@@ -49,7 +49,7 @@ public class SingleTagOptimizer extends BaseOptimizer {
             PlcReadRequest subRequest = new DefaultPlcReadRequest(
                 ((DefaultPlcReadRequest) readRequest).getReader(),
                 // We are only expecting valid tagItems being passed in.
-                new LinkedHashMap<>(Collections.singletonMap(tagName, new DefaultPlcTagItem(tag))));
+                new LinkedHashMap<>(Collections.singletonMap(tagName, new DefaultPlcTagItem<>(tag))));
             subRequests.add(subRequest);
         }
         return subRequests;
@@ -67,7 +67,7 @@ public class SingleTagOptimizer extends BaseOptimizer {
             PlcWriteRequest subRequest = new DefaultPlcWriteRequest(
                 ((DefaultPlcWriteRequest) writeRequest).getWriter(),
                 // We are only expecting valid tagValueItems being passed in.
-                new LinkedHashMap<>(Collections.singletonMap(tagName, new DefaultPlcTagValueItem(tag, value))));
+                new LinkedHashMap<>(Collections.singletonMap(tagName, new DefaultPlcTagValueItem<>(tag, value))));
             subRequests.add(subRequest);
         }
         return subRequests;

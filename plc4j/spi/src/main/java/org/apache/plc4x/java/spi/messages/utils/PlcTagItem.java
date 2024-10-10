@@ -22,13 +22,13 @@ package org.apache.plc4x.java.spi.messages.utils;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
-public interface PlcTagItem {
+public interface PlcTagItem<T extends PlcTag> {
 
     default PlcResponseCode getResponseCode() {
         return PlcResponseCode.OK;
     }
 
-    default PlcTag getTag() {
+    default T getTag() {
         return null;
     }
 

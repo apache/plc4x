@@ -20,7 +20,6 @@ package org.apache.plc4x.java.transport.serial;
 
 import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultPromise;
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,7 +122,7 @@ class SerialPollingSelector extends AbstractSelector {
     public Selector wakeup() {
         logger.debug("being asked to wake up from select");
         // throw new NotImplementedException("Not implemented for this selector, should not be needed.");
-        if (!selectPromise.isDone()) {
+        if ((selectPromise != null) && !selectPromise.isDone()) {
             selectPromise.setSuccess(null);
         }
         return this;

@@ -103,7 +103,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
         if (values.get(name) == null) {
             throw new PlcInvalidTagException(name);
         }
-        return values.get(name).getCode();
+        return values.get(name).getResponseCode();
     }
 
     public Map<String, PlcResponseItem<PlcValue>> getValues() {
@@ -623,9 +623,9 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
         if (values.get(name) == null) {
             throw new PlcInvalidTagException(name);
         }
-        if (values.get(name).getCode() != PlcResponseCode.OK) {
+        if (values.get(name).getResponseCode() != PlcResponseCode.OK) {
             throw new PlcRuntimeException(
-                "Tag '" + name + "' could not be fetched, response was " + values.get(name).getCode());
+                "Tag '" + name + "' could not be fetched, response was " + values.get(name).getResponseCode());
         }
         // No need to check for "null" as this is already captured by the constructors.
         return values.get(name).getValue();

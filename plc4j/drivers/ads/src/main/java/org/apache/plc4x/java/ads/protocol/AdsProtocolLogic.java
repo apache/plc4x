@@ -45,7 +45,9 @@ import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagItem;
 import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
 import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
@@ -408,51 +410,58 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                         }
                                     }
 
-                                    LinkedHashMap<String, PlcSubscriptionTag> subscriptionTags = new LinkedHashMap<>();
+                                    LinkedHashMap<String, PlcTagItem<PlcSubscriptionTag>> subscriptionTags = new LinkedHashMap<>();
                                     // Subscribe to online-version changes (get the address from the collected data for symbol: "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt")
-                                    subscriptionTags.put("onlineVersion", new DefaultPlcSubscriptionTag(
+                                    subscriptionTags.put("onlineVersion", new DefaultPlcTagItem<>(new DefaultPlcSubscriptionTag(
                                         PlcSubscriptionType.CHANGE_OF_STATE,
                                         new SymbolicAdsTag("TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt", org.apache.plc4x.java.api.types.PlcValueType.UDINT, Collections.emptyList()),
-                                        Duration.ofMillis(1000)));
+                                        Duration.ofMillis(1000))));
                                     // Subscribe to symbol-version changes (Address: GroupID: 0xF008, Offset: 0, Read length: 1)
-                                    subscriptionTags.put("symbolVersion", new DefaultPlcSubscriptionTag(
+                                    subscriptionTags.put("symbolVersion", new DefaultPlcTagItem<>(new DefaultPlcSubscriptionTag(
                                         PlcSubscriptionType.CHANGE_OF_STATE,
                                         new DirectAdsTag(0xF008, 0x0000, "USINT", 1),
-                                        Duration.ofMillis(1000)));
-                                    LinkedHashMap<String, List<Consumer<PlcSubscriptionEvent>>> consumer = new LinkedHashMap<>();
-                                    consumer.put("onlineVersion", Collections.singletonList(plcSubscriptionEvent -> {
-                                        long oldVersion = onlineVersion;
-                                        long newVersion = plcSubscriptionEvent.getPlcValue("onlineVersion").getLong();
-                                        if (oldVersion != newVersion) {
-                                            if (invalidationLock.tryLock()) {
-                                                LOGGER.info("Detected change of the 'online-version', invalidating data type and symbol information.");
-                                                CompletableFuture<Void> reloadingFuture = readSymbolTableAndDatatypeTable(context);
-                                                reloadingFuture.whenComplete((unused, throwable) -> {
-                                                    if (throwable != null) {
-                                                        LOGGER.error("Error reloading data type and symbol data", throwable);
+                                        Duration.ofMillis(1000))));
+                                    Consumer<PlcSubscriptionEvent> consumer = plcSubscriptionEvent -> {
+                                        for (String tagName : plcSubscriptionEvent.getTagNames()) {
+                                            switch (tagName) {
+                                                case "onlineVersion": {
+                                                    long oldVersion = onlineVersion;
+                                                    long newVersion = plcSubscriptionEvent.getPlcValue("onlineVersion").getLong();
+                                                    if (oldVersion != newVersion) {
+                                                        if (invalidationLock.tryLock()) {
+                                                            LOGGER.info("Detected change of the 'online-version', invalidating data type and symbol information.");
+                                                            CompletableFuture<Void> reloadingFuture = readSymbolTableAndDatatypeTable(context);
+                                                            reloadingFuture.whenComplete((unused, throwable) -> {
+                                                                if (throwable != null) {
+                                                                    LOGGER.error("Error reloading data type and symbol data", throwable);
+                                                                }
+                                                                invalidationLock.unlock();
+                                                            });
+                                                        }
                                                     }
-                                                    invalidationLock.unlock();
-                                                });
+                                                    break;
+                                                }
+                                                case "symbolVersion": {
+                                                    int oldVersion = symbolVersion;
+                                                    int newVersion = plcSubscriptionEvent.getPlcValue("symbolVersion").getInteger();
+                                                    if (oldVersion != newVersion) {
+                                                        if (invalidationLock.tryLock()) {
+                                                            LOGGER.info("Detected change of the 'symbol-version', invalidating data type and symbol information.");
+                                                            CompletableFuture<Void> reloadingFuture = readSymbolTableAndDatatypeTable(context);
+                                                            reloadingFuture.whenComplete((unused, throwable) -> {
+                                                                if (throwable != null) {
+                                                                    LOGGER.error("Error reloading data type and symbol data", throwable);
+                                                                }
+                                                                invalidationLock.unlock();
+                                                            });
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
-                                    }));
-                                    consumer.put("symbolVersion", Collections.singletonList(plcSubscriptionEvent -> {
-                                        int oldVersion = symbolVersion;
-                                        int newVersion = plcSubscriptionEvent.getPlcValue("symbolVersion").getInteger();
-                                        if (oldVersion != newVersion) {
-                                            if (invalidationLock.tryLock()) {
-                                                LOGGER.info("Detected change of the 'symbol-version', invalidating data type and symbol information.");
-                                                CompletableFuture<Void> reloadingFuture = readSymbolTableAndDatatypeTable(context);
-                                                reloadingFuture.whenComplete((unused, throwable) -> {
-                                                    if (throwable != null) {
-                                                        LOGGER.error("Error reloading data type and symbol data", throwable);
-                                                    }
-                                                    invalidationLock.unlock();
-                                                });
-                                            }
-                                        }
-                                    }));
-                                    PlcSubscriptionRequest subscriptionRequest = new DefaultPlcSubscriptionRequest(this, subscriptionTags, consumer);
+                                    };
+
+                                    PlcSubscriptionRequest subscriptionRequest = new DefaultPlcSubscriptionRequest(this, subscriptionTags, consumer, Collections.emptyMap());
                                     CompletableFuture<PlcSubscriptionResponse> subscriptionResponseCompletableFuture = subscribe(subscriptionRequest);
 
                                     // Wait for the subscription to be finished

@@ -29,12 +29,18 @@ Incompatible changes
   efficient PlcRawByteArray type is used, that gives users
   direct access to the bytes returned from the PLC instead of
   a list of PlcValues.
-- The builders for read- and write-requests now process tags
-  and values on a per-field level. If one field has an invalid
-  address it will now only fail the one item related to that.
-  Same applies to values. Only the tag who's value was invalid
-  will be considered failed and no longer an exception should
-  be thrown.
+- The builders for read-, write- ans subscription.requests now
+  process tags and values on a per-field level. If one field
+  has an invalid address it will now only fail the one item
+  related to that. Same applies to values. Only the tag who's
+  value was invalid will be considered failed and no longer an
+  exception should be thrown.
+- Subscription-requests now allow registering a handler for
+  all fields in the subscription.
+- The addPreRegisteredConsumer method was removed and versions
+  of the "addXYZ" methods were added, that allow providing
+  individual consumers for each tag.
+
 
 Bug Fixes
 ---------

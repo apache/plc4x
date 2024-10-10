@@ -801,9 +801,10 @@ public enum KnxManufacturer {
   M_ITALIANA_CONDUTTORI_SRL((int) 688, (int) 746, (String) "Italiana Conduttori srl"),
   M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_(
       (int) 689, (int) 747, (String) "Xiamen Leelen Technology Co.,Ltd."),
-  M_ABB___RESERVED((int) 690, (int) 43954, (String) "ABB - reserved"),
+  M_LEDNX((int) 690, (int) 748, (String) "LedNX"),
+  M_ABB___RESERVED((int) 691, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 691, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 692, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

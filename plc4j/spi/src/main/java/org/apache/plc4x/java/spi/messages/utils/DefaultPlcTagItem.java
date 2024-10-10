@@ -24,15 +24,15 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
-public class DefaultPlcTagItem implements PlcTagItem, Serializable {
+public class DefaultPlcTagItem<T extends PlcTag> implements PlcTagItem<T>, Serializable {
 
-    private final PlcTag tag;
+    private final T tag;
 
-    public DefaultPlcTagItem(PlcTag tag) {
+    public DefaultPlcTagItem(T tag) {
         this.tag = tag;
     }
 
-    public PlcTag getTag() {
+    public T getTag() {
         return tag;
     }
 

@@ -1439,8 +1439,9 @@
     ['687' M_3A_ENTREPRISE_APS ['745', '"3a entreprise aps"']]
     ['688' M_ITALIANA_CONDUTTORI_SRL ['746', '"Italiana Conduttori srl"']]
     ['689' M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_ ['747', '"Xiamen Leelen Technology Co.,Ltd."']]
-    ['690' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['691' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['690' M_LEDNX ['748', '"LedNX"']]
+    ['691' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['692' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -81,7 +82,7 @@ public class S7Optimizer extends BaseOptimizer {
 
         // List of all items in the current request.
 
-        LinkedHashMap<String, PlcTagItem> curTagItems = new LinkedHashMap<>();
+        LinkedHashMap<String, PlcTagItem<PlcTag>> curTagItems = new LinkedHashMap<>();
 
         for (String tagName : readRequest.getTagNames()) {
 
@@ -89,7 +90,7 @@ public class S7Optimizer extends BaseOptimizer {
             if ((readRequest.getTag(tagName) instanceof S7SzlTag) ||
                 (readRequest.getTag(tagName) instanceof S7ClkTag)) {
                 // We are only expecting valid tagValueItems being passed in.
-                curTagItems.put(tagName, new DefaultPlcTagItem(readRequest.getTag(tagName)));
+                curTagItems.put(tagName, new DefaultPlcTagItem<>(readRequest.getTag(tagName)));
                 continue;
             }
 
@@ -124,7 +125,7 @@ public class S7Optimizer extends BaseOptimizer {
 
                 // Add the tag to the current request
                 // We are only expecting valid tagValueItems being passed in.
-                curTagItems.put(tagName, new DefaultPlcTagItem(tag));
+                curTagItems.put(tagName, new DefaultPlcTagItem<>(tag));
             }
             // If the current item would exceed the PDU size in the response, even if this is a new request, split
             // up the array to fill up the last request and create so many sub-requests that read all in total.
@@ -137,8 +138,8 @@ public class S7Optimizer extends BaseOptimizer {
                 for(int curRequest = 0; curRequest < numRequests; curRequest++) {
                     int numCurRequestItems = Math.min(numItemsPerRequest, itemsLeft);
                     S7Tag tagFragment = new S7Tag(tag.getDataType(), tag.getMemoryArea(), tag.getBlockNumber(), curByteOffset, (byte) 0, numCurRequestItems);
-                    LinkedHashMap<String, PlcTagItem> tagFragments = new LinkedHashMap<>();
-                    tagFragments.put(tagName, new DefaultPlcTagItem(tagFragment));
+                    LinkedHashMap<String, PlcTagItem<PlcTag>> tagFragments = new LinkedHashMap<>();
+                    tagFragments.put(tagName, new DefaultPlcTagItem<>(tagFragment));
                     processedRequests.add(new DefaultPlcReadRequest(((DefaultPlcReadRequest) readRequest).getReader(), tagFragments));
                     curByteOffset += numItemsPerRequest * tag.getDataType().getSizeInBytes();
                     itemsLeft -= numCurRequestItems;
@@ -163,7 +164,7 @@ public class S7Optimizer extends BaseOptimizer {
 
                 // Add the tag to the new current request
                 // We are only expecting valid tagValueItems being passed in.
-                curTagItems.put(tagName, new DefaultPlcTagItem(tag));
+                curTagItems.put(tagName, new DefaultPlcTagItem<>(tag));
             }
         }
 
@@ -199,7 +200,7 @@ public class S7Optimizer extends BaseOptimizer {
                                 if (tagValues.containsKey(tagName)) {
                                     PlcResponseItem<PlcValue> existingTagItem = tagValues.get(tagName);
                                     // If a previous response was invalid, we'll discard this part of it too.
-                                    if(existingTagItem.getCode() != PlcResponseCode.OK) {
+                                    if(existingTagItem.getResponseCode() != PlcResponseCode.OK) {
                                         continue;
                                     }
                                     existingItem = (PlcRawByteArray) existingTagItem.getValue();
@@ -218,7 +219,7 @@ public class S7Optimizer extends BaseOptimizer {
                                 if (tagValues.containsKey(tagName)) {
                                     PlcResponseItem<PlcValue> existingTagItem = tagValues.get(tagName);
                                     // If a previous response was invalid, we'll discard this part of it too.
-                                    if(existingTagItem.getCode() != PlcResponseCode.OK) {
+                                    if(existingTagItem.getResponseCode() != PlcResponseCode.OK) {
                                         continue;
                                     }
                                     existingItems = (List<PlcValue>) existingTagItem.getValue().getList();
@@ -267,7 +268,7 @@ public class S7Optimizer extends BaseOptimizer {
         int curResponseSize = EMPTY_WRITE_RESPONSE_SIZE;
 
         // List of all items in the current request.
-        LinkedHashMap<String, PlcTagValueItem> curTags = new LinkedHashMap<>();
+        LinkedHashMap<String, PlcTagValueItem<PlcTag>> curTags = new LinkedHashMap<>();
 
         for (String tagName : writeRequest.getTagNames()) {
             S7Tag tag = (S7Tag) writeRequest.getTag(tagName);
@@ -333,7 +334,7 @@ public class S7Optimizer extends BaseOptimizer {
                 }
             }
             // We are only expecting valid tagValueItems being passed in.
-            curTags.put(tagName, new DefaultPlcTagValueItem(tag, value));
+            curTags.put(tagName, new DefaultPlcTagValueItem<>(tag, value));
         }
 
         // Create a new PlcWriteRequest from the remaining tag items.

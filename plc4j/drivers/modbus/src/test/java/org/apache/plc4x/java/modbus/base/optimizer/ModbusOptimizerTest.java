@@ -227,10 +227,10 @@ class ModbusOptimizerTest {
         Mockito.when(driverContext.getByteOrder()).thenReturn(ModbusByteOrder.BIG_ENDIAN);
         Mockito.when(driverContext.getMaxCoilsPerRequest()).thenReturn(2000);
         Mockito.when(driverContext.getMaxRegistersPerRequest()).thenReturn(125);
-        LinkedHashMap<String, PlcTagItem> tagMap = new LinkedHashMap<>();
+        LinkedHashMap<String, PlcTagItem<PlcTag>> tagMap = new LinkedHashMap<>();
         int i = 0;
         for (PlcTag tag : tags) {
-            tagMap.put("tag" + i++, new DefaultPlcTagItem(tag));
+            tagMap.put("tag" + i++, new DefaultPlcTagItem<>(tag));
         }
         ModbusOptimizer sut = new ModbusOptimizer();
         List<PlcReadRequest> plcReadRequests = sut.processReadRequest(new DefaultPlcReadRequest(reader, tagMap), driverContext);

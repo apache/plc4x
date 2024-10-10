@@ -48,10 +48,10 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
 
     private final PlcReader reader;
     // This is intentionally a linked hash map in order to keep the order of how elements were added.
-    private final LinkedHashMap<String, PlcTagItem> tags;
+    private final LinkedHashMap<String, PlcTagItem<PlcTag>> tags;
 
     public DefaultPlcReadRequest(PlcReader reader,
-                                 LinkedHashMap<String, PlcTagItem> tags) {
+                                 LinkedHashMap<String, PlcTagItem<PlcTag>> tags) {
         this.reader = reader;
         this.tags = tags;
     }
@@ -72,7 +72,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
         return new LinkedHashSet<>(tags.keySet());
     }
 
-    public PlcTagItem getTagItem(String tagName) {
+    public PlcTagItem<PlcTag> getTagItem(String tagName) {
         return tags.get(tagName);
     }
 
@@ -101,10 +101,10 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
 
         writeBuffer.pushContext("PlcTagRequest");
         writeBuffer.pushContext("tags", WithRenderAsList(true));
-        for (Map.Entry<String, PlcTagItem> tagEntry : tags.entrySet()) {
+        for (Map.Entry<String, PlcTagItem<PlcTag>> tagEntry : tags.entrySet()) {
             String tagName = tagEntry.getKey();
             writeBuffer.pushContext(tagName);
-            PlcTagItem tagItem = tagEntry.getValue();
+            PlcTagItem<PlcTag> tagItem = tagEntry.getValue();
             if (!(tagItem instanceof Serializable)) {
                 throw new RuntimeException("Error serializing. PlcTagItem doesn't implement Serializable");
             }
@@ -121,7 +121,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
 
         private final PlcReader reader;
         private final PlcTagHandler tagHandler;
-        private final Map<String, Supplier<PlcTagItem>> tagItems;
+        private final Map<String, Supplier<PlcTagItem<PlcTag>>> tagItems;
 
         public Builder(PlcReader reader, PlcTagHandler tagHandler) {
             this.reader = Objects.requireNonNull(reader);
@@ -137,11 +137,11 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
             tagItems.put(name, () -> {
                 try {
                     PlcTag tag = tagHandler.parseTag(tagAddress);
-                    return new DefaultPlcTagItem(tag);
+                    return new DefaultPlcTagItem<>(tag);
                 } catch (PlcTagNotFoundException e) {
-                    return new DefaultPlcTagErrorItem(PlcResponseCode.NOT_FOUND);
+                    return new DefaultPlcTagErrorItem<>(PlcResponseCode.NOT_FOUND);
                 } catch (Exception e) {
-                    return new DefaultPlcTagErrorItem(PlcResponseCode.INVALID_ADDRESS);
+                    return new DefaultPlcTagErrorItem<>(PlcResponseCode.INVALID_ADDRESS);
                 }
             });
             return this;
@@ -152,15 +152,15 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
             if (tagItems.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            tagItems.put(name, () -> new DefaultPlcTagItem(tag));
+            tagItems.put(name, () -> new DefaultPlcTagItem<>(tag));
             return this;
         }
 
         @Override
         public PlcReadRequest build() {
-            LinkedHashMap<String, PlcTagItem> parsedTags = new LinkedHashMap<>();
+            LinkedHashMap<String, PlcTagItem<PlcTag>> parsedTags = new LinkedHashMap<>();
             tagItems.forEach((name, tagItemSupplier) -> {
-                PlcTagItem plcTagItem = tagItemSupplier.get();
+                PlcTagItem<PlcTag> plcTagItem = tagItemSupplier.get();
                 parsedTags.put(name, plcTagItem);
             });
             return new DefaultPlcReadRequest(reader, parsedTags);

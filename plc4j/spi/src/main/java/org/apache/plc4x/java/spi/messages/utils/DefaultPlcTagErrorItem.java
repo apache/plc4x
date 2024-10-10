@@ -19,12 +19,13 @@
 
 package org.apache.plc4x.java.spi.messages.utils;
 
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
-public class DefaultPlcTagErrorItem implements PlcTagItem, PlcTagValueItem, Serializable {
+public class DefaultPlcTagErrorItem<T extends PlcTag> implements PlcTagItem<T>, PlcTagValueItem<T>, Serializable {
 
     private final PlcResponseCode responseCode;
 

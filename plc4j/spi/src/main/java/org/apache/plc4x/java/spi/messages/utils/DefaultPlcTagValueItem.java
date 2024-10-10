@@ -24,11 +24,11 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
-public class DefaultPlcTagValueItem extends DefaultPlcTagItem implements PlcTagValueItem, Serializable {
+public class DefaultPlcTagValueItem<T extends PlcTag> extends DefaultPlcTagItem<T> implements PlcTagValueItem<T>, Serializable {
 
     private final PlcValue value;
 
-    public DefaultPlcTagValueItem(PlcTag tag, PlcValue value) {
+    public DefaultPlcTagValueItem(T tag, PlcValue value) {
         super(tag);
         this.value = value;
     }
