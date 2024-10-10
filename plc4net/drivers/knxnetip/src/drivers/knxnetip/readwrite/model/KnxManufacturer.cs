@@ -714,8 +714,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_3A_ENTREPRISE_APS = 687,
         M_ITALIANA_CONDUTTORI_SRL = 688,
         M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_ = 689,
-        M_ABB___RESERVED = 690,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 691,
+        M_LEDNX = 690,
+        M_ABB___RESERVED = 691,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 692,
     }
 
     public static class KnxManufacturerInfo
@@ -2696,10 +2697,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_EELECTRON: { /* '69' */
                     return 108;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '690' */
+                case KnxManufacturer.M_LEDNX: { /* '690' */
+                    return 748;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '691' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '691' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '692' */
                     return 43959;
                 }
                 case KnxManufacturer.M_GIRA_GIERSIEPEN: { /* '7' */
@@ -4782,10 +4786,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_EELECTRON: { /* '69' */
                     return "Eelectron";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '690' */
+                case KnxManufacturer.M_LEDNX: { /* '690' */
+                    return "LedNX";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '691' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '691' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '692' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_GIRA_GIERSIEPEN: { /* '7' */
