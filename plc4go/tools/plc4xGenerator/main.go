@@ -236,7 +236,9 @@ func (g *Generator) generate(typeName string) {
 		}
 	}
 	if len(fields) == 0 {
-		log.Printf("no fields defined for type %s", typeName)
+		if *verbose {
+			log.Printf("no fields defined for type %s", typeName)
+		}
 	}
 	// TODO: for now we remove Default from the start (maybe move that to an option)
 	logicalTypeName := "\"" + strings.TrimPrefix(typeName, "Default") + "\""
@@ -372,7 +374,9 @@ func (g *Generator) generate(typeName string) {
 						}
 					}
 					if xIdent.Name == "sync" {
-						fmt.Printf("\t skipping field %s because it is %v.%v\n", fieldName, x, sel)
+						if *verbose {
+							fmt.Printf("\t skipping field %s because it is %v.%v\n", fieldName, x, sel)
+						}
 						if field.hasLocker != "" {
 							g.Printf("\treturn nil\n")
 							g.Printf("}(); err != nil {\n")
@@ -382,7 +386,9 @@ func (g *Generator) generate(typeName string) {
 						continue
 					}
 					if xIdent.Name == "zerolog" {
-						fmt.Printf("\t skipping field %s because it is %v.%v\n", fieldName, x, sel)
+						if *verbose {
+							fmt.Printf("\t skipping field %s because it is %v.%v\n", fieldName, x, sel)
+						}
 						continue
 					}
 					if xIdent.Name == "time" {
@@ -421,7 +427,9 @@ func (g *Generator) generate(typeName string) {
 					continue
 				}
 			}
-			fmt.Printf("no support yet for %#q\n", fieldType)
+			if *verbose {
+				fmt.Printf("Warn: no support yet for %#q\n", fieldType)
+			}
 			continue
 		case *ast.Ident:
 			deref := ""
@@ -449,7 +457,9 @@ func (g *Generator) generate(typeName string) {
 			case "error":
 				g.Printf(indent(indentTimes, errorFieldSerialize), deref+"d."+field.name, fieldNameUntitled)
 			default:
-				fmt.Printf("\t no support implemented for Ident with type %v\n", fieldType)
+				if *verbose {
+					fmt.Printf("\t Warn: no support implemented for Ident with type %v\n", fieldType)
+				}
 				g.Printf("{\n")
 				g.Printf("_value := fmt.Sprintf(\"%%v\", d.%s)\n", fieldName)
 				g.Printf(stringFieldSerialize, "_value", fieldNameUntitled)
@@ -483,7 +493,9 @@ func (g *Generator) generate(typeName string) {
 					case "error":
 						g.Printf(errorFieldSerialize, "elem", "\"\"")
 					default:
-						fmt.Printf("\t no support implemented for Ident within ArrayType for %v\n", fieldType)
+						if *verbose {
+							fmt.Printf("\t Warn: no support implemented for Ident within ArrayType for %v\n", fieldType)
+						}
 						g.Printf("_value := fmt.Sprintf(\"%%v\", elem)\n")
 						g.Printf(stringFieldSerialize, "_value", fieldNameUntitled)
 					}
@@ -536,12 +548,16 @@ func (g *Generator) generate(typeName string) {
 				case "error":
 					g.Printf(errorFieldSerialize, "elem", "name")
 				default:
-					fmt.Printf("\t no support implemented for Ident within MapType for %v\n", fieldType)
+					if *verbose {
+						fmt.Printf("\t Warn: no support implemented for Ident within MapType for %v\n", fieldType)
+					}
 					g.Printf("\t\t_value := fmt.Sprintf(\"%%v\", elem)\n")
 					g.Printf(stringFieldSerialize, "_value", "name")
 				}
 			default:
-				fmt.Printf("\t no support implemented within MapType %v\n", fieldType.Value)
+				if *verbose {
+					fmt.Printf("\t Warn: no support implemented within MapType %v\n", fieldType.Value)
+				}
 				g.Printf("\t\t_value := fmt.Sprintf(\"%%v\", elem)\n")
 				g.Printf(stringFieldSerialize, "_value", "name")
 			}
@@ -552,7 +568,9 @@ func (g *Generator) generate(typeName string) {
 		case *ast.FuncType:
 			g.Printf(funcFieldSerialize, "d."+field.name, fieldNameUntitled)
 		default:
-			fmt.Printf("no support implemented %#v\n", fieldType)
+			if *verbose {
+				fmt.Printf("Warn: no support implemented %#v\n", fieldType)
+			}
 		}
 		if field.hasLocker != "" {
 			g.Printf("\treturn nil\n")
@@ -614,7 +632,9 @@ func (f *File) genDecl(node ast.Node) bool {
 		if typeSpec.Name.Name != f.typeName {
 			continue
 		}
-		fmt.Printf("Handling %s\n", typeSpec.Name.Name)
+		if *verbose {
+			fmt.Printf("Handling %s\n", typeSpec.Name.Name)
+		}
 		for _, field := range structDecl.Fields.List {
 			if field.Tag != nil && field.Tag.Value == "`ignore:\"true\"`" {
 				var name string
@@ -623,7 +643,9 @@ func (f *File) genDecl(node ast.Node) bool {
 				} else {
 					name = "<delegate>"
 				}
-				fmt.Printf("\t ignoring field %s %v\n", name, field.Type)
+				if *verbose {
+					fmt.Printf("\t ignoring field %s %v\n", name, field.Type)
+				}
 				continue
 			}
 			isStringer := false
@@ -644,7 +666,9 @@ func (f *File) genDecl(node ast.Node) bool {
 				directSerialize = true
 			}
 			if len(field.Names) == 0 {
-				fmt.Printf("\t adding delegate\n")
+				if *verbose {
+					fmt.Printf("\t adding delegate\n")
+				}
 				switch ft := field.Type.(type) {
 				case *ast.Ident:
 					f.fields = append(f.fields, Field{
@@ -691,7 +715,9 @@ func (f *File) genDecl(node ast.Node) bool {
 					panic(fmt.Sprintf("Only struct delegates supported now. Type %T", field.Type))
 				}
 			}
-			fmt.Printf("\t adding field %s %v\n", field.Names[0].Name, field.Type)
+			if *verbose {
+				fmt.Printf("\t adding field %s %v\n", field.Names[0].Name, field.Type)
+			}
 			f.fields = append(f.fields, Field{
 				name:            field.Names[0].Name,
 				fieldType:       field.Type,
