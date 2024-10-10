@@ -142,7 +142,7 @@
     <jserialcom.version>2.11.0</jserialcom.version>
     <junit.jupiter.version>5.11.2</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
-    <logback.version>1.5.8</logback.version>
+    <logback.version>1.5.9</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <milo.version>0.6.14</milo.version>
     <mockito.version>5.13.0</mockito.version>
