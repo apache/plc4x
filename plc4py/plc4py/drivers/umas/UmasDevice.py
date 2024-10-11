@@ -171,7 +171,7 @@ class UmasDevice:
         return_dict = {}
         for kea, tag in tags.items():
             temp_variable = UmasVariableBuilder(
-                kea, tag, data_types, data_type_children
+                kea, tag, data_types, data_type_children, base_offset=tag.base_offset
             ).build()
             if temp_variable is not None:
                 return_dict[kea] = temp_variable

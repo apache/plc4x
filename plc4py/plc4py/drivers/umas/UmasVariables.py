@@ -39,6 +39,7 @@ class UmasVariable:
     variable_name: str
     data_type: int
     block_no: int
+    base_offset: int
     offset: int
 
     def get_variable_reference(self, address: str) -> VariableReadRequestReference:
@@ -60,7 +61,7 @@ class UmasElementryVariable(UmasVariable):
                 is_array=1,
                 data_size_index=UmasDataType(self.data_type).request_size,
                 block=self.block_no,
-                base_offset=0x0000,
+                base_offset=self.base_offset,
                 offset=self.offset,
                 array_length=16,
             )
@@ -69,7 +70,7 @@ class UmasElementryVariable(UmasVariable):
                 is_array=0,
                 data_size_index=UmasDataType(self.data_type).request_size,
                 block=self.block_no,
-                base_offset=0x0000,
+                base_offset=self.base_offset,
                 offset=self.offset,
                 array_length=None,
             )
@@ -116,7 +117,7 @@ class UmasArrayVariable(UmasVariable):
                 is_array=0,
                 data_size_index=data_type_enum.request_size,
                 block=self.block_no,
-                base_offset=0x0000,
+                base_offset=self.base_offset,
                 offset=self.offset
                 + (address_index - self.start_index) * data_type_enum.data_type_size,
                 array_length=None,
@@ -126,7 +127,7 @@ class UmasArrayVariable(UmasVariable):
                 is_array=1,
                 data_size_index=data_type_enum.request_size,
                 block=self.block_no,
-                base_offset=0x0000,
+                base_offset=self.base_offset,
                 offset=self.offset,
                 array_length=self.end_index - self.start_index + 1,
             )
@@ -142,6 +143,7 @@ class UmasVariableBuilder:
     data_type_references: List[UmasDatatypeReference]
     udt_definitions: Dict[str, List[UmasUDTDefinition]]
     block: int = -1
+    base_offset: int = 0
     offset: int = 0
 
     def build(self) -> UmasVariable:
@@ -160,6 +162,7 @@ class UmasVariableBuilder:
                 self.tag_name,
                 data_type,
                 self.block,
+                self.base_offset,
                 self.tag_reference.offset + self.offset,
             )
         else:
@@ -180,6 +183,7 @@ class UmasVariableBuilder:
                                 child,
                                 self.data_type_references,
                                 self.udt_definitions,
+                                base_offset=self.base_offset,
                                 offset=self.tag_reference.offset,
                                 block=self.block,
                             ).build()
@@ -187,6 +191,7 @@ class UmasVariableBuilder:
                             self.tag_name,
                             data_type,
                             self.block,
+                            self.base_offset,
                             self.tag_reference.offset,
                             children,
                         )
@@ -212,6 +217,7 @@ class UmasVariableBuilder:
                             self.tag_reference.value,
                             data_type,
                             self.block,
+                            self.base_offset,
                             self.tag_reference.offset + self.offset,
                             int(match.group("start_number")),
                             int(match.group("end_number")),

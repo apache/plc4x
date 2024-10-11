@@ -34,7 +34,7 @@ class UmasUnlocatedVariableReference:
     unknown1: int
     block: int
     offset: int
-    unknown5: int
+    base_offset: int
     unknown4: int
     string_length: int
     value: str
@@ -62,9 +62,9 @@ class UmasUnlocatedVariableReference:
             self.offset, bit_length=8, logical_name="offset"
         )
 
-        # Simple Field (unknown5)
+        # Simple Field (baseOffset)
         write_buffer.write_unsigned_byte(
-            self.unknown5, bit_length=8, logical_name="unknown5"
+            self.base_offset, bit_length=8, logical_name="baseOffset"
         )
 
         # Simple Field (unknown4)
@@ -105,7 +105,7 @@ class UmasUnlocatedVariableReference:
         # Simple field (offset)
         length_in_bits += 8
 
-        # Simple field (unknown5)
+        # Simple field (baseOffset)
         length_in_bits += 8
 
         # Simple field (unknown4)
@@ -143,8 +143,8 @@ class UmasUnlocatedVariableReference:
             logical_name="offset", bit_length=8
         )
 
-        unknown5: int = read_buffer.read_unsigned_byte(
-            logical_name="unknown5", bit_length=8
+        base_offset: int = read_buffer.read_unsigned_byte(
+            logical_name="base_offset", bit_length=8
         )
 
         unknown4: int = read_buffer.read_unsigned_short(
@@ -170,7 +170,7 @@ class UmasUnlocatedVariableReference:
                 unknown1,
                 block,
                 offset,
-                unknown5,
+                base_offset,
                 unknown4,
                 string_length,
                 value,
@@ -191,7 +191,7 @@ class UmasUnlocatedVariableReference:
             and (self.unknown1 == that.unknown1)
             and (self.block == that.block)
             and (self.offset == that.offset)
-            and (self.unknown5 == that.unknown5)
+            and (self.base_offset == that.base_offset)
             and (self.unknown4 == that.unknown4)
             and (self.string_length == that.string_length)
             and (self.value == that.value)

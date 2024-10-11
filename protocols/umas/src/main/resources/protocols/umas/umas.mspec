@@ -97,7 +97,7 @@
             [simple     uint 32         hardwareId]
             [simple     uint 16         blockNo]
             [simple     uint 16         offset]
-            [const      uint 8          blank 0x00]
+            [const      uint 16         blank 0x00]
         ]
         ['0xFD'     UmasPDUErrorResponse
             [array      uint 8          block count 'byteLength - 2']
@@ -208,7 +208,7 @@
     [simple     uint 8           unknown1]
     [simple     uint 16          block]
     [simple     uint 8           offset]
-    [simple     uint 8           unknown5]
+    [simple     uint 8           baseOffset]
     [simple     uint 16          unknown4]
     [simple     uint 16          stringLength]
     [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)']
