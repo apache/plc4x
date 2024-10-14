@@ -362,7 +362,7 @@ class UmasDevice:
         )
         tags: Dict[str, UmasUnlocatedVariableReference] = {}
         for variable in variable_list.records:
-            tags[variable.value.lower()] = variable
+            tags[variable.value] = variable
         return variable_list.next_address, tags
 
     async def _send_read_variable_request(
@@ -421,7 +421,7 @@ class UmasDevice:
         for kea, tag in request.tags.items():
             umas_tag = cast(UmasTag, tag)
             base_tag_name = umas_tag.tag_name.split(".")[0]
-            variable = self.variables[base_tag_name.lower()]
+            variable = self.variables[base_tag_name]
 
             if byte_count + variable.get_byte_length() > self.max_frame_size:
                 current_list_index += 1

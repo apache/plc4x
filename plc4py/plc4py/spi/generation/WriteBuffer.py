@@ -437,7 +437,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
 
     def write_bit(self, value: bool, logical_name: str = "", **kwargs) -> None:
         data_type: str = "bit"
-        data: str = str(value).lower()
+        data: str = str(value)
         if "bit_length" in kwargs:
             kwargs["bit_length"] = str(kwargs["bit_length"])
         else:
