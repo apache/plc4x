@@ -236,7 +236,7 @@ func (m *_COTPPacketConnectionResponse) GetTypeName() string {
 }
 
 func (m *_COTPPacketConnectionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.COTPPacketContract.(*_COTPPacket).getLengthInBits(ctx))
+	lengthInBits := uint16(m.COTPPacketContract.(*_COTPPacket).GetLengthInBits(ctx))
 
 	// Simple field (destinationReference)
 	lengthInBits += 16

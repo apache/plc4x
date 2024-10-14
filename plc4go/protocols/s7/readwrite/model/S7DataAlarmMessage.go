@@ -257,7 +257,7 @@ func (m *_S7DataAlarmMessage) GetTypeName() string {
 	return "S7DataAlarmMessage"
 }
 
-func (m *_S7DataAlarmMessage) getLengthInBits(ctx context.Context) uint16 {
+func (m *_S7DataAlarmMessage) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (functionId)

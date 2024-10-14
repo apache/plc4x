@@ -414,7 +414,7 @@ func (m *_APDUConfirmedRequest) GetTypeName() string {
 }
 
 func (m *_APDUConfirmedRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+	lengthInBits := uint16(m.APDUContract.(*_APDU).GetLengthInBits(ctx))
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1

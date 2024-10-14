@@ -210,7 +210,7 @@ func (m *_BACnetConstructedDataListOfObjectPropertyReferences) GetTypeName() str
 }
 
 func (m *_BACnetConstructedDataListOfObjectPropertyReferences) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.References) > 0 {

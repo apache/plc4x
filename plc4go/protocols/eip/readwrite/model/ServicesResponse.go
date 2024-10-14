@@ -254,7 +254,7 @@ func (m *_ServicesResponse) GetTypeName() string {
 }
 
 func (m *_ServicesResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TypeIdContract.(*_TypeId).getLengthInBits(ctx))
+	lengthInBits := uint16(m.TypeIdContract.(*_TypeId).GetLengthInBits(ctx))
 
 	// Implicit Field (serviceLen)
 	lengthInBits += 16

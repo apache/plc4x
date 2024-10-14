@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataIPDefaultGateway) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataIPDefaultGateway) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (ipDefaultGateway)
 	lengthInBits += m.IpDefaultGateway.GetLengthInBits(ctx)

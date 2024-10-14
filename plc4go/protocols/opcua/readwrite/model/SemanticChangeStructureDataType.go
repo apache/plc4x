@@ -269,7 +269,7 @@ func (m *_SemanticChangeStructureDataType) GetTypeName() string {
 }
 
 func (m *_SemanticChangeStructureDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (affected)
 	lengthInBits += m.Affected.GetLengthInBits(ctx)

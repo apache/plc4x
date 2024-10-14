@@ -494,7 +494,7 @@ func (m *_CALData) GetTypeName() string {
 	return "CALData"
 }
 
-func (m *_CALData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_CALData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)

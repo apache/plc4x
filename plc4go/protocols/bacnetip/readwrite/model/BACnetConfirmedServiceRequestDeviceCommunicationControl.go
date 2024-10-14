@@ -290,7 +290,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetTypeName()
 }
 
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).GetLengthInBits(ctx))
 
 	// Optional Field (timeDuration)
 	if m.TimeDuration != nil {

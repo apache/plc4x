@@ -299,7 +299,7 @@ func (m *_SecurityDataEmulatedKeypad) GetTypeName() string {
 }
 
 func (m *_SecurityDataEmulatedKeypad) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).GetLengthInBits(ctx))
 
 	// Simple field (key)
 	lengthInBits += 8

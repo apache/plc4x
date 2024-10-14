@@ -284,7 +284,7 @@ func (m *_MonitoredItemCreateRequest) GetTypeName() string {
 }
 
 func (m *_MonitoredItemCreateRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (itemToMonitor)
 	lengthInBits += m.ItemToMonitor.GetLengthInBits(ctx)

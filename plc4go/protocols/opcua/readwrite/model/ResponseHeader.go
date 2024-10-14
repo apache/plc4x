@@ -353,7 +353,7 @@ func (m *_ResponseHeader) GetTypeName() string {
 }
 
 func (m *_ResponseHeader) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (timestamp)
 	lengthInBits += 64

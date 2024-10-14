@@ -273,7 +273,7 @@ func (m *_OpcuaCloseRequest) GetTypeName() string {
 }
 
 func (m *_OpcuaCloseRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
+	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).GetLengthInBits(ctx))
 
 	// Simple field (securityHeader)
 	lengthInBits += m.SecurityHeader.GetLengthInBits(ctx)

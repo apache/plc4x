@@ -715,7 +715,7 @@ func (m *_SALData) GetTypeName() string {
 	return "SALData"
 }
 
-func (m *_SALData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_SALData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Optional Field (salData)

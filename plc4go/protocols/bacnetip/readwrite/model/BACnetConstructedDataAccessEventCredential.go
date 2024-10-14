@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataAccessEventCredential) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAccessEventCredential) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (accessEventCredential)
 	lengthInBits += m.AccessEventCredential.GetLengthInBits(ctx)

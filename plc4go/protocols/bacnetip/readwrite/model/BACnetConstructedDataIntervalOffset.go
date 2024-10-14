@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataIntervalOffset) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (intervalOffset)
 	lengthInBits += m.IntervalOffset.GetLengthInBits(ctx)

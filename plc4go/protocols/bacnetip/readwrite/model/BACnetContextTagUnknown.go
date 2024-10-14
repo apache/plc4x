@@ -209,7 +209,7 @@ func (m *_BACnetContextTagUnknown) GetTypeName() string {
 }
 
 func (m *_BACnetContextTagUnknown) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetContextTagContract.(*_BACnetContextTag).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.UnknownData) > 0 {

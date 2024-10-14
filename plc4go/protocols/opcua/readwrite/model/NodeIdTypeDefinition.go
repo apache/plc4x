@@ -345,7 +345,7 @@ func (m *_NodeIdTypeDefinition) GetTypeName() string {
 	return "NodeIdTypeDefinition"
 }
 
-func (m *_NodeIdTypeDefinition) getLengthInBits(ctx context.Context) uint16 {
+func (m *_NodeIdTypeDefinition) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (nodeType)
 	lengthInBits += 6

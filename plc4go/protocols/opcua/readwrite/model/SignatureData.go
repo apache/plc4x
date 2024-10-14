@@ -269,7 +269,7 @@ func (m *_SignatureData) GetTypeName() string {
 }
 
 func (m *_SignatureData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (algorithm)
 	lengthInBits += m.Algorithm.GetLengthInBits(ctx)

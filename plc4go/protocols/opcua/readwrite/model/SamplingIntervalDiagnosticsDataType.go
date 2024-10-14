@@ -251,7 +251,7 @@ func (m *_SamplingIntervalDiagnosticsDataType) GetTypeName() string {
 }
 
 func (m *_SamplingIntervalDiagnosticsDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (samplingInterval)
 	lengthInBits += 64

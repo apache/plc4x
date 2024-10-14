@@ -269,7 +269,7 @@ func (m *_KeyValuePair) GetTypeName() string {
 }
 
 func (m *_KeyValuePair) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (key)
 	lengthInBits += m.Key.GetLengthInBits(ctx)

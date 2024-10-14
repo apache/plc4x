@@ -241,7 +241,7 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) GetTypeName() string {
 }
 
 func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand).GetLengthInBits(ctx))
 
 	// Simple field (application)
 	lengthInBits += 8

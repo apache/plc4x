@@ -175,7 +175,7 @@ func (m *_SecurityDataLineCutAlarmRaised) GetTypeName() string {
 }
 
 func (m *_SecurityDataLineCutAlarmRaised) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

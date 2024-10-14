@@ -690,7 +690,7 @@ func (m *_MediaTransportControlData) GetTypeName() string {
 	return "MediaTransportControlData"
 }
 
-func (m *_MediaTransportControlData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_MediaTransportControlData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)

@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetTypeName() strin
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (deadband)
 	lengthInBits += m.Deadband.GetLengthInBits(ctx)

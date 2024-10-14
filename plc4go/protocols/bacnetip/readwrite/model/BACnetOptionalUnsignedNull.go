@@ -226,7 +226,7 @@ func (m *_BACnetOptionalUnsignedNull) GetTypeName() string {
 }
 
 func (m *_BACnetOptionalUnsignedNull) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned).GetLengthInBits(ctx))
 
 	// Simple field (nullValue)
 	lengthInBits += m.NullValue.GetLengthInBits(ctx)

@@ -179,7 +179,7 @@ func (m *_HistoryUpdateDetails) GetTypeName() string {
 }
 
 func (m *_HistoryUpdateDetails) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

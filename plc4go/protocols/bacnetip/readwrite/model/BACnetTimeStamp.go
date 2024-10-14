@@ -322,7 +322,7 @@ func (m *_BACnetTimeStamp) GetTypeName() string {
 	return "BACnetTimeStamp"
 }
 
-func (m *_BACnetTimeStamp) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetTimeStamp) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.

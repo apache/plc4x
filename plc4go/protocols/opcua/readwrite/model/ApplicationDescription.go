@@ -416,7 +416,7 @@ func (m *_ApplicationDescription) GetTypeName() string {
 }
 
 func (m *_ApplicationDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (applicationUri)
 	lengthInBits += m.ApplicationUri.GetLengthInBits(ctx)

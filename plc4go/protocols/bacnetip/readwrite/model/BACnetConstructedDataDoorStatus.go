@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataDoorStatus) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDoorStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (doorStatus)
 	lengthInBits += m.DoorStatus.GetLengthInBits(ctx)

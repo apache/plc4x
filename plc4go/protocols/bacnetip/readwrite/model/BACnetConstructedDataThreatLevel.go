@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataThreatLevel) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataThreatLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (threatLevel)
 	lengthInBits += m.ThreatLevel.GetLengthInBits(ctx)

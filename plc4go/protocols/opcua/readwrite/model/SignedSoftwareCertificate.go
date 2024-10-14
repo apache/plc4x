@@ -269,7 +269,7 @@ func (m *_SignedSoftwareCertificate) GetTypeName() string {
 }
 
 func (m *_SignedSoftwareCertificate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (certificateData)
 	lengthInBits += m.CertificateData.GetLengthInBits(ctx)

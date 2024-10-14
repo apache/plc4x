@@ -226,7 +226,7 @@ func (m *_BACnetPropertyStatesShedState) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesShedState) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).GetLengthInBits(ctx))
 
 	// Simple field (shedState)
 	lengthInBits += m.ShedState.GetLengthInBits(ctx)

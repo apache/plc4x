@@ -226,7 +226,7 @@ func (m *_BACnetClientCOVNone) GetTypeName() string {
 }
 
 func (m *_BACnetClientCOVNone) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetClientCOVContract.(*_BACnetClientCOV).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetClientCOVContract.(*_BACnetClientCOV).GetLengthInBits(ctx))
 
 	// Simple field (defaultIncrement)
 	lengthInBits += m.DefaultIncrement.GetLengthInBits(ctx)

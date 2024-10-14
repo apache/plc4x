@@ -221,7 +221,7 @@ func (m *_VariantInt32) GetTypeName() string {
 }
 
 func (m *_VariantInt32) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
+	lengthInBits := uint16(m.VariantContract.(*_Variant).GetLengthInBits(ctx))
 
 	// Optional Field (arrayLength)
 	if m.ArrayLength != nil {

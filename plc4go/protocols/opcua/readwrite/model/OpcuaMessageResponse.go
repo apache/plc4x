@@ -276,7 +276,7 @@ func (m *_OpcuaMessageResponse) GetTypeName() string {
 }
 
 func (m *_OpcuaMessageResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
+	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).GetLengthInBits(ctx))
 
 	// Simple field (securityHeader)
 	lengthInBits += m.SecurityHeader.GetLengthInBits(ctx)

@@ -206,7 +206,7 @@ func (m *_ApduDataDeviceDescriptorRead) GetTypeName() string {
 }
 
 func (m *_ApduDataDeviceDescriptorRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).GetLengthInBits(ctx))
 
 	// Simple field (descriptorType)
 	lengthInBits += 6

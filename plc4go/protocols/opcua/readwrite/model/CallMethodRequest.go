@@ -284,7 +284,7 @@ func (m *_CallMethodRequest) GetTypeName() string {
 }
 
 func (m *_CallMethodRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (objectId)
 	lengthInBits += m.ObjectId.GetLengthInBits(ctx)

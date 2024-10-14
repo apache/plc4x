@@ -210,7 +210,7 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetTypeName() stri
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.TimeSynchronizationRecipients) > 0 {

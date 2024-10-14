@@ -299,7 +299,7 @@ func (m *_ServerOnNetwork) GetTypeName() string {
 }
 
 func (m *_ServerOnNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (recordId)
 	lengthInBits += 32

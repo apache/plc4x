@@ -270,7 +270,7 @@ func (m *_NodeIdString) GetTypeName() string {
 }
 
 func (m *_NodeIdString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).GetLengthInBits(ctx))
 
 	// Simple field (namespaceIndex)
 	lengthInBits += 16

@@ -292,7 +292,7 @@ func (m *_MonitoringParameters) GetTypeName() string {
 }
 
 func (m *_MonitoringParameters) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (clientHandle)
 	lengthInBits += 32

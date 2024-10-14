@@ -223,7 +223,7 @@ func (m *_TimeZoneDataType) GetTypeName() string {
 }
 
 func (m *_TimeZoneDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (offset)
 	lengthInBits += 16

@@ -230,7 +230,7 @@ func (m *_NLMSetMasterKey) GetTypeName() string {
 }
 
 func (m *_NLMSetMasterKey) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).GetLengthInBits(ctx))
 
 	// Simple field (key)
 	lengthInBits += m.Key.GetLengthInBits(ctx)

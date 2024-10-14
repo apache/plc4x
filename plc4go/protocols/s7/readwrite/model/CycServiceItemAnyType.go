@@ -262,7 +262,7 @@ func (m *_CycServiceItemAnyType) GetTypeName() string {
 }
 
 func (m *_CycServiceItemAnyType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CycServiceItemTypeContract.(*_CycServiceItemType).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CycServiceItemTypeContract.(*_CycServiceItemType).GetLengthInBits(ctx))
 
 	// Enum Field (transportSize)
 	lengthInBits += 8

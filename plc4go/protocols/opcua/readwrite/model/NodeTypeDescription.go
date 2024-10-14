@@ -262,7 +262,7 @@ func (m *_NodeTypeDescription) GetTypeName() string {
 }
 
 func (m *_NodeTypeDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (typeDefinitionNode)
 	lengthInBits += m.TypeDefinitionNode.GetLengthInBits(ctx)

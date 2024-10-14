@@ -382,7 +382,7 @@ func (m *_AdsDiscoveryBlock) GetTypeName() string {
 	return "AdsDiscoveryBlock"
 }
 
-func (m *_AdsDiscoveryBlock) getLengthInBits(ctx context.Context) uint16 {
+func (m *_AdsDiscoveryBlock) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (blockType)
 	lengthInBits += 16

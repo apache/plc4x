@@ -269,7 +269,7 @@ func (m *_AggregateConfiguration) GetTypeName() string {
 }
 
 func (m *_AggregateConfiguration) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 6

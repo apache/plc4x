@@ -233,7 +233,7 @@ func (m *_RootExtensionObject) GetTypeName() string {
 }
 
 func (m *_RootExtensionObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectContract.(*_ExtensionObject).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectContract.(*_ExtensionObject).GetLengthInBits(ctx))
 
 	// Simple field (body)
 	lengthInBits += m.Body.GetLengthInBits(ctx)
@@ -332,9 +332,13 @@ func (m *_RootExtensionObject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -431,7 +431,7 @@ func (m *_EndpointDescription) GetTypeName() string {
 }
 
 func (m *_EndpointDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (endpointUrl)
 	lengthInBits += m.EndpointUrl.GetLengthInBits(ctx)

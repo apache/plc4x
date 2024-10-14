@@ -234,7 +234,7 @@ func (m *_BinaryExtensionObjectWithMask) GetTypeName() string {
 }
 
 func (m *_BinaryExtensionObjectWithMask) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask).GetLengthInBits(ctx))
 
 	// Implicit Field (bodyLength)
 	lengthInBits += 32
@@ -335,9 +335,13 @@ func (m *_BinaryExtensionObjectWithMask) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

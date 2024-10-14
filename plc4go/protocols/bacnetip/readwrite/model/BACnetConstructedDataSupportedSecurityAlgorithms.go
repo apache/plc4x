@@ -210,7 +210,7 @@ func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetTypeName() string
 }
 
 func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.SupportedSecurityAlgorithms) > 0 {

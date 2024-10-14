@@ -284,7 +284,7 @@ func (m *_UserManagementDataType) GetTypeName() string {
 }
 
 func (m *_UserManagementDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (userName)
 	lengthInBits += m.UserName.GetLengthInBits(ctx)

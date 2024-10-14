@@ -226,7 +226,7 @@ func (m *_BACnetLogDataLogStatus) GetTypeName() string {
 }
 
 func (m *_BACnetLogDataLogStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogDataContract.(*_BACnetLogData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogDataContract.(*_BACnetLogData).GetLengthInBits(ctx))
 
 	// Simple field (logStatus)
 	lengthInBits += m.LogStatus.GetLengthInBits(ctx)

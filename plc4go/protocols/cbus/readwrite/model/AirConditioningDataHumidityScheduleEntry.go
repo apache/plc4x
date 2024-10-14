@@ -409,7 +409,7 @@ func (m *_AirConditioningDataHumidityScheduleEntry) GetTypeName() string {
 }
 
 func (m *_AirConditioningDataHumidityScheduleEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AirConditioningDataContract.(*_AirConditioningData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AirConditioningDataContract.(*_AirConditioningData).GetLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8

@@ -226,7 +226,7 @@ func (m *_MonitoredSALReply) GetTypeName() string {
 }
 
 func (m *_MonitoredSALReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EncodedReplyContract.(*_EncodedReply).getLengthInBits(ctx))
+	lengthInBits := uint16(m.EncodedReplyContract.(*_EncodedReply).GetLengthInBits(ctx))
 
 	// Simple field (monitoredSAL)
 	lengthInBits += m.MonitoredSAL.GetLengthInBits(ctx)

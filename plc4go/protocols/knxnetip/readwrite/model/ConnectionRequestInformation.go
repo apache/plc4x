@@ -235,7 +235,7 @@ func (m *_ConnectionRequestInformation) GetTypeName() string {
 	return "ConnectionRequestInformation"
 }
 
-func (m *_ConnectionRequestInformation) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ConnectionRequestInformation) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)

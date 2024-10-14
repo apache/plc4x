@@ -226,7 +226,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetTypeName() string 
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject).GetLengthInBits(ctx))
 
 	// Simple field (objectName)
 	lengthInBits += m.ObjectName.GetLengthInBits(ctx)

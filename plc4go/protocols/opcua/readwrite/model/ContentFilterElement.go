@@ -221,7 +221,7 @@ func (m *_ContentFilterElement) GetTypeName() string {
 }
 
 func (m *_ContentFilterElement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (filterOperator)
 	lengthInBits += 32

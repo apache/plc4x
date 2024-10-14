@@ -256,7 +256,7 @@ func (m *_ErrorReportingData) GetTypeName() string {
 	return "ErrorReportingData"
 }
 
-func (m *_ErrorReportingData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ErrorReportingData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
