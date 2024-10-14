@@ -227,7 +227,7 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) GetTypeName() string {
 }
 
 func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).GetLengthInBits(ctx))
 
 	// Simple field (isolateStatus)
 	lengthInBits += 8

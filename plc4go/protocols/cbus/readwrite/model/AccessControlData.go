@@ -431,7 +431,7 @@ func (m *_AccessControlData) GetTypeName() string {
 	return "AccessControlData"
 }
 
-func (m *_AccessControlData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_AccessControlData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)

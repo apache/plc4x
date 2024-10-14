@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataInitialTimeout) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (initialTimeout)
 	lengthInBits += m.InitialTimeout.GetLengthInBits(ctx)

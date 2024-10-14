@@ -230,7 +230,7 @@ func (m *_ExtensiblePayload) GetTypeName() string {
 }
 
 func (m *_ExtensiblePayload) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.PayloadContract.(*_Payload).getLengthInBits(ctx))
+	lengthInBits := uint16(m.PayloadContract.(*_Payload).GetLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)

@@ -288,7 +288,7 @@ func (m *_DF1ResponseMessage) GetTypeName() string {
 	return "DF1ResponseMessage"
 }
 
-func (m *_DF1ResponseMessage) getLengthInBits(ctx context.Context) uint16 {
+func (m *_DF1ResponseMessage) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)

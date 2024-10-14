@@ -288,7 +288,7 @@ func (m *_OpcuaHelloRequest) GetTypeName() string {
 }
 
 func (m *_OpcuaHelloRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
+	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).GetLengthInBits(ctx))
 
 	// Simple field (version)
 	lengthInBits += 32

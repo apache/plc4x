@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (apduSegmentTimeout)
 	lengthInBits += m.ApduSegmentTimeout.GetLengthInBits(ctx)

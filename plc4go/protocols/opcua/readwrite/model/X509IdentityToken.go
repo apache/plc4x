@@ -269,7 +269,7 @@ func (m *_X509IdentityToken) GetTypeName() string {
 }
 
 func (m *_X509IdentityToken) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (policyId)
 	lengthInBits += m.PolicyId.GetLengthInBits(ctx)

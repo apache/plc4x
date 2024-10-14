@@ -241,7 +241,7 @@ func (m *_CBusMessage) GetTypeName() string {
 	return "CBusMessage"
 }
 
-func (m *_CBusMessage) getLengthInBits(ctx context.Context) uint16 {
+func (m *_CBusMessage) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

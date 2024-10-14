@@ -210,7 +210,7 @@ func (m *_SysexCommandAnalogMappingQueryResponse) GetTypeName() string {
 }
 
 func (m *_SysexCommandAnalogMappingQueryResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).GetLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8

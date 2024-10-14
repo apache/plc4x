@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (adjustValue)
 	lengthInBits += m.AdjustValue.GetLengthInBits(ctx)

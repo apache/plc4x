@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataIntegerValueFaultLowLimit) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataIntegerValueFaultLowLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (faultLowLimit)
 	lengthInBits += m.FaultLowLimit.GetLengthInBits(ctx)

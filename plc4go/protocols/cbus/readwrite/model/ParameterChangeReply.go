@@ -226,7 +226,7 @@ func (m *_ParameterChangeReply) GetTypeName() string {
 }
 
 func (m *_ParameterChangeReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ReplyContract.(*_Reply).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ReplyContract.(*_Reply).GetLengthInBits(ctx))
 
 	// Simple field (parameterChange)
 	lengthInBits += m.ParameterChange.GetLengthInBits(ctx)

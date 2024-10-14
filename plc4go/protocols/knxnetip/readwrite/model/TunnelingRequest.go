@@ -274,7 +274,7 @@ func (m *_TunnelingRequest) GetTypeName() string {
 }
 
 func (m *_TunnelingRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).GetLengthInBits(ctx))
 
 	// Simple field (tunnelingRequestDataBlock)
 	lengthInBits += m.TunnelingRequestDataBlock.GetLengthInBits(ctx)

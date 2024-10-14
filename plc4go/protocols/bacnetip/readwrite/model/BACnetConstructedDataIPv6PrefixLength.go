@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (ipv6PrefixLength)
 	lengthInBits += m.Ipv6PrefixLength.GetLengthInBits(ctx)

@@ -211,7 +211,7 @@ func (m *_UnknownMessage) GetTypeName() string {
 }
 
 func (m *_UnknownMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.UnknownData) > 0 {

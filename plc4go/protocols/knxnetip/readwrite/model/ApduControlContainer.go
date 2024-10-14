@@ -230,7 +230,7 @@ func (m *_ApduControlContainer) GetTypeName() string {
 }
 
 func (m *_ApduControlContainer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduContract.(*_Apdu).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduContract.(*_Apdu).GetLengthInBits(ctx))
 
 	// Simple field (controlApdu)
 	lengthInBits += m.ControlApdu.GetLengthInBits(ctx)

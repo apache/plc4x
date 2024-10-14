@@ -329,7 +329,7 @@ func (m *_ServerStatusDataType) GetTypeName() string {
 }
 
 func (m *_ServerStatusDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (startTime)
 	lengthInBits += 64

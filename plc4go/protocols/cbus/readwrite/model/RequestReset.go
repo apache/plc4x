@@ -247,7 +247,7 @@ func (m *_RequestReset) GetTypeName() string {
 }
 
 func (m *_RequestReset) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.RequestContract.(*_Request).getLengthInBits(ctx))
+	lengthInBits := uint16(m.RequestContract.(*_Request).GetLengthInBits(ctx))
 
 	// Optional Field (secondTilde)
 	if m.SecondTilde != nil {

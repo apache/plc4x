@@ -296,7 +296,7 @@ func (m *_NLMRequestKeyUpdate) GetTypeName() string {
 }
 
 func (m *_NLMRequestKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).GetLengthInBits(ctx))
 
 	// Simple field (set1KeyRevision)
 	lengthInBits += 8

@@ -440,7 +440,7 @@ func (m *_AddNodesItem) GetTypeName() string {
 }
 
 func (m *_AddNodesItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (parentNodeId)
 	lengthInBits += m.ParentNodeId.GetLengthInBits(ctx)

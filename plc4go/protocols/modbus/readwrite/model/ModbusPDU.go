@@ -1016,7 +1016,7 @@ func (m *_ModbusPDU) GetTypeName() string {
 	return "ModbusPDU"
 }
 
-func (m *_ModbusPDU) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ModbusPDU) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (errorFlag)
 	lengthInBits += 1

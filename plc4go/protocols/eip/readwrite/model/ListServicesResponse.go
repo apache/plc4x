@@ -214,7 +214,7 @@ func (m *_ListServicesResponse) GetTypeName() string {
 }
 
 func (m *_ListServicesResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
+	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).GetLengthInBits(ctx))
 
 	// Implicit Field (typeIdCount)
 	lengthInBits += 16

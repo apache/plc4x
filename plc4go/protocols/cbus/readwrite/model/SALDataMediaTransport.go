@@ -230,7 +230,7 @@ func (m *_SALDataMediaTransport) GetTypeName() string {
 }
 
 func (m *_SALDataMediaTransport) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).GetLengthInBits(ctx))
 
 	// Simple field (mediaTransportControlData)
 	lengthInBits += m.MediaTransportControlData.GetLengthInBits(ctx)

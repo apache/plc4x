@@ -342,7 +342,7 @@ func (m *_S7Parameter) GetTypeName() string {
 	return "S7Parameter"
 }
 
-func (m *_S7Parameter) getLengthInBits(ctx context.Context) uint16 {
+func (m *_S7Parameter) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (parameterType)
 	lengthInBits += 8

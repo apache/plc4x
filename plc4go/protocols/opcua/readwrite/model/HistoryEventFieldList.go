@@ -206,7 +206,7 @@ func (m *_HistoryEventFieldList) GetTypeName() string {
 }
 
 func (m *_HistoryEventFieldList) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Implicit Field (noOfEventFields)
 	lengthInBits += 32

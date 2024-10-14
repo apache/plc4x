@@ -221,7 +221,7 @@ func (m *_ParameterValueBaudRateSelector) GetTypeName() string {
 }
 
 func (m *_ParameterValueBaudRateSelector) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).GetLengthInBits(ctx))
 
 	// Simple field (value)
 	lengthInBits += 8

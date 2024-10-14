@@ -230,7 +230,7 @@ func (m *_NetworkAddressDataType) GetTypeName() string {
 }
 
 func (m *_NetworkAddressDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (networkInterface)
 	lengthInBits += m.NetworkInterface.GetLengthInBits(ctx)

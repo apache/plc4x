@@ -226,7 +226,7 @@ func (m *_BACnetPropertyStatesEscalatorMode) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesEscalatorMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).GetLengthInBits(ctx))
 
 	// Simple field (escalatorMode)
 	lengthInBits += m.EscalatorMode.GetLengthInBits(ctx)

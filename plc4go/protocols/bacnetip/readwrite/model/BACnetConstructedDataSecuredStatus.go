@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataSecuredStatus) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataSecuredStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (securedStatus)
 	lengthInBits += m.SecuredStatus.GetLengthInBits(ctx)

@@ -497,7 +497,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetTypeName() string {
 }
 
 func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).GetLengthInBits(ctx))
 
 	// Simple field (lowApplication)
 	lengthInBits += 8

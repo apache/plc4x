@@ -260,7 +260,7 @@ func (m *_ModbusADU) GetTypeName() string {
 	return "ModbusADU"
 }
 
-func (m *_ModbusADU) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ModbusADU) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

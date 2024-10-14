@@ -308,7 +308,7 @@ func (m *_TransactionErrorType) GetTypeName() string {
 }
 
 func (m *_TransactionErrorType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (targetId)
 	lengthInBits += m.TargetId.GetLengthInBits(ctx)

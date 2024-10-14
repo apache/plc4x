@@ -210,7 +210,7 @@ func (m *_AdsDeleteDeviceNotificationRequest) GetTypeName() string {
 }
 
 func (m *_AdsDeleteDeviceNotificationRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).GetLengthInBits(ctx))
 
 	// Simple field (notificationHandle)
 	lengthInBits += 32

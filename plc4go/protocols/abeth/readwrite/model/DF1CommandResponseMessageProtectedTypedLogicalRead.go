@@ -206,7 +206,7 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetTypeName() stri
 }
 
 func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1ResponseMessageContract.(*_DF1ResponseMessage).getLengthInBits(ctx))
+	lengthInBits := uint16(m.DF1ResponseMessageContract.(*_DF1ResponseMessage).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {

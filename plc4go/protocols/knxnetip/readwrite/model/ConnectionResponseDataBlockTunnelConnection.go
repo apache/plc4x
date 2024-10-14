@@ -230,7 +230,7 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) GetTypeName() string {
 }
 
 func (m *_ConnectionResponseDataBlockTunnelConnection) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock).GetLengthInBits(ctx))
 
 	// Simple field (knxAddress)
 	lengthInBits += m.KnxAddress.GetLengthInBits(ctx)

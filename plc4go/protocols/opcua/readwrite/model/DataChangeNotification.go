@@ -221,7 +221,7 @@ func (m *_DataChangeNotification) GetTypeName() string {
 }
 
 func (m *_DataChangeNotification) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Implicit Field (noOfMonitoredItems)
 	lengthInBits += 32

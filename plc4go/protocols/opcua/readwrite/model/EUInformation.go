@@ -323,7 +323,7 @@ func (m *_EUInformation) GetTypeName() string {
 }
 
 func (m *_EUInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (namespaceUri)
 	lengthInBits += m.NamespaceUri.GetLengthInBits(ctx)

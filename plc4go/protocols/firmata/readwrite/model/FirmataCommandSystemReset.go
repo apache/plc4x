@@ -179,7 +179,7 @@ func (m *_FirmataCommandSystemReset) GetTypeName() string {
 }
 
 func (m *_FirmataCommandSystemReset) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

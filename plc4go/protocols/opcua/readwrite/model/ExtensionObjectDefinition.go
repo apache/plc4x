@@ -6722,7 +6722,7 @@ func (m *_ExtensionObjectDefinition) GetTypeName() string {
 	return "ExtensionObjectDefinition"
 }
 
-func (m *_ExtensionObjectDefinition) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ExtensionObjectDefinition) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

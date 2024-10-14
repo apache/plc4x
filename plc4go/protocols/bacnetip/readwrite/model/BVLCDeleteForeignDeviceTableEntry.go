@@ -223,7 +223,7 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetTypeName() string {
 }
 
 func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BVLCContract.(*_BVLC).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.Ip) > 0 {

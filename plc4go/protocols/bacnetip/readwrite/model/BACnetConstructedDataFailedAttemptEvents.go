@@ -210,7 +210,7 @@ func (m *_BACnetConstructedDataFailedAttemptEvents) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataFailedAttemptEvents) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.FailedAttemptEvents) > 0 {

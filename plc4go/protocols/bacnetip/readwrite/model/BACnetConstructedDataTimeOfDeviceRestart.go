@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (timeOfDeviceRestart)
 	lengthInBits += m.TimeOfDeviceRestart.GetLengthInBits(ctx)

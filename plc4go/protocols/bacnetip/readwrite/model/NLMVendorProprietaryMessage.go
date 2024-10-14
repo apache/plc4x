@@ -221,7 +221,7 @@ func (m *_NLMVendorProprietaryMessage) GetTypeName() string {
 }
 
 func (m *_NLMVendorProprietaryMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).GetLengthInBits(ctx))
 
 	// Simple field (vendorId)
 	lengthInBits += 16

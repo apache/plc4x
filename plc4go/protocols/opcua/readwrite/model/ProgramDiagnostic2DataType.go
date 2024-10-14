@@ -491,7 +491,7 @@ func (m *_ProgramDiagnostic2DataType) GetTypeName() string {
 }
 
 func (m *_ProgramDiagnostic2DataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (createSessionId)
 	lengthInBits += m.CreateSessionId.GetLengthInBits(ctx)

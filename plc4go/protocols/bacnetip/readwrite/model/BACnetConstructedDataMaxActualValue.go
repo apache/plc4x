@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataMaxActualValue) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataMaxActualValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (maxActualValue)
 	lengthInBits += m.MaxActualValue.GetLengthInBits(ctx)

@@ -233,7 +233,7 @@ func (m *_OpenChannelMessage) GetTypeName() string {
 	return "OpenChannelMessage"
 }
 
-func (m *_OpenChannelMessage) getLengthInBits(ctx context.Context) uint16 {
+func (m *_OpenChannelMessage) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

@@ -245,7 +245,7 @@ func (m *_GenericAttributeValue) GetTypeName() string {
 }
 
 func (m *_GenericAttributeValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (attributeId)
 	lengthInBits += 32

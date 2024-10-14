@@ -284,7 +284,7 @@ func (m *_ModelChangeStructureDataType) GetTypeName() string {
 }
 
 func (m *_ModelChangeStructureDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (affected)
 	lengthInBits += m.Affected.GetLengthInBits(ctx)

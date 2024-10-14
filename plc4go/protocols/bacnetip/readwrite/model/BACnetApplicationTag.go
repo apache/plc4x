@@ -541,7 +541,7 @@ func (m *_BACnetApplicationTag) GetTypeName() string {
 	return "BACnetApplicationTag"
 }
 
-func (m *_BACnetApplicationTag) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetApplicationTag) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)

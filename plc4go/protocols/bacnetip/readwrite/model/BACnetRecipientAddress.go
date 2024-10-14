@@ -226,7 +226,7 @@ func (m *_BACnetRecipientAddress) GetTypeName() string {
 }
 
 func (m *_BACnetRecipientAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetRecipientContract.(*_BACnetRecipient).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetRecipientContract.(*_BACnetRecipient).GetLengthInBits(ctx))
 
 	// Simple field (addressValue)
 	lengthInBits += m.AddressValue.GetLengthInBits(ctx)

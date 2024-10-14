@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (processIdentifierFilter)
 	lengthInBits += m.ProcessIdentifierFilter.GetLengthInBits(ctx)

@@ -347,7 +347,7 @@ func (m *_CIPEncapsulationPacket) GetTypeName() string {
 	return "CIPEncapsulationPacket"
 }
 
-func (m *_CIPEncapsulationPacket) getLengthInBits(ctx context.Context) uint16 {
+func (m *_CIPEncapsulationPacket) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (commandType)
 	lengthInBits += 16

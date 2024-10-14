@@ -206,7 +206,7 @@ func (m *_ContentFilter) GetTypeName() string {
 }
 
 func (m *_ContentFilter) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Implicit Field (noOfElements)
 	lengthInBits += 32

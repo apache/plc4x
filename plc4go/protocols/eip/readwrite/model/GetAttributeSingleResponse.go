@@ -187,7 +187,7 @@ func (m *_GetAttributeSingleResponse) GetTypeName() string {
 }
 
 func (m *_GetAttributeSingleResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CipServiceContract.(*_CipService).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

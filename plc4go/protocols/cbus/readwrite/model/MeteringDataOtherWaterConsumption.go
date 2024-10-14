@@ -202,7 +202,7 @@ func (m *_MeteringDataOtherWaterConsumption) GetTypeName() string {
 }
 
 func (m *_MeteringDataOtherWaterConsumption) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).GetLengthInBits(ctx))
 
 	// Simple field (kL)
 	lengthInBits += 32

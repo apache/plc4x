@@ -226,7 +226,7 @@ func (m *_BACnetNotificationParametersComplexEventType) GetTypeName() string {
 }
 
 func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).GetLengthInBits(ctx))
 
 	// Simple field (listOfValues)
 	lengthInBits += m.ListOfValues.GetLengthInBits(ctx)

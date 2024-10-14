@@ -226,7 +226,7 @@ func (m *_BACnetClientCOVObject) GetTypeName() string {
 }
 
 func (m *_BACnetClientCOVObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetClientCOVContract.(*_BACnetClientCOV).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetClientCOVContract.(*_BACnetClientCOV).GetLengthInBits(ctx))
 
 	// Simple field (realIncrement)
 	lengthInBits += m.RealIncrement.GetLengthInBits(ctx)

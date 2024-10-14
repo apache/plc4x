@@ -275,7 +275,7 @@ func (m *_DF1Symbol) GetTypeName() string {
 	return "DF1Symbol"
 }
 
-func (m *_DF1Symbol) getLengthInBits(ctx context.Context) uint16 {
+func (m *_DF1Symbol) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (messageStart)

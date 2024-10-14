@@ -310,7 +310,7 @@ func (m *_ConnectionRequest) GetTypeName() string {
 }
 
 func (m *_ConnectionRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).GetLengthInBits(ctx))
 
 	// Simple field (hpaiDiscoveryEndpoint)
 	lengthInBits += m.HpaiDiscoveryEndpoint.GetLengthInBits(ctx)

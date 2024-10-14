@@ -338,7 +338,7 @@ func (m *_AxisInformation) GetTypeName() string {
 }
 
 func (m *_AxisInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (engineeringUnits)
 	lengthInBits += m.EngineeringUnits.GetLengthInBits(ctx)

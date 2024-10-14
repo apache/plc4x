@@ -256,7 +256,7 @@ func (m *_LogicalSegmentType) GetTypeName() string {
 	return "LogicalSegmentType"
 }
 
-func (m *_LogicalSegmentType) getLengthInBits(ctx context.Context) uint16 {
+func (m *_LogicalSegmentType) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (logicalSegmentType)
 	lengthInBits += 3

@@ -202,7 +202,7 @@ func (m *_MeteringDataElectricityConsumption) GetTypeName() string {
 }
 
 func (m *_MeteringDataElectricityConsumption) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).GetLengthInBits(ctx))
 
 	// Simple field (kWhr)
 	lengthInBits += 32
