@@ -17,20 +17,20 @@
  * under the License.
  */
 
-// https://Umas.org/docs/Umas_Application_Protocol_V1_1b.pdf
+// https://modbus.org/docs/Modbus_Application_Protocol_V1_1b.pdf
 
-// Remark: The different fields are encoded in Big-endian.
+// Remark: The different fields are encoded in Big-endian for Modbus. UMAS uses Little-Endian
 
-[type UmasConstants
-    [const          uint 16     UmasTcpDefaultPort 502]
+[type ModbusConstants
+    [const          uint 16     ModbusTcpDefaultPort 502]
 ]
 
 [discriminatedType ModbusTcpADU byteOrder='BIG_ENDIAN'
-    // It is used for transaction pairing, the Umas server copies in the response the transaction
+    // It is used for transaction pairing, the Mobus server copies in the response the transaction
     // identifier of the request.
     [simple         uint 16     transactionIdentifier]
 
-    // It is used for intra-system multiplexing. The Umas protocol is identified by the value 0.
+    // It is used for intra-system multiplexing. The Modbus protocol is identified by the value 0.
     [const          uint 16     protocolIdentifier    0x0000]
 
     // The length field is a byte count of the following fields, including the Unit Identifier and
@@ -38,8 +38,8 @@
     [implicit       uint 16     length                'COUNT(pduArray) + 1']
 
     // This field is used for intra-system routing purpose. It is typically used to communicate to
-    // a Umas+ or a Umas serial line slave through a gateway between an Ethernet TCP-IP network
-    // and a Umas serial line. This field is set by the Umas Client in the request and must be
+    // a Modbus serial line slave through a gateway between an Ethernet TCP-IP network
+    // and a Umas serial line. This field is set by the Modbus Client in the request and must be
     // returned with the same value in the response by the server.
     [simple         uint 8      unitIdentifier]
 
@@ -61,27 +61,40 @@
 ]
 
 [type UmasPDUItem(uint 8 umasRequestFunctionKey, uint 16 byteLength) byteOrder='LITTLE_ENDIAN'
+    // Not too sure what this is. It is normally 0x00 or 0xFF
     [simple     uint 8     pairingKey]
     [discriminator     uint 8     umasFunctionKey]
     [typeSwitch umasFunctionKey, umasRequestFunctionKey
+        // Opens a connection to the PLC to enable reading and writing. It use one connection from the PLC.
         ['0x01'      UmasInitCommsRequest
-            [simple     uint 8         unknownObject]
+            [const     uint 8         unknownObject     0x00]
         ]
         ['0x02'      UmasPDUPlcIdentRequest
         ]
+        // Requests information about the running project
         ['0x03'      UmasPDUProjectInfoRequest
             [simple uint 8 subcode]
         ]
+        // Requests information about the PLC, it mainly contains useful information about each memory block
         ['0x04'      UmasPDUPlcStatusRequest
         ]
+        // Request to read data from a memory block defined by the Block No. and Offset.
         ['0x20'      UmasPDUReadMemoryBlockRequest
-            [simple     uint 8         range]
+            [const      uint 8         range        0x00]
+            // The memory block number to be read.
             [simple     uint 16        blockNumber]
+            // The offset from the start of the block to read
             [simple     uint 16        offset]
+            // Not sure but probably some other offset
             [simple     uint 16        unknownObject1]
+            // The number of bytes to read
             [simple     uint 16        numberOfBytes]
         ]
+        // Used to read the values of variables. The variable information must firstly be looked up using a UmasPDUReadUnlocatedVariableNamesRequest
         ['0x22'      UmasPDUReadVariableRequest
+            // This can be calculated from a UmasPDUPlcStatusResponse by adding blocks 3 and 4.
+            // It is a unique value for the current project on the PLC. If there are any modifications then this changes.
+            // It is used to detect a programming change to know when to re-read the tag information.
             [simple     uint 32        crc]
             [simple     uint 8        variableCount]
             [array      VariableReadRequestReference variables count 'variableCount']
@@ -91,9 +104,13 @@
             [simple     uint 8        variableCount]
             [array      VariableWriteRequestReference variables count 'variableCount']
         ]
-        ['0x26'     UmasPDUReadUnlocatedVariableNamesRequest
+        // Is used to read information from the data dictionary such as tag names, data types, etc...
+        ['0x26'     UmasPDUReadDataDictionaryRequest
+            // I've seen values 0xDD02 and 0xDD03 being used
             [simple     uint 16         recordType]
+            // This is an index from the UmasMemoryBlockBasicInfo message
             [simple     uint 8          index]
+            // This seems to be a unique number returned from the UmasMemoryBlockBasicInfo
             [simple     uint 32         hardwareId]
             [simple     uint 16         blockNo]
             [simple     uint 16         offset]
@@ -103,14 +120,18 @@
             [array      uint 8          block count 'byteLength - 2']
         ]
         ['0xFE', '0x01'     UmasInitCommsResponse
+            // The largest UMAS packet size. I don't think it includes the Modbus header
             [simple     uint 16         maxFrameSize]
+            // PLC Firmware Version
             [simple     uint 16         firmwareVersion]
             [simple     uint 32         notSure]
             [simple     uint 32         internalCode]
             [simple     uint 8          hostnameLength]
+            // PLC Name returned a string
             [simple     vstring         'hostnameLength*8' hostname]
         ]
         ['0xFE', '0x02'     UmasPDUPlcIdentResponse
+            // I don't have a lot of information about these, but can be used to identify the PLC/Firmware/Hardware version if we ever have a need
             [simple     uint 16         range]
             [simple     uint 32         ident]
             [simple     uint 16         model]
@@ -123,26 +144,34 @@
             [simple     uint 8          hostnameLength]
             [simple     vstring         'hostnameLength*8' hostname]
             [simple     uint 8          numberOfMemoryBanks]
+            // List of memory blocks within the PLC.
             [array      PlcMemoryBlockIdent memoryIdents count 'numberOfMemoryBanks']
         ]
         ['0xFE', '0x04'     UmasPDUPlcStatusResponse
+            // This has some information, presumably about the current project. We need blocks 3 and 4 to work out the CRC of the project.
+            // We monitor these to check if the project has changed, if so we re-read the data dictionary
             [simple     uint 8          notUsed1]
             [simple     uint 16         notUsed2]
             [simple     uint 8          numberOfBlocks]
             [array      uint 32         blocks count 'numberOfBlocks']
         ]
         ['0xFE', '0x20'     UmasPDUReadMemoryBlockResponse
+            // Simply reads a section of memory. A UmasMemoryBlock can be returned, I don't have much information on what other blocks mean though.
             [simple     uint 8          range]
             [simple     uint 16         numberOfBytes]
             [array      uint 8          block count 'numberOfBytes']
         ]
         ['0xFE', '0x22'     UmasPDUReadVariableResponse
+            // It just returns the variable data which can then be decoded with the DataIO.
             [array      uint 8          block count 'byteLength - 2']
         ]
         ['0xFE', '0x23'     UmasPDUWriteVariableResponse
             [array      uint 8          block count 'byteLength - 2']
         ]
-        ['0xFE', '0x26'     UmasPDUReadUnlocatedVariableResponse
+        // Reads information from the data dictionary.
+        // we can read one of UmasPDUReadUnlocatedVariableNamesResponse, UmasPDUReadUmasUDTDefinitionResponse or UmasPDUReadDatatypeNamesResponse
+        // Which depends on the request that was sent.
+        ['0xFE', '0x26'     UmasPDUReadDataDictionaryResponse
             [array      uint 8          block count 'byteLength - 2']
         ]
     ]
