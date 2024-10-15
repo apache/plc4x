@@ -65,6 +65,7 @@ var (
 		nil,
 		nil,
 	)
+	BINARY_ENCODING_MASK  = readWriteModel.NewExtensionObjectEncodingMask(false, false, true)
 	NULL_EXTENSION_OBJECT = readWriteModel.NewNullExtensionObjectWithMask(NULL_EXPANDED_NODEID,
 		readWriteModel.NewExtensionObjectEncodingMask(false, false, false),
 		0,
@@ -1560,18 +1561,21 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 	switch tokenType {
 	case readWriteModel.UserTokenType_userTokenTypeAnonymous:
 		//If we aren't using authentication tell the server we would like to log in anonymously
-		anonymousIdentityToken := readWriteModel.NewAnonymousIdentityToken(readWriteModel.NewPascalString(policyId))
+		anonymousIdentityToken, err := readWriteModel.NewAnonymousIdentityTokenBuilder().WithPolicyId(readWriteModel.NewPascalString(policyId)).Build()
+		if err != nil {
+			s.log.Error().Err(err).Msg("error creating anonymous authentication token")
+			return nil
+		}
 		extExpandedNodeId := readWriteModel.NewExpandedNodeId(
 			false, //Namespace Uri Specified
 			false, //Server Index Specified
-			readWriteModel.NewNodeIdFourByte(
-				0, 321 /* TODO: disabled till we have greater segmentation: uint16(readWriteModel.OpcuaNodeIdServices_AnonymousIdentityToken_Encoding_DefaultBinary)*/),
+			readWriteModel.NewNodeIdFourByte(0, uint16(anonymousIdentityToken.GetExtensionId())),
 			nil,
 			nil,
 		)
 		return readWriteModel.NewBinaryExtensionObjectWithMask(
 			extExpandedNodeId,
-			readWriteModel.NewExtensionObjectEncodingMask(false, false, true),
+			BINARY_ENCODING_MASK,
 			anonymousIdentityToken,
 			anonymousIdentityToken.GetExtensionId(),
 			false,
@@ -1604,12 +1608,12 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 		extExpandedNodeId := readWriteModel.NewExpandedNodeId(
 			false, //Namespace Uri Specified
 			false, //Server Index Specified
-			readWriteModel.NewNodeIdFourByte(0, 324 /*TODO: disabled till we have greater segmentation: uint16(readWriteModel.OpcuaNodeIdServices_UserNameIdentityToken_Encoding_DefaultBinary)*/),
+			readWriteModel.NewNodeIdFourByte(0, uint16(userNameIdentityToken.GetExtensionId())),
 			nil,
 			nil)
 		return readWriteModel.NewBinaryExtensionObjectWithMask(
 			extExpandedNodeId,
-			readWriteModel.NewExtensionObjectEncodingMask(false, false, true),
+			BINARY_ENCODING_MASK,
 			userNameIdentityToken,
 			userNameIdentityToken.GetExtensionId(),
 			false,
