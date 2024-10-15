@@ -104,7 +104,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         // Make the new Map the top of the stack.
         batchSetAttributes.push(curBatchSetAttributes);
 
-        if (ctx.enumValues != null) {
+        if ("enum".equals(ctx.getChild(0).getText())) {
             List<EnumValue> enumContext = new LinkedList<>();
             enumContexts.push(enumContext);
         } else {
@@ -123,7 +123,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
         final Map<String, Term> attributes = batchSetAttributes.peek();
         // Handle enum types.
-        if (ctx.enumValues != null) {
+        if ("enum".equals(ctx.getChild(0).getText())) {
             SimpleTypeReference type = (ctx.type != null) ? getSimpleTypeReference(ctx.type) : null;
             List<EnumValue> enumValues = getEnumValues();
             if (type == null) {

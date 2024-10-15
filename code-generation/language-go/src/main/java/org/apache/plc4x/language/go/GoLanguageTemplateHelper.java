@@ -46,6 +46,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     private static final Logger LOGGER = LoggerFactory.getLogger(GoLanguageTemplateHelper.class);
 
     private final Map<String, String> options;
+    private final Map<String, String> externalTypes;
 
     // TODO: we could condense it to one import set as these can be emitted per template and are not hardcoded anymore
 
@@ -54,9 +55,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     public final SortedSet<String> requiredImportsForDataIo = new TreeSet<>();
 
     public GoLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-                                    Map<String, String> options) {
+                                    Map<String, String> externalTypes, Map<String, String> options) {
         super(thisType, protocolName, flavorName, types);
         this.options = options;
+        this.externalTypes = externalTypes;
     }
 
     public String fileName(String protocolName, String languageName, String languageFlavorName) {
@@ -111,6 +113,31 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     @Override
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference) {
+        if(externalTypes != null) {
+            String typeName = null;
+            if(typeReference.isComplexTypeReference()) {
+                typeName = typeReference.asComplexTypeReference().orElseThrow().getName();
+            } else if(typeReference.isEnumTypeReference()) {
+                typeName = typeReference.asEnumTypeReference().orElseThrow().getName();
+            }
+            if((typeName != null) && externalTypes.containsKey(typeName)) {
+                String replacement = externalTypes.get(typeName);
+                String namespaceAlias;
+                if(replacement.contains(" ")) {
+                    namespaceAlias = replacement.split(" ")[0];
+                    String pkg = replacement.split(" ")[1];
+                    pkg = pkg.substring(1, pkg.length() - 1);
+                    emitDataIoRequiredImport(namespaceAlias, pkg);
+                    emitRequiredImport(namespaceAlias, pkg);
+                } else {
+                    String[] split = replacement.split("/");
+                    namespaceAlias = split[split.length - 1];
+                    emitDataIoRequiredImport(replacement);
+                    emitRequiredImport(replacement);
+                }
+                return namespaceAlias + "." + typeName;
+            }
+        }
         return getLanguageTypeNameForTypeReference(typeReference, null);
     }
 
@@ -1898,6 +1925,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     public boolean isGeneratePropertiesForReservedFields() {
         return options.getOrDefault("generate-properties-for-reserved-fields", "false").equals("true");
+    }
+
+    public String getExternalTypeImports() {
+        StringBuilder imports = new StringBuilder();
+        externalTypes.forEach((mspecTypeName, javaTypeName) -> imports.append("import ").append(javaTypeName).append(";\n"));
+        return imports.toString();
     }
 
 }

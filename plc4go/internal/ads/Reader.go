@@ -307,7 +307,8 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 		if valueType == apiValues.NULL {
 			return nil, errors.New(fmt.Sprintf("error converting %s into plc4x plc-value type", dataType.GetDataTypeName()))
 		}
-		adsValueType, ok := driverModel.PlcValueTypeByName(valueType.String())
+
+		adsValueType, ok := apiValues.PlcValueTypeByName(valueType.String())
 		if !ok {
 			return nil, errors.New(fmt.Sprintf("error converting plc4x plc-value type %s into ads plc-value type", valueType.String()))
 		}

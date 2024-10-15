@@ -76,8 +76,8 @@ public class GoLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-                                                         Map<String, String> options) {
-        return new GoLanguageTemplateHelper(thisType, protocolName, flavorName, types, options);
+                                                         Map<String, String> externalTypes, Map<String, String> options) {
+        return new GoLanguageTemplateHelper(thisType, protocolName, flavorName, types, externalTypes, options);
     }
 
 }

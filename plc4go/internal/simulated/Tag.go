@@ -69,7 +69,7 @@ func (t simulatedTag) GetAddressString() string {
 }
 
 func (t simulatedTag) GetValueType() values.PlcValueType {
-	if plcValueType, ok := values.PlcValueByName(t.DataTypeSize.String()); ok {
+	if plcValueType, ok := values.PlcValueTypeByName(t.DataTypeSize.String()); ok {
 		return plcValueType
 	}
 	return values.NULL

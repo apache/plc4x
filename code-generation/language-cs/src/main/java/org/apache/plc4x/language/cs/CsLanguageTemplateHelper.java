@@ -40,7 +40,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     private final Map<String, String> options;
 
     public CsLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-                                      Map<String, String> options) {
+                                    Map<String, String> externalTypes, Map<String, String> options) {
         super(thisType, protocolName, flavorName, types);
         this.options = options;
     }
@@ -55,7 +55,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String packageName(String protocolName, String languageName, String languageFlavorName) {
-        return Optional.ofNullable(options.get("package")).orElseGet(() ->
+        return Optional.ofNullable((String) options.get("package")).orElseGet(() ->
             "org.apache.plc4x." + String.join("", languageName.split("-")) + "." +
                 String.join("", protocolName.split("-")) + "." +
                 String.join("", languageFlavorName.split("-")));

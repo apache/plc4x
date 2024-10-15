@@ -42,10 +42,12 @@ import java.util.function.Function;
 public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
 
     private final Map<String, String> options;
+    private final Map<String, String> externalTypes;
 
     public JavaLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-                                      Map<String, String> options) {
+                                      Map<String, String> externalTypes, Map<String, String> options) {
         super(thisType, protocolName, flavorName, types);
+        this.externalTypes = externalTypes;
         this.options = options;
     }
 
@@ -54,7 +56,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     public String packageName(String protocolName, String languageName, String languageFlavorName) {
-        return Optional.ofNullable(options.get("package")).orElseGet(() ->
+        return Optional.ofNullable((String) options.get("package")).orElseGet(() ->
             "org.apache.plc4x." + String.join("", languageName.split("-")) + "." +
                 String.join("", protocolName.split("-")) + "." +
                 String.join("", languageFlavorName.split("-")));
@@ -1390,6 +1392,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     public boolean isGeneratePropertiesForReservedFields() {
         return options.getOrDefault("generate-properties-for-reserved-fields", "false").equals("true");
+    }
+
+    public String getExternalTypeImports() {
+        StringBuilder imports = new StringBuilder();
+        externalTypes.forEach((mspecTypeName, javaTypeName) -> imports.append("import ").append(javaTypeName).append(";\n"));
+        return imports.toString();
     }
 
 }

@@ -168,6 +168,9 @@
                   <languageName>java</languageName>
                   <outputFlavor>read-write</outputFlavor>
                   <outputDir>src/main/generated</outputDir>
+                  <externalTypes>
+                    <PlcValueType>org.apache.plc4x.java.api.types.PlcValueType</PlcValueType>
+                  </externalTypes>
                 </configuration>
               </execution>
               <execution>

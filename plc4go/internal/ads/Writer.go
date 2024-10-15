@@ -298,7 +298,7 @@ func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntr
 		if valueType == apiValues.NULL {
 			return errors.New(fmt.Sprintf("error converting %s into plc4x plc-value type", dataType.GetDataTypeName()))
 		}
-		adsValueType, ok := driverModel.PlcValueTypeByName(valueType.String())
+		adsValueType, ok := apiValues.PlcValueTypeByName(valueType.String())
 		if !ok {
 			return errors.New(fmt.Sprintf("error converting plc4x plc-value type %s into ads plc-value type", valueType.String()))
 		}

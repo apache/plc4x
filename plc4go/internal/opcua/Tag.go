@@ -59,7 +59,7 @@ func (t *tag) GetAddressString() string {
 }
 
 func (t *tag) GetValueType() apiValues.PlcValueType {
-	valueType, ok := apiValues.PlcValueByName(t.dataType.PLC4XEnumName())
+	valueType, ok := apiValues.PlcValueTypeByName(t.dataType.PLC4XEnumName())
 	if !ok {
 		return 0xFF
 	}
