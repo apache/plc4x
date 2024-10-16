@@ -37,10 +37,10 @@ import java.util.function.Function;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
 
-    private final Map<String, String> options;
+    private final Map<String, Object> options;
 
     public CsLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-                                    Map<String, String> externalTypes, Map<String, String> options) {
+                                    Map<String, Object> options) {
         super(thisType, protocolName, flavorName, types);
         this.options = options;
     }

@@ -55,7 +55,7 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
             // Generates additional properties to save values of reserved fields for the case that the value differs from the expected value.
             "generate-properties-for-reserved-fields",
             // Map containing the type-names for external types.
-            "external"));
+            "externalTypes"));
     }
 
     @Override
@@ -86,9 +86,9 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
-    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-                                                         Map<String, String> externalTypes, Map<String, String> options) {
-        return new JavaLanguageTemplateHelper(thisType, protocolName, flavorName, types, externalTypes, options);
+    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName,
+                                                         Map<String, TypeDefinition> types, Map<String, Object> options) {
+        return new JavaLanguageTemplateHelper(thisType, protocolName, flavorName, types, options);
     }
 
     @Override
