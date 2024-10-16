@@ -26,6 +26,7 @@ import (
 
 	"github.com/pkg/errors"
 
+	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	. "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -48,7 +49,7 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 	case "AmsSerialFrame":
 		return AmsSerialFrameParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DataItem":
-		plcValueType, _ := PlcValueTypeByName(parserArguments[0])
+		plcValueType, _ := api.PlcValueTypeByName(parserArguments[0])
 		parsedInt1, err := strconv.ParseInt(parserArguments[1], 10, 32)
 		if err != nil {
 			return nil, err

@@ -75,7 +75,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             typeContext.put("languageName", languageName);
             typeContext.put("protocolName", protocolName);
             typeContext.put("outputFlavor", outputFlavor);
-            typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types, options, externalTypes));
+            typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types, externalTypes, options));
             typeContext.put("tracer", Tracer.start("global"));
             typeContext.putAll(options);
 
@@ -129,7 +129,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             typeContext.put("languageName", languageName);
             typeContext.put("protocolName", protocolName);
             typeContext.put("outputFlavor", outputFlavor);
-            typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types, options, externalTypes));
+            typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types, externalTypes, options));
             typeContext.putAll(options);
 
             for (Template template : miscTemplateList) {
