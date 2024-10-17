@@ -25,11 +25,10 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.opcua.MiloTestContainer;
 import org.apache.plc4x.java.opcua.OpcuaPlcDriverTest;
-import org.apache.plc4x.test.DisableInDockerFlag;
 import org.apache.plc4x.test.DisableOnJenkinsFlag;
 import org.apache.plc4x.test.DisableOnParallelsVmFlag;
-import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -41,6 +40,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
+import org.testcontainers.containers.BindMode;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,25 +56,24 @@ import static org.junit.jupiter.api.Assertions.fail;
 // cdutz: I have done way more than my fair share on tracking down this issue and am simply giving up on it.
 // I tracked it down into the core of Milo several times now, but got lost in there.
 // It's not a big issue as the GitHub runners and the Apache Jenkins still run the test.
-@DisableOnParallelsVmFlag
-@DisableInDockerFlag
-@DisableOnJenkinsFlag
-@Disabled("This test seems to randomly fail on ANY CI platform")
+@Testcontainers(disabledWithoutDocker = true)
 public class OpcuaSubscriptionHandleTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
 
-    private static ExampleServer exampleServer;
+    @Container
+    public final GenericContainer milo = new MiloTestContainer()
+        //.withCreateContainerCmdModifier(cmd -> cmd.withHostName("test-opcua-server"))
+        .withLogConsumer(new Slf4jLogConsumer(LOGGER))
+        .withFileSystemBind("target/tmp/server/security", "/tmp/server/security", BindMode.READ_WRITE);
 
     // Address of local milo server
-    private static final String miloLocalAddress = "127.0.0.1:12686/milo";
+    private static final String miloLocalAddress = "%s:%d/milo";
     //Tcp pattern of OPC UA
     private static final String opcPattern = "opcua:tcp://";
 
     private final String paramSectionDivider = "?";
     private final String paramDivider = "&";
-
-    private static final String tcpConnectionAddress = opcPattern + miloLocalAddress;
 
     // Read only variables of milo example server of version 3.6
     private static final String BOOL_IDENTIFIER_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Boolean";
@@ -89,14 +92,17 @@ public class OpcuaSubscriptionHandleTest {
     private static final String UINTEGER_IDENTIFIER_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/UInteger";
     private static final String DOES_NOT_EXIST_IDENTIFIER_READ_WRITE = "ns=2;i=12512623";
 
-    private static PlcConnection opcuaConnection;
+    private PlcConnection opcuaConnection;
 
     // ! If this test fails, see comment at the top of the class before investigating.
-    @BeforeAll
-    public static void setup() throws Exception {
+    @BeforeEach
+    public void setup() throws Exception {
         // When switching JDK versions from a newer to an older version,
         // this can cause the server to not start correctly.
         // Deleting the directory makes sure the key-store is initialized correctly.
+
+        String tcpConnectionAddress = String.format(opcPattern + miloLocalAddress, milo.getHost(), milo.getMappedPort(12686)) + "?endpoint-port=12686";
+
         Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
         try {
             Files.delete(securityBaseDir);
@@ -104,20 +110,16 @@ public class OpcuaSubscriptionHandleTest {
             // Ignore this ...
         }
 
-        exampleServer = new ExampleServer();
-        exampleServer.startup().get();
         //Connect
         opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
         assertThat(opcuaConnection).extracting(PlcConnection::isConnected).isEqualTo(true);
     }
 
-    @AfterAll
-    public static void tearDown() throws Exception {
+    @AfterEach
+    public void tearDown() throws Exception {
         // Close Connection
         opcuaConnection.close();
         assertThat(opcuaConnection).extracting(PlcConnection::isConnected).isEqualTo(false);
-
-        exampleServer.shutdown().get();
     }
 
     // ! If this test fails, see comment at the top of the class before investigating.

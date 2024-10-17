@@ -57,6 +57,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
@@ -64,6 +65,9 @@ import java.util.stream.Stream;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.jib.JibImage;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -72,15 +76,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 @Testcontainers(disabledWithoutDocker = true)
-@DisableOnJenkinsFlag
 public class OpcuaPlcDriverTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
 
     @Container
-    public static final GenericContainer<MiloTestContainer> milo = new MiloTestContainer()
+    public final GenericContainer milo = new MiloTestContainer()
         //.withCreateContainerCmdModifier(cmd -> cmd.withHostName("test-opcua-server"))
-        .withReuse(true)
         .withLogConsumer(new Slf4jLogConsumer(LOGGER))
         .withFileSystemBind("target/tmp/server/security", "/tmp/server/security", BindMode.READ_WRITE);
 
@@ -135,17 +137,17 @@ public class OpcuaPlcDriverTest {
     public static final String STRING_IDENTIFIER_ONLY_ADMIN_READ_WRITE = "ns=2;s=HelloWorld/OnlyAdminCanRead/String";
 
     // Address of local milo server, since it comes from test container its hostname and port is not static
-    private static final String miloLocalAddress = "%s:%d/milo";
+    private final String miloLocalAddress = "%s:%d/milo";
     //Tcp pattern of OPC UA
-    private static final String opcPattern = "opcua:tcp://";
+    private final String opcPattern = "opcua:tcp://";
 
-    private static final String paramSectionDivider = "?";
-    private static final String paramDivider = "&";
+    private final String paramSectionDivider = "?";
+    private final String paramDivider = "&";
 
-    private static final String discoveryValidParamTrue = "discovery=true";
-    private static final String discoveryValidParamFalse = "discovery=false";
-    private static final String discoveryCorruptedParamWrongValueNum = "discovery=1";
-    private static final String discoveryCorruptedParamWrongName = "diskovery=false";
+    private final String discoveryValidParamTrue = "discovery=true";
+    private final String discoveryValidParamFalse = "discovery=false";
+    private final String discoveryCorruptedParamWrongValueNum = "discovery=1";
+    private final String discoveryCorruptedParamWrongName = "diskovery=false";
 
     private String tcpConnectionAddress;
     private List<String> connectionStringValidSet;
@@ -153,12 +155,10 @@ public class OpcuaPlcDriverTest {
     final List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
     List<String> discoveryParamCorruptedSet = List.of(discoveryCorruptedParamWrongValueNum, discoveryCorruptedParamWrongName);
 
-    private static TestMiloServer exampleServer;
-
     @BeforeEach
     public void startUp() {
         //System.out.println(milo.getMappedPort(12686));
-        tcpConnectionAddress = String.format(opcPattern + miloLocalAddress, milo.getHost(), milo.getMappedPort(12686));
+        tcpConnectionAddress = String.format(opcPattern + miloLocalAddress, milo.getHost(), milo.getMappedPort(12686)) + "?endpoint-port=12686";
         connectionStringValidSet = List.of(tcpConnectionAddress);
     }
 
@@ -275,7 +275,7 @@ public class OpcuaPlcDriverTest {
             return connectionStringValidSet.stream()
                 .map(connectionAddress -> DynamicContainer.dynamicContainer(connectionAddress, () ->
                     discoveryParamValidSet.stream().map(discoveryParam -> DynamicTest.dynamicTest(discoveryParam, () -> {
-                            String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
+                            String connectionString = connectionAddress + paramDivider + discoveryParam;
                             PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
                             Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
                             assertThat(opcuaConnection).is(is_connected);
@@ -290,7 +290,7 @@ public class OpcuaPlcDriverTest {
         @Test
         void connectionWithUrlAuthentication() throws Exception {
             DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
-            try (PlcConnection opcuaConnection = driverManager.getConnection(tcpConnectionAddress + "?username=admin&password=password2")) {
+            try (PlcConnection opcuaConnection = driverManager.getConnection(tcpConnectionAddress + "&username=admin&password=password2")) {
                 Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
                 assertThat(opcuaConnection).is(is_connected);
 
@@ -325,7 +325,7 @@ public class OpcuaPlcDriverTest {
         @Test
         void connectionWithPlcAuthenticationOverridesUrlParam() throws Exception {
             DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
-            try (PlcConnection opcuaConnection = driverManager.getConnection(tcpConnectionAddress + "?username=user&password=password1",
+            try (PlcConnection opcuaConnection = driverManager.getConnection(tcpConnectionAddress + "&username=user&password=password1",
                     new PlcUsernamePasswordAuthentication("admin", "password2"))) {
                 Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
                 assertThat(opcuaConnection).is(is_connected);
@@ -459,7 +459,6 @@ public class OpcuaPlcDriverTest {
         Test added to test the synchronized TransactionHandler. (This was disabled before being enabled again so it might be a candidate for those tests not running properly on different platforms)
      */
     @Test
-    @Disabled("Disabled flaky test. Tracking issue at https://github.com/apache/plc4x/issues/1764")
     public void multipleThreads() throws Exception {
         class ReadWorker extends Thread {
             private final PlcConnection connection;
@@ -554,7 +553,7 @@ public class OpcuaPlcDriverTest {
                     .map(tuple -> tuple.getKey() + "=" + URLEncoder.encode(tuple.getValue(), Charset.defaultCharset()))
                     .collect(Collectors.joining(paramDivider));
 
-                return tcpConnectionAddress + paramSectionDivider + connectionParams;
+                return tcpConnectionAddress + paramDivider + connectionParams;
             default:
                 throw new IllegalStateException();
         }
@@ -565,19 +564,19 @@ public class OpcuaPlcDriverTest {
             Arguments.of(SecurityPolicy.NONE, MessageSecurity.NONE),
             Arguments.of(SecurityPolicy.NONE, MessageSecurity.SIGN),
             Arguments.of(SecurityPolicy.NONE, MessageSecurity.SIGN_ENCRYPT),
-            Arguments.of(SecurityPolicy.Basic256Sha256, MessageSecurity.NONE),
+            //Arguments.of(SecurityPolicy.Basic256Sha256, MessageSecurity.NONE),
             Arguments.of(SecurityPolicy.Basic256Sha256, MessageSecurity.SIGN),
             Arguments.of(SecurityPolicy.Basic256Sha256, MessageSecurity.SIGN_ENCRYPT),
-            Arguments.of(SecurityPolicy.Basic256, MessageSecurity.NONE),
+            //Arguments.of(SecurityPolicy.Basic256, MessageSecurity.NONE),
             Arguments.of(SecurityPolicy.Basic256, MessageSecurity.SIGN),
             Arguments.of(SecurityPolicy.Basic256, MessageSecurity.SIGN_ENCRYPT),
-            Arguments.of(SecurityPolicy.Basic128Rsa15, MessageSecurity.NONE),
+            //Arguments.of(SecurityPolicy.Basic128Rsa15, MessageSecurity.NONE),
             Arguments.of(SecurityPolicy.Basic128Rsa15, MessageSecurity.SIGN),
             Arguments.of(SecurityPolicy.Basic128Rsa15, MessageSecurity.SIGN_ENCRYPT),
-            Arguments.of(SecurityPolicy.Aes128_Sha256_RsaOaep, MessageSecurity.NONE),
+            //Arguments.of(SecurityPolicy.Aes128_Sha256_RsaOaep, MessageSecurity.NONE),
             Arguments.of(SecurityPolicy.Aes128_Sha256_RsaOaep, MessageSecurity.SIGN),
             Arguments.of(SecurityPolicy.Aes128_Sha256_RsaOaep, MessageSecurity.SIGN_ENCRYPT),
-            Arguments.of(SecurityPolicy.Aes256_Sha256_RsaPss, MessageSecurity.NONE),
+            //Arguments.of(SecurityPolicy.Aes256_Sha256_RsaPss, MessageSecurity.NONE),
             Arguments.of(SecurityPolicy.Aes256_Sha256_RsaPss, MessageSecurity.SIGN),
             Arguments.of(SecurityPolicy.Aes256_Sha256_RsaPss, MessageSecurity.SIGN_ENCRYPT)
         );

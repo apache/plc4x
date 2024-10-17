@@ -30,7 +30,8 @@ import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 
 public class ChunkFactory {
 
-    public static int SYMMETRIC_SECURITY_HEADER_SIZE = 4;
+    public static final int ASYMMETRIC_SECURITY_HEADER_SIZE = 59;
+    public static final int SYMMETRIC_SECURITY_HEADER_SIZE = 4;
 
     public Chunk create(boolean asymmetric, Conversation conversation) {
         return create(asymmetric,
@@ -48,7 +49,7 @@ public class ChunkFactory {
 
         if (securityPolicy == SecurityPolicy.NONE) {
             return new Chunk(
-                asymmetric ? 59 : SYMMETRIC_SECURITY_HEADER_SIZE,
+                asymmetric ? ASYMMETRIC_SECURITY_HEADER_SIZE : SYMMETRIC_SECURITY_HEADER_SIZE,
                 1,
                 1,
                 securityPolicy.getSymmetricSignatureSize(),
