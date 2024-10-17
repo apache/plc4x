@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.opcua.context;
 
+import static java.util.Map.entry;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 import static org.apache.plc4x.java.opcua.readwrite.ChunkType.*;
 
@@ -27,6 +28,7 @@ import java.security.Signature;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Map.Entry;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -56,7 +58,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
@@ -82,8 +83,6 @@ public class SecureChannel {
     private final String sessionName = "UaSession:" + APPLICATION_TEXT.getStringValue() + ":" + RandomStringUtils.random(20, true, true);
     private final PascalByteString localCertificateString;
     private final PascalByteString remoteCertificateThumbprint;
-    private PascalString policyId;
-    private UserTokenType tokenType;
     private final PascalString endpoint;
     private final String username;
     private final String password;
@@ -324,13 +323,14 @@ public class SecureChannel {
             LOGGER.debug("error getting host", e);
         }
 
-        selectEndpoint(sessionResponse);
-
-        if (this.policyId == null) {
+        Entry<EndpointDescription, UserTokenPolicy> endpointAndAuthPolicy = selectEndpoint(sessionResponse);
+        if (endpointAndAuthPolicy == null) {
             throw new PlcRuntimeException("Unable to find endpoint - " + endpoints[1]);
         }
 
-        ExtensionObject userIdentityToken = getIdentityToken(this.tokenType, policyId.getStringValue());
+        PascalString policyId = endpointAndAuthPolicy.getValue().getPolicyId();
+        UserTokenType tokenType = endpointAndAuthPolicy.getValue().getTokenType();
+        ExtensionObject userIdentityToken = getIdentityToken(tokenType, policyId.getStringValue());
         RequestHeader requestHeader = conversation.createRequestHeader();
         SignatureData clientSignature = new SignatureData(NULL_STRING, NULL_BYTE_STRING);
         if (conversation.getSecurityPolicy() != SecurityPolicy.NONE) {
@@ -501,31 +501,34 @@ public class SecureChannel {
     }
 
     /**
-     * Selects the endpoint to use based on the connection string provided.
-     * If Discovery is disabled it will use the host address return from the server
+     * Selects the endpoint and authentication policy based on client settings.
      *
      * @param sessionResponse - The CreateSessionResponse message returned by the server
-     * @throws PlcRuntimeException - If no endpoint with a compatible policy is found raise and error.
+     * @return Entry representing desired server endpoint and user token policy to access it.
      */
-    private void selectEndpoint(CreateSessionResponse sessionResponse) throws PlcRuntimeException {
+    private Entry<EndpointDescription, UserTokenPolicy> selectEndpoint(CreateSessionResponse sessionResponse) {
         // Get a list of the endpoints which match ours.
-        Stream<EndpointDescription> filteredEndpoints = sessionResponse.getServerEndpoints().stream()
-            .map(e -> (EndpointDescription) e)
-            .filter(this::isEndpoint);
-
-        //Determine if the requested security policy is included in the endpoint
-        filteredEndpoints.forEach(endpoint -> hasIdentity(
-            endpoint.getUserIdentityTokens().stream()
-                .map(p -> (UserTokenPolicy) p)
-                .toArray(UserTokenPolicy[]::new)
-        ));
-
-        if (this.policyId == null) {
-            throw new PlcRuntimeException("Unable to find endpoint - " + this.endpoints.get(0));
+        EndpointDescription selectedEndpoint = null;
+        for (ExtensionObjectDefinition endpoint : sessionResponse.getServerEndpoints()) {
+            if (!(endpoint instanceof EndpointDescription)) {
+                continue;
+            }
+            if (isEndpoint((EndpointDescription) endpoint)) {
+                selectedEndpoint = (EndpointDescription) endpoint;
+                break;
+            }
         }
-        if (this.tokenType == null) {
-            throw new PlcRuntimeException("Unable to find Security Policy for endpoint - " + this.endpoints.get(0));
+
+        for (ExtensionObjectDefinition tokenPolicy : selectedEndpoint.getUserIdentityTokens()) {
+            if (!(tokenPolicy instanceof UserTokenPolicy)) {
+                continue;
+            }
+            if (hasIdentity((UserTokenPolicy) tokenPolicy)) {
+                return entry(selectedEndpoint, (UserTokenPolicy) tokenPolicy);
+            }
         }
+
+        return null;
     }
 
     /**
@@ -569,21 +572,16 @@ public class SecureChannel {
     }
 
     /**
-     * Confirms that a policy that matches the connection string is available from
-     * the returned endpoints. It sets the policyId and tokenType for the policy to use.
+     * Confirms that given policy matches the connection string used by client.
      *
-     * @param policies - A list of policies returned with the endpoint description.
+     * @param policy - UserTokenPolicy configured for server endpoint.
+     * @return True if given token policy matches client configuration.
      */
-    private void hasIdentity(UserTokenPolicy[] policies) {
-        for (UserTokenPolicy identityToken : policies) {
-            if ((identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) && (this.username == null)) {
-                policyId = identityToken.getPolicyId();
-                tokenType = identityToken.getTokenType();
-            } else if ((identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) && (this.username != null)) {
-                policyId = identityToken.getPolicyId();
-                tokenType = identityToken.getTokenType();
-            }
+    private boolean hasIdentity(UserTokenPolicy policy) {
+        if ((policy.getTokenType() == UserTokenType.userTokenTypeAnonymous) && this.username == null) {
+            return true;
         }
+        return policy.getTokenType() == UserTokenType.userTokenTypeUserName && this.username != null;
     }
 
     /**
