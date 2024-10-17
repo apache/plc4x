@@ -68,7 +68,7 @@ public class AsymmetricEncryptionHandler extends BaseEncryptionHandler {
         for (int block = 0; block < blockCount; block++) {
             int pos = block * chunk.getCipherTextBlockSize();
 
-            bodyLength += cipher.doFinal(encrypted, pos, chunk.getCipherTextBlockSize(), plainText, pos);
+            bodyLength += cipher.doFinal(encrypted, pos, chunk.getCipherTextBlockSize(), plainText, bodyLength);
         }
 
         chunkBuffer.setPos(bodyStart);

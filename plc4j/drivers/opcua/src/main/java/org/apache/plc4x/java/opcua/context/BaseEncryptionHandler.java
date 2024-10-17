@@ -223,9 +223,10 @@ abstract class BaseEncryptionHandler {
         int paddingEnd = messageLength - chunk.getSignatureSize() - encryptionOverhead - chunk.getPaddingOverhead();
         byte[] padding = chunkBuffer.getBytes(paddingEnd, paddingEnd + chunk.getPaddingOverhead());
         if (padding.length > 2) { // cipher block size exceeds 256 bytes
-            return (short)(((padding[1] & 0xFF) << 8) | (padding[0] & 0xFF));
+            int paddingSize = ((padding[1] & 0xFF) << 8) | (padding[0] & 0xFF);
+            return (short) (paddingSize & 0xFFFF);
         }
-        return padding[0];
+        return (short) (padding[0] & 0xFF);
     }
 
     protected abstract void verify(WriteBufferByteBased buffer, Chunk chunk, int messageLength) throws Exception;

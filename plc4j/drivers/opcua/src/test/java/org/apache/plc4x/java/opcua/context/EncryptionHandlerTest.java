@@ -19,26 +19,26 @@
 
 package org.apache.plc4x.java.opcua.context;
 
+import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.security.Key;
 import java.security.KeyPair;
-import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.plc4x.java.opcua.TestCertificateGenerator;
 import org.apache.plc4x.java.opcua.readwrite.BinaryPayload;
 import org.apache.plc4x.java.opcua.readwrite.ChunkType;
 import org.apache.plc4x.java.opcua.readwrite.MessagePDU;
+import org.apache.plc4x.java.opcua.readwrite.MessageSecurityMode;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaMessageRequest;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaOpenRequest;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaProtocolLimits;
@@ -51,34 +51,62 @@ import org.apache.plc4x.java.opcua.readwrite.SequenceHeader;
 import org.apache.plc4x.java.opcua.security.MessageSecurity;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 
 class EncryptionHandlerTest {
 
     Supplier<Integer> sequenceSupplier = () -> 0;
 
-    CertificateKeyPair clientKeyPair;
-    CertificateKeyPair serverKeyPair;
+    static List<Arguments> signKeyLengths() {
+        return List.of(
+            Arguments.of(SecurityPolicy.Basic128Rsa15, MessageSecurity.SIGN, 1024, 1024),
+            Arguments.of(SecurityPolicy.Basic128Rsa15, MessageSecurity.SIGN, 2048, 1024),
+            Arguments.of(SecurityPolicy.Basic128Rsa15, MessageSecurity.SIGN, 1024, 2048),
+            Arguments.of(SecurityPolicy.Basic128Rsa15, MessageSecurity.SIGN, 2048, 2048)
+        );
+    }
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        Entry<PrivateKey, X509Certificate> clientKeyPair = TestCertificateGenerator.generate(2048, "cn=client", 3600);
-        Entry<PrivateKey, X509Certificate> serverKeyPair = TestCertificateGenerator.generate(2048, "cn=server", 3600);
+    static List<Arguments> encryptKeyLengths() {
+        return List.of(
+            Arguments.of(SecurityPolicy.Basic128Rsa15, MessageSecurity.SIGN_ENCRYPT, 1024, 1024),
+            Arguments.of(SecurityPolicy.Basic128Rsa15, MessageSecurity.SIGN_ENCRYPT, 2048, 1024),
+            Arguments.of(SecurityPolicy.Basic128Rsa15, MessageSecurity.SIGN_ENCRYPT, 1024, 2048),
+            Arguments.of(SecurityPolicy.Basic128Rsa15, MessageSecurity.SIGN_ENCRYPT, 2048, 2048),
+            Arguments.of(SecurityPolicy.Basic256Sha256, MessageSecurity.SIGN_ENCRYPT, 1024, 1024),
+            Arguments.of(SecurityPolicy.Basic256Sha256, MessageSecurity.SIGN_ENCRYPT, 2048, 1024),
+            Arguments.of(SecurityPolicy.Basic256Sha256, MessageSecurity.SIGN_ENCRYPT, 1024, 2048),
+            Arguments.of(SecurityPolicy.Basic256Sha256, MessageSecurity.SIGN_ENCRYPT, 2048, 2048)
+        );
+    }
+
+    private Entry<CertificateKeyPair, CertificateKeyPair> initialize(int client, int server) throws Exception {
+        Entry<PrivateKey, X509Certificate> clientKeyPair = TestCertificateGenerator.generate(client, "cn=client", 3600);
+        Entry<PrivateKey, X509Certificate> serverKeyPair = TestCertificateGenerator.generate(server, "cn=server", 3600);
 
         X509Certificate clientCertificate = clientKeyPair.getValue();
         PublicKey clientPublicKey = clientCertificate.getPublicKey();
-        this.clientKeyPair = new CertificateKeyPair(new KeyPair(clientPublicKey, clientKeyPair.getKey()), clientCertificate);
-
         X509Certificate serverCertificate = serverKeyPair.getValue();
-        PublicKey serverPublicKey = serverCertificate.getPublicKey();
-        this.serverKeyPair = new CertificateKeyPair(new KeyPair(clientPublicKey, serverKeyPair.getKey()), serverCertificate);
+
+        return entry(
+            new CertificateKeyPair(new KeyPair(clientPublicKey, clientKeyPair.getKey()), clientCertificate),
+            new CertificateKeyPair(new KeyPair(clientPublicKey, serverKeyPair.getKey()), serverCertificate)
+        );
     }
 
-    @Test
-    void testAsymmetricEncryption() throws Exception {
+    @ParameterizedTest
+    @MethodSource("encryptKeyLengths")
+    void testAsymmetricEncryption(SecurityPolicy securityPolicy, MessageSecurity messageSecurityMode, int client, int server) throws Exception {
+        Entry<CertificateKeyPair, CertificateKeyPair> keyPairs = initialize(client, server);
+        CertificateKeyPair clientKeyPair = keyPairs.getKey();
+        CertificateKeyPair serverKeyPair = keyPairs.getValue();
+
         Conversation conversation = createSecureChannel(clientKeyPair.getCertificate(), serverKeyPair.getCertificate(),
-            SecurityPolicy.Basic128Rsa15, MessageSecurity.SIGN_ENCRYPT, true, true
+            securityPolicy, messageSecurityMode, true, true
         );
 
         EncryptionHandler handler = new EncryptionHandler(conversation, clientKeyPair.getKeyPair().getPrivate());
@@ -97,7 +125,7 @@ class EncryptionHandlerTest {
             OpcuaOpenRequest request = new OpcuaOpenRequest(ChunkType.FINAL,
                 new OpenChannelMessageRequest(
                     (int) securityHeader.getSecureChannelId(),
-                    new PascalString(SecurityPolicy.Basic128Rsa15.getSecurityPolicyUri()),
+                    new PascalString(securityPolicy.getSecurityPolicyUri()),
                     stringFromBytes(clientKeyPair.getCertificate().getEncoded()),
                     stringFromBytes(DigestUtils.sha1(serverKeyPair.getCertificate().getEncoded()))
                 ),
@@ -109,11 +137,11 @@ class EncryptionHandlerTest {
             assertEquals(1, pdus.size());
 
             // decrypt
-            conversation = createSecureChannel(serverKeyPair.getCertificate(), clientKeyPair.getCertificate(), SecurityPolicy.Basic128Rsa15,
-                MessageSecurity.SIGN_ENCRYPT, true, true);
+            conversation = createSecureChannel(serverKeyPair.getCertificate(), clientKeyPair.getCertificate(), securityPolicy,
+                messageSecurityMode, true, true);
             EncryptionHandler decrypter = new EncryptionHandler(conversation, serverKeyPair.getPrivateKey());
             MessagePDU decoded = decrypter.decodeMessage(pdus.get(0));
-            assertTrue(decoded instanceof OpcuaOpenRequest);
+            assertInstanceOf(OpcuaOpenRequest.class, decoded);
             OpcuaOpenRequest decodedRequest = (OpcuaOpenRequest) decoded;
             SequenceHeader decodedSequenceHeader = decodedRequest.getMessage().getSequenceHeader();
             Payload decodedPayload = decodedRequest.getMessage();
@@ -124,10 +152,15 @@ class EncryptionHandlerTest {
 
     }
 
-    @Test
-    void testAsymmetricEncryptionSign() throws Exception {
+    @ParameterizedTest
+    @MethodSource("encryptKeyLengths")
+    void testAsymmetricEncryptionSign(SecurityPolicy securityPolicy, MessageSecurity messageSecurityMode, int client, int server) throws Exception {
+        Entry<CertificateKeyPair, CertificateKeyPair> keyPairs = initialize(client, server);
+        CertificateKeyPair clientKeyPair = keyPairs.getKey();
+        CertificateKeyPair serverKeyPair = keyPairs.getValue();
+
         Conversation secureChannel = createSecureChannel(clientKeyPair.getCertificate(), serverKeyPair.getCertificate(),
-            SecurityPolicy.Basic128Rsa15, MessageSecurity.SIGN, true, true);
+            securityPolicy, messageSecurityMode, true, true);
 
         EncryptionHandler handler = new EncryptionHandler(secureChannel, clientKeyPair.getPrivateKey());
 
@@ -145,7 +178,7 @@ class EncryptionHandlerTest {
             OpcuaOpenRequest request = new OpcuaOpenRequest(ChunkType.FINAL,
                 new OpenChannelMessageRequest(
                     (int) securityHeader.getSecureChannelId(),
-                    new PascalString(SecurityPolicy.Basic128Rsa15.getSecurityPolicyUri()),
+                    new PascalString(securityPolicy.getSecurityPolicyUri()),
                     stringFromBytes(clientKeyPair.getCertificate().getEncoded()),
                     stringFromBytes(DigestUtils.sha1(serverKeyPair.getCertificate().getEncoded()))
                 ),
@@ -157,10 +190,11 @@ class EncryptionHandlerTest {
             assertEquals(1, pdus.size());
 
             // decrypt
-            secureChannel = createSecureChannel(serverKeyPair.getCertificate(), clientKeyPair.getCertificate(), SecurityPolicy.Basic128Rsa15,
-                MessageSecurity.SIGN, true, true);
+            secureChannel = createSecureChannel(serverKeyPair.getCertificate(), clientKeyPair.getCertificate(), securityPolicy,
+                messageSecurityMode, true, true);
             EncryptionHandler decryptHandler = new EncryptionHandler(secureChannel, serverKeyPair.getPrivateKey());
             MessagePDU decoded = decryptHandler.decodeMessage(pdus.get(0));
+            assertInstanceOf(OpcuaOpenRequest.class, decoded);
             OpcuaOpenRequest decodedRequest = (OpcuaOpenRequest) decoded;
             SequenceHeader decodedSequenceHeader = decodedRequest.getMessage().getSequenceHeader();
             Payload decodedPayload = decodedRequest.getMessage();
@@ -171,10 +205,15 @@ class EncryptionHandlerTest {
 
     }
 
-    @Test
-    void testSymmetricEncryption() throws Exception {
-        Conversation secureChannel = createSecureChannel(clientKeyPair.getCertificate(), serverKeyPair.getCertificate(), SecurityPolicy.Basic128Rsa15,
-            MessageSecurity.SIGN_ENCRYPT, true, true);
+    @ParameterizedTest
+    @MethodSource("signKeyLengths")
+    void testSymmetricEncryption(SecurityPolicy securityPolicy, MessageSecurity messageSecurityMode, int client, int server) throws Exception {
+        Entry<CertificateKeyPair, CertificateKeyPair> keyPairs = initialize(client, server);
+        CertificateKeyPair clientKeyPair = keyPairs.getKey();
+        CertificateKeyPair serverKeyPair = keyPairs.getValue();
+
+        Conversation secureChannel = createSecureChannel(clientKeyPair.getCertificate(), serverKeyPair.getCertificate(), securityPolicy,
+            messageSecurityMode, true, true);
 
         EncryptionHandler handler = new EncryptionHandler(secureChannel, clientKeyPair.getPrivateKey());
 
@@ -199,8 +238,8 @@ class EncryptionHandlerTest {
             assertEquals(1, pdus.size());
 
             // decrypt
-            secureChannel = createSecureChannel(serverKeyPair.getCertificate(), clientKeyPair.getCertificate(), SecurityPolicy.Basic128Rsa15,
-                MessageSecurity.SIGN, true, true);
+            secureChannel = createSecureChannel(serverKeyPair.getCertificate(), clientKeyPair.getCertificate(), securityPolicy,
+                messageSecurityMode, true, true);
             EncryptionHandler decryptHandler = new EncryptionHandler(secureChannel, serverKeyPair.getPrivateKey());
             MessagePDU decoded = decryptHandler.decodeMessage(pdus.get(0));
             OpcuaMessageRequest decodedRequest = (OpcuaMessageRequest) decoded;
@@ -212,10 +251,15 @@ class EncryptionHandlerTest {
         }
     }
 
-    @Test
-    void testSymmetricEncryptionSign() throws Exception {
-        Conversation secureChannel = createSecureChannel(clientKeyPair.getCertificate(), serverKeyPair.getCertificate(), SecurityPolicy.Basic128Rsa15,
-            MessageSecurity.SIGN, true, true);
+    @ParameterizedTest
+    @MethodSource("signKeyLengths")
+    void testSymmetricEncryptionSign(SecurityPolicy securityPolicy, MessageSecurity messageSecurityMode, int client, int server) throws Exception {
+        Entry<CertificateKeyPair, CertificateKeyPair> keyPairs = initialize(client, server);
+        CertificateKeyPair clientKeyPair = keyPairs.getKey();
+        CertificateKeyPair serverKeyPair = keyPairs.getValue();
+
+        Conversation secureChannel = createSecureChannel(clientKeyPair.getCertificate(), serverKeyPair.getCertificate(), securityPolicy,
+            messageSecurityMode, true, true);
 
         EncryptionHandler handler = new EncryptionHandler(secureChannel, clientKeyPair.getPrivateKey());
 
@@ -240,8 +284,8 @@ class EncryptionHandlerTest {
             assertEquals(1, pdus.size());
 
             // decrypt
-            secureChannel = createSecureChannel(serverKeyPair.getCertificate(), clientKeyPair.getCertificate(), SecurityPolicy.Basic128Rsa15,
-                MessageSecurity.SIGN, true, true);
+            secureChannel = createSecureChannel(serverKeyPair.getCertificate(), clientKeyPair.getCertificate(), securityPolicy,
+                messageSecurityMode, true, true);
             EncryptionHandler decryptHandler = new EncryptionHandler(secureChannel, serverKeyPair.getPrivateKey());
             MessagePDU decoded = decryptHandler.decodeMessage(pdus.get(0));
             OpcuaMessageRequest decodedRequest = (OpcuaMessageRequest) decoded;
