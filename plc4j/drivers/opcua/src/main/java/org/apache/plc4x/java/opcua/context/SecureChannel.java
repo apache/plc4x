@@ -499,18 +499,13 @@ public class SecureChannel {
      * @param messageSecurity Message security needed by client.
      * @return Endpoint matching given.
      */
-    private Entry<EndpointDescription, UserTokenPolicy> selectEndpoint(List<ExtensionObjectDefinition> extensionObjects, Collection<String> contactPoints,
+    private Entry<EndpointDescription, UserTokenPolicy> selectEndpoint(List<EndpointDescription> extensionObjects, Collection<String> contactPoints,
         SecurityPolicy securityPolicy, MessageSecurity messageSecurity) throws PlcRuntimeException {
         // Get a list of the endpoints which match ours.
         MessageSecurityMode effectiveMessageSecurity = SecurityPolicy.NONE == securityPolicy ? MessageSecurityMode.messageSecurityModeNone : messageSecurity.getMode();
         List<Entry<EndpointDescription, UserTokenPolicy>> serverEndpoints = new ArrayList<>();
 
-        for (ExtensionObjectDefinition extensionObject : extensionObjects) {
-            if (!(extensionObject instanceof EndpointDescription)) {
-                continue;
-            }
-
-            EndpointDescription endpointDescription = (EndpointDescription) extensionObject;
+        for (EndpointDescription endpointDescription : extensionObjects) {
             if (isMatchingEndpoint(endpointDescription, contactPoints)) {
                 boolean policyMatch = endpointDescription.getSecurityPolicyUri().getStringValue().equals(securityPolicy.getSecurityPolicyUri());
                 boolean msgSecurityMatch = endpointDescription.getSecurityMode().equals(effectiveMessageSecurity);
@@ -519,12 +514,9 @@ public class SecureChannel {
                     continue;
                 }
 
-                for (ExtensionObjectDefinition objectDefinition : endpointDescription.getUserIdentityTokens()) {
-                    if (objectDefinition instanceof UserTokenPolicy) {
-                        UserTokenPolicy userTokenPolicy = (UserTokenPolicy) objectDefinition;
-                        if (isUserTokenPolicyCompatible(userTokenPolicy, this.username)) {
-                            serverEndpoints.add(entry(endpointDescription, userTokenPolicy));
-                        }
+                for (UserTokenPolicy userTokenPolicy : endpointDescription.getUserIdentityTokens()) {
+                    if (isUserTokenPolicyCompatible(userTokenPolicy, this.username)) {
+                        serverEndpoints.add(entry(endpointDescription, userTokenPolicy));
                     }
                 }
             }
