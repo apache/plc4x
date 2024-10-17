@@ -80,7 +80,7 @@ func (m modbusTag) GetAddressString() string {
 }
 
 func (m modbusTag) GetValueType() apiValues.PlcValueType {
-	if plcValueType, ok := apiValues.PlcValueByName(m.Datatype.String()); !ok {
+	if plcValueType, ok := apiValues.PlcValueTypeByName(m.Datatype.String()); !ok {
 		return apiValues.NULL
 	} else {
 		return plcValueType

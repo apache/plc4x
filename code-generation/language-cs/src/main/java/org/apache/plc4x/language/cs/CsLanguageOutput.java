@@ -69,7 +69,7 @@ public class CsLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
-    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types, Map<String, String> options) {
+    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types, Map<String, Object> options) {
         return new CsLanguageTemplateHelper(thisType, protocolName, flavorName, types, options);
     }
 

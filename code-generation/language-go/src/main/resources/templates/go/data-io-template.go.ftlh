@@ -93,7 +93,11 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
                         <#assign enumValue=helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)>
                         <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
                         <#assign enumValueTraces=tracer.extractTraces(enumValue)>
-                        ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?replace("Get","")?replace("()","")}
+						<#if enumTypeWithoutTraces?contains(".")>
+							${enumTypeTraces}${enumTypeWithoutTraces?split(".")[0]}.${enumValueWithoutTraces?replace("Get","")?replace("()","")}
+						<#else>
+							${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?replace("Get","")?replace("()","")}
+						</#if>
 					<#else>
 						${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}
 					</#if>
@@ -353,7 +357,11 @@ func ${type.name}SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
                         <#assign enumValue=helper.toParseExpression(null, typeRef, discriminatorValueTerm, parserArguments)>
                         <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
                         <#assign enumValueTraces=tracer.extractTraces(enumValue)>
-                        ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?replace("Get","")?replace("()","")}
+						<#if enumTypeWithoutTraces?contains(".")>
+							${enumTypeTraces}${enumTypeWithoutTraces?split(".")[0]}.${enumValueWithoutTraces?replace("Get","")?replace("()","")}
+						<#else>
+							${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?replace("Get","")?replace("()","")}
+						</#if>
 					<#else>
 						${helper.toParseExpression(null, typeRef, discriminatorValueTerm, parserArguments)}
 					</#if>

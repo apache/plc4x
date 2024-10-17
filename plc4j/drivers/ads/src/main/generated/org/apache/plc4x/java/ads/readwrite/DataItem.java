@@ -29,6 +29,7 @@ import java.time.*;
 import java.time.temporal.ChronoField;
 import java.util.*;
 import org.apache.plc4x.java.api.exceptions.*;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.codegen.*;
 import org.apache.plc4x.java.spi.codegen.fields.*;

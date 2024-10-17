@@ -36,7 +36,9 @@ public class GoLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     public Set<String> supportedOptions() {
-        return Collections.emptySet();
+        return new HashSet<>(List.of(
+            // Map containing the type-names for external types.
+            "externalTypes"));
     }
 
     @Override
@@ -76,7 +78,7 @@ public class GoLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-                                                         Map<String, String> options) {
+                                                         Map<String, Object> options) {
         return new GoLanguageTemplateHelper(thisType, protocolName, flavorName, types, options);
     }
 

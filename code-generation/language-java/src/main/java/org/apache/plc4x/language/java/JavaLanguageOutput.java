@@ -53,7 +53,9 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
             // Generates additional properties to save parser arguments.
             "generate-properties-for-parser-arguments",
             // Generates additional properties to save values of reserved fields for the case that the value differs from the expected value.
-            "generate-properties-for-reserved-fields"));
+            "generate-properties-for-reserved-fields",
+            // Map containing the type-names for external types.
+            "externalTypes"));
     }
 
     @Override
@@ -84,8 +86,8 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
-    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-                                                         Map<String, String> options) {
+    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName,
+                                                         Map<String, TypeDefinition> types, Map<String, Object> options) {
         return new JavaLanguageTemplateHelper(thisType, protocolName, flavorName, types, options);
     }
 

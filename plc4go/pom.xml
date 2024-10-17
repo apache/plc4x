@@ -632,6 +632,11 @@
                   <languageName>go</languageName>
                   <outputFlavor>read-write</outputFlavor>
                   <outputDir>${project.basedir}/protocols</outputDir>
+                  <options>
+                    <externalTypes>
+                      <PlcValueType>api "github.com/apache/plc4x/plc4go/pkg/api/values"</PlcValueType>
+                    </externalTypes>
+                  </options>
                 </configuration>
               </execution>
               <execution>

@@ -45,7 +45,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoLanguageTemplateHelper.class);
 
-    private final Map<String, String> options;
+    private final Map<String, Object> options;
 
     // TODO: we could condense it to one import set as these can be emitted per template and are not hardcoded anymore
 
@@ -54,7 +54,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     public final SortedSet<String> requiredImportsForDataIo = new TreeSet<>();
 
     public GoLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-                                    Map<String, String> options) {
+                                    Map<String, Object> options) {
         super(thisType, protocolName, flavorName, types);
         this.options = options;
     }
@@ -111,6 +111,37 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     @Override
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference) {
+        if(options.containsKey("externalTypes")) {
+            Object externalTypes = options.get("externalTypes");
+            if(!(externalTypes instanceof Map)) {
+                throw new IllegalArgumentException("The option 'externalTypes' is not a Map");
+            }
+            Map<String, Object> externalTypesMap = (Map<String, Object>) externalTypes;
+
+            String typeName = null;
+            if(typeReference.isComplexTypeReference()) {
+                typeName = typeReference.asComplexTypeReference().orElseThrow().getName();
+            } else if(typeReference.isEnumTypeReference()) {
+                typeName = typeReference.asEnumTypeReference().orElseThrow().getName();
+            }
+            if((typeName != null) && externalTypesMap.containsKey(typeName)) {
+                String replacement = externalTypesMap.get(typeName).toString();
+                String namespaceAlias;
+                if(replacement.contains(" ")) {
+                    namespaceAlias = replacement.split(" ")[0];
+                    String pkg = replacement.split(" ")[1];
+                    pkg = pkg.substring(1, pkg.length() - 1);
+                    emitDataIoRequiredImport(namespaceAlias, pkg);
+                    emitRequiredImport(namespaceAlias, pkg);
+                } else {
+                    String[] split = replacement.split("/");
+                    namespaceAlias = split[split.length - 1];
+                    emitDataIoRequiredImport(replacement);
+                    emitRequiredImport(replacement);
+                }
+                return namespaceAlias + "." + typeName;
+            }
+        }
         return getLanguageTypeNameForTypeReference(typeReference, null);
     }
 

@@ -37,6 +37,7 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -505,8 +506,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 }
 
                 // Convert the plc value type from the ADS specific one to the PLC4X global one.
-                org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType =
-                    org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataTypeForBrowse(dataType).toString());
+                PlcValueType plcValueType = getPlcValueTypeForAdsDataTypeForBrowse(dataType);
 
                 // If this type has children, add entries for its children.
                 List<PlcBrowseItem> children = getBrowseItems(symbol.getName(), symbol.getGroup(), symbol.getOffset(), !symbol.getFlagReadOnly(), dataType);
@@ -530,7 +530,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
                         adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
                 }
-                DefaultPlcBrowseItemList item = new DefaultPlcBrowseItemList(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo), symbol.getName(),
+                DefaultPlcBrowseItemList item = new DefaultPlcBrowseItemList(new SymbolicAdsTag(symbol.getName(), plcValueType, arrayInfo), symbol.getName(),
                     true, !symbol.getFlagReadOnly(), true, false, childMap, options, itemArrayInfo);
 
                 // Check if this item should be added to the result

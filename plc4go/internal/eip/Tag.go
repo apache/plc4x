@@ -57,7 +57,7 @@ func (m plcTag) GetAddressString() string {
 }
 
 func (m plcTag) GetValueType() apiValues.PlcValueType {
-	if plcValueType, ok := apiValues.PlcValueByName(m.GetType().String()); !ok {
+	if plcValueType, ok := apiValues.PlcValueTypeByName(m.GetType().String()); !ok {
 		return apiValues.NULL
 	} else {
 		return plcValueType

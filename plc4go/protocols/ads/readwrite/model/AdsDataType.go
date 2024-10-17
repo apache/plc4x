@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,7 +40,7 @@ type IAdsDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint16
-	PlcValueType() PlcValueType
+	PlcValueType() api.PlcValueType
 }
 
 const (
@@ -311,167 +312,167 @@ func AdsDataTypeFirstEnumForFieldNumBytes(value uint16) (enum AdsDataType, ok bo
 	return 0, false
 }
 
-func (e AdsDataType) PlcValueType() PlcValueType {
+func (e AdsDataType) PlcValueType() api.PlcValueType {
 	switch e {
 	case 0x01:
 		{ /* '0x01' */
-			return PlcValueType_BOOL
+			return api.BOOL
 		}
 	case 0x02:
 		{ /* '0x02' */
-			return PlcValueType_BOOL
+			return api.BOOL
 		}
 	case 0x03:
 		{ /* '0x03' */
-			return PlcValueType_BYTE
+			return api.BYTE
 		}
 	case 0x04:
 		{ /* '0x04' */
-			return PlcValueType_BYTE
+			return api.BYTE
 		}
 	case 0x05:
 		{ /* '0x05' */
-			return PlcValueType_BYTE
+			return api.BYTE
 		}
 	case 0x06:
 		{ /* '0x06' */
-			return PlcValueType_WORD
+			return api.WORD
 		}
 	case 0x07:
 		{ /* '0x07' */
-			return PlcValueType_WORD
+			return api.WORD
 		}
 	case 0x08:
 		{ /* '0x08' */
-			return PlcValueType_DWORD
+			return api.DWORD
 		}
 	case 0x09:
 		{ /* '0x09' */
-			return PlcValueType_DWORD
+			return api.DWORD
 		}
 	case 0x0A:
 		{ /* '0x0A' */
-			return PlcValueType_SINT
+			return api.SINT
 		}
 	case 0x0B:
 		{ /* '0x0B' */
-			return PlcValueType_SINT
+			return api.SINT
 		}
 	case 0x0C:
 		{ /* '0x0C' */
-			return PlcValueType_USINT
+			return api.USINT
 		}
 	case 0x0D:
 		{ /* '0x0D' */
-			return PlcValueType_USINT
+			return api.USINT
 		}
 	case 0x0E:
 		{ /* '0x0E' */
-			return PlcValueType_INT
+			return api.INT
 		}
 	case 0x0F:
 		{ /* '0x0F' */
-			return PlcValueType_INT
+			return api.INT
 		}
 	case 0x10:
 		{ /* '0x10' */
-			return PlcValueType_UINT
+			return api.UINT
 		}
 	case 0x11:
 		{ /* '0x11' */
-			return PlcValueType_UINT
+			return api.UINT
 		}
 	case 0x12:
 		{ /* '0x12' */
-			return PlcValueType_DINT
+			return api.DINT
 		}
 	case 0x13:
 		{ /* '0x13' */
-			return PlcValueType_DINT
+			return api.DINT
 		}
 	case 0x14:
 		{ /* '0x14' */
-			return PlcValueType_UDINT
+			return api.UDINT
 		}
 	case 0x15:
 		{ /* '0x15' */
-			return PlcValueType_UDINT
+			return api.UDINT
 		}
 	case 0x16:
 		{ /* '0x16' */
-			return PlcValueType_LINT
+			return api.LINT
 		}
 	case 0x17:
 		{ /* '0x17' */
-			return PlcValueType_LINT
+			return api.LINT
 		}
 	case 0x18:
 		{ /* '0x18' */
-			return PlcValueType_ULINT
+			return api.ULINT
 		}
 	case 0x19:
 		{ /* '0x19' */
-			return PlcValueType_ULINT
+			return api.ULINT
 		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return PlcValueType_REAL
+			return api.REAL
 		}
 	case 0x1B:
 		{ /* '0x1B' */
-			return PlcValueType_REAL
+			return api.REAL
 		}
 	case 0x1C:
 		{ /* '0x1C' */
-			return PlcValueType_LREAL
+			return api.LREAL
 		}
 	case 0x1D:
 		{ /* '0x1D' */
-			return PlcValueType_LREAL
+			return api.LREAL
 		}
 	case 0x1E:
 		{ /* '0x1E' */
-			return PlcValueType_CHAR
+			return api.CHAR
 		}
 	case 0x1F:
 		{ /* '0x1F' */
-			return PlcValueType_WCHAR
+			return api.WCHAR
 		}
 	case 0x20:
 		{ /* '0x20' */
-			return PlcValueType_STRING
+			return api.STRING
 		}
 	case 0x21:
 		{ /* '0x21' */
-			return PlcValueType_WSTRING
+			return api.WSTRING
 		}
 	case 0x22:
 		{ /* '0x22' */
-			return PlcValueType_TIME
+			return api.TIME
 		}
 	case 0x23:
 		{ /* '0x23' */
-			return PlcValueType_LTIME
+			return api.LTIME
 		}
 	case 0x24:
 		{ /* '0x24' */
-			return PlcValueType_DATE
+			return api.DATE
 		}
 	case 0x25:
 		{ /* '0x25' */
-			return PlcValueType_TIME_OF_DAY
+			return api.TIME_OF_DAY
 		}
 	case 0x26:
 		{ /* '0x26' */
-			return PlcValueType_TIME_OF_DAY
+			return api.TIME_OF_DAY
 		}
 	case 0x27:
 		{ /* '0x27' */
-			return PlcValueType_DATE_AND_TIME
+			return api.DATE_AND_TIME
 		}
 	case 0x28:
 		{ /* '0x28' */
-			return PlcValueType_DATE_AND_TIME
+			return api.DATE_AND_TIME
 		}
 	default:
 		{
@@ -480,7 +481,7 @@ func (e AdsDataType) PlcValueType() PlcValueType {
 	}
 }
 
-func AdsDataTypeFirstEnumForFieldPlcValueType(value PlcValueType) (enum AdsDataType, ok bool) {
+func AdsDataTypeFirstEnumForFieldPlcValueType(value api.PlcValueType) (enum AdsDataType, ok bool) {
 	for _, sizeValue := range AdsDataTypeValues {
 		if sizeValue.PlcValueType() == value {
 			return sizeValue, true
@@ -727,7 +728,7 @@ func (e AdsDataType) GetValue() int8 {
 func (e AdsDataType) GetNumBytes() uint16 {
 	return e.NumBytes()
 }
-func (e AdsDataType) GetPlcValueType() PlcValueType {
+func (e AdsDataType) GetPlcValueType() api.PlcValueType {
 	return e.PlcValueType()
 }
 

@@ -402,7 +402,7 @@ func (m *Connection) getPlcValueForAdsDataTypeTableEntry(entry readWriteModel.Ad
 		}
 		dataTypeName = "WSTRING"
 	}
-	plcValueType, ok := apiValues.PlcValueByName(dataTypeName)
+	plcValueType, ok := apiValues.PlcValueTypeByName(dataTypeName)
 	if !ok {
 		return apiValues.NULL, -1
 	}

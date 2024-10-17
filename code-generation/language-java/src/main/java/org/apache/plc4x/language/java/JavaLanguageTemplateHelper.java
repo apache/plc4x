@@ -41,10 +41,10 @@ import java.util.function.Function;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
 
-    private final Map<String, String> options;
+    private final Map<String, Object> options;
 
     public JavaLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-                                      Map<String, String> options) {
+                                      Map<String, Object> options) {
         super(thisType, protocolName, flavorName, types);
         this.options = options;
     }
@@ -54,7 +54,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     public String packageName(String protocolName, String languageName, String languageFlavorName) {
-        return Optional.ofNullable(options.get("package")).orElseGet(() ->
+        return Optional.ofNullable((String) options.get("package")).orElseGet(() ->
             "org.apache.plc4x." + String.join("", languageName.split("-")) + "." +
                 String.join("", protocolName.split("-")) + "." +
                 String.join("", languageFlavorName.split("-")));
@@ -1390,6 +1390,25 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     public boolean isGeneratePropertiesForReservedFields() {
         return options.getOrDefault("generate-properties-for-reserved-fields", "false").equals("true");
+    }
+
+    public String getExternalTypeImports() {
+        StringBuilder imports = new StringBuilder();
+        if(options.containsKey("externalTypes")) {
+            Object externalTypes = options.get("externalTypes");
+            if(externalTypes instanceof Map) {
+                Map<String, Object> externalTypesMap = (Map<String, Object>) externalTypes;
+                for (String mspecTypeName : externalTypesMap.keySet()) {
+                    Object obj = externalTypesMap.get(mspecTypeName);
+                    if(obj instanceof String) {
+                        imports.append("import ").append(obj).append(";\n");
+                    } else {
+                        throw new IllegalArgumentException("Type definition for " + mspecTypeName + " is invalid");
+                    }
+                }
+            }
+        }
+        return imports.toString();
     }
 
 }
