@@ -105,7 +105,7 @@ public class S7Tag implements PlcTag, Serializable {
     @Override
     public List<ArrayInfo> getArrayInfo() {
         if (numElements != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, numElements));
+            return Collections.singletonList(new DefaultArrayInfo(0, numElements - 1));
         }
         return Collections.emptyList();
     }
