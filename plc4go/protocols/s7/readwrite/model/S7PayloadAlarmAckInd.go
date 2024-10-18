@@ -238,7 +238,7 @@ func (m *_S7PayloadAlarmAckInd) GetTypeName() string {
 }
 
 func (m *_S7PayloadAlarmAckInd) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).GetLengthInBits(ctx))
 
 	// Simple field (alarmMessage)
 	lengthInBits += m.AlarmMessage.GetLengthInBits(ctx)

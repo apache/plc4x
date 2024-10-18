@@ -44,10 +44,8 @@ type NodeTypeDescription interface {
 	GetTypeDefinitionNode() ExpandedNodeId
 	// GetIncludeSubTypes returns IncludeSubTypes (property field)
 	GetIncludeSubTypes() bool
-	// GetNoOfDataToReturn returns NoOfDataToReturn (property field)
-	GetNoOfDataToReturn() int32
 	// GetDataToReturn returns DataToReturn (property field)
-	GetDataToReturn() []ExtensionObjectDefinition
+	GetDataToReturn() []QueryDataDescription
 	// IsNodeTypeDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeTypeDescription()
 	// CreateBuilder creates a NodeTypeDescriptionBuilder
@@ -59,8 +57,7 @@ type _NodeTypeDescription struct {
 	ExtensionObjectDefinitionContract
 	TypeDefinitionNode ExpandedNodeId
 	IncludeSubTypes    bool
-	NoOfDataToReturn   int32
-	DataToReturn       []ExtensionObjectDefinition
+	DataToReturn       []QueryDataDescription
 	// Reserved Fields
 	reservedField0 *uint8
 }
@@ -69,7 +66,7 @@ var _ NodeTypeDescription = (*_NodeTypeDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NodeTypeDescription)(nil)
 
 // NewNodeTypeDescription factory function for _NodeTypeDescription
-func NewNodeTypeDescription(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, noOfDataToReturn int32, dataToReturn []ExtensionObjectDefinition) *_NodeTypeDescription {
+func NewNodeTypeDescription(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, dataToReturn []QueryDataDescription) *_NodeTypeDescription {
 	if typeDefinitionNode == nil {
 		panic("typeDefinitionNode of type ExpandedNodeId for NodeTypeDescription must not be nil")
 	}
@@ -77,7 +74,6 @@ func NewNodeTypeDescription(typeDefinitionNode ExpandedNodeId, includeSubTypes b
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		TypeDefinitionNode:                typeDefinitionNode,
 		IncludeSubTypes:                   includeSubTypes,
-		NoOfDataToReturn:                  noOfDataToReturn,
 		DataToReturn:                      dataToReturn,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -93,17 +89,15 @@ func NewNodeTypeDescription(typeDefinitionNode ExpandedNodeId, includeSubTypes b
 type NodeTypeDescriptionBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, noOfDataToReturn int32, dataToReturn []ExtensionObjectDefinition) NodeTypeDescriptionBuilder
+	WithMandatoryFields(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, dataToReturn []QueryDataDescription) NodeTypeDescriptionBuilder
 	// WithTypeDefinitionNode adds TypeDefinitionNode (property field)
 	WithTypeDefinitionNode(ExpandedNodeId) NodeTypeDescriptionBuilder
 	// WithTypeDefinitionNodeBuilder adds TypeDefinitionNode (property field) which is build by the builder
 	WithTypeDefinitionNodeBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) NodeTypeDescriptionBuilder
 	// WithIncludeSubTypes adds IncludeSubTypes (property field)
 	WithIncludeSubTypes(bool) NodeTypeDescriptionBuilder
-	// WithNoOfDataToReturn adds NoOfDataToReturn (property field)
-	WithNoOfDataToReturn(int32) NodeTypeDescriptionBuilder
 	// WithDataToReturn adds DataToReturn (property field)
-	WithDataToReturn(...ExtensionObjectDefinition) NodeTypeDescriptionBuilder
+	WithDataToReturn(...QueryDataDescription) NodeTypeDescriptionBuilder
 	// Build builds the NodeTypeDescription or returns an error if something is wrong
 	Build() (NodeTypeDescription, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,8 +123,8 @@ func (b *_NodeTypeDescriptionBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_NodeTypeDescriptionBuilder) WithMandatoryFields(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, noOfDataToReturn int32, dataToReturn []ExtensionObjectDefinition) NodeTypeDescriptionBuilder {
-	return b.WithTypeDefinitionNode(typeDefinitionNode).WithIncludeSubTypes(includeSubTypes).WithNoOfDataToReturn(noOfDataToReturn).WithDataToReturn(dataToReturn...)
+func (b *_NodeTypeDescriptionBuilder) WithMandatoryFields(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, dataToReturn []QueryDataDescription) NodeTypeDescriptionBuilder {
+	return b.WithTypeDefinitionNode(typeDefinitionNode).WithIncludeSubTypes(includeSubTypes).WithDataToReturn(dataToReturn...)
 }
 
 func (b *_NodeTypeDescriptionBuilder) WithTypeDefinitionNode(typeDefinitionNode ExpandedNodeId) NodeTypeDescriptionBuilder {
@@ -156,12 +150,7 @@ func (b *_NodeTypeDescriptionBuilder) WithIncludeSubTypes(includeSubTypes bool) 
 	return b
 }
 
-func (b *_NodeTypeDescriptionBuilder) WithNoOfDataToReturn(noOfDataToReturn int32) NodeTypeDescriptionBuilder {
-	b.NoOfDataToReturn = noOfDataToReturn
-	return b
-}
-
-func (b *_NodeTypeDescriptionBuilder) WithDataToReturn(dataToReturn ...ExtensionObjectDefinition) NodeTypeDescriptionBuilder {
+func (b *_NodeTypeDescriptionBuilder) WithDataToReturn(dataToReturn ...QueryDataDescription) NodeTypeDescriptionBuilder {
 	b.DataToReturn = dataToReturn
 	return b
 }
@@ -222,8 +211,8 @@ func (b *_NodeTypeDescription) CreateNodeTypeDescriptionBuilder() NodeTypeDescri
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_NodeTypeDescription) GetIdentifier() string {
-	return "575"
+func (m *_NodeTypeDescription) GetExtensionId() int32 {
+	return int32(575)
 }
 
 ///////////////////////
@@ -248,11 +237,7 @@ func (m *_NodeTypeDescription) GetIncludeSubTypes() bool {
 	return m.IncludeSubTypes
 }
 
-func (m *_NodeTypeDescription) GetNoOfDataToReturn() int32 {
-	return m.NoOfDataToReturn
-}
-
-func (m *_NodeTypeDescription) GetDataToReturn() []ExtensionObjectDefinition {
+func (m *_NodeTypeDescription) GetDataToReturn() []QueryDataDescription {
 	return m.DataToReturn
 }
 
@@ -277,7 +262,7 @@ func (m *_NodeTypeDescription) GetTypeName() string {
 }
 
 func (m *_NodeTypeDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (typeDefinitionNode)
 	lengthInBits += m.TypeDefinitionNode.GetLengthInBits(ctx)
@@ -288,7 +273,7 @@ func (m *_NodeTypeDescription) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (includeSubTypes)
 	lengthInBits += 1
 
-	// Simple field (noOfDataToReturn)
+	// Implicit Field (noOfDataToReturn)
 	lengthInBits += 32
 
 	// Array field
@@ -308,7 +293,7 @@ func (m *_NodeTypeDescription) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_NodeTypeDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__nodeTypeDescription NodeTypeDescription, err error) {
+func (m *_NodeTypeDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__nodeTypeDescription NodeTypeDescription, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -337,13 +322,13 @@ func (m *_NodeTypeDescription) parse(ctx context.Context, readBuffer utils.ReadB
 	}
 	m.IncludeSubTypes = includeSubTypes
 
-	noOfDataToReturn, err := ReadSimpleField(ctx, "noOfDataToReturn", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDataToReturn, err := ReadImplicitField[int32](ctx, "noOfDataToReturn", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDataToReturn' field"))
 	}
-	m.NoOfDataToReturn = noOfDataToReturn
+	_ = noOfDataToReturn
 
-	dataToReturn, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "dataToReturn", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("572")), readBuffer), uint64(noOfDataToReturn))
+	dataToReturn, err := ReadCountArrayField[QueryDataDescription](ctx, "dataToReturn", ReadComplex[QueryDataDescription](ExtensionObjectDefinitionParseWithBufferProducer[QueryDataDescription]((int32)(int32(572))), readBuffer), uint64(noOfDataToReturn))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataToReturn' field"))
 	}
@@ -385,8 +370,8 @@ func (m *_NodeTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 		if err := WriteSimpleField[bool](ctx, "includeSubTypes", m.GetIncludeSubTypes(), WriteBoolean(writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'includeSubTypes' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDataToReturn", m.GetNoOfDataToReturn(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDataToReturn := int32(utils.InlineIf(bool((m.GetDataToReturn()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDataToReturn()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDataToReturn", noOfDataToReturn, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDataToReturn' field")
 		}
 
@@ -416,8 +401,7 @@ func (m *_NodeTypeDescription) deepCopy() *_NodeTypeDescription {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.TypeDefinitionNode.DeepCopy().(ExpandedNodeId),
 		m.IncludeSubTypes,
-		m.NoOfDataToReturn,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.DataToReturn),
+		utils.DeepCopySlice[QueryDataDescription, QueryDataDescription](m.DataToReturn),
 		m.reservedField0,
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -174,8 +174,8 @@ func (b *_XVType) CreateXVTypeBuilder() XVTypeBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_XVType) GetIdentifier() string {
-	return "12082"
+func (m *_XVType) GetExtensionId() int32 {
+	return int32(12082)
 }
 
 ///////////////////////
@@ -221,7 +221,7 @@ func (m *_XVType) GetTypeName() string {
 }
 
 func (m *_XVType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (x)
 	lengthInBits += 64
@@ -236,7 +236,7 @@ func (m *_XVType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_XVType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__xVType XVType, err error) {
+func (m *_XVType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__xVType XVType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

@@ -38,26 +38,26 @@ import org.apache.plc4x.java.spi.generation.*;
 public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "745";
+  public Integer getExtensionId() {
+    return (int) 745;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition itemToMonitor;
+  protected final ReadValueId itemToMonitor;
   protected final MonitoringMode monitoringMode;
-  protected final ExtensionObjectDefinition requestedParameters;
+  protected final MonitoringParameters requestedParameters;
 
   public MonitoredItemCreateRequest(
-      ExtensionObjectDefinition itemToMonitor,
+      ReadValueId itemToMonitor,
       MonitoringMode monitoringMode,
-      ExtensionObjectDefinition requestedParameters) {
+      MonitoringParameters requestedParameters) {
     super();
     this.itemToMonitor = itemToMonitor;
     this.monitoringMode = monitoringMode;
     this.requestedParameters = requestedParameters;
   }
 
-  public ExtensionObjectDefinition getItemToMonitor() {
+  public ReadValueId getItemToMonitor() {
     return itemToMonitor;
   }
 
@@ -65,7 +65,7 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
     return monitoringMode;
   }
 
-  public ExtensionObjectDefinition getRequestedParameters() {
+  public MonitoringParameters getRequestedParameters() {
     return requestedParameters;
   }
 
@@ -117,16 +117,16 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("MonitoredItemCreateRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition itemToMonitor =
+    ReadValueId itemToMonitor =
         readSimpleField(
             "itemToMonitor",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("628")),
+                () -> (ReadValueId) ExtensionObjectDefinition.staticParse(readBuffer, (int) (628)),
                 readBuffer));
 
     MonitoringMode monitoringMode =
@@ -135,11 +135,13 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
             "MonitoringMode",
             readEnum(MonitoringMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
-    ExtensionObjectDefinition requestedParameters =
+    MonitoringParameters requestedParameters =
         readSimpleField(
             "requestedParameters",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("742")),
+                () ->
+                    (MonitoringParameters)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (742)),
                 readBuffer));
 
     readBuffer.closeContext("MonitoredItemCreateRequest");
@@ -150,14 +152,14 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
 
   public static class MonitoredItemCreateRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition itemToMonitor;
+    private final ReadValueId itemToMonitor;
     private final MonitoringMode monitoringMode;
-    private final ExtensionObjectDefinition requestedParameters;
+    private final MonitoringParameters requestedParameters;
 
     public MonitoredItemCreateRequestBuilderImpl(
-        ExtensionObjectDefinition itemToMonitor,
+        ReadValueId itemToMonitor,
         MonitoringMode monitoringMode,
-        ExtensionObjectDefinition requestedParameters) {
+        MonitoringParameters requestedParameters) {
       this.itemToMonitor = itemToMonitor;
       this.monitoringMode = monitoringMode;
       this.requestedParameters = requestedParameters;

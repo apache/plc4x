@@ -54,8 +54,6 @@ type PublishedVariableDataType interface {
 	GetIndexRange() PascalString
 	// GetSubstituteValue returns SubstituteValue (property field)
 	GetSubstituteValue() Variant
-	// GetNoOfMetaDataProperties returns NoOfMetaDataProperties (property field)
-	GetNoOfMetaDataProperties() int32
 	// GetMetaDataProperties returns MetaDataProperties (property field)
 	GetMetaDataProperties() []QualifiedName
 	// IsPublishedVariableDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -67,22 +65,21 @@ type PublishedVariableDataType interface {
 // _PublishedVariableDataType is the data-structure of this message
 type _PublishedVariableDataType struct {
 	ExtensionObjectDefinitionContract
-	PublishedVariable      NodeId
-	AttributeId            uint32
-	SamplingIntervalHint   float64
-	DeadbandType           uint32
-	DeadbandValue          float64
-	IndexRange             PascalString
-	SubstituteValue        Variant
-	NoOfMetaDataProperties int32
-	MetaDataProperties     []QualifiedName
+	PublishedVariable    NodeId
+	AttributeId          uint32
+	SamplingIntervalHint float64
+	DeadbandType         uint32
+	DeadbandValue        float64
+	IndexRange           PascalString
+	SubstituteValue      Variant
+	MetaDataProperties   []QualifiedName
 }
 
 var _ PublishedVariableDataType = (*_PublishedVariableDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PublishedVariableDataType)(nil)
 
 // NewPublishedVariableDataType factory function for _PublishedVariableDataType
-func NewPublishedVariableDataType(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, noOfMetaDataProperties int32, metaDataProperties []QualifiedName) *_PublishedVariableDataType {
+func NewPublishedVariableDataType(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, metaDataProperties []QualifiedName) *_PublishedVariableDataType {
 	if publishedVariable == nil {
 		panic("publishedVariable of type NodeId for PublishedVariableDataType must not be nil")
 	}
@@ -101,7 +98,6 @@ func NewPublishedVariableDataType(publishedVariable NodeId, attributeId uint32, 
 		DeadbandValue:                     deadbandValue,
 		IndexRange:                        indexRange,
 		SubstituteValue:                   substituteValue,
-		NoOfMetaDataProperties:            noOfMetaDataProperties,
 		MetaDataProperties:                metaDataProperties,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -117,7 +113,7 @@ func NewPublishedVariableDataType(publishedVariable NodeId, attributeId uint32, 
 type PublishedVariableDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, noOfMetaDataProperties int32, metaDataProperties []QualifiedName) PublishedVariableDataTypeBuilder
+	WithMandatoryFields(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, metaDataProperties []QualifiedName) PublishedVariableDataTypeBuilder
 	// WithPublishedVariable adds PublishedVariable (property field)
 	WithPublishedVariable(NodeId) PublishedVariableDataTypeBuilder
 	// WithPublishedVariableBuilder adds PublishedVariable (property field) which is build by the builder
@@ -138,8 +134,6 @@ type PublishedVariableDataTypeBuilder interface {
 	WithSubstituteValue(Variant) PublishedVariableDataTypeBuilder
 	// WithSubstituteValueBuilder adds SubstituteValue (property field) which is build by the builder
 	WithSubstituteValueBuilder(func(VariantBuilder) VariantBuilder) PublishedVariableDataTypeBuilder
-	// WithNoOfMetaDataProperties adds NoOfMetaDataProperties (property field)
-	WithNoOfMetaDataProperties(int32) PublishedVariableDataTypeBuilder
 	// WithMetaDataProperties adds MetaDataProperties (property field)
 	WithMetaDataProperties(...QualifiedName) PublishedVariableDataTypeBuilder
 	// Build builds the PublishedVariableDataType or returns an error if something is wrong
@@ -167,8 +161,8 @@ func (b *_PublishedVariableDataTypeBuilder) setParent(contract ExtensionObjectDe
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_PublishedVariableDataTypeBuilder) WithMandatoryFields(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, noOfMetaDataProperties int32, metaDataProperties []QualifiedName) PublishedVariableDataTypeBuilder {
-	return b.WithPublishedVariable(publishedVariable).WithAttributeId(attributeId).WithSamplingIntervalHint(samplingIntervalHint).WithDeadbandType(deadbandType).WithDeadbandValue(deadbandValue).WithIndexRange(indexRange).WithSubstituteValue(substituteValue).WithNoOfMetaDataProperties(noOfMetaDataProperties).WithMetaDataProperties(metaDataProperties...)
+func (b *_PublishedVariableDataTypeBuilder) WithMandatoryFields(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, metaDataProperties []QualifiedName) PublishedVariableDataTypeBuilder {
+	return b.WithPublishedVariable(publishedVariable).WithAttributeId(attributeId).WithSamplingIntervalHint(samplingIntervalHint).WithDeadbandType(deadbandType).WithDeadbandValue(deadbandValue).WithIndexRange(indexRange).WithSubstituteValue(substituteValue).WithMetaDataProperties(metaDataProperties...)
 }
 
 func (b *_PublishedVariableDataTypeBuilder) WithPublishedVariable(publishedVariable NodeId) PublishedVariableDataTypeBuilder {
@@ -245,11 +239,6 @@ func (b *_PublishedVariableDataTypeBuilder) WithSubstituteValueBuilder(builderSu
 	return b
 }
 
-func (b *_PublishedVariableDataTypeBuilder) WithNoOfMetaDataProperties(noOfMetaDataProperties int32) PublishedVariableDataTypeBuilder {
-	b.NoOfMetaDataProperties = noOfMetaDataProperties
-	return b
-}
-
 func (b *_PublishedVariableDataTypeBuilder) WithMetaDataProperties(metaDataProperties ...QualifiedName) PublishedVariableDataTypeBuilder {
 	b.MetaDataProperties = metaDataProperties
 	return b
@@ -323,8 +312,8 @@ func (b *_PublishedVariableDataType) CreatePublishedVariableDataTypeBuilder() Pu
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_PublishedVariableDataType) GetIdentifier() string {
-	return "14275"
+func (m *_PublishedVariableDataType) GetExtensionId() int32 {
+	return int32(14275)
 }
 
 ///////////////////////
@@ -369,10 +358,6 @@ func (m *_PublishedVariableDataType) GetSubstituteValue() Variant {
 	return m.SubstituteValue
 }
 
-func (m *_PublishedVariableDataType) GetNoOfMetaDataProperties() int32 {
-	return m.NoOfMetaDataProperties
-}
-
 func (m *_PublishedVariableDataType) GetMetaDataProperties() []QualifiedName {
 	return m.MetaDataProperties
 }
@@ -398,7 +383,7 @@ func (m *_PublishedVariableDataType) GetTypeName() string {
 }
 
 func (m *_PublishedVariableDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (publishedVariable)
 	lengthInBits += m.PublishedVariable.GetLengthInBits(ctx)
@@ -421,7 +406,7 @@ func (m *_PublishedVariableDataType) GetLengthInBits(ctx context.Context) uint16
 	// Simple field (substituteValue)
 	lengthInBits += m.SubstituteValue.GetLengthInBits(ctx)
 
-	// Simple field (noOfMetaDataProperties)
+	// Implicit Field (noOfMetaDataProperties)
 	lengthInBits += 32
 
 	// Array field
@@ -441,7 +426,7 @@ func (m *_PublishedVariableDataType) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_PublishedVariableDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__publishedVariableDataType PublishedVariableDataType, err error) {
+func (m *_PublishedVariableDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__publishedVariableDataType PublishedVariableDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -494,11 +479,11 @@ func (m *_PublishedVariableDataType) parse(ctx context.Context, readBuffer utils
 	}
 	m.SubstituteValue = substituteValue
 
-	noOfMetaDataProperties, err := ReadSimpleField(ctx, "noOfMetaDataProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfMetaDataProperties, err := ReadImplicitField[int32](ctx, "noOfMetaDataProperties", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfMetaDataProperties' field"))
 	}
-	m.NoOfMetaDataProperties = noOfMetaDataProperties
+	_ = noOfMetaDataProperties
 
 	metaDataProperties, err := ReadCountArrayField[QualifiedName](ctx, "metaDataProperties", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer), uint64(noOfMetaDataProperties))
 	if err != nil {
@@ -558,8 +543,8 @@ func (m *_PublishedVariableDataType) SerializeWithWriteBuffer(ctx context.Contex
 		if err := WriteSimpleField[Variant](ctx, "substituteValue", m.GetSubstituteValue(), WriteComplex[Variant](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'substituteValue' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfMetaDataProperties", m.GetNoOfMetaDataProperties(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfMetaDataProperties := int32(utils.InlineIf(bool((m.GetMetaDataProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetMetaDataProperties()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfMetaDataProperties", noOfMetaDataProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfMetaDataProperties' field")
 		}
 
@@ -594,7 +579,6 @@ func (m *_PublishedVariableDataType) deepCopy() *_PublishedVariableDataType {
 		m.DeadbandValue,
 		m.IndexRange.DeepCopy().(PascalString),
 		m.SubstituteValue.DeepCopy().(Variant),
-		m.NoOfMetaDataProperties,
 		utils.DeepCopySlice[QualifiedName, QualifiedName](m.MetaDataProperties),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

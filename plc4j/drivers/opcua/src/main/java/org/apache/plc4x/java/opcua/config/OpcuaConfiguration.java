@@ -135,6 +135,14 @@ public class OpcuaConfiguration implements PlcConnectionConfiguration {
     @Description("TCP encoding options")
     private Limits limits;
 
+    @ConfigurationParameter("endpoint-host")
+    @Description("Endpoint host used to establish secure channel.")
+    private String endpointHost;
+
+    @ConfigurationParameter("endpoint-port")
+    @Description("Endpoint port used to establish secure channel")
+    private Integer endpointPort;
+
     public String getProtocolCode() {
         return protocolCode;
     }
@@ -228,6 +236,14 @@ public class OpcuaConfiguration implements PlcConnectionConfiguration {
         return negotiationTimeout;
     }
 
+    public String getEndpointHost() {
+        return endpointHost;
+    }
+
+    public Integer getEndpointPort() {
+        return endpointPort;
+    }
+
     @Override
     public String toString() {
         return "OpcuaConfiguration{" +
@@ -240,5 +256,6 @@ public class OpcuaConfiguration implements PlcConnectionConfiguration {
             ", limits=" + limits +
             '}';
     }
+
 }
 

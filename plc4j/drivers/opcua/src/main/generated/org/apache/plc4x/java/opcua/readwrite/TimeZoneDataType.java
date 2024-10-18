@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class TimeZoneDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "8914";
+  public Integer getExtensionId() {
+    return (int) 8914;
   }
 
   // Properties.
@@ -103,7 +103,7 @@ public class TimeZoneDataType extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("TimeZoneDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

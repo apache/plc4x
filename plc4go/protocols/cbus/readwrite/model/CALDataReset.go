@@ -175,7 +175,7 @@ func (m *_CALDataReset) GetTypeName() string {
 }
 
 func (m *_CALDataReset) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CALDataContract.(*_CALData).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

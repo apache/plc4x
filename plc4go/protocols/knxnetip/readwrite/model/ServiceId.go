@@ -340,7 +340,7 @@ func (m *_ServiceId) GetTypeName() string {
 	return "ServiceId"
 }
 
-func (m *_ServiceId) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ServiceId) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceType)
 	lengthInBits += 8

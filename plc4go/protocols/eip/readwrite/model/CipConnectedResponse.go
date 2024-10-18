@@ -261,7 +261,7 @@ func (m *_CipConnectedResponse) GetTypeName() string {
 }
 
 func (m *_CipConnectedResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CipServiceContract.(*_CipService).GetLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8

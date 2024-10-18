@@ -150,8 +150,8 @@ func (b *_WriterGroupTransportDataType) CreateWriterGroupTransportDataTypeBuilde
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_WriterGroupTransportDataType) GetIdentifier() string {
-	return "15613"
+func (m *_WriterGroupTransportDataType) GetExtensionId() int32 {
+	return int32(15613)
 }
 
 ///////////////////////
@@ -179,7 +179,7 @@ func (m *_WriterGroupTransportDataType) GetTypeName() string {
 }
 
 func (m *_WriterGroupTransportDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -188,7 +188,7 @@ func (m *_WriterGroupTransportDataType) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_WriterGroupTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__writerGroupTransportDataType WriterGroupTransportDataType, err error) {
+func (m *_WriterGroupTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__writerGroupTransportDataType WriterGroupTransportDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

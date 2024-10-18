@@ -253,7 +253,7 @@ func (m *_PortSegmentExtended) GetTypeName() string {
 }
 
 func (m *_PortSegmentExtended) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.PortSegmentTypeContract.(*_PortSegmentType).getLengthInBits(ctx))
+	lengthInBits := uint16(m.PortSegmentTypeContract.(*_PortSegmentType).GetLengthInBits(ctx))
 
 	// Simple field (port)
 	lengthInBits += 4

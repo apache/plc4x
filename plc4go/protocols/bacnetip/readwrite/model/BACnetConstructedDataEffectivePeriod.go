@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataEffectivePeriod) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataEffectivePeriod) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (dateRange)
 	lengthInBits += m.DateRange.GetLengthInBits(ctx)

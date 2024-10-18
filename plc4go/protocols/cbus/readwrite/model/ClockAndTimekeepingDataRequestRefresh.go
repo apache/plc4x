@@ -175,7 +175,7 @@ func (m *_ClockAndTimekeepingDataRequestRefresh) GetTypeName() string {
 }
 
 func (m *_ClockAndTimekeepingDataRequestRefresh) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

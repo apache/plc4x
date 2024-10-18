@@ -214,7 +214,7 @@ func (m *_DataSegmentType) GetTypeName() string {
 	return "DataSegmentType"
 }
 
-func (m *_DataSegmentType) getLengthInBits(ctx context.Context) uint16 {
+func (m *_DataSegmentType) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (dataSegmentType)
 	lengthInBits += 5

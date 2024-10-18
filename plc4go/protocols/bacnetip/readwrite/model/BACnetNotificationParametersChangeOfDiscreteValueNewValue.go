@@ -561,7 +561,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetTypeName
 	return "BACnetNotificationParametersChangeOfDiscreteValueNewValue"
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)

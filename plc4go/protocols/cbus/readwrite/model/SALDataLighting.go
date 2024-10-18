@@ -230,7 +230,7 @@ func (m *_SALDataLighting) GetTypeName() string {
 }
 
 func (m *_SALDataLighting) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).GetLengthInBits(ctx))
 
 	// Simple field (lightingData)
 	lengthInBits += m.LightingData.GetLengthInBits(ctx)

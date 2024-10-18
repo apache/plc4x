@@ -41,13 +41,9 @@ type TranslateBrowsePathsToNodeIdsResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
-	// GetNoOfResults returns NoOfResults (property field)
-	GetNoOfResults() int32
+	GetResponseHeader() ResponseHeader
 	// GetResults returns Results (property field)
-	GetResults() []ExtensionObjectDefinition
-	// GetNoOfDiagnosticInfos returns NoOfDiagnosticInfos (property field)
-	GetNoOfDiagnosticInfos() int32
+	GetResults() []BrowsePathResult
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsTranslateBrowsePathsToNodeIdsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,27 +55,23 @@ type TranslateBrowsePathsToNodeIdsResponse interface {
 // _TranslateBrowsePathsToNodeIdsResponse is the data-structure of this message
 type _TranslateBrowsePathsToNodeIdsResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader      ExtensionObjectDefinition
-	NoOfResults         int32
-	Results             []ExtensionObjectDefinition
-	NoOfDiagnosticInfos int32
-	DiagnosticInfos     []DiagnosticInfo
+	ResponseHeader  ResponseHeader
+	Results         []BrowsePathResult
+	DiagnosticInfos []DiagnosticInfo
 }
 
 var _ TranslateBrowsePathsToNodeIdsResponse = (*_TranslateBrowsePathsToNodeIdsResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TranslateBrowsePathsToNodeIdsResponse)(nil)
 
 // NewTranslateBrowsePathsToNodeIdsResponse factory function for _TranslateBrowsePathsToNodeIdsResponse
-func NewTranslateBrowsePathsToNodeIdsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_TranslateBrowsePathsToNodeIdsResponse {
+func NewTranslateBrowsePathsToNodeIdsResponse(responseHeader ResponseHeader, results []BrowsePathResult, diagnosticInfos []DiagnosticInfo) *_TranslateBrowsePathsToNodeIdsResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for TranslateBrowsePathsToNodeIdsResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for TranslateBrowsePathsToNodeIdsResponse must not be nil")
 	}
 	_result := &_TranslateBrowsePathsToNodeIdsResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
 		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
 		DiagnosticInfos:                   diagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -95,17 +87,13 @@ func NewTranslateBrowsePathsToNodeIdsResponse(responseHeader ExtensionObjectDefi
 type TranslateBrowsePathsToNodeIdsResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, results []BrowsePathResult, diagnosticInfos []DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsResponseBuilder
+	WithResponseHeader(ResponseHeader) TranslateBrowsePathsToNodeIdsResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TranslateBrowsePathsToNodeIdsResponseBuilder
-	// WithNoOfResults adds NoOfResults (property field)
-	WithNoOfResults(int32) TranslateBrowsePathsToNodeIdsResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) TranslateBrowsePathsToNodeIdsResponseBuilder
 	// WithResults adds Results (property field)
-	WithResults(...ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) TranslateBrowsePathsToNodeIdsResponseBuilder
+	WithResults(...BrowsePathResult) TranslateBrowsePathsToNodeIdsResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder
 	// Build builds the TranslateBrowsePathsToNodeIdsResponse or returns an error if something is wrong
@@ -133,40 +121,30 @@ func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) setParent(contract Exten
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []BrowsePathResult, diagnosticInfos []DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithResults(results...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsResponseBuilder {
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) TranslateBrowsePathsToNodeIdsResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TranslateBrowsePathsToNodeIdsResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithNoOfResults(noOfResults int32) TranslateBrowsePathsToNodeIdsResponseBuilder {
-	b.NoOfResults = noOfResults
-	return b
-}
-
-func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithResults(results ...ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsResponseBuilder {
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithResults(results ...BrowsePathResult) TranslateBrowsePathsToNodeIdsResponseBuilder {
 	b.Results = results
-	return b
-}
-
-func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) TranslateBrowsePathsToNodeIdsResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -231,8 +209,8 @@ func (b *_TranslateBrowsePathsToNodeIdsResponse) CreateTranslateBrowsePathsToNod
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_TranslateBrowsePathsToNodeIdsResponse) GetIdentifier() string {
-	return "557"
+func (m *_TranslateBrowsePathsToNodeIdsResponse) GetExtensionId() int32 {
+	return int32(557)
 }
 
 ///////////////////////
@@ -249,20 +227,12 @@ func (m *_TranslateBrowsePathsToNodeIdsResponse) GetParent() ExtensionObjectDefi
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_TranslateBrowsePathsToNodeIdsResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_TranslateBrowsePathsToNodeIdsResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
-func (m *_TranslateBrowsePathsToNodeIdsResponse) GetNoOfResults() int32 {
-	return m.NoOfResults
-}
-
-func (m *_TranslateBrowsePathsToNodeIdsResponse) GetResults() []ExtensionObjectDefinition {
+func (m *_TranslateBrowsePathsToNodeIdsResponse) GetResults() []BrowsePathResult {
 	return m.Results
-}
-
-func (m *_TranslateBrowsePathsToNodeIdsResponse) GetNoOfDiagnosticInfos() int32 {
-	return m.NoOfDiagnosticInfos
 }
 
 func (m *_TranslateBrowsePathsToNodeIdsResponse) GetDiagnosticInfos() []DiagnosticInfo {
@@ -290,12 +260,12 @@ func (m *_TranslateBrowsePathsToNodeIdsResponse) GetTypeName() string {
 }
 
 func (m *_TranslateBrowsePathsToNodeIdsResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfResults)
+	// Implicit Field (noOfResults)
 	lengthInBits += 32
 
 	// Array field
@@ -308,7 +278,7 @@ func (m *_TranslateBrowsePathsToNodeIdsResponse) GetLengthInBits(ctx context.Con
 		}
 	}
 
-	// Simple field (noOfDiagnosticInfos)
+	// Implicit Field (noOfDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -328,7 +298,7 @@ func (m *_TranslateBrowsePathsToNodeIdsResponse) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_TranslateBrowsePathsToNodeIdsResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__translateBrowsePathsToNodeIdsResponse TranslateBrowsePathsToNodeIdsResponse, err error) {
+func (m *_TranslateBrowsePathsToNodeIdsResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__translateBrowsePathsToNodeIdsResponse TranslateBrowsePathsToNodeIdsResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -339,29 +309,29 @@ func (m *_TranslateBrowsePathsToNodeIdsResponse) parse(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfResults, err := ReadSimpleField(ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfResults, err := ReadImplicitField[int32](ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfResults' field"))
 	}
-	m.NoOfResults = noOfResults
+	_ = noOfResults
 
-	results, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "results", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("551")), readBuffer), uint64(noOfResults))
+	results, err := ReadCountArrayField[BrowsePathResult](ctx, "results", ReadComplex[BrowsePathResult](ExtensionObjectDefinitionParseWithBufferProducer[BrowsePathResult]((int32)(int32(551))), readBuffer), uint64(noOfResults))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'results' field"))
 	}
 	m.Results = results
 
-	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	_ = noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {
@@ -394,19 +364,19 @@ func (m *_TranslateBrowsePathsToNodeIdsResponse) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for TranslateBrowsePathsToNodeIdsResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfResults", m.GetNoOfResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfResults := int32(utils.InlineIf(bool((m.GetResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfResults", noOfResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "results", m.GetResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'results' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiagnosticInfos := int32(utils.InlineIf(bool((m.GetDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiagnosticInfos", noOfDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
@@ -434,10 +404,8 @@ func (m *_TranslateBrowsePathsToNodeIdsResponse) deepCopy() *_TranslateBrowsePat
 	}
 	_TranslateBrowsePathsToNodeIdsResponseCopy := &_TranslateBrowsePathsToNodeIdsResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfResults,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
-		m.NoOfDiagnosticInfos,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopySlice[BrowsePathResult, BrowsePathResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -221,7 +221,7 @@ func (m *_APDUUnknown) GetTypeName() string {
 }
 
 func (m *_APDUUnknown) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+	lengthInBits := uint16(m.APDUContract.(*_APDU).GetLengthInBits(ctx))
 
 	// Simple field (unknownTypeRest)
 	lengthInBits += 4

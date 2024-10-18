@@ -41,7 +41,7 @@ type RegisterServerResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// IsRegisterServerResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRegisterServerResponse()
 	// CreateBuilder creates a RegisterServerResponseBuilder
@@ -51,16 +51,16 @@ type RegisterServerResponse interface {
 // _RegisterServerResponse is the data-structure of this message
 type _RegisterServerResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader ExtensionObjectDefinition
+	ResponseHeader ResponseHeader
 }
 
 var _ RegisterServerResponse = (*_RegisterServerResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterServerResponse)(nil)
 
 // NewRegisterServerResponse factory function for _RegisterServerResponse
-func NewRegisterServerResponse(responseHeader ExtensionObjectDefinition) *_RegisterServerResponse {
+func NewRegisterServerResponse(responseHeader ResponseHeader) *_RegisterServerResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for RegisterServerResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for RegisterServerResponse must not be nil")
 	}
 	_result := &_RegisterServerResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -79,11 +79,11 @@ func NewRegisterServerResponse(responseHeader ExtensionObjectDefinition) *_Regis
 type RegisterServerResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition) RegisterServerResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader) RegisterServerResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) RegisterServerResponseBuilder
+	WithResponseHeader(ResponseHeader) RegisterServerResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterServerResponseBuilder
 	// Build builds the RegisterServerResponse or returns an error if something is wrong
 	Build() (RegisterServerResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,24 +109,24 @@ func (b *_RegisterServerResponseBuilder) setParent(contract ExtensionObjectDefin
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisterServerResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) RegisterServerResponseBuilder {
+func (b *_RegisterServerResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader) RegisterServerResponseBuilder {
 	return b.WithResponseHeader(responseHeader)
 }
 
-func (b *_RegisterServerResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RegisterServerResponseBuilder {
+func (b *_RegisterServerResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) RegisterServerResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_RegisterServerResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterServerResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterServerResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -187,8 +187,8 @@ func (b *_RegisterServerResponse) CreateRegisterServerResponseBuilder() Register
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RegisterServerResponse) GetIdentifier() string {
-	return "440"
+func (m *_RegisterServerResponse) GetExtensionId() int32 {
+	return int32(440)
 }
 
 ///////////////////////
@@ -205,7 +205,7 @@ func (m *_RegisterServerResponse) GetParent() ExtensionObjectDefinitionContract 
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RegisterServerResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_RegisterServerResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
@@ -230,7 +230,7 @@ func (m *_RegisterServerResponse) GetTypeName() string {
 }
 
 func (m *_RegisterServerResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -242,7 +242,7 @@ func (m *_RegisterServerResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RegisterServerResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__registerServerResponse RegisterServerResponse, err error) {
+func (m *_RegisterServerResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__registerServerResponse RegisterServerResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -253,7 +253,7 @@ func (m *_RegisterServerResponse) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -284,7 +284,7 @@ func (m *_RegisterServerResponse) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for RegisterServerResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
@@ -308,7 +308,7 @@ func (m *_RegisterServerResponse) deepCopy() *_RegisterServerResponse {
 	}
 	_RegisterServerResponseCopy := &_RegisterServerResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RegisterServerResponseCopy

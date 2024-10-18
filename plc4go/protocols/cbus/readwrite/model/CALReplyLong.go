@@ -373,7 +373,7 @@ func (m *_CALReplyLong) GetTypeName() string {
 }
 
 func (m *_CALReplyLong) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CALReplyContract.(*_CALReply).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CALReplyContract.(*_CALReply).GetLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8

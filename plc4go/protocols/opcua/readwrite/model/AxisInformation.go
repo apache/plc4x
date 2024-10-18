@@ -41,15 +41,13 @@ type AxisInformation interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetEngineeringUnits returns EngineeringUnits (property field)
-	GetEngineeringUnits() ExtensionObjectDefinition
+	GetEngineeringUnits() EUInformation
 	// GetEURange returns EURange (property field)
-	GetEURange() ExtensionObjectDefinition
+	GetEURange() Range
 	// GetTitle returns Title (property field)
 	GetTitle() LocalizedText
 	// GetAxisScaleType returns AxisScaleType (property field)
 	GetAxisScaleType() AxisScaleEnumeration
-	// GetNoOfAxisSteps returns NoOfAxisSteps (property field)
-	GetNoOfAxisSteps() int32
 	// GetAxisSteps returns AxisSteps (property field)
 	GetAxisSteps() []float64
 	// IsAxisInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -61,11 +59,10 @@ type AxisInformation interface {
 // _AxisInformation is the data-structure of this message
 type _AxisInformation struct {
 	ExtensionObjectDefinitionContract
-	EngineeringUnits ExtensionObjectDefinition
-	EURange          ExtensionObjectDefinition
+	EngineeringUnits EUInformation
+	EURange          Range
 	Title            LocalizedText
 	AxisScaleType    AxisScaleEnumeration
-	NoOfAxisSteps    int32
 	AxisSteps        []float64
 }
 
@@ -73,12 +70,12 @@ var _ AxisInformation = (*_AxisInformation)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AxisInformation)(nil)
 
 // NewAxisInformation factory function for _AxisInformation
-func NewAxisInformation(engineeringUnits ExtensionObjectDefinition, eURange ExtensionObjectDefinition, title LocalizedText, axisScaleType AxisScaleEnumeration, noOfAxisSteps int32, axisSteps []float64) *_AxisInformation {
+func NewAxisInformation(engineeringUnits EUInformation, eURange Range, title LocalizedText, axisScaleType AxisScaleEnumeration, axisSteps []float64) *_AxisInformation {
 	if engineeringUnits == nil {
-		panic("engineeringUnits of type ExtensionObjectDefinition for AxisInformation must not be nil")
+		panic("engineeringUnits of type EUInformation for AxisInformation must not be nil")
 	}
 	if eURange == nil {
-		panic("eURange of type ExtensionObjectDefinition for AxisInformation must not be nil")
+		panic("eURange of type Range for AxisInformation must not be nil")
 	}
 	if title == nil {
 		panic("title of type LocalizedText for AxisInformation must not be nil")
@@ -89,7 +86,6 @@ func NewAxisInformation(engineeringUnits ExtensionObjectDefinition, eURange Exte
 		EURange:                           eURange,
 		Title:                             title,
 		AxisScaleType:                     axisScaleType,
-		NoOfAxisSteps:                     noOfAxisSteps,
 		AxisSteps:                         axisSteps,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -105,23 +101,21 @@ func NewAxisInformation(engineeringUnits ExtensionObjectDefinition, eURange Exte
 type AxisInformationBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(engineeringUnits ExtensionObjectDefinition, eURange ExtensionObjectDefinition, title LocalizedText, axisScaleType AxisScaleEnumeration, noOfAxisSteps int32, axisSteps []float64) AxisInformationBuilder
+	WithMandatoryFields(engineeringUnits EUInformation, eURange Range, title LocalizedText, axisScaleType AxisScaleEnumeration, axisSteps []float64) AxisInformationBuilder
 	// WithEngineeringUnits adds EngineeringUnits (property field)
-	WithEngineeringUnits(ExtensionObjectDefinition) AxisInformationBuilder
+	WithEngineeringUnits(EUInformation) AxisInformationBuilder
 	// WithEngineeringUnitsBuilder adds EngineeringUnits (property field) which is build by the builder
-	WithEngineeringUnitsBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AxisInformationBuilder
+	WithEngineeringUnitsBuilder(func(EUInformationBuilder) EUInformationBuilder) AxisInformationBuilder
 	// WithEURange adds EURange (property field)
-	WithEURange(ExtensionObjectDefinition) AxisInformationBuilder
+	WithEURange(Range) AxisInformationBuilder
 	// WithEURangeBuilder adds EURange (property field) which is build by the builder
-	WithEURangeBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AxisInformationBuilder
+	WithEURangeBuilder(func(RangeBuilder) RangeBuilder) AxisInformationBuilder
 	// WithTitle adds Title (property field)
 	WithTitle(LocalizedText) AxisInformationBuilder
 	// WithTitleBuilder adds Title (property field) which is build by the builder
 	WithTitleBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) AxisInformationBuilder
 	// WithAxisScaleType adds AxisScaleType (property field)
 	WithAxisScaleType(AxisScaleEnumeration) AxisInformationBuilder
-	// WithNoOfAxisSteps adds NoOfAxisSteps (property field)
-	WithNoOfAxisSteps(int32) AxisInformationBuilder
 	// WithAxisSteps adds AxisSteps (property field)
 	WithAxisSteps(...float64) AxisInformationBuilder
 	// Build builds the AxisInformation or returns an error if something is wrong
@@ -149,42 +143,42 @@ func (b *_AxisInformationBuilder) setParent(contract ExtensionObjectDefinitionCo
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_AxisInformationBuilder) WithMandatoryFields(engineeringUnits ExtensionObjectDefinition, eURange ExtensionObjectDefinition, title LocalizedText, axisScaleType AxisScaleEnumeration, noOfAxisSteps int32, axisSteps []float64) AxisInformationBuilder {
-	return b.WithEngineeringUnits(engineeringUnits).WithEURange(eURange).WithTitle(title).WithAxisScaleType(axisScaleType).WithNoOfAxisSteps(noOfAxisSteps).WithAxisSteps(axisSteps...)
+func (b *_AxisInformationBuilder) WithMandatoryFields(engineeringUnits EUInformation, eURange Range, title LocalizedText, axisScaleType AxisScaleEnumeration, axisSteps []float64) AxisInformationBuilder {
+	return b.WithEngineeringUnits(engineeringUnits).WithEURange(eURange).WithTitle(title).WithAxisScaleType(axisScaleType).WithAxisSteps(axisSteps...)
 }
 
-func (b *_AxisInformationBuilder) WithEngineeringUnits(engineeringUnits ExtensionObjectDefinition) AxisInformationBuilder {
+func (b *_AxisInformationBuilder) WithEngineeringUnits(engineeringUnits EUInformation) AxisInformationBuilder {
 	b.EngineeringUnits = engineeringUnits
 	return b
 }
 
-func (b *_AxisInformationBuilder) WithEngineeringUnitsBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AxisInformationBuilder {
-	builder := builderSupplier(b.EngineeringUnits.CreateExtensionObjectDefinitionBuilder())
+func (b *_AxisInformationBuilder) WithEngineeringUnitsBuilder(builderSupplier func(EUInformationBuilder) EUInformationBuilder) AxisInformationBuilder {
+	builder := builderSupplier(b.EngineeringUnits.CreateEUInformationBuilder())
 	var err error
 	b.EngineeringUnits, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "EUInformationBuilder failed"))
 	}
 	return b
 }
 
-func (b *_AxisInformationBuilder) WithEURange(eURange ExtensionObjectDefinition) AxisInformationBuilder {
+func (b *_AxisInformationBuilder) WithEURange(eURange Range) AxisInformationBuilder {
 	b.EURange = eURange
 	return b
 }
 
-func (b *_AxisInformationBuilder) WithEURangeBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AxisInformationBuilder {
-	builder := builderSupplier(b.EURange.CreateExtensionObjectDefinitionBuilder())
+func (b *_AxisInformationBuilder) WithEURangeBuilder(builderSupplier func(RangeBuilder) RangeBuilder) AxisInformationBuilder {
+	builder := builderSupplier(b.EURange.CreateRangeBuilder())
 	var err error
 	b.EURange, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RangeBuilder failed"))
 	}
 	return b
 }
@@ -209,11 +203,6 @@ func (b *_AxisInformationBuilder) WithTitleBuilder(builderSupplier func(Localize
 
 func (b *_AxisInformationBuilder) WithAxisScaleType(axisScaleType AxisScaleEnumeration) AxisInformationBuilder {
 	b.AxisScaleType = axisScaleType
-	return b
-}
-
-func (b *_AxisInformationBuilder) WithNoOfAxisSteps(noOfAxisSteps int32) AxisInformationBuilder {
-	b.NoOfAxisSteps = noOfAxisSteps
 	return b
 }
 
@@ -290,8 +279,8 @@ func (b *_AxisInformation) CreateAxisInformationBuilder() AxisInformationBuilder
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_AxisInformation) GetIdentifier() string {
-	return "12081"
+func (m *_AxisInformation) GetExtensionId() int32 {
+	return int32(12081)
 }
 
 ///////////////////////
@@ -308,11 +297,11 @@ func (m *_AxisInformation) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_AxisInformation) GetEngineeringUnits() ExtensionObjectDefinition {
+func (m *_AxisInformation) GetEngineeringUnits() EUInformation {
 	return m.EngineeringUnits
 }
 
-func (m *_AxisInformation) GetEURange() ExtensionObjectDefinition {
+func (m *_AxisInformation) GetEURange() Range {
 	return m.EURange
 }
 
@@ -322,10 +311,6 @@ func (m *_AxisInformation) GetTitle() LocalizedText {
 
 func (m *_AxisInformation) GetAxisScaleType() AxisScaleEnumeration {
 	return m.AxisScaleType
-}
-
-func (m *_AxisInformation) GetNoOfAxisSteps() int32 {
-	return m.NoOfAxisSteps
 }
 
 func (m *_AxisInformation) GetAxisSteps() []float64 {
@@ -353,7 +338,7 @@ func (m *_AxisInformation) GetTypeName() string {
 }
 
 func (m *_AxisInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (engineeringUnits)
 	lengthInBits += m.EngineeringUnits.GetLengthInBits(ctx)
@@ -367,7 +352,7 @@ func (m *_AxisInformation) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (axisScaleType)
 	lengthInBits += 32
 
-	// Simple field (noOfAxisSteps)
+	// Implicit Field (noOfAxisSteps)
 	lengthInBits += 32
 
 	// Array field
@@ -382,7 +367,7 @@ func (m *_AxisInformation) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_AxisInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__axisInformation AxisInformation, err error) {
+func (m *_AxisInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__axisInformation AxisInformation, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -393,13 +378,13 @@ func (m *_AxisInformation) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	engineeringUnits, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "engineeringUnits", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("889")), readBuffer))
+	engineeringUnits, err := ReadSimpleField[EUInformation](ctx, "engineeringUnits", ReadComplex[EUInformation](ExtensionObjectDefinitionParseWithBufferProducer[EUInformation]((int32)(int32(889))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'engineeringUnits' field"))
 	}
 	m.EngineeringUnits = engineeringUnits
 
-	eURange, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "eURange", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("886")), readBuffer))
+	eURange, err := ReadSimpleField[Range](ctx, "eURange", ReadComplex[Range](ExtensionObjectDefinitionParseWithBufferProducer[Range]((int32)(int32(886))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eURange' field"))
 	}
@@ -417,11 +402,11 @@ func (m *_AxisInformation) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 	m.AxisScaleType = axisScaleType
 
-	noOfAxisSteps, err := ReadSimpleField(ctx, "noOfAxisSteps", ReadSignedInt(readBuffer, uint8(32)))
+	noOfAxisSteps, err := ReadImplicitField[int32](ctx, "noOfAxisSteps", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAxisSteps' field"))
 	}
-	m.NoOfAxisSteps = noOfAxisSteps
+	_ = noOfAxisSteps
 
 	axisSteps, err := ReadCountArrayField[float64](ctx, "axisSteps", ReadDouble(readBuffer, uint8(64)), uint64(noOfAxisSteps))
 	if err != nil {
@@ -454,11 +439,11 @@ func (m *_AxisInformation) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for AxisInformation")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "engineeringUnits", m.GetEngineeringUnits(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[EUInformation](ctx, "engineeringUnits", m.GetEngineeringUnits(), WriteComplex[EUInformation](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'engineeringUnits' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "eURange", m.GetEURange(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[Range](ctx, "eURange", m.GetEURange(), WriteComplex[Range](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'eURange' field")
 		}
 
@@ -469,8 +454,8 @@ func (m *_AxisInformation) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		if err := WriteSimpleEnumField[AxisScaleEnumeration](ctx, "axisScaleType", "AxisScaleEnumeration", m.GetAxisScaleType(), WriteEnum[AxisScaleEnumeration, uint32](AxisScaleEnumeration.GetValue, AxisScaleEnumeration.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
 			return errors.Wrap(err, "Error serializing 'axisScaleType' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfAxisSteps", m.GetNoOfAxisSteps(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfAxisSteps := int32(utils.InlineIf(bool((m.GetAxisSteps()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetAxisSteps()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfAxisSteps", noOfAxisSteps, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfAxisSteps' field")
 		}
 
@@ -498,11 +483,10 @@ func (m *_AxisInformation) deepCopy() *_AxisInformation {
 	}
 	_AxisInformationCopy := &_AxisInformation{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.EngineeringUnits.DeepCopy().(ExtensionObjectDefinition),
-		m.EURange.DeepCopy().(ExtensionObjectDefinition),
+		m.EngineeringUnits.DeepCopy().(EUInformation),
+		m.EURange.DeepCopy().(Range),
 		m.Title.DeepCopy().(LocalizedText),
 		m.AxisScaleType,
-		m.NoOfAxisSteps,
 		utils.DeepCopySlice[float64, float64](m.AxisSteps),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -298,7 +298,7 @@ func (m *_TypeId) GetTypeName() string {
 	return "TypeId"
 }
 
-func (m *_TypeId) getLengthInBits(ctx context.Context) uint16 {
+func (m *_TypeId) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (id)
 	lengthInBits += 16

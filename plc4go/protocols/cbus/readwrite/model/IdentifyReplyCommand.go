@@ -574,7 +574,7 @@ func (m *_IdentifyReplyCommand) GetTypeName() string {
 	return "IdentifyReplyCommand"
 }
 
-func (m *_IdentifyReplyCommand) getLengthInBits(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommand) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

@@ -226,7 +226,7 @@ func (m *_BACnetHostAddressName) GetTypeName() string {
 }
 
 func (m *_BACnetHostAddressName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetHostAddressContract.(*_BACnetHostAddress).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetHostAddressContract.(*_BACnetHostAddress).GetLengthInBits(ctx))
 
 	// Simple field (name)
 	lengthInBits += m.Name.GetLengthInBits(ctx)

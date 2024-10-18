@@ -209,8 +209,8 @@ func (b *_RedundantServerDataType) CreateRedundantServerDataTypeBuilder() Redund
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RedundantServerDataType) GetIdentifier() string {
-	return "855"
+func (m *_RedundantServerDataType) GetExtensionId() int32 {
+	return int32(855)
 }
 
 ///////////////////////
@@ -260,7 +260,7 @@ func (m *_RedundantServerDataType) GetTypeName() string {
 }
 
 func (m *_RedundantServerDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (serverId)
 	lengthInBits += m.ServerId.GetLengthInBits(ctx)
@@ -278,7 +278,7 @@ func (m *_RedundantServerDataType) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RedundantServerDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__redundantServerDataType RedundantServerDataType, err error) {
+func (m *_RedundantServerDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__redundantServerDataType RedundantServerDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

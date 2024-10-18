@@ -226,7 +226,7 @@ func (m *_BACnetScaleIntegerScale) GetTypeName() string {
 }
 
 func (m *_BACnetScaleIntegerScale) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetScaleContract.(*_BACnetScale).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetScaleContract.(*_BACnetScale).GetLengthInBits(ctx))
 
 	// Simple field (integerScale)
 	lengthInBits += m.IntegerScale.GetLengthInBits(ctx)

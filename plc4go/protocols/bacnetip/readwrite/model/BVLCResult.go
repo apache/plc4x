@@ -208,7 +208,7 @@ func (m *_BVLCResult) GetTypeName() string {
 }
 
 func (m *_BVLCResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BVLCContract.(*_BVLC).GetLengthInBits(ctx))
 
 	// Simple field (code)
 	lengthInBits += 16

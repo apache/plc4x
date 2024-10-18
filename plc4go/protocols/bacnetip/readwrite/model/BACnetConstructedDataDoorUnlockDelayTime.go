@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (doorUnlockDelayTime)
 	lengthInBits += m.DoorUnlockDelayTime.GetLengthInBits(ctx)

@@ -38,15 +38,14 @@ import org.apache.plc4x.java.spi.generation.*;
 public class Argument extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "298";
+  public Integer getExtensionId() {
+    return (int) 298;
   }
 
   // Properties.
   protected final PascalString name;
   protected final NodeId dataType;
   protected final int valueRank;
-  protected final int noOfArrayDimensions;
   protected final List<Long> arrayDimensions;
   protected final LocalizedText description;
 
@@ -54,14 +53,12 @@ public class Argument extends ExtensionObjectDefinition implements Message {
       PascalString name,
       NodeId dataType,
       int valueRank,
-      int noOfArrayDimensions,
       List<Long> arrayDimensions,
       LocalizedText description) {
     super();
     this.name = name;
     this.dataType = dataType;
     this.valueRank = valueRank;
-    this.noOfArrayDimensions = noOfArrayDimensions;
     this.arrayDimensions = arrayDimensions;
     this.description = description;
   }
@@ -76,10 +73,6 @@ public class Argument extends ExtensionObjectDefinition implements Message {
 
   public int getValueRank() {
     return valueRank;
-  }
-
-  public int getNoOfArrayDimensions() {
-    return noOfArrayDimensions;
   }
 
   public List<Long> getArrayDimensions() {
@@ -106,8 +99,11 @@ public class Argument extends ExtensionObjectDefinition implements Message {
     // Simple Field (valueRank)
     writeSimpleField("valueRank", valueRank, writeSignedInt(writeBuffer, 32));
 
-    // Simple Field (noOfArrayDimensions)
-    writeSimpleField("noOfArrayDimensions", noOfArrayDimensions, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfArrayDimensions) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfArrayDimensions =
+        (int) ((((getArrayDimensions()) == (null)) ? -(1) : COUNT(getArrayDimensions())));
+    writeImplicitField("noOfArrayDimensions", noOfArrayDimensions, writeSignedInt(writeBuffer, 32));
 
     // Array Field (arrayDimensions)
     writeSimpleTypeArrayField(
@@ -139,7 +135,7 @@ public class Argument extends ExtensionObjectDefinition implements Message {
     // Simple field (valueRank)
     lengthInBits += 32;
 
-    // Simple field (noOfArrayDimensions)
+    // Implicit Field (noOfArrayDimensions)
     lengthInBits += 32;
 
     // Array field
@@ -154,7 +150,7 @@ public class Argument extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("Argument");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -168,7 +164,8 @@ public class Argument extends ExtensionObjectDefinition implements Message {
 
     int valueRank = readSimpleField("valueRank", readSignedInt(readBuffer, 32));
 
-    int noOfArrayDimensions = readSimpleField("noOfArrayDimensions", readSignedInt(readBuffer, 32));
+    int noOfArrayDimensions =
+        readImplicitField("noOfArrayDimensions", readSignedInt(readBuffer, 32));
 
     List<Long> arrayDimensions =
         readCountArrayField(
@@ -180,8 +177,7 @@ public class Argument extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("Argument");
     // Create the instance
-    return new ArgumentBuilderImpl(
-        name, dataType, valueRank, noOfArrayDimensions, arrayDimensions, description);
+    return new ArgumentBuilderImpl(name, dataType, valueRank, arrayDimensions, description);
   }
 
   public static class ArgumentBuilderImpl
@@ -189,7 +185,6 @@ public class Argument extends ExtensionObjectDefinition implements Message {
     private final PascalString name;
     private final NodeId dataType;
     private final int valueRank;
-    private final int noOfArrayDimensions;
     private final List<Long> arrayDimensions;
     private final LocalizedText description;
 
@@ -197,21 +192,17 @@ public class Argument extends ExtensionObjectDefinition implements Message {
         PascalString name,
         NodeId dataType,
         int valueRank,
-        int noOfArrayDimensions,
         List<Long> arrayDimensions,
         LocalizedText description) {
       this.name = name;
       this.dataType = dataType;
       this.valueRank = valueRank;
-      this.noOfArrayDimensions = noOfArrayDimensions;
       this.arrayDimensions = arrayDimensions;
       this.description = description;
     }
 
     public Argument build() {
-      Argument argument =
-          new Argument(
-              name, dataType, valueRank, noOfArrayDimensions, arrayDimensions, description);
+      Argument argument = new Argument(name, dataType, valueRank, arrayDimensions, description);
       return argument;
     }
   }
@@ -228,7 +219,6 @@ public class Argument extends ExtensionObjectDefinition implements Message {
     return (getName() == that.getName())
         && (getDataType() == that.getDataType())
         && (getValueRank() == that.getValueRank())
-        && (getNoOfArrayDimensions() == that.getNoOfArrayDimensions())
         && (getArrayDimensions() == that.getArrayDimensions())
         && (getDescription() == that.getDescription())
         && super.equals(that)
@@ -242,7 +232,6 @@ public class Argument extends ExtensionObjectDefinition implements Message {
         getName(),
         getDataType(),
         getValueRank(),
-        getNoOfArrayDimensions(),
         getArrayDimensions(),
         getDescription());
   }

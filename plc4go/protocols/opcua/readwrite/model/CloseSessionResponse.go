@@ -41,7 +41,7 @@ type CloseSessionResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// IsCloseSessionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCloseSessionResponse()
 	// CreateBuilder creates a CloseSessionResponseBuilder
@@ -51,16 +51,16 @@ type CloseSessionResponse interface {
 // _CloseSessionResponse is the data-structure of this message
 type _CloseSessionResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader ExtensionObjectDefinition
+	ResponseHeader ResponseHeader
 }
 
 var _ CloseSessionResponse = (*_CloseSessionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CloseSessionResponse)(nil)
 
 // NewCloseSessionResponse factory function for _CloseSessionResponse
-func NewCloseSessionResponse(responseHeader ExtensionObjectDefinition) *_CloseSessionResponse {
+func NewCloseSessionResponse(responseHeader ResponseHeader) *_CloseSessionResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CloseSessionResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for CloseSessionResponse must not be nil")
 	}
 	_result := &_CloseSessionResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -79,11 +79,11 @@ func NewCloseSessionResponse(responseHeader ExtensionObjectDefinition) *_CloseSe
 type CloseSessionResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition) CloseSessionResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader) CloseSessionResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) CloseSessionResponseBuilder
+	WithResponseHeader(ResponseHeader) CloseSessionResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSessionResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) CloseSessionResponseBuilder
 	// Build builds the CloseSessionResponse or returns an error if something is wrong
 	Build() (CloseSessionResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,24 +109,24 @@ func (b *_CloseSessionResponseBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CloseSessionResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) CloseSessionResponseBuilder {
+func (b *_CloseSessionResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader) CloseSessionResponseBuilder {
 	return b.WithResponseHeader(responseHeader)
 }
 
-func (b *_CloseSessionResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CloseSessionResponseBuilder {
+func (b *_CloseSessionResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) CloseSessionResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_CloseSessionResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSessionResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CloseSessionResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) CloseSessionResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -187,8 +187,8 @@ func (b *_CloseSessionResponse) CreateCloseSessionResponseBuilder() CloseSession
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CloseSessionResponse) GetIdentifier() string {
-	return "476"
+func (m *_CloseSessionResponse) GetExtensionId() int32 {
+	return int32(476)
 }
 
 ///////////////////////
@@ -205,7 +205,7 @@ func (m *_CloseSessionResponse) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CloseSessionResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_CloseSessionResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
@@ -230,7 +230,7 @@ func (m *_CloseSessionResponse) GetTypeName() string {
 }
 
 func (m *_CloseSessionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -242,7 +242,7 @@ func (m *_CloseSessionResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CloseSessionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__closeSessionResponse CloseSessionResponse, err error) {
+func (m *_CloseSessionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__closeSessionResponse CloseSessionResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -253,7 +253,7 @@ func (m *_CloseSessionResponse) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -284,7 +284,7 @@ func (m *_CloseSessionResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for CloseSessionResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
@@ -308,7 +308,7 @@ func (m *_CloseSessionResponse) deepCopy() *_CloseSessionResponse {
 	}
 	_CloseSessionResponseCopy := &_CloseSessionResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CloseSessionResponseCopy

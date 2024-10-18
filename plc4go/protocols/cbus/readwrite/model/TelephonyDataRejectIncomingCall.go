@@ -175,7 +175,7 @@ func (m *_TelephonyDataRejectIncomingCall) GetTypeName() string {
 }
 
 func (m *_TelephonyDataRejectIncomingCall) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

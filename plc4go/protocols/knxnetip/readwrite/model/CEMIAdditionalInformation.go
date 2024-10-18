@@ -235,7 +235,7 @@ func (m *_CEMIAdditionalInformation) GetTypeName() string {
 	return "CEMIAdditionalInformation"
 }
 
-func (m *_CEMIAdditionalInformation) getLengthInBits(ctx context.Context) uint16 {
+func (m *_CEMIAdditionalInformation) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (additionalInformationType)
 	lengthInBits += 8

@@ -38,34 +38,26 @@ import org.apache.plc4x.java.spi.generation.*;
 public class PublishRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "826";
+  public Integer getExtensionId() {
+    return (int) 826;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final int noOfSubscriptionAcknowledgements;
-  protected final List<ExtensionObjectDefinition> subscriptionAcknowledgements;
+  protected final RequestHeader requestHeader;
+  protected final List<SubscriptionAcknowledgement> subscriptionAcknowledgements;
 
   public PublishRequest(
-      ExtensionObjectDefinition requestHeader,
-      int noOfSubscriptionAcknowledgements,
-      List<ExtensionObjectDefinition> subscriptionAcknowledgements) {
+      RequestHeader requestHeader, List<SubscriptionAcknowledgement> subscriptionAcknowledgements) {
     super();
     this.requestHeader = requestHeader;
-    this.noOfSubscriptionAcknowledgements = noOfSubscriptionAcknowledgements;
     this.subscriptionAcknowledgements = subscriptionAcknowledgements;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public int getNoOfSubscriptionAcknowledgements() {
-    return noOfSubscriptionAcknowledgements;
-  }
-
-  public List<ExtensionObjectDefinition> getSubscriptionAcknowledgements() {
+  public List<SubscriptionAcknowledgement> getSubscriptionAcknowledgements() {
     return subscriptionAcknowledgements;
   }
 
@@ -79,8 +71,14 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
     // Simple Field (requestHeader)
     writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfSubscriptionAcknowledgements)
-    writeSimpleField(
+    // Implicit Field (noOfSubscriptionAcknowledgements) (Used for parsing, but its value is not
+    // stored as it's implicitly given by the objects content)
+    int noOfSubscriptionAcknowledgements =
+        (int)
+            ((((getSubscriptionAcknowledgements()) == (null))
+                ? -(1)
+                : COUNT(getSubscriptionAcknowledgements())));
+    writeImplicitField(
         "noOfSubscriptionAcknowledgements",
         noOfSubscriptionAcknowledgements,
         writeSignedInt(writeBuffer, 32));
@@ -106,13 +104,13 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
 
-    // Simple field (noOfSubscriptionAcknowledgements)
+    // Implicit Field (noOfSubscriptionAcknowledgements)
     lengthInBits += 32;
 
     // Array field
     if (subscriptionAcknowledgements != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : subscriptionAcknowledgements) {
+      for (SubscriptionAcknowledgement element : subscriptionAcknowledgements) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= subscriptionAcknowledgements.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -122,54 +120,52 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("PublishRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     int noOfSubscriptionAcknowledgements =
-        readSimpleField("noOfSubscriptionAcknowledgements", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfSubscriptionAcknowledgements", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> subscriptionAcknowledgements =
+    List<SubscriptionAcknowledgement> subscriptionAcknowledgements =
         readCountArrayField(
             "subscriptionAcknowledgements",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("823")),
+                () ->
+                    (SubscriptionAcknowledgement)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (823)),
                 readBuffer),
             noOfSubscriptionAcknowledgements);
 
     readBuffer.closeContext("PublishRequest");
     // Create the instance
-    return new PublishRequestBuilderImpl(
-        requestHeader, noOfSubscriptionAcknowledgements, subscriptionAcknowledgements);
+    return new PublishRequestBuilderImpl(requestHeader, subscriptionAcknowledgements);
   }
 
   public static class PublishRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final int noOfSubscriptionAcknowledgements;
-    private final List<ExtensionObjectDefinition> subscriptionAcknowledgements;
+    private final RequestHeader requestHeader;
+    private final List<SubscriptionAcknowledgement> subscriptionAcknowledgements;
 
     public PublishRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        int noOfSubscriptionAcknowledgements,
-        List<ExtensionObjectDefinition> subscriptionAcknowledgements) {
+        RequestHeader requestHeader,
+        List<SubscriptionAcknowledgement> subscriptionAcknowledgements) {
       this.requestHeader = requestHeader;
-      this.noOfSubscriptionAcknowledgements = noOfSubscriptionAcknowledgements;
       this.subscriptionAcknowledgements = subscriptionAcknowledgements;
     }
 
     public PublishRequest build() {
       PublishRequest publishRequest =
-          new PublishRequest(
-              requestHeader, noOfSubscriptionAcknowledgements, subscriptionAcknowledgements);
+          new PublishRequest(requestHeader, subscriptionAcknowledgements);
       return publishRequest;
     }
   }
@@ -184,7 +180,6 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
     }
     PublishRequest that = (PublishRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
-        && (getNoOfSubscriptionAcknowledgements() == that.getNoOfSubscriptionAcknowledgements())
         && (getSubscriptionAcknowledgements() == that.getSubscriptionAcknowledgements())
         && super.equals(that)
         && true;
@@ -192,11 +187,7 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getRequestHeader(),
-        getNoOfSubscriptionAcknowledgements(),
-        getSubscriptionAcknowledgements());
+    return Objects.hash(super.hashCode(), getRequestHeader(), getSubscriptionAcknowledgements());
   }
 
   @Override

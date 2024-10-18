@@ -662,7 +662,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetTypeNa
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).GetLengthInBits(ctx))
 
 	// Simple field (processIdentifier)
 	lengthInBits += m.ProcessIdentifier.GetLengthInBits(ctx)

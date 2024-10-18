@@ -210,8 +210,8 @@ func (b *_AggregateConfiguration) CreateAggregateConfigurationBuilder() Aggregat
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_AggregateConfiguration) GetIdentifier() string {
-	return "950"
+func (m *_AggregateConfiguration) GetExtensionId() int32 {
+	return int32(950)
 }
 
 ///////////////////////
@@ -269,7 +269,7 @@ func (m *_AggregateConfiguration) GetTypeName() string {
 }
 
 func (m *_AggregateConfiguration) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 6
@@ -299,7 +299,7 @@ func (m *_AggregateConfiguration) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_AggregateConfiguration) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__aggregateConfiguration AggregateConfiguration, err error) {
+func (m *_AggregateConfiguration) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__aggregateConfiguration AggregateConfiguration, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

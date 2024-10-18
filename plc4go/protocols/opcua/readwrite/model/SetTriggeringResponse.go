@@ -41,21 +41,13 @@ type SetTriggeringResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
-	// GetNoOfAddResults returns NoOfAddResults (property field)
-	GetNoOfAddResults() int32
+	GetResponseHeader() ResponseHeader
 	// GetAddResults returns AddResults (property field)
 	GetAddResults() []StatusCode
-	// GetNoOfAddDiagnosticInfos returns NoOfAddDiagnosticInfos (property field)
-	GetNoOfAddDiagnosticInfos() int32
 	// GetAddDiagnosticInfos returns AddDiagnosticInfos (property field)
 	GetAddDiagnosticInfos() []DiagnosticInfo
-	// GetNoOfRemoveResults returns NoOfRemoveResults (property field)
-	GetNoOfRemoveResults() int32
 	// GetRemoveResults returns RemoveResults (property field)
 	GetRemoveResults() []StatusCode
-	// GetNoOfRemoveDiagnosticInfos returns NoOfRemoveDiagnosticInfos (property field)
-	GetNoOfRemoveDiagnosticInfos() int32
 	// GetRemoveDiagnosticInfos returns RemoveDiagnosticInfos (property field)
 	GetRemoveDiagnosticInfos() []DiagnosticInfo
 	// IsSetTriggeringResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -67,35 +59,27 @@ type SetTriggeringResponse interface {
 // _SetTriggeringResponse is the data-structure of this message
 type _SetTriggeringResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader            ExtensionObjectDefinition
-	NoOfAddResults            int32
-	AddResults                []StatusCode
-	NoOfAddDiagnosticInfos    int32
-	AddDiagnosticInfos        []DiagnosticInfo
-	NoOfRemoveResults         int32
-	RemoveResults             []StatusCode
-	NoOfRemoveDiagnosticInfos int32
-	RemoveDiagnosticInfos     []DiagnosticInfo
+	ResponseHeader        ResponseHeader
+	AddResults            []StatusCode
+	AddDiagnosticInfos    []DiagnosticInfo
+	RemoveResults         []StatusCode
+	RemoveDiagnosticInfos []DiagnosticInfo
 }
 
 var _ SetTriggeringResponse = (*_SetTriggeringResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetTriggeringResponse)(nil)
 
 // NewSetTriggeringResponse factory function for _SetTriggeringResponse
-func NewSetTriggeringResponse(responseHeader ExtensionObjectDefinition, noOfAddResults int32, addResults []StatusCode, noOfAddDiagnosticInfos int32, addDiagnosticInfos []DiagnosticInfo, noOfRemoveResults int32, removeResults []StatusCode, noOfRemoveDiagnosticInfos int32, removeDiagnosticInfos []DiagnosticInfo) *_SetTriggeringResponse {
+func NewSetTriggeringResponse(responseHeader ResponseHeader, addResults []StatusCode, addDiagnosticInfos []DiagnosticInfo, removeResults []StatusCode, removeDiagnosticInfos []DiagnosticInfo) *_SetTriggeringResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for SetTriggeringResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for SetTriggeringResponse must not be nil")
 	}
 	_result := &_SetTriggeringResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
-		NoOfAddResults:                    noOfAddResults,
 		AddResults:                        addResults,
-		NoOfAddDiagnosticInfos:            noOfAddDiagnosticInfos,
 		AddDiagnosticInfos:                addDiagnosticInfos,
-		NoOfRemoveResults:                 noOfRemoveResults,
 		RemoveResults:                     removeResults,
-		NoOfRemoveDiagnosticInfos:         noOfRemoveDiagnosticInfos,
 		RemoveDiagnosticInfos:             removeDiagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -111,25 +95,17 @@ func NewSetTriggeringResponse(responseHeader ExtensionObjectDefinition, noOfAddR
 type SetTriggeringResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfAddResults int32, addResults []StatusCode, noOfAddDiagnosticInfos int32, addDiagnosticInfos []DiagnosticInfo, noOfRemoveResults int32, removeResults []StatusCode, noOfRemoveDiagnosticInfos int32, removeDiagnosticInfos []DiagnosticInfo) SetTriggeringResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, addResults []StatusCode, addDiagnosticInfos []DiagnosticInfo, removeResults []StatusCode, removeDiagnosticInfos []DiagnosticInfo) SetTriggeringResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) SetTriggeringResponseBuilder
+	WithResponseHeader(ResponseHeader) SetTriggeringResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetTriggeringResponseBuilder
-	// WithNoOfAddResults adds NoOfAddResults (property field)
-	WithNoOfAddResults(int32) SetTriggeringResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) SetTriggeringResponseBuilder
 	// WithAddResults adds AddResults (property field)
 	WithAddResults(...StatusCode) SetTriggeringResponseBuilder
-	// WithNoOfAddDiagnosticInfos adds NoOfAddDiagnosticInfos (property field)
-	WithNoOfAddDiagnosticInfos(int32) SetTriggeringResponseBuilder
 	// WithAddDiagnosticInfos adds AddDiagnosticInfos (property field)
 	WithAddDiagnosticInfos(...DiagnosticInfo) SetTriggeringResponseBuilder
-	// WithNoOfRemoveResults adds NoOfRemoveResults (property field)
-	WithNoOfRemoveResults(int32) SetTriggeringResponseBuilder
 	// WithRemoveResults adds RemoveResults (property field)
 	WithRemoveResults(...StatusCode) SetTriggeringResponseBuilder
-	// WithNoOfRemoveDiagnosticInfos adds NoOfRemoveDiagnosticInfos (property field)
-	WithNoOfRemoveDiagnosticInfos(int32) SetTriggeringResponseBuilder
 	// WithRemoveDiagnosticInfos adds RemoveDiagnosticInfos (property field)
 	WithRemoveDiagnosticInfos(...DiagnosticInfo) SetTriggeringResponseBuilder
 	// Build builds the SetTriggeringResponse or returns an error if something is wrong
@@ -157,30 +133,25 @@ func (b *_SetTriggeringResponseBuilder) setParent(contract ExtensionObjectDefini
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_SetTriggeringResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfAddResults int32, addResults []StatusCode, noOfAddDiagnosticInfos int32, addDiagnosticInfos []DiagnosticInfo, noOfRemoveResults int32, removeResults []StatusCode, noOfRemoveDiagnosticInfos int32, removeDiagnosticInfos []DiagnosticInfo) SetTriggeringResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfAddResults(noOfAddResults).WithAddResults(addResults...).WithNoOfAddDiagnosticInfos(noOfAddDiagnosticInfos).WithAddDiagnosticInfos(addDiagnosticInfos...).WithNoOfRemoveResults(noOfRemoveResults).WithRemoveResults(removeResults...).WithNoOfRemoveDiagnosticInfos(noOfRemoveDiagnosticInfos).WithRemoveDiagnosticInfos(removeDiagnosticInfos...)
+func (b *_SetTriggeringResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, addResults []StatusCode, addDiagnosticInfos []DiagnosticInfo, removeResults []StatusCode, removeDiagnosticInfos []DiagnosticInfo) SetTriggeringResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithAddResults(addResults...).WithAddDiagnosticInfos(addDiagnosticInfos...).WithRemoveResults(removeResults...).WithRemoveDiagnosticInfos(removeDiagnosticInfos...)
 }
 
-func (b *_SetTriggeringResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) SetTriggeringResponseBuilder {
+func (b *_SetTriggeringResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) SetTriggeringResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_SetTriggeringResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetTriggeringResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_SetTriggeringResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) SetTriggeringResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_SetTriggeringResponseBuilder) WithNoOfAddResults(noOfAddResults int32) SetTriggeringResponseBuilder {
-	b.NoOfAddResults = noOfAddResults
 	return b
 }
 
@@ -189,28 +160,13 @@ func (b *_SetTriggeringResponseBuilder) WithAddResults(addResults ...StatusCode)
 	return b
 }
 
-func (b *_SetTriggeringResponseBuilder) WithNoOfAddDiagnosticInfos(noOfAddDiagnosticInfos int32) SetTriggeringResponseBuilder {
-	b.NoOfAddDiagnosticInfos = noOfAddDiagnosticInfos
-	return b
-}
-
 func (b *_SetTriggeringResponseBuilder) WithAddDiagnosticInfos(addDiagnosticInfos ...DiagnosticInfo) SetTriggeringResponseBuilder {
 	b.AddDiagnosticInfos = addDiagnosticInfos
 	return b
 }
 
-func (b *_SetTriggeringResponseBuilder) WithNoOfRemoveResults(noOfRemoveResults int32) SetTriggeringResponseBuilder {
-	b.NoOfRemoveResults = noOfRemoveResults
-	return b
-}
-
 func (b *_SetTriggeringResponseBuilder) WithRemoveResults(removeResults ...StatusCode) SetTriggeringResponseBuilder {
 	b.RemoveResults = removeResults
-	return b
-}
-
-func (b *_SetTriggeringResponseBuilder) WithNoOfRemoveDiagnosticInfos(noOfRemoveDiagnosticInfos int32) SetTriggeringResponseBuilder {
-	b.NoOfRemoveDiagnosticInfos = noOfRemoveDiagnosticInfos
 	return b
 }
 
@@ -275,8 +231,8 @@ func (b *_SetTriggeringResponse) CreateSetTriggeringResponseBuilder() SetTrigger
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SetTriggeringResponse) GetIdentifier() string {
-	return "778"
+func (m *_SetTriggeringResponse) GetExtensionId() int32 {
+	return int32(778)
 }
 
 ///////////////////////
@@ -293,36 +249,20 @@ func (m *_SetTriggeringResponse) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_SetTriggeringResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_SetTriggeringResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
-}
-
-func (m *_SetTriggeringResponse) GetNoOfAddResults() int32 {
-	return m.NoOfAddResults
 }
 
 func (m *_SetTriggeringResponse) GetAddResults() []StatusCode {
 	return m.AddResults
 }
 
-func (m *_SetTriggeringResponse) GetNoOfAddDiagnosticInfos() int32 {
-	return m.NoOfAddDiagnosticInfos
-}
-
 func (m *_SetTriggeringResponse) GetAddDiagnosticInfos() []DiagnosticInfo {
 	return m.AddDiagnosticInfos
 }
 
-func (m *_SetTriggeringResponse) GetNoOfRemoveResults() int32 {
-	return m.NoOfRemoveResults
-}
-
 func (m *_SetTriggeringResponse) GetRemoveResults() []StatusCode {
 	return m.RemoveResults
-}
-
-func (m *_SetTriggeringResponse) GetNoOfRemoveDiagnosticInfos() int32 {
-	return m.NoOfRemoveDiagnosticInfos
 }
 
 func (m *_SetTriggeringResponse) GetRemoveDiagnosticInfos() []DiagnosticInfo {
@@ -350,12 +290,12 @@ func (m *_SetTriggeringResponse) GetTypeName() string {
 }
 
 func (m *_SetTriggeringResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfAddResults)
+	// Implicit Field (noOfAddResults)
 	lengthInBits += 32
 
 	// Array field
@@ -368,7 +308,7 @@ func (m *_SetTriggeringResponse) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfAddDiagnosticInfos)
+	// Implicit Field (noOfAddDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -381,7 +321,7 @@ func (m *_SetTriggeringResponse) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfRemoveResults)
+	// Implicit Field (noOfRemoveResults)
 	lengthInBits += 32
 
 	// Array field
@@ -394,7 +334,7 @@ func (m *_SetTriggeringResponse) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfRemoveDiagnosticInfos)
+	// Implicit Field (noOfRemoveDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -414,7 +354,7 @@ func (m *_SetTriggeringResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SetTriggeringResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__setTriggeringResponse SetTriggeringResponse, err error) {
+func (m *_SetTriggeringResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__setTriggeringResponse SetTriggeringResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -425,17 +365,17 @@ func (m *_SetTriggeringResponse) parse(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfAddResults, err := ReadSimpleField(ctx, "noOfAddResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfAddResults, err := ReadImplicitField[int32](ctx, "noOfAddResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAddResults' field"))
 	}
-	m.NoOfAddResults = noOfAddResults
+	_ = noOfAddResults
 
 	addResults, err := ReadCountArrayField[StatusCode](ctx, "addResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfAddResults))
 	if err != nil {
@@ -443,11 +383,11 @@ func (m *_SetTriggeringResponse) parse(ctx context.Context, readBuffer utils.Rea
 	}
 	m.AddResults = addResults
 
-	noOfAddDiagnosticInfos, err := ReadSimpleField(ctx, "noOfAddDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfAddDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfAddDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAddDiagnosticInfos' field"))
 	}
-	m.NoOfAddDiagnosticInfos = noOfAddDiagnosticInfos
+	_ = noOfAddDiagnosticInfos
 
 	addDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "addDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfAddDiagnosticInfos))
 	if err != nil {
@@ -455,11 +395,11 @@ func (m *_SetTriggeringResponse) parse(ctx context.Context, readBuffer utils.Rea
 	}
 	m.AddDiagnosticInfos = addDiagnosticInfos
 
-	noOfRemoveResults, err := ReadSimpleField(ctx, "noOfRemoveResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfRemoveResults, err := ReadImplicitField[int32](ctx, "noOfRemoveResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRemoveResults' field"))
 	}
-	m.NoOfRemoveResults = noOfRemoveResults
+	_ = noOfRemoveResults
 
 	removeResults, err := ReadCountArrayField[StatusCode](ctx, "removeResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfRemoveResults))
 	if err != nil {
@@ -467,11 +407,11 @@ func (m *_SetTriggeringResponse) parse(ctx context.Context, readBuffer utils.Rea
 	}
 	m.RemoveResults = removeResults
 
-	noOfRemoveDiagnosticInfos, err := ReadSimpleField(ctx, "noOfRemoveDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfRemoveDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfRemoveDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRemoveDiagnosticInfos' field"))
 	}
-	m.NoOfRemoveDiagnosticInfos = noOfRemoveDiagnosticInfos
+	_ = noOfRemoveDiagnosticInfos
 
 	removeDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "removeDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfRemoveDiagnosticInfos))
 	if err != nil {
@@ -504,35 +444,35 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for SetTriggeringResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfAddResults", m.GetNoOfAddResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfAddResults := int32(utils.InlineIf(bool((m.GetAddResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetAddResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfAddResults", noOfAddResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfAddResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "addResults", m.GetAddResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'addResults' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfAddDiagnosticInfos", m.GetNoOfAddDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfAddDiagnosticInfos := int32(utils.InlineIf(bool((m.GetAddDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetAddDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfAddDiagnosticInfos", noOfAddDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfAddDiagnosticInfos' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "addDiagnosticInfos", m.GetAddDiagnosticInfos(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'addDiagnosticInfos' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfRemoveResults", m.GetNoOfRemoveResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfRemoveResults := int32(utils.InlineIf(bool((m.GetRemoveResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetRemoveResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfRemoveResults", noOfRemoveResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfRemoveResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "removeResults", m.GetRemoveResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'removeResults' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfRemoveDiagnosticInfos", m.GetNoOfRemoveDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfRemoveDiagnosticInfos := int32(utils.InlineIf(bool((m.GetRemoveDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetRemoveDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfRemoveDiagnosticInfos", noOfRemoveDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfRemoveDiagnosticInfos' field")
 		}
 
@@ -560,14 +500,10 @@ func (m *_SetTriggeringResponse) deepCopy() *_SetTriggeringResponse {
 	}
 	_SetTriggeringResponseCopy := &_SetTriggeringResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfAddResults,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.AddResults),
-		m.NoOfAddDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.AddDiagnosticInfos),
-		m.NoOfRemoveResults,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.RemoveResults),
-		m.NoOfRemoveDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.RemoveDiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

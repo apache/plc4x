@@ -38,24 +38,24 @@ import org.apache.plc4x.java.spi.generation.*;
 public class QueryDataDescription extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "572";
+  public Integer getExtensionId() {
+    return (int) 572;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition relativePath;
+  protected final RelativePath relativePath;
   protected final long attributeId;
   protected final PascalString indexRange;
 
   public QueryDataDescription(
-      ExtensionObjectDefinition relativePath, long attributeId, PascalString indexRange) {
+      RelativePath relativePath, long attributeId, PascalString indexRange) {
     super();
     this.relativePath = relativePath;
     this.attributeId = attributeId;
     this.indexRange = indexRange;
   }
 
-  public ExtensionObjectDefinition getRelativePath() {
+  public RelativePath getRelativePath() {
     return relativePath;
   }
 
@@ -110,16 +110,16 @@ public class QueryDataDescription extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("QueryDataDescription");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition relativePath =
+    RelativePath relativePath =
         readSimpleField(
             "relativePath",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("542")),
+                () -> (RelativePath) ExtensionObjectDefinition.staticParse(readBuffer, (int) (542)),
                 readBuffer));
 
     long attributeId = readSimpleField("attributeId", readUnsignedLong(readBuffer, 32));
@@ -135,12 +135,12 @@ public class QueryDataDescription extends ExtensionObjectDefinition implements M
 
   public static class QueryDataDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition relativePath;
+    private final RelativePath relativePath;
     private final long attributeId;
     private final PascalString indexRange;
 
     public QueryDataDescriptionBuilderImpl(
-        ExtensionObjectDefinition relativePath, long attributeId, PascalString indexRange) {
+        RelativePath relativePath, long attributeId, PascalString indexRange) {
       this.relativePath = relativePath;
       this.attributeId = attributeId;
       this.indexRange = indexRange;

@@ -23,7 +23,6 @@ import (
 	"context"
 	"encoding/binary"
 	"runtime/debug"
-	"strconv"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -75,7 +74,7 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 		REQUEST_TIMEOUT_LONG,
 		NULL_EXTENSION_OBJECT,
 	)
-	writeValueArray := make([]readWriteModel.ExtensionObjectDefinition, len(writeRequest.GetTagNames()))
+	writeValueArray := make([]readWriteModel.WriteValue, len(writeRequest.GetTagNames()))
 	for i, tagName := range writeRequest.GetTagNames() {
 		tag := writeRequest.GetTag(tagName).(Tag)
 
@@ -112,35 +111,33 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 
 	opcuaWriteRequest := readWriteModel.NewWriteRequest(
 		requestHeader,
-		int32(len(writeValueArray)),
 		writeValueArray,
 	)
 
-	identifier, err := strconv.ParseUint(opcuaWriteRequest.GetIdentifier(), 10, 16)
-	if err != nil {
-		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "error parsing identifier"))
-		return
-	}
+	identifier := opcuaWriteRequest.GetExtensionId()
 	expandedNodeId := readWriteModel.NewExpandedNodeId(false, //Namespace Uri Specified
 		false, //Server Index Specified
 		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
 		nil,
 		nil)
 
-	extObject := readWriteModel.NewExtensionObject(
-		expandedNodeId,
+	extObject := readWriteModel.NewExtensiblePayload(
 		nil,
-		opcuaWriteRequest,
-		false)
-
+		readWriteModel.NewRootExtensionObject(
+			expandedNodeId,
+			opcuaWriteRequest,
+			identifier,
+		),
+		0,
+	)
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err = extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to serialise the ReadRequest"))
 		return
 	}
 
 	consumer := func(opcuaResponse []byte) {
-		reply, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+		reply, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
 			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to read the reply"))
 			return
@@ -409,7 +406,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	case apiValues.WSTRING:
 		tmpString := make([]readWriteModel.PascalString, length)
 		for i := uint32(0); i < length; i++ {
-			tmpString[i] = readWriteModel.NewPascalString(valueObject.GetIndex(i).GetString())
+			tmpString[i] = readWriteModel.NewPascalString(utils.ToPtr(valueObject.GetIndex(i).GetString()))
 		}
 		var arrayLength *int32
 		if length != 1 {

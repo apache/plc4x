@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class NotificationData extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "947";
+  public Integer getExtensionId() {
+    return (int) 947;
   }
 
   public NotificationData() {
@@ -71,7 +71,7 @@ public class NotificationData extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("NotificationData");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

@@ -38,25 +38,20 @@ import org.apache.plc4x.java.spi.generation.*;
 public class NotificationMessage extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "805";
+  public Integer getExtensionId() {
+    return (int) 805;
   }
 
   // Properties.
   protected final long sequenceNumber;
   protected final long publishTime;
-  protected final int noOfNotificationData;
   protected final List<ExtensionObject> notificationData;
 
   public NotificationMessage(
-      long sequenceNumber,
-      long publishTime,
-      int noOfNotificationData,
-      List<ExtensionObject> notificationData) {
+      long sequenceNumber, long publishTime, List<ExtensionObject> notificationData) {
     super();
     this.sequenceNumber = sequenceNumber;
     this.publishTime = publishTime;
-    this.noOfNotificationData = noOfNotificationData;
     this.notificationData = notificationData;
   }
 
@@ -66,10 +61,6 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
 
   public long getPublishTime() {
     return publishTime;
-  }
-
-  public int getNoOfNotificationData() {
-    return noOfNotificationData;
   }
 
   public List<ExtensionObject> getNotificationData() {
@@ -89,8 +80,12 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
     // Simple Field (publishTime)
     writeSimpleField("publishTime", publishTime, writeSignedLong(writeBuffer, 64));
 
-    // Simple Field (noOfNotificationData)
-    writeSimpleField("noOfNotificationData", noOfNotificationData, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfNotificationData) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfNotificationData =
+        (int) ((((getNotificationData()) == (null)) ? -(1) : COUNT(getNotificationData())));
+    writeImplicitField(
+        "noOfNotificationData", noOfNotificationData, writeSignedInt(writeBuffer, 32));
 
     // Array Field (notificationData)
     writeComplexTypeArrayField("notificationData", notificationData, writeBuffer);
@@ -115,7 +110,7 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
     // Simple field (publishTime)
     lengthInBits += 64;
 
-    // Simple field (noOfNotificationData)
+    // Implicit Field (noOfNotificationData)
     lengthInBits += 32;
 
     // Array field
@@ -131,7 +126,7 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("NotificationMessage");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -141,7 +136,7 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
     long publishTime = readSimpleField("publishTime", readSignedLong(readBuffer, 64));
 
     int noOfNotificationData =
-        readSimpleField("noOfNotificationData", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfNotificationData", readSignedInt(readBuffer, 32));
 
     List<ExtensionObject> notificationData =
         readCountArrayField(
@@ -152,32 +147,25 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("NotificationMessage");
     // Create the instance
-    return new NotificationMessageBuilderImpl(
-        sequenceNumber, publishTime, noOfNotificationData, notificationData);
+    return new NotificationMessageBuilderImpl(sequenceNumber, publishTime, notificationData);
   }
 
   public static class NotificationMessageBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long sequenceNumber;
     private final long publishTime;
-    private final int noOfNotificationData;
     private final List<ExtensionObject> notificationData;
 
     public NotificationMessageBuilderImpl(
-        long sequenceNumber,
-        long publishTime,
-        int noOfNotificationData,
-        List<ExtensionObject> notificationData) {
+        long sequenceNumber, long publishTime, List<ExtensionObject> notificationData) {
       this.sequenceNumber = sequenceNumber;
       this.publishTime = publishTime;
-      this.noOfNotificationData = noOfNotificationData;
       this.notificationData = notificationData;
     }
 
     public NotificationMessage build() {
       NotificationMessage notificationMessage =
-          new NotificationMessage(
-              sequenceNumber, publishTime, noOfNotificationData, notificationData);
+          new NotificationMessage(sequenceNumber, publishTime, notificationData);
       return notificationMessage;
     }
   }
@@ -193,7 +181,6 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
     NotificationMessage that = (NotificationMessage) o;
     return (getSequenceNumber() == that.getSequenceNumber())
         && (getPublishTime() == that.getPublishTime())
-        && (getNoOfNotificationData() == that.getNoOfNotificationData())
         && (getNotificationData() == that.getNotificationData())
         && super.equals(that)
         && true;
@@ -202,11 +189,7 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getSequenceNumber(),
-        getPublishTime(),
-        getNoOfNotificationData(),
-        getNotificationData());
+        super.hashCode(), getSequenceNumber(), getPublishTime(), getNotificationData());
   }
 
   @Override

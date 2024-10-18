@@ -288,7 +288,7 @@ func (m *_Reply) GetTypeName() string {
 	return "Reply"
 }
 
-func (m *_Reply) getLengthInBits(ctx context.Context) uint16 {
+func (m *_Reply) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

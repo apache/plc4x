@@ -44,8 +44,6 @@ type CallMethodRequest interface {
 	GetObjectId() NodeId
 	// GetMethodId returns MethodId (property field)
 	GetMethodId() NodeId
-	// GetNoOfInputArguments returns NoOfInputArguments (property field)
-	GetNoOfInputArguments() int32
 	// GetInputArguments returns InputArguments (property field)
 	GetInputArguments() []Variant
 	// IsCallMethodRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -57,17 +55,16 @@ type CallMethodRequest interface {
 // _CallMethodRequest is the data-structure of this message
 type _CallMethodRequest struct {
 	ExtensionObjectDefinitionContract
-	ObjectId           NodeId
-	MethodId           NodeId
-	NoOfInputArguments int32
-	InputArguments     []Variant
+	ObjectId       NodeId
+	MethodId       NodeId
+	InputArguments []Variant
 }
 
 var _ CallMethodRequest = (*_CallMethodRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CallMethodRequest)(nil)
 
 // NewCallMethodRequest factory function for _CallMethodRequest
-func NewCallMethodRequest(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) *_CallMethodRequest {
+func NewCallMethodRequest(objectId NodeId, methodId NodeId, inputArguments []Variant) *_CallMethodRequest {
 	if objectId == nil {
 		panic("objectId of type NodeId for CallMethodRequest must not be nil")
 	}
@@ -78,7 +75,6 @@ func NewCallMethodRequest(objectId NodeId, methodId NodeId, noOfInputArguments i
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ObjectId:                          objectId,
 		MethodId:                          methodId,
-		NoOfInputArguments:                noOfInputArguments,
 		InputArguments:                    inputArguments,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -94,7 +90,7 @@ func NewCallMethodRequest(objectId NodeId, methodId NodeId, noOfInputArguments i
 type CallMethodRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) CallMethodRequestBuilder
+	WithMandatoryFields(objectId NodeId, methodId NodeId, inputArguments []Variant) CallMethodRequestBuilder
 	// WithObjectId adds ObjectId (property field)
 	WithObjectId(NodeId) CallMethodRequestBuilder
 	// WithObjectIdBuilder adds ObjectId (property field) which is build by the builder
@@ -103,8 +99,6 @@ type CallMethodRequestBuilder interface {
 	WithMethodId(NodeId) CallMethodRequestBuilder
 	// WithMethodIdBuilder adds MethodId (property field) which is build by the builder
 	WithMethodIdBuilder(func(NodeIdBuilder) NodeIdBuilder) CallMethodRequestBuilder
-	// WithNoOfInputArguments adds NoOfInputArguments (property field)
-	WithNoOfInputArguments(int32) CallMethodRequestBuilder
 	// WithInputArguments adds InputArguments (property field)
 	WithInputArguments(...Variant) CallMethodRequestBuilder
 	// Build builds the CallMethodRequest or returns an error if something is wrong
@@ -132,8 +126,8 @@ func (b *_CallMethodRequestBuilder) setParent(contract ExtensionObjectDefinition
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CallMethodRequestBuilder) WithMandatoryFields(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) CallMethodRequestBuilder {
-	return b.WithObjectId(objectId).WithMethodId(methodId).WithNoOfInputArguments(noOfInputArguments).WithInputArguments(inputArguments...)
+func (b *_CallMethodRequestBuilder) WithMandatoryFields(objectId NodeId, methodId NodeId, inputArguments []Variant) CallMethodRequestBuilder {
+	return b.WithObjectId(objectId).WithMethodId(methodId).WithInputArguments(inputArguments...)
 }
 
 func (b *_CallMethodRequestBuilder) WithObjectId(objectId NodeId) CallMethodRequestBuilder {
@@ -169,11 +163,6 @@ func (b *_CallMethodRequestBuilder) WithMethodIdBuilder(builderSupplier func(Nod
 		}
 		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return b
-}
-
-func (b *_CallMethodRequestBuilder) WithNoOfInputArguments(noOfInputArguments int32) CallMethodRequestBuilder {
-	b.NoOfInputArguments = noOfInputArguments
 	return b
 }
 
@@ -244,8 +233,8 @@ func (b *_CallMethodRequest) CreateCallMethodRequestBuilder() CallMethodRequestB
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CallMethodRequest) GetIdentifier() string {
-	return "706"
+func (m *_CallMethodRequest) GetExtensionId() int32 {
+	return int32(706)
 }
 
 ///////////////////////
@@ -268,10 +257,6 @@ func (m *_CallMethodRequest) GetObjectId() NodeId {
 
 func (m *_CallMethodRequest) GetMethodId() NodeId {
 	return m.MethodId
-}
-
-func (m *_CallMethodRequest) GetNoOfInputArguments() int32 {
-	return m.NoOfInputArguments
 }
 
 func (m *_CallMethodRequest) GetInputArguments() []Variant {
@@ -299,7 +284,7 @@ func (m *_CallMethodRequest) GetTypeName() string {
 }
 
 func (m *_CallMethodRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (objectId)
 	lengthInBits += m.ObjectId.GetLengthInBits(ctx)
@@ -307,7 +292,7 @@ func (m *_CallMethodRequest) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (methodId)
 	lengthInBits += m.MethodId.GetLengthInBits(ctx)
 
-	// Simple field (noOfInputArguments)
+	// Implicit Field (noOfInputArguments)
 	lengthInBits += 32
 
 	// Array field
@@ -327,7 +312,7 @@ func (m *_CallMethodRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CallMethodRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__callMethodRequest CallMethodRequest, err error) {
+func (m *_CallMethodRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__callMethodRequest CallMethodRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -350,11 +335,11 @@ func (m *_CallMethodRequest) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	m.MethodId = methodId
 
-	noOfInputArguments, err := ReadSimpleField(ctx, "noOfInputArguments", ReadSignedInt(readBuffer, uint8(32)))
+	noOfInputArguments, err := ReadImplicitField[int32](ctx, "noOfInputArguments", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfInputArguments' field"))
 	}
-	m.NoOfInputArguments = noOfInputArguments
+	_ = noOfInputArguments
 
 	inputArguments, err := ReadCountArrayField[Variant](ctx, "inputArguments", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfInputArguments))
 	if err != nil {
@@ -394,8 +379,8 @@ func (m *_CallMethodRequest) SerializeWithWriteBuffer(ctx context.Context, write
 		if err := WriteSimpleField[NodeId](ctx, "methodId", m.GetMethodId(), WriteComplex[NodeId](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'methodId' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfInputArguments", m.GetNoOfInputArguments(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfInputArguments := int32(utils.InlineIf(bool((m.GetInputArguments()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetInputArguments()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfInputArguments", noOfInputArguments, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfInputArguments' field")
 		}
 
@@ -425,7 +410,6 @@ func (m *_CallMethodRequest) deepCopy() *_CallMethodRequest {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ObjectId.DeepCopy().(NodeId),
 		m.MethodId.DeepCopy().(NodeId),
-		m.NoOfInputArguments,
 		utils.DeepCopySlice[Variant, Variant](m.InputArguments),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

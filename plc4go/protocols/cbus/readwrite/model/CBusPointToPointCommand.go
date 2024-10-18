@@ -320,7 +320,7 @@ func (m *_CBusPointToPointCommand) GetTypeName() string {
 	return "CBusPointToPointCommand"
 }
 
-func (m *_CBusPointToPointCommand) getLengthInBits(ctx context.Context) uint16 {
+func (m *_CBusPointToPointCommand) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.

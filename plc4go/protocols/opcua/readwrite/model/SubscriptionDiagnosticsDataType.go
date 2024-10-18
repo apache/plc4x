@@ -519,8 +519,8 @@ func (b *_SubscriptionDiagnosticsDataType) CreateSubscriptionDiagnosticsDataType
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SubscriptionDiagnosticsDataType) GetIdentifier() string {
-	return "876"
+func (m *_SubscriptionDiagnosticsDataType) GetExtensionId() int32 {
+	return int32(876)
 }
 
 ///////////////////////
@@ -682,7 +682,7 @@ func (m *_SubscriptionDiagnosticsDataType) GetTypeName() string {
 }
 
 func (m *_SubscriptionDiagnosticsDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (sessionId)
 	lengthInBits += m.SessionId.GetLengthInBits(ctx)
@@ -787,7 +787,7 @@ func (m *_SubscriptionDiagnosticsDataType) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SubscriptionDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__subscriptionDiagnosticsDataType SubscriptionDiagnosticsDataType, err error) {
+func (m *_SubscriptionDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__subscriptionDiagnosticsDataType SubscriptionDiagnosticsDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

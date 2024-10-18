@@ -38,22 +38,19 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CallMethodRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "706";
+  public Integer getExtensionId() {
+    return (int) 706;
   }
 
   // Properties.
   protected final NodeId objectId;
   protected final NodeId methodId;
-  protected final int noOfInputArguments;
   protected final List<Variant> inputArguments;
 
-  public CallMethodRequest(
-      NodeId objectId, NodeId methodId, int noOfInputArguments, List<Variant> inputArguments) {
+  public CallMethodRequest(NodeId objectId, NodeId methodId, List<Variant> inputArguments) {
     super();
     this.objectId = objectId;
     this.methodId = methodId;
-    this.noOfInputArguments = noOfInputArguments;
     this.inputArguments = inputArguments;
   }
 
@@ -63,10 +60,6 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
 
   public NodeId getMethodId() {
     return methodId;
-  }
-
-  public int getNoOfInputArguments() {
-    return noOfInputArguments;
   }
 
   public List<Variant> getInputArguments() {
@@ -86,8 +79,11 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
     // Simple Field (methodId)
     writeSimpleField("methodId", methodId, writeComplex(writeBuffer));
 
-    // Simple Field (noOfInputArguments)
-    writeSimpleField("noOfInputArguments", noOfInputArguments, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfInputArguments) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfInputArguments =
+        (int) ((((getInputArguments()) == (null)) ? -(1) : COUNT(getInputArguments())));
+    writeImplicitField("noOfInputArguments", noOfInputArguments, writeSignedInt(writeBuffer, 32));
 
     // Array Field (inputArguments)
     writeComplexTypeArrayField("inputArguments", inputArguments, writeBuffer);
@@ -112,7 +108,7 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
     // Simple field (methodId)
     lengthInBits += methodId.getLengthInBits();
 
-    // Simple field (noOfInputArguments)
+    // Implicit Field (noOfInputArguments)
     lengthInBits += 32;
 
     // Array field
@@ -128,7 +124,7 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CallMethodRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -139,7 +135,7 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
     NodeId methodId =
         readSimpleField("methodId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
-    int noOfInputArguments = readSimpleField("noOfInputArguments", readSignedInt(readBuffer, 32));
+    int noOfInputArguments = readImplicitField("noOfInputArguments", readSignedInt(readBuffer, 32));
 
     List<Variant> inputArguments =
         readCountArrayField(
@@ -149,27 +145,25 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("CallMethodRequest");
     // Create the instance
-    return new CallMethodRequestBuilderImpl(objectId, methodId, noOfInputArguments, inputArguments);
+    return new CallMethodRequestBuilderImpl(objectId, methodId, inputArguments);
   }
 
   public static class CallMethodRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId objectId;
     private final NodeId methodId;
-    private final int noOfInputArguments;
     private final List<Variant> inputArguments;
 
     public CallMethodRequestBuilderImpl(
-        NodeId objectId, NodeId methodId, int noOfInputArguments, List<Variant> inputArguments) {
+        NodeId objectId, NodeId methodId, List<Variant> inputArguments) {
       this.objectId = objectId;
       this.methodId = methodId;
-      this.noOfInputArguments = noOfInputArguments;
       this.inputArguments = inputArguments;
     }
 
     public CallMethodRequest build() {
       CallMethodRequest callMethodRequest =
-          new CallMethodRequest(objectId, methodId, noOfInputArguments, inputArguments);
+          new CallMethodRequest(objectId, methodId, inputArguments);
       return callMethodRequest;
     }
   }
@@ -185,7 +179,6 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
     CallMethodRequest that = (CallMethodRequest) o;
     return (getObjectId() == that.getObjectId())
         && (getMethodId() == that.getMethodId())
-        && (getNoOfInputArguments() == that.getNoOfInputArguments())
         && (getInputArguments() == that.getInputArguments())
         && super.equals(that)
         && true;
@@ -193,12 +186,7 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getObjectId(),
-        getMethodId(),
-        getNoOfInputArguments(),
-        getInputArguments());
+    return Objects.hash(super.hashCode(), getObjectId(), getMethodId(), getInputArguments());
   }
 
   @Override

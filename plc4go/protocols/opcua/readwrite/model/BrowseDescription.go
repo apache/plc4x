@@ -268,8 +268,8 @@ func (b *_BrowseDescription) CreateBrowseDescriptionBuilder() BrowseDescriptionB
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_BrowseDescription) GetIdentifier() string {
-	return "516"
+func (m *_BrowseDescription) GetExtensionId() int32 {
+	return int32(516)
 }
 
 ///////////////////////
@@ -331,7 +331,7 @@ func (m *_BrowseDescription) GetTypeName() string {
 }
 
 func (m *_BrowseDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (nodeId)
 	lengthInBits += m.NodeId.GetLengthInBits(ctx)
@@ -361,7 +361,7 @@ func (m *_BrowseDescription) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_BrowseDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__browseDescription BrowseDescription, err error) {
+func (m *_BrowseDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__browseDescription BrowseDescription, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

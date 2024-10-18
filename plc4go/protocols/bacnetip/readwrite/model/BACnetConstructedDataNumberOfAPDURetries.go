@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (numberOfApduRetries)
 	lengthInBits += m.NumberOfApduRetries.GetLengthInBits(ctx)

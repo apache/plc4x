@@ -41,11 +41,11 @@ type MonitoredItemCreateRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetItemToMonitor returns ItemToMonitor (property field)
-	GetItemToMonitor() ExtensionObjectDefinition
+	GetItemToMonitor() ReadValueId
 	// GetMonitoringMode returns MonitoringMode (property field)
 	GetMonitoringMode() MonitoringMode
 	// GetRequestedParameters returns RequestedParameters (property field)
-	GetRequestedParameters() ExtensionObjectDefinition
+	GetRequestedParameters() MonitoringParameters
 	// IsMonitoredItemCreateRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredItemCreateRequest()
 	// CreateBuilder creates a MonitoredItemCreateRequestBuilder
@@ -55,21 +55,21 @@ type MonitoredItemCreateRequest interface {
 // _MonitoredItemCreateRequest is the data-structure of this message
 type _MonitoredItemCreateRequest struct {
 	ExtensionObjectDefinitionContract
-	ItemToMonitor       ExtensionObjectDefinition
+	ItemToMonitor       ReadValueId
 	MonitoringMode      MonitoringMode
-	RequestedParameters ExtensionObjectDefinition
+	RequestedParameters MonitoringParameters
 }
 
 var _ MonitoredItemCreateRequest = (*_MonitoredItemCreateRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoredItemCreateRequest)(nil)
 
 // NewMonitoredItemCreateRequest factory function for _MonitoredItemCreateRequest
-func NewMonitoredItemCreateRequest(itemToMonitor ExtensionObjectDefinition, monitoringMode MonitoringMode, requestedParameters ExtensionObjectDefinition) *_MonitoredItemCreateRequest {
+func NewMonitoredItemCreateRequest(itemToMonitor ReadValueId, monitoringMode MonitoringMode, requestedParameters MonitoringParameters) *_MonitoredItemCreateRequest {
 	if itemToMonitor == nil {
-		panic("itemToMonitor of type ExtensionObjectDefinition for MonitoredItemCreateRequest must not be nil")
+		panic("itemToMonitor of type ReadValueId for MonitoredItemCreateRequest must not be nil")
 	}
 	if requestedParameters == nil {
-		panic("requestedParameters of type ExtensionObjectDefinition for MonitoredItemCreateRequest must not be nil")
+		panic("requestedParameters of type MonitoringParameters for MonitoredItemCreateRequest must not be nil")
 	}
 	_result := &_MonitoredItemCreateRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -90,17 +90,17 @@ func NewMonitoredItemCreateRequest(itemToMonitor ExtensionObjectDefinition, moni
 type MonitoredItemCreateRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(itemToMonitor ExtensionObjectDefinition, monitoringMode MonitoringMode, requestedParameters ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder
+	WithMandatoryFields(itemToMonitor ReadValueId, monitoringMode MonitoringMode, requestedParameters MonitoringParameters) MonitoredItemCreateRequestBuilder
 	// WithItemToMonitor adds ItemToMonitor (property field)
-	WithItemToMonitor(ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder
+	WithItemToMonitor(ReadValueId) MonitoredItemCreateRequestBuilder
 	// WithItemToMonitorBuilder adds ItemToMonitor (property field) which is build by the builder
-	WithItemToMonitorBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemCreateRequestBuilder
+	WithItemToMonitorBuilder(func(ReadValueIdBuilder) ReadValueIdBuilder) MonitoredItemCreateRequestBuilder
 	// WithMonitoringMode adds MonitoringMode (property field)
 	WithMonitoringMode(MonitoringMode) MonitoredItemCreateRequestBuilder
 	// WithRequestedParameters adds RequestedParameters (property field)
-	WithRequestedParameters(ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder
+	WithRequestedParameters(MonitoringParameters) MonitoredItemCreateRequestBuilder
 	// WithRequestedParametersBuilder adds RequestedParameters (property field) which is build by the builder
-	WithRequestedParametersBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemCreateRequestBuilder
+	WithRequestedParametersBuilder(func(MonitoringParametersBuilder) MonitoringParametersBuilder) MonitoredItemCreateRequestBuilder
 	// Build builds the MonitoredItemCreateRequest or returns an error if something is wrong
 	Build() (MonitoredItemCreateRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -126,24 +126,24 @@ func (b *_MonitoredItemCreateRequestBuilder) setParent(contract ExtensionObjectD
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_MonitoredItemCreateRequestBuilder) WithMandatoryFields(itemToMonitor ExtensionObjectDefinition, monitoringMode MonitoringMode, requestedParameters ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder {
+func (b *_MonitoredItemCreateRequestBuilder) WithMandatoryFields(itemToMonitor ReadValueId, monitoringMode MonitoringMode, requestedParameters MonitoringParameters) MonitoredItemCreateRequestBuilder {
 	return b.WithItemToMonitor(itemToMonitor).WithMonitoringMode(monitoringMode).WithRequestedParameters(requestedParameters)
 }
 
-func (b *_MonitoredItemCreateRequestBuilder) WithItemToMonitor(itemToMonitor ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder {
+func (b *_MonitoredItemCreateRequestBuilder) WithItemToMonitor(itemToMonitor ReadValueId) MonitoredItemCreateRequestBuilder {
 	b.ItemToMonitor = itemToMonitor
 	return b
 }
 
-func (b *_MonitoredItemCreateRequestBuilder) WithItemToMonitorBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemCreateRequestBuilder {
-	builder := builderSupplier(b.ItemToMonitor.CreateExtensionObjectDefinitionBuilder())
+func (b *_MonitoredItemCreateRequestBuilder) WithItemToMonitorBuilder(builderSupplier func(ReadValueIdBuilder) ReadValueIdBuilder) MonitoredItemCreateRequestBuilder {
+	builder := builderSupplier(b.ItemToMonitor.CreateReadValueIdBuilder())
 	var err error
 	b.ItemToMonitor, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ReadValueIdBuilder failed"))
 	}
 	return b
 }
@@ -153,20 +153,20 @@ func (b *_MonitoredItemCreateRequestBuilder) WithMonitoringMode(monitoringMode M
 	return b
 }
 
-func (b *_MonitoredItemCreateRequestBuilder) WithRequestedParameters(requestedParameters ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder {
+func (b *_MonitoredItemCreateRequestBuilder) WithRequestedParameters(requestedParameters MonitoringParameters) MonitoredItemCreateRequestBuilder {
 	b.RequestedParameters = requestedParameters
 	return b
 }
 
-func (b *_MonitoredItemCreateRequestBuilder) WithRequestedParametersBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemCreateRequestBuilder {
-	builder := builderSupplier(b.RequestedParameters.CreateExtensionObjectDefinitionBuilder())
+func (b *_MonitoredItemCreateRequestBuilder) WithRequestedParametersBuilder(builderSupplier func(MonitoringParametersBuilder) MonitoringParametersBuilder) MonitoredItemCreateRequestBuilder {
+	builder := builderSupplier(b.RequestedParameters.CreateMonitoringParametersBuilder())
 	var err error
 	b.RequestedParameters, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "MonitoringParametersBuilder failed"))
 	}
 	return b
 }
@@ -233,8 +233,8 @@ func (b *_MonitoredItemCreateRequest) CreateMonitoredItemCreateRequestBuilder() 
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_MonitoredItemCreateRequest) GetIdentifier() string {
-	return "745"
+func (m *_MonitoredItemCreateRequest) GetExtensionId() int32 {
+	return int32(745)
 }
 
 ///////////////////////
@@ -251,7 +251,7 @@ func (m *_MonitoredItemCreateRequest) GetParent() ExtensionObjectDefinitionContr
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_MonitoredItemCreateRequest) GetItemToMonitor() ExtensionObjectDefinition {
+func (m *_MonitoredItemCreateRequest) GetItemToMonitor() ReadValueId {
 	return m.ItemToMonitor
 }
 
@@ -259,7 +259,7 @@ func (m *_MonitoredItemCreateRequest) GetMonitoringMode() MonitoringMode {
 	return m.MonitoringMode
 }
 
-func (m *_MonitoredItemCreateRequest) GetRequestedParameters() ExtensionObjectDefinition {
+func (m *_MonitoredItemCreateRequest) GetRequestedParameters() MonitoringParameters {
 	return m.RequestedParameters
 }
 
@@ -284,7 +284,7 @@ func (m *_MonitoredItemCreateRequest) GetTypeName() string {
 }
 
 func (m *_MonitoredItemCreateRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (itemToMonitor)
 	lengthInBits += m.ItemToMonitor.GetLengthInBits(ctx)
@@ -302,7 +302,7 @@ func (m *_MonitoredItemCreateRequest) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_MonitoredItemCreateRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__monitoredItemCreateRequest MonitoredItemCreateRequest, err error) {
+func (m *_MonitoredItemCreateRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__monitoredItemCreateRequest MonitoredItemCreateRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -313,7 +313,7 @@ func (m *_MonitoredItemCreateRequest) parse(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	itemToMonitor, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "itemToMonitor", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("628")), readBuffer))
+	itemToMonitor, err := ReadSimpleField[ReadValueId](ctx, "itemToMonitor", ReadComplex[ReadValueId](ExtensionObjectDefinitionParseWithBufferProducer[ReadValueId]((int32)(int32(628))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemToMonitor' field"))
 	}
@@ -325,7 +325,7 @@ func (m *_MonitoredItemCreateRequest) parse(ctx context.Context, readBuffer util
 	}
 	m.MonitoringMode = monitoringMode
 
-	requestedParameters, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestedParameters", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("742")), readBuffer))
+	requestedParameters, err := ReadSimpleField[MonitoringParameters](ctx, "requestedParameters", ReadComplex[MonitoringParameters](ExtensionObjectDefinitionParseWithBufferProducer[MonitoringParameters]((int32)(int32(742))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedParameters' field"))
 	}
@@ -356,7 +356,7 @@ func (m *_MonitoredItemCreateRequest) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for MonitoredItemCreateRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "itemToMonitor", m.GetItemToMonitor(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ReadValueId](ctx, "itemToMonitor", m.GetItemToMonitor(), WriteComplex[ReadValueId](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'itemToMonitor' field")
 		}
 
@@ -364,7 +364,7 @@ func (m *_MonitoredItemCreateRequest) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(err, "Error serializing 'monitoringMode' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestedParameters", m.GetRequestedParameters(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[MonitoringParameters](ctx, "requestedParameters", m.GetRequestedParameters(), WriteComplex[MonitoringParameters](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestedParameters' field")
 		}
 
@@ -388,9 +388,9 @@ func (m *_MonitoredItemCreateRequest) deepCopy() *_MonitoredItemCreateRequest {
 	}
 	_MonitoredItemCreateRequestCopy := &_MonitoredItemCreateRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ItemToMonitor.DeepCopy().(ExtensionObjectDefinition),
+		m.ItemToMonitor.DeepCopy().(ReadValueId),
 		m.MonitoringMode,
-		m.RequestedParameters.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestedParameters.DeepCopy().(MonitoringParameters),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _MonitoredItemCreateRequestCopy

@@ -42,10 +42,8 @@ type BrowsePathResult interface {
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
-	// GetNoOfTargets returns NoOfTargets (property field)
-	GetNoOfTargets() int32
 	// GetTargets returns Targets (property field)
-	GetTargets() []ExtensionObjectDefinition
+	GetTargets() []BrowsePathTarget
 	// IsBrowsePathResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrowsePathResult()
 	// CreateBuilder creates a BrowsePathResultBuilder
@@ -55,23 +53,21 @@ type BrowsePathResult interface {
 // _BrowsePathResult is the data-structure of this message
 type _BrowsePathResult struct {
 	ExtensionObjectDefinitionContract
-	StatusCode  StatusCode
-	NoOfTargets int32
-	Targets     []ExtensionObjectDefinition
+	StatusCode StatusCode
+	Targets    []BrowsePathTarget
 }
 
 var _ BrowsePathResult = (*_BrowsePathResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowsePathResult)(nil)
 
 // NewBrowsePathResult factory function for _BrowsePathResult
-func NewBrowsePathResult(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) *_BrowsePathResult {
+func NewBrowsePathResult(statusCode StatusCode, targets []BrowsePathTarget) *_BrowsePathResult {
 	if statusCode == nil {
 		panic("statusCode of type StatusCode for BrowsePathResult must not be nil")
 	}
 	_result := &_BrowsePathResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,
-		NoOfTargets:                       noOfTargets,
 		Targets:                           targets,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -87,15 +83,13 @@ func NewBrowsePathResult(statusCode StatusCode, noOfTargets int32, targets []Ext
 type BrowsePathResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) BrowsePathResultBuilder
+	WithMandatoryFields(statusCode StatusCode, targets []BrowsePathTarget) BrowsePathResultBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithStatusCode(StatusCode) BrowsePathResultBuilder
 	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
 	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) BrowsePathResultBuilder
-	// WithNoOfTargets adds NoOfTargets (property field)
-	WithNoOfTargets(int32) BrowsePathResultBuilder
 	// WithTargets adds Targets (property field)
-	WithTargets(...ExtensionObjectDefinition) BrowsePathResultBuilder
+	WithTargets(...BrowsePathTarget) BrowsePathResultBuilder
 	// Build builds the BrowsePathResult or returns an error if something is wrong
 	Build() (BrowsePathResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,8 +115,8 @@ func (b *_BrowsePathResultBuilder) setParent(contract ExtensionObjectDefinitionC
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_BrowsePathResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) BrowsePathResultBuilder {
-	return b.WithStatusCode(statusCode).WithNoOfTargets(noOfTargets).WithTargets(targets...)
+func (b *_BrowsePathResultBuilder) WithMandatoryFields(statusCode StatusCode, targets []BrowsePathTarget) BrowsePathResultBuilder {
+	return b.WithStatusCode(statusCode).WithTargets(targets...)
 }
 
 func (b *_BrowsePathResultBuilder) WithStatusCode(statusCode StatusCode) BrowsePathResultBuilder {
@@ -143,12 +137,7 @@ func (b *_BrowsePathResultBuilder) WithStatusCodeBuilder(builderSupplier func(St
 	return b
 }
 
-func (b *_BrowsePathResultBuilder) WithNoOfTargets(noOfTargets int32) BrowsePathResultBuilder {
-	b.NoOfTargets = noOfTargets
-	return b
-}
-
-func (b *_BrowsePathResultBuilder) WithTargets(targets ...ExtensionObjectDefinition) BrowsePathResultBuilder {
+func (b *_BrowsePathResultBuilder) WithTargets(targets ...BrowsePathTarget) BrowsePathResultBuilder {
 	b.Targets = targets
 	return b
 }
@@ -209,8 +198,8 @@ func (b *_BrowsePathResult) CreateBrowsePathResultBuilder() BrowsePathResultBuil
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_BrowsePathResult) GetIdentifier() string {
-	return "551"
+func (m *_BrowsePathResult) GetExtensionId() int32 {
+	return int32(551)
 }
 
 ///////////////////////
@@ -231,11 +220,7 @@ func (m *_BrowsePathResult) GetStatusCode() StatusCode {
 	return m.StatusCode
 }
 
-func (m *_BrowsePathResult) GetNoOfTargets() int32 {
-	return m.NoOfTargets
-}
-
-func (m *_BrowsePathResult) GetTargets() []ExtensionObjectDefinition {
+func (m *_BrowsePathResult) GetTargets() []BrowsePathTarget {
 	return m.Targets
 }
 
@@ -260,12 +245,12 @@ func (m *_BrowsePathResult) GetTypeName() string {
 }
 
 func (m *_BrowsePathResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
 
-	// Simple field (noOfTargets)
+	// Implicit Field (noOfTargets)
 	lengthInBits += 32
 
 	// Array field
@@ -285,7 +270,7 @@ func (m *_BrowsePathResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_BrowsePathResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__browsePathResult BrowsePathResult, err error) {
+func (m *_BrowsePathResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__browsePathResult BrowsePathResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -302,13 +287,13 @@ func (m *_BrowsePathResult) parse(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	m.StatusCode = statusCode
 
-	noOfTargets, err := ReadSimpleField(ctx, "noOfTargets", ReadSignedInt(readBuffer, uint8(32)))
+	noOfTargets, err := ReadImplicitField[int32](ctx, "noOfTargets", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfTargets' field"))
 	}
-	m.NoOfTargets = noOfTargets
+	_ = noOfTargets
 
-	targets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "targets", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("548")), readBuffer), uint64(noOfTargets))
+	targets, err := ReadCountArrayField[BrowsePathTarget](ctx, "targets", ReadComplex[BrowsePathTarget](ExtensionObjectDefinitionParseWithBufferProducer[BrowsePathTarget]((int32)(int32(548))), readBuffer), uint64(noOfTargets))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targets' field"))
 	}
@@ -342,8 +327,8 @@ func (m *_BrowsePathResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfTargets", m.GetNoOfTargets(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfTargets := int32(utils.InlineIf(bool((m.GetTargets()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetTargets()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfTargets", noOfTargets, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfTargets' field")
 		}
 
@@ -372,8 +357,7 @@ func (m *_BrowsePathResult) deepCopy() *_BrowsePathResult {
 	_BrowsePathResultCopy := &_BrowsePathResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
-		m.NoOfTargets,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Targets),
+		utils.DeepCopySlice[BrowsePathTarget, BrowsePathTarget](m.Targets),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrowsePathResultCopy

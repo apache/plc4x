@@ -38,45 +38,31 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AddNodesResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "491";
+  public Integer getExtensionId() {
+    return (int) 491;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
-  protected final int noOfResults;
-  protected final List<ExtensionObjectDefinition> results;
-  protected final int noOfDiagnosticInfos;
+  protected final ResponseHeader responseHeader;
+  protected final List<AddNodesResult> results;
   protected final List<DiagnosticInfo> diagnosticInfos;
 
   public AddNodesResponse(
-      ExtensionObjectDefinition responseHeader,
-      int noOfResults,
-      List<ExtensionObjectDefinition> results,
-      int noOfDiagnosticInfos,
+      ResponseHeader responseHeader,
+      List<AddNodesResult> results,
       List<DiagnosticInfo> diagnosticInfos) {
     super();
     this.responseHeader = responseHeader;
-    this.noOfResults = noOfResults;
     this.results = results;
-    this.noOfDiagnosticInfos = noOfDiagnosticInfos;
     this.diagnosticInfos = diagnosticInfos;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
-  public int getNoOfResults() {
-    return noOfResults;
-  }
-
-  public List<ExtensionObjectDefinition> getResults() {
+  public List<AddNodesResult> getResults() {
     return results;
-  }
-
-  public int getNoOfDiagnosticInfos() {
-    return noOfDiagnosticInfos;
   }
 
   public List<DiagnosticInfo> getDiagnosticInfos() {
@@ -93,14 +79,19 @@ public class AddNodesResponse extends ExtensionObjectDefinition implements Messa
     // Simple Field (responseHeader)
     writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfResults)
-    writeSimpleField("noOfResults", noOfResults, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfResults) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfResults = (int) ((((getResults()) == (null)) ? -(1) : COUNT(getResults())));
+    writeImplicitField("noOfResults", noOfResults, writeSignedInt(writeBuffer, 32));
 
     // Array Field (results)
     writeComplexTypeArrayField("results", results, writeBuffer);
 
-    // Simple Field (noOfDiagnosticInfos)
-    writeSimpleField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfDiagnosticInfos) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfDiagnosticInfos =
+        (int) ((((getDiagnosticInfos()) == (null)) ? -(1) : COUNT(getDiagnosticInfos())));
+    writeImplicitField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
 
     // Array Field (diagnosticInfos)
     writeComplexTypeArrayField("diagnosticInfos", diagnosticInfos, writeBuffer);
@@ -122,19 +113,19 @@ public class AddNodesResponse extends ExtensionObjectDefinition implements Messa
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
 
-    // Simple field (noOfResults)
+    // Implicit Field (noOfResults)
     lengthInBits += 32;
 
     // Array field
     if (results != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : results) {
+      for (AddNodesResult element : results) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= results.size());
         lengthInBits += element.getLengthInBits();
       }
     }
 
-    // Simple field (noOfDiagnosticInfos)
+    // Implicit Field (noOfDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -150,29 +141,32 @@ public class AddNodesResponse extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("AddNodesResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
-    int noOfResults = readSimpleField("noOfResults", readSignedInt(readBuffer, 32));
+    int noOfResults = readImplicitField("noOfResults", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> results =
+    List<AddNodesResult> results =
         readCountArrayField(
             "results",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("485")),
+                () ->
+                    (AddNodesResult) ExtensionObjectDefinition.staticParse(readBuffer, (int) (485)),
                 readBuffer),
             noOfResults);
 
-    int noOfDiagnosticInfos = readSimpleField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
+    int noOfDiagnosticInfos =
+        readImplicitField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
@@ -182,35 +176,27 @@ public class AddNodesResponse extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("AddNodesResponse");
     // Create the instance
-    return new AddNodesResponseBuilderImpl(
-        responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
+    return new AddNodesResponseBuilderImpl(responseHeader, results, diagnosticInfos);
   }
 
   public static class AddNodesResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
-    private final int noOfResults;
-    private final List<ExtensionObjectDefinition> results;
-    private final int noOfDiagnosticInfos;
+    private final ResponseHeader responseHeader;
+    private final List<AddNodesResult> results;
     private final List<DiagnosticInfo> diagnosticInfos;
 
     public AddNodesResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
-        int noOfResults,
-        List<ExtensionObjectDefinition> results,
-        int noOfDiagnosticInfos,
+        ResponseHeader responseHeader,
+        List<AddNodesResult> results,
         List<DiagnosticInfo> diagnosticInfos) {
       this.responseHeader = responseHeader;
-      this.noOfResults = noOfResults;
       this.results = results;
-      this.noOfDiagnosticInfos = noOfDiagnosticInfos;
       this.diagnosticInfos = diagnosticInfos;
     }
 
     public AddNodesResponse build() {
       AddNodesResponse addNodesResponse =
-          new AddNodesResponse(
-              responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
+          new AddNodesResponse(responseHeader, results, diagnosticInfos);
       return addNodesResponse;
     }
   }
@@ -225,9 +211,7 @@ public class AddNodesResponse extends ExtensionObjectDefinition implements Messa
     }
     AddNodesResponse that = (AddNodesResponse) o;
     return (getResponseHeader() == that.getResponseHeader())
-        && (getNoOfResults() == that.getNoOfResults())
         && (getResults() == that.getResults())
-        && (getNoOfDiagnosticInfos() == that.getNoOfDiagnosticInfos())
         && (getDiagnosticInfos() == that.getDiagnosticInfos())
         && super.equals(that)
         && true;
@@ -235,13 +219,7 @@ public class AddNodesResponse extends ExtensionObjectDefinition implements Messa
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getResponseHeader(),
-        getNoOfResults(),
-        getResults(),
-        getNoOfDiagnosticInfos(),
-        getDiagnosticInfos());
+    return Objects.hash(super.hashCode(), getResponseHeader(), getResults(), getDiagnosticInfos());
   }
 
   @Override

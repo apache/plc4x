@@ -38,38 +38,29 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SetPublishingModeRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "799";
+  public Integer getExtensionId() {
+    return (int) 799;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final boolean publishingEnabled;
-  protected final int noOfSubscriptionIds;
   protected final List<Long> subscriptionIds;
 
   public SetPublishingModeRequest(
-      ExtensionObjectDefinition requestHeader,
-      boolean publishingEnabled,
-      int noOfSubscriptionIds,
-      List<Long> subscriptionIds) {
+      RequestHeader requestHeader, boolean publishingEnabled, List<Long> subscriptionIds) {
     super();
     this.requestHeader = requestHeader;
     this.publishingEnabled = publishingEnabled;
-    this.noOfSubscriptionIds = noOfSubscriptionIds;
     this.subscriptionIds = subscriptionIds;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
   public boolean getPublishingEnabled() {
     return publishingEnabled;
-  }
-
-  public int getNoOfSubscriptionIds() {
-    return noOfSubscriptionIds;
   }
 
   public List<Long> getSubscriptionIds() {
@@ -92,8 +83,11 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
     // Simple Field (publishingEnabled)
     writeSimpleField("publishingEnabled", publishingEnabled, writeBoolean(writeBuffer));
 
-    // Simple Field (noOfSubscriptionIds)
-    writeSimpleField("noOfSubscriptionIds", noOfSubscriptionIds, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfSubscriptionIds) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfSubscriptionIds =
+        (int) ((((getSubscriptionIds()) == (null)) ? -(1) : COUNT(getSubscriptionIds())));
+    writeImplicitField("noOfSubscriptionIds", noOfSubscriptionIds, writeSignedInt(writeBuffer, 32));
 
     // Array Field (subscriptionIds)
     writeSimpleTypeArrayField(
@@ -122,7 +116,7 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
     // Simple field (publishingEnabled)
     lengthInBits += 1;
 
-    // Simple field (noOfSubscriptionIds)
+    // Implicit Field (noOfSubscriptionIds)
     lengthInBits += 32;
 
     // Array field
@@ -134,16 +128,17 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SetPublishingModeRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     Byte reservedField0 =
@@ -151,7 +146,8 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
 
     boolean publishingEnabled = readSimpleField("publishingEnabled", readBoolean(readBuffer));
 
-    int noOfSubscriptionIds = readSimpleField("noOfSubscriptionIds", readSignedInt(readBuffer, 32));
+    int noOfSubscriptionIds =
+        readImplicitField("noOfSubscriptionIds", readSignedInt(readBuffer, 32));
 
     List<Long> subscriptionIds =
         readCountArrayField(
@@ -160,31 +156,25 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
     readBuffer.closeContext("SetPublishingModeRequest");
     // Create the instance
     return new SetPublishingModeRequestBuilderImpl(
-        requestHeader, publishingEnabled, noOfSubscriptionIds, subscriptionIds);
+        requestHeader, publishingEnabled, subscriptionIds);
   }
 
   public static class SetPublishingModeRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final boolean publishingEnabled;
-    private final int noOfSubscriptionIds;
     private final List<Long> subscriptionIds;
 
     public SetPublishingModeRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        boolean publishingEnabled,
-        int noOfSubscriptionIds,
-        List<Long> subscriptionIds) {
+        RequestHeader requestHeader, boolean publishingEnabled, List<Long> subscriptionIds) {
       this.requestHeader = requestHeader;
       this.publishingEnabled = publishingEnabled;
-      this.noOfSubscriptionIds = noOfSubscriptionIds;
       this.subscriptionIds = subscriptionIds;
     }
 
     public SetPublishingModeRequest build() {
       SetPublishingModeRequest setPublishingModeRequest =
-          new SetPublishingModeRequest(
-              requestHeader, publishingEnabled, noOfSubscriptionIds, subscriptionIds);
+          new SetPublishingModeRequest(requestHeader, publishingEnabled, subscriptionIds);
       return setPublishingModeRequest;
     }
   }
@@ -200,7 +190,6 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
     SetPublishingModeRequest that = (SetPublishingModeRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
         && (getPublishingEnabled() == that.getPublishingEnabled())
-        && (getNoOfSubscriptionIds() == that.getNoOfSubscriptionIds())
         && (getSubscriptionIds() == that.getSubscriptionIds())
         && super.equals(that)
         && true;
@@ -209,11 +198,7 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getRequestHeader(),
-        getPublishingEnabled(),
-        getNoOfSubscriptionIds(),
-        getSubscriptionIds());
+        super.hashCode(), getRequestHeader(), getPublishingEnabled(), getSubscriptionIds());
   }
 
   @Override

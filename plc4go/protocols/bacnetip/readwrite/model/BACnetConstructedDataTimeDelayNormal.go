@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataTimeDelayNormal) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataTimeDelayNormal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (timeDelayNormal)
 	lengthInBits += m.TimeDelayNormal.GetLengthInBits(ctx)

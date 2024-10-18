@@ -235,7 +235,7 @@ func (m *_BVLCDistributeBroadcastToNetwork) GetTypeName() string {
 }
 
 func (m *_BVLCDistributeBroadcastToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BVLCContract.(*_BVLC).GetLengthInBits(ctx))
 
 	// Simple field (npdu)
 	lengthInBits += m.Npdu.GetLengthInBits(ctx)

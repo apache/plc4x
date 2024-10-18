@@ -68,7 +68,7 @@ import java.util.function.Consumer;
 public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements HasConfiguration<OpcuaConfiguration>, PlcSubscriber {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaProtocolLogic.class);
-    protected static final PascalString NULL_STRING = new PascalString("");
+    protected static final PascalString NULL_STRING = new PascalString(null);
     private static final ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeId(false,
         false,
         new NodeIdTwoByte((short) 0),
@@ -76,10 +76,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         null
     );
 
-    protected static final ExtensionObject NULL_EXTENSION_OBJECT = new ExtensionObject(
+    protected static final ExtensionObject NULL_EXTENSION_OBJECT = new NullExtensionObjectWithMask(
         NULL_EXPANDED_NODEID,
-        new ExtensionObjectEncodingMask(false, false, false),
-        new NullExtension());               // Body
+        new ExtensionObjectEncodingMask(false, false, false));
 
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
     private final Map<Long, OpcuaSubscriptionHandle> subscriptions = new ConcurrentHashMap<>();
@@ -208,7 +207,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
         RequestHeader requestHeader = conversation.createRequestHeader();
 
-        List<ExtensionObjectDefinition> readValueArray = new ArrayList<>(request.getTagNames().size());
+        List<ReadValueId> readValueArray = new ArrayList<>(request.getTagNames().size());
         Iterator<String> iterator = request.getTagNames().iterator();
         Map<String, PlcTag> tagMap = new HashMap<>();
         for (int i = 0; i < request.getTagNames().size(); i++) {
@@ -220,7 +219,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             NodeId nodeId = generateNodeId(tag);
 
             readValueArray.add(new ReadValueId(nodeId,
-                0xD,
+                tag.getAttributeId().getValue(),
                 NULL_STRING,
                 new QualifiedName(0, NULL_STRING)));
         }
@@ -229,8 +228,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             requestHeader,
             0.0d,
             TimestampsToReturn.timestampsToReturnNeither,
-            readValueArray.size(),
-            readValueArray);
+            readValueArray
+        );
 
         CompletableFuture<ReadResponse> future = new CompletableFuture<>();
         RequestTransaction transaction = tm.startRequest();
@@ -726,14 +725,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
 
         RequestHeader requestHeader = conversation.createRequestHeader();
-        List<ExtensionObjectDefinition> writeValueList = new ArrayList<>(request.getTagNames().size());
+        List<WriteValue> writeValueList = new ArrayList<>(request.getTagNames().size());
         for (String tagName : request.getTagNames()) {
             OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
 
             NodeId nodeId = generateNodeId(tag);
 
             writeValueList.add(new WriteValue(nodeId,
-                0xD,
+                tag.getAttributeId().getValue(),
                 NULL_STRING,
                 new DataValue(
                     false,
@@ -750,7 +749,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null)));
         }
 
-        WriteRequest opcuaWriteRequest = new WriteRequest(requestHeader, writeValueList.size(), writeValueList);
+        WriteRequest opcuaWriteRequest = new WriteRequest(requestHeader, writeValueList);
 
         CompletableFuture<WriteResponse> future = new CompletableFuture<>();
         RequestTransaction transaction = tm.startRequest();
@@ -782,7 +781,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
         RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> {
-            // bridge(transaction, future, response, error)
             onSubscribeCreateSubscription(cycleTime).thenApply(response -> {
                 long subscriptionId = response.getSubscriptionId();
                 OpcuaSubscriptionHandle handle = new OpcuaSubscriptionHandle(this, tm,
@@ -807,10 +805,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             .whenComplete((response, error) -> bridge(transaction, future, response, error));
         });
         return future;
-    }
-
-    protected void requestSubscriptionPublish() {
-
     }
 
     private CompletableFuture<CreateSubscriptionResponse> onSubscribeCreateSubscription(long cycleTime) {

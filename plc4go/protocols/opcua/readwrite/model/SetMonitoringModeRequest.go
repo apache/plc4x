@@ -41,13 +41,11 @@ type SetMonitoringModeRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetSubscriptionId returns SubscriptionId (property field)
 	GetSubscriptionId() uint32
 	// GetMonitoringMode returns MonitoringMode (property field)
 	GetMonitoringMode() MonitoringMode
-	// GetNoOfMonitoredItemIds returns NoOfMonitoredItemIds (property field)
-	GetNoOfMonitoredItemIds() int32
 	// GetMonitoredItemIds returns MonitoredItemIds (property field)
 	GetMonitoredItemIds() []uint32
 	// IsSetMonitoringModeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,27 +57,25 @@ type SetMonitoringModeRequest interface {
 // _SetMonitoringModeRequest is the data-structure of this message
 type _SetMonitoringModeRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader        ExtensionObjectDefinition
-	SubscriptionId       uint32
-	MonitoringMode       MonitoringMode
-	NoOfMonitoredItemIds int32
-	MonitoredItemIds     []uint32
+	RequestHeader    RequestHeader
+	SubscriptionId   uint32
+	MonitoringMode   MonitoringMode
+	MonitoredItemIds []uint32
 }
 
 var _ SetMonitoringModeRequest = (*_SetMonitoringModeRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetMonitoringModeRequest)(nil)
 
 // NewSetMonitoringModeRequest factory function for _SetMonitoringModeRequest
-func NewSetMonitoringModeRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, monitoringMode MonitoringMode, noOfMonitoredItemIds int32, monitoredItemIds []uint32) *_SetMonitoringModeRequest {
+func NewSetMonitoringModeRequest(requestHeader RequestHeader, subscriptionId uint32, monitoringMode MonitoringMode, monitoredItemIds []uint32) *_SetMonitoringModeRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for SetMonitoringModeRequest must not be nil")
+		panic("requestHeader of type RequestHeader for SetMonitoringModeRequest must not be nil")
 	}
 	_result := &_SetMonitoringModeRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
 		SubscriptionId:                    subscriptionId,
 		MonitoringMode:                    monitoringMode,
-		NoOfMonitoredItemIds:              noOfMonitoredItemIds,
 		MonitoredItemIds:                  monitoredItemIds,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -95,17 +91,15 @@ func NewSetMonitoringModeRequest(requestHeader ExtensionObjectDefinition, subscr
 type SetMonitoringModeRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, monitoringMode MonitoringMode, noOfMonitoredItemIds int32, monitoredItemIds []uint32) SetMonitoringModeRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, monitoringMode MonitoringMode, monitoredItemIds []uint32) SetMonitoringModeRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) SetMonitoringModeRequestBuilder
+	WithRequestHeader(RequestHeader) SetMonitoringModeRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetMonitoringModeRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) SetMonitoringModeRequestBuilder
 	// WithSubscriptionId adds SubscriptionId (property field)
 	WithSubscriptionId(uint32) SetMonitoringModeRequestBuilder
 	// WithMonitoringMode adds MonitoringMode (property field)
 	WithMonitoringMode(MonitoringMode) SetMonitoringModeRequestBuilder
-	// WithNoOfMonitoredItemIds adds NoOfMonitoredItemIds (property field)
-	WithNoOfMonitoredItemIds(int32) SetMonitoringModeRequestBuilder
 	// WithMonitoredItemIds adds MonitoredItemIds (property field)
 	WithMonitoredItemIds(...uint32) SetMonitoringModeRequestBuilder
 	// Build builds the SetMonitoringModeRequest or returns an error if something is wrong
@@ -133,24 +127,24 @@ func (b *_SetMonitoringModeRequestBuilder) setParent(contract ExtensionObjectDef
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_SetMonitoringModeRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, monitoringMode MonitoringMode, noOfMonitoredItemIds int32, monitoredItemIds []uint32) SetMonitoringModeRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithMonitoringMode(monitoringMode).WithNoOfMonitoredItemIds(noOfMonitoredItemIds).WithMonitoredItemIds(monitoredItemIds...)
+func (b *_SetMonitoringModeRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, monitoringMode MonitoringMode, monitoredItemIds []uint32) SetMonitoringModeRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithMonitoringMode(monitoringMode).WithMonitoredItemIds(monitoredItemIds...)
 }
 
-func (b *_SetMonitoringModeRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) SetMonitoringModeRequestBuilder {
+func (b *_SetMonitoringModeRequestBuilder) WithRequestHeader(requestHeader RequestHeader) SetMonitoringModeRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_SetMonitoringModeRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetMonitoringModeRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_SetMonitoringModeRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) SetMonitoringModeRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -162,11 +156,6 @@ func (b *_SetMonitoringModeRequestBuilder) WithSubscriptionId(subscriptionId uin
 
 func (b *_SetMonitoringModeRequestBuilder) WithMonitoringMode(monitoringMode MonitoringMode) SetMonitoringModeRequestBuilder {
 	b.MonitoringMode = monitoringMode
-	return b
-}
-
-func (b *_SetMonitoringModeRequestBuilder) WithNoOfMonitoredItemIds(noOfMonitoredItemIds int32) SetMonitoringModeRequestBuilder {
-	b.NoOfMonitoredItemIds = noOfMonitoredItemIds
 	return b
 }
 
@@ -231,8 +220,8 @@ func (b *_SetMonitoringModeRequest) CreateSetMonitoringModeRequestBuilder() SetM
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SetMonitoringModeRequest) GetIdentifier() string {
-	return "769"
+func (m *_SetMonitoringModeRequest) GetExtensionId() int32 {
+	return int32(769)
 }
 
 ///////////////////////
@@ -249,7 +238,7 @@ func (m *_SetMonitoringModeRequest) GetParent() ExtensionObjectDefinitionContrac
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_SetMonitoringModeRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_SetMonitoringModeRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
@@ -259,10 +248,6 @@ func (m *_SetMonitoringModeRequest) GetSubscriptionId() uint32 {
 
 func (m *_SetMonitoringModeRequest) GetMonitoringMode() MonitoringMode {
 	return m.MonitoringMode
-}
-
-func (m *_SetMonitoringModeRequest) GetNoOfMonitoredItemIds() int32 {
-	return m.NoOfMonitoredItemIds
 }
 
 func (m *_SetMonitoringModeRequest) GetMonitoredItemIds() []uint32 {
@@ -290,7 +275,7 @@ func (m *_SetMonitoringModeRequest) GetTypeName() string {
 }
 
 func (m *_SetMonitoringModeRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -301,7 +286,7 @@ func (m *_SetMonitoringModeRequest) GetLengthInBits(ctx context.Context) uint16 
 	// Simple field (monitoringMode)
 	lengthInBits += 32
 
-	// Simple field (noOfMonitoredItemIds)
+	// Implicit Field (noOfMonitoredItemIds)
 	lengthInBits += 32
 
 	// Array field
@@ -316,7 +301,7 @@ func (m *_SetMonitoringModeRequest) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SetMonitoringModeRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__setMonitoringModeRequest SetMonitoringModeRequest, err error) {
+func (m *_SetMonitoringModeRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__setMonitoringModeRequest SetMonitoringModeRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -327,7 +312,7 @@ func (m *_SetMonitoringModeRequest) parse(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -345,11 +330,11 @@ func (m *_SetMonitoringModeRequest) parse(ctx context.Context, readBuffer utils.
 	}
 	m.MonitoringMode = monitoringMode
 
-	noOfMonitoredItemIds, err := ReadSimpleField(ctx, "noOfMonitoredItemIds", ReadSignedInt(readBuffer, uint8(32)))
+	noOfMonitoredItemIds, err := ReadImplicitField[int32](ctx, "noOfMonitoredItemIds", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfMonitoredItemIds' field"))
 	}
-	m.NoOfMonitoredItemIds = noOfMonitoredItemIds
+	_ = noOfMonitoredItemIds
 
 	monitoredItemIds, err := ReadCountArrayField[uint32](ctx, "monitoredItemIds", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfMonitoredItemIds))
 	if err != nil {
@@ -382,7 +367,7 @@ func (m *_SetMonitoringModeRequest) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for SetMonitoringModeRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
@@ -393,8 +378,8 @@ func (m *_SetMonitoringModeRequest) SerializeWithWriteBuffer(ctx context.Context
 		if err := WriteSimpleEnumField[MonitoringMode](ctx, "monitoringMode", "MonitoringMode", m.GetMonitoringMode(), WriteEnum[MonitoringMode, uint32](MonitoringMode.GetValue, MonitoringMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
 			return errors.Wrap(err, "Error serializing 'monitoringMode' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfMonitoredItemIds", m.GetNoOfMonitoredItemIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfMonitoredItemIds := int32(utils.InlineIf(bool((m.GetMonitoredItemIds()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetMonitoredItemIds()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfMonitoredItemIds", noOfMonitoredItemIds, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfMonitoredItemIds' field")
 		}
 
@@ -422,10 +407,9 @@ func (m *_SetMonitoringModeRequest) deepCopy() *_SetMonitoringModeRequest {
 	}
 	_SetMonitoringModeRequestCopy := &_SetMonitoringModeRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.SubscriptionId,
 		m.MonitoringMode,
-		m.NoOfMonitoredItemIds,
 		utils.DeepCopySlice[uint32, uint32](m.MonitoredItemIds),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataProfileLocation) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataProfileLocation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (profileLocation)
 	lengthInBits += m.ProfileLocation.GetLengthInBits(ctx)

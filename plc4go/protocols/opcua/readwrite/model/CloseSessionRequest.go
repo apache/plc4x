@@ -41,7 +41,7 @@ type CloseSessionRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetDeleteSubscriptions returns DeleteSubscriptions (property field)
 	GetDeleteSubscriptions() bool
 	// IsCloseSessionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -53,7 +53,7 @@ type CloseSessionRequest interface {
 // _CloseSessionRequest is the data-structure of this message
 type _CloseSessionRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader       ExtensionObjectDefinition
+	RequestHeader       RequestHeader
 	DeleteSubscriptions bool
 	// Reserved Fields
 	reservedField0 *uint8
@@ -63,9 +63,9 @@ var _ CloseSessionRequest = (*_CloseSessionRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CloseSessionRequest)(nil)
 
 // NewCloseSessionRequest factory function for _CloseSessionRequest
-func NewCloseSessionRequest(requestHeader ExtensionObjectDefinition, deleteSubscriptions bool) *_CloseSessionRequest {
+func NewCloseSessionRequest(requestHeader RequestHeader, deleteSubscriptions bool) *_CloseSessionRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CloseSessionRequest must not be nil")
+		panic("requestHeader of type RequestHeader for CloseSessionRequest must not be nil")
 	}
 	_result := &_CloseSessionRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -85,11 +85,11 @@ func NewCloseSessionRequest(requestHeader ExtensionObjectDefinition, deleteSubsc
 type CloseSessionRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, deleteSubscriptions bool) CloseSessionRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, deleteSubscriptions bool) CloseSessionRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) CloseSessionRequestBuilder
+	WithRequestHeader(RequestHeader) CloseSessionRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSessionRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) CloseSessionRequestBuilder
 	// WithDeleteSubscriptions adds DeleteSubscriptions (property field)
 	WithDeleteSubscriptions(bool) CloseSessionRequestBuilder
 	// Build builds the CloseSessionRequest or returns an error if something is wrong
@@ -117,24 +117,24 @@ func (b *_CloseSessionRequestBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CloseSessionRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, deleteSubscriptions bool) CloseSessionRequestBuilder {
+func (b *_CloseSessionRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, deleteSubscriptions bool) CloseSessionRequestBuilder {
 	return b.WithRequestHeader(requestHeader).WithDeleteSubscriptions(deleteSubscriptions)
 }
 
-func (b *_CloseSessionRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CloseSessionRequestBuilder {
+func (b *_CloseSessionRequestBuilder) WithRequestHeader(requestHeader RequestHeader) CloseSessionRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_CloseSessionRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSessionRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CloseSessionRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) CloseSessionRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -200,8 +200,8 @@ func (b *_CloseSessionRequest) CreateCloseSessionRequestBuilder() CloseSessionRe
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CloseSessionRequest) GetIdentifier() string {
-	return "473"
+func (m *_CloseSessionRequest) GetExtensionId() int32 {
+	return int32(473)
 }
 
 ///////////////////////
@@ -218,7 +218,7 @@ func (m *_CloseSessionRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CloseSessionRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_CloseSessionRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
@@ -247,7 +247,7 @@ func (m *_CloseSessionRequest) GetTypeName() string {
 }
 
 func (m *_CloseSessionRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -265,7 +265,7 @@ func (m *_CloseSessionRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CloseSessionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__closeSessionRequest CloseSessionRequest, err error) {
+func (m *_CloseSessionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__closeSessionRequest CloseSessionRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -276,7 +276,7 @@ func (m *_CloseSessionRequest) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -319,7 +319,7 @@ func (m *_CloseSessionRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for CloseSessionRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
@@ -351,7 +351,7 @@ func (m *_CloseSessionRequest) deepCopy() *_CloseSessionRequest {
 	}
 	_CloseSessionRequestCopy := &_CloseSessionRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.DeleteSubscriptions,
 		m.reservedField0,
 	}

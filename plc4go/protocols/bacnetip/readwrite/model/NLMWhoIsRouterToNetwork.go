@@ -206,7 +206,7 @@ func (m *_NLMWhoIsRouterToNetwork) GetTypeName() string {
 }
 
 func (m *_NLMWhoIsRouterToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).GetLengthInBits(ctx))
 
 	// Optional Field (destinationNetworkAddress)
 	if m.DestinationNetworkAddress != nil {

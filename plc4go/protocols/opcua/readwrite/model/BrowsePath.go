@@ -43,7 +43,7 @@ type BrowsePath interface {
 	// GetStartingNode returns StartingNode (property field)
 	GetStartingNode() NodeId
 	// GetRelativePath returns RelativePath (property field)
-	GetRelativePath() ExtensionObjectDefinition
+	GetRelativePath() RelativePath
 	// IsBrowsePath is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrowsePath()
 	// CreateBuilder creates a BrowsePathBuilder
@@ -54,19 +54,19 @@ type BrowsePath interface {
 type _BrowsePath struct {
 	ExtensionObjectDefinitionContract
 	StartingNode NodeId
-	RelativePath ExtensionObjectDefinition
+	RelativePath RelativePath
 }
 
 var _ BrowsePath = (*_BrowsePath)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowsePath)(nil)
 
 // NewBrowsePath factory function for _BrowsePath
-func NewBrowsePath(startingNode NodeId, relativePath ExtensionObjectDefinition) *_BrowsePath {
+func NewBrowsePath(startingNode NodeId, relativePath RelativePath) *_BrowsePath {
 	if startingNode == nil {
 		panic("startingNode of type NodeId for BrowsePath must not be nil")
 	}
 	if relativePath == nil {
-		panic("relativePath of type ExtensionObjectDefinition for BrowsePath must not be nil")
+		panic("relativePath of type RelativePath for BrowsePath must not be nil")
 	}
 	_result := &_BrowsePath{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -86,15 +86,15 @@ func NewBrowsePath(startingNode NodeId, relativePath ExtensionObjectDefinition) 
 type BrowsePathBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(startingNode NodeId, relativePath ExtensionObjectDefinition) BrowsePathBuilder
+	WithMandatoryFields(startingNode NodeId, relativePath RelativePath) BrowsePathBuilder
 	// WithStartingNode adds StartingNode (property field)
 	WithStartingNode(NodeId) BrowsePathBuilder
 	// WithStartingNodeBuilder adds StartingNode (property field) which is build by the builder
 	WithStartingNodeBuilder(func(NodeIdBuilder) NodeIdBuilder) BrowsePathBuilder
 	// WithRelativePath adds RelativePath (property field)
-	WithRelativePath(ExtensionObjectDefinition) BrowsePathBuilder
+	WithRelativePath(RelativePath) BrowsePathBuilder
 	// WithRelativePathBuilder adds RelativePath (property field) which is build by the builder
-	WithRelativePathBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowsePathBuilder
+	WithRelativePathBuilder(func(RelativePathBuilder) RelativePathBuilder) BrowsePathBuilder
 	// Build builds the BrowsePath or returns an error if something is wrong
 	Build() (BrowsePath, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,7 +120,7 @@ func (b *_BrowsePathBuilder) setParent(contract ExtensionObjectDefinitionContrac
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_BrowsePathBuilder) WithMandatoryFields(startingNode NodeId, relativePath ExtensionObjectDefinition) BrowsePathBuilder {
+func (b *_BrowsePathBuilder) WithMandatoryFields(startingNode NodeId, relativePath RelativePath) BrowsePathBuilder {
 	return b.WithStartingNode(startingNode).WithRelativePath(relativePath)
 }
 
@@ -142,20 +142,20 @@ func (b *_BrowsePathBuilder) WithStartingNodeBuilder(builderSupplier func(NodeId
 	return b
 }
 
-func (b *_BrowsePathBuilder) WithRelativePath(relativePath ExtensionObjectDefinition) BrowsePathBuilder {
+func (b *_BrowsePathBuilder) WithRelativePath(relativePath RelativePath) BrowsePathBuilder {
 	b.RelativePath = relativePath
 	return b
 }
 
-func (b *_BrowsePathBuilder) WithRelativePathBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowsePathBuilder {
-	builder := builderSupplier(b.RelativePath.CreateExtensionObjectDefinitionBuilder())
+func (b *_BrowsePathBuilder) WithRelativePathBuilder(builderSupplier func(RelativePathBuilder) RelativePathBuilder) BrowsePathBuilder {
+	builder := builderSupplier(b.RelativePath.CreateRelativePathBuilder())
 	var err error
 	b.RelativePath, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RelativePathBuilder failed"))
 	}
 	return b
 }
@@ -222,8 +222,8 @@ func (b *_BrowsePath) CreateBrowsePathBuilder() BrowsePathBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_BrowsePath) GetIdentifier() string {
-	return "545"
+func (m *_BrowsePath) GetExtensionId() int32 {
+	return int32(545)
 }
 
 ///////////////////////
@@ -244,7 +244,7 @@ func (m *_BrowsePath) GetStartingNode() NodeId {
 	return m.StartingNode
 }
 
-func (m *_BrowsePath) GetRelativePath() ExtensionObjectDefinition {
+func (m *_BrowsePath) GetRelativePath() RelativePath {
 	return m.RelativePath
 }
 
@@ -269,7 +269,7 @@ func (m *_BrowsePath) GetTypeName() string {
 }
 
 func (m *_BrowsePath) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (startingNode)
 	lengthInBits += m.StartingNode.GetLengthInBits(ctx)
@@ -284,7 +284,7 @@ func (m *_BrowsePath) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_BrowsePath) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__browsePath BrowsePath, err error) {
+func (m *_BrowsePath) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__browsePath BrowsePath, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -301,7 +301,7 @@ func (m *_BrowsePath) parse(ctx context.Context, readBuffer utils.ReadBuffer, pa
 	}
 	m.StartingNode = startingNode
 
-	relativePath, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "relativePath", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("542")), readBuffer))
+	relativePath, err := ReadSimpleField[RelativePath](ctx, "relativePath", ReadComplex[RelativePath](ExtensionObjectDefinitionParseWithBufferProducer[RelativePath]((int32)(int32(542))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relativePath' field"))
 	}
@@ -336,7 +336,7 @@ func (m *_BrowsePath) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			return errors.Wrap(err, "Error serializing 'startingNode' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "relativePath", m.GetRelativePath(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RelativePath](ctx, "relativePath", m.GetRelativePath(), WriteComplex[RelativePath](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'relativePath' field")
 		}
 
@@ -361,7 +361,7 @@ func (m *_BrowsePath) deepCopy() *_BrowsePath {
 	_BrowsePathCopy := &_BrowsePath{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StartingNode.DeepCopy().(NodeId),
-		m.RelativePath.DeepCopy().(ExtensionObjectDefinition),
+		m.RelativePath.DeepCopy().(RelativePath),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrowsePathCopy

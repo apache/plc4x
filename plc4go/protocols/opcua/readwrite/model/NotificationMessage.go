@@ -44,8 +44,6 @@ type NotificationMessage interface {
 	GetSequenceNumber() uint32
 	// GetPublishTime returns PublishTime (property field)
 	GetPublishTime() int64
-	// GetNoOfNotificationData returns NoOfNotificationData (property field)
-	GetNoOfNotificationData() int32
 	// GetNotificationData returns NotificationData (property field)
 	GetNotificationData() []ExtensionObject
 	// IsNotificationMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -57,22 +55,20 @@ type NotificationMessage interface {
 // _NotificationMessage is the data-structure of this message
 type _NotificationMessage struct {
 	ExtensionObjectDefinitionContract
-	SequenceNumber       uint32
-	PublishTime          int64
-	NoOfNotificationData int32
-	NotificationData     []ExtensionObject
+	SequenceNumber   uint32
+	PublishTime      int64
+	NotificationData []ExtensionObject
 }
 
 var _ NotificationMessage = (*_NotificationMessage)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NotificationMessage)(nil)
 
 // NewNotificationMessage factory function for _NotificationMessage
-func NewNotificationMessage(sequenceNumber uint32, publishTime int64, noOfNotificationData int32, notificationData []ExtensionObject) *_NotificationMessage {
+func NewNotificationMessage(sequenceNumber uint32, publishTime int64, notificationData []ExtensionObject) *_NotificationMessage {
 	_result := &_NotificationMessage{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		SequenceNumber:                    sequenceNumber,
 		PublishTime:                       publishTime,
-		NoOfNotificationData:              noOfNotificationData,
 		NotificationData:                  notificationData,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -88,13 +84,11 @@ func NewNotificationMessage(sequenceNumber uint32, publishTime int64, noOfNotifi
 type NotificationMessageBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(sequenceNumber uint32, publishTime int64, noOfNotificationData int32, notificationData []ExtensionObject) NotificationMessageBuilder
+	WithMandatoryFields(sequenceNumber uint32, publishTime int64, notificationData []ExtensionObject) NotificationMessageBuilder
 	// WithSequenceNumber adds SequenceNumber (property field)
 	WithSequenceNumber(uint32) NotificationMessageBuilder
 	// WithPublishTime adds PublishTime (property field)
 	WithPublishTime(int64) NotificationMessageBuilder
-	// WithNoOfNotificationData adds NoOfNotificationData (property field)
-	WithNoOfNotificationData(int32) NotificationMessageBuilder
 	// WithNotificationData adds NotificationData (property field)
 	WithNotificationData(...ExtensionObject) NotificationMessageBuilder
 	// Build builds the NotificationMessage or returns an error if something is wrong
@@ -122,8 +116,8 @@ func (b *_NotificationMessageBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_NotificationMessageBuilder) WithMandatoryFields(sequenceNumber uint32, publishTime int64, noOfNotificationData int32, notificationData []ExtensionObject) NotificationMessageBuilder {
-	return b.WithSequenceNumber(sequenceNumber).WithPublishTime(publishTime).WithNoOfNotificationData(noOfNotificationData).WithNotificationData(notificationData...)
+func (b *_NotificationMessageBuilder) WithMandatoryFields(sequenceNumber uint32, publishTime int64, notificationData []ExtensionObject) NotificationMessageBuilder {
+	return b.WithSequenceNumber(sequenceNumber).WithPublishTime(publishTime).WithNotificationData(notificationData...)
 }
 
 func (b *_NotificationMessageBuilder) WithSequenceNumber(sequenceNumber uint32) NotificationMessageBuilder {
@@ -133,11 +127,6 @@ func (b *_NotificationMessageBuilder) WithSequenceNumber(sequenceNumber uint32) 
 
 func (b *_NotificationMessageBuilder) WithPublishTime(publishTime int64) NotificationMessageBuilder {
 	b.PublishTime = publishTime
-	return b
-}
-
-func (b *_NotificationMessageBuilder) WithNoOfNotificationData(noOfNotificationData int32) NotificationMessageBuilder {
-	b.NoOfNotificationData = noOfNotificationData
 	return b
 }
 
@@ -196,8 +185,8 @@ func (b *_NotificationMessage) CreateNotificationMessageBuilder() NotificationMe
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_NotificationMessage) GetIdentifier() string {
-	return "805"
+func (m *_NotificationMessage) GetExtensionId() int32 {
+	return int32(805)
 }
 
 ///////////////////////
@@ -220,10 +209,6 @@ func (m *_NotificationMessage) GetSequenceNumber() uint32 {
 
 func (m *_NotificationMessage) GetPublishTime() int64 {
 	return m.PublishTime
-}
-
-func (m *_NotificationMessage) GetNoOfNotificationData() int32 {
-	return m.NoOfNotificationData
 }
 
 func (m *_NotificationMessage) GetNotificationData() []ExtensionObject {
@@ -251,7 +236,7 @@ func (m *_NotificationMessage) GetTypeName() string {
 }
 
 func (m *_NotificationMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (sequenceNumber)
 	lengthInBits += 32
@@ -259,7 +244,7 @@ func (m *_NotificationMessage) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (publishTime)
 	lengthInBits += 64
 
-	// Simple field (noOfNotificationData)
+	// Implicit Field (noOfNotificationData)
 	lengthInBits += 32
 
 	// Array field
@@ -279,7 +264,7 @@ func (m *_NotificationMessage) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_NotificationMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__notificationMessage NotificationMessage, err error) {
+func (m *_NotificationMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__notificationMessage NotificationMessage, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -302,13 +287,13 @@ func (m *_NotificationMessage) parse(ctx context.Context, readBuffer utils.ReadB
 	}
 	m.PublishTime = publishTime
 
-	noOfNotificationData, err := ReadSimpleField(ctx, "noOfNotificationData", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNotificationData, err := ReadImplicitField[int32](ctx, "noOfNotificationData", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNotificationData' field"))
 	}
-	m.NoOfNotificationData = noOfNotificationData
+	_ = noOfNotificationData
 
-	notificationData, err := ReadCountArrayField[ExtensionObject](ctx, "notificationData", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer), uint64(noOfNotificationData))
+	notificationData, err := ReadCountArrayField[ExtensionObject](ctx, "notificationData", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), uint64(noOfNotificationData))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationData' field"))
 	}
@@ -346,8 +331,8 @@ func (m *_NotificationMessage) SerializeWithWriteBuffer(ctx context.Context, wri
 		if err := WriteSimpleField[int64](ctx, "publishTime", m.GetPublishTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishTime' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfNotificationData", m.GetNoOfNotificationData(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfNotificationData := int32(utils.InlineIf(bool((m.GetNotificationData()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNotificationData()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfNotificationData", noOfNotificationData, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNotificationData' field")
 		}
 
@@ -377,7 +362,6 @@ func (m *_NotificationMessage) deepCopy() *_NotificationMessage {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SequenceNumber,
 		m.PublishTime,
-		m.NoOfNotificationData,
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.NotificationData),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

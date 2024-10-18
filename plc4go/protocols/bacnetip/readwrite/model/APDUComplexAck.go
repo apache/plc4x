@@ -369,7 +369,7 @@ func (m *_APDUComplexAck) GetTypeName() string {
 }
 
 func (m *_APDUComplexAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+	lengthInBits := uint16(m.APDUContract.(*_APDU).GetLengthInBits(ctx))
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1

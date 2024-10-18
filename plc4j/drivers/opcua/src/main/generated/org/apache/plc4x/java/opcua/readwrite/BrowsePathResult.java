@@ -38,20 +38,17 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BrowsePathResult extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "551";
+  public Integer getExtensionId() {
+    return (int) 551;
   }
 
   // Properties.
   protected final StatusCode statusCode;
-  protected final int noOfTargets;
-  protected final List<ExtensionObjectDefinition> targets;
+  protected final List<BrowsePathTarget> targets;
 
-  public BrowsePathResult(
-      StatusCode statusCode, int noOfTargets, List<ExtensionObjectDefinition> targets) {
+  public BrowsePathResult(StatusCode statusCode, List<BrowsePathTarget> targets) {
     super();
     this.statusCode = statusCode;
-    this.noOfTargets = noOfTargets;
     this.targets = targets;
   }
 
@@ -59,11 +56,7 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
     return statusCode;
   }
 
-  public int getNoOfTargets() {
-    return noOfTargets;
-  }
-
-  public List<ExtensionObjectDefinition> getTargets() {
+  public List<BrowsePathTarget> getTargets() {
     return targets;
   }
 
@@ -77,8 +70,10 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
     // Simple Field (statusCode)
     writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
-    // Simple Field (noOfTargets)
-    writeSimpleField("noOfTargets", noOfTargets, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfTargets) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfTargets = (int) ((((getTargets()) == (null)) ? -(1) : COUNT(getTargets())));
+    writeImplicitField("noOfTargets", noOfTargets, writeSignedInt(writeBuffer, 32));
 
     // Array Field (targets)
     writeComplexTypeArrayField("targets", targets, writeBuffer);
@@ -100,13 +95,13 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
 
-    // Simple field (noOfTargets)
+    // Implicit Field (noOfTargets)
     lengthInBits += 32;
 
     // Array field
     if (targets != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : targets) {
+      for (BrowsePathTarget element : targets) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= targets.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -116,7 +111,7 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("BrowsePathResult");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -125,36 +120,35 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
         readSimpleField(
             "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
-    int noOfTargets = readSimpleField("noOfTargets", readSignedInt(readBuffer, 32));
+    int noOfTargets = readImplicitField("noOfTargets", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> targets =
+    List<BrowsePathTarget> targets =
         readCountArrayField(
             "targets",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("548")),
+                () ->
+                    (BrowsePathTarget)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (548)),
                 readBuffer),
             noOfTargets);
 
     readBuffer.closeContext("BrowsePathResult");
     // Create the instance
-    return new BrowsePathResultBuilderImpl(statusCode, noOfTargets, targets);
+    return new BrowsePathResultBuilderImpl(statusCode, targets);
   }
 
   public static class BrowsePathResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
-    private final int noOfTargets;
-    private final List<ExtensionObjectDefinition> targets;
+    private final List<BrowsePathTarget> targets;
 
-    public BrowsePathResultBuilderImpl(
-        StatusCode statusCode, int noOfTargets, List<ExtensionObjectDefinition> targets) {
+    public BrowsePathResultBuilderImpl(StatusCode statusCode, List<BrowsePathTarget> targets) {
       this.statusCode = statusCode;
-      this.noOfTargets = noOfTargets;
       this.targets = targets;
     }
 
     public BrowsePathResult build() {
-      BrowsePathResult browsePathResult = new BrowsePathResult(statusCode, noOfTargets, targets);
+      BrowsePathResult browsePathResult = new BrowsePathResult(statusCode, targets);
       return browsePathResult;
     }
   }
@@ -169,7 +163,6 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
     }
     BrowsePathResult that = (BrowsePathResult) o;
     return (getStatusCode() == that.getStatusCode())
-        && (getNoOfTargets() == that.getNoOfTargets())
         && (getTargets() == that.getTargets())
         && super.equals(that)
         && true;
@@ -177,7 +170,7 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getStatusCode(), getNoOfTargets(), getTargets());
+    return Objects.hash(super.hashCode(), getStatusCode(), getTargets());
   }
 
   @Override

@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataAbsenteeLimit) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAbsenteeLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (absenteeLimit)
 	lengthInBits += m.AbsenteeLimit.GetLengthInBits(ctx)

@@ -233,8 +233,8 @@ func (b *_ModelChangeStructureDataType) CreateModelChangeStructureDataTypeBuilde
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ModelChangeStructureDataType) GetIdentifier() string {
-	return "879"
+func (m *_ModelChangeStructureDataType) GetExtensionId() int32 {
+	return int32(879)
 }
 
 ///////////////////////
@@ -284,7 +284,7 @@ func (m *_ModelChangeStructureDataType) GetTypeName() string {
 }
 
 func (m *_ModelChangeStructureDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (affected)
 	lengthInBits += m.Affected.GetLengthInBits(ctx)
@@ -302,7 +302,7 @@ func (m *_ModelChangeStructureDataType) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ModelChangeStructureDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__modelChangeStructureDataType ModelChangeStructureDataType, err error) {
+func (m *_ModelChangeStructureDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__modelChangeStructureDataType ModelChangeStructureDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

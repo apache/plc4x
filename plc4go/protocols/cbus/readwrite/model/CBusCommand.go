@@ -359,7 +359,7 @@ func (m *_CBusCommand) GetTypeName() string {
 	return "CBusCommand"
 }
 
-func (m *_CBusCommand) getLengthInBits(ctx context.Context) uint16 {
+func (m *_CBusCommand) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)

@@ -183,7 +183,7 @@ func (m *_AdsReadStateRequest) GetTypeName() string {
 }
 
 func (m *_AdsReadStateRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

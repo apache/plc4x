@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -37,7 +39,9 @@ type AnonymousIdentityToken interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	UserIdentityTokenDefinition
+	ExtensionObjectDefinition
+	// GetPolicyId returns PolicyId (property field)
+	GetPolicyId() PascalString
 	// IsAnonymousIdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAnonymousIdentityToken()
 	// CreateBuilder creates a AnonymousIdentityTokenBuilder
@@ -46,18 +50,23 @@ type AnonymousIdentityToken interface {
 
 // _AnonymousIdentityToken is the data-structure of this message
 type _AnonymousIdentityToken struct {
-	UserIdentityTokenDefinitionContract
+	ExtensionObjectDefinitionContract
+	PolicyId PascalString
 }
 
 var _ AnonymousIdentityToken = (*_AnonymousIdentityToken)(nil)
-var _ UserIdentityTokenDefinitionRequirements = (*_AnonymousIdentityToken)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_AnonymousIdentityToken)(nil)
 
 // NewAnonymousIdentityToken factory function for _AnonymousIdentityToken
-func NewAnonymousIdentityToken() *_AnonymousIdentityToken {
-	_result := &_AnonymousIdentityToken{
-		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
+func NewAnonymousIdentityToken(policyId PascalString) *_AnonymousIdentityToken {
+	if policyId == nil {
+		panic("policyId of type PascalString for AnonymousIdentityToken must not be nil")
 	}
-	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
+	_result := &_AnonymousIdentityToken{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		PolicyId:                          policyId,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -70,7 +79,11 @@ func NewAnonymousIdentityToken() *_AnonymousIdentityToken {
 type AnonymousIdentityTokenBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields() AnonymousIdentityTokenBuilder
+	WithMandatoryFields(policyId PascalString) AnonymousIdentityTokenBuilder
+	// WithPolicyId adds PolicyId (property field)
+	WithPolicyId(PascalString) AnonymousIdentityTokenBuilder
+	// WithPolicyIdBuilder adds PolicyId (property field) which is build by the builder
+	WithPolicyIdBuilder(func(PascalStringBuilder) PascalStringBuilder) AnonymousIdentityTokenBuilder
 	// Build builds the AnonymousIdentityToken or returns an error if something is wrong
 	Build() (AnonymousIdentityToken, error)
 	// MustBuild does the same as Build but panics on error
@@ -85,22 +98,46 @@ func NewAnonymousIdentityTokenBuilder() AnonymousIdentityTokenBuilder {
 type _AnonymousIdentityTokenBuilder struct {
 	*_AnonymousIdentityToken
 
-	parentBuilder *_UserIdentityTokenDefinitionBuilder
+	parentBuilder *_ExtensionObjectDefinitionBuilder
 
 	err *utils.MultiError
 }
 
 var _ (AnonymousIdentityTokenBuilder) = (*_AnonymousIdentityTokenBuilder)(nil)
 
-func (b *_AnonymousIdentityTokenBuilder) setParent(contract UserIdentityTokenDefinitionContract) {
-	b.UserIdentityTokenDefinitionContract = contract
+func (b *_AnonymousIdentityTokenBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_AnonymousIdentityTokenBuilder) WithMandatoryFields() AnonymousIdentityTokenBuilder {
+func (b *_AnonymousIdentityTokenBuilder) WithMandatoryFields(policyId PascalString) AnonymousIdentityTokenBuilder {
+	return b.WithPolicyId(policyId)
+}
+
+func (b *_AnonymousIdentityTokenBuilder) WithPolicyId(policyId PascalString) AnonymousIdentityTokenBuilder {
+	b.PolicyId = policyId
+	return b
+}
+
+func (b *_AnonymousIdentityTokenBuilder) WithPolicyIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnonymousIdentityTokenBuilder {
+	builder := builderSupplier(b.PolicyId.CreatePascalStringBuilder())
+	var err error
+	b.PolicyId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
 	return b
 }
 
 func (b *_AnonymousIdentityTokenBuilder) Build() (AnonymousIdentityToken, error) {
+	if b.PolicyId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'policyId' not set"))
+	}
 	if b.err != nil {
 		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
@@ -116,11 +153,11 @@ func (b *_AnonymousIdentityTokenBuilder) MustBuild() AnonymousIdentityToken {
 }
 
 // Done is used to finish work on this child and return to the parent builder
-func (b *_AnonymousIdentityTokenBuilder) Done() UserIdentityTokenDefinitionBuilder {
+func (b *_AnonymousIdentityTokenBuilder) Done() ExtensionObjectDefinitionBuilder {
 	return b.parentBuilder
 }
 
-func (b *_AnonymousIdentityTokenBuilder) buildForUserIdentityTokenDefinition() (UserIdentityTokenDefinition, error) {
+func (b *_AnonymousIdentityTokenBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
 	return b.Build()
 }
 
@@ -150,8 +187,8 @@ func (b *_AnonymousIdentityToken) CreateAnonymousIdentityTokenBuilder() Anonymou
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_AnonymousIdentityToken) GetIdentifier() string {
-	return "anonymous"
+func (m *_AnonymousIdentityToken) GetExtensionId() int32 {
+	return int32(321)
 }
 
 ///////////////////////
@@ -159,9 +196,23 @@ func (m *_AnonymousIdentityToken) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AnonymousIdentityToken) GetParent() UserIdentityTokenDefinitionContract {
-	return m.UserIdentityTokenDefinitionContract
+func (m *_AnonymousIdentityToken) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_AnonymousIdentityToken) GetPolicyId() PascalString {
+	return m.PolicyId
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastAnonymousIdentityToken(structType any) AnonymousIdentityToken {
@@ -179,7 +230,10 @@ func (m *_AnonymousIdentityToken) GetTypeName() string {
 }
 
 func (m *_AnonymousIdentityToken) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
+
+	// Simple field (policyId)
+	lengthInBits += m.PolicyId.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
@@ -188,8 +242,8 @@ func (m *_AnonymousIdentityToken) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_AnonymousIdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_UserIdentityTokenDefinition, identifier string) (__anonymousIdentityToken AnonymousIdentityToken, err error) {
-	m.UserIdentityTokenDefinitionContract = parent
+func (m *_AnonymousIdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__anonymousIdentityToken AnonymousIdentityToken, err error) {
+	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -198,6 +252,12 @@ func (m *_AnonymousIdentityToken) parse(ctx context.Context, readBuffer utils.Re
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+
+	policyId, err := ReadSimpleField[PascalString](ctx, "policyId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policyId' field"))
+	}
+	m.PolicyId = policyId
 
 	if closeErr := readBuffer.CloseContext("AnonymousIdentityToken"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AnonymousIdentityToken")
@@ -224,12 +284,16 @@ func (m *_AnonymousIdentityToken) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for AnonymousIdentityToken")
 		}
 
+		if err := WriteSimpleField[PascalString](ctx, "policyId", m.GetPolicyId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'policyId' field")
+		}
+
 		if popErr := writeBuffer.PopContext("AnonymousIdentityToken"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for AnonymousIdentityToken")
 		}
 		return nil
 	}
-	return m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).serializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AnonymousIdentityToken) IsAnonymousIdentityToken() {}
@@ -243,9 +307,10 @@ func (m *_AnonymousIdentityToken) deepCopy() *_AnonymousIdentityToken {
 		return nil
 	}
 	_AnonymousIdentityTokenCopy := &_AnonymousIdentityToken{
-		m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).deepCopy(),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.PolicyId.DeepCopy().(PascalString),
 	}
-	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AnonymousIdentityTokenCopy
 }
 

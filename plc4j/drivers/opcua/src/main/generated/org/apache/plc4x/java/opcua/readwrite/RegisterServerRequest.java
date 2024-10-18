@@ -38,26 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RegisterServerRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "437";
+  public Integer getExtensionId() {
+    return (int) 437;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final ExtensionObjectDefinition server;
+  protected final RequestHeader requestHeader;
+  protected final RegisteredServer server;
 
-  public RegisterServerRequest(
-      ExtensionObjectDefinition requestHeader, ExtensionObjectDefinition server) {
+  public RegisterServerRequest(RequestHeader requestHeader, RegisteredServer server) {
     super();
     this.requestHeader = requestHeader;
     this.server = server;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public ExtensionObjectDefinition getServer() {
+  public RegisteredServer getServer() {
     return server;
   }
 
@@ -98,23 +97,26 @@ public class RegisterServerRequest extends ExtensionObjectDefinition implements 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RegisterServerRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    ExtensionObjectDefinition server =
+    RegisteredServer server =
         readSimpleField(
             "server",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("434")),
+                () ->
+                    (RegisteredServer)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (434)),
                 readBuffer));
 
     readBuffer.closeContext("RegisterServerRequest");
@@ -124,11 +126,10 @@ public class RegisterServerRequest extends ExtensionObjectDefinition implements 
 
   public static class RegisterServerRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final ExtensionObjectDefinition server;
+    private final RequestHeader requestHeader;
+    private final RegisteredServer server;
 
-    public RegisterServerRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader, ExtensionObjectDefinition server) {
+    public RegisterServerRequestBuilderImpl(RequestHeader requestHeader, RegisteredServer server) {
       this.requestHeader = requestHeader;
       this.server = server;
     }

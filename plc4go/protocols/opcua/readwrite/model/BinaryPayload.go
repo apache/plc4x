@@ -206,7 +206,7 @@ func (m *_BinaryPayload) GetTypeName() string {
 }
 
 func (m *_BinaryPayload) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.PayloadContract.(*_Payload).getLengthInBits(ctx))
+	lengthInBits := uint16(m.PayloadContract.(*_Payload).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.Payload) > 0 {

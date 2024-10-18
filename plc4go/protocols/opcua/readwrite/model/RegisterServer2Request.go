@@ -41,11 +41,9 @@ type RegisterServer2Request interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetServer returns Server (property field)
-	GetServer() ExtensionObjectDefinition
-	// GetNoOfDiscoveryConfiguration returns NoOfDiscoveryConfiguration (property field)
-	GetNoOfDiscoveryConfiguration() int32
+	GetServer() RegisteredServer
 	// GetDiscoveryConfiguration returns DiscoveryConfiguration (property field)
 	GetDiscoveryConfiguration() []ExtensionObject
 	// IsRegisterServer2Request is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -57,28 +55,26 @@ type RegisterServer2Request interface {
 // _RegisterServer2Request is the data-structure of this message
 type _RegisterServer2Request struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader              ExtensionObjectDefinition
-	Server                     ExtensionObjectDefinition
-	NoOfDiscoveryConfiguration int32
-	DiscoveryConfiguration     []ExtensionObject
+	RequestHeader          RequestHeader
+	Server                 RegisteredServer
+	DiscoveryConfiguration []ExtensionObject
 }
 
 var _ RegisterServer2Request = (*_RegisterServer2Request)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterServer2Request)(nil)
 
 // NewRegisterServer2Request factory function for _RegisterServer2Request
-func NewRegisterServer2Request(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition, noOfDiscoveryConfiguration int32, discoveryConfiguration []ExtensionObject) *_RegisterServer2Request {
+func NewRegisterServer2Request(requestHeader RequestHeader, server RegisteredServer, discoveryConfiguration []ExtensionObject) *_RegisterServer2Request {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for RegisterServer2Request must not be nil")
+		panic("requestHeader of type RequestHeader for RegisterServer2Request must not be nil")
 	}
 	if server == nil {
-		panic("server of type ExtensionObjectDefinition for RegisterServer2Request must not be nil")
+		panic("server of type RegisteredServer for RegisterServer2Request must not be nil")
 	}
 	_result := &_RegisterServer2Request{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
 		Server:                            server,
-		NoOfDiscoveryConfiguration:        noOfDiscoveryConfiguration,
 		DiscoveryConfiguration:            discoveryConfiguration,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -94,17 +90,15 @@ func NewRegisterServer2Request(requestHeader ExtensionObjectDefinition, server E
 type RegisterServer2RequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition, noOfDiscoveryConfiguration int32, discoveryConfiguration []ExtensionObject) RegisterServer2RequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, server RegisteredServer, discoveryConfiguration []ExtensionObject) RegisterServer2RequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) RegisterServer2RequestBuilder
+	WithRequestHeader(RequestHeader) RegisterServer2RequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServer2RequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) RegisterServer2RequestBuilder
 	// WithServer adds Server (property field)
-	WithServer(ExtensionObjectDefinition) RegisterServer2RequestBuilder
+	WithServer(RegisteredServer) RegisterServer2RequestBuilder
 	// WithServerBuilder adds Server (property field) which is build by the builder
-	WithServerBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServer2RequestBuilder
-	// WithNoOfDiscoveryConfiguration adds NoOfDiscoveryConfiguration (property field)
-	WithNoOfDiscoveryConfiguration(int32) RegisterServer2RequestBuilder
+	WithServerBuilder(func(RegisteredServerBuilder) RegisteredServerBuilder) RegisterServer2RequestBuilder
 	// WithDiscoveryConfiguration adds DiscoveryConfiguration (property field)
 	WithDiscoveryConfiguration(...ExtensionObject) RegisterServer2RequestBuilder
 	// Build builds the RegisterServer2Request or returns an error if something is wrong
@@ -132,48 +126,43 @@ func (b *_RegisterServer2RequestBuilder) setParent(contract ExtensionObjectDefin
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisterServer2RequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition, noOfDiscoveryConfiguration int32, discoveryConfiguration []ExtensionObject) RegisterServer2RequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithServer(server).WithNoOfDiscoveryConfiguration(noOfDiscoveryConfiguration).WithDiscoveryConfiguration(discoveryConfiguration...)
+func (b *_RegisterServer2RequestBuilder) WithMandatoryFields(requestHeader RequestHeader, server RegisteredServer, discoveryConfiguration []ExtensionObject) RegisterServer2RequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithServer(server).WithDiscoveryConfiguration(discoveryConfiguration...)
 }
 
-func (b *_RegisterServer2RequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) RegisterServer2RequestBuilder {
+func (b *_RegisterServer2RequestBuilder) WithRequestHeader(requestHeader RequestHeader) RegisterServer2RequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_RegisterServer2RequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServer2RequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterServer2RequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) RegisterServer2RequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_RegisterServer2RequestBuilder) WithServer(server ExtensionObjectDefinition) RegisterServer2RequestBuilder {
+func (b *_RegisterServer2RequestBuilder) WithServer(server RegisteredServer) RegisterServer2RequestBuilder {
 	b.Server = server
 	return b
 }
 
-func (b *_RegisterServer2RequestBuilder) WithServerBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServer2RequestBuilder {
-	builder := builderSupplier(b.Server.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterServer2RequestBuilder) WithServerBuilder(builderSupplier func(RegisteredServerBuilder) RegisteredServerBuilder) RegisterServer2RequestBuilder {
+	builder := builderSupplier(b.Server.CreateRegisteredServerBuilder())
 	var err error
 	b.Server, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RegisteredServerBuilder failed"))
 	}
-	return b
-}
-
-func (b *_RegisterServer2RequestBuilder) WithNoOfDiscoveryConfiguration(noOfDiscoveryConfiguration int32) RegisterServer2RequestBuilder {
-	b.NoOfDiscoveryConfiguration = noOfDiscoveryConfiguration
 	return b
 }
 
@@ -244,8 +233,8 @@ func (b *_RegisterServer2Request) CreateRegisterServer2RequestBuilder() Register
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RegisterServer2Request) GetIdentifier() string {
-	return "12195"
+func (m *_RegisterServer2Request) GetExtensionId() int32 {
+	return int32(12195)
 }
 
 ///////////////////////
@@ -262,16 +251,12 @@ func (m *_RegisterServer2Request) GetParent() ExtensionObjectDefinitionContract 
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RegisterServer2Request) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_RegisterServer2Request) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
-func (m *_RegisterServer2Request) GetServer() ExtensionObjectDefinition {
+func (m *_RegisterServer2Request) GetServer() RegisteredServer {
 	return m.Server
-}
-
-func (m *_RegisterServer2Request) GetNoOfDiscoveryConfiguration() int32 {
-	return m.NoOfDiscoveryConfiguration
 }
 
 func (m *_RegisterServer2Request) GetDiscoveryConfiguration() []ExtensionObject {
@@ -299,7 +284,7 @@ func (m *_RegisterServer2Request) GetTypeName() string {
 }
 
 func (m *_RegisterServer2Request) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -307,7 +292,7 @@ func (m *_RegisterServer2Request) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (server)
 	lengthInBits += m.Server.GetLengthInBits(ctx)
 
-	// Simple field (noOfDiscoveryConfiguration)
+	// Implicit Field (noOfDiscoveryConfiguration)
 	lengthInBits += 32
 
 	// Array field
@@ -327,7 +312,7 @@ func (m *_RegisterServer2Request) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RegisterServer2Request) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__registerServer2Request RegisterServer2Request, err error) {
+func (m *_RegisterServer2Request) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__registerServer2Request RegisterServer2Request, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -338,25 +323,25 @@ func (m *_RegisterServer2Request) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	server, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "server", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("434")), readBuffer))
+	server, err := ReadSimpleField[RegisteredServer](ctx, "server", ReadComplex[RegisteredServer](ExtensionObjectDefinitionParseWithBufferProducer[RegisteredServer]((int32)(int32(434))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'server' field"))
 	}
 	m.Server = server
 
-	noOfDiscoveryConfiguration, err := ReadSimpleField(ctx, "noOfDiscoveryConfiguration", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiscoveryConfiguration, err := ReadImplicitField[int32](ctx, "noOfDiscoveryConfiguration", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiscoveryConfiguration' field"))
 	}
-	m.NoOfDiscoveryConfiguration = noOfDiscoveryConfiguration
+	_ = noOfDiscoveryConfiguration
 
-	discoveryConfiguration, err := ReadCountArrayField[ExtensionObject](ctx, "discoveryConfiguration", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer), uint64(noOfDiscoveryConfiguration))
+	discoveryConfiguration, err := ReadCountArrayField[ExtensionObject](ctx, "discoveryConfiguration", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), uint64(noOfDiscoveryConfiguration))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discoveryConfiguration' field"))
 	}
@@ -387,15 +372,15 @@ func (m *_RegisterServer2Request) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for RegisterServer2Request")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "server", m.GetServer(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RegisteredServer](ctx, "server", m.GetServer(), WriteComplex[RegisteredServer](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'server' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiscoveryConfiguration", m.GetNoOfDiscoveryConfiguration(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiscoveryConfiguration := int32(utils.InlineIf(bool((m.GetDiscoveryConfiguration()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiscoveryConfiguration()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiscoveryConfiguration", noOfDiscoveryConfiguration, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiscoveryConfiguration' field")
 		}
 
@@ -423,9 +408,8 @@ func (m *_RegisterServer2Request) deepCopy() *_RegisterServer2Request {
 	}
 	_RegisterServer2RequestCopy := &_RegisterServer2Request{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.Server.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfDiscoveryConfiguration,
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		m.Server.DeepCopy().(RegisteredServer),
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.DiscoveryConfiguration),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

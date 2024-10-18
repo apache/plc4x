@@ -38,28 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class EventFieldList extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "919";
+  public Integer getExtensionId() {
+    return (int) 919;
   }
 
   // Properties.
   protected final long clientHandle;
-  protected final int noOfEventFields;
   protected final List<Variant> eventFields;
 
-  public EventFieldList(long clientHandle, int noOfEventFields, List<Variant> eventFields) {
+  public EventFieldList(long clientHandle, List<Variant> eventFields) {
     super();
     this.clientHandle = clientHandle;
-    this.noOfEventFields = noOfEventFields;
     this.eventFields = eventFields;
   }
 
   public long getClientHandle() {
     return clientHandle;
-  }
-
-  public int getNoOfEventFields() {
-    return noOfEventFields;
   }
 
   public List<Variant> getEventFields() {
@@ -76,8 +70,10 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
     // Simple Field (clientHandle)
     writeSimpleField("clientHandle", clientHandle, writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (noOfEventFields)
-    writeSimpleField("noOfEventFields", noOfEventFields, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfEventFields) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfEventFields = (int) ((((getEventFields()) == (null)) ? -(1) : COUNT(getEventFields())));
+    writeImplicitField("noOfEventFields", noOfEventFields, writeSignedInt(writeBuffer, 32));
 
     // Array Field (eventFields)
     writeComplexTypeArrayField("eventFields", eventFields, writeBuffer);
@@ -99,7 +95,7 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
     // Simple field (clientHandle)
     lengthInBits += 32;
 
-    // Simple field (noOfEventFields)
+    // Implicit Field (noOfEventFields)
     lengthInBits += 32;
 
     // Array field
@@ -115,14 +111,14 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("EventFieldList");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long clientHandle = readSimpleField("clientHandle", readUnsignedLong(readBuffer, 32));
 
-    int noOfEventFields = readSimpleField("noOfEventFields", readSignedInt(readBuffer, 32));
+    int noOfEventFields = readImplicitField("noOfEventFields", readSignedInt(readBuffer, 32));
 
     List<Variant> eventFields =
         readCountArrayField(
@@ -132,25 +128,21 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("EventFieldList");
     // Create the instance
-    return new EventFieldListBuilderImpl(clientHandle, noOfEventFields, eventFields);
+    return new EventFieldListBuilderImpl(clientHandle, eventFields);
   }
 
   public static class EventFieldListBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long clientHandle;
-    private final int noOfEventFields;
     private final List<Variant> eventFields;
 
-    public EventFieldListBuilderImpl(
-        long clientHandle, int noOfEventFields, List<Variant> eventFields) {
+    public EventFieldListBuilderImpl(long clientHandle, List<Variant> eventFields) {
       this.clientHandle = clientHandle;
-      this.noOfEventFields = noOfEventFields;
       this.eventFields = eventFields;
     }
 
     public EventFieldList build() {
-      EventFieldList eventFieldList =
-          new EventFieldList(clientHandle, noOfEventFields, eventFields);
+      EventFieldList eventFieldList = new EventFieldList(clientHandle, eventFields);
       return eventFieldList;
     }
   }
@@ -165,7 +157,6 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
     }
     EventFieldList that = (EventFieldList) o;
     return (getClientHandle() == that.getClientHandle())
-        && (getNoOfEventFields() == that.getNoOfEventFields())
         && (getEventFields() == that.getEventFields())
         && super.equals(that)
         && true;
@@ -173,8 +164,7 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getClientHandle(), getNoOfEventFields(), getEventFields());
+    return Objects.hash(super.hashCode(), getClientHandle(), getEventFields());
   }
 
   @Override

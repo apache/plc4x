@@ -38,31 +38,23 @@ import org.apache.plc4x.java.spi.generation.*;
 public class HistoryUpdateRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "700";
+  public Integer getExtensionId() {
+    return (int) 700;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final int noOfHistoryUpdateDetails;
+  protected final RequestHeader requestHeader;
   protected final List<ExtensionObject> historyUpdateDetails;
 
   public HistoryUpdateRequest(
-      ExtensionObjectDefinition requestHeader,
-      int noOfHistoryUpdateDetails,
-      List<ExtensionObject> historyUpdateDetails) {
+      RequestHeader requestHeader, List<ExtensionObject> historyUpdateDetails) {
     super();
     this.requestHeader = requestHeader;
-    this.noOfHistoryUpdateDetails = noOfHistoryUpdateDetails;
     this.historyUpdateDetails = historyUpdateDetails;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
-  }
-
-  public int getNoOfHistoryUpdateDetails() {
-    return noOfHistoryUpdateDetails;
   }
 
   public List<ExtensionObject> getHistoryUpdateDetails() {
@@ -79,8 +71,11 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
     // Simple Field (requestHeader)
     writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfHistoryUpdateDetails)
-    writeSimpleField(
+    // Implicit Field (noOfHistoryUpdateDetails) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfHistoryUpdateDetails =
+        (int) ((((getHistoryUpdateDetails()) == (null)) ? -(1) : COUNT(getHistoryUpdateDetails())));
+    writeImplicitField(
         "noOfHistoryUpdateDetails", noOfHistoryUpdateDetails, writeSignedInt(writeBuffer, 32));
 
     // Array Field (historyUpdateDetails)
@@ -103,7 +98,7 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
 
-    // Simple field (noOfHistoryUpdateDetails)
+    // Implicit Field (noOfHistoryUpdateDetails)
     lengthInBits += 32;
 
     // Array field
@@ -119,20 +114,21 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("HistoryUpdateRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     int noOfHistoryUpdateDetails =
-        readSimpleField("noOfHistoryUpdateDetails", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfHistoryUpdateDetails", readSignedInt(readBuffer, 32));
 
     List<ExtensionObject> historyUpdateDetails =
         readCountArrayField(
@@ -143,28 +139,23 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("HistoryUpdateRequest");
     // Create the instance
-    return new HistoryUpdateRequestBuilderImpl(
-        requestHeader, noOfHistoryUpdateDetails, historyUpdateDetails);
+    return new HistoryUpdateRequestBuilderImpl(requestHeader, historyUpdateDetails);
   }
 
   public static class HistoryUpdateRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final int noOfHistoryUpdateDetails;
+    private final RequestHeader requestHeader;
     private final List<ExtensionObject> historyUpdateDetails;
 
     public HistoryUpdateRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        int noOfHistoryUpdateDetails,
-        List<ExtensionObject> historyUpdateDetails) {
+        RequestHeader requestHeader, List<ExtensionObject> historyUpdateDetails) {
       this.requestHeader = requestHeader;
-      this.noOfHistoryUpdateDetails = noOfHistoryUpdateDetails;
       this.historyUpdateDetails = historyUpdateDetails;
     }
 
     public HistoryUpdateRequest build() {
       HistoryUpdateRequest historyUpdateRequest =
-          new HistoryUpdateRequest(requestHeader, noOfHistoryUpdateDetails, historyUpdateDetails);
+          new HistoryUpdateRequest(requestHeader, historyUpdateDetails);
       return historyUpdateRequest;
     }
   }
@@ -179,7 +170,6 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
     }
     HistoryUpdateRequest that = (HistoryUpdateRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
-        && (getNoOfHistoryUpdateDetails() == that.getNoOfHistoryUpdateDetails())
         && (getHistoryUpdateDetails() == that.getHistoryUpdateDetails())
         && super.equals(that)
         && true;
@@ -187,11 +177,7 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getRequestHeader(),
-        getNoOfHistoryUpdateDetails(),
-        getHistoryUpdateDetails());
+    return Objects.hash(super.hashCode(), getRequestHeader(), getHistoryUpdateDetails());
   }
 
   @Override

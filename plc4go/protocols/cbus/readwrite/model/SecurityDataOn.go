@@ -202,7 +202,7 @@ func (m *_SecurityDataOn) GetTypeName() string {
 }
 
 func (m *_SecurityDataOn) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {

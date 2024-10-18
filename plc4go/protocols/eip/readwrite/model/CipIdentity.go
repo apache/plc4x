@@ -409,7 +409,7 @@ func (m *_CipIdentity) GetTypeName() string {
 }
 
 func (m *_CipIdentity) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).GetLengthInBits(ctx))
 
 	// Implicit Field (itemLength)
 	lengthInBits += 16

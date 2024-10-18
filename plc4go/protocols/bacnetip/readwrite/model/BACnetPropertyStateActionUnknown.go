@@ -226,7 +226,7 @@ func (m *_BACnetPropertyStateActionUnknown) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStateActionUnknown) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).GetLengthInBits(ctx))
 
 	// Simple field (unknownValue)
 	lengthInBits += m.UnknownValue.GetLengthInBits(ctx)

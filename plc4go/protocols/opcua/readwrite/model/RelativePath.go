@@ -40,10 +40,8 @@ type RelativePath interface {
 	utils.Serializable
 	utils.Copyable
 	ExtensionObjectDefinition
-	// GetNoOfElements returns NoOfElements (property field)
-	GetNoOfElements() int32
 	// GetElements returns Elements (property field)
-	GetElements() []ExtensionObjectDefinition
+	GetElements() []RelativePathElement
 	// IsRelativePath is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRelativePath()
 	// CreateBuilder creates a RelativePathBuilder
@@ -53,18 +51,16 @@ type RelativePath interface {
 // _RelativePath is the data-structure of this message
 type _RelativePath struct {
 	ExtensionObjectDefinitionContract
-	NoOfElements int32
-	Elements     []ExtensionObjectDefinition
+	Elements []RelativePathElement
 }
 
 var _ RelativePath = (*_RelativePath)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RelativePath)(nil)
 
 // NewRelativePath factory function for _RelativePath
-func NewRelativePath(noOfElements int32, elements []ExtensionObjectDefinition) *_RelativePath {
+func NewRelativePath(elements []RelativePathElement) *_RelativePath {
 	_result := &_RelativePath{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfElements:                      noOfElements,
 		Elements:                          elements,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -80,11 +76,9 @@ func NewRelativePath(noOfElements int32, elements []ExtensionObjectDefinition) *
 type RelativePathBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfElements int32, elements []ExtensionObjectDefinition) RelativePathBuilder
-	// WithNoOfElements adds NoOfElements (property field)
-	WithNoOfElements(int32) RelativePathBuilder
+	WithMandatoryFields(elements []RelativePathElement) RelativePathBuilder
 	// WithElements adds Elements (property field)
-	WithElements(...ExtensionObjectDefinition) RelativePathBuilder
+	WithElements(...RelativePathElement) RelativePathBuilder
 	// Build builds the RelativePath or returns an error if something is wrong
 	Build() (RelativePath, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,16 +104,11 @@ func (b *_RelativePathBuilder) setParent(contract ExtensionObjectDefinitionContr
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RelativePathBuilder) WithMandatoryFields(noOfElements int32, elements []ExtensionObjectDefinition) RelativePathBuilder {
-	return b.WithNoOfElements(noOfElements).WithElements(elements...)
+func (b *_RelativePathBuilder) WithMandatoryFields(elements []RelativePathElement) RelativePathBuilder {
+	return b.WithElements(elements...)
 }
 
-func (b *_RelativePathBuilder) WithNoOfElements(noOfElements int32) RelativePathBuilder {
-	b.NoOfElements = noOfElements
-	return b
-}
-
-func (b *_RelativePathBuilder) WithElements(elements ...ExtensionObjectDefinition) RelativePathBuilder {
+func (b *_RelativePathBuilder) WithElements(elements ...RelativePathElement) RelativePathBuilder {
 	b.Elements = elements
 	return b
 }
@@ -174,8 +163,8 @@ func (b *_RelativePath) CreateRelativePathBuilder() RelativePathBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RelativePath) GetIdentifier() string {
-	return "542"
+func (m *_RelativePath) GetExtensionId() int32 {
+	return int32(542)
 }
 
 ///////////////////////
@@ -192,11 +181,7 @@ func (m *_RelativePath) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RelativePath) GetNoOfElements() int32 {
-	return m.NoOfElements
-}
-
-func (m *_RelativePath) GetElements() []ExtensionObjectDefinition {
+func (m *_RelativePath) GetElements() []RelativePathElement {
 	return m.Elements
 }
 
@@ -221,9 +206,9 @@ func (m *_RelativePath) GetTypeName() string {
 }
 
 func (m *_RelativePath) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
-	// Simple field (noOfElements)
+	// Implicit Field (noOfElements)
 	lengthInBits += 32
 
 	// Array field
@@ -243,7 +228,7 @@ func (m *_RelativePath) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RelativePath) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__relativePath RelativePath, err error) {
+func (m *_RelativePath) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__relativePath RelativePath, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -254,13 +239,13 @@ func (m *_RelativePath) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfElements, err := ReadSimpleField(ctx, "noOfElements", ReadSignedInt(readBuffer, uint8(32)))
+	noOfElements, err := ReadImplicitField[int32](ctx, "noOfElements", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfElements' field"))
 	}
-	m.NoOfElements = noOfElements
+	_ = noOfElements
 
-	elements, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "elements", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("539")), readBuffer), uint64(noOfElements))
+	elements, err := ReadCountArrayField[RelativePathElement](ctx, "elements", ReadComplex[RelativePathElement](ExtensionObjectDefinitionParseWithBufferProducer[RelativePathElement]((int32)(int32(539))), readBuffer), uint64(noOfElements))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elements' field"))
 	}
@@ -290,8 +275,8 @@ func (m *_RelativePath) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		if pushErr := writeBuffer.PushContext("RelativePath"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for RelativePath")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfElements", m.GetNoOfElements(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfElements := int32(utils.InlineIf(bool((m.GetElements()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetElements()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfElements", noOfElements, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfElements' field")
 		}
 
@@ -319,8 +304,7 @@ func (m *_RelativePath) deepCopy() *_RelativePath {
 	}
 	_RelativePathCopy := &_RelativePath{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfElements,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Elements),
+		utils.DeepCopySlice[RelativePathElement, RelativePathElement](m.Elements),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RelativePathCopy

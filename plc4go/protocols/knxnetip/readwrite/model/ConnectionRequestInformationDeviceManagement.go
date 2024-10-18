@@ -179,7 +179,7 @@ func (m *_ConnectionRequestInformationDeviceManagement) GetTypeName() string {
 }
 
 func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

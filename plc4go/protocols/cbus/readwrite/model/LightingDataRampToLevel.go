@@ -217,7 +217,7 @@ func (m *_LightingDataRampToLevel) GetTypeName() string {
 }
 
 func (m *_LightingDataRampToLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LightingDataContract.(*_LightingData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.LightingDataContract.(*_LightingData).GetLengthInBits(ctx))
 
 	// Simple field (group)
 	lengthInBits += 8

@@ -226,7 +226,7 @@ func (m *_BACnetPropertyStatesNetworkNumberQuality) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesNetworkNumberQuality) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).GetLengthInBits(ctx))
 
 	// Simple field (networkNumberQuality)
 	lengthInBits += m.NetworkNumberQuality.GetLengthInBits(ctx)

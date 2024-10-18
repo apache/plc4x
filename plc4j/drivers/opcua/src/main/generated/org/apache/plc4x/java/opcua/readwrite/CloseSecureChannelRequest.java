@@ -38,19 +38,19 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CloseSecureChannelRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "452";
+  public Integer getExtensionId() {
+    return (int) 452;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
 
-  public CloseSecureChannelRequest(ExtensionObjectDefinition requestHeader) {
+  public CloseSecureChannelRequest(RequestHeader requestHeader) {
     super();
     this.requestHeader = requestHeader;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -85,16 +85,17 @@ public class CloseSecureChannelRequest extends ExtensionObjectDefinition impleme
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CloseSecureChannelRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     readBuffer.closeContext("CloseSecureChannelRequest");
@@ -104,9 +105,9 @@ public class CloseSecureChannelRequest extends ExtensionObjectDefinition impleme
 
   public static class CloseSecureChannelRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
 
-    public CloseSecureChannelRequestBuilderImpl(ExtensionObjectDefinition requestHeader) {
+    public CloseSecureChannelRequestBuilderImpl(RequestHeader requestHeader) {
       this.requestHeader = requestHeader;
     }
 

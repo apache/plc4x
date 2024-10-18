@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class StatusChangeNotification extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "820";
+  public Integer getExtensionId() {
+    return (int) 820;
   }
 
   // Properties.
@@ -67,11 +67,6 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("StatusChangeNotification");
 
-    // Implicit Field (notificationLength) (Used for parsing, but its value is not stored as it's
-    // implicitly given by the objects content)
-    int notificationLength = (int) (getLengthInBytes());
-    writeImplicitField("notificationLength", notificationLength, writeSignedInt(writeBuffer, 32));
-
     // Simple Field (status)
     writeSimpleField("status", status, writeComplex(writeBuffer));
 
@@ -92,9 +87,6 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
     StatusChangeNotification _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Implicit Field (notificationLength)
-    lengthInBits += 32;
-
     // Simple field (status)
     lengthInBits += status.getLengthInBits();
 
@@ -105,12 +97,10 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("StatusChangeNotification");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-
-    int notificationLength = readImplicitField("notificationLength", readSignedInt(readBuffer, 32));
 
     StatusCode status =
         readSimpleField(

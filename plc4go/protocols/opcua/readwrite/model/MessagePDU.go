@@ -387,7 +387,7 @@ func (m *_MessagePDU) GetTypeName() string {
 	return "MessagePDU"
 }
 
-func (m *_MessagePDU) getLengthInBits(ctx context.Context) uint16 {
+func (m *_MessagePDU) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 24

@@ -38,56 +38,43 @@ import org.apache.plc4x.java.spi.generation.*;
 public class PublishResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "829";
+  public Integer getExtensionId() {
+    return (int) 829;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
+  protected final ResponseHeader responseHeader;
   protected final long subscriptionId;
-  protected final int noOfAvailableSequenceNumbers;
   protected final List<Long> availableSequenceNumbers;
   protected final boolean moreNotifications;
-  protected final ExtensionObjectDefinition notificationMessage;
-  protected final int noOfResults;
+  protected final NotificationMessage notificationMessage;
   protected final List<StatusCode> results;
-  protected final int noOfDiagnosticInfos;
   protected final List<DiagnosticInfo> diagnosticInfos;
 
   public PublishResponse(
-      ExtensionObjectDefinition responseHeader,
+      ResponseHeader responseHeader,
       long subscriptionId,
-      int noOfAvailableSequenceNumbers,
       List<Long> availableSequenceNumbers,
       boolean moreNotifications,
-      ExtensionObjectDefinition notificationMessage,
-      int noOfResults,
+      NotificationMessage notificationMessage,
       List<StatusCode> results,
-      int noOfDiagnosticInfos,
       List<DiagnosticInfo> diagnosticInfos) {
     super();
     this.responseHeader = responseHeader;
     this.subscriptionId = subscriptionId;
-    this.noOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers;
     this.availableSequenceNumbers = availableSequenceNumbers;
     this.moreNotifications = moreNotifications;
     this.notificationMessage = notificationMessage;
-    this.noOfResults = noOfResults;
     this.results = results;
-    this.noOfDiagnosticInfos = noOfDiagnosticInfos;
     this.diagnosticInfos = diagnosticInfos;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
   public long getSubscriptionId() {
     return subscriptionId;
-  }
-
-  public int getNoOfAvailableSequenceNumbers() {
-    return noOfAvailableSequenceNumbers;
   }
 
   public List<Long> getAvailableSequenceNumbers() {
@@ -98,20 +85,12 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     return moreNotifications;
   }
 
-  public ExtensionObjectDefinition getNotificationMessage() {
+  public NotificationMessage getNotificationMessage() {
     return notificationMessage;
-  }
-
-  public int getNoOfResults() {
-    return noOfResults;
   }
 
   public List<StatusCode> getResults() {
     return results;
-  }
-
-  public int getNoOfDiagnosticInfos() {
-    return noOfDiagnosticInfos;
   }
 
   public List<DiagnosticInfo> getDiagnosticInfos() {
@@ -131,8 +110,14 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     // Simple Field (subscriptionId)
     writeSimpleField("subscriptionId", subscriptionId, writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (noOfAvailableSequenceNumbers)
-    writeSimpleField(
+    // Implicit Field (noOfAvailableSequenceNumbers) (Used for parsing, but its value is not stored
+    // as it's implicitly given by the objects content)
+    int noOfAvailableSequenceNumbers =
+        (int)
+            ((((getAvailableSequenceNumbers()) == (null))
+                ? -(1)
+                : COUNT(getAvailableSequenceNumbers())));
+    writeImplicitField(
         "noOfAvailableSequenceNumbers",
         noOfAvailableSequenceNumbers,
         writeSignedInt(writeBuffer, 32));
@@ -150,14 +135,19 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     // Simple Field (notificationMessage)
     writeSimpleField("notificationMessage", notificationMessage, writeComplex(writeBuffer));
 
-    // Simple Field (noOfResults)
-    writeSimpleField("noOfResults", noOfResults, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfResults) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfResults = (int) ((((getResults()) == (null)) ? -(1) : COUNT(getResults())));
+    writeImplicitField("noOfResults", noOfResults, writeSignedInt(writeBuffer, 32));
 
     // Array Field (results)
     writeComplexTypeArrayField("results", results, writeBuffer);
 
-    // Simple Field (noOfDiagnosticInfos)
-    writeSimpleField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfDiagnosticInfos) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfDiagnosticInfos =
+        (int) ((((getDiagnosticInfos()) == (null)) ? -(1) : COUNT(getDiagnosticInfos())));
+    writeImplicitField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
 
     // Array Field (diagnosticInfos)
     writeComplexTypeArrayField("diagnosticInfos", diagnosticInfos, writeBuffer);
@@ -182,7 +172,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     // Simple field (subscriptionId)
     lengthInBits += 32;
 
-    // Simple field (noOfAvailableSequenceNumbers)
+    // Implicit Field (noOfAvailableSequenceNumbers)
     lengthInBits += 32;
 
     // Array field
@@ -199,7 +189,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     // Simple field (notificationMessage)
     lengthInBits += notificationMessage.getLengthInBits();
 
-    // Simple field (noOfResults)
+    // Implicit Field (noOfResults)
     lengthInBits += 32;
 
     // Array field
@@ -211,7 +201,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
       }
     }
 
-    // Simple field (noOfDiagnosticInfos)
+    // Implicit Field (noOfDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -227,22 +217,23 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("PublishResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     long subscriptionId = readSimpleField("subscriptionId", readUnsignedLong(readBuffer, 32));
 
     int noOfAvailableSequenceNumbers =
-        readSimpleField("noOfAvailableSequenceNumbers", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfAvailableSequenceNumbers", readSignedInt(readBuffer, 32));
 
     List<Long> availableSequenceNumbers =
         readCountArrayField(
@@ -255,14 +246,16 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
 
     boolean moreNotifications = readSimpleField("moreNotifications", readBoolean(readBuffer));
 
-    ExtensionObjectDefinition notificationMessage =
+    NotificationMessage notificationMessage =
         readSimpleField(
             "notificationMessage",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("805")),
+                () ->
+                    (NotificationMessage)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (805)),
                 readBuffer));
 
-    int noOfResults = readSimpleField("noOfResults", readSignedInt(readBuffer, 32));
+    int noOfResults = readImplicitField("noOfResults", readSignedInt(readBuffer, 32));
 
     List<StatusCode> results =
         readCountArrayField(
@@ -270,7 +263,8 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
             readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfResults);
 
-    int noOfDiagnosticInfos = readSimpleField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
+    int noOfDiagnosticInfos =
+        readImplicitField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
@@ -283,49 +277,37 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     return new PublishResponseBuilderImpl(
         responseHeader,
         subscriptionId,
-        noOfAvailableSequenceNumbers,
         availableSequenceNumbers,
         moreNotifications,
         notificationMessage,
-        noOfResults,
         results,
-        noOfDiagnosticInfos,
         diagnosticInfos);
   }
 
   public static class PublishResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
+    private final ResponseHeader responseHeader;
     private final long subscriptionId;
-    private final int noOfAvailableSequenceNumbers;
     private final List<Long> availableSequenceNumbers;
     private final boolean moreNotifications;
-    private final ExtensionObjectDefinition notificationMessage;
-    private final int noOfResults;
+    private final NotificationMessage notificationMessage;
     private final List<StatusCode> results;
-    private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
     public PublishResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
+        ResponseHeader responseHeader,
         long subscriptionId,
-        int noOfAvailableSequenceNumbers,
         List<Long> availableSequenceNumbers,
         boolean moreNotifications,
-        ExtensionObjectDefinition notificationMessage,
-        int noOfResults,
+        NotificationMessage notificationMessage,
         List<StatusCode> results,
-        int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
       this.responseHeader = responseHeader;
       this.subscriptionId = subscriptionId;
-      this.noOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers;
       this.availableSequenceNumbers = availableSequenceNumbers;
       this.moreNotifications = moreNotifications;
       this.notificationMessage = notificationMessage;
-      this.noOfResults = noOfResults;
       this.results = results;
-      this.noOfDiagnosticInfos = noOfDiagnosticInfos;
       this.diagnosticInfos = diagnosticInfos;
     }
 
@@ -334,13 +316,10 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
           new PublishResponse(
               responseHeader,
               subscriptionId,
-              noOfAvailableSequenceNumbers,
               availableSequenceNumbers,
               moreNotifications,
               notificationMessage,
-              noOfResults,
               results,
-              noOfDiagnosticInfos,
               diagnosticInfos);
       return publishResponse;
     }
@@ -357,13 +336,10 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     PublishResponse that = (PublishResponse) o;
     return (getResponseHeader() == that.getResponseHeader())
         && (getSubscriptionId() == that.getSubscriptionId())
-        && (getNoOfAvailableSequenceNumbers() == that.getNoOfAvailableSequenceNumbers())
         && (getAvailableSequenceNumbers() == that.getAvailableSequenceNumbers())
         && (getMoreNotifications() == that.getMoreNotifications())
         && (getNotificationMessage() == that.getNotificationMessage())
-        && (getNoOfResults() == that.getNoOfResults())
         && (getResults() == that.getResults())
-        && (getNoOfDiagnosticInfos() == that.getNoOfDiagnosticInfos())
         && (getDiagnosticInfos() == that.getDiagnosticInfos())
         && super.equals(that)
         && true;
@@ -375,13 +351,10 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
         super.hashCode(),
         getResponseHeader(),
         getSubscriptionId(),
-        getNoOfAvailableSequenceNumbers(),
         getAvailableSequenceNumbers(),
         getMoreNotifications(),
         getNotificationMessage(),
-        getNoOfResults(),
         getResults(),
-        getNoOfDiagnosticInfos(),
         getDiagnosticInfos());
   }
 

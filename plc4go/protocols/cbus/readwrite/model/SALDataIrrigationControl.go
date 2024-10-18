@@ -230,7 +230,7 @@ func (m *_SALDataIrrigationControl) GetTypeName() string {
 }
 
 func (m *_SALDataIrrigationControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).GetLengthInBits(ctx))
 
 	// Simple field (irrigationControlData)
 	lengthInBits += m.IrrigationControlData.GetLengthInBits(ctx)

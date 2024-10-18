@@ -179,7 +179,7 @@ func (m *_LevelInformationAbsent) GetTypeName() string {
 }
 
 func (m *_LevelInformationAbsent) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LevelInformationContract.(*_LevelInformation).getLengthInBits(ctx))
+	lengthInBits := uint16(m.LevelInformationContract.(*_LevelInformation).GetLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 16

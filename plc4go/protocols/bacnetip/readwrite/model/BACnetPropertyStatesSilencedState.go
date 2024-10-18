@@ -226,7 +226,7 @@ func (m *_BACnetPropertyStatesSilencedState) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesSilencedState) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).GetLengthInBits(ctx))
 
 	// Simple field (silencedState)
 	lengthInBits += m.SilencedState.GetLengthInBits(ctx)
