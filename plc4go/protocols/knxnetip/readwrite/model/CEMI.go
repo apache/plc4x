@@ -681,7 +681,7 @@ func (m *_CEMI) GetTypeName() string {
 	return "CEMI"
 }
 
-func (m *_CEMI) getLengthInBits(ctx context.Context) uint16 {
+func (m *_CEMI) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageCode)
 	lengthInBits += 8

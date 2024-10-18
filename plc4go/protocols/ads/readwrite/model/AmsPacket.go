@@ -833,7 +833,7 @@ func (m *_AmsPacket) GetTypeName() string {
 	return "AmsPacket"
 }
 
-func (m *_AmsPacket) getLengthInBits(ctx context.Context) uint16 {
+func (m *_AmsPacket) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (targetAmsNetId)

@@ -226,7 +226,7 @@ func (m *_BACnetCalendarEntryWeekNDay) GetTypeName() string {
 }
 
 func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).GetLengthInBits(ctx))
 
 	// Simple field (weekNDay)
 	lengthInBits += m.WeekNDay.GetLengthInBits(ctx)

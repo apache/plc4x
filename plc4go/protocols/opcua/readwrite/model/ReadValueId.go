@@ -268,8 +268,8 @@ func (b *_ReadValueId) CreateReadValueIdBuilder() ReadValueIdBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ReadValueId) GetIdentifier() string {
-	return "628"
+func (m *_ReadValueId) GetExtensionId() int32 {
+	return int32(628)
 }
 
 ///////////////////////
@@ -323,7 +323,7 @@ func (m *_ReadValueId) GetTypeName() string {
 }
 
 func (m *_ReadValueId) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (nodeId)
 	lengthInBits += m.NodeId.GetLengthInBits(ctx)
@@ -344,7 +344,7 @@ func (m *_ReadValueId) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ReadValueId) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__readValueId ReadValueId, err error) {
+func (m *_ReadValueId) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__readValueId ReadValueId, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

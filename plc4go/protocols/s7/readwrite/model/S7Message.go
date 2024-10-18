@@ -377,7 +377,7 @@ func (m *_S7Message) GetTypeName() string {
 	return "S7Message"
 }
 
-func (m *_S7Message) getLengthInBits(ctx context.Context) uint16 {
+func (m *_S7Message) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (protocolId)

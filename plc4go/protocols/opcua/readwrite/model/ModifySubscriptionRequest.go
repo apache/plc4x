@@ -41,7 +41,7 @@ type ModifySubscriptionRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetSubscriptionId returns SubscriptionId (property field)
 	GetSubscriptionId() uint32
 	// GetRequestedPublishingInterval returns RequestedPublishingInterval (property field)
@@ -63,7 +63,7 @@ type ModifySubscriptionRequest interface {
 // _ModifySubscriptionRequest is the data-structure of this message
 type _ModifySubscriptionRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader               ExtensionObjectDefinition
+	RequestHeader               RequestHeader
 	SubscriptionId              uint32
 	RequestedPublishingInterval float64
 	RequestedLifetimeCount      uint32
@@ -76,9 +76,9 @@ var _ ModifySubscriptionRequest = (*_ModifySubscriptionRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ModifySubscriptionRequest)(nil)
 
 // NewModifySubscriptionRequest factory function for _ModifySubscriptionRequest
-func NewModifySubscriptionRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, priority uint8) *_ModifySubscriptionRequest {
+func NewModifySubscriptionRequest(requestHeader RequestHeader, subscriptionId uint32, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, priority uint8) *_ModifySubscriptionRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for ModifySubscriptionRequest must not be nil")
+		panic("requestHeader of type RequestHeader for ModifySubscriptionRequest must not be nil")
 	}
 	_result := &_ModifySubscriptionRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -103,11 +103,11 @@ func NewModifySubscriptionRequest(requestHeader ExtensionObjectDefinition, subsc
 type ModifySubscriptionRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, priority uint8) ModifySubscriptionRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, priority uint8) ModifySubscriptionRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) ModifySubscriptionRequestBuilder
+	WithRequestHeader(RequestHeader) ModifySubscriptionRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ModifySubscriptionRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) ModifySubscriptionRequestBuilder
 	// WithSubscriptionId adds SubscriptionId (property field)
 	WithSubscriptionId(uint32) ModifySubscriptionRequestBuilder
 	// WithRequestedPublishingInterval adds RequestedPublishingInterval (property field)
@@ -145,24 +145,24 @@ func (b *_ModifySubscriptionRequestBuilder) setParent(contract ExtensionObjectDe
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ModifySubscriptionRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, priority uint8) ModifySubscriptionRequestBuilder {
+func (b *_ModifySubscriptionRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, priority uint8) ModifySubscriptionRequestBuilder {
 	return b.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithRequestedPublishingInterval(requestedPublishingInterval).WithRequestedLifetimeCount(requestedLifetimeCount).WithRequestedMaxKeepAliveCount(requestedMaxKeepAliveCount).WithMaxNotificationsPerPublish(maxNotificationsPerPublish).WithPriority(priority)
 }
 
-func (b *_ModifySubscriptionRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) ModifySubscriptionRequestBuilder {
+func (b *_ModifySubscriptionRequestBuilder) WithRequestHeader(requestHeader RequestHeader) ModifySubscriptionRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_ModifySubscriptionRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ModifySubscriptionRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_ModifySubscriptionRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) ModifySubscriptionRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -253,8 +253,8 @@ func (b *_ModifySubscriptionRequest) CreateModifySubscriptionRequestBuilder() Mo
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ModifySubscriptionRequest) GetIdentifier() string {
-	return "793"
+func (m *_ModifySubscriptionRequest) GetExtensionId() int32 {
+	return int32(793)
 }
 
 ///////////////////////
@@ -271,7 +271,7 @@ func (m *_ModifySubscriptionRequest) GetParent() ExtensionObjectDefinitionContra
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_ModifySubscriptionRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_ModifySubscriptionRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
@@ -320,7 +320,7 @@ func (m *_ModifySubscriptionRequest) GetTypeName() string {
 }
 
 func (m *_ModifySubscriptionRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -350,7 +350,7 @@ func (m *_ModifySubscriptionRequest) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ModifySubscriptionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__modifySubscriptionRequest ModifySubscriptionRequest, err error) {
+func (m *_ModifySubscriptionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__modifySubscriptionRequest ModifySubscriptionRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -361,7 +361,7 @@ func (m *_ModifySubscriptionRequest) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -428,7 +428,7 @@ func (m *_ModifySubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for ModifySubscriptionRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
@@ -476,7 +476,7 @@ func (m *_ModifySubscriptionRequest) deepCopy() *_ModifySubscriptionRequest {
 	}
 	_ModifySubscriptionRequestCopy := &_ModifySubscriptionRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.SubscriptionId,
 		m.RequestedPublishingInterval,
 		m.RequestedLifetimeCount,

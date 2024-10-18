@@ -226,7 +226,7 @@ func (m *_BACnetLogRecordLogDatumFailure) GetTypeName() string {
 }
 
 func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).GetLengthInBits(ctx))
 
 	// Simple field (failure)
 	lengthInBits += m.Failure.GetLengthInBits(ctx)

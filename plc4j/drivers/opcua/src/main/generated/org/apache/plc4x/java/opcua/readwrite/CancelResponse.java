@@ -38,21 +38,21 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CancelResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "482";
+  public Integer getExtensionId() {
+    return (int) 482;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
+  protected final ResponseHeader responseHeader;
   protected final long cancelCount;
 
-  public CancelResponse(ExtensionObjectDefinition responseHeader, long cancelCount) {
+  public CancelResponse(ResponseHeader responseHeader, long cancelCount) {
     super();
     this.responseHeader = responseHeader;
     this.cancelCount = cancelCount;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
@@ -97,16 +97,17 @@ public class CancelResponse extends ExtensionObjectDefinition implements Message
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CancelResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     long cancelCount = readSimpleField("cancelCount", readUnsignedLong(readBuffer, 32));
@@ -118,10 +119,10 @@ public class CancelResponse extends ExtensionObjectDefinition implements Message
 
   public static class CancelResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
+    private final ResponseHeader responseHeader;
     private final long cancelCount;
 
-    public CancelResponseBuilderImpl(ExtensionObjectDefinition responseHeader, long cancelCount) {
+    public CancelResponseBuilderImpl(ResponseHeader responseHeader, long cancelCount) {
       this.responseHeader = responseHeader;
       this.cancelCount = cancelCount;
     }

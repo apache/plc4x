@@ -150,8 +150,8 @@ func (b *_PublishedDataSetSourceDataType) CreatePublishedDataSetSourceDataTypeBu
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_PublishedDataSetSourceDataType) GetIdentifier() string {
-	return "15582"
+func (m *_PublishedDataSetSourceDataType) GetExtensionId() int32 {
+	return int32(15582)
 }
 
 ///////////////////////
@@ -179,7 +179,7 @@ func (m *_PublishedDataSetSourceDataType) GetTypeName() string {
 }
 
 func (m *_PublishedDataSetSourceDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -188,7 +188,7 @@ func (m *_PublishedDataSetSourceDataType) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_PublishedDataSetSourceDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__publishedDataSetSourceDataType PublishedDataSetSourceDataType, err error) {
+func (m *_PublishedDataSetSourceDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__publishedDataSetSourceDataType PublishedDataSetSourceDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

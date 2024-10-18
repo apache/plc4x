@@ -38,12 +38,12 @@ import org.apache.plc4x.java.spi.generation.*;
 public class OpenSecureChannelRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "446";
+  public Integer getExtensionId() {
+    return (int) 446;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final long clientProtocolVersion;
   protected final SecurityTokenRequestType requestType;
   protected final MessageSecurityMode securityMode;
@@ -51,7 +51,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
   protected final long requestedLifetime;
 
   public OpenSecureChannelRequest(
-      ExtensionObjectDefinition requestHeader,
+      RequestHeader requestHeader,
       long clientProtocolVersion,
       SecurityTokenRequestType requestType,
       MessageSecurityMode securityMode,
@@ -66,7 +66,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
     this.requestedLifetime = requestedLifetime;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -166,16 +166,17 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("OpenSecureChannelRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     long clientProtocolVersion =
@@ -212,7 +213,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
 
   public static class OpenSecureChannelRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final long clientProtocolVersion;
     private final SecurityTokenRequestType requestType;
     private final MessageSecurityMode securityMode;
@@ -220,7 +221,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
     private final long requestedLifetime;
 
     public OpenSecureChannelRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
+        RequestHeader requestHeader,
         long clientProtocolVersion,
         SecurityTokenRequestType requestType,
         MessageSecurityMode securityMode,

@@ -202,7 +202,7 @@ func (m *_MediaTransportControlDataTrackName) GetTypeName() string {
 }
 
 func (m *_MediaTransportControlDataTrackName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).GetLengthInBits(ctx))
 
 	// Simple field (trackName)
 	lengthInBits += uint16(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(1)))) * int32(int32(8)))

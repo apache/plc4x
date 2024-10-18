@@ -202,7 +202,7 @@ func (m *_SecurityDataArmReadyNotReady) GetTypeName() string {
 }
 
 func (m *_SecurityDataArmReadyNotReady) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).GetLengthInBits(ctx))
 
 	// Simple field (zoneNumber)
 	lengthInBits += 8

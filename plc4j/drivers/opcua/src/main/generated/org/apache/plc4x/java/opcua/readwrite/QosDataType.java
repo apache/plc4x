@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class QosDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "23605";
+  public Integer getExtensionId() {
+    return (int) 23605;
   }
 
   public QosDataType() {
@@ -71,7 +71,7 @@ public class QosDataType extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("QosDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

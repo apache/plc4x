@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining) GetTypeName() string 
 }
 
 func (m *_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (ipv6DhcpLeaseTimeRemaining)
 	lengthInBits += m.Ipv6DhcpLeaseTimeRemaining.GetLengthInBits(ctx)

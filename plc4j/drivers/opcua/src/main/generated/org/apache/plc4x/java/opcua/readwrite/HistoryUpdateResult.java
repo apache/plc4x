@@ -38,28 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class HistoryUpdateResult extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "697";
+  public Integer getExtensionId() {
+    return (int) 697;
   }
 
   // Properties.
   protected final StatusCode statusCode;
-  protected final int noOfOperationResults;
   protected final List<StatusCode> operationResults;
-  protected final int noOfDiagnosticInfos;
   protected final List<DiagnosticInfo> diagnosticInfos;
 
   public HistoryUpdateResult(
       StatusCode statusCode,
-      int noOfOperationResults,
       List<StatusCode> operationResults,
-      int noOfDiagnosticInfos,
       List<DiagnosticInfo> diagnosticInfos) {
     super();
     this.statusCode = statusCode;
-    this.noOfOperationResults = noOfOperationResults;
     this.operationResults = operationResults;
-    this.noOfDiagnosticInfos = noOfDiagnosticInfos;
     this.diagnosticInfos = diagnosticInfos;
   }
 
@@ -67,16 +61,8 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     return statusCode;
   }
 
-  public int getNoOfOperationResults() {
-    return noOfOperationResults;
-  }
-
   public List<StatusCode> getOperationResults() {
     return operationResults;
-  }
-
-  public int getNoOfDiagnosticInfos() {
-    return noOfDiagnosticInfos;
   }
 
   public List<DiagnosticInfo> getDiagnosticInfos() {
@@ -93,14 +79,21 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     // Simple Field (statusCode)
     writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
-    // Simple Field (noOfOperationResults)
-    writeSimpleField("noOfOperationResults", noOfOperationResults, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfOperationResults) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfOperationResults =
+        (int) ((((getOperationResults()) == (null)) ? -(1) : COUNT(getOperationResults())));
+    writeImplicitField(
+        "noOfOperationResults", noOfOperationResults, writeSignedInt(writeBuffer, 32));
 
     // Array Field (operationResults)
     writeComplexTypeArrayField("operationResults", operationResults, writeBuffer);
 
-    // Simple Field (noOfDiagnosticInfos)
-    writeSimpleField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfDiagnosticInfos) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfDiagnosticInfos =
+        (int) ((((getDiagnosticInfos()) == (null)) ? -(1) : COUNT(getDiagnosticInfos())));
+    writeImplicitField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
 
     // Array Field (diagnosticInfos)
     writeComplexTypeArrayField("diagnosticInfos", diagnosticInfos, writeBuffer);
@@ -122,7 +115,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
 
-    // Simple field (noOfOperationResults)
+    // Implicit Field (noOfOperationResults)
     lengthInBits += 32;
 
     // Array field
@@ -134,7 +127,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
       }
     }
 
-    // Simple field (noOfDiagnosticInfos)
+    // Implicit Field (noOfDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -150,7 +143,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("HistoryUpdateResult");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -160,7 +153,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
             "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     int noOfOperationResults =
-        readSimpleField("noOfOperationResults", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfOperationResults", readSignedInt(readBuffer, 32));
 
     List<StatusCode> operationResults =
         readCountArrayField(
@@ -168,7 +161,8 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
             readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfOperationResults);
 
-    int noOfDiagnosticInfos = readSimpleField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
+    int noOfDiagnosticInfos =
+        readImplicitField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
@@ -178,39 +172,27 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("HistoryUpdateResult");
     // Create the instance
-    return new HistoryUpdateResultBuilderImpl(
-        statusCode, noOfOperationResults, operationResults, noOfDiagnosticInfos, diagnosticInfos);
+    return new HistoryUpdateResultBuilderImpl(statusCode, operationResults, diagnosticInfos);
   }
 
   public static class HistoryUpdateResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
-    private final int noOfOperationResults;
     private final List<StatusCode> operationResults;
-    private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
     public HistoryUpdateResultBuilderImpl(
         StatusCode statusCode,
-        int noOfOperationResults,
         List<StatusCode> operationResults,
-        int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
       this.statusCode = statusCode;
-      this.noOfOperationResults = noOfOperationResults;
       this.operationResults = operationResults;
-      this.noOfDiagnosticInfos = noOfDiagnosticInfos;
       this.diagnosticInfos = diagnosticInfos;
     }
 
     public HistoryUpdateResult build() {
       HistoryUpdateResult historyUpdateResult =
-          new HistoryUpdateResult(
-              statusCode,
-              noOfOperationResults,
-              operationResults,
-              noOfDiagnosticInfos,
-              diagnosticInfos);
+          new HistoryUpdateResult(statusCode, operationResults, diagnosticInfos);
       return historyUpdateResult;
     }
   }
@@ -225,9 +207,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     }
     HistoryUpdateResult that = (HistoryUpdateResult) o;
     return (getStatusCode() == that.getStatusCode())
-        && (getNoOfOperationResults() == that.getNoOfOperationResults())
         && (getOperationResults() == that.getOperationResults())
-        && (getNoOfDiagnosticInfos() == that.getNoOfDiagnosticInfos())
         && (getDiagnosticInfos() == that.getDiagnosticInfos())
         && super.equals(that)
         && true;
@@ -236,12 +216,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getStatusCode(),
-        getNoOfOperationResults(),
-        getOperationResults(),
-        getNoOfDiagnosticInfos(),
-        getDiagnosticInfos());
+        super.hashCode(), getStatusCode(), getOperationResults(), getDiagnosticInfos());
   }
 
   @Override

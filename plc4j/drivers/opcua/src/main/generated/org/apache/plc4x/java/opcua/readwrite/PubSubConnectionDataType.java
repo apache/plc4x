@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class PubSubConnectionDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "15619";
+  public Integer getExtensionId() {
+    return (int) 15619;
   }
 
   // Properties.
@@ -48,13 +48,10 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
   protected final Variant publisherId;
   protected final PascalString transportProfileUri;
   protected final ExtensionObject address;
-  protected final int noOfConnectionProperties;
-  protected final List<ExtensionObjectDefinition> connectionProperties;
+  protected final List<KeyValuePair> connectionProperties;
   protected final ExtensionObject transportSettings;
-  protected final int noOfWriterGroups;
-  protected final List<PubSubGroupDataType> writerGroups;
-  protected final int noOfReaderGroups;
-  protected final List<PubSubGroupDataType> readerGroups;
+  protected final List<WriterGroupDataType> writerGroups;
+  protected final List<ReaderGroupDataType> readerGroups;
 
   public PubSubConnectionDataType(
       PascalString name,
@@ -62,25 +59,19 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
       Variant publisherId,
       PascalString transportProfileUri,
       ExtensionObject address,
-      int noOfConnectionProperties,
-      List<ExtensionObjectDefinition> connectionProperties,
+      List<KeyValuePair> connectionProperties,
       ExtensionObject transportSettings,
-      int noOfWriterGroups,
-      List<PubSubGroupDataType> writerGroups,
-      int noOfReaderGroups,
-      List<PubSubGroupDataType> readerGroups) {
+      List<WriterGroupDataType> writerGroups,
+      List<ReaderGroupDataType> readerGroups) {
     super();
     this.name = name;
     this.enabled = enabled;
     this.publisherId = publisherId;
     this.transportProfileUri = transportProfileUri;
     this.address = address;
-    this.noOfConnectionProperties = noOfConnectionProperties;
     this.connectionProperties = connectionProperties;
     this.transportSettings = transportSettings;
-    this.noOfWriterGroups = noOfWriterGroups;
     this.writerGroups = writerGroups;
-    this.noOfReaderGroups = noOfReaderGroups;
     this.readerGroups = readerGroups;
   }
 
@@ -104,11 +95,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     return address;
   }
 
-  public int getNoOfConnectionProperties() {
-    return noOfConnectionProperties;
-  }
-
-  public List<ExtensionObjectDefinition> getConnectionProperties() {
+  public List<KeyValuePair> getConnectionProperties() {
     return connectionProperties;
   }
 
@@ -116,19 +103,11 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     return transportSettings;
   }
 
-  public int getNoOfWriterGroups() {
-    return noOfWriterGroups;
-  }
-
-  public List<PubSubGroupDataType> getWriterGroups() {
+  public List<WriterGroupDataType> getWriterGroups() {
     return writerGroups;
   }
 
-  public int getNoOfReaderGroups() {
-    return noOfReaderGroups;
-  }
-
-  public List<PubSubGroupDataType> getReaderGroups() {
+  public List<ReaderGroupDataType> getReaderGroups() {
     return readerGroups;
   }
 
@@ -157,8 +136,11 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     // Simple Field (address)
     writeSimpleField("address", address, writeComplex(writeBuffer));
 
-    // Simple Field (noOfConnectionProperties)
-    writeSimpleField(
+    // Implicit Field (noOfConnectionProperties) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfConnectionProperties =
+        (int) ((((getConnectionProperties()) == (null)) ? -(1) : COUNT(getConnectionProperties())));
+    writeImplicitField(
         "noOfConnectionProperties", noOfConnectionProperties, writeSignedInt(writeBuffer, 32));
 
     // Array Field (connectionProperties)
@@ -167,14 +149,20 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     // Simple Field (transportSettings)
     writeSimpleField("transportSettings", transportSettings, writeComplex(writeBuffer));
 
-    // Simple Field (noOfWriterGroups)
-    writeSimpleField("noOfWriterGroups", noOfWriterGroups, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfWriterGroups) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfWriterGroups =
+        (int) ((((getWriterGroups()) == (null)) ? -(1) : COUNT(getWriterGroups())));
+    writeImplicitField("noOfWriterGroups", noOfWriterGroups, writeSignedInt(writeBuffer, 32));
 
     // Array Field (writerGroups)
     writeComplexTypeArrayField("writerGroups", writerGroups, writeBuffer);
 
-    // Simple Field (noOfReaderGroups)
-    writeSimpleField("noOfReaderGroups", noOfReaderGroups, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfReaderGroups) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfReaderGroups =
+        (int) ((((getReaderGroups()) == (null)) ? -(1) : COUNT(getReaderGroups())));
+    writeImplicitField("noOfReaderGroups", noOfReaderGroups, writeSignedInt(writeBuffer, 32));
 
     // Array Field (readerGroups)
     writeComplexTypeArrayField("readerGroups", readerGroups, writeBuffer);
@@ -211,13 +199,13 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     // Simple field (address)
     lengthInBits += address.getLengthInBits();
 
-    // Simple field (noOfConnectionProperties)
+    // Implicit Field (noOfConnectionProperties)
     lengthInBits += 32;
 
     // Array field
     if (connectionProperties != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : connectionProperties) {
+      for (KeyValuePair element : connectionProperties) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= connectionProperties.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -226,25 +214,25 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     // Simple field (transportSettings)
     lengthInBits += transportSettings.getLengthInBits();
 
-    // Simple field (noOfWriterGroups)
+    // Implicit Field (noOfWriterGroups)
     lengthInBits += 32;
 
     // Array field
     if (writerGroups != null) {
       int i = 0;
-      for (PubSubGroupDataType element : writerGroups) {
+      for (WriterGroupDataType element : writerGroups) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= writerGroups.size());
         lengthInBits += element.getLengthInBits();
       }
     }
 
-    // Simple field (noOfReaderGroups)
+    // Implicit Field (noOfReaderGroups)
     lengthInBits += 32;
 
     // Array field
     if (readerGroups != null) {
       int i = 0;
-      for (PubSubGroupDataType element : readerGroups) {
+      for (ReaderGroupDataType element : readerGroups) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= readerGroups.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -254,7 +242,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("PubSubConnectionDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -284,13 +272,14 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     int noOfConnectionProperties =
-        readSimpleField("noOfConnectionProperties", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfConnectionProperties", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> connectionProperties =
+    List<KeyValuePair> connectionProperties =
         readCountArrayField(
             "connectionProperties",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
+                () ->
+                    (KeyValuePair) ExtensionObjectDefinition.staticParse(readBuffer, (int) (14535)),
                 readBuffer),
             noOfConnectionProperties);
 
@@ -300,27 +289,27 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
             readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
-    int noOfWriterGroups = readSimpleField("noOfWriterGroups", readSignedInt(readBuffer, 32));
+    int noOfWriterGroups = readImplicitField("noOfWriterGroups", readSignedInt(readBuffer, 32));
 
-    List<PubSubGroupDataType> writerGroups =
+    List<WriterGroupDataType> writerGroups =
         readCountArrayField(
             "writerGroups",
             readComplex(
                 () ->
-                    (PubSubGroupDataType)
-                        ExtensionObjectDefinition.staticParse(readBuffer, (String) ("15609")),
+                    (WriterGroupDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (15482)),
                 readBuffer),
             noOfWriterGroups);
 
-    int noOfReaderGroups = readSimpleField("noOfReaderGroups", readSignedInt(readBuffer, 32));
+    int noOfReaderGroups = readImplicitField("noOfReaderGroups", readSignedInt(readBuffer, 32));
 
-    List<PubSubGroupDataType> readerGroups =
+    List<ReaderGroupDataType> readerGroups =
         readCountArrayField(
             "readerGroups",
             readComplex(
                 () ->
-                    (PubSubGroupDataType)
-                        ExtensionObjectDefinition.staticParse(readBuffer, (String) ("15609")),
+                    (ReaderGroupDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (15522)),
                 readBuffer),
             noOfReaderGroups);
 
@@ -332,12 +321,9 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
         publisherId,
         transportProfileUri,
         address,
-        noOfConnectionProperties,
         connectionProperties,
         transportSettings,
-        noOfWriterGroups,
         writerGroups,
-        noOfReaderGroups,
         readerGroups);
   }
 
@@ -348,13 +334,10 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     private final Variant publisherId;
     private final PascalString transportProfileUri;
     private final ExtensionObject address;
-    private final int noOfConnectionProperties;
-    private final List<ExtensionObjectDefinition> connectionProperties;
+    private final List<KeyValuePair> connectionProperties;
     private final ExtensionObject transportSettings;
-    private final int noOfWriterGroups;
-    private final List<PubSubGroupDataType> writerGroups;
-    private final int noOfReaderGroups;
-    private final List<PubSubGroupDataType> readerGroups;
+    private final List<WriterGroupDataType> writerGroups;
+    private final List<ReaderGroupDataType> readerGroups;
 
     public PubSubConnectionDataTypeBuilderImpl(
         PascalString name,
@@ -362,24 +345,18 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
         Variant publisherId,
         PascalString transportProfileUri,
         ExtensionObject address,
-        int noOfConnectionProperties,
-        List<ExtensionObjectDefinition> connectionProperties,
+        List<KeyValuePair> connectionProperties,
         ExtensionObject transportSettings,
-        int noOfWriterGroups,
-        List<PubSubGroupDataType> writerGroups,
-        int noOfReaderGroups,
-        List<PubSubGroupDataType> readerGroups) {
+        List<WriterGroupDataType> writerGroups,
+        List<ReaderGroupDataType> readerGroups) {
       this.name = name;
       this.enabled = enabled;
       this.publisherId = publisherId;
       this.transportProfileUri = transportProfileUri;
       this.address = address;
-      this.noOfConnectionProperties = noOfConnectionProperties;
       this.connectionProperties = connectionProperties;
       this.transportSettings = transportSettings;
-      this.noOfWriterGroups = noOfWriterGroups;
       this.writerGroups = writerGroups;
-      this.noOfReaderGroups = noOfReaderGroups;
       this.readerGroups = readerGroups;
     }
 
@@ -391,12 +368,9 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
               publisherId,
               transportProfileUri,
               address,
-              noOfConnectionProperties,
               connectionProperties,
               transportSettings,
-              noOfWriterGroups,
               writerGroups,
-              noOfReaderGroups,
               readerGroups);
       return pubSubConnectionDataType;
     }
@@ -416,12 +390,9 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
         && (getPublisherId() == that.getPublisherId())
         && (getTransportProfileUri() == that.getTransportProfileUri())
         && (getAddress() == that.getAddress())
-        && (getNoOfConnectionProperties() == that.getNoOfConnectionProperties())
         && (getConnectionProperties() == that.getConnectionProperties())
         && (getTransportSettings() == that.getTransportSettings())
-        && (getNoOfWriterGroups() == that.getNoOfWriterGroups())
         && (getWriterGroups() == that.getWriterGroups())
-        && (getNoOfReaderGroups() == that.getNoOfReaderGroups())
         && (getReaderGroups() == that.getReaderGroups())
         && super.equals(that)
         && true;
@@ -436,12 +407,9 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
         getPublisherId(),
         getTransportProfileUri(),
         getAddress(),
-        getNoOfConnectionProperties(),
         getConnectionProperties(),
         getTransportSettings(),
-        getNoOfWriterGroups(),
         getWriterGroups(),
-        getNoOfReaderGroups(),
         getReaderGroups());
   }
 

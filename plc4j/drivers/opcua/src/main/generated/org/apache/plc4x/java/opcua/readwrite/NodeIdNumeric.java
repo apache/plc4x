@@ -64,6 +64,10 @@ public class NodeIdNumeric extends NodeIdTypeDefinition implements Message {
     return String.valueOf(getId());
   }
 
+  public short getNamespace() {
+    return (short) (getNamespaceIndex());
+  }
+
   @Override
   protected void serializeNodeIdTypeDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
@@ -80,6 +84,10 @@ public class NodeIdNumeric extends NodeIdTypeDefinition implements Message {
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     String identifier = getIdentifier();
     writeBuffer.writeVirtual("identifier", identifier);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    short namespace = getNamespace();
+    writeBuffer.writeVirtual("namespace", namespace);
 
     writeBuffer.popContext("NodeIdNumeric");
   }
@@ -103,6 +111,8 @@ public class NodeIdNumeric extends NodeIdTypeDefinition implements Message {
 
     // A virtual field doesn't have any in- or output.
 
+    // A virtual field doesn't have any in- or output.
+
     return lengthInBits;
   }
 
@@ -116,6 +126,7 @@ public class NodeIdNumeric extends NodeIdTypeDefinition implements Message {
 
     long id = readSimpleField("id", readUnsignedLong(readBuffer, 32));
     String identifier = readVirtualField("identifier", String.class, id);
+    short namespace = readVirtualField("namespace", short.class, namespaceIndex);
 
     readBuffer.closeContext("NodeIdNumeric");
     // Create the instance

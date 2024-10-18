@@ -39,7 +39,9 @@ type UserNameIdentityToken interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	UserIdentityTokenDefinition
+	ExtensionObjectDefinition
+	// GetPolicyId returns PolicyId (property field)
+	GetPolicyId() PascalString
 	// GetUserName returns UserName (property field)
 	GetUserName() PascalString
 	// GetPassword returns Password (property field)
@@ -54,17 +56,21 @@ type UserNameIdentityToken interface {
 
 // _UserNameIdentityToken is the data-structure of this message
 type _UserNameIdentityToken struct {
-	UserIdentityTokenDefinitionContract
+	ExtensionObjectDefinitionContract
+	PolicyId            PascalString
 	UserName            PascalString
 	Password            PascalByteString
 	EncryptionAlgorithm PascalString
 }
 
 var _ UserNameIdentityToken = (*_UserNameIdentityToken)(nil)
-var _ UserIdentityTokenDefinitionRequirements = (*_UserNameIdentityToken)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_UserNameIdentityToken)(nil)
 
 // NewUserNameIdentityToken factory function for _UserNameIdentityToken
-func NewUserNameIdentityToken(userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) *_UserNameIdentityToken {
+func NewUserNameIdentityToken(policyId PascalString, userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) *_UserNameIdentityToken {
+	if policyId == nil {
+		panic("policyId of type PascalString for UserNameIdentityToken must not be nil")
+	}
 	if userName == nil {
 		panic("userName of type PascalString for UserNameIdentityToken must not be nil")
 	}
@@ -75,12 +81,13 @@ func NewUserNameIdentityToken(userName PascalString, password PascalByteString, 
 		panic("encryptionAlgorithm of type PascalString for UserNameIdentityToken must not be nil")
 	}
 	_result := &_UserNameIdentityToken{
-		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
-		UserName:                            userName,
-		Password:                            password,
-		EncryptionAlgorithm:                 encryptionAlgorithm,
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		PolicyId:                          policyId,
+		UserName:                          userName,
+		Password:                          password,
+		EncryptionAlgorithm:               encryptionAlgorithm,
 	}
-	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 
@@ -93,7 +100,11 @@ func NewUserNameIdentityToken(userName PascalString, password PascalByteString, 
 type UserNameIdentityTokenBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) UserNameIdentityTokenBuilder
+	WithMandatoryFields(policyId PascalString, userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) UserNameIdentityTokenBuilder
+	// WithPolicyId adds PolicyId (property field)
+	WithPolicyId(PascalString) UserNameIdentityTokenBuilder
+	// WithPolicyIdBuilder adds PolicyId (property field) which is build by the builder
+	WithPolicyIdBuilder(func(PascalStringBuilder) PascalStringBuilder) UserNameIdentityTokenBuilder
 	// WithUserName adds UserName (property field)
 	WithUserName(PascalString) UserNameIdentityTokenBuilder
 	// WithUserNameBuilder adds UserName (property field) which is build by the builder
@@ -120,19 +131,37 @@ func NewUserNameIdentityTokenBuilder() UserNameIdentityTokenBuilder {
 type _UserNameIdentityTokenBuilder struct {
 	*_UserNameIdentityToken
 
-	parentBuilder *_UserIdentityTokenDefinitionBuilder
+	parentBuilder *_ExtensionObjectDefinitionBuilder
 
 	err *utils.MultiError
 }
 
 var _ (UserNameIdentityTokenBuilder) = (*_UserNameIdentityTokenBuilder)(nil)
 
-func (b *_UserNameIdentityTokenBuilder) setParent(contract UserIdentityTokenDefinitionContract) {
-	b.UserIdentityTokenDefinitionContract = contract
+func (b *_UserNameIdentityTokenBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_UserNameIdentityTokenBuilder) WithMandatoryFields(userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) UserNameIdentityTokenBuilder {
-	return b.WithUserName(userName).WithPassword(password).WithEncryptionAlgorithm(encryptionAlgorithm)
+func (b *_UserNameIdentityTokenBuilder) WithMandatoryFields(policyId PascalString, userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) UserNameIdentityTokenBuilder {
+	return b.WithPolicyId(policyId).WithUserName(userName).WithPassword(password).WithEncryptionAlgorithm(encryptionAlgorithm)
+}
+
+func (b *_UserNameIdentityTokenBuilder) WithPolicyId(policyId PascalString) UserNameIdentityTokenBuilder {
+	b.PolicyId = policyId
+	return b
+}
+
+func (b *_UserNameIdentityTokenBuilder) WithPolicyIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserNameIdentityTokenBuilder {
+	builder := builderSupplier(b.PolicyId.CreatePascalStringBuilder())
+	var err error
+	b.PolicyId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
 }
 
 func (b *_UserNameIdentityTokenBuilder) WithUserName(userName PascalString) UserNameIdentityTokenBuilder {
@@ -190,6 +219,12 @@ func (b *_UserNameIdentityTokenBuilder) WithEncryptionAlgorithmBuilder(builderSu
 }
 
 func (b *_UserNameIdentityTokenBuilder) Build() (UserNameIdentityToken, error) {
+	if b.PolicyId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'policyId' not set"))
+	}
 	if b.UserName == nil {
 		if b.err == nil {
 			b.err = new(utils.MultiError)
@@ -223,11 +258,11 @@ func (b *_UserNameIdentityTokenBuilder) MustBuild() UserNameIdentityToken {
 }
 
 // Done is used to finish work on this child and return to the parent builder
-func (b *_UserNameIdentityTokenBuilder) Done() UserIdentityTokenDefinitionBuilder {
+func (b *_UserNameIdentityTokenBuilder) Done() ExtensionObjectDefinitionBuilder {
 	return b.parentBuilder
 }
 
-func (b *_UserNameIdentityTokenBuilder) buildForUserIdentityTokenDefinition() (UserIdentityTokenDefinition, error) {
+func (b *_UserNameIdentityTokenBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
 	return b.Build()
 }
 
@@ -257,8 +292,8 @@ func (b *_UserNameIdentityToken) CreateUserNameIdentityTokenBuilder() UserNameId
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_UserNameIdentityToken) GetIdentifier() string {
-	return "username"
+func (m *_UserNameIdentityToken) GetExtensionId() int32 {
+	return int32(324)
 }
 
 ///////////////////////
@@ -266,14 +301,18 @@ func (m *_UserNameIdentityToken) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_UserNameIdentityToken) GetParent() UserIdentityTokenDefinitionContract {
-	return m.UserIdentityTokenDefinitionContract
+func (m *_UserNameIdentityToken) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
+func (m *_UserNameIdentityToken) GetPolicyId() PascalString {
+	return m.PolicyId
+}
 
 func (m *_UserNameIdentityToken) GetUserName() PascalString {
 	return m.UserName
@@ -308,7 +347,10 @@ func (m *_UserNameIdentityToken) GetTypeName() string {
 }
 
 func (m *_UserNameIdentityToken) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
+
+	// Simple field (policyId)
+	lengthInBits += m.PolicyId.GetLengthInBits(ctx)
 
 	// Simple field (userName)
 	lengthInBits += m.UserName.GetLengthInBits(ctx)
@@ -326,8 +368,8 @@ func (m *_UserNameIdentityToken) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_UserNameIdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_UserIdentityTokenDefinition, identifier string) (__userNameIdentityToken UserNameIdentityToken, err error) {
-	m.UserIdentityTokenDefinitionContract = parent
+func (m *_UserNameIdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__userNameIdentityToken UserNameIdentityToken, err error) {
+	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -336,6 +378,12 @@ func (m *_UserNameIdentityToken) parse(ctx context.Context, readBuffer utils.Rea
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+
+	policyId, err := ReadSimpleField[PascalString](ctx, "policyId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policyId' field"))
+	}
+	m.PolicyId = policyId
 
 	userName, err := ReadSimpleField[PascalString](ctx, "userName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
 	if err != nil {
@@ -380,6 +428,10 @@ func (m *_UserNameIdentityToken) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for UserNameIdentityToken")
 		}
 
+		if err := WriteSimpleField[PascalString](ctx, "policyId", m.GetPolicyId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'policyId' field")
+		}
+
 		if err := WriteSimpleField[PascalString](ctx, "userName", m.GetUserName(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'userName' field")
 		}
@@ -397,7 +449,7 @@ func (m *_UserNameIdentityToken) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).serializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_UserNameIdentityToken) IsUserNameIdentityToken() {}
@@ -411,12 +463,13 @@ func (m *_UserNameIdentityToken) deepCopy() *_UserNameIdentityToken {
 		return nil
 	}
 	_UserNameIdentityTokenCopy := &_UserNameIdentityToken{
-		m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).deepCopy(),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.PolicyId.DeepCopy().(PascalString),
 		m.UserName.DeepCopy().(PascalString),
 		m.Password.DeepCopy().(PascalByteString),
 		m.EncryptionAlgorithm.DeepCopy().(PascalString),
 	}
-	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UserNameIdentityTokenCopy
 }
 

@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataNotificationThreshold) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataNotificationThreshold) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (notificationThreshold)
 	lengthInBits += m.NotificationThreshold.GetLengthInBits(ctx)

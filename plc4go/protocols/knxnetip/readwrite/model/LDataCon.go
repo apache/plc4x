@@ -260,7 +260,7 @@ func (m *_LDataCon) GetTypeName() string {
 }
 
 func (m *_LDataCon) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIContract.(*_CEMI).GetLengthInBits(ctx))
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8

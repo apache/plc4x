@@ -41,9 +41,7 @@ type HistoryUpdateRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
-	// GetNoOfHistoryUpdateDetails returns NoOfHistoryUpdateDetails (property field)
-	GetNoOfHistoryUpdateDetails() int32
+	GetRequestHeader() RequestHeader
 	// GetHistoryUpdateDetails returns HistoryUpdateDetails (property field)
 	GetHistoryUpdateDetails() []ExtensionObject
 	// IsHistoryUpdateRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -55,23 +53,21 @@ type HistoryUpdateRequest interface {
 // _HistoryUpdateRequest is the data-structure of this message
 type _HistoryUpdateRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader            ExtensionObjectDefinition
-	NoOfHistoryUpdateDetails int32
-	HistoryUpdateDetails     []ExtensionObject
+	RequestHeader        RequestHeader
+	HistoryUpdateDetails []ExtensionObject
 }
 
 var _ HistoryUpdateRequest = (*_HistoryUpdateRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryUpdateRequest)(nil)
 
 // NewHistoryUpdateRequest factory function for _HistoryUpdateRequest
-func NewHistoryUpdateRequest(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) *_HistoryUpdateRequest {
+func NewHistoryUpdateRequest(requestHeader RequestHeader, historyUpdateDetails []ExtensionObject) *_HistoryUpdateRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for HistoryUpdateRequest must not be nil")
+		panic("requestHeader of type RequestHeader for HistoryUpdateRequest must not be nil")
 	}
 	_result := &_HistoryUpdateRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
-		NoOfHistoryUpdateDetails:          noOfHistoryUpdateDetails,
 		HistoryUpdateDetails:              historyUpdateDetails,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -87,13 +83,11 @@ func NewHistoryUpdateRequest(requestHeader ExtensionObjectDefinition, noOfHistor
 type HistoryUpdateRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) HistoryUpdateRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, historyUpdateDetails []ExtensionObject) HistoryUpdateRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) HistoryUpdateRequestBuilder
+	WithRequestHeader(RequestHeader) HistoryUpdateRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryUpdateRequestBuilder
-	// WithNoOfHistoryUpdateDetails adds NoOfHistoryUpdateDetails (property field)
-	WithNoOfHistoryUpdateDetails(int32) HistoryUpdateRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) HistoryUpdateRequestBuilder
 	// WithHistoryUpdateDetails adds HistoryUpdateDetails (property field)
 	WithHistoryUpdateDetails(...ExtensionObject) HistoryUpdateRequestBuilder
 	// Build builds the HistoryUpdateRequest or returns an error if something is wrong
@@ -121,30 +115,25 @@ func (b *_HistoryUpdateRequestBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_HistoryUpdateRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) HistoryUpdateRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfHistoryUpdateDetails(noOfHistoryUpdateDetails).WithHistoryUpdateDetails(historyUpdateDetails...)
+func (b *_HistoryUpdateRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, historyUpdateDetails []ExtensionObject) HistoryUpdateRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithHistoryUpdateDetails(historyUpdateDetails...)
 }
 
-func (b *_HistoryUpdateRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) HistoryUpdateRequestBuilder {
+func (b *_HistoryUpdateRequestBuilder) WithRequestHeader(requestHeader RequestHeader) HistoryUpdateRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_HistoryUpdateRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryUpdateRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_HistoryUpdateRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) HistoryUpdateRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_HistoryUpdateRequestBuilder) WithNoOfHistoryUpdateDetails(noOfHistoryUpdateDetails int32) HistoryUpdateRequestBuilder {
-	b.NoOfHistoryUpdateDetails = noOfHistoryUpdateDetails
 	return b
 }
 
@@ -209,8 +198,8 @@ func (b *_HistoryUpdateRequest) CreateHistoryUpdateRequestBuilder() HistoryUpdat
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_HistoryUpdateRequest) GetIdentifier() string {
-	return "700"
+func (m *_HistoryUpdateRequest) GetExtensionId() int32 {
+	return int32(700)
 }
 
 ///////////////////////
@@ -227,12 +216,8 @@ func (m *_HistoryUpdateRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_HistoryUpdateRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_HistoryUpdateRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
-}
-
-func (m *_HistoryUpdateRequest) GetNoOfHistoryUpdateDetails() int32 {
-	return m.NoOfHistoryUpdateDetails
 }
 
 func (m *_HistoryUpdateRequest) GetHistoryUpdateDetails() []ExtensionObject {
@@ -260,12 +245,12 @@ func (m *_HistoryUpdateRequest) GetTypeName() string {
 }
 
 func (m *_HistoryUpdateRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfHistoryUpdateDetails)
+	// Implicit Field (noOfHistoryUpdateDetails)
 	lengthInBits += 32
 
 	// Array field
@@ -285,7 +270,7 @@ func (m *_HistoryUpdateRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_HistoryUpdateRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyUpdateRequest HistoryUpdateRequest, err error) {
+func (m *_HistoryUpdateRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__historyUpdateRequest HistoryUpdateRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -296,19 +281,19 @@ func (m *_HistoryUpdateRequest) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfHistoryUpdateDetails, err := ReadSimpleField(ctx, "noOfHistoryUpdateDetails", ReadSignedInt(readBuffer, uint8(32)))
+	noOfHistoryUpdateDetails, err := ReadImplicitField[int32](ctx, "noOfHistoryUpdateDetails", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfHistoryUpdateDetails' field"))
 	}
-	m.NoOfHistoryUpdateDetails = noOfHistoryUpdateDetails
+	_ = noOfHistoryUpdateDetails
 
-	historyUpdateDetails, err := ReadCountArrayField[ExtensionObject](ctx, "historyUpdateDetails", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer), uint64(noOfHistoryUpdateDetails))
+	historyUpdateDetails, err := ReadCountArrayField[ExtensionObject](ctx, "historyUpdateDetails", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), uint64(noOfHistoryUpdateDetails))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'historyUpdateDetails' field"))
 	}
@@ -339,11 +324,11 @@ func (m *_HistoryUpdateRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for HistoryUpdateRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfHistoryUpdateDetails", m.GetNoOfHistoryUpdateDetails(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfHistoryUpdateDetails := int32(utils.InlineIf(bool((m.GetHistoryUpdateDetails()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetHistoryUpdateDetails()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfHistoryUpdateDetails", noOfHistoryUpdateDetails, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfHistoryUpdateDetails' field")
 		}
 
@@ -371,8 +356,7 @@ func (m *_HistoryUpdateRequest) deepCopy() *_HistoryUpdateRequest {
 	}
 	_HistoryUpdateRequestCopy := &_HistoryUpdateRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfHistoryUpdateDetails,
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.HistoryUpdateDetails),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

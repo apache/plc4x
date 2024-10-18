@@ -265,7 +265,7 @@ func (m *_ReplyOrConfirmationReply) GetTypeName() string {
 }
 
 func (m *_ReplyOrConfirmationReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).GetLengthInBits(ctx))
 
 	// Simple field (reply)
 	lengthInBits += m.Reply.GetLengthInBits(ctx)

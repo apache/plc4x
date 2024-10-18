@@ -303,7 +303,7 @@ func (m *_COTPParameter) GetTypeName() string {
 	return "COTPParameter"
 }
 
-func (m *_COTPParameter) getLengthInBits(ctx context.Context) uint16 {
+func (m *_COTPParameter) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (parameterType)
 	lengthInBits += 8

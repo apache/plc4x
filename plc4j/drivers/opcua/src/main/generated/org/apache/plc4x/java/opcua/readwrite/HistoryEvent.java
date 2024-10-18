@@ -38,25 +38,19 @@ import org.apache.plc4x.java.spi.generation.*;
 public class HistoryEvent extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "661";
+  public Integer getExtensionId() {
+    return (int) 661;
   }
 
   // Properties.
-  protected final int noOfEvents;
-  protected final List<ExtensionObjectDefinition> events;
+  protected final List<HistoryEventFieldList> events;
 
-  public HistoryEvent(int noOfEvents, List<ExtensionObjectDefinition> events) {
+  public HistoryEvent(List<HistoryEventFieldList> events) {
     super();
-    this.noOfEvents = noOfEvents;
     this.events = events;
   }
 
-  public int getNoOfEvents() {
-    return noOfEvents;
-  }
-
-  public List<ExtensionObjectDefinition> getEvents() {
+  public List<HistoryEventFieldList> getEvents() {
     return events;
   }
 
@@ -67,8 +61,10 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("HistoryEvent");
 
-    // Simple Field (noOfEvents)
-    writeSimpleField("noOfEvents", noOfEvents, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfEvents) (Used for parsing, but its value is not stored as it's implicitly
+    // given by the objects content)
+    int noOfEvents = (int) ((((getEvents()) == (null)) ? -(1) : COUNT(getEvents())));
+    writeImplicitField("noOfEvents", noOfEvents, writeSignedInt(writeBuffer, 32));
 
     // Array Field (events)
     writeComplexTypeArrayField("events", events, writeBuffer);
@@ -87,13 +83,13 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
     HistoryEvent _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (noOfEvents)
+    // Implicit Field (noOfEvents)
     lengthInBits += 32;
 
     // Array field
     if (events != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : events) {
+      for (HistoryEventFieldList element : events) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= events.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -103,38 +99,38 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("HistoryEvent");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int noOfEvents = readSimpleField("noOfEvents", readSignedInt(readBuffer, 32));
+    int noOfEvents = readImplicitField("noOfEvents", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> events =
+    List<HistoryEventFieldList> events =
         readCountArrayField(
             "events",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("922")),
+                () ->
+                    (HistoryEventFieldList)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (922)),
                 readBuffer),
             noOfEvents);
 
     readBuffer.closeContext("HistoryEvent");
     // Create the instance
-    return new HistoryEventBuilderImpl(noOfEvents, events);
+    return new HistoryEventBuilderImpl(events);
   }
 
   public static class HistoryEventBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final int noOfEvents;
-    private final List<ExtensionObjectDefinition> events;
+    private final List<HistoryEventFieldList> events;
 
-    public HistoryEventBuilderImpl(int noOfEvents, List<ExtensionObjectDefinition> events) {
-      this.noOfEvents = noOfEvents;
+    public HistoryEventBuilderImpl(List<HistoryEventFieldList> events) {
       this.events = events;
     }
 
     public HistoryEvent build() {
-      HistoryEvent historyEvent = new HistoryEvent(noOfEvents, events);
+      HistoryEvent historyEvent = new HistoryEvent(events);
       return historyEvent;
     }
   }
@@ -148,15 +144,12 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
       return false;
     }
     HistoryEvent that = (HistoryEvent) o;
-    return (getNoOfEvents() == that.getNoOfEvents())
-        && (getEvents() == that.getEvents())
-        && super.equals(that)
-        && true;
+    return (getEvents() == that.getEvents()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getNoOfEvents(), getEvents());
+    return Objects.hash(super.hashCode(), getEvents());
   }
 
   @Override

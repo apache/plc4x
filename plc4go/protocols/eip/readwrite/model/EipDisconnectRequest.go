@@ -187,7 +187,7 @@ func (m *_EipDisconnectRequest) GetTypeName() string {
 }
 
 func (m *_EipDisconnectRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
+	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

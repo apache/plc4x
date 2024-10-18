@@ -230,7 +230,7 @@ func (m *_BACnetErrorGeneral) GetTypeName() string {
 }
 
 func (m *_BACnetErrorGeneral) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetErrorContract.(*_BACnetError).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetErrorContract.(*_BACnetError).GetLengthInBits(ctx))
 
 	// Simple field (error)
 	lengthInBits += m.Error.GetLengthInBits(ctx)

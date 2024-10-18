@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (maxSegmentsAccepted)
 	lengthInBits += m.MaxSegmentsAccepted.GetLengthInBits(ctx)

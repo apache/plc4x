@@ -264,7 +264,7 @@ func (m *_MonitoredSAL) GetTypeName() string {
 	return "MonitoredSAL"
 }
 
-func (m *_MonitoredSAL) getLengthInBits(ctx context.Context) uint16 {
+func (m *_MonitoredSAL) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

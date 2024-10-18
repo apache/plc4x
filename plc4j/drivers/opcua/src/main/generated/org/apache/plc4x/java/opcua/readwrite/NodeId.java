@@ -49,10 +49,6 @@ public class NodeId implements Message {
     return nodeId;
   }
 
-  public String getId() {
-    return String.valueOf(getNodeId().getIdentifier());
-  }
-
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -63,10 +59,6 @@ public class NodeId implements Message {
 
     // Simple Field (nodeId)
     writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
-
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
-    String id = getId();
-    writeBuffer.writeVirtual("id", id);
 
     writeBuffer.popContext("NodeId");
   }
@@ -88,8 +80,6 @@ public class NodeId implements Message {
     // Simple field (nodeId)
     lengthInBits += nodeId.getLengthInBits();
 
-    // A virtual field doesn't have any in- or output.
-
     return lengthInBits;
   }
 
@@ -103,7 +93,6 @@ public class NodeId implements Message {
     NodeIdTypeDefinition nodeId =
         readSimpleField(
             "nodeId", readComplex(() -> NodeIdTypeDefinition.staticParse(readBuffer), readBuffer));
-    String id = readVirtualField("id", String.class, nodeId.getIdentifier());
 
     readBuffer.closeContext("NodeId");
     // Create the instance

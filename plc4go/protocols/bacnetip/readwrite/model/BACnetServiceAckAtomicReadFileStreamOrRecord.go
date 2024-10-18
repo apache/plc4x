@@ -377,7 +377,7 @@ func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) GetTypeName() string {
 	return "BACnetServiceAckAtomicReadFileStreamOrRecord"
 }
 
-func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)

@@ -230,7 +230,7 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) GetTypeName() string {
 }
 
 func (m *_ParameterValueInterfaceOptions1PowerUpSettings) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).GetLengthInBits(ctx))
 
 	// Simple field (value)
 	lengthInBits += m.Value.GetLengthInBits(ctx)

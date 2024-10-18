@@ -41,11 +41,9 @@ type GetEndpointsResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
-	// GetNoOfEndpoints returns NoOfEndpoints (property field)
-	GetNoOfEndpoints() int32
+	GetResponseHeader() ResponseHeader
 	// GetEndpoints returns Endpoints (property field)
-	GetEndpoints() []ExtensionObjectDefinition
+	GetEndpoints() []EndpointDescription
 	// IsGetEndpointsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetEndpointsResponse()
 	// CreateBuilder creates a GetEndpointsResponseBuilder
@@ -55,23 +53,21 @@ type GetEndpointsResponse interface {
 // _GetEndpointsResponse is the data-structure of this message
 type _GetEndpointsResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader ExtensionObjectDefinition
-	NoOfEndpoints  int32
-	Endpoints      []ExtensionObjectDefinition
+	ResponseHeader ResponseHeader
+	Endpoints      []EndpointDescription
 }
 
 var _ GetEndpointsResponse = (*_GetEndpointsResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_GetEndpointsResponse)(nil)
 
 // NewGetEndpointsResponse factory function for _GetEndpointsResponse
-func NewGetEndpointsResponse(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) *_GetEndpointsResponse {
+func NewGetEndpointsResponse(responseHeader ResponseHeader, endpoints []EndpointDescription) *_GetEndpointsResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for GetEndpointsResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for GetEndpointsResponse must not be nil")
 	}
 	_result := &_GetEndpointsResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
-		NoOfEndpoints:                     noOfEndpoints,
 		Endpoints:                         endpoints,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -87,15 +83,13 @@ func NewGetEndpointsResponse(responseHeader ExtensionObjectDefinition, noOfEndpo
 type GetEndpointsResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) GetEndpointsResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, endpoints []EndpointDescription) GetEndpointsResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) GetEndpointsResponseBuilder
+	WithResponseHeader(ResponseHeader) GetEndpointsResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) GetEndpointsResponseBuilder
-	// WithNoOfEndpoints adds NoOfEndpoints (property field)
-	WithNoOfEndpoints(int32) GetEndpointsResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) GetEndpointsResponseBuilder
 	// WithEndpoints adds Endpoints (property field)
-	WithEndpoints(...ExtensionObjectDefinition) GetEndpointsResponseBuilder
+	WithEndpoints(...EndpointDescription) GetEndpointsResponseBuilder
 	// Build builds the GetEndpointsResponse or returns an error if something is wrong
 	Build() (GetEndpointsResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,34 +115,29 @@ func (b *_GetEndpointsResponseBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_GetEndpointsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) GetEndpointsResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfEndpoints(noOfEndpoints).WithEndpoints(endpoints...)
+func (b *_GetEndpointsResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, endpoints []EndpointDescription) GetEndpointsResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithEndpoints(endpoints...)
 }
 
-func (b *_GetEndpointsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) GetEndpointsResponseBuilder {
+func (b *_GetEndpointsResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) GetEndpointsResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_GetEndpointsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) GetEndpointsResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_GetEndpointsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) GetEndpointsResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_GetEndpointsResponseBuilder) WithNoOfEndpoints(noOfEndpoints int32) GetEndpointsResponseBuilder {
-	b.NoOfEndpoints = noOfEndpoints
-	return b
-}
-
-func (b *_GetEndpointsResponseBuilder) WithEndpoints(endpoints ...ExtensionObjectDefinition) GetEndpointsResponseBuilder {
+func (b *_GetEndpointsResponseBuilder) WithEndpoints(endpoints ...EndpointDescription) GetEndpointsResponseBuilder {
 	b.Endpoints = endpoints
 	return b
 }
@@ -209,8 +198,8 @@ func (b *_GetEndpointsResponse) CreateGetEndpointsResponseBuilder() GetEndpoints
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_GetEndpointsResponse) GetIdentifier() string {
-	return "431"
+func (m *_GetEndpointsResponse) GetExtensionId() int32 {
+	return int32(431)
 }
 
 ///////////////////////
@@ -227,15 +216,11 @@ func (m *_GetEndpointsResponse) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_GetEndpointsResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_GetEndpointsResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
-func (m *_GetEndpointsResponse) GetNoOfEndpoints() int32 {
-	return m.NoOfEndpoints
-}
-
-func (m *_GetEndpointsResponse) GetEndpoints() []ExtensionObjectDefinition {
+func (m *_GetEndpointsResponse) GetEndpoints() []EndpointDescription {
 	return m.Endpoints
 }
 
@@ -260,12 +245,12 @@ func (m *_GetEndpointsResponse) GetTypeName() string {
 }
 
 func (m *_GetEndpointsResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfEndpoints)
+	// Implicit Field (noOfEndpoints)
 	lengthInBits += 32
 
 	// Array field
@@ -285,7 +270,7 @@ func (m *_GetEndpointsResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_GetEndpointsResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__getEndpointsResponse GetEndpointsResponse, err error) {
+func (m *_GetEndpointsResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__getEndpointsResponse GetEndpointsResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -296,19 +281,19 @@ func (m *_GetEndpointsResponse) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfEndpoints, err := ReadSimpleField(ctx, "noOfEndpoints", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEndpoints, err := ReadImplicitField[int32](ctx, "noOfEndpoints", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEndpoints' field"))
 	}
-	m.NoOfEndpoints = noOfEndpoints
+	_ = noOfEndpoints
 
-	endpoints, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "endpoints", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("314")), readBuffer), uint64(noOfEndpoints))
+	endpoints, err := ReadCountArrayField[EndpointDescription](ctx, "endpoints", ReadComplex[EndpointDescription](ExtensionObjectDefinitionParseWithBufferProducer[EndpointDescription]((int32)(int32(314))), readBuffer), uint64(noOfEndpoints))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpoints' field"))
 	}
@@ -339,11 +324,11 @@ func (m *_GetEndpointsResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for GetEndpointsResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfEndpoints", m.GetNoOfEndpoints(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfEndpoints := int32(utils.InlineIf(bool((m.GetEndpoints()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEndpoints()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfEndpoints", noOfEndpoints, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEndpoints' field")
 		}
 
@@ -371,9 +356,8 @@ func (m *_GetEndpointsResponse) deepCopy() *_GetEndpointsResponse {
 	}
 	_GetEndpointsResponseCopy := &_GetEndpointsResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfEndpoints,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Endpoints),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopySlice[EndpointDescription, EndpointDescription](m.Endpoints),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _GetEndpointsResponseCopy

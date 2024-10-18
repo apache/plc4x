@@ -41,11 +41,9 @@ type QueryNextResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
-	// GetNoOfQueryDataSets returns NoOfQueryDataSets (property field)
-	GetNoOfQueryDataSets() int32
+	GetResponseHeader() ResponseHeader
 	// GetQueryDataSets returns QueryDataSets (property field)
-	GetQueryDataSets() []ExtensionObjectDefinition
+	GetQueryDataSets() []QueryDataSet
 	// GetRevisedContinuationPoint returns RevisedContinuationPoint (property field)
 	GetRevisedContinuationPoint() PascalByteString
 	// IsQueryNextResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -57,9 +55,8 @@ type QueryNextResponse interface {
 // _QueryNextResponse is the data-structure of this message
 type _QueryNextResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader           ExtensionObjectDefinition
-	NoOfQueryDataSets        int32
-	QueryDataSets            []ExtensionObjectDefinition
+	ResponseHeader           ResponseHeader
+	QueryDataSets            []QueryDataSet
 	RevisedContinuationPoint PascalByteString
 }
 
@@ -67,9 +64,9 @@ var _ QueryNextResponse = (*_QueryNextResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryNextResponse)(nil)
 
 // NewQueryNextResponse factory function for _QueryNextResponse
-func NewQueryNextResponse(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, revisedContinuationPoint PascalByteString) *_QueryNextResponse {
+func NewQueryNextResponse(responseHeader ResponseHeader, queryDataSets []QueryDataSet, revisedContinuationPoint PascalByteString) *_QueryNextResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for QueryNextResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for QueryNextResponse must not be nil")
 	}
 	if revisedContinuationPoint == nil {
 		panic("revisedContinuationPoint of type PascalByteString for QueryNextResponse must not be nil")
@@ -77,7 +74,6 @@ func NewQueryNextResponse(responseHeader ExtensionObjectDefinition, noOfQueryDat
 	_result := &_QueryNextResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
-		NoOfQueryDataSets:                 noOfQueryDataSets,
 		QueryDataSets:                     queryDataSets,
 		RevisedContinuationPoint:          revisedContinuationPoint,
 	}
@@ -94,15 +90,13 @@ func NewQueryNextResponse(responseHeader ExtensionObjectDefinition, noOfQueryDat
 type QueryNextResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, revisedContinuationPoint PascalByteString) QueryNextResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, queryDataSets []QueryDataSet, revisedContinuationPoint PascalByteString) QueryNextResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) QueryNextResponseBuilder
+	WithResponseHeader(ResponseHeader) QueryNextResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryNextResponseBuilder
-	// WithNoOfQueryDataSets adds NoOfQueryDataSets (property field)
-	WithNoOfQueryDataSets(int32) QueryNextResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) QueryNextResponseBuilder
 	// WithQueryDataSets adds QueryDataSets (property field)
-	WithQueryDataSets(...ExtensionObjectDefinition) QueryNextResponseBuilder
+	WithQueryDataSets(...QueryDataSet) QueryNextResponseBuilder
 	// WithRevisedContinuationPoint adds RevisedContinuationPoint (property field)
 	WithRevisedContinuationPoint(PascalByteString) QueryNextResponseBuilder
 	// WithRevisedContinuationPointBuilder adds RevisedContinuationPoint (property field) which is build by the builder
@@ -132,34 +126,29 @@ func (b *_QueryNextResponseBuilder) setParent(contract ExtensionObjectDefinition
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_QueryNextResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, revisedContinuationPoint PascalByteString) QueryNextResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfQueryDataSets(noOfQueryDataSets).WithQueryDataSets(queryDataSets...).WithRevisedContinuationPoint(revisedContinuationPoint)
+func (b *_QueryNextResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, queryDataSets []QueryDataSet, revisedContinuationPoint PascalByteString) QueryNextResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithQueryDataSets(queryDataSets...).WithRevisedContinuationPoint(revisedContinuationPoint)
 }
 
-func (b *_QueryNextResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) QueryNextResponseBuilder {
+func (b *_QueryNextResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) QueryNextResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_QueryNextResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryNextResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_QueryNextResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) QueryNextResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_QueryNextResponseBuilder) WithNoOfQueryDataSets(noOfQueryDataSets int32) QueryNextResponseBuilder {
-	b.NoOfQueryDataSets = noOfQueryDataSets
-	return b
-}
-
-func (b *_QueryNextResponseBuilder) WithQueryDataSets(queryDataSets ...ExtensionObjectDefinition) QueryNextResponseBuilder {
+func (b *_QueryNextResponseBuilder) WithQueryDataSets(queryDataSets ...QueryDataSet) QueryNextResponseBuilder {
 	b.QueryDataSets = queryDataSets
 	return b
 }
@@ -244,8 +233,8 @@ func (b *_QueryNextResponse) CreateQueryNextResponseBuilder() QueryNextResponseB
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_QueryNextResponse) GetIdentifier() string {
-	return "624"
+func (m *_QueryNextResponse) GetExtensionId() int32 {
+	return int32(624)
 }
 
 ///////////////////////
@@ -262,15 +251,11 @@ func (m *_QueryNextResponse) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_QueryNextResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_QueryNextResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
-func (m *_QueryNextResponse) GetNoOfQueryDataSets() int32 {
-	return m.NoOfQueryDataSets
-}
-
-func (m *_QueryNextResponse) GetQueryDataSets() []ExtensionObjectDefinition {
+func (m *_QueryNextResponse) GetQueryDataSets() []QueryDataSet {
 	return m.QueryDataSets
 }
 
@@ -299,12 +284,12 @@ func (m *_QueryNextResponse) GetTypeName() string {
 }
 
 func (m *_QueryNextResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfQueryDataSets)
+	// Implicit Field (noOfQueryDataSets)
 	lengthInBits += 32
 
 	// Array field
@@ -327,7 +312,7 @@ func (m *_QueryNextResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_QueryNextResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__queryNextResponse QueryNextResponse, err error) {
+func (m *_QueryNextResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__queryNextResponse QueryNextResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -338,19 +323,19 @@ func (m *_QueryNextResponse) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfQueryDataSets, err := ReadSimpleField(ctx, "noOfQueryDataSets", ReadSignedInt(readBuffer, uint8(32)))
+	noOfQueryDataSets, err := ReadImplicitField[int32](ctx, "noOfQueryDataSets", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfQueryDataSets' field"))
 	}
-	m.NoOfQueryDataSets = noOfQueryDataSets
+	_ = noOfQueryDataSets
 
-	queryDataSets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "queryDataSets", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("579")), readBuffer), uint64(noOfQueryDataSets))
+	queryDataSets, err := ReadCountArrayField[QueryDataSet](ctx, "queryDataSets", ReadComplex[QueryDataSet](ExtensionObjectDefinitionParseWithBufferProducer[QueryDataSet]((int32)(int32(579))), readBuffer), uint64(noOfQueryDataSets))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queryDataSets' field"))
 	}
@@ -387,11 +372,11 @@ func (m *_QueryNextResponse) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for QueryNextResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfQueryDataSets", m.GetNoOfQueryDataSets(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfQueryDataSets := int32(utils.InlineIf(bool((m.GetQueryDataSets()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetQueryDataSets()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfQueryDataSets", noOfQueryDataSets, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfQueryDataSets' field")
 		}
 
@@ -423,9 +408,8 @@ func (m *_QueryNextResponse) deepCopy() *_QueryNextResponse {
 	}
 	_QueryNextResponseCopy := &_QueryNextResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfQueryDataSets,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.QueryDataSets),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopySlice[QueryDataSet, QueryDataSet](m.QueryDataSets),
 		m.RevisedContinuationPoint.DeepCopy().(PascalByteString),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

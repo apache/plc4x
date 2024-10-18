@@ -41,9 +41,9 @@ type RegisterServerRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetServer returns Server (property field)
-	GetServer() ExtensionObjectDefinition
+	GetServer() RegisteredServer
 	// IsRegisterServerRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRegisterServerRequest()
 	// CreateBuilder creates a RegisterServerRequestBuilder
@@ -53,20 +53,20 @@ type RegisterServerRequest interface {
 // _RegisterServerRequest is the data-structure of this message
 type _RegisterServerRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader ExtensionObjectDefinition
-	Server        ExtensionObjectDefinition
+	RequestHeader RequestHeader
+	Server        RegisteredServer
 }
 
 var _ RegisterServerRequest = (*_RegisterServerRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterServerRequest)(nil)
 
 // NewRegisterServerRequest factory function for _RegisterServerRequest
-func NewRegisterServerRequest(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition) *_RegisterServerRequest {
+func NewRegisterServerRequest(requestHeader RequestHeader, server RegisteredServer) *_RegisterServerRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for RegisterServerRequest must not be nil")
+		panic("requestHeader of type RequestHeader for RegisterServerRequest must not be nil")
 	}
 	if server == nil {
-		panic("server of type ExtensionObjectDefinition for RegisterServerRequest must not be nil")
+		panic("server of type RegisteredServer for RegisterServerRequest must not be nil")
 	}
 	_result := &_RegisterServerRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -86,15 +86,15 @@ func NewRegisterServerRequest(requestHeader ExtensionObjectDefinition, server Ex
 type RegisterServerRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition) RegisterServerRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, server RegisteredServer) RegisterServerRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) RegisterServerRequestBuilder
+	WithRequestHeader(RequestHeader) RegisterServerRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) RegisterServerRequestBuilder
 	// WithServer adds Server (property field)
-	WithServer(ExtensionObjectDefinition) RegisterServerRequestBuilder
+	WithServer(RegisteredServer) RegisterServerRequestBuilder
 	// WithServerBuilder adds Server (property field) which is build by the builder
-	WithServerBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerRequestBuilder
+	WithServerBuilder(func(RegisteredServerBuilder) RegisteredServerBuilder) RegisterServerRequestBuilder
 	// Build builds the RegisterServerRequest or returns an error if something is wrong
 	Build() (RegisterServerRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,42 +120,42 @@ func (b *_RegisterServerRequestBuilder) setParent(contract ExtensionObjectDefini
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisterServerRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition) RegisterServerRequestBuilder {
+func (b *_RegisterServerRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, server RegisteredServer) RegisterServerRequestBuilder {
 	return b.WithRequestHeader(requestHeader).WithServer(server)
 }
 
-func (b *_RegisterServerRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) RegisterServerRequestBuilder {
+func (b *_RegisterServerRequestBuilder) WithRequestHeader(requestHeader RequestHeader) RegisterServerRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_RegisterServerRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterServerRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) RegisterServerRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_RegisterServerRequestBuilder) WithServer(server ExtensionObjectDefinition) RegisterServerRequestBuilder {
+func (b *_RegisterServerRequestBuilder) WithServer(server RegisteredServer) RegisterServerRequestBuilder {
 	b.Server = server
 	return b
 }
 
-func (b *_RegisterServerRequestBuilder) WithServerBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerRequestBuilder {
-	builder := builderSupplier(b.Server.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterServerRequestBuilder) WithServerBuilder(builderSupplier func(RegisteredServerBuilder) RegisteredServerBuilder) RegisterServerRequestBuilder {
+	builder := builderSupplier(b.Server.CreateRegisteredServerBuilder())
 	var err error
 	b.Server, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RegisteredServerBuilder failed"))
 	}
 	return b
 }
@@ -222,8 +222,8 @@ func (b *_RegisterServerRequest) CreateRegisterServerRequestBuilder() RegisterSe
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RegisterServerRequest) GetIdentifier() string {
-	return "437"
+func (m *_RegisterServerRequest) GetExtensionId() int32 {
+	return int32(437)
 }
 
 ///////////////////////
@@ -240,11 +240,11 @@ func (m *_RegisterServerRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RegisterServerRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_RegisterServerRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
-func (m *_RegisterServerRequest) GetServer() ExtensionObjectDefinition {
+func (m *_RegisterServerRequest) GetServer() RegisteredServer {
 	return m.Server
 }
 
@@ -269,7 +269,7 @@ func (m *_RegisterServerRequest) GetTypeName() string {
 }
 
 func (m *_RegisterServerRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -284,7 +284,7 @@ func (m *_RegisterServerRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RegisterServerRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__registerServerRequest RegisterServerRequest, err error) {
+func (m *_RegisterServerRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__registerServerRequest RegisterServerRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -295,13 +295,13 @@ func (m *_RegisterServerRequest) parse(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	server, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "server", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("434")), readBuffer))
+	server, err := ReadSimpleField[RegisteredServer](ctx, "server", ReadComplex[RegisteredServer](ExtensionObjectDefinitionParseWithBufferProducer[RegisteredServer]((int32)(int32(434))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'server' field"))
 	}
@@ -332,11 +332,11 @@ func (m *_RegisterServerRequest) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for RegisterServerRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "server", m.GetServer(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RegisteredServer](ctx, "server", m.GetServer(), WriteComplex[RegisteredServer](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'server' field")
 		}
 
@@ -360,8 +360,8 @@ func (m *_RegisterServerRequest) deepCopy() *_RegisterServerRequest {
 	}
 	_RegisterServerRequestCopy := &_RegisterServerRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.Server.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		m.Server.DeepCopy().(RegisteredServer),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RegisterServerRequestCopy

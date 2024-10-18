@@ -206,7 +206,7 @@ func (m *_CipSecurityInformation) GetTypeName() string {
 }
 
 func (m *_CipSecurityInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).GetLengthInBits(ctx))
 
 	// Implicit Field (itemLength)
 	lengthInBits += 16

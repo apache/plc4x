@@ -284,8 +284,8 @@ func (b *_ServerDiagnosticsSummaryDataType) CreateServerDiagnosticsSummaryDataTy
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ServerDiagnosticsSummaryDataType) GetIdentifier() string {
-	return "861"
+func (m *_ServerDiagnosticsSummaryDataType) GetExtensionId() int32 {
+	return int32(861)
 }
 
 ///////////////////////
@@ -371,7 +371,7 @@ func (m *_ServerDiagnosticsSummaryDataType) GetTypeName() string {
 }
 
 func (m *_ServerDiagnosticsSummaryDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (serverViewCount)
 	lengthInBits += 32
@@ -416,7 +416,7 @@ func (m *_ServerDiagnosticsSummaryDataType) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ServerDiagnosticsSummaryDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__serverDiagnosticsSummaryDataType ServerDiagnosticsSummaryDataType, err error) {
+func (m *_ServerDiagnosticsSummaryDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__serverDiagnosticsSummaryDataType ServerDiagnosticsSummaryDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

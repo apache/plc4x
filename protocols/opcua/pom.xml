@@ -135,6 +135,33 @@
                 <transformationSet>
                   <dir>${project.build.directory}/downloads</dir>
                   <includes>Opc.Ua.Types.bsd</includes>
+                  <stylesheet>src/main/xslt/opc-attribute.xsl</stylesheet>
+                  <outputDir>${project.basedir}/src/main/generated/protocols/opcua</outputDir>
+                  <fileMappers>
+                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                      <targetName>opc-attribute.mspec</targetName>
+                    </fileMapper>
+                  </fileMappers>
+                  <parameters>
+                    <parameter>
+                      <name>osType</name>
+                      <value>${os.suffix}</value>
+                    </parameter>
+                    <parameter>
+                      <name>fileName</name>
+                      <value>${project.build.directory}/downloads/AttributeIds.csv</value>
+                    </parameter>
+                  </parameters>
+                  <outputProperties>
+                    <outputProperty>
+                      <name>indent</name>
+                      <value>no</value>
+                    </outputProperty>
+                  </outputProperties>
+                </transformationSet>
+                <transformationSet>
+                  <dir>${project.build.directory}/downloads</dir>
+                  <includes>Opc.Ua.Types.bsd</includes>
                   <stylesheet>src/main/xslt/opc-status.xsl</stylesheet>
                   <outputDir>${project.basedir}/src/main/generated/protocols/opcua</outputDir>
                   <fileMappers>

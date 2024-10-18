@@ -38,32 +38,29 @@ import org.apache.plc4x.java.spi.generation.*;
 public class FindServersOnNetworkRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "12192";
+  public Integer getExtensionId() {
+    return (int) 12192;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final long startingRecordId;
   protected final long maxRecordsToReturn;
-  protected final int noOfServerCapabilityFilter;
   protected final List<PascalString> serverCapabilityFilter;
 
   public FindServersOnNetworkRequest(
-      ExtensionObjectDefinition requestHeader,
+      RequestHeader requestHeader,
       long startingRecordId,
       long maxRecordsToReturn,
-      int noOfServerCapabilityFilter,
       List<PascalString> serverCapabilityFilter) {
     super();
     this.requestHeader = requestHeader;
     this.startingRecordId = startingRecordId;
     this.maxRecordsToReturn = maxRecordsToReturn;
-    this.noOfServerCapabilityFilter = noOfServerCapabilityFilter;
     this.serverCapabilityFilter = serverCapabilityFilter;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -73,10 +70,6 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
 
   public long getMaxRecordsToReturn() {
     return maxRecordsToReturn;
-  }
-
-  public int getNoOfServerCapabilityFilter() {
-    return noOfServerCapabilityFilter;
   }
 
   public List<PascalString> getServerCapabilityFilter() {
@@ -99,8 +92,14 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     // Simple Field (maxRecordsToReturn)
     writeSimpleField("maxRecordsToReturn", maxRecordsToReturn, writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (noOfServerCapabilityFilter)
-    writeSimpleField(
+    // Implicit Field (noOfServerCapabilityFilter) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfServerCapabilityFilter =
+        (int)
+            ((((getServerCapabilityFilter()) == (null))
+                ? -(1)
+                : COUNT(getServerCapabilityFilter())));
+    writeImplicitField(
         "noOfServerCapabilityFilter", noOfServerCapabilityFilter, writeSignedInt(writeBuffer, 32));
 
     // Array Field (serverCapabilityFilter)
@@ -129,7 +128,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     // Simple field (maxRecordsToReturn)
     lengthInBits += 32;
 
-    // Simple field (noOfServerCapabilityFilter)
+    // Implicit Field (noOfServerCapabilityFilter)
     lengthInBits += 32;
 
     // Array field
@@ -145,16 +144,17 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("FindServersOnNetworkRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     long startingRecordId = readSimpleField("startingRecordId", readUnsignedLong(readBuffer, 32));
@@ -163,7 +163,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
         readSimpleField("maxRecordsToReturn", readUnsignedLong(readBuffer, 32));
 
     int noOfServerCapabilityFilter =
-        readSimpleField("noOfServerCapabilityFilter", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfServerCapabilityFilter", readSignedInt(readBuffer, 32));
 
     List<PascalString> serverCapabilityFilter =
         readCountArrayField(
@@ -174,42 +174,31 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     readBuffer.closeContext("FindServersOnNetworkRequest");
     // Create the instance
     return new FindServersOnNetworkRequestBuilderImpl(
-        requestHeader,
-        startingRecordId,
-        maxRecordsToReturn,
-        noOfServerCapabilityFilter,
-        serverCapabilityFilter);
+        requestHeader, startingRecordId, maxRecordsToReturn, serverCapabilityFilter);
   }
 
   public static class FindServersOnNetworkRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final long startingRecordId;
     private final long maxRecordsToReturn;
-    private final int noOfServerCapabilityFilter;
     private final List<PascalString> serverCapabilityFilter;
 
     public FindServersOnNetworkRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
+        RequestHeader requestHeader,
         long startingRecordId,
         long maxRecordsToReturn,
-        int noOfServerCapabilityFilter,
         List<PascalString> serverCapabilityFilter) {
       this.requestHeader = requestHeader;
       this.startingRecordId = startingRecordId;
       this.maxRecordsToReturn = maxRecordsToReturn;
-      this.noOfServerCapabilityFilter = noOfServerCapabilityFilter;
       this.serverCapabilityFilter = serverCapabilityFilter;
     }
 
     public FindServersOnNetworkRequest build() {
       FindServersOnNetworkRequest findServersOnNetworkRequest =
           new FindServersOnNetworkRequest(
-              requestHeader,
-              startingRecordId,
-              maxRecordsToReturn,
-              noOfServerCapabilityFilter,
-              serverCapabilityFilter);
+              requestHeader, startingRecordId, maxRecordsToReturn, serverCapabilityFilter);
       return findServersOnNetworkRequest;
     }
   }
@@ -226,7 +215,6 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     return (getRequestHeader() == that.getRequestHeader())
         && (getStartingRecordId() == that.getStartingRecordId())
         && (getMaxRecordsToReturn() == that.getMaxRecordsToReturn())
-        && (getNoOfServerCapabilityFilter() == that.getNoOfServerCapabilityFilter())
         && (getServerCapabilityFilter() == that.getServerCapabilityFilter())
         && super.equals(that)
         && true;
@@ -239,7 +227,6 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
         getRequestHeader(),
         getStartingRecordId(),
         getMaxRecordsToReturn(),
-        getNoOfServerCapabilityFilter(),
         getServerCapabilityFilter());
   }
 

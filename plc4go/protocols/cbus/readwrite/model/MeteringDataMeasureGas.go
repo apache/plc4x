@@ -175,7 +175,7 @@ func (m *_MeteringDataMeasureGas) GetTypeName() string {
 }
 
 func (m *_MeteringDataMeasureGas) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

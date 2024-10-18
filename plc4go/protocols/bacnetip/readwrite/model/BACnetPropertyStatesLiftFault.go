@@ -226,7 +226,7 @@ func (m *_BACnetPropertyStatesLiftFault) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesLiftFault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).GetLengthInBits(ctx))
 
 	// Simple field (liftFault)
 	lengthInBits += m.LiftFault.GetLengthInBits(ctx)

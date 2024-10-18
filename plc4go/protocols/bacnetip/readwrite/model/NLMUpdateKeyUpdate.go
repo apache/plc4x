@@ -380,7 +380,7 @@ func (m *_NLMUpdateKeyUpdate) GetTypeName() string {
 }
 
 func (m *_NLMUpdateKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).GetLengthInBits(ctx))
 
 	// Simple field (controlFlags)
 	lengthInBits += m.ControlFlags.GetLengthInBits(ctx)

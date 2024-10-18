@@ -48,8 +48,6 @@ type ResponseHeader interface {
 	GetServiceResult() StatusCode
 	// GetServiceDiagnostics returns ServiceDiagnostics (property field)
 	GetServiceDiagnostics() DiagnosticInfo
-	// GetNoOfStringTable returns NoOfStringTable (property field)
-	GetNoOfStringTable() int32
 	// GetStringTable returns StringTable (property field)
 	GetStringTable() []PascalString
 	// GetAdditionalHeader returns AdditionalHeader (property field)
@@ -67,7 +65,6 @@ type _ResponseHeader struct {
 	RequestHandle      uint32
 	ServiceResult      StatusCode
 	ServiceDiagnostics DiagnosticInfo
-	NoOfStringTable    int32
 	StringTable        []PascalString
 	AdditionalHeader   ExtensionObject
 }
@@ -76,7 +73,7 @@ var _ ResponseHeader = (*_ResponseHeader)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ResponseHeader)(nil)
 
 // NewResponseHeader factory function for _ResponseHeader
-func NewResponseHeader(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, noOfStringTable int32, stringTable []PascalString, additionalHeader ExtensionObject) *_ResponseHeader {
+func NewResponseHeader(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, stringTable []PascalString, additionalHeader ExtensionObject) *_ResponseHeader {
 	if serviceResult == nil {
 		panic("serviceResult of type StatusCode for ResponseHeader must not be nil")
 	}
@@ -92,7 +89,6 @@ func NewResponseHeader(timestamp int64, requestHandle uint32, serviceResult Stat
 		RequestHandle:                     requestHandle,
 		ServiceResult:                     serviceResult,
 		ServiceDiagnostics:                serviceDiagnostics,
-		NoOfStringTable:                   noOfStringTable,
 		StringTable:                       stringTable,
 		AdditionalHeader:                  additionalHeader,
 	}
@@ -109,7 +105,7 @@ func NewResponseHeader(timestamp int64, requestHandle uint32, serviceResult Stat
 type ResponseHeaderBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, noOfStringTable int32, stringTable []PascalString, additionalHeader ExtensionObject) ResponseHeaderBuilder
+	WithMandatoryFields(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, stringTable []PascalString, additionalHeader ExtensionObject) ResponseHeaderBuilder
 	// WithTimestamp adds Timestamp (property field)
 	WithTimestamp(int64) ResponseHeaderBuilder
 	// WithRequestHandle adds RequestHandle (property field)
@@ -122,8 +118,6 @@ type ResponseHeaderBuilder interface {
 	WithServiceDiagnostics(DiagnosticInfo) ResponseHeaderBuilder
 	// WithServiceDiagnosticsBuilder adds ServiceDiagnostics (property field) which is build by the builder
 	WithServiceDiagnosticsBuilder(func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) ResponseHeaderBuilder
-	// WithNoOfStringTable adds NoOfStringTable (property field)
-	WithNoOfStringTable(int32) ResponseHeaderBuilder
 	// WithStringTable adds StringTable (property field)
 	WithStringTable(...PascalString) ResponseHeaderBuilder
 	// WithAdditionalHeader adds AdditionalHeader (property field)
@@ -155,8 +149,8 @@ func (b *_ResponseHeaderBuilder) setParent(contract ExtensionObjectDefinitionCon
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ResponseHeaderBuilder) WithMandatoryFields(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, noOfStringTable int32, stringTable []PascalString, additionalHeader ExtensionObject) ResponseHeaderBuilder {
-	return b.WithTimestamp(timestamp).WithRequestHandle(requestHandle).WithServiceResult(serviceResult).WithServiceDiagnostics(serviceDiagnostics).WithNoOfStringTable(noOfStringTable).WithStringTable(stringTable...).WithAdditionalHeader(additionalHeader)
+func (b *_ResponseHeaderBuilder) WithMandatoryFields(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, stringTable []PascalString, additionalHeader ExtensionObject) ResponseHeaderBuilder {
+	return b.WithTimestamp(timestamp).WithRequestHandle(requestHandle).WithServiceResult(serviceResult).WithServiceDiagnostics(serviceDiagnostics).WithStringTable(stringTable...).WithAdditionalHeader(additionalHeader)
 }
 
 func (b *_ResponseHeaderBuilder) WithTimestamp(timestamp int64) ResponseHeaderBuilder {
@@ -202,11 +196,6 @@ func (b *_ResponseHeaderBuilder) WithServiceDiagnosticsBuilder(builderSupplier f
 		}
 		b.err.Append(errors.Wrap(err, "DiagnosticInfoBuilder failed"))
 	}
-	return b
-}
-
-func (b *_ResponseHeaderBuilder) WithNoOfStringTable(noOfStringTable int32) ResponseHeaderBuilder {
-	b.NoOfStringTable = noOfStringTable
 	return b
 }
 
@@ -301,8 +290,8 @@ func (b *_ResponseHeader) CreateResponseHeaderBuilder() ResponseHeaderBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ResponseHeader) GetIdentifier() string {
-	return "394"
+func (m *_ResponseHeader) GetExtensionId() int32 {
+	return int32(394)
 }
 
 ///////////////////////
@@ -335,10 +324,6 @@ func (m *_ResponseHeader) GetServiceDiagnostics() DiagnosticInfo {
 	return m.ServiceDiagnostics
 }
 
-func (m *_ResponseHeader) GetNoOfStringTable() int32 {
-	return m.NoOfStringTable
-}
-
 func (m *_ResponseHeader) GetStringTable() []PascalString {
 	return m.StringTable
 }
@@ -368,7 +353,7 @@ func (m *_ResponseHeader) GetTypeName() string {
 }
 
 func (m *_ResponseHeader) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (timestamp)
 	lengthInBits += 64
@@ -382,7 +367,7 @@ func (m *_ResponseHeader) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (serviceDiagnostics)
 	lengthInBits += m.ServiceDiagnostics.GetLengthInBits(ctx)
 
-	// Simple field (noOfStringTable)
+	// Implicit Field (noOfStringTable)
 	lengthInBits += 32
 
 	// Array field
@@ -405,7 +390,7 @@ func (m *_ResponseHeader) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ResponseHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__responseHeader ResponseHeader, err error) {
+func (m *_ResponseHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__responseHeader ResponseHeader, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -440,11 +425,11 @@ func (m *_ResponseHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 	m.ServiceDiagnostics = serviceDiagnostics
 
-	noOfStringTable, err := ReadSimpleField(ctx, "noOfStringTable", ReadSignedInt(readBuffer, uint8(32)))
+	noOfStringTable, err := ReadImplicitField[int32](ctx, "noOfStringTable", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfStringTable' field"))
 	}
-	m.NoOfStringTable = noOfStringTable
+	_ = noOfStringTable
 
 	stringTable, err := ReadCountArrayField[PascalString](ctx, "stringTable", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfStringTable))
 	if err != nil {
@@ -452,7 +437,7 @@ func (m *_ResponseHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 	m.StringTable = stringTable
 
-	additionalHeader, err := ReadSimpleField[ExtensionObject](ctx, "additionalHeader", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	additionalHeader, err := ReadSimpleField[ExtensionObject](ctx, "additionalHeader", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalHeader' field"))
 	}
@@ -498,8 +483,8 @@ func (m *_ResponseHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		if err := WriteSimpleField[DiagnosticInfo](ctx, "serviceDiagnostics", m.GetServiceDiagnostics(), WriteComplex[DiagnosticInfo](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceDiagnostics' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfStringTable", m.GetNoOfStringTable(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfStringTable := int32(utils.InlineIf(bool((m.GetStringTable()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetStringTable()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfStringTable", noOfStringTable, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfStringTable' field")
 		}
 
@@ -535,7 +520,6 @@ func (m *_ResponseHeader) deepCopy() *_ResponseHeader {
 		m.RequestHandle,
 		m.ServiceResult.DeepCopy().(StatusCode),
 		m.ServiceDiagnostics.DeepCopy().(DiagnosticInfo),
-		m.NoOfStringTable,
 		utils.DeepCopySlice[PascalString, PascalString](m.StringTable),
 		m.AdditionalHeader.DeepCopy().(ExtensionObject),
 	}

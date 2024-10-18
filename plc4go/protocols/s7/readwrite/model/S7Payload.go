@@ -282,7 +282,7 @@ func (m *_S7Payload) GetTypeName() string {
 	return "S7Payload"
 }
 
-func (m *_S7Payload) getLengthInBits(ctx context.Context) uint16 {
+func (m *_S7Payload) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

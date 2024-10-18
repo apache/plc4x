@@ -232,7 +232,7 @@ func (m *_DeviceConfigurationAck) GetTypeName() string {
 }
 
 func (m *_DeviceConfigurationAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).GetLengthInBits(ctx))
 
 	// Simple field (deviceConfigurationAckDataBlock)
 	lengthInBits += m.DeviceConfigurationAckDataBlock.GetLengthInBits(ctx)

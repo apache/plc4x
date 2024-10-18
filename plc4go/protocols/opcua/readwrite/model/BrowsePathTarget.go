@@ -198,8 +198,8 @@ func (b *_BrowsePathTarget) CreateBrowsePathTargetBuilder() BrowsePathTargetBuil
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_BrowsePathTarget) GetIdentifier() string {
-	return "548"
+func (m *_BrowsePathTarget) GetExtensionId() int32 {
+	return int32(548)
 }
 
 ///////////////////////
@@ -245,7 +245,7 @@ func (m *_BrowsePathTarget) GetTypeName() string {
 }
 
 func (m *_BrowsePathTarget) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (targetId)
 	lengthInBits += m.TargetId.GetLengthInBits(ctx)
@@ -260,7 +260,7 @@ func (m *_BrowsePathTarget) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_BrowsePathTarget) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__browsePathTarget BrowsePathTarget, err error) {
+func (m *_BrowsePathTarget) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__browsePathTarget BrowsePathTarget, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

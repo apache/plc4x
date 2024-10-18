@@ -41,8 +41,8 @@ type ExtensionObjectEncodingMask interface {
 	utils.Copyable
 	// GetTypeIdSpecified returns TypeIdSpecified (property field)
 	GetTypeIdSpecified() bool
-	// GetXmlbody returns Xmlbody (property field)
-	GetXmlbody() bool
+	// GetXmlBody returns XmlBody (property field)
+	GetXmlBody() bool
 	// GetBinaryBody returns BinaryBody (property field)
 	GetBinaryBody() bool
 	// IsExtensionObjectEncodingMask is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -54,7 +54,7 @@ type ExtensionObjectEncodingMask interface {
 // _ExtensionObjectEncodingMask is the data-structure of this message
 type _ExtensionObjectEncodingMask struct {
 	TypeIdSpecified bool
-	Xmlbody         bool
+	XmlBody         bool
 	BinaryBody      bool
 	// Reserved Fields
 	reservedField0 *int8
@@ -63,8 +63,8 @@ type _ExtensionObjectEncodingMask struct {
 var _ ExtensionObjectEncodingMask = (*_ExtensionObjectEncodingMask)(nil)
 
 // NewExtensionObjectEncodingMask factory function for _ExtensionObjectEncodingMask
-func NewExtensionObjectEncodingMask(typeIdSpecified bool, xmlbody bool, binaryBody bool) *_ExtensionObjectEncodingMask {
-	return &_ExtensionObjectEncodingMask{TypeIdSpecified: typeIdSpecified, Xmlbody: xmlbody, BinaryBody: binaryBody}
+func NewExtensionObjectEncodingMask(typeIdSpecified bool, xmlBody bool, binaryBody bool) *_ExtensionObjectEncodingMask {
+	return &_ExtensionObjectEncodingMask{TypeIdSpecified: typeIdSpecified, XmlBody: xmlBody, BinaryBody: binaryBody}
 }
 
 ///////////////////////////////////////////////////////////
@@ -76,11 +76,11 @@ func NewExtensionObjectEncodingMask(typeIdSpecified bool, xmlbody bool, binaryBo
 type ExtensionObjectEncodingMaskBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(typeIdSpecified bool, xmlbody bool, binaryBody bool) ExtensionObjectEncodingMaskBuilder
+	WithMandatoryFields(typeIdSpecified bool, xmlBody bool, binaryBody bool) ExtensionObjectEncodingMaskBuilder
 	// WithTypeIdSpecified adds TypeIdSpecified (property field)
 	WithTypeIdSpecified(bool) ExtensionObjectEncodingMaskBuilder
-	// WithXmlbody adds Xmlbody (property field)
-	WithXmlbody(bool) ExtensionObjectEncodingMaskBuilder
+	// WithXmlBody adds XmlBody (property field)
+	WithXmlBody(bool) ExtensionObjectEncodingMaskBuilder
 	// WithBinaryBody adds BinaryBody (property field)
 	WithBinaryBody(bool) ExtensionObjectEncodingMaskBuilder
 	// Build builds the ExtensionObjectEncodingMask or returns an error if something is wrong
@@ -102,8 +102,8 @@ type _ExtensionObjectEncodingMaskBuilder struct {
 
 var _ (ExtensionObjectEncodingMaskBuilder) = (*_ExtensionObjectEncodingMaskBuilder)(nil)
 
-func (b *_ExtensionObjectEncodingMaskBuilder) WithMandatoryFields(typeIdSpecified bool, xmlbody bool, binaryBody bool) ExtensionObjectEncodingMaskBuilder {
-	return b.WithTypeIdSpecified(typeIdSpecified).WithXmlbody(xmlbody).WithBinaryBody(binaryBody)
+func (b *_ExtensionObjectEncodingMaskBuilder) WithMandatoryFields(typeIdSpecified bool, xmlBody bool, binaryBody bool) ExtensionObjectEncodingMaskBuilder {
+	return b.WithTypeIdSpecified(typeIdSpecified).WithXmlBody(xmlBody).WithBinaryBody(binaryBody)
 }
 
 func (b *_ExtensionObjectEncodingMaskBuilder) WithTypeIdSpecified(typeIdSpecified bool) ExtensionObjectEncodingMaskBuilder {
@@ -111,8 +111,8 @@ func (b *_ExtensionObjectEncodingMaskBuilder) WithTypeIdSpecified(typeIdSpecifie
 	return b
 }
 
-func (b *_ExtensionObjectEncodingMaskBuilder) WithXmlbody(xmlbody bool) ExtensionObjectEncodingMaskBuilder {
-	b.Xmlbody = xmlbody
+func (b *_ExtensionObjectEncodingMaskBuilder) WithXmlBody(xmlBody bool) ExtensionObjectEncodingMaskBuilder {
+	b.XmlBody = xmlBody
 	return b
 }
 
@@ -166,8 +166,8 @@ func (m *_ExtensionObjectEncodingMask) GetTypeIdSpecified() bool {
 	return m.TypeIdSpecified
 }
 
-func (m *_ExtensionObjectEncodingMask) GetXmlbody() bool {
-	return m.Xmlbody
+func (m *_ExtensionObjectEncodingMask) GetXmlBody() bool {
+	return m.XmlBody
 }
 
 func (m *_ExtensionObjectEncodingMask) GetBinaryBody() bool {
@@ -203,7 +203,7 @@ func (m *_ExtensionObjectEncodingMask) GetLengthInBits(ctx context.Context) uint
 	// Simple field (typeIdSpecified)
 	lengthInBits += 1
 
-	// Simple field (xmlbody)
+	// Simple field (xmlBody)
 	lengthInBits += 1
 
 	// Simple field (binaryBody)
@@ -255,11 +255,11 @@ func (m *_ExtensionObjectEncodingMask) parse(ctx context.Context, readBuffer uti
 	}
 	m.TypeIdSpecified = typeIdSpecified
 
-	xmlbody, err := ReadSimpleField(ctx, "xmlbody", ReadBoolean(readBuffer))
+	xmlBody, err := ReadSimpleField(ctx, "xmlBody", ReadBoolean(readBuffer))
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'xmlbody' field"))
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'xmlBody' field"))
 	}
-	m.Xmlbody = xmlbody
+	m.XmlBody = xmlBody
 
 	binaryBody, err := ReadSimpleField(ctx, "binaryBody", ReadBoolean(readBuffer))
 	if err != nil {
@@ -299,8 +299,8 @@ func (m *_ExtensionObjectEncodingMask) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(err, "Error serializing 'typeIdSpecified' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "xmlbody", m.GetXmlbody(), WriteBoolean(writeBuffer)); err != nil {
-		return errors.Wrap(err, "Error serializing 'xmlbody' field")
+	if err := WriteSimpleField[bool](ctx, "xmlBody", m.GetXmlBody(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'xmlBody' field")
 	}
 
 	if err := WriteSimpleField[bool](ctx, "binaryBody", m.GetBinaryBody(), WriteBoolean(writeBuffer)); err != nil {
@@ -325,7 +325,7 @@ func (m *_ExtensionObjectEncodingMask) deepCopy() *_ExtensionObjectEncodingMask 
 	}
 	_ExtensionObjectEncodingMaskCopy := &_ExtensionObjectEncodingMask{
 		m.TypeIdSpecified,
-		m.Xmlbody,
+		m.XmlBody,
 		m.BinaryBody,
 		m.reservedField0,
 	}

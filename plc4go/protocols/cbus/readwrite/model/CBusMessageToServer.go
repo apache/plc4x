@@ -230,7 +230,7 @@ func (m *_CBusMessageToServer) GetTypeName() string {
 }
 
 func (m *_CBusMessageToServer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CBusMessageContract.(*_CBusMessage).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CBusMessageContract.(*_CBusMessage).GetLengthInBits(ctx))
 
 	// Simple field (request)
 	lengthInBits += m.Request.GetLengthInBits(ctx)

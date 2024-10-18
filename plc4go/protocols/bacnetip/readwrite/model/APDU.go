@@ -387,7 +387,7 @@ func (m *_APDU) GetTypeName() string {
 	return "APDU"
 }
 
-func (m *_APDU) getLengthInBits(ctx context.Context) uint16 {
+func (m *_APDU) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (apduType)
 	lengthInBits += 4

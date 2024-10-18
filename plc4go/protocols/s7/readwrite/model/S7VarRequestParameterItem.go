@@ -214,7 +214,7 @@ func (m *_S7VarRequestParameterItem) GetTypeName() string {
 	return "S7VarRequestParameterItem"
 }
 
-func (m *_S7VarRequestParameterItem) getLengthInBits(ctx context.Context) uint16 {
+func (m *_S7VarRequestParameterItem) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (itemType)
 	lengthInBits += 8

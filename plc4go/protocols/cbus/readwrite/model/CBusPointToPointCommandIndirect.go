@@ -304,7 +304,7 @@ func (m *_CBusPointToPointCommandIndirect) GetTypeName() string {
 }
 
 func (m *_CBusPointToPointCommandIndirect) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand).GetLengthInBits(ctx))
 
 	// Simple field (bridgeAddress)
 	lengthInBits += m.BridgeAddress.GetLengthInBits(ctx)

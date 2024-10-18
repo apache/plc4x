@@ -427,7 +427,7 @@ func (m *_ParameterValue) GetTypeName() string {
 	return "ParameterValue"
 }
 
-func (m *_ParameterValue) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ParameterValue) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

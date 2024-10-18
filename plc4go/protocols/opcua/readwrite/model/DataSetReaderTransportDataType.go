@@ -150,8 +150,8 @@ func (b *_DataSetReaderTransportDataType) CreateDataSetReaderTransportDataTypeBu
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DataSetReaderTransportDataType) GetIdentifier() string {
-	return "15630"
+func (m *_DataSetReaderTransportDataType) GetExtensionId() int32 {
+	return int32(15630)
 }
 
 ///////////////////////
@@ -179,7 +179,7 @@ func (m *_DataSetReaderTransportDataType) GetTypeName() string {
 }
 
 func (m *_DataSetReaderTransportDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -188,7 +188,7 @@ func (m *_DataSetReaderTransportDataType) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DataSetReaderTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataSetReaderTransportDataType DataSetReaderTransportDataType, err error) {
+func (m *_DataSetReaderTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__dataSetReaderTransportDataType DataSetReaderTransportDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

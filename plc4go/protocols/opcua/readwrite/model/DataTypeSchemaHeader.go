@@ -40,22 +40,14 @@ type DataTypeSchemaHeader interface {
 	utils.Serializable
 	utils.Copyable
 	ExtensionObjectDefinition
-	// GetNoOfNamespaces returns NoOfNamespaces (property field)
-	GetNoOfNamespaces() int32
 	// GetNamespaces returns Namespaces (property field)
 	GetNamespaces() []PascalString
-	// GetNoOfStructureDataTypes returns NoOfStructureDataTypes (property field)
-	GetNoOfStructureDataTypes() int32
 	// GetStructureDataTypes returns StructureDataTypes (property field)
-	GetStructureDataTypes() []DataTypeDescription
-	// GetNoOfEnumDataTypes returns NoOfEnumDataTypes (property field)
-	GetNoOfEnumDataTypes() int32
+	GetStructureDataTypes() []StructureDescription
 	// GetEnumDataTypes returns EnumDataTypes (property field)
-	GetEnumDataTypes() []DataTypeDescription
-	// GetNoOfSimpleDataTypes returns NoOfSimpleDataTypes (property field)
-	GetNoOfSimpleDataTypes() int32
+	GetEnumDataTypes() []EnumDescription
 	// GetSimpleDataTypes returns SimpleDataTypes (property field)
-	GetSimpleDataTypes() []DataTypeDescription
+	GetSimpleDataTypes() []SimpleTypeDescription
 	// IsDataTypeSchemaHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataTypeSchemaHeader()
 	// CreateBuilder creates a DataTypeSchemaHeaderBuilder
@@ -65,30 +57,22 @@ type DataTypeSchemaHeader interface {
 // _DataTypeSchemaHeader is the data-structure of this message
 type _DataTypeSchemaHeader struct {
 	ExtensionObjectDefinitionContract
-	NoOfNamespaces         int32
-	Namespaces             []PascalString
-	NoOfStructureDataTypes int32
-	StructureDataTypes     []DataTypeDescription
-	NoOfEnumDataTypes      int32
-	EnumDataTypes          []DataTypeDescription
-	NoOfSimpleDataTypes    int32
-	SimpleDataTypes        []DataTypeDescription
+	Namespaces         []PascalString
+	StructureDataTypes []StructureDescription
+	EnumDataTypes      []EnumDescription
+	SimpleDataTypes    []SimpleTypeDescription
 }
 
 var _ DataTypeSchemaHeader = (*_DataTypeSchemaHeader)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataTypeSchemaHeader)(nil)
 
 // NewDataTypeSchemaHeader factory function for _DataTypeSchemaHeader
-func NewDataTypeSchemaHeader(noOfNamespaces int32, namespaces []PascalString, noOfStructureDataTypes int32, structureDataTypes []DataTypeDescription, noOfEnumDataTypes int32, enumDataTypes []DataTypeDescription, noOfSimpleDataTypes int32, simpleDataTypes []DataTypeDescription) *_DataTypeSchemaHeader {
+func NewDataTypeSchemaHeader(namespaces []PascalString, structureDataTypes []StructureDescription, enumDataTypes []EnumDescription, simpleDataTypes []SimpleTypeDescription) *_DataTypeSchemaHeader {
 	_result := &_DataTypeSchemaHeader{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfNamespaces:                    noOfNamespaces,
 		Namespaces:                        namespaces,
-		NoOfStructureDataTypes:            noOfStructureDataTypes,
 		StructureDataTypes:                structureDataTypes,
-		NoOfEnumDataTypes:                 noOfEnumDataTypes,
 		EnumDataTypes:                     enumDataTypes,
-		NoOfSimpleDataTypes:               noOfSimpleDataTypes,
 		SimpleDataTypes:                   simpleDataTypes,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -104,23 +88,15 @@ func NewDataTypeSchemaHeader(noOfNamespaces int32, namespaces []PascalString, no
 type DataTypeSchemaHeaderBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfNamespaces int32, namespaces []PascalString, noOfStructureDataTypes int32, structureDataTypes []DataTypeDescription, noOfEnumDataTypes int32, enumDataTypes []DataTypeDescription, noOfSimpleDataTypes int32, simpleDataTypes []DataTypeDescription) DataTypeSchemaHeaderBuilder
-	// WithNoOfNamespaces adds NoOfNamespaces (property field)
-	WithNoOfNamespaces(int32) DataTypeSchemaHeaderBuilder
+	WithMandatoryFields(namespaces []PascalString, structureDataTypes []StructureDescription, enumDataTypes []EnumDescription, simpleDataTypes []SimpleTypeDescription) DataTypeSchemaHeaderBuilder
 	// WithNamespaces adds Namespaces (property field)
 	WithNamespaces(...PascalString) DataTypeSchemaHeaderBuilder
-	// WithNoOfStructureDataTypes adds NoOfStructureDataTypes (property field)
-	WithNoOfStructureDataTypes(int32) DataTypeSchemaHeaderBuilder
 	// WithStructureDataTypes adds StructureDataTypes (property field)
-	WithStructureDataTypes(...DataTypeDescription) DataTypeSchemaHeaderBuilder
-	// WithNoOfEnumDataTypes adds NoOfEnumDataTypes (property field)
-	WithNoOfEnumDataTypes(int32) DataTypeSchemaHeaderBuilder
+	WithStructureDataTypes(...StructureDescription) DataTypeSchemaHeaderBuilder
 	// WithEnumDataTypes adds EnumDataTypes (property field)
-	WithEnumDataTypes(...DataTypeDescription) DataTypeSchemaHeaderBuilder
-	// WithNoOfSimpleDataTypes adds NoOfSimpleDataTypes (property field)
-	WithNoOfSimpleDataTypes(int32) DataTypeSchemaHeaderBuilder
+	WithEnumDataTypes(...EnumDescription) DataTypeSchemaHeaderBuilder
 	// WithSimpleDataTypes adds SimpleDataTypes (property field)
-	WithSimpleDataTypes(...DataTypeDescription) DataTypeSchemaHeaderBuilder
+	WithSimpleDataTypes(...SimpleTypeDescription) DataTypeSchemaHeaderBuilder
 	// Build builds the DataTypeSchemaHeader or returns an error if something is wrong
 	Build() (DataTypeSchemaHeader, error)
 	// MustBuild does the same as Build but panics on error
@@ -146,13 +122,8 @@ func (b *_DataTypeSchemaHeaderBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_DataTypeSchemaHeaderBuilder) WithMandatoryFields(noOfNamespaces int32, namespaces []PascalString, noOfStructureDataTypes int32, structureDataTypes []DataTypeDescription, noOfEnumDataTypes int32, enumDataTypes []DataTypeDescription, noOfSimpleDataTypes int32, simpleDataTypes []DataTypeDescription) DataTypeSchemaHeaderBuilder {
-	return b.WithNoOfNamespaces(noOfNamespaces).WithNamespaces(namespaces...).WithNoOfStructureDataTypes(noOfStructureDataTypes).WithStructureDataTypes(structureDataTypes...).WithNoOfEnumDataTypes(noOfEnumDataTypes).WithEnumDataTypes(enumDataTypes...).WithNoOfSimpleDataTypes(noOfSimpleDataTypes).WithSimpleDataTypes(simpleDataTypes...)
-}
-
-func (b *_DataTypeSchemaHeaderBuilder) WithNoOfNamespaces(noOfNamespaces int32) DataTypeSchemaHeaderBuilder {
-	b.NoOfNamespaces = noOfNamespaces
-	return b
+func (b *_DataTypeSchemaHeaderBuilder) WithMandatoryFields(namespaces []PascalString, structureDataTypes []StructureDescription, enumDataTypes []EnumDescription, simpleDataTypes []SimpleTypeDescription) DataTypeSchemaHeaderBuilder {
+	return b.WithNamespaces(namespaces...).WithStructureDataTypes(structureDataTypes...).WithEnumDataTypes(enumDataTypes...).WithSimpleDataTypes(simpleDataTypes...)
 }
 
 func (b *_DataTypeSchemaHeaderBuilder) WithNamespaces(namespaces ...PascalString) DataTypeSchemaHeaderBuilder {
@@ -160,32 +131,17 @@ func (b *_DataTypeSchemaHeaderBuilder) WithNamespaces(namespaces ...PascalString
 	return b
 }
 
-func (b *_DataTypeSchemaHeaderBuilder) WithNoOfStructureDataTypes(noOfStructureDataTypes int32) DataTypeSchemaHeaderBuilder {
-	b.NoOfStructureDataTypes = noOfStructureDataTypes
-	return b
-}
-
-func (b *_DataTypeSchemaHeaderBuilder) WithStructureDataTypes(structureDataTypes ...DataTypeDescription) DataTypeSchemaHeaderBuilder {
+func (b *_DataTypeSchemaHeaderBuilder) WithStructureDataTypes(structureDataTypes ...StructureDescription) DataTypeSchemaHeaderBuilder {
 	b.StructureDataTypes = structureDataTypes
 	return b
 }
 
-func (b *_DataTypeSchemaHeaderBuilder) WithNoOfEnumDataTypes(noOfEnumDataTypes int32) DataTypeSchemaHeaderBuilder {
-	b.NoOfEnumDataTypes = noOfEnumDataTypes
-	return b
-}
-
-func (b *_DataTypeSchemaHeaderBuilder) WithEnumDataTypes(enumDataTypes ...DataTypeDescription) DataTypeSchemaHeaderBuilder {
+func (b *_DataTypeSchemaHeaderBuilder) WithEnumDataTypes(enumDataTypes ...EnumDescription) DataTypeSchemaHeaderBuilder {
 	b.EnumDataTypes = enumDataTypes
 	return b
 }
 
-func (b *_DataTypeSchemaHeaderBuilder) WithNoOfSimpleDataTypes(noOfSimpleDataTypes int32) DataTypeSchemaHeaderBuilder {
-	b.NoOfSimpleDataTypes = noOfSimpleDataTypes
-	return b
-}
-
-func (b *_DataTypeSchemaHeaderBuilder) WithSimpleDataTypes(simpleDataTypes ...DataTypeDescription) DataTypeSchemaHeaderBuilder {
+func (b *_DataTypeSchemaHeaderBuilder) WithSimpleDataTypes(simpleDataTypes ...SimpleTypeDescription) DataTypeSchemaHeaderBuilder {
 	b.SimpleDataTypes = simpleDataTypes
 	return b
 }
@@ -240,8 +196,8 @@ func (b *_DataTypeSchemaHeader) CreateDataTypeSchemaHeaderBuilder() DataTypeSche
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DataTypeSchemaHeader) GetIdentifier() string {
-	return "15536"
+func (m *_DataTypeSchemaHeader) GetExtensionId() int32 {
+	return int32(15536)
 }
 
 ///////////////////////
@@ -258,35 +214,19 @@ func (m *_DataTypeSchemaHeader) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_DataTypeSchemaHeader) GetNoOfNamespaces() int32 {
-	return m.NoOfNamespaces
-}
-
 func (m *_DataTypeSchemaHeader) GetNamespaces() []PascalString {
 	return m.Namespaces
 }
 
-func (m *_DataTypeSchemaHeader) GetNoOfStructureDataTypes() int32 {
-	return m.NoOfStructureDataTypes
-}
-
-func (m *_DataTypeSchemaHeader) GetStructureDataTypes() []DataTypeDescription {
+func (m *_DataTypeSchemaHeader) GetStructureDataTypes() []StructureDescription {
 	return m.StructureDataTypes
 }
 
-func (m *_DataTypeSchemaHeader) GetNoOfEnumDataTypes() int32 {
-	return m.NoOfEnumDataTypes
-}
-
-func (m *_DataTypeSchemaHeader) GetEnumDataTypes() []DataTypeDescription {
+func (m *_DataTypeSchemaHeader) GetEnumDataTypes() []EnumDescription {
 	return m.EnumDataTypes
 }
 
-func (m *_DataTypeSchemaHeader) GetNoOfSimpleDataTypes() int32 {
-	return m.NoOfSimpleDataTypes
-}
-
-func (m *_DataTypeSchemaHeader) GetSimpleDataTypes() []DataTypeDescription {
+func (m *_DataTypeSchemaHeader) GetSimpleDataTypes() []SimpleTypeDescription {
 	return m.SimpleDataTypes
 }
 
@@ -311,9 +251,9 @@ func (m *_DataTypeSchemaHeader) GetTypeName() string {
 }
 
 func (m *_DataTypeSchemaHeader) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
-	// Simple field (noOfNamespaces)
+	// Implicit Field (noOfNamespaces)
 	lengthInBits += 32
 
 	// Array field
@@ -326,7 +266,7 @@ func (m *_DataTypeSchemaHeader) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfStructureDataTypes)
+	// Implicit Field (noOfStructureDataTypes)
 	lengthInBits += 32
 
 	// Array field
@@ -339,7 +279,7 @@ func (m *_DataTypeSchemaHeader) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfEnumDataTypes)
+	// Implicit Field (noOfEnumDataTypes)
 	lengthInBits += 32
 
 	// Array field
@@ -352,7 +292,7 @@ func (m *_DataTypeSchemaHeader) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfSimpleDataTypes)
+	// Implicit Field (noOfSimpleDataTypes)
 	lengthInBits += 32
 
 	// Array field
@@ -372,7 +312,7 @@ func (m *_DataTypeSchemaHeader) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DataTypeSchemaHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataTypeSchemaHeader DataTypeSchemaHeader, err error) {
+func (m *_DataTypeSchemaHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__dataTypeSchemaHeader DataTypeSchemaHeader, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -383,11 +323,11 @@ func (m *_DataTypeSchemaHeader) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfNamespaces, err := ReadSimpleField(ctx, "noOfNamespaces", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNamespaces, err := ReadImplicitField[int32](ctx, "noOfNamespaces", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNamespaces' field"))
 	}
-	m.NoOfNamespaces = noOfNamespaces
+	_ = noOfNamespaces
 
 	namespaces, err := ReadCountArrayField[PascalString](ctx, "namespaces", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfNamespaces))
 	if err != nil {
@@ -395,37 +335,37 @@ func (m *_DataTypeSchemaHeader) parse(ctx context.Context, readBuffer utils.Read
 	}
 	m.Namespaces = namespaces
 
-	noOfStructureDataTypes, err := ReadSimpleField(ctx, "noOfStructureDataTypes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfStructureDataTypes, err := ReadImplicitField[int32](ctx, "noOfStructureDataTypes", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfStructureDataTypes' field"))
 	}
-	m.NoOfStructureDataTypes = noOfStructureDataTypes
+	_ = noOfStructureDataTypes
 
-	structureDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "structureDataTypes", ReadComplex[DataTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[DataTypeDescription]((string)("14525")), readBuffer), uint64(noOfStructureDataTypes))
+	structureDataTypes, err := ReadCountArrayField[StructureDescription](ctx, "structureDataTypes", ReadComplex[StructureDescription](ExtensionObjectDefinitionParseWithBufferProducer[StructureDescription]((int32)(int32(15489))), readBuffer), uint64(noOfStructureDataTypes))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureDataTypes' field"))
 	}
 	m.StructureDataTypes = structureDataTypes
 
-	noOfEnumDataTypes, err := ReadSimpleField(ctx, "noOfEnumDataTypes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEnumDataTypes, err := ReadImplicitField[int32](ctx, "noOfEnumDataTypes", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEnumDataTypes' field"))
 	}
-	m.NoOfEnumDataTypes = noOfEnumDataTypes
+	_ = noOfEnumDataTypes
 
-	enumDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "enumDataTypes", ReadComplex[DataTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[DataTypeDescription]((string)("14525")), readBuffer), uint64(noOfEnumDataTypes))
+	enumDataTypes, err := ReadCountArrayField[EnumDescription](ctx, "enumDataTypes", ReadComplex[EnumDescription](ExtensionObjectDefinitionParseWithBufferProducer[EnumDescription]((int32)(int32(15490))), readBuffer), uint64(noOfEnumDataTypes))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumDataTypes' field"))
 	}
 	m.EnumDataTypes = enumDataTypes
 
-	noOfSimpleDataTypes, err := ReadSimpleField(ctx, "noOfSimpleDataTypes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSimpleDataTypes, err := ReadImplicitField[int32](ctx, "noOfSimpleDataTypes", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSimpleDataTypes' field"))
 	}
-	m.NoOfSimpleDataTypes = noOfSimpleDataTypes
+	_ = noOfSimpleDataTypes
 
-	simpleDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "simpleDataTypes", ReadComplex[DataTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[DataTypeDescription]((string)("14525")), readBuffer), uint64(noOfSimpleDataTypes))
+	simpleDataTypes, err := ReadCountArrayField[SimpleTypeDescription](ctx, "simpleDataTypes", ReadComplex[SimpleTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[SimpleTypeDescription]((int32)(int32(15007))), readBuffer), uint64(noOfSimpleDataTypes))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'simpleDataTypes' field"))
 	}
@@ -455,32 +395,32 @@ func (m *_DataTypeSchemaHeader) SerializeWithWriteBuffer(ctx context.Context, wr
 		if pushErr := writeBuffer.PushContext("DataTypeSchemaHeader"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for DataTypeSchemaHeader")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfNamespaces", m.GetNoOfNamespaces(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfNamespaces := int32(utils.InlineIf(bool((m.GetNamespaces()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNamespaces()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfNamespaces", noOfNamespaces, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNamespaces' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "namespaces", m.GetNamespaces(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'namespaces' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfStructureDataTypes", m.GetNoOfStructureDataTypes(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfStructureDataTypes := int32(utils.InlineIf(bool((m.GetStructureDataTypes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetStructureDataTypes()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfStructureDataTypes", noOfStructureDataTypes, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfStructureDataTypes' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "structureDataTypes", m.GetStructureDataTypes(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'structureDataTypes' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfEnumDataTypes", m.GetNoOfEnumDataTypes(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfEnumDataTypes := int32(utils.InlineIf(bool((m.GetEnumDataTypes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEnumDataTypes()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfEnumDataTypes", noOfEnumDataTypes, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEnumDataTypes' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "enumDataTypes", m.GetEnumDataTypes(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'enumDataTypes' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfSimpleDataTypes", m.GetNoOfSimpleDataTypes(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfSimpleDataTypes := int32(utils.InlineIf(bool((m.GetSimpleDataTypes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSimpleDataTypes()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfSimpleDataTypes", noOfSimpleDataTypes, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSimpleDataTypes' field")
 		}
 
@@ -508,14 +448,10 @@ func (m *_DataTypeSchemaHeader) deepCopy() *_DataTypeSchemaHeader {
 	}
 	_DataTypeSchemaHeaderCopy := &_DataTypeSchemaHeader{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfNamespaces,
 		utils.DeepCopySlice[PascalString, PascalString](m.Namespaces),
-		m.NoOfStructureDataTypes,
-		utils.DeepCopySlice[DataTypeDescription, DataTypeDescription](m.StructureDataTypes),
-		m.NoOfEnumDataTypes,
-		utils.DeepCopySlice[DataTypeDescription, DataTypeDescription](m.EnumDataTypes),
-		m.NoOfSimpleDataTypes,
-		utils.DeepCopySlice[DataTypeDescription, DataTypeDescription](m.SimpleDataTypes),
+		utils.DeepCopySlice[StructureDescription, StructureDescription](m.StructureDataTypes),
+		utils.DeepCopySlice[EnumDescription, EnumDescription](m.EnumDataTypes),
+		utils.DeepCopySlice[SimpleTypeDescription, SimpleTypeDescription](m.SimpleDataTypes),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataTypeSchemaHeaderCopy

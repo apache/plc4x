@@ -47,7 +47,7 @@ type ServerStatusDataType interface {
 	// GetState returns State (property field)
 	GetState() ServerState
 	// GetBuildInfo returns BuildInfo (property field)
-	GetBuildInfo() ExtensionObjectDefinition
+	GetBuildInfo() BuildInfo
 	// GetSecondsTillShutdown returns SecondsTillShutdown (property field)
 	GetSecondsTillShutdown() uint32
 	// GetShutdownReason returns ShutdownReason (property field)
@@ -64,7 +64,7 @@ type _ServerStatusDataType struct {
 	StartTime           int64
 	CurrentTime         int64
 	State               ServerState
-	BuildInfo           ExtensionObjectDefinition
+	BuildInfo           BuildInfo
 	SecondsTillShutdown uint32
 	ShutdownReason      LocalizedText
 }
@@ -73,9 +73,9 @@ var _ ServerStatusDataType = (*_ServerStatusDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServerStatusDataType)(nil)
 
 // NewServerStatusDataType factory function for _ServerStatusDataType
-func NewServerStatusDataType(startTime int64, currentTime int64, state ServerState, buildInfo ExtensionObjectDefinition, secondsTillShutdown uint32, shutdownReason LocalizedText) *_ServerStatusDataType {
+func NewServerStatusDataType(startTime int64, currentTime int64, state ServerState, buildInfo BuildInfo, secondsTillShutdown uint32, shutdownReason LocalizedText) *_ServerStatusDataType {
 	if buildInfo == nil {
-		panic("buildInfo of type ExtensionObjectDefinition for ServerStatusDataType must not be nil")
+		panic("buildInfo of type BuildInfo for ServerStatusDataType must not be nil")
 	}
 	if shutdownReason == nil {
 		panic("shutdownReason of type LocalizedText for ServerStatusDataType must not be nil")
@@ -102,7 +102,7 @@ func NewServerStatusDataType(startTime int64, currentTime int64, state ServerSta
 type ServerStatusDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(startTime int64, currentTime int64, state ServerState, buildInfo ExtensionObjectDefinition, secondsTillShutdown uint32, shutdownReason LocalizedText) ServerStatusDataTypeBuilder
+	WithMandatoryFields(startTime int64, currentTime int64, state ServerState, buildInfo BuildInfo, secondsTillShutdown uint32, shutdownReason LocalizedText) ServerStatusDataTypeBuilder
 	// WithStartTime adds StartTime (property field)
 	WithStartTime(int64) ServerStatusDataTypeBuilder
 	// WithCurrentTime adds CurrentTime (property field)
@@ -110,9 +110,9 @@ type ServerStatusDataTypeBuilder interface {
 	// WithState adds State (property field)
 	WithState(ServerState) ServerStatusDataTypeBuilder
 	// WithBuildInfo adds BuildInfo (property field)
-	WithBuildInfo(ExtensionObjectDefinition) ServerStatusDataTypeBuilder
+	WithBuildInfo(BuildInfo) ServerStatusDataTypeBuilder
 	// WithBuildInfoBuilder adds BuildInfo (property field) which is build by the builder
-	WithBuildInfoBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ServerStatusDataTypeBuilder
+	WithBuildInfoBuilder(func(BuildInfoBuilder) BuildInfoBuilder) ServerStatusDataTypeBuilder
 	// WithSecondsTillShutdown adds SecondsTillShutdown (property field)
 	WithSecondsTillShutdown(uint32) ServerStatusDataTypeBuilder
 	// WithShutdownReason adds ShutdownReason (property field)
@@ -144,7 +144,7 @@ func (b *_ServerStatusDataTypeBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ServerStatusDataTypeBuilder) WithMandatoryFields(startTime int64, currentTime int64, state ServerState, buildInfo ExtensionObjectDefinition, secondsTillShutdown uint32, shutdownReason LocalizedText) ServerStatusDataTypeBuilder {
+func (b *_ServerStatusDataTypeBuilder) WithMandatoryFields(startTime int64, currentTime int64, state ServerState, buildInfo BuildInfo, secondsTillShutdown uint32, shutdownReason LocalizedText) ServerStatusDataTypeBuilder {
 	return b.WithStartTime(startTime).WithCurrentTime(currentTime).WithState(state).WithBuildInfo(buildInfo).WithSecondsTillShutdown(secondsTillShutdown).WithShutdownReason(shutdownReason)
 }
 
@@ -163,20 +163,20 @@ func (b *_ServerStatusDataTypeBuilder) WithState(state ServerState) ServerStatus
 	return b
 }
 
-func (b *_ServerStatusDataTypeBuilder) WithBuildInfo(buildInfo ExtensionObjectDefinition) ServerStatusDataTypeBuilder {
+func (b *_ServerStatusDataTypeBuilder) WithBuildInfo(buildInfo BuildInfo) ServerStatusDataTypeBuilder {
 	b.BuildInfo = buildInfo
 	return b
 }
 
-func (b *_ServerStatusDataTypeBuilder) WithBuildInfoBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ServerStatusDataTypeBuilder {
-	builder := builderSupplier(b.BuildInfo.CreateExtensionObjectDefinitionBuilder())
+func (b *_ServerStatusDataTypeBuilder) WithBuildInfoBuilder(builderSupplier func(BuildInfoBuilder) BuildInfoBuilder) ServerStatusDataTypeBuilder {
+	builder := builderSupplier(b.BuildInfo.CreateBuildInfoBuilder())
 	var err error
 	b.BuildInfo, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BuildInfoBuilder failed"))
 	}
 	return b
 }
@@ -266,8 +266,8 @@ func (b *_ServerStatusDataType) CreateServerStatusDataTypeBuilder() ServerStatus
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ServerStatusDataType) GetIdentifier() string {
-	return "864"
+func (m *_ServerStatusDataType) GetExtensionId() int32 {
+	return int32(864)
 }
 
 ///////////////////////
@@ -296,7 +296,7 @@ func (m *_ServerStatusDataType) GetState() ServerState {
 	return m.State
 }
 
-func (m *_ServerStatusDataType) GetBuildInfo() ExtensionObjectDefinition {
+func (m *_ServerStatusDataType) GetBuildInfo() BuildInfo {
 	return m.BuildInfo
 }
 
@@ -329,7 +329,7 @@ func (m *_ServerStatusDataType) GetTypeName() string {
 }
 
 func (m *_ServerStatusDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (startTime)
 	lengthInBits += 64
@@ -356,7 +356,7 @@ func (m *_ServerStatusDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ServerStatusDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__serverStatusDataType ServerStatusDataType, err error) {
+func (m *_ServerStatusDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__serverStatusDataType ServerStatusDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -385,7 +385,7 @@ func (m *_ServerStatusDataType) parse(ctx context.Context, readBuffer utils.Read
 	}
 	m.State = state
 
-	buildInfo, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "buildInfo", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("340")), readBuffer))
+	buildInfo, err := ReadSimpleField[BuildInfo](ctx, "buildInfo", ReadComplex[BuildInfo](ExtensionObjectDefinitionParseWithBufferProducer[BuildInfo]((int32)(int32(340))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'buildInfo' field"))
 	}
@@ -440,7 +440,7 @@ func (m *_ServerStatusDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(err, "Error serializing 'state' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "buildInfo", m.GetBuildInfo(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[BuildInfo](ctx, "buildInfo", m.GetBuildInfo(), WriteComplex[BuildInfo](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'buildInfo' field")
 		}
 
@@ -475,7 +475,7 @@ func (m *_ServerStatusDataType) deepCopy() *_ServerStatusDataType {
 		m.StartTime,
 		m.CurrentTime,
 		m.State,
-		m.BuildInfo.DeepCopy().(ExtensionObjectDefinition),
+		m.BuildInfo.DeepCopy().(BuildInfo),
 		m.SecondsTillShutdown,
 		m.ShutdownReason.DeepCopy().(LocalizedText),
 	}

@@ -38,31 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RegisterNodesResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "563";
+  public Integer getExtensionId() {
+    return (int) 563;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
-  protected final int noOfRegisteredNodeIds;
+  protected final ResponseHeader responseHeader;
   protected final List<NodeId> registeredNodeIds;
 
-  public RegisterNodesResponse(
-      ExtensionObjectDefinition responseHeader,
-      int noOfRegisteredNodeIds,
-      List<NodeId> registeredNodeIds) {
+  public RegisterNodesResponse(ResponseHeader responseHeader, List<NodeId> registeredNodeIds) {
     super();
     this.responseHeader = responseHeader;
-    this.noOfRegisteredNodeIds = noOfRegisteredNodeIds;
     this.registeredNodeIds = registeredNodeIds;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
-  }
-
-  public int getNoOfRegisteredNodeIds() {
-    return noOfRegisteredNodeIds;
   }
 
   public List<NodeId> getRegisteredNodeIds() {
@@ -79,8 +70,11 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
     // Simple Field (responseHeader)
     writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfRegisteredNodeIds)
-    writeSimpleField(
+    // Implicit Field (noOfRegisteredNodeIds) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfRegisteredNodeIds =
+        (int) ((((getRegisteredNodeIds()) == (null)) ? -(1) : COUNT(getRegisteredNodeIds())));
+    writeImplicitField(
         "noOfRegisteredNodeIds", noOfRegisteredNodeIds, writeSignedInt(writeBuffer, 32));
 
     // Array Field (registeredNodeIds)
@@ -103,7 +97,7 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
 
-    // Simple field (noOfRegisteredNodeIds)
+    // Implicit Field (noOfRegisteredNodeIds)
     lengthInBits += 32;
 
     // Array field
@@ -119,20 +113,21 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RegisterNodesResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     int noOfRegisteredNodeIds =
-        readSimpleField("noOfRegisteredNodeIds", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfRegisteredNodeIds", readSignedInt(readBuffer, 32));
 
     List<NodeId> registeredNodeIds =
         readCountArrayField(
@@ -142,28 +137,23 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("RegisterNodesResponse");
     // Create the instance
-    return new RegisterNodesResponseBuilderImpl(
-        responseHeader, noOfRegisteredNodeIds, registeredNodeIds);
+    return new RegisterNodesResponseBuilderImpl(responseHeader, registeredNodeIds);
   }
 
   public static class RegisterNodesResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
-    private final int noOfRegisteredNodeIds;
+    private final ResponseHeader responseHeader;
     private final List<NodeId> registeredNodeIds;
 
     public RegisterNodesResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
-        int noOfRegisteredNodeIds,
-        List<NodeId> registeredNodeIds) {
+        ResponseHeader responseHeader, List<NodeId> registeredNodeIds) {
       this.responseHeader = responseHeader;
-      this.noOfRegisteredNodeIds = noOfRegisteredNodeIds;
       this.registeredNodeIds = registeredNodeIds;
     }
 
     public RegisterNodesResponse build() {
       RegisterNodesResponse registerNodesResponse =
-          new RegisterNodesResponse(responseHeader, noOfRegisteredNodeIds, registeredNodeIds);
+          new RegisterNodesResponse(responseHeader, registeredNodeIds);
       return registerNodesResponse;
     }
   }
@@ -178,7 +168,6 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
     }
     RegisterNodesResponse that = (RegisterNodesResponse) o;
     return (getResponseHeader() == that.getResponseHeader())
-        && (getNoOfRegisteredNodeIds() == that.getNoOfRegisteredNodeIds())
         && (getRegisteredNodeIds() == that.getRegisteredNodeIds())
         && super.equals(that)
         && true;
@@ -186,8 +175,7 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getResponseHeader(), getNoOfRegisteredNodeIds(), getRegisteredNodeIds());
+    return Objects.hash(super.hashCode(), getResponseHeader(), getRegisteredNodeIds());
   }
 
   @Override

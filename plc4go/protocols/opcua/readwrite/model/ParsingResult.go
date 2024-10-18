@@ -42,12 +42,8 @@ type ParsingResult interface {
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
-	// GetNoOfDataStatusCodes returns NoOfDataStatusCodes (property field)
-	GetNoOfDataStatusCodes() int32
 	// GetDataStatusCodes returns DataStatusCodes (property field)
 	GetDataStatusCodes() []StatusCode
-	// GetNoOfDataDiagnosticInfos returns NoOfDataDiagnosticInfos (property field)
-	GetNoOfDataDiagnosticInfos() int32
 	// GetDataDiagnosticInfos returns DataDiagnosticInfos (property field)
 	GetDataDiagnosticInfos() []DiagnosticInfo
 	// IsParsingResult is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,27 +55,23 @@ type ParsingResult interface {
 // _ParsingResult is the data-structure of this message
 type _ParsingResult struct {
 	ExtensionObjectDefinitionContract
-	StatusCode              StatusCode
-	NoOfDataStatusCodes     int32
-	DataStatusCodes         []StatusCode
-	NoOfDataDiagnosticInfos int32
-	DataDiagnosticInfos     []DiagnosticInfo
+	StatusCode          StatusCode
+	DataStatusCodes     []StatusCode
+	DataDiagnosticInfos []DiagnosticInfo
 }
 
 var _ ParsingResult = (*_ParsingResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ParsingResult)(nil)
 
 // NewParsingResult factory function for _ParsingResult
-func NewParsingResult(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) *_ParsingResult {
+func NewParsingResult(statusCode StatusCode, dataStatusCodes []StatusCode, dataDiagnosticInfos []DiagnosticInfo) *_ParsingResult {
 	if statusCode == nil {
 		panic("statusCode of type StatusCode for ParsingResult must not be nil")
 	}
 	_result := &_ParsingResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,
-		NoOfDataStatusCodes:               noOfDataStatusCodes,
 		DataStatusCodes:                   dataStatusCodes,
-		NoOfDataDiagnosticInfos:           noOfDataDiagnosticInfos,
 		DataDiagnosticInfos:               dataDiagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -95,17 +87,13 @@ func NewParsingResult(statusCode StatusCode, noOfDataStatusCodes int32, dataStat
 type ParsingResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder
+	WithMandatoryFields(statusCode StatusCode, dataStatusCodes []StatusCode, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithStatusCode(StatusCode) ParsingResultBuilder
 	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
 	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) ParsingResultBuilder
-	// WithNoOfDataStatusCodes adds NoOfDataStatusCodes (property field)
-	WithNoOfDataStatusCodes(int32) ParsingResultBuilder
 	// WithDataStatusCodes adds DataStatusCodes (property field)
 	WithDataStatusCodes(...StatusCode) ParsingResultBuilder
-	// WithNoOfDataDiagnosticInfos adds NoOfDataDiagnosticInfos (property field)
-	WithNoOfDataDiagnosticInfos(int32) ParsingResultBuilder
 	// WithDataDiagnosticInfos adds DataDiagnosticInfos (property field)
 	WithDataDiagnosticInfos(...DiagnosticInfo) ParsingResultBuilder
 	// Build builds the ParsingResult or returns an error if something is wrong
@@ -133,8 +121,8 @@ func (b *_ParsingResultBuilder) setParent(contract ExtensionObjectDefinitionCont
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ParsingResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder {
-	return b.WithStatusCode(statusCode).WithNoOfDataStatusCodes(noOfDataStatusCodes).WithDataStatusCodes(dataStatusCodes...).WithNoOfDataDiagnosticInfos(noOfDataDiagnosticInfos).WithDataDiagnosticInfos(dataDiagnosticInfos...)
+func (b *_ParsingResultBuilder) WithMandatoryFields(statusCode StatusCode, dataStatusCodes []StatusCode, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder {
+	return b.WithStatusCode(statusCode).WithDataStatusCodes(dataStatusCodes...).WithDataDiagnosticInfos(dataDiagnosticInfos...)
 }
 
 func (b *_ParsingResultBuilder) WithStatusCode(statusCode StatusCode) ParsingResultBuilder {
@@ -155,18 +143,8 @@ func (b *_ParsingResultBuilder) WithStatusCodeBuilder(builderSupplier func(Statu
 	return b
 }
 
-func (b *_ParsingResultBuilder) WithNoOfDataStatusCodes(noOfDataStatusCodes int32) ParsingResultBuilder {
-	b.NoOfDataStatusCodes = noOfDataStatusCodes
-	return b
-}
-
 func (b *_ParsingResultBuilder) WithDataStatusCodes(dataStatusCodes ...StatusCode) ParsingResultBuilder {
 	b.DataStatusCodes = dataStatusCodes
-	return b
-}
-
-func (b *_ParsingResultBuilder) WithNoOfDataDiagnosticInfos(noOfDataDiagnosticInfos int32) ParsingResultBuilder {
-	b.NoOfDataDiagnosticInfos = noOfDataDiagnosticInfos
 	return b
 }
 
@@ -231,8 +209,8 @@ func (b *_ParsingResult) CreateParsingResultBuilder() ParsingResultBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ParsingResult) GetIdentifier() string {
-	return "612"
+func (m *_ParsingResult) GetExtensionId() int32 {
+	return int32(612)
 }
 
 ///////////////////////
@@ -253,16 +231,8 @@ func (m *_ParsingResult) GetStatusCode() StatusCode {
 	return m.StatusCode
 }
 
-func (m *_ParsingResult) GetNoOfDataStatusCodes() int32 {
-	return m.NoOfDataStatusCodes
-}
-
 func (m *_ParsingResult) GetDataStatusCodes() []StatusCode {
 	return m.DataStatusCodes
-}
-
-func (m *_ParsingResult) GetNoOfDataDiagnosticInfos() int32 {
-	return m.NoOfDataDiagnosticInfos
 }
 
 func (m *_ParsingResult) GetDataDiagnosticInfos() []DiagnosticInfo {
@@ -290,12 +260,12 @@ func (m *_ParsingResult) GetTypeName() string {
 }
 
 func (m *_ParsingResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
 
-	// Simple field (noOfDataStatusCodes)
+	// Implicit Field (noOfDataStatusCodes)
 	lengthInBits += 32
 
 	// Array field
@@ -308,7 +278,7 @@ func (m *_ParsingResult) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfDataDiagnosticInfos)
+	// Implicit Field (noOfDataDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -328,7 +298,7 @@ func (m *_ParsingResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ParsingResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__parsingResult ParsingResult, err error) {
+func (m *_ParsingResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__parsingResult ParsingResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -345,11 +315,11 @@ func (m *_ParsingResult) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	}
 	m.StatusCode = statusCode
 
-	noOfDataStatusCodes, err := ReadSimpleField(ctx, "noOfDataStatusCodes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDataStatusCodes, err := ReadImplicitField[int32](ctx, "noOfDataStatusCodes", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDataStatusCodes' field"))
 	}
-	m.NoOfDataStatusCodes = noOfDataStatusCodes
+	_ = noOfDataStatusCodes
 
 	dataStatusCodes, err := ReadCountArrayField[StatusCode](ctx, "dataStatusCodes", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfDataStatusCodes))
 	if err != nil {
@@ -357,11 +327,11 @@ func (m *_ParsingResult) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	}
 	m.DataStatusCodes = dataStatusCodes
 
-	noOfDataDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDataDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDataDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfDataDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDataDiagnosticInfos' field"))
 	}
-	m.NoOfDataDiagnosticInfos = noOfDataDiagnosticInfos
+	_ = noOfDataDiagnosticInfos
 
 	dataDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "dataDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDataDiagnosticInfos))
 	if err != nil {
@@ -397,16 +367,16 @@ func (m *_ParsingResult) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDataStatusCodes", m.GetNoOfDataStatusCodes(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDataStatusCodes := int32(utils.InlineIf(bool((m.GetDataStatusCodes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDataStatusCodes()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDataStatusCodes", noOfDataStatusCodes, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDataStatusCodes' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "dataStatusCodes", m.GetDataStatusCodes(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataStatusCodes' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDataDiagnosticInfos", m.GetNoOfDataDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDataDiagnosticInfos := int32(utils.InlineIf(bool((m.GetDataDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDataDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDataDiagnosticInfos", noOfDataDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDataDiagnosticInfos' field")
 		}
 
@@ -435,9 +405,7 @@ func (m *_ParsingResult) deepCopy() *_ParsingResult {
 	_ParsingResultCopy := &_ParsingResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
-		m.NoOfDataStatusCodes,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.DataStatusCodes),
-		m.NoOfDataDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DataDiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

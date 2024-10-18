@@ -194,7 +194,7 @@ func (m *_ServerErrorReply) GetTypeName() string {
 }
 
 func (m *_ServerErrorReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).GetLengthInBits(ctx))
 
 	// Const Field (errorMarker)
 	lengthInBits += 8

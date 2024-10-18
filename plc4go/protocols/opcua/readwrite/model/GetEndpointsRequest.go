@@ -41,15 +41,11 @@ type GetEndpointsRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetEndpointUrl returns EndpointUrl (property field)
 	GetEndpointUrl() PascalString
-	// GetNoOfLocaleIds returns NoOfLocaleIds (property field)
-	GetNoOfLocaleIds() int32
 	// GetLocaleIds returns LocaleIds (property field)
 	GetLocaleIds() []PascalString
-	// GetNoOfProfileUris returns NoOfProfileUris (property field)
-	GetNoOfProfileUris() int32
 	// GetProfileUris returns ProfileUris (property field)
 	GetProfileUris() []PascalString
 	// IsGetEndpointsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -61,21 +57,19 @@ type GetEndpointsRequest interface {
 // _GetEndpointsRequest is the data-structure of this message
 type _GetEndpointsRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader   ExtensionObjectDefinition
-	EndpointUrl     PascalString
-	NoOfLocaleIds   int32
-	LocaleIds       []PascalString
-	NoOfProfileUris int32
-	ProfileUris     []PascalString
+	RequestHeader RequestHeader
+	EndpointUrl   PascalString
+	LocaleIds     []PascalString
+	ProfileUris   []PascalString
 }
 
 var _ GetEndpointsRequest = (*_GetEndpointsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_GetEndpointsRequest)(nil)
 
 // NewGetEndpointsRequest factory function for _GetEndpointsRequest
-func NewGetEndpointsRequest(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) *_GetEndpointsRequest {
+func NewGetEndpointsRequest(requestHeader RequestHeader, endpointUrl PascalString, localeIds []PascalString, profileUris []PascalString) *_GetEndpointsRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for GetEndpointsRequest must not be nil")
+		panic("requestHeader of type RequestHeader for GetEndpointsRequest must not be nil")
 	}
 	if endpointUrl == nil {
 		panic("endpointUrl of type PascalString for GetEndpointsRequest must not be nil")
@@ -84,9 +78,7 @@ func NewGetEndpointsRequest(requestHeader ExtensionObjectDefinition, endpointUrl
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
 		EndpointUrl:                       endpointUrl,
-		NoOfLocaleIds:                     noOfLocaleIds,
 		LocaleIds:                         localeIds,
-		NoOfProfileUris:                   noOfProfileUris,
 		ProfileUris:                       profileUris,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -102,21 +94,17 @@ func NewGetEndpointsRequest(requestHeader ExtensionObjectDefinition, endpointUrl
 type GetEndpointsRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) GetEndpointsRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, endpointUrl PascalString, localeIds []PascalString, profileUris []PascalString) GetEndpointsRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) GetEndpointsRequestBuilder
+	WithRequestHeader(RequestHeader) GetEndpointsRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) GetEndpointsRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) GetEndpointsRequestBuilder
 	// WithEndpointUrl adds EndpointUrl (property field)
 	WithEndpointUrl(PascalString) GetEndpointsRequestBuilder
 	// WithEndpointUrlBuilder adds EndpointUrl (property field) which is build by the builder
 	WithEndpointUrlBuilder(func(PascalStringBuilder) PascalStringBuilder) GetEndpointsRequestBuilder
-	// WithNoOfLocaleIds adds NoOfLocaleIds (property field)
-	WithNoOfLocaleIds(int32) GetEndpointsRequestBuilder
 	// WithLocaleIds adds LocaleIds (property field)
 	WithLocaleIds(...PascalString) GetEndpointsRequestBuilder
-	// WithNoOfProfileUris adds NoOfProfileUris (property field)
-	WithNoOfProfileUris(int32) GetEndpointsRequestBuilder
 	// WithProfileUris adds ProfileUris (property field)
 	WithProfileUris(...PascalString) GetEndpointsRequestBuilder
 	// Build builds the GetEndpointsRequest or returns an error if something is wrong
@@ -144,24 +132,24 @@ func (b *_GetEndpointsRequestBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_GetEndpointsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) GetEndpointsRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithEndpointUrl(endpointUrl).WithNoOfLocaleIds(noOfLocaleIds).WithLocaleIds(localeIds...).WithNoOfProfileUris(noOfProfileUris).WithProfileUris(profileUris...)
+func (b *_GetEndpointsRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, endpointUrl PascalString, localeIds []PascalString, profileUris []PascalString) GetEndpointsRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithEndpointUrl(endpointUrl).WithLocaleIds(localeIds...).WithProfileUris(profileUris...)
 }
 
-func (b *_GetEndpointsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) GetEndpointsRequestBuilder {
+func (b *_GetEndpointsRequestBuilder) WithRequestHeader(requestHeader RequestHeader) GetEndpointsRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_GetEndpointsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) GetEndpointsRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_GetEndpointsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) GetEndpointsRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -184,18 +172,8 @@ func (b *_GetEndpointsRequestBuilder) WithEndpointUrlBuilder(builderSupplier fun
 	return b
 }
 
-func (b *_GetEndpointsRequestBuilder) WithNoOfLocaleIds(noOfLocaleIds int32) GetEndpointsRequestBuilder {
-	b.NoOfLocaleIds = noOfLocaleIds
-	return b
-}
-
 func (b *_GetEndpointsRequestBuilder) WithLocaleIds(localeIds ...PascalString) GetEndpointsRequestBuilder {
 	b.LocaleIds = localeIds
-	return b
-}
-
-func (b *_GetEndpointsRequestBuilder) WithNoOfProfileUris(noOfProfileUris int32) GetEndpointsRequestBuilder {
-	b.NoOfProfileUris = noOfProfileUris
 	return b
 }
 
@@ -266,8 +244,8 @@ func (b *_GetEndpointsRequest) CreateGetEndpointsRequestBuilder() GetEndpointsRe
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_GetEndpointsRequest) GetIdentifier() string {
-	return "428"
+func (m *_GetEndpointsRequest) GetExtensionId() int32 {
+	return int32(428)
 }
 
 ///////////////////////
@@ -284,7 +262,7 @@ func (m *_GetEndpointsRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_GetEndpointsRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_GetEndpointsRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
@@ -292,16 +270,8 @@ func (m *_GetEndpointsRequest) GetEndpointUrl() PascalString {
 	return m.EndpointUrl
 }
 
-func (m *_GetEndpointsRequest) GetNoOfLocaleIds() int32 {
-	return m.NoOfLocaleIds
-}
-
 func (m *_GetEndpointsRequest) GetLocaleIds() []PascalString {
 	return m.LocaleIds
-}
-
-func (m *_GetEndpointsRequest) GetNoOfProfileUris() int32 {
-	return m.NoOfProfileUris
 }
 
 func (m *_GetEndpointsRequest) GetProfileUris() []PascalString {
@@ -329,7 +299,7 @@ func (m *_GetEndpointsRequest) GetTypeName() string {
 }
 
 func (m *_GetEndpointsRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -337,7 +307,7 @@ func (m *_GetEndpointsRequest) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (endpointUrl)
 	lengthInBits += m.EndpointUrl.GetLengthInBits(ctx)
 
-	// Simple field (noOfLocaleIds)
+	// Implicit Field (noOfLocaleIds)
 	lengthInBits += 32
 
 	// Array field
@@ -350,7 +320,7 @@ func (m *_GetEndpointsRequest) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfProfileUris)
+	// Implicit Field (noOfProfileUris)
 	lengthInBits += 32
 
 	// Array field
@@ -370,7 +340,7 @@ func (m *_GetEndpointsRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_GetEndpointsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__getEndpointsRequest GetEndpointsRequest, err error) {
+func (m *_GetEndpointsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__getEndpointsRequest GetEndpointsRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -381,7 +351,7 @@ func (m *_GetEndpointsRequest) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -393,11 +363,11 @@ func (m *_GetEndpointsRequest) parse(ctx context.Context, readBuffer utils.ReadB
 	}
 	m.EndpointUrl = endpointUrl
 
-	noOfLocaleIds, err := ReadSimpleField(ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLocaleIds, err := ReadImplicitField[int32](ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLocaleIds' field"))
 	}
-	m.NoOfLocaleIds = noOfLocaleIds
+	_ = noOfLocaleIds
 
 	localeIds, err := ReadCountArrayField[PascalString](ctx, "localeIds", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfLocaleIds))
 	if err != nil {
@@ -405,11 +375,11 @@ func (m *_GetEndpointsRequest) parse(ctx context.Context, readBuffer utils.ReadB
 	}
 	m.LocaleIds = localeIds
 
-	noOfProfileUris, err := ReadSimpleField(ctx, "noOfProfileUris", ReadSignedInt(readBuffer, uint8(32)))
+	noOfProfileUris, err := ReadImplicitField[int32](ctx, "noOfProfileUris", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfProfileUris' field"))
 	}
-	m.NoOfProfileUris = noOfProfileUris
+	_ = noOfProfileUris
 
 	profileUris, err := ReadCountArrayField[PascalString](ctx, "profileUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfProfileUris))
 	if err != nil {
@@ -442,23 +412,23 @@ func (m *_GetEndpointsRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for GetEndpointsRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
 		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfLocaleIds", m.GetNoOfLocaleIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfLocaleIds := int32(utils.InlineIf(bool((m.GetLocaleIds()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLocaleIds()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfLocaleIds", noOfLocaleIds, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLocaleIds' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "localeIds", m.GetLocaleIds(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'localeIds' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfProfileUris", m.GetNoOfProfileUris(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfProfileUris := int32(utils.InlineIf(bool((m.GetProfileUris()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetProfileUris()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfProfileUris", noOfProfileUris, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfProfileUris' field")
 		}
 
@@ -486,11 +456,9 @@ func (m *_GetEndpointsRequest) deepCopy() *_GetEndpointsRequest {
 	}
 	_GetEndpointsRequestCopy := &_GetEndpointsRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.EndpointUrl.DeepCopy().(PascalString),
-		m.NoOfLocaleIds,
 		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
-		m.NoOfProfileUris,
 		utils.DeepCopySlice[PascalString, PascalString](m.ProfileUris),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -363,7 +363,7 @@ func (m *_TriggerControlData) GetTypeName() string {
 	return "TriggerControlData"
 }
 
-func (m *_TriggerControlData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_TriggerControlData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)

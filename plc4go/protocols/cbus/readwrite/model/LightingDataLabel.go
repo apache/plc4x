@@ -271,7 +271,7 @@ func (m *_LightingDataLabel) GetTypeName() string {
 }
 
 func (m *_LightingDataLabel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LightingDataContract.(*_LightingData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.LightingDataContract.(*_LightingData).GetLengthInBits(ctx))
 
 	// Simple field (group)
 	lengthInBits += 8

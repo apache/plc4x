@@ -42,8 +42,6 @@ type SecurityGroupDataType interface {
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
-	// GetNoOfSecurityGroupFolder returns NoOfSecurityGroupFolder (property field)
-	GetNoOfSecurityGroupFolder() int32
 	// GetSecurityGroupFolder returns SecurityGroupFolder (property field)
 	GetSecurityGroupFolder() []PascalString
 	// GetKeyLifetime returns KeyLifetime (property field)
@@ -56,14 +54,10 @@ type SecurityGroupDataType interface {
 	GetMaxPastKeyCount() uint32
 	// GetSecurityGroupId returns SecurityGroupId (property field)
 	GetSecurityGroupId() PascalString
-	// GetNoOfRolePermissions returns NoOfRolePermissions (property field)
-	GetNoOfRolePermissions() int32
 	// GetRolePermissions returns RolePermissions (property field)
-	GetRolePermissions() []ExtensionObjectDefinition
-	// GetNoOfGroupProperties returns NoOfGroupProperties (property field)
-	GetNoOfGroupProperties() int32
+	GetRolePermissions() []RolePermissionType
 	// GetGroupProperties returns GroupProperties (property field)
-	GetGroupProperties() []ExtensionObjectDefinition
+	GetGroupProperties() []KeyValuePair
 	// IsSecurityGroupDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityGroupDataType()
 	// CreateBuilder creates a SecurityGroupDataTypeBuilder
@@ -73,25 +67,22 @@ type SecurityGroupDataType interface {
 // _SecurityGroupDataType is the data-structure of this message
 type _SecurityGroupDataType struct {
 	ExtensionObjectDefinitionContract
-	Name                    PascalString
-	NoOfSecurityGroupFolder int32
-	SecurityGroupFolder     []PascalString
-	KeyLifetime             float64
-	SecurityPolicyUri       PascalString
-	MaxFutureKeyCount       uint32
-	MaxPastKeyCount         uint32
-	SecurityGroupId         PascalString
-	NoOfRolePermissions     int32
-	RolePermissions         []ExtensionObjectDefinition
-	NoOfGroupProperties     int32
-	GroupProperties         []ExtensionObjectDefinition
+	Name                PascalString
+	SecurityGroupFolder []PascalString
+	KeyLifetime         float64
+	SecurityPolicyUri   PascalString
+	MaxFutureKeyCount   uint32
+	MaxPastKeyCount     uint32
+	SecurityGroupId     PascalString
+	RolePermissions     []RolePermissionType
+	GroupProperties     []KeyValuePair
 }
 
 var _ SecurityGroupDataType = (*_SecurityGroupDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SecurityGroupDataType)(nil)
 
 // NewSecurityGroupDataType factory function for _SecurityGroupDataType
-func NewSecurityGroupDataType(name PascalString, noOfSecurityGroupFolder int32, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, noOfRolePermissions int32, rolePermissions []ExtensionObjectDefinition, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) *_SecurityGroupDataType {
+func NewSecurityGroupDataType(name PascalString, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, rolePermissions []RolePermissionType, groupProperties []KeyValuePair) *_SecurityGroupDataType {
 	if name == nil {
 		panic("name of type PascalString for SecurityGroupDataType must not be nil")
 	}
@@ -104,16 +95,13 @@ func NewSecurityGroupDataType(name PascalString, noOfSecurityGroupFolder int32, 
 	_result := &_SecurityGroupDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Name:                              name,
-		NoOfSecurityGroupFolder:           noOfSecurityGroupFolder,
 		SecurityGroupFolder:               securityGroupFolder,
 		KeyLifetime:                       keyLifetime,
 		SecurityPolicyUri:                 securityPolicyUri,
 		MaxFutureKeyCount:                 maxFutureKeyCount,
 		MaxPastKeyCount:                   maxPastKeyCount,
 		SecurityGroupId:                   securityGroupId,
-		NoOfRolePermissions:               noOfRolePermissions,
 		RolePermissions:                   rolePermissions,
-		NoOfGroupProperties:               noOfGroupProperties,
 		GroupProperties:                   groupProperties,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -129,13 +117,11 @@ func NewSecurityGroupDataType(name PascalString, noOfSecurityGroupFolder int32, 
 type SecurityGroupDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(name PascalString, noOfSecurityGroupFolder int32, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, noOfRolePermissions int32, rolePermissions []ExtensionObjectDefinition, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) SecurityGroupDataTypeBuilder
+	WithMandatoryFields(name PascalString, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, rolePermissions []RolePermissionType, groupProperties []KeyValuePair) SecurityGroupDataTypeBuilder
 	// WithName adds Name (property field)
 	WithName(PascalString) SecurityGroupDataTypeBuilder
 	// WithNameBuilder adds Name (property field) which is build by the builder
 	WithNameBuilder(func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder
-	// WithNoOfSecurityGroupFolder adds NoOfSecurityGroupFolder (property field)
-	WithNoOfSecurityGroupFolder(int32) SecurityGroupDataTypeBuilder
 	// WithSecurityGroupFolder adds SecurityGroupFolder (property field)
 	WithSecurityGroupFolder(...PascalString) SecurityGroupDataTypeBuilder
 	// WithKeyLifetime adds KeyLifetime (property field)
@@ -152,14 +138,10 @@ type SecurityGroupDataTypeBuilder interface {
 	WithSecurityGroupId(PascalString) SecurityGroupDataTypeBuilder
 	// WithSecurityGroupIdBuilder adds SecurityGroupId (property field) which is build by the builder
 	WithSecurityGroupIdBuilder(func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder
-	// WithNoOfRolePermissions adds NoOfRolePermissions (property field)
-	WithNoOfRolePermissions(int32) SecurityGroupDataTypeBuilder
 	// WithRolePermissions adds RolePermissions (property field)
-	WithRolePermissions(...ExtensionObjectDefinition) SecurityGroupDataTypeBuilder
-	// WithNoOfGroupProperties adds NoOfGroupProperties (property field)
-	WithNoOfGroupProperties(int32) SecurityGroupDataTypeBuilder
+	WithRolePermissions(...RolePermissionType) SecurityGroupDataTypeBuilder
 	// WithGroupProperties adds GroupProperties (property field)
-	WithGroupProperties(...ExtensionObjectDefinition) SecurityGroupDataTypeBuilder
+	WithGroupProperties(...KeyValuePair) SecurityGroupDataTypeBuilder
 	// Build builds the SecurityGroupDataType or returns an error if something is wrong
 	Build() (SecurityGroupDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -185,8 +167,8 @@ func (b *_SecurityGroupDataTypeBuilder) setParent(contract ExtensionObjectDefini
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_SecurityGroupDataTypeBuilder) WithMandatoryFields(name PascalString, noOfSecurityGroupFolder int32, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, noOfRolePermissions int32, rolePermissions []ExtensionObjectDefinition, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) SecurityGroupDataTypeBuilder {
-	return b.WithName(name).WithNoOfSecurityGroupFolder(noOfSecurityGroupFolder).WithSecurityGroupFolder(securityGroupFolder...).WithKeyLifetime(keyLifetime).WithSecurityPolicyUri(securityPolicyUri).WithMaxFutureKeyCount(maxFutureKeyCount).WithMaxPastKeyCount(maxPastKeyCount).WithSecurityGroupId(securityGroupId).WithNoOfRolePermissions(noOfRolePermissions).WithRolePermissions(rolePermissions...).WithNoOfGroupProperties(noOfGroupProperties).WithGroupProperties(groupProperties...)
+func (b *_SecurityGroupDataTypeBuilder) WithMandatoryFields(name PascalString, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, rolePermissions []RolePermissionType, groupProperties []KeyValuePair) SecurityGroupDataTypeBuilder {
+	return b.WithName(name).WithSecurityGroupFolder(securityGroupFolder...).WithKeyLifetime(keyLifetime).WithSecurityPolicyUri(securityPolicyUri).WithMaxFutureKeyCount(maxFutureKeyCount).WithMaxPastKeyCount(maxPastKeyCount).WithSecurityGroupId(securityGroupId).WithRolePermissions(rolePermissions...).WithGroupProperties(groupProperties...)
 }
 
 func (b *_SecurityGroupDataTypeBuilder) WithName(name PascalString) SecurityGroupDataTypeBuilder {
@@ -204,11 +186,6 @@ func (b *_SecurityGroupDataTypeBuilder) WithNameBuilder(builderSupplier func(Pas
 		}
 		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return b
-}
-
-func (b *_SecurityGroupDataTypeBuilder) WithNoOfSecurityGroupFolder(noOfSecurityGroupFolder int32) SecurityGroupDataTypeBuilder {
-	b.NoOfSecurityGroupFolder = noOfSecurityGroupFolder
 	return b
 }
 
@@ -268,22 +245,12 @@ func (b *_SecurityGroupDataTypeBuilder) WithSecurityGroupIdBuilder(builderSuppli
 	return b
 }
 
-func (b *_SecurityGroupDataTypeBuilder) WithNoOfRolePermissions(noOfRolePermissions int32) SecurityGroupDataTypeBuilder {
-	b.NoOfRolePermissions = noOfRolePermissions
-	return b
-}
-
-func (b *_SecurityGroupDataTypeBuilder) WithRolePermissions(rolePermissions ...ExtensionObjectDefinition) SecurityGroupDataTypeBuilder {
+func (b *_SecurityGroupDataTypeBuilder) WithRolePermissions(rolePermissions ...RolePermissionType) SecurityGroupDataTypeBuilder {
 	b.RolePermissions = rolePermissions
 	return b
 }
 
-func (b *_SecurityGroupDataTypeBuilder) WithNoOfGroupProperties(noOfGroupProperties int32) SecurityGroupDataTypeBuilder {
-	b.NoOfGroupProperties = noOfGroupProperties
-	return b
-}
-
-func (b *_SecurityGroupDataTypeBuilder) WithGroupProperties(groupProperties ...ExtensionObjectDefinition) SecurityGroupDataTypeBuilder {
+func (b *_SecurityGroupDataTypeBuilder) WithGroupProperties(groupProperties ...KeyValuePair) SecurityGroupDataTypeBuilder {
 	b.GroupProperties = groupProperties
 	return b
 }
@@ -356,8 +323,8 @@ func (b *_SecurityGroupDataType) CreateSecurityGroupDataTypeBuilder() SecurityGr
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SecurityGroupDataType) GetIdentifier() string {
-	return "23603"
+func (m *_SecurityGroupDataType) GetExtensionId() int32 {
+	return int32(23603)
 }
 
 ///////////////////////
@@ -376,10 +343,6 @@ func (m *_SecurityGroupDataType) GetParent() ExtensionObjectDefinitionContract {
 
 func (m *_SecurityGroupDataType) GetName() PascalString {
 	return m.Name
-}
-
-func (m *_SecurityGroupDataType) GetNoOfSecurityGroupFolder() int32 {
-	return m.NoOfSecurityGroupFolder
 }
 
 func (m *_SecurityGroupDataType) GetSecurityGroupFolder() []PascalString {
@@ -406,19 +369,11 @@ func (m *_SecurityGroupDataType) GetSecurityGroupId() PascalString {
 	return m.SecurityGroupId
 }
 
-func (m *_SecurityGroupDataType) GetNoOfRolePermissions() int32 {
-	return m.NoOfRolePermissions
-}
-
-func (m *_SecurityGroupDataType) GetRolePermissions() []ExtensionObjectDefinition {
+func (m *_SecurityGroupDataType) GetRolePermissions() []RolePermissionType {
 	return m.RolePermissions
 }
 
-func (m *_SecurityGroupDataType) GetNoOfGroupProperties() int32 {
-	return m.NoOfGroupProperties
-}
-
-func (m *_SecurityGroupDataType) GetGroupProperties() []ExtensionObjectDefinition {
+func (m *_SecurityGroupDataType) GetGroupProperties() []KeyValuePair {
 	return m.GroupProperties
 }
 
@@ -443,12 +398,12 @@ func (m *_SecurityGroupDataType) GetTypeName() string {
 }
 
 func (m *_SecurityGroupDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (name)
 	lengthInBits += m.Name.GetLengthInBits(ctx)
 
-	// Simple field (noOfSecurityGroupFolder)
+	// Implicit Field (noOfSecurityGroupFolder)
 	lengthInBits += 32
 
 	// Array field
@@ -476,7 +431,7 @@ func (m *_SecurityGroupDataType) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (securityGroupId)
 	lengthInBits += m.SecurityGroupId.GetLengthInBits(ctx)
 
-	// Simple field (noOfRolePermissions)
+	// Implicit Field (noOfRolePermissions)
 	lengthInBits += 32
 
 	// Array field
@@ -489,7 +444,7 @@ func (m *_SecurityGroupDataType) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfGroupProperties)
+	// Implicit Field (noOfGroupProperties)
 	lengthInBits += 32
 
 	// Array field
@@ -509,7 +464,7 @@ func (m *_SecurityGroupDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SecurityGroupDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__securityGroupDataType SecurityGroupDataType, err error) {
+func (m *_SecurityGroupDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__securityGroupDataType SecurityGroupDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -526,11 +481,11 @@ func (m *_SecurityGroupDataType) parse(ctx context.Context, readBuffer utils.Rea
 	}
 	m.Name = name
 
-	noOfSecurityGroupFolder, err := ReadSimpleField(ctx, "noOfSecurityGroupFolder", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSecurityGroupFolder, err := ReadImplicitField[int32](ctx, "noOfSecurityGroupFolder", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSecurityGroupFolder' field"))
 	}
-	m.NoOfSecurityGroupFolder = noOfSecurityGroupFolder
+	_ = noOfSecurityGroupFolder
 
 	securityGroupFolder, err := ReadCountArrayField[PascalString](ctx, "securityGroupFolder", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfSecurityGroupFolder))
 	if err != nil {
@@ -568,25 +523,25 @@ func (m *_SecurityGroupDataType) parse(ctx context.Context, readBuffer utils.Rea
 	}
 	m.SecurityGroupId = securityGroupId
 
-	noOfRolePermissions, err := ReadSimpleField(ctx, "noOfRolePermissions", ReadSignedInt(readBuffer, uint8(32)))
+	noOfRolePermissions, err := ReadImplicitField[int32](ctx, "noOfRolePermissions", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRolePermissions' field"))
 	}
-	m.NoOfRolePermissions = noOfRolePermissions
+	_ = noOfRolePermissions
 
-	rolePermissions, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "rolePermissions", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("98")), readBuffer), uint64(noOfRolePermissions))
+	rolePermissions, err := ReadCountArrayField[RolePermissionType](ctx, "rolePermissions", ReadComplex[RolePermissionType](ExtensionObjectDefinitionParseWithBufferProducer[RolePermissionType]((int32)(int32(98))), readBuffer), uint64(noOfRolePermissions))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rolePermissions' field"))
 	}
 	m.RolePermissions = rolePermissions
 
-	noOfGroupProperties, err := ReadSimpleField(ctx, "noOfGroupProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfGroupProperties, err := ReadImplicitField[int32](ctx, "noOfGroupProperties", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfGroupProperties' field"))
 	}
-	m.NoOfGroupProperties = noOfGroupProperties
+	_ = noOfGroupProperties
 
-	groupProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "groupProperties", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("14535")), readBuffer), uint64(noOfGroupProperties))
+	groupProperties, err := ReadCountArrayField[KeyValuePair](ctx, "groupProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfGroupProperties))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupProperties' field"))
 	}
@@ -620,8 +575,8 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'name' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfSecurityGroupFolder", m.GetNoOfSecurityGroupFolder(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfSecurityGroupFolder := int32(utils.InlineIf(bool((m.GetSecurityGroupFolder()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSecurityGroupFolder()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfSecurityGroupFolder", noOfSecurityGroupFolder, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSecurityGroupFolder' field")
 		}
 
@@ -648,16 +603,16 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 		if err := WriteSimpleField[PascalString](ctx, "securityGroupId", m.GetSecurityGroupId(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityGroupId' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfRolePermissions", m.GetNoOfRolePermissions(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfRolePermissions := int32(utils.InlineIf(bool((m.GetRolePermissions()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetRolePermissions()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfRolePermissions", noOfRolePermissions, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfRolePermissions' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "rolePermissions", m.GetRolePermissions(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'rolePermissions' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfGroupProperties", m.GetNoOfGroupProperties(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfGroupProperties := int32(utils.InlineIf(bool((m.GetGroupProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetGroupProperties()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfGroupProperties", noOfGroupProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfGroupProperties' field")
 		}
 
@@ -686,17 +641,14 @@ func (m *_SecurityGroupDataType) deepCopy() *_SecurityGroupDataType {
 	_SecurityGroupDataTypeCopy := &_SecurityGroupDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Name.DeepCopy().(PascalString),
-		m.NoOfSecurityGroupFolder,
 		utils.DeepCopySlice[PascalString, PascalString](m.SecurityGroupFolder),
 		m.KeyLifetime,
 		m.SecurityPolicyUri.DeepCopy().(PascalString),
 		m.MaxFutureKeyCount,
 		m.MaxPastKeyCount,
 		m.SecurityGroupId.DeepCopy().(PascalString),
-		m.NoOfRolePermissions,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.RolePermissions),
-		m.NoOfGroupProperties,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.GroupProperties),
+		utils.DeepCopySlice[RolePermissionType, RolePermissionType](m.RolePermissions),
+		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.GroupProperties),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SecurityGroupDataTypeCopy

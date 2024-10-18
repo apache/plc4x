@@ -42,8 +42,6 @@ type TransferResult interface {
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
-	// GetNoOfAvailableSequenceNumbers returns NoOfAvailableSequenceNumbers (property field)
-	GetNoOfAvailableSequenceNumbers() int32
 	// GetAvailableSequenceNumbers returns AvailableSequenceNumbers (property field)
 	GetAvailableSequenceNumbers() []uint32
 	// IsTransferResult is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -55,23 +53,21 @@ type TransferResult interface {
 // _TransferResult is the data-structure of this message
 type _TransferResult struct {
 	ExtensionObjectDefinitionContract
-	StatusCode                   StatusCode
-	NoOfAvailableSequenceNumbers int32
-	AvailableSequenceNumbers     []uint32
+	StatusCode               StatusCode
+	AvailableSequenceNumbers []uint32
 }
 
 var _ TransferResult = (*_TransferResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TransferResult)(nil)
 
 // NewTransferResult factory function for _TransferResult
-func NewTransferResult(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) *_TransferResult {
+func NewTransferResult(statusCode StatusCode, availableSequenceNumbers []uint32) *_TransferResult {
 	if statusCode == nil {
 		panic("statusCode of type StatusCode for TransferResult must not be nil")
 	}
 	_result := &_TransferResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,
-		NoOfAvailableSequenceNumbers:      noOfAvailableSequenceNumbers,
 		AvailableSequenceNumbers:          availableSequenceNumbers,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -87,13 +83,11 @@ func NewTransferResult(statusCode StatusCode, noOfAvailableSequenceNumbers int32
 type TransferResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) TransferResultBuilder
+	WithMandatoryFields(statusCode StatusCode, availableSequenceNumbers []uint32) TransferResultBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithStatusCode(StatusCode) TransferResultBuilder
 	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
 	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) TransferResultBuilder
-	// WithNoOfAvailableSequenceNumbers adds NoOfAvailableSequenceNumbers (property field)
-	WithNoOfAvailableSequenceNumbers(int32) TransferResultBuilder
 	// WithAvailableSequenceNumbers adds AvailableSequenceNumbers (property field)
 	WithAvailableSequenceNumbers(...uint32) TransferResultBuilder
 	// Build builds the TransferResult or returns an error if something is wrong
@@ -121,8 +115,8 @@ func (b *_TransferResultBuilder) setParent(contract ExtensionObjectDefinitionCon
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_TransferResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) TransferResultBuilder {
-	return b.WithStatusCode(statusCode).WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers).WithAvailableSequenceNumbers(availableSequenceNumbers...)
+func (b *_TransferResultBuilder) WithMandatoryFields(statusCode StatusCode, availableSequenceNumbers []uint32) TransferResultBuilder {
+	return b.WithStatusCode(statusCode).WithAvailableSequenceNumbers(availableSequenceNumbers...)
 }
 
 func (b *_TransferResultBuilder) WithStatusCode(statusCode StatusCode) TransferResultBuilder {
@@ -140,11 +134,6 @@ func (b *_TransferResultBuilder) WithStatusCodeBuilder(builderSupplier func(Stat
 		}
 		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return b
-}
-
-func (b *_TransferResultBuilder) WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers int32) TransferResultBuilder {
-	b.NoOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers
 	return b
 }
 
@@ -209,8 +198,8 @@ func (b *_TransferResult) CreateTransferResultBuilder() TransferResultBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_TransferResult) GetIdentifier() string {
-	return "838"
+func (m *_TransferResult) GetExtensionId() int32 {
+	return int32(838)
 }
 
 ///////////////////////
@@ -229,10 +218,6 @@ func (m *_TransferResult) GetParent() ExtensionObjectDefinitionContract {
 
 func (m *_TransferResult) GetStatusCode() StatusCode {
 	return m.StatusCode
-}
-
-func (m *_TransferResult) GetNoOfAvailableSequenceNumbers() int32 {
-	return m.NoOfAvailableSequenceNumbers
 }
 
 func (m *_TransferResult) GetAvailableSequenceNumbers() []uint32 {
@@ -260,12 +245,12 @@ func (m *_TransferResult) GetTypeName() string {
 }
 
 func (m *_TransferResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
 
-	// Simple field (noOfAvailableSequenceNumbers)
+	// Implicit Field (noOfAvailableSequenceNumbers)
 	lengthInBits += 32
 
 	// Array field
@@ -280,7 +265,7 @@ func (m *_TransferResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_TransferResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__transferResult TransferResult, err error) {
+func (m *_TransferResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__transferResult TransferResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -297,11 +282,11 @@ func (m *_TransferResult) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 	m.StatusCode = statusCode
 
-	noOfAvailableSequenceNumbers, err := ReadSimpleField(ctx, "noOfAvailableSequenceNumbers", ReadSignedInt(readBuffer, uint8(32)))
+	noOfAvailableSequenceNumbers, err := ReadImplicitField[int32](ctx, "noOfAvailableSequenceNumbers", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAvailableSequenceNumbers' field"))
 	}
-	m.NoOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers
+	_ = noOfAvailableSequenceNumbers
 
 	availableSequenceNumbers, err := ReadCountArrayField[uint32](ctx, "availableSequenceNumbers", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfAvailableSequenceNumbers))
 	if err != nil {
@@ -337,8 +322,8 @@ func (m *_TransferResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfAvailableSequenceNumbers", m.GetNoOfAvailableSequenceNumbers(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfAvailableSequenceNumbers := int32(utils.InlineIf(bool((m.GetAvailableSequenceNumbers()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetAvailableSequenceNumbers()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfAvailableSequenceNumbers", noOfAvailableSequenceNumbers, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfAvailableSequenceNumbers' field")
 		}
 
@@ -367,7 +352,6 @@ func (m *_TransferResult) deepCopy() *_TransferResult {
 	_TransferResultCopy := &_TransferResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
-		m.NoOfAvailableSequenceNumbers,
 		utils.DeepCopySlice[uint32, uint32](m.AvailableSequenceNumbers),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

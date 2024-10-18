@@ -382,7 +382,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetTypeName() string {
 	return "BACnetEventParameterChangeOfValueCivCriteria"
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteria) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)

@@ -179,7 +179,7 @@ func (m *_ApduDataExtWriteRoutingTableRequest) GetTypeName() string {
 }
 
 func (m *_ApduDataExtWriteRoutingTableRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

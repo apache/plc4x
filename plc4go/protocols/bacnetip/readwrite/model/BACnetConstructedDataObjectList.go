@@ -259,7 +259,7 @@ func (m *_BACnetConstructedDataObjectList) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataObjectList) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// A virtual field doesn't have any in- or output.
 

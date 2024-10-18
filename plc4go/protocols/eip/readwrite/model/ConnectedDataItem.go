@@ -245,7 +245,7 @@ func (m *_ConnectedDataItem) GetTypeName() string {
 }
 
 func (m *_ConnectedDataItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TypeIdContract.(*_TypeId).getLengthInBits(ctx))
+	lengthInBits := uint16(m.TypeIdContract.(*_TypeId).GetLengthInBits(ctx))
 
 	// Implicit Field (packetSize)
 	lengthInBits += 16

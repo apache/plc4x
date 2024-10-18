@@ -303,8 +303,8 @@ func (b *_UserTokenPolicy) CreateUserTokenPolicyBuilder() UserTokenPolicyBuilder
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_UserTokenPolicy) GetIdentifier() string {
-	return "306"
+func (m *_UserTokenPolicy) GetExtensionId() int32 {
+	return int32(306)
 }
 
 ///////////////////////
@@ -362,7 +362,7 @@ func (m *_UserTokenPolicy) GetTypeName() string {
 }
 
 func (m *_UserTokenPolicy) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (policyId)
 	lengthInBits += m.PolicyId.GetLengthInBits(ctx)
@@ -386,7 +386,7 @@ func (m *_UserTokenPolicy) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_UserTokenPolicy) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__userTokenPolicy UserTokenPolicy, err error) {
+func (m *_UserTokenPolicy) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__userTokenPolicy UserTokenPolicy, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

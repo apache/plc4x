@@ -179,7 +179,7 @@ func (m *_SALDataReserved) GetTypeName() string {
 }
 
 func (m *_SALDataReserved) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).GetLengthInBits(ctx))
 
 	return lengthInBits
 }
