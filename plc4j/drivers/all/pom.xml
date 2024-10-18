@@ -58,12 +58,12 @@
           <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-api</artifactId>
-            <version>0.13.0-SNAPSHOT</version>
+            <version>${project.version}</version>
           </dependency>
           <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-spi</artifactId>
-            <version>0.13.0-SNAPSHOT</version>
+            <version>${project.version}</version>
           </dependency>
           <dependency>
             <groupId>org.apache.maven</groupId>
@@ -80,110 +80,92 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ab-eth</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-bacnet</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-c-bus</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-can</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-canopen</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-firmata</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-iec-60870</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-open-protocol</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-plc4x</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-profinet-ng</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-serial</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
