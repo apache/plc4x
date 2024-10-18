@@ -121,7 +121,7 @@
             [simple string 8 abstractStringField]
         ]
     ]
-    //[abstract bit oneMoreBit] // TODO: apparently this breaks java
+    [abstract bit oneMoreBit] // TODO: apparently this breaks java
 ]
 
 [type ArrayTypeTest
@@ -211,6 +211,23 @@
             [reserved       uint 8  '0x00']
         ]
     ]
+]
+
+// Check field with arguments
+[type Struct(bit signed, bit unsigned)
+  [typeSwitch signed
+    ['true' SignedType
+      [simple int 8 data]
+    ]
+    ['false' UnsignedType
+      [simple uint 8 data]
+    ]
+  ]
+]
+
+[type StructContainer
+    [simple bit signed]
+    [simple Struct('signed', '!signed') struct]
 ]
 
 // TODO: So far only trouble in GO, C seems OK.
@@ -476,7 +493,6 @@
 // TypeSwitch in TypeSwitch
 ////////////////////////////////////////////////////////////////
 
-/* Needs to be ported to C and GO
 [discriminatedType TTGranddad
     [discriminator uint 8 dadNumber]
     [simple uint 8 warStories]
@@ -499,6 +515,7 @@
     ]
 ]
 
+/* Needs to be ported to C and GO
 [discriminatedType TypeSwitchInTypeSwitchParentType
     [discriminator uint 8 typeNumber]
     [simple uint 8 parentFieldHurz]
@@ -559,6 +576,19 @@
         ]
     ]
 ]*/
+
+[discriminatedType TypeSwitchWithArg(bit arg1, uint 8 arg2)
+    [abstract bit isItTrue]
+    [simple uint 8 value]
+    [typeSwitch arg1
+        ['true' TrustfulTypeSwitch(uint 8 value)
+            [virtual bit isItTrue 'true']
+        ]
+        ['false' UnTrustfulTypeSwitch(uint 8 value)
+            [virtual bit isItTrue 'false']
+        ]
+    ]
+]
 
 ////////////////////////////////////////////////////////////////
 // Missing Tests
