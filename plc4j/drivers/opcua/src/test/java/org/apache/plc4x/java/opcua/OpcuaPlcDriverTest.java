@@ -75,6 +75,7 @@ import static java.util.Map.entry;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+@DisableOnJenkinsFlag
 @Testcontainers(disabledWithoutDocker = true)
 public class OpcuaPlcDriverTest {
 
