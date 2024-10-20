@@ -96,6 +96,19 @@ public class ManualS71200DriverTest extends ManualTest {
         test.addTestCase("%DB4:72:TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
         test.addTestCase("%DB4:908:CHAR[5]", new PlcList(Arrays.asList(new PlcCHAR("w"), new PlcCHAR("i"), new PlcCHAR("e"), new PlcCHAR("s"), new PlcCHAR("e"))));
         test.addTestCase("%DB4:914:RAW_BYTE_ARRAY[11]", new PlcRawByteArray(new byte[] {(byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6, (byte) 7, (byte) 8, (byte) 9, (byte) 10, (byte) 11}));
+        // Disabled, as we currently only have the large-array-splitting for read requests.
+        /*test.addTestCase("%DB4:926:DINT[100]", new PlcList(Arrays.asList(new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
+            new PlcDINT(0), new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
+            new PlcDINT(0), new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
+            new PlcDINT(0), new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
+            new PlcDINT(0), new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
+            new PlcDINT(0), new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
+            new PlcDINT(0), new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
+            new PlcDINT(0), new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
+            new PlcDINT(0), new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
+            new PlcDINT(0), new PlcDINT(1), new PlcDINT(2), new PlcDINT(3), new PlcDINT(4), new PlcDINT(5), new PlcDINT(6), new PlcDINT(7), new PlcDINT(8), new PlcDINT(9),
+            new PlcDINT(0))));
+         */
 
         long start = System.currentTimeMillis();
         test.run();
