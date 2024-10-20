@@ -559,7 +559,7 @@ public enum KnxManufacturer {
   M_BERGHOF_AUTOMATION_GMBH((int) 485, (int) 540, (String) "Berghof Automation GmbH"),
   M_TOTAL_AUTOMATION_AND_CONTROLS_GMBH(
       (int) 486, (int) 541, (String) "Total Automation and controls GmbH"),
-  M_DOVIT((int) 487, (int) 542, (String) "dovit"),
+  M_DOVIT((int) 487, (int) 542, (String) "DOVIT"),
   M_INSTALIGHTING_GMBH((int) 488, (int) 543, (String) "Instalighting GmbH"),
   M_UNI_TEC((int) 489, (int) 544, (String) "UNI-TEC"),
   M_CASATUNES((int) 490, (int) 545, (String) "CasaTunes"),

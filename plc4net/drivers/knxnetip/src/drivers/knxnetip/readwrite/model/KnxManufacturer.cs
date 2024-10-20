@@ -4109,7 +4109,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                     return "Total Automation and controls GmbH";
                 }
                 case KnxManufacturer.M_DOVIT: { /* '487' */
-                    return "dovit";
+                    return "DOVIT";
                 }
                 case KnxManufacturer.M_INSTALIGHTING_GMBH: { /* '488' */
                     return "Instalighting GmbH";

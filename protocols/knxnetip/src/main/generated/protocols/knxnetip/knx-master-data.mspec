@@ -1236,7 +1236,7 @@
     ['484' M_STILIGER ['539', '"Stiliger"']]
     ['485' M_BERGHOF_AUTOMATION_GMBH ['540', '"Berghof Automation GmbH"']]
     ['486' M_TOTAL_AUTOMATION_AND_CONTROLS_GMBH ['541', '"Total Automation and controls GmbH"']]
-    ['487' M_DOVIT ['542', '"dovit"']]
+    ['487' M_DOVIT ['542', '"DOVIT"']]
     ['488' M_INSTALIGHTING_GMBH ['543', '"Instalighting GmbH"']]
     ['489' M_UNI_TEC ['544', '"UNI-TEC"']]
     ['490' M_CASATUNES ['545', '"CasaTunes"']]

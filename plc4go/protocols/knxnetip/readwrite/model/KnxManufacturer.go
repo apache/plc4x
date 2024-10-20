@@ -5957,7 +5957,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 487:
 		{ /* '487' */
-			return "dovit"
+			return "DOVIT"
 		}
 	case 488:
 		{ /* '488' */
