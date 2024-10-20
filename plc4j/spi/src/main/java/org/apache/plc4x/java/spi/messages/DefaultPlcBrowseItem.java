@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.spi.messages;
 
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
-import org.apache.plc4x.java.api.messages.PlcBrowseItemArrayInfo;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -28,7 +28,6 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -43,8 +42,8 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     private final boolean subscribable;
     private final boolean publishable;
 
+    private final List<ArrayInfo> arrayInformation;
     private final Map<String, PlcBrowseItem> children;
-
     private final Map<String, PlcValue> options;
 
     public DefaultPlcBrowseItem(PlcTag tag,
@@ -53,6 +52,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
                                 boolean writable,
                                 boolean subscribable,
                                 boolean publishable,
+                                List<ArrayInfo> arrayInformation,
                                 Map<String, PlcBrowseItem> children,
                                 Map<String, PlcValue> options) {
         this.tag = tag;
@@ -61,6 +61,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
         this.writable = writable;
         this.subscribable = subscribable;
         this.publishable = publishable;
+        this.arrayInformation = arrayInformation;
         this.children = children;
         this.options = options;
     }
@@ -72,6 +73,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
         this.writable = original.isWritable();
         this.subscribable = original.isSubscribable();
         this.publishable = original.isPublishable();
+        this.arrayInformation = original.getArrayInformation();
         this.options = original.getOptions();
         this.children = children;
     }
@@ -112,8 +114,8 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     }
 
     @Override
-    public List<PlcBrowseItemArrayInfo> getArrayInformation() {
-        return Collections.emptyList();
+    public List<ArrayInfo> getArrayInformation() {
+        return arrayInformation;
     }
 
     @Override

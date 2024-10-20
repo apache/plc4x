@@ -364,7 +364,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                                     slot, subslot, ProfinetTag.Direction.INPUT,
                                     i, dataTypeInformation.getPlcValueType(), dataTypeInformation.getNumElements()),
                                     name, false, true, true, false,
-                                    Collections.emptyMap(), Collections.emptyMap()));
+                                    Collections.emptyList(), Collections.emptyMap(), Collections.emptyMap()));
                             }
                         }
                     }
@@ -382,7 +382,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                                     slot, subslot, ProfinetTag.Direction.OUTPUT,
                                     i, dataTypeInformation.getPlcValueType(), dataTypeInformation.getNumElements()),
                                     name, false, true, true, false,
-                                    Collections.emptyMap(), Collections.emptyMap()));
+                                    Collections.emptyList(), Collections.emptyMap(), Collections.emptyMap()));
                             }
                         }
                     }

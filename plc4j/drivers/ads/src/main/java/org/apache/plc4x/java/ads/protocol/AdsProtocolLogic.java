@@ -523,15 +523,15 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 options.put("size-in-bytes", new PlcUDINT(symbol.getSize()));
 
                 List<ArrayInfo> arrayInfo = new ArrayList<>(dataType.getArrayInfo().size());
-                List<PlcBrowseItemArrayInfo> itemArrayInfo = new ArrayList<>(dataType.getArrayInfo().size());
+                List<ArrayInfo> itemArrayInfo = new ArrayList<>(dataType.getArrayInfo().size());
                 for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : dataType.getArrayInfo()) {
                     arrayInfo.add(new DefaultArrayInfo(
                         (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
-                    itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
-                        adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
+                    itemArrayInfo.add(new DefaultArrayInfo(
+                        (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
                 }
-                DefaultPlcBrowseItemList item = new DefaultPlcBrowseItemList(new SymbolicAdsTag(symbol.getName(), plcValueType, arrayInfo), symbol.getName(),
-                    true, !symbol.getFlagReadOnly(), true, false, childMap, options, itemArrayInfo);
+                DefaultPlcBrowseItem item = new DefaultPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plcValueType, arrayInfo), symbol.getName(),
+                    true, !symbol.getFlagReadOnly(), true, false, itemArrayInfo, childMap, options);
 
                 // Check if this item should be added to the result
                 if (interceptor.intercept(item)) {
@@ -585,17 +585,17 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             options.put("size-in-bytes", new PlcUDINT(childDataType.getSize()));
 
             List<ArrayInfo> arrayInfo = new ArrayList<>(childDataType.getArrayInfo().size());
-            List<PlcBrowseItemArrayInfo> itemArrayInfo = new ArrayList<>(childDataType.getArrayInfo().size());
+            List<ArrayInfo> itemArrayInfo = new ArrayList<>(childDataType.getArrayInfo().size());
             for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : childDataType.getArrayInfo()) {
                 arrayInfo.add(new DefaultArrayInfo(
                     (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
-                itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
-                    adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
+                itemArrayInfo.add(new DefaultArrayInfo(
+                    (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
             }
             // Add the type itself.
-            values.add(new DefaultPlcBrowseItemList(new SymbolicAdsTag(
+            values.add(new DefaultPlcBrowseItem(new SymbolicAdsTag(
                 basePath + "." + child.getPropertyName(), plc4xPlcValueType, arrayInfo), child.getPropertyName(),
-                true, parentWritable, true, false, childMap, options, itemArrayInfo));
+                true, parentWritable, true, false, itemArrayInfo, childMap, options));
         }
         return values;
     }

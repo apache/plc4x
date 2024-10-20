@@ -274,10 +274,10 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
                                 e.printStackTrace();
                             }*/
                             matchingQueryNames.forEach(queryName -> responseItems.get(queryName).add(
-                                new DefaultPlcBrowseItemList(
+                                new DefaultPlcBrowseItem(
                                     new CtrlXTag(curNode, PlcValueType.BOOL, Collections.emptyList()),
                                     curNode, true, true, true, false,
-                                    Collections.emptyMap(), Collections.emptyMap(), Collections.emptyList())));
+                                    Collections.emptyList(), Collections.emptyMap(), Collections.emptyMap())));
                         }
                     }
                     // If this node has children, then it's branch, and we need to add its children to the queue.

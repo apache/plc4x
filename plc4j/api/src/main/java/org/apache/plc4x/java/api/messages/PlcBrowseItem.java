@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 
@@ -61,7 +62,7 @@ public interface PlcBrowseItem {
     /**
      * @return list of elements providing information about the array dimensions of this item.
      */
-    List<PlcBrowseItemArrayInfo> getArrayInformation();
+    List<ArrayInfo> getArrayInformation();
 
     /**
      * @return returns any children this item might have
