@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataOccupancyLowerLimit) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (occupancyLowerLimit)
 	lengthInBits += m.OccupancyLowerLimit.GetLengthInBits(ctx)

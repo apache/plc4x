@@ -174,8 +174,8 @@ func (b *_ComplexNumberType) CreateComplexNumberTypeBuilder() ComplexNumberTypeB
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ComplexNumberType) GetIdentifier() string {
-	return "12173"
+func (m *_ComplexNumberType) GetExtensionId() int32 {
+	return int32(12173)
 }
 
 ///////////////////////
@@ -221,7 +221,7 @@ func (m *_ComplexNumberType) GetTypeName() string {
 }
 
 func (m *_ComplexNumberType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (real)
 	lengthInBits += 32
@@ -236,7 +236,7 @@ func (m *_ComplexNumberType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ComplexNumberType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__complexNumberType ComplexNumberType, err error) {
+func (m *_ComplexNumberType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__complexNumberType ComplexNumberType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

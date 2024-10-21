@@ -38,58 +38,44 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ActivateSessionRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "467";
+  public Integer getExtensionId() {
+    return (int) 467;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final ExtensionObjectDefinition clientSignature;
-  protected final int noOfClientSoftwareCertificates;
-  protected final List<ExtensionObjectDefinition> clientSoftwareCertificates;
-  protected final int noOfLocaleIds;
+  protected final RequestHeader requestHeader;
+  protected final SignatureData clientSignature;
+  protected final List<SignedSoftwareCertificate> clientSoftwareCertificates;
   protected final List<PascalString> localeIds;
   protected final ExtensionObject userIdentityToken;
-  protected final ExtensionObjectDefinition userTokenSignature;
+  protected final SignatureData userTokenSignature;
 
   public ActivateSessionRequest(
-      ExtensionObjectDefinition requestHeader,
-      ExtensionObjectDefinition clientSignature,
-      int noOfClientSoftwareCertificates,
-      List<ExtensionObjectDefinition> clientSoftwareCertificates,
-      int noOfLocaleIds,
+      RequestHeader requestHeader,
+      SignatureData clientSignature,
+      List<SignedSoftwareCertificate> clientSoftwareCertificates,
       List<PascalString> localeIds,
       ExtensionObject userIdentityToken,
-      ExtensionObjectDefinition userTokenSignature) {
+      SignatureData userTokenSignature) {
     super();
     this.requestHeader = requestHeader;
     this.clientSignature = clientSignature;
-    this.noOfClientSoftwareCertificates = noOfClientSoftwareCertificates;
     this.clientSoftwareCertificates = clientSoftwareCertificates;
-    this.noOfLocaleIds = noOfLocaleIds;
     this.localeIds = localeIds;
     this.userIdentityToken = userIdentityToken;
     this.userTokenSignature = userTokenSignature;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public ExtensionObjectDefinition getClientSignature() {
+  public SignatureData getClientSignature() {
     return clientSignature;
   }
 
-  public int getNoOfClientSoftwareCertificates() {
-    return noOfClientSoftwareCertificates;
-  }
-
-  public List<ExtensionObjectDefinition> getClientSoftwareCertificates() {
+  public List<SignedSoftwareCertificate> getClientSoftwareCertificates() {
     return clientSoftwareCertificates;
-  }
-
-  public int getNoOfLocaleIds() {
-    return noOfLocaleIds;
   }
 
   public List<PascalString> getLocaleIds() {
@@ -100,7 +86,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     return userIdentityToken;
   }
 
-  public ExtensionObjectDefinition getUserTokenSignature() {
+  public SignatureData getUserTokenSignature() {
     return userTokenSignature;
   }
 
@@ -117,8 +103,14 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     // Simple Field (clientSignature)
     writeSimpleField("clientSignature", clientSignature, writeComplex(writeBuffer));
 
-    // Simple Field (noOfClientSoftwareCertificates)
-    writeSimpleField(
+    // Implicit Field (noOfClientSoftwareCertificates) (Used for parsing, but its value is not
+    // stored as it's implicitly given by the objects content)
+    int noOfClientSoftwareCertificates =
+        (int)
+            ((((getClientSoftwareCertificates()) == (null))
+                ? -(1)
+                : COUNT(getClientSoftwareCertificates())));
+    writeImplicitField(
         "noOfClientSoftwareCertificates",
         noOfClientSoftwareCertificates,
         writeSignedInt(writeBuffer, 32));
@@ -127,8 +119,10 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     writeComplexTypeArrayField(
         "clientSoftwareCertificates", clientSoftwareCertificates, writeBuffer);
 
-    // Simple Field (noOfLocaleIds)
-    writeSimpleField("noOfLocaleIds", noOfLocaleIds, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfLocaleIds) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfLocaleIds = (int) ((((getLocaleIds()) == (null)) ? -(1) : COUNT(getLocaleIds())));
+    writeImplicitField("noOfLocaleIds", noOfLocaleIds, writeSignedInt(writeBuffer, 32));
 
     // Array Field (localeIds)
     writeComplexTypeArrayField("localeIds", localeIds, writeBuffer);
@@ -159,19 +153,19 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     // Simple field (clientSignature)
     lengthInBits += clientSignature.getLengthInBits();
 
-    // Simple field (noOfClientSoftwareCertificates)
+    // Implicit Field (noOfClientSoftwareCertificates)
     lengthInBits += 32;
 
     // Array field
     if (clientSoftwareCertificates != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : clientSoftwareCertificates) {
+      for (SignedSoftwareCertificate element : clientSoftwareCertificates) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= clientSoftwareCertificates.size());
         lengthInBits += element.getLengthInBits();
       }
     }
 
-    // Simple field (noOfLocaleIds)
+    // Implicit Field (noOfLocaleIds)
     lengthInBits += 32;
 
     // Array field
@@ -193,37 +187,41 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ActivateSessionRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    ExtensionObjectDefinition clientSignature =
+    SignatureData clientSignature =
         readSimpleField(
             "clientSignature",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("458")),
+                () ->
+                    (SignatureData) ExtensionObjectDefinition.staticParse(readBuffer, (int) (458)),
                 readBuffer));
 
     int noOfClientSoftwareCertificates =
-        readSimpleField("noOfClientSoftwareCertificates", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfClientSoftwareCertificates", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> clientSoftwareCertificates =
+    List<SignedSoftwareCertificate> clientSoftwareCertificates =
         readCountArrayField(
             "clientSoftwareCertificates",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("346")),
+                () ->
+                    (SignedSoftwareCertificate)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (346)),
                 readBuffer),
             noOfClientSoftwareCertificates);
 
-    int noOfLocaleIds = readSimpleField("noOfLocaleIds", readSignedInt(readBuffer, 32));
+    int noOfLocaleIds = readImplicitField("noOfLocaleIds", readSignedInt(readBuffer, 32));
 
     List<PascalString> localeIds =
         readCountArrayField(
@@ -237,11 +235,12 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
             readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
-    ExtensionObjectDefinition userTokenSignature =
+    SignatureData userTokenSignature =
         readSimpleField(
             "userTokenSignature",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("458")),
+                () ->
+                    (SignatureData) ExtensionObjectDefinition.staticParse(readBuffer, (int) (458)),
                 readBuffer));
 
     readBuffer.closeContext("ActivateSessionRequest");
@@ -249,9 +248,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     return new ActivateSessionRequestBuilderImpl(
         requestHeader,
         clientSignature,
-        noOfClientSoftwareCertificates,
         clientSoftwareCertificates,
-        noOfLocaleIds,
         localeIds,
         userIdentityToken,
         userTokenSignature);
@@ -259,29 +256,23 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
 
   public static class ActivateSessionRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final ExtensionObjectDefinition clientSignature;
-    private final int noOfClientSoftwareCertificates;
-    private final List<ExtensionObjectDefinition> clientSoftwareCertificates;
-    private final int noOfLocaleIds;
+    private final RequestHeader requestHeader;
+    private final SignatureData clientSignature;
+    private final List<SignedSoftwareCertificate> clientSoftwareCertificates;
     private final List<PascalString> localeIds;
     private final ExtensionObject userIdentityToken;
-    private final ExtensionObjectDefinition userTokenSignature;
+    private final SignatureData userTokenSignature;
 
     public ActivateSessionRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        ExtensionObjectDefinition clientSignature,
-        int noOfClientSoftwareCertificates,
-        List<ExtensionObjectDefinition> clientSoftwareCertificates,
-        int noOfLocaleIds,
+        RequestHeader requestHeader,
+        SignatureData clientSignature,
+        List<SignedSoftwareCertificate> clientSoftwareCertificates,
         List<PascalString> localeIds,
         ExtensionObject userIdentityToken,
-        ExtensionObjectDefinition userTokenSignature) {
+        SignatureData userTokenSignature) {
       this.requestHeader = requestHeader;
       this.clientSignature = clientSignature;
-      this.noOfClientSoftwareCertificates = noOfClientSoftwareCertificates;
       this.clientSoftwareCertificates = clientSoftwareCertificates;
-      this.noOfLocaleIds = noOfLocaleIds;
       this.localeIds = localeIds;
       this.userIdentityToken = userIdentityToken;
       this.userTokenSignature = userTokenSignature;
@@ -292,9 +283,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
           new ActivateSessionRequest(
               requestHeader,
               clientSignature,
-              noOfClientSoftwareCertificates,
               clientSoftwareCertificates,
-              noOfLocaleIds,
               localeIds,
               userIdentityToken,
               userTokenSignature);
@@ -313,9 +302,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     ActivateSessionRequest that = (ActivateSessionRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
         && (getClientSignature() == that.getClientSignature())
-        && (getNoOfClientSoftwareCertificates() == that.getNoOfClientSoftwareCertificates())
         && (getClientSoftwareCertificates() == that.getClientSoftwareCertificates())
-        && (getNoOfLocaleIds() == that.getNoOfLocaleIds())
         && (getLocaleIds() == that.getLocaleIds())
         && (getUserIdentityToken() == that.getUserIdentityToken())
         && (getUserTokenSignature() == that.getUserTokenSignature())
@@ -329,9 +316,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
         super.hashCode(),
         getRequestHeader(),
         getClientSignature(),
-        getNoOfClientSoftwareCertificates(),
         getClientSoftwareCertificates(),
-        getNoOfLocaleIds(),
         getLocaleIds(),
         getUserIdentityToken(),
         getUserTokenSignature());

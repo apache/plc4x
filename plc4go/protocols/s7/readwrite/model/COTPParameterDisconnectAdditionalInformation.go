@@ -206,7 +206,7 @@ func (m *_COTPParameterDisconnectAdditionalInformation) GetTypeName() string {
 }
 
 func (m *_COTPParameterDisconnectAdditionalInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
+	lengthInBits := uint16(m.COTPParameterContract.(*_COTPParameter).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {

@@ -226,7 +226,7 @@ func (m *_BACnetShedLevelAmount) GetTypeName() string {
 }
 
 func (m *_BACnetShedLevelAmount) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetShedLevelContract.(*_BACnetShedLevel).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetShedLevelContract.(*_BACnetShedLevel).GetLengthInBits(ctx))
 
 	// Simple field (amount)
 	lengthInBits += m.Amount.GetLengthInBits(ctx)

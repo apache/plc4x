@@ -254,7 +254,7 @@ func (m *_ComObjectTable) GetTypeName() string {
 	return "ComObjectTable"
 }
 
-func (m *_ComObjectTable) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ComObjectTable) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

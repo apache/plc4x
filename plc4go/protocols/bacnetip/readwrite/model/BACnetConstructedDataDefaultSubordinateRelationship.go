@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetTypeName() str
 }
 
 func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (defaultSubordinateRelationship)
 	lengthInBits += m.DefaultSubordinateRelationship.GetLengthInBits(ctx)

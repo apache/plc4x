@@ -83,10 +83,6 @@ func (m OpcuaXmlParserHelper) Parse(typeName string, xmlString string, parserArg
 		return AudioDataTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "SecurityHeader":
 		return SecurityHeaderParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "UserIdentityTokenDefinition":
-		// TODO: find a way to parse the sub types
-		var identifier string
-		return UserIdentityTokenDefinitionParseWithBuffer[UserIdentityTokenDefinition](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), identifier)
 	case "ContinuationPoint":
 		return ContinuationPointParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Variant":
@@ -107,8 +103,6 @@ func (m OpcuaXmlParserHelper) Parse(typeName string, xmlString string, parserArg
 		return StructureParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "OpcuaConstants":
 		return OpcuaConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ExtensionHeader":
-		return ExtensionHeaderParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "UtcTime":
 		return UtcTimeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "MessagePDU":
@@ -124,7 +118,7 @@ func (m OpcuaXmlParserHelper) Parse(typeName string, xmlString string, parserArg
 		return RsaEncryptedSecretParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ExtensionObject":
 		includeEncodingMask := parserArguments[0] == "true"
-		return ExtensionObjectParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), includeEncodingMask)
+		return ExtensionObjectParseWithBuffer[ExtensionObject](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), includeEncodingMask)
 	case "LocalizedText":
 		return LocalizedTextParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "IntegerId":
@@ -154,9 +148,12 @@ func (m OpcuaXmlParserHelper) Parse(typeName string, xmlString string, parserArg
 	case "ImageBMP":
 		return ImageBMPParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ExtensionObjectDefinition":
-		// TODO: find a way to parse the sub types
-		var identifier string
-		return ExtensionObjectDefinitionParseWithBuffer[ExtensionObjectDefinition](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), identifier)
+		parsedInt0, err := strconv.ParseInt(parserArguments[0], 10, 32)
+		if err != nil {
+			return nil, err
+		}
+		extensionId := int32(parsedInt0)
+		return ExtensionObjectDefinitionParseWithBuffer[ExtensionObjectDefinition](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), extensionId)
 	case "ExpandedNodeId":
 		return ExpandedNodeIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "OpcuaProtocolLimits":

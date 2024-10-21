@@ -175,7 +175,7 @@ func (m *_TriggerControlDataTriggerMin) GetTypeName() string {
 }
 
 func (m *_TriggerControlDataTriggerMin) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TriggerControlDataContract.(*_TriggerControlData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.TriggerControlDataContract.(*_TriggerControlData).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

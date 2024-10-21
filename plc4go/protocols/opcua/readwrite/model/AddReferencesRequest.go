@@ -41,11 +41,9 @@ type AddReferencesRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
-	// GetNoOfReferencesToAdd returns NoOfReferencesToAdd (property field)
-	GetNoOfReferencesToAdd() int32
+	GetRequestHeader() RequestHeader
 	// GetReferencesToAdd returns ReferencesToAdd (property field)
-	GetReferencesToAdd() []ExtensionObjectDefinition
+	GetReferencesToAdd() []AddReferencesItem
 	// IsAddReferencesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAddReferencesRequest()
 	// CreateBuilder creates a AddReferencesRequestBuilder
@@ -55,23 +53,21 @@ type AddReferencesRequest interface {
 // _AddReferencesRequest is the data-structure of this message
 type _AddReferencesRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader       ExtensionObjectDefinition
-	NoOfReferencesToAdd int32
-	ReferencesToAdd     []ExtensionObjectDefinition
+	RequestHeader   RequestHeader
+	ReferencesToAdd []AddReferencesItem
 }
 
 var _ AddReferencesRequest = (*_AddReferencesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AddReferencesRequest)(nil)
 
 // NewAddReferencesRequest factory function for _AddReferencesRequest
-func NewAddReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) *_AddReferencesRequest {
+func NewAddReferencesRequest(requestHeader RequestHeader, referencesToAdd []AddReferencesItem) *_AddReferencesRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for AddReferencesRequest must not be nil")
+		panic("requestHeader of type RequestHeader for AddReferencesRequest must not be nil")
 	}
 	_result := &_AddReferencesRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
-		NoOfReferencesToAdd:               noOfReferencesToAdd,
 		ReferencesToAdd:                   referencesToAdd,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -87,15 +83,13 @@ func NewAddReferencesRequest(requestHeader ExtensionObjectDefinition, noOfRefere
 type AddReferencesRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) AddReferencesRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, referencesToAdd []AddReferencesItem) AddReferencesRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) AddReferencesRequestBuilder
+	WithRequestHeader(RequestHeader) AddReferencesRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddReferencesRequestBuilder
-	// WithNoOfReferencesToAdd adds NoOfReferencesToAdd (property field)
-	WithNoOfReferencesToAdd(int32) AddReferencesRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) AddReferencesRequestBuilder
 	// WithReferencesToAdd adds ReferencesToAdd (property field)
-	WithReferencesToAdd(...ExtensionObjectDefinition) AddReferencesRequestBuilder
+	WithReferencesToAdd(...AddReferencesItem) AddReferencesRequestBuilder
 	// Build builds the AddReferencesRequest or returns an error if something is wrong
 	Build() (AddReferencesRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,34 +115,29 @@ func (b *_AddReferencesRequestBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_AddReferencesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) AddReferencesRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfReferencesToAdd(noOfReferencesToAdd).WithReferencesToAdd(referencesToAdd...)
+func (b *_AddReferencesRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, referencesToAdd []AddReferencesItem) AddReferencesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithReferencesToAdd(referencesToAdd...)
 }
 
-func (b *_AddReferencesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) AddReferencesRequestBuilder {
+func (b *_AddReferencesRequestBuilder) WithRequestHeader(requestHeader RequestHeader) AddReferencesRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_AddReferencesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddReferencesRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_AddReferencesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) AddReferencesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_AddReferencesRequestBuilder) WithNoOfReferencesToAdd(noOfReferencesToAdd int32) AddReferencesRequestBuilder {
-	b.NoOfReferencesToAdd = noOfReferencesToAdd
-	return b
-}
-
-func (b *_AddReferencesRequestBuilder) WithReferencesToAdd(referencesToAdd ...ExtensionObjectDefinition) AddReferencesRequestBuilder {
+func (b *_AddReferencesRequestBuilder) WithReferencesToAdd(referencesToAdd ...AddReferencesItem) AddReferencesRequestBuilder {
 	b.ReferencesToAdd = referencesToAdd
 	return b
 }
@@ -209,8 +198,8 @@ func (b *_AddReferencesRequest) CreateAddReferencesRequestBuilder() AddReference
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_AddReferencesRequest) GetIdentifier() string {
-	return "494"
+func (m *_AddReferencesRequest) GetExtensionId() int32 {
+	return int32(494)
 }
 
 ///////////////////////
@@ -227,15 +216,11 @@ func (m *_AddReferencesRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_AddReferencesRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_AddReferencesRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
-func (m *_AddReferencesRequest) GetNoOfReferencesToAdd() int32 {
-	return m.NoOfReferencesToAdd
-}
-
-func (m *_AddReferencesRequest) GetReferencesToAdd() []ExtensionObjectDefinition {
+func (m *_AddReferencesRequest) GetReferencesToAdd() []AddReferencesItem {
 	return m.ReferencesToAdd
 }
 
@@ -260,12 +245,12 @@ func (m *_AddReferencesRequest) GetTypeName() string {
 }
 
 func (m *_AddReferencesRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfReferencesToAdd)
+	// Implicit Field (noOfReferencesToAdd)
 	lengthInBits += 32
 
 	// Array field
@@ -285,7 +270,7 @@ func (m *_AddReferencesRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_AddReferencesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__addReferencesRequest AddReferencesRequest, err error) {
+func (m *_AddReferencesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__addReferencesRequest AddReferencesRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -296,19 +281,19 @@ func (m *_AddReferencesRequest) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfReferencesToAdd, err := ReadSimpleField(ctx, "noOfReferencesToAdd", ReadSignedInt(readBuffer, uint8(32)))
+	noOfReferencesToAdd, err := ReadImplicitField[int32](ctx, "noOfReferencesToAdd", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReferencesToAdd' field"))
 	}
-	m.NoOfReferencesToAdd = noOfReferencesToAdd
+	_ = noOfReferencesToAdd
 
-	referencesToAdd, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "referencesToAdd", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("381")), readBuffer), uint64(noOfReferencesToAdd))
+	referencesToAdd, err := ReadCountArrayField[AddReferencesItem](ctx, "referencesToAdd", ReadComplex[AddReferencesItem](ExtensionObjectDefinitionParseWithBufferProducer[AddReferencesItem]((int32)(int32(381))), readBuffer), uint64(noOfReferencesToAdd))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referencesToAdd' field"))
 	}
@@ -339,11 +324,11 @@ func (m *_AddReferencesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for AddReferencesRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfReferencesToAdd", m.GetNoOfReferencesToAdd(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfReferencesToAdd := int32(utils.InlineIf(bool((m.GetReferencesToAdd()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetReferencesToAdd()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfReferencesToAdd", noOfReferencesToAdd, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfReferencesToAdd' field")
 		}
 
@@ -371,9 +356,8 @@ func (m *_AddReferencesRequest) deepCopy() *_AddReferencesRequest {
 	}
 	_AddReferencesRequestCopy := &_AddReferencesRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfReferencesToAdd,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ReferencesToAdd),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopySlice[AddReferencesItem, AddReferencesItem](m.ReferencesToAdd),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AddReferencesRequestCopy

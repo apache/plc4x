@@ -305,7 +305,7 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) GetTypeName() string {
 }
 
 func (m *_ModbusPDUReadDeviceIdentificationResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).GetLengthInBits(ctx))
 
 	// Const Field (meiType)
 	lengthInBits += 8

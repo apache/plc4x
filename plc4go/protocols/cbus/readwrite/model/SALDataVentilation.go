@@ -230,7 +230,7 @@ func (m *_SALDataVentilation) GetTypeName() string {
 }
 
 func (m *_SALDataVentilation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).GetLengthInBits(ctx))
 
 	// Simple field (ventilationData)
 	lengthInBits += m.VentilationData.GetLengthInBits(ctx)

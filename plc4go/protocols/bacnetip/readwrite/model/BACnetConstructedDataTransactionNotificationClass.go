@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataTransactionNotificationClass) GetTypeName() strin
 }
 
 func (m *_BACnetConstructedDataTransactionNotificationClass) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (transactionNotificationClass)
 	lengthInBits += m.TransactionNotificationClass.GetLengthInBits(ctx)

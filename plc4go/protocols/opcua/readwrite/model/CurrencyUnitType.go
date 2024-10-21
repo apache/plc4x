@@ -244,8 +244,8 @@ func (b *_CurrencyUnitType) CreateCurrencyUnitTypeBuilder() CurrencyUnitTypeBuil
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CurrencyUnitType) GetIdentifier() string {
-	return "23500"
+func (m *_CurrencyUnitType) GetExtensionId() int32 {
+	return int32(23500)
 }
 
 ///////////////////////
@@ -299,7 +299,7 @@ func (m *_CurrencyUnitType) GetTypeName() string {
 }
 
 func (m *_CurrencyUnitType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (numericCode)
 	lengthInBits += 16
@@ -320,7 +320,7 @@ func (m *_CurrencyUnitType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CurrencyUnitType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__currencyUnitType CurrencyUnitType, err error) {
+func (m *_CurrencyUnitType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__currencyUnitType CurrencyUnitType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

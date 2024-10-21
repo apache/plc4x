@@ -235,7 +235,7 @@ func (m *_CommandSpecificDataItem) GetTypeName() string {
 	return "CommandSpecificDataItem"
 }
 
-func (m *_CommandSpecificDataItem) getLengthInBits(ctx context.Context) uint16 {
+func (m *_CommandSpecificDataItem) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (itemType)
 	lengthInBits += 16

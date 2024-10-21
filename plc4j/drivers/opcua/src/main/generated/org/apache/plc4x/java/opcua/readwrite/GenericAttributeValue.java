@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class GenericAttributeValue extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "17608";
+  public Integer getExtensionId() {
+    return (int) 17608;
   }
 
   // Properties.
@@ -97,7 +97,7 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("GenericAttributeValue");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

@@ -334,7 +334,7 @@ func (m *_RequestCommand) GetTypeName() string {
 }
 
 func (m *_RequestCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.RequestContract.(*_Request).getLengthInBits(ctx))
+	lengthInBits := uint16(m.RequestContract.(*_Request).GetLengthInBits(ctx))
 
 	// Const Field (initiator)
 	lengthInBits += 8

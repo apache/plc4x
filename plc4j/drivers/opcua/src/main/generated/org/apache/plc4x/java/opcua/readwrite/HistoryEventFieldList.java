@@ -38,22 +38,16 @@ import org.apache.plc4x.java.spi.generation.*;
 public class HistoryEventFieldList extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "922";
+  public Integer getExtensionId() {
+    return (int) 922;
   }
 
   // Properties.
-  protected final int noOfEventFields;
   protected final List<Variant> eventFields;
 
-  public HistoryEventFieldList(int noOfEventFields, List<Variant> eventFields) {
+  public HistoryEventFieldList(List<Variant> eventFields) {
     super();
-    this.noOfEventFields = noOfEventFields;
     this.eventFields = eventFields;
-  }
-
-  public int getNoOfEventFields() {
-    return noOfEventFields;
   }
 
   public List<Variant> getEventFields() {
@@ -67,8 +61,10 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("HistoryEventFieldList");
 
-    // Simple Field (noOfEventFields)
-    writeSimpleField("noOfEventFields", noOfEventFields, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfEventFields) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfEventFields = (int) ((((getEventFields()) == (null)) ? -(1) : COUNT(getEventFields())));
+    writeImplicitField("noOfEventFields", noOfEventFields, writeSignedInt(writeBuffer, 32));
 
     // Array Field (eventFields)
     writeComplexTypeArrayField("eventFields", eventFields, writeBuffer);
@@ -87,7 +83,7 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
     HistoryEventFieldList _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (noOfEventFields)
+    // Implicit Field (noOfEventFields)
     lengthInBits += 32;
 
     // Array field
@@ -103,12 +99,12 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("HistoryEventFieldList");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int noOfEventFields = readSimpleField("noOfEventFields", readSignedInt(readBuffer, 32));
+    int noOfEventFields = readImplicitField("noOfEventFields", readSignedInt(readBuffer, 32));
 
     List<Variant> eventFields =
         readCountArrayField(
@@ -118,22 +114,19 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("HistoryEventFieldList");
     // Create the instance
-    return new HistoryEventFieldListBuilderImpl(noOfEventFields, eventFields);
+    return new HistoryEventFieldListBuilderImpl(eventFields);
   }
 
   public static class HistoryEventFieldListBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final int noOfEventFields;
     private final List<Variant> eventFields;
 
-    public HistoryEventFieldListBuilderImpl(int noOfEventFields, List<Variant> eventFields) {
-      this.noOfEventFields = noOfEventFields;
+    public HistoryEventFieldListBuilderImpl(List<Variant> eventFields) {
       this.eventFields = eventFields;
     }
 
     public HistoryEventFieldList build() {
-      HistoryEventFieldList historyEventFieldList =
-          new HistoryEventFieldList(noOfEventFields, eventFields);
+      HistoryEventFieldList historyEventFieldList = new HistoryEventFieldList(eventFields);
       return historyEventFieldList;
     }
   }
@@ -147,15 +140,12 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
       return false;
     }
     HistoryEventFieldList that = (HistoryEventFieldList) o;
-    return (getNoOfEventFields() == that.getNoOfEventFields())
-        && (getEventFields() == that.getEventFields())
-        && super.equals(that)
-        && true;
+    return (getEventFields() == that.getEventFields()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getNoOfEventFields(), getEventFields());
+    return Objects.hash(super.hashCode(), getEventFields());
   }
 
   @Override

@@ -230,7 +230,7 @@ func (m *_SALDataHeating) GetTypeName() string {
 }
 
 func (m *_SALDataHeating) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).GetLengthInBits(ctx))
 
 	// Simple field (heatingData)
 	lengthInBits += m.HeatingData.GetLengthInBits(ctx)

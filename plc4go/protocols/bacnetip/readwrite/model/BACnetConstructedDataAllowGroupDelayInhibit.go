@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (allowGroupDelayInhibit)
 	lengthInBits += m.AllowGroupDelayInhibit.GetLengthInBits(ctx)

@@ -183,7 +183,7 @@ func (m *_ErrorResponse) GetTypeName() string {
 }
 
 func (m *_ErrorResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

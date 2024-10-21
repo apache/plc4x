@@ -42,16 +42,10 @@ type CallMethodResult interface {
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
-	// GetNoOfInputArgumentResults returns NoOfInputArgumentResults (property field)
-	GetNoOfInputArgumentResults() int32
 	// GetInputArgumentResults returns InputArgumentResults (property field)
 	GetInputArgumentResults() []StatusCode
-	// GetNoOfInputArgumentDiagnosticInfos returns NoOfInputArgumentDiagnosticInfos (property field)
-	GetNoOfInputArgumentDiagnosticInfos() int32
 	// GetInputArgumentDiagnosticInfos returns InputArgumentDiagnosticInfos (property field)
 	GetInputArgumentDiagnosticInfos() []DiagnosticInfo
-	// GetNoOfOutputArguments returns NoOfOutputArguments (property field)
-	GetNoOfOutputArguments() int32
 	// GetOutputArguments returns OutputArguments (property field)
 	GetOutputArguments() []Variant
 	// IsCallMethodResult is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -63,31 +57,25 @@ type CallMethodResult interface {
 // _CallMethodResult is the data-structure of this message
 type _CallMethodResult struct {
 	ExtensionObjectDefinitionContract
-	StatusCode                       StatusCode
-	NoOfInputArgumentResults         int32
-	InputArgumentResults             []StatusCode
-	NoOfInputArgumentDiagnosticInfos int32
-	InputArgumentDiagnosticInfos     []DiagnosticInfo
-	NoOfOutputArguments              int32
-	OutputArguments                  []Variant
+	StatusCode                   StatusCode
+	InputArgumentResults         []StatusCode
+	InputArgumentDiagnosticInfos []DiagnosticInfo
+	OutputArguments              []Variant
 }
 
 var _ CallMethodResult = (*_CallMethodResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CallMethodResult)(nil)
 
 // NewCallMethodResult factory function for _CallMethodResult
-func NewCallMethodResult(statusCode StatusCode, noOfInputArgumentResults int32, inputArgumentResults []StatusCode, noOfInputArgumentDiagnosticInfos int32, inputArgumentDiagnosticInfos []DiagnosticInfo, noOfOutputArguments int32, outputArguments []Variant) *_CallMethodResult {
+func NewCallMethodResult(statusCode StatusCode, inputArgumentResults []StatusCode, inputArgumentDiagnosticInfos []DiagnosticInfo, outputArguments []Variant) *_CallMethodResult {
 	if statusCode == nil {
 		panic("statusCode of type StatusCode for CallMethodResult must not be nil")
 	}
 	_result := &_CallMethodResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,
-		NoOfInputArgumentResults:          noOfInputArgumentResults,
 		InputArgumentResults:              inputArgumentResults,
-		NoOfInputArgumentDiagnosticInfos:  noOfInputArgumentDiagnosticInfos,
 		InputArgumentDiagnosticInfos:      inputArgumentDiagnosticInfos,
-		NoOfOutputArguments:               noOfOutputArguments,
 		OutputArguments:                   outputArguments,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -103,21 +91,15 @@ func NewCallMethodResult(statusCode StatusCode, noOfInputArgumentResults int32, 
 type CallMethodResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(statusCode StatusCode, noOfInputArgumentResults int32, inputArgumentResults []StatusCode, noOfInputArgumentDiagnosticInfos int32, inputArgumentDiagnosticInfos []DiagnosticInfo, noOfOutputArguments int32, outputArguments []Variant) CallMethodResultBuilder
+	WithMandatoryFields(statusCode StatusCode, inputArgumentResults []StatusCode, inputArgumentDiagnosticInfos []DiagnosticInfo, outputArguments []Variant) CallMethodResultBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithStatusCode(StatusCode) CallMethodResultBuilder
 	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
 	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) CallMethodResultBuilder
-	// WithNoOfInputArgumentResults adds NoOfInputArgumentResults (property field)
-	WithNoOfInputArgumentResults(int32) CallMethodResultBuilder
 	// WithInputArgumentResults adds InputArgumentResults (property field)
 	WithInputArgumentResults(...StatusCode) CallMethodResultBuilder
-	// WithNoOfInputArgumentDiagnosticInfos adds NoOfInputArgumentDiagnosticInfos (property field)
-	WithNoOfInputArgumentDiagnosticInfos(int32) CallMethodResultBuilder
 	// WithInputArgumentDiagnosticInfos adds InputArgumentDiagnosticInfos (property field)
 	WithInputArgumentDiagnosticInfos(...DiagnosticInfo) CallMethodResultBuilder
-	// WithNoOfOutputArguments adds NoOfOutputArguments (property field)
-	WithNoOfOutputArguments(int32) CallMethodResultBuilder
 	// WithOutputArguments adds OutputArguments (property field)
 	WithOutputArguments(...Variant) CallMethodResultBuilder
 	// Build builds the CallMethodResult or returns an error if something is wrong
@@ -145,8 +127,8 @@ func (b *_CallMethodResultBuilder) setParent(contract ExtensionObjectDefinitionC
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CallMethodResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfInputArgumentResults int32, inputArgumentResults []StatusCode, noOfInputArgumentDiagnosticInfos int32, inputArgumentDiagnosticInfos []DiagnosticInfo, noOfOutputArguments int32, outputArguments []Variant) CallMethodResultBuilder {
-	return b.WithStatusCode(statusCode).WithNoOfInputArgumentResults(noOfInputArgumentResults).WithInputArgumentResults(inputArgumentResults...).WithNoOfInputArgumentDiagnosticInfos(noOfInputArgumentDiagnosticInfos).WithInputArgumentDiagnosticInfos(inputArgumentDiagnosticInfos...).WithNoOfOutputArguments(noOfOutputArguments).WithOutputArguments(outputArguments...)
+func (b *_CallMethodResultBuilder) WithMandatoryFields(statusCode StatusCode, inputArgumentResults []StatusCode, inputArgumentDiagnosticInfos []DiagnosticInfo, outputArguments []Variant) CallMethodResultBuilder {
+	return b.WithStatusCode(statusCode).WithInputArgumentResults(inputArgumentResults...).WithInputArgumentDiagnosticInfos(inputArgumentDiagnosticInfos...).WithOutputArguments(outputArguments...)
 }
 
 func (b *_CallMethodResultBuilder) WithStatusCode(statusCode StatusCode) CallMethodResultBuilder {
@@ -167,28 +149,13 @@ func (b *_CallMethodResultBuilder) WithStatusCodeBuilder(builderSupplier func(St
 	return b
 }
 
-func (b *_CallMethodResultBuilder) WithNoOfInputArgumentResults(noOfInputArgumentResults int32) CallMethodResultBuilder {
-	b.NoOfInputArgumentResults = noOfInputArgumentResults
-	return b
-}
-
 func (b *_CallMethodResultBuilder) WithInputArgumentResults(inputArgumentResults ...StatusCode) CallMethodResultBuilder {
 	b.InputArgumentResults = inputArgumentResults
 	return b
 }
 
-func (b *_CallMethodResultBuilder) WithNoOfInputArgumentDiagnosticInfos(noOfInputArgumentDiagnosticInfos int32) CallMethodResultBuilder {
-	b.NoOfInputArgumentDiagnosticInfos = noOfInputArgumentDiagnosticInfos
-	return b
-}
-
 func (b *_CallMethodResultBuilder) WithInputArgumentDiagnosticInfos(inputArgumentDiagnosticInfos ...DiagnosticInfo) CallMethodResultBuilder {
 	b.InputArgumentDiagnosticInfos = inputArgumentDiagnosticInfos
-	return b
-}
-
-func (b *_CallMethodResultBuilder) WithNoOfOutputArguments(noOfOutputArguments int32) CallMethodResultBuilder {
-	b.NoOfOutputArguments = noOfOutputArguments
 	return b
 }
 
@@ -253,8 +220,8 @@ func (b *_CallMethodResult) CreateCallMethodResultBuilder() CallMethodResultBuil
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CallMethodResult) GetIdentifier() string {
-	return "709"
+func (m *_CallMethodResult) GetExtensionId() int32 {
+	return int32(709)
 }
 
 ///////////////////////
@@ -275,24 +242,12 @@ func (m *_CallMethodResult) GetStatusCode() StatusCode {
 	return m.StatusCode
 }
 
-func (m *_CallMethodResult) GetNoOfInputArgumentResults() int32 {
-	return m.NoOfInputArgumentResults
-}
-
 func (m *_CallMethodResult) GetInputArgumentResults() []StatusCode {
 	return m.InputArgumentResults
 }
 
-func (m *_CallMethodResult) GetNoOfInputArgumentDiagnosticInfos() int32 {
-	return m.NoOfInputArgumentDiagnosticInfos
-}
-
 func (m *_CallMethodResult) GetInputArgumentDiagnosticInfos() []DiagnosticInfo {
 	return m.InputArgumentDiagnosticInfos
-}
-
-func (m *_CallMethodResult) GetNoOfOutputArguments() int32 {
-	return m.NoOfOutputArguments
 }
 
 func (m *_CallMethodResult) GetOutputArguments() []Variant {
@@ -320,12 +275,12 @@ func (m *_CallMethodResult) GetTypeName() string {
 }
 
 func (m *_CallMethodResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
 
-	// Simple field (noOfInputArgumentResults)
+	// Implicit Field (noOfInputArgumentResults)
 	lengthInBits += 32
 
 	// Array field
@@ -338,7 +293,7 @@ func (m *_CallMethodResult) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfInputArgumentDiagnosticInfos)
+	// Implicit Field (noOfInputArgumentDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -351,7 +306,7 @@ func (m *_CallMethodResult) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfOutputArguments)
+	// Implicit Field (noOfOutputArguments)
 	lengthInBits += 32
 
 	// Array field
@@ -371,7 +326,7 @@ func (m *_CallMethodResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CallMethodResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__callMethodResult CallMethodResult, err error) {
+func (m *_CallMethodResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__callMethodResult CallMethodResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -388,11 +343,11 @@ func (m *_CallMethodResult) parse(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	m.StatusCode = statusCode
 
-	noOfInputArgumentResults, err := ReadSimpleField(ctx, "noOfInputArgumentResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfInputArgumentResults, err := ReadImplicitField[int32](ctx, "noOfInputArgumentResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfInputArgumentResults' field"))
 	}
-	m.NoOfInputArgumentResults = noOfInputArgumentResults
+	_ = noOfInputArgumentResults
 
 	inputArgumentResults, err := ReadCountArrayField[StatusCode](ctx, "inputArgumentResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfInputArgumentResults))
 	if err != nil {
@@ -400,11 +355,11 @@ func (m *_CallMethodResult) parse(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	m.InputArgumentResults = inputArgumentResults
 
-	noOfInputArgumentDiagnosticInfos, err := ReadSimpleField(ctx, "noOfInputArgumentDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfInputArgumentDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfInputArgumentDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfInputArgumentDiagnosticInfos' field"))
 	}
-	m.NoOfInputArgumentDiagnosticInfos = noOfInputArgumentDiagnosticInfos
+	_ = noOfInputArgumentDiagnosticInfos
 
 	inputArgumentDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "inputArgumentDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfInputArgumentDiagnosticInfos))
 	if err != nil {
@@ -412,11 +367,11 @@ func (m *_CallMethodResult) parse(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	m.InputArgumentDiagnosticInfos = inputArgumentDiagnosticInfos
 
-	noOfOutputArguments, err := ReadSimpleField(ctx, "noOfOutputArguments", ReadSignedInt(readBuffer, uint8(32)))
+	noOfOutputArguments, err := ReadImplicitField[int32](ctx, "noOfOutputArguments", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfOutputArguments' field"))
 	}
-	m.NoOfOutputArguments = noOfOutputArguments
+	_ = noOfOutputArguments
 
 	outputArguments, err := ReadCountArrayField[Variant](ctx, "outputArguments", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfOutputArguments))
 	if err != nil {
@@ -452,24 +407,24 @@ func (m *_CallMethodResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfInputArgumentResults", m.GetNoOfInputArgumentResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfInputArgumentResults := int32(utils.InlineIf(bool((m.GetInputArgumentResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetInputArgumentResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfInputArgumentResults", noOfInputArgumentResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfInputArgumentResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "inputArgumentResults", m.GetInputArgumentResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'inputArgumentResults' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfInputArgumentDiagnosticInfos", m.GetNoOfInputArgumentDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfInputArgumentDiagnosticInfos := int32(utils.InlineIf(bool((m.GetInputArgumentDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetInputArgumentDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfInputArgumentDiagnosticInfos", noOfInputArgumentDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfInputArgumentDiagnosticInfos' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "inputArgumentDiagnosticInfos", m.GetInputArgumentDiagnosticInfos(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'inputArgumentDiagnosticInfos' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfOutputArguments", m.GetNoOfOutputArguments(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfOutputArguments := int32(utils.InlineIf(bool((m.GetOutputArguments()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetOutputArguments()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfOutputArguments", noOfOutputArguments, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfOutputArguments' field")
 		}
 
@@ -498,11 +453,8 @@ func (m *_CallMethodResult) deepCopy() *_CallMethodResult {
 	_CallMethodResultCopy := &_CallMethodResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
-		m.NoOfInputArgumentResults,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.InputArgumentResults),
-		m.NoOfInputArgumentDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.InputArgumentDiagnosticInfos),
-		m.NoOfOutputArguments,
 		utils.DeepCopySlice[Variant, Variant](m.OutputArguments),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

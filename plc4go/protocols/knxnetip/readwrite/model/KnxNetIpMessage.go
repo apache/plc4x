@@ -548,7 +548,7 @@ func (m *_KnxNetIpMessage) GetTypeName() string {
 	return "KnxNetIpMessage"
 }
 
-func (m *_KnxNetIpMessage) getLengthInBits(ctx context.Context) uint16 {
+func (m *_KnxNetIpMessage) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)

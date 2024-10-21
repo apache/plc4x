@@ -221,7 +221,7 @@ func (m *_AnsiExtendedSymbolSegment) GetTypeName() string {
 }
 
 func (m *_AnsiExtendedSymbolSegment) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DataSegmentTypeContract.(*_DataSegmentType).getLengthInBits(ctx))
+	lengthInBits := uint16(m.DataSegmentTypeContract.(*_DataSegmentType).GetLengthInBits(ctx))
 
 	// Implicit Field (dataSize)
 	lengthInBits += 8

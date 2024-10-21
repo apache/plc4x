@@ -222,8 +222,8 @@ func (b *_SemanticChangeStructureDataType) CreateSemanticChangeStructureDataType
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SemanticChangeStructureDataType) GetIdentifier() string {
-	return "899"
+func (m *_SemanticChangeStructureDataType) GetExtensionId() int32 {
+	return int32(899)
 }
 
 ///////////////////////
@@ -269,7 +269,7 @@ func (m *_SemanticChangeStructureDataType) GetTypeName() string {
 }
 
 func (m *_SemanticChangeStructureDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (affected)
 	lengthInBits += m.Affected.GetLengthInBits(ctx)
@@ -284,7 +284,7 @@ func (m *_SemanticChangeStructureDataType) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SemanticChangeStructureDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__semanticChangeStructureDataType SemanticChangeStructureDataType, err error) {
+func (m *_SemanticChangeStructureDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__semanticChangeStructureDataType SemanticChangeStructureDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

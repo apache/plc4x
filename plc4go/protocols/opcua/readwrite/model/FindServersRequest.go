@@ -41,15 +41,11 @@ type FindServersRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetEndpointUrl returns EndpointUrl (property field)
 	GetEndpointUrl() PascalString
-	// GetNoOfLocaleIds returns NoOfLocaleIds (property field)
-	GetNoOfLocaleIds() int32
 	// GetLocaleIds returns LocaleIds (property field)
 	GetLocaleIds() []PascalString
-	// GetNoOfServerUris returns NoOfServerUris (property field)
-	GetNoOfServerUris() int32
 	// GetServerUris returns ServerUris (property field)
 	GetServerUris() []PascalString
 	// IsFindServersRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -61,21 +57,19 @@ type FindServersRequest interface {
 // _FindServersRequest is the data-structure of this message
 type _FindServersRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader  ExtensionObjectDefinition
-	EndpointUrl    PascalString
-	NoOfLocaleIds  int32
-	LocaleIds      []PascalString
-	NoOfServerUris int32
-	ServerUris     []PascalString
+	RequestHeader RequestHeader
+	EndpointUrl   PascalString
+	LocaleIds     []PascalString
+	ServerUris    []PascalString
 }
 
 var _ FindServersRequest = (*_FindServersRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FindServersRequest)(nil)
 
 // NewFindServersRequest factory function for _FindServersRequest
-func NewFindServersRequest(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfServerUris int32, serverUris []PascalString) *_FindServersRequest {
+func NewFindServersRequest(requestHeader RequestHeader, endpointUrl PascalString, localeIds []PascalString, serverUris []PascalString) *_FindServersRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for FindServersRequest must not be nil")
+		panic("requestHeader of type RequestHeader for FindServersRequest must not be nil")
 	}
 	if endpointUrl == nil {
 		panic("endpointUrl of type PascalString for FindServersRequest must not be nil")
@@ -84,9 +78,7 @@ func NewFindServersRequest(requestHeader ExtensionObjectDefinition, endpointUrl 
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
 		EndpointUrl:                       endpointUrl,
-		NoOfLocaleIds:                     noOfLocaleIds,
 		LocaleIds:                         localeIds,
-		NoOfServerUris:                    noOfServerUris,
 		ServerUris:                        serverUris,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -102,21 +94,17 @@ func NewFindServersRequest(requestHeader ExtensionObjectDefinition, endpointUrl 
 type FindServersRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfServerUris int32, serverUris []PascalString) FindServersRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, endpointUrl PascalString, localeIds []PascalString, serverUris []PascalString) FindServersRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) FindServersRequestBuilder
+	WithRequestHeader(RequestHeader) FindServersRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) FindServersRequestBuilder
 	// WithEndpointUrl adds EndpointUrl (property field)
 	WithEndpointUrl(PascalString) FindServersRequestBuilder
 	// WithEndpointUrlBuilder adds EndpointUrl (property field) which is build by the builder
 	WithEndpointUrlBuilder(func(PascalStringBuilder) PascalStringBuilder) FindServersRequestBuilder
-	// WithNoOfLocaleIds adds NoOfLocaleIds (property field)
-	WithNoOfLocaleIds(int32) FindServersRequestBuilder
 	// WithLocaleIds adds LocaleIds (property field)
 	WithLocaleIds(...PascalString) FindServersRequestBuilder
-	// WithNoOfServerUris adds NoOfServerUris (property field)
-	WithNoOfServerUris(int32) FindServersRequestBuilder
 	// WithServerUris adds ServerUris (property field)
 	WithServerUris(...PascalString) FindServersRequestBuilder
 	// Build builds the FindServersRequest or returns an error if something is wrong
@@ -144,24 +132,24 @@ func (b *_FindServersRequestBuilder) setParent(contract ExtensionObjectDefinitio
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_FindServersRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfServerUris int32, serverUris []PascalString) FindServersRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithEndpointUrl(endpointUrl).WithNoOfLocaleIds(noOfLocaleIds).WithLocaleIds(localeIds...).WithNoOfServerUris(noOfServerUris).WithServerUris(serverUris...)
+func (b *_FindServersRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, endpointUrl PascalString, localeIds []PascalString, serverUris []PascalString) FindServersRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithEndpointUrl(endpointUrl).WithLocaleIds(localeIds...).WithServerUris(serverUris...)
 }
 
-func (b *_FindServersRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) FindServersRequestBuilder {
+func (b *_FindServersRequestBuilder) WithRequestHeader(requestHeader RequestHeader) FindServersRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_FindServersRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_FindServersRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) FindServersRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -184,18 +172,8 @@ func (b *_FindServersRequestBuilder) WithEndpointUrlBuilder(builderSupplier func
 	return b
 }
 
-func (b *_FindServersRequestBuilder) WithNoOfLocaleIds(noOfLocaleIds int32) FindServersRequestBuilder {
-	b.NoOfLocaleIds = noOfLocaleIds
-	return b
-}
-
 func (b *_FindServersRequestBuilder) WithLocaleIds(localeIds ...PascalString) FindServersRequestBuilder {
 	b.LocaleIds = localeIds
-	return b
-}
-
-func (b *_FindServersRequestBuilder) WithNoOfServerUris(noOfServerUris int32) FindServersRequestBuilder {
-	b.NoOfServerUris = noOfServerUris
 	return b
 }
 
@@ -266,8 +244,8 @@ func (b *_FindServersRequest) CreateFindServersRequestBuilder() FindServersReque
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_FindServersRequest) GetIdentifier() string {
-	return "422"
+func (m *_FindServersRequest) GetExtensionId() int32 {
+	return int32(422)
 }
 
 ///////////////////////
@@ -284,7 +262,7 @@ func (m *_FindServersRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_FindServersRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_FindServersRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
@@ -292,16 +270,8 @@ func (m *_FindServersRequest) GetEndpointUrl() PascalString {
 	return m.EndpointUrl
 }
 
-func (m *_FindServersRequest) GetNoOfLocaleIds() int32 {
-	return m.NoOfLocaleIds
-}
-
 func (m *_FindServersRequest) GetLocaleIds() []PascalString {
 	return m.LocaleIds
-}
-
-func (m *_FindServersRequest) GetNoOfServerUris() int32 {
-	return m.NoOfServerUris
 }
 
 func (m *_FindServersRequest) GetServerUris() []PascalString {
@@ -329,7 +299,7 @@ func (m *_FindServersRequest) GetTypeName() string {
 }
 
 func (m *_FindServersRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -337,7 +307,7 @@ func (m *_FindServersRequest) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (endpointUrl)
 	lengthInBits += m.EndpointUrl.GetLengthInBits(ctx)
 
-	// Simple field (noOfLocaleIds)
+	// Implicit Field (noOfLocaleIds)
 	lengthInBits += 32
 
 	// Array field
@@ -350,7 +320,7 @@ func (m *_FindServersRequest) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfServerUris)
+	// Implicit Field (noOfServerUris)
 	lengthInBits += 32
 
 	// Array field
@@ -370,7 +340,7 @@ func (m *_FindServersRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_FindServersRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__findServersRequest FindServersRequest, err error) {
+func (m *_FindServersRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__findServersRequest FindServersRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -381,7 +351,7 @@ func (m *_FindServersRequest) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -393,11 +363,11 @@ func (m *_FindServersRequest) parse(ctx context.Context, readBuffer utils.ReadBu
 	}
 	m.EndpointUrl = endpointUrl
 
-	noOfLocaleIds, err := ReadSimpleField(ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLocaleIds, err := ReadImplicitField[int32](ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLocaleIds' field"))
 	}
-	m.NoOfLocaleIds = noOfLocaleIds
+	_ = noOfLocaleIds
 
 	localeIds, err := ReadCountArrayField[PascalString](ctx, "localeIds", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfLocaleIds))
 	if err != nil {
@@ -405,11 +375,11 @@ func (m *_FindServersRequest) parse(ctx context.Context, readBuffer utils.ReadBu
 	}
 	m.LocaleIds = localeIds
 
-	noOfServerUris, err := ReadSimpleField(ctx, "noOfServerUris", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServerUris, err := ReadImplicitField[int32](ctx, "noOfServerUris", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerUris' field"))
 	}
-	m.NoOfServerUris = noOfServerUris
+	_ = noOfServerUris
 
 	serverUris, err := ReadCountArrayField[PascalString](ctx, "serverUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerUris))
 	if err != nil {
@@ -442,23 +412,23 @@ func (m *_FindServersRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for FindServersRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
 		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfLocaleIds", m.GetNoOfLocaleIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfLocaleIds := int32(utils.InlineIf(bool((m.GetLocaleIds()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLocaleIds()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfLocaleIds", noOfLocaleIds, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLocaleIds' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "localeIds", m.GetLocaleIds(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'localeIds' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfServerUris", m.GetNoOfServerUris(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfServerUris := int32(utils.InlineIf(bool((m.GetServerUris()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServerUris()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfServerUris", noOfServerUris, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServerUris' field")
 		}
 
@@ -486,11 +456,9 @@ func (m *_FindServersRequest) deepCopy() *_FindServersRequest {
 	}
 	_FindServersRequestCopy := &_FindServersRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.EndpointUrl.DeepCopy().(PascalString),
-		m.NoOfLocaleIds,
 		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
-		m.NoOfServerUris,
 		utils.DeepCopySlice[PascalString, PascalString](m.ServerUris),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

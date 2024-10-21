@@ -40,12 +40,8 @@ type ContentFilterResult interface {
 	utils.Serializable
 	utils.Copyable
 	ExtensionObjectDefinition
-	// GetNoOfElementResults returns NoOfElementResults (property field)
-	GetNoOfElementResults() int32
 	// GetElementResults returns ElementResults (property field)
-	GetElementResults() []ExtensionObjectDefinition
-	// GetNoOfElementDiagnosticInfos returns NoOfElementDiagnosticInfos (property field)
-	GetNoOfElementDiagnosticInfos() int32
+	GetElementResults() []ContentFilterElementResult
 	// GetElementDiagnosticInfos returns ElementDiagnosticInfos (property field)
 	GetElementDiagnosticInfos() []DiagnosticInfo
 	// IsContentFilterResult is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -57,22 +53,18 @@ type ContentFilterResult interface {
 // _ContentFilterResult is the data-structure of this message
 type _ContentFilterResult struct {
 	ExtensionObjectDefinitionContract
-	NoOfElementResults         int32
-	ElementResults             []ExtensionObjectDefinition
-	NoOfElementDiagnosticInfos int32
-	ElementDiagnosticInfos     []DiagnosticInfo
+	ElementResults         []ContentFilterElementResult
+	ElementDiagnosticInfos []DiagnosticInfo
 }
 
 var _ ContentFilterResult = (*_ContentFilterResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ContentFilterResult)(nil)
 
 // NewContentFilterResult factory function for _ContentFilterResult
-func NewContentFilterResult(noOfElementResults int32, elementResults []ExtensionObjectDefinition, noOfElementDiagnosticInfos int32, elementDiagnosticInfos []DiagnosticInfo) *_ContentFilterResult {
+func NewContentFilterResult(elementResults []ContentFilterElementResult, elementDiagnosticInfos []DiagnosticInfo) *_ContentFilterResult {
 	_result := &_ContentFilterResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfElementResults:                noOfElementResults,
 		ElementResults:                    elementResults,
-		NoOfElementDiagnosticInfos:        noOfElementDiagnosticInfos,
 		ElementDiagnosticInfos:            elementDiagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -88,13 +80,9 @@ func NewContentFilterResult(noOfElementResults int32, elementResults []Extension
 type ContentFilterResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfElementResults int32, elementResults []ExtensionObjectDefinition, noOfElementDiagnosticInfos int32, elementDiagnosticInfos []DiagnosticInfo) ContentFilterResultBuilder
-	// WithNoOfElementResults adds NoOfElementResults (property field)
-	WithNoOfElementResults(int32) ContentFilterResultBuilder
+	WithMandatoryFields(elementResults []ContentFilterElementResult, elementDiagnosticInfos []DiagnosticInfo) ContentFilterResultBuilder
 	// WithElementResults adds ElementResults (property field)
-	WithElementResults(...ExtensionObjectDefinition) ContentFilterResultBuilder
-	// WithNoOfElementDiagnosticInfos adds NoOfElementDiagnosticInfos (property field)
-	WithNoOfElementDiagnosticInfos(int32) ContentFilterResultBuilder
+	WithElementResults(...ContentFilterElementResult) ContentFilterResultBuilder
 	// WithElementDiagnosticInfos adds ElementDiagnosticInfos (property field)
 	WithElementDiagnosticInfos(...DiagnosticInfo) ContentFilterResultBuilder
 	// Build builds the ContentFilterResult or returns an error if something is wrong
@@ -122,22 +110,12 @@ func (b *_ContentFilterResultBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ContentFilterResultBuilder) WithMandatoryFields(noOfElementResults int32, elementResults []ExtensionObjectDefinition, noOfElementDiagnosticInfos int32, elementDiagnosticInfos []DiagnosticInfo) ContentFilterResultBuilder {
-	return b.WithNoOfElementResults(noOfElementResults).WithElementResults(elementResults...).WithNoOfElementDiagnosticInfos(noOfElementDiagnosticInfos).WithElementDiagnosticInfos(elementDiagnosticInfos...)
+func (b *_ContentFilterResultBuilder) WithMandatoryFields(elementResults []ContentFilterElementResult, elementDiagnosticInfos []DiagnosticInfo) ContentFilterResultBuilder {
+	return b.WithElementResults(elementResults...).WithElementDiagnosticInfos(elementDiagnosticInfos...)
 }
 
-func (b *_ContentFilterResultBuilder) WithNoOfElementResults(noOfElementResults int32) ContentFilterResultBuilder {
-	b.NoOfElementResults = noOfElementResults
-	return b
-}
-
-func (b *_ContentFilterResultBuilder) WithElementResults(elementResults ...ExtensionObjectDefinition) ContentFilterResultBuilder {
+func (b *_ContentFilterResultBuilder) WithElementResults(elementResults ...ContentFilterElementResult) ContentFilterResultBuilder {
 	b.ElementResults = elementResults
-	return b
-}
-
-func (b *_ContentFilterResultBuilder) WithNoOfElementDiagnosticInfos(noOfElementDiagnosticInfos int32) ContentFilterResultBuilder {
-	b.NoOfElementDiagnosticInfos = noOfElementDiagnosticInfos
 	return b
 }
 
@@ -196,8 +174,8 @@ func (b *_ContentFilterResult) CreateContentFilterResultBuilder() ContentFilterR
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ContentFilterResult) GetIdentifier() string {
-	return "609"
+func (m *_ContentFilterResult) GetExtensionId() int32 {
+	return int32(609)
 }
 
 ///////////////////////
@@ -214,16 +192,8 @@ func (m *_ContentFilterResult) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_ContentFilterResult) GetNoOfElementResults() int32 {
-	return m.NoOfElementResults
-}
-
-func (m *_ContentFilterResult) GetElementResults() []ExtensionObjectDefinition {
+func (m *_ContentFilterResult) GetElementResults() []ContentFilterElementResult {
 	return m.ElementResults
-}
-
-func (m *_ContentFilterResult) GetNoOfElementDiagnosticInfos() int32 {
-	return m.NoOfElementDiagnosticInfos
 }
 
 func (m *_ContentFilterResult) GetElementDiagnosticInfos() []DiagnosticInfo {
@@ -251,9 +221,9 @@ func (m *_ContentFilterResult) GetTypeName() string {
 }
 
 func (m *_ContentFilterResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
-	// Simple field (noOfElementResults)
+	// Implicit Field (noOfElementResults)
 	lengthInBits += 32
 
 	// Array field
@@ -266,7 +236,7 @@ func (m *_ContentFilterResult) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfElementDiagnosticInfos)
+	// Implicit Field (noOfElementDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -286,7 +256,7 @@ func (m *_ContentFilterResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ContentFilterResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__contentFilterResult ContentFilterResult, err error) {
+func (m *_ContentFilterResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__contentFilterResult ContentFilterResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -297,23 +267,23 @@ func (m *_ContentFilterResult) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfElementResults, err := ReadSimpleField(ctx, "noOfElementResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfElementResults, err := ReadImplicitField[int32](ctx, "noOfElementResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfElementResults' field"))
 	}
-	m.NoOfElementResults = noOfElementResults
+	_ = noOfElementResults
 
-	elementResults, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "elementResults", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("606")), readBuffer), uint64(noOfElementResults))
+	elementResults, err := ReadCountArrayField[ContentFilterElementResult](ctx, "elementResults", ReadComplex[ContentFilterElementResult](ExtensionObjectDefinitionParseWithBufferProducer[ContentFilterElementResult]((int32)(int32(606))), readBuffer), uint64(noOfElementResults))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elementResults' field"))
 	}
 	m.ElementResults = elementResults
 
-	noOfElementDiagnosticInfos, err := ReadSimpleField(ctx, "noOfElementDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfElementDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfElementDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfElementDiagnosticInfos' field"))
 	}
-	m.NoOfElementDiagnosticInfos = noOfElementDiagnosticInfos
+	_ = noOfElementDiagnosticInfos
 
 	elementDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "elementDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfElementDiagnosticInfos))
 	if err != nil {
@@ -345,16 +315,16 @@ func (m *_ContentFilterResult) SerializeWithWriteBuffer(ctx context.Context, wri
 		if pushErr := writeBuffer.PushContext("ContentFilterResult"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ContentFilterResult")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfElementResults", m.GetNoOfElementResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfElementResults := int32(utils.InlineIf(bool((m.GetElementResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetElementResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfElementResults", noOfElementResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfElementResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "elementResults", m.GetElementResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'elementResults' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfElementDiagnosticInfos", m.GetNoOfElementDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfElementDiagnosticInfos := int32(utils.InlineIf(bool((m.GetElementDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetElementDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfElementDiagnosticInfos", noOfElementDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfElementDiagnosticInfos' field")
 		}
 
@@ -382,9 +352,7 @@ func (m *_ContentFilterResult) deepCopy() *_ContentFilterResult {
 	}
 	_ContentFilterResultCopy := &_ContentFilterResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfElementResults,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ElementResults),
-		m.NoOfElementDiagnosticInfos,
+		utils.DeepCopySlice[ContentFilterElementResult, ContentFilterElementResult](m.ElementResults),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.ElementDiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

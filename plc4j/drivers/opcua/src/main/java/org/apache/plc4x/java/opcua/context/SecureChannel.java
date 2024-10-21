@@ -82,6 +82,8 @@ public class SecureChannel {
     private static final PascalString PRODUCT_URI = new PascalString("urn:apache:plc4x:client");
     private static final PascalString APPLICATION_TEXT = new PascalString("OPCUA client for the Apache PLC4X:PLC4J project");
     public static final ScheduledExecutorService KEEP_ALIVE_EXECUTOR = newSingleThreadScheduledExecutor(runnable -> new Thread(runnable, "plc4x-opcua-keep-alive"));
+    public static final ExtensionObjectEncodingMask BINARY_ENCODING_MASK = new ExtensionObjectEncodingMask(
+        false, false, true);
     private final String sessionName = "UaSession:" + APPLICATION_TEXT.getStringValue() + ":" + RandomStringUtils.random(20, true, true);
     private final PascalByteString localCertificateString;
     private final PascalByteString remoteCertificateThumbprint;
@@ -183,10 +185,9 @@ public class SecureChannel {
         }
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(false, false,
-            new NodeIdFourByte((short) 0, Integer.parseInt(openSecureChannelRequest.getIdentifier())),
+            new NodeIdFourByte((short) 0, openSecureChannelRequest.getExtensionId()),
             null, null
         );
-        ExtensionObject extObject = new ExtensionObject(expandedNodeId, null, openSecureChannelRequest);
 
         Function<CallContext, OpcuaOpenRequest> openRequest = context -> {
             LOGGER.debug("Submitting OpenSecureChannel with id of {}", context.getRequestId());
@@ -197,7 +198,7 @@ public class SecureChannel {
             ),
             new ExtensiblePayload(
                 new SequenceHeader(context.getNextSequenceNumber(), context.getRequestId()),
-                extObject
+                new RootExtensionObject(expandedNodeId, openSecureChannelRequest)
             ));
         };
 
@@ -209,7 +210,7 @@ public class SecureChannel {
             .thenApply(this::onOpenResponse)
             .thenApply(openSecureChannelResponse -> {
                 ChannelSecurityToken securityToken = (ChannelSecurityToken) openSecureChannelResponse.getSecurityToken();
-                LOGGER.debug("Opened secure response id: {}, channel id:{}, token:{} lifetime:{}", openSecureChannelResponse.getIdentifier(),
+                LOGGER.debug("Opened secure response id: {}, channel id:{}, token:{} lifetime:{}", openSecureChannelResponse.getExtensionId(),
                     securityToken.getChannelId(), securityToken.getTokenId(), securityToken.getRevisedLifetime());
 
                 // store server and client nonce
@@ -232,7 +233,6 @@ public class SecureChannel {
             APPLICATION_TEXT
         );
 
-        int noOfDiscoveryUrls = -1;
         List<PascalString> discoveryUrls = new ArrayList<>(0);
 
         ApplicationDescription clientDescription = new ApplicationDescription(
@@ -242,7 +242,6 @@ public class SecureChannel {
             ApplicationType.applicationTypeClient,
             NULL_STRING,
             NULL_STRING,
-            noOfDiscoveryUrls,
             discoveryUrls
         );
 
@@ -347,9 +346,7 @@ public class SecureChannel {
         ActivateSessionRequest activateSessionRequest = new ActivateSessionRequest(
             requestHeader,
             clientSignature,
-            0,
             null,
-            0,
             null,
             userIdentityToken,
             clientSignature
@@ -382,7 +379,7 @@ public class SecureChannel {
         CloseSecureChannelRequest closeSecureChannelRequest = new CloseSecureChannelRequest(requestHeader);
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(false, false,
-            new NodeIdFourByte((short) 0, Integer.parseInt(closeSecureChannelRequest.getIdentifier())),
+            new NodeIdFourByte((short) 0, closeSecureChannelRequest.getExtensionId()),
             null, null
         );
 
@@ -390,7 +387,7 @@ public class SecureChannel {
             new OpcuaCloseRequest(FINAL, ctx.getSecurityHeader(),
             new ExtensiblePayload(
                 new SequenceHeader(ctx.getNextSequenceNumber(), ctx.getRequestId()),
-                new ExtensionObject(expandedNodeId, null, closeSecureChannelRequest)
+                new RootExtensionObject(expandedNodeId, closeSecureChannelRequest)
             )
         );
 
@@ -416,20 +413,15 @@ public class SecureChannel {
         GetEndpointsRequest endpointsRequest = new GetEndpointsRequest(
             requestHeader,
             this.endpoint,
-            0,
             null,
-            0,
             null
         );
 
         return conversation.submit(endpointsRequest, GetEndpointsResponse.class).thenApply(response -> {
-            List<ExtensionObjectDefinition> endpoints = response.getEndpoints();
             Entry<EndpointDescription, UserTokenPolicy> entry = selectEndpoint(response.getEndpoints(), this.endpoints, this.configuration.getSecurityPolicy(), this.configuration.getMessageSecurity());
 
             if (entry == null) {
-                Set<String> endpointUris = endpoints.stream()
-                    .filter(EndpointDescription.class::isInstance)
-                    .map(EndpointDescription.class::cast)
+                Set<String> endpointUris = response.getEndpoints().stream()
                     .map(EndpointDescription::getEndpointUrl)
                     .map(PascalString::getStringValue)
                     .collect(Collectors.toSet());
@@ -504,18 +496,13 @@ public class SecureChannel {
      * @param messageSecurity Message security needed by client.
      * @return Endpoint matching given.
      */
-    private Entry<EndpointDescription, UserTokenPolicy> selectEndpoint(List<ExtensionObjectDefinition> extensionObjects, Collection<String> contactPoints,
+    private Entry<EndpointDescription, UserTokenPolicy> selectEndpoint(List<EndpointDescription> extensionObjects, Collection<String> contactPoints,
         SecurityPolicy securityPolicy, MessageSecurity messageSecurity) throws PlcRuntimeException {
         // Get a list of the endpoints which match ours.
         MessageSecurityMode effectiveMessageSecurity = SecurityPolicy.NONE == securityPolicy ? MessageSecurityMode.messageSecurityModeNone : messageSecurity.getMode();
         List<Entry<EndpointDescription, UserTokenPolicy>> serverEndpoints = new ArrayList<>();
 
-        for (ExtensionObjectDefinition extensionObject : extensionObjects) {
-            if (!(extensionObject instanceof EndpointDescription)) {
-                continue;
-            }
-
-            EndpointDescription endpointDescription = (EndpointDescription) extensionObject;
+        for (EndpointDescription endpointDescription : extensionObjects) {
             if (isMatchingEndpoint(endpointDescription, contactPoints)) {
                 boolean policyMatch = endpointDescription.getSecurityPolicyUri().getStringValue().equals(securityPolicy.getSecurityPolicyUri());
                 boolean msgSecurityMatch = endpointDescription.getSecurityMode().equals(effectiveMessageSecurity);
@@ -524,12 +511,9 @@ public class SecureChannel {
                     continue;
                 }
 
-                for (ExtensionObjectDefinition objectDefinition : endpointDescription.getUserIdentityTokens()) {
-                    if (objectDefinition instanceof UserTokenPolicy) {
-                        UserTokenPolicy userTokenPolicy = (UserTokenPolicy) objectDefinition;
-                        if (isUserTokenPolicyCompatible(userTokenPolicy, this.username)) {
-                            serverEndpoints.add(entry(endpointDescription, userTokenPolicy));
-                        }
+                for (UserTokenPolicy userTokenPolicy : endpointDescription.getUserIdentityTokens()) {
+                    if (isUserTokenPolicyCompatible(userTokenPolicy, this.username)) {
+                        serverEndpoints.add(entry(endpointDescription, userTokenPolicy));
                     }
                 }
             }
@@ -586,20 +570,17 @@ public class SecureChannel {
         switch (tokenType) {
             case userTokenTypeAnonymous:
                 //If we aren't using authentication tell the server we would like to log in anonymously
-                AnonymousIdentityToken anonymousIdentityToken = new AnonymousIdentityToken();
+                AnonymousIdentityToken anonymousIdentityToken = new AnonymousIdentityToken(new PascalString(securityPolicy));
 
                 extExpandedNodeId = new ExpandedNodeId(
                     false,           //Namespace Uri Specified
                     false,            //Server Index Specified
-                    new NodeIdFourByte((short) 0, OpcuaNodeIdServicesObject.AnonymousIdentityToken_Encoding_DefaultBinary.getValue()),
+                    new NodeIdFourByte((short) 0, anonymousIdentityToken.getExtensionId()),
                     null,
                     null
                 );
 
-                return new ExtensionObject(
-                    extExpandedNodeId,
-                    new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken));
+                return new BinaryExtensionObjectWithMask(extExpandedNodeId, BINARY_ENCODING_MASK, anonymousIdentityToken);
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
                 byte[] remoteNonce = conversation.getRemoteNonce();
@@ -615,6 +596,7 @@ public class SecureChannel {
 
                 byte[] encryptedPassword = conversation.encryptPassword(encodeablePassword);
                 UserNameIdentityToken userNameIdentityToken = new UserNameIdentityToken(
+                    new PascalString(securityPolicy),
                     new PascalString(this.username),
                     new PascalByteString(encryptedPassword.length, encryptedPassword),
                     new PascalString(PASSWORD_ENCRYPTION_ALGORITHM)
@@ -622,14 +604,11 @@ public class SecureChannel {
 
                 extExpandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
                     false,            //Server Index Specified
-                    new NodeIdFourByte((short) 0, OpcuaNodeIdServicesObject.UserNameIdentityToken_Encoding_DefaultBinary.getValue()),
+                    new NodeIdFourByte((short) 0, userNameIdentityToken.getExtensionId()),
                     null,
                     null);
 
-                return new ExtensionObject(
-                    extExpandedNodeId,
-                    new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken));
+                return new BinaryExtensionObjectWithMask(extExpandedNodeId, BINARY_ENCODING_MASK, userNameIdentityToken);
         }
         return null;
     }

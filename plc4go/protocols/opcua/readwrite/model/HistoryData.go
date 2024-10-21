@@ -40,8 +40,6 @@ type HistoryData interface {
 	utils.Serializable
 	utils.Copyable
 	ExtensionObjectDefinition
-	// GetNoOfDataValues returns NoOfDataValues (property field)
-	GetNoOfDataValues() int32
 	// GetDataValues returns DataValues (property field)
 	GetDataValues() []DataValue
 	// IsHistoryData is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -53,18 +51,16 @@ type HistoryData interface {
 // _HistoryData is the data-structure of this message
 type _HistoryData struct {
 	ExtensionObjectDefinitionContract
-	NoOfDataValues int32
-	DataValues     []DataValue
+	DataValues []DataValue
 }
 
 var _ HistoryData = (*_HistoryData)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryData)(nil)
 
 // NewHistoryData factory function for _HistoryData
-func NewHistoryData(noOfDataValues int32, dataValues []DataValue) *_HistoryData {
+func NewHistoryData(dataValues []DataValue) *_HistoryData {
 	_result := &_HistoryData{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfDataValues:                    noOfDataValues,
 		DataValues:                        dataValues,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -80,9 +76,7 @@ func NewHistoryData(noOfDataValues int32, dataValues []DataValue) *_HistoryData 
 type HistoryDataBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfDataValues int32, dataValues []DataValue) HistoryDataBuilder
-	// WithNoOfDataValues adds NoOfDataValues (property field)
-	WithNoOfDataValues(int32) HistoryDataBuilder
+	WithMandatoryFields(dataValues []DataValue) HistoryDataBuilder
 	// WithDataValues adds DataValues (property field)
 	WithDataValues(...DataValue) HistoryDataBuilder
 	// Build builds the HistoryData or returns an error if something is wrong
@@ -110,13 +104,8 @@ func (b *_HistoryDataBuilder) setParent(contract ExtensionObjectDefinitionContra
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_HistoryDataBuilder) WithMandatoryFields(noOfDataValues int32, dataValues []DataValue) HistoryDataBuilder {
-	return b.WithNoOfDataValues(noOfDataValues).WithDataValues(dataValues...)
-}
-
-func (b *_HistoryDataBuilder) WithNoOfDataValues(noOfDataValues int32) HistoryDataBuilder {
-	b.NoOfDataValues = noOfDataValues
-	return b
+func (b *_HistoryDataBuilder) WithMandatoryFields(dataValues []DataValue) HistoryDataBuilder {
+	return b.WithDataValues(dataValues...)
 }
 
 func (b *_HistoryDataBuilder) WithDataValues(dataValues ...DataValue) HistoryDataBuilder {
@@ -174,8 +163,8 @@ func (b *_HistoryData) CreateHistoryDataBuilder() HistoryDataBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_HistoryData) GetIdentifier() string {
-	return "658"
+func (m *_HistoryData) GetExtensionId() int32 {
+	return int32(658)
 }
 
 ///////////////////////
@@ -191,10 +180,6 @@ func (m *_HistoryData) GetParent() ExtensionObjectDefinitionContract {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
-
-func (m *_HistoryData) GetNoOfDataValues() int32 {
-	return m.NoOfDataValues
-}
 
 func (m *_HistoryData) GetDataValues() []DataValue {
 	return m.DataValues
@@ -221,9 +206,9 @@ func (m *_HistoryData) GetTypeName() string {
 }
 
 func (m *_HistoryData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
-	// Simple field (noOfDataValues)
+	// Implicit Field (noOfDataValues)
 	lengthInBits += 32
 
 	// Array field
@@ -243,7 +228,7 @@ func (m *_HistoryData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_HistoryData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyData HistoryData, err error) {
+func (m *_HistoryData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__historyData HistoryData, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -254,11 +239,11 @@ func (m *_HistoryData) parse(ctx context.Context, readBuffer utils.ReadBuffer, p
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfDataValues, err := ReadSimpleField(ctx, "noOfDataValues", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDataValues, err := ReadImplicitField[int32](ctx, "noOfDataValues", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDataValues' field"))
 	}
-	m.NoOfDataValues = noOfDataValues
+	_ = noOfDataValues
 
 	dataValues, err := ReadCountArrayField[DataValue](ctx, "dataValues", ReadComplex[DataValue](DataValueParseWithBuffer, readBuffer), uint64(noOfDataValues))
 	if err != nil {
@@ -290,8 +275,8 @@ func (m *_HistoryData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		if pushErr := writeBuffer.PushContext("HistoryData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for HistoryData")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDataValues", m.GetNoOfDataValues(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDataValues := int32(utils.InlineIf(bool((m.GetDataValues()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDataValues()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDataValues", noOfDataValues, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDataValues' field")
 		}
 
@@ -319,7 +304,6 @@ func (m *_HistoryData) deepCopy() *_HistoryData {
 	}
 	_HistoryDataCopy := &_HistoryData{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfDataValues,
 		utils.DeepCopySlice[DataValue, DataValue](m.DataValues),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

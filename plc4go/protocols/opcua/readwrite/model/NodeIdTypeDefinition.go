@@ -51,6 +51,8 @@ type NodeIdTypeDefinition interface {
 type NodeIdTypeDefinitionContract interface {
 	// GetIdentifier returns Identifier (abstract field)
 	GetIdentifier() string
+	// GetNamespace returns Namespace (abstract field)
+	GetNamespace() int16
 	// IsNodeIdTypeDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdTypeDefinition()
 	// CreateBuilder creates a NodeIdTypeDefinitionBuilder
@@ -65,6 +67,8 @@ type NodeIdTypeDefinitionRequirements interface {
 	GetNodeType() NodeIdType
 	// GetIdentifier returns Identifier (abstract field)
 	GetIdentifier() string
+	// GetNamespace returns Namespace (abstract field)
+	GetNamespace() int16
 }
 
 // _NodeIdTypeDefinition is the data-structure of this message
@@ -317,6 +321,10 @@ func (m *_NodeIdTypeDefinition) GetIdentifier() string {
 	return m._SubType.GetIdentifier()
 }
 
+func (m *_NodeIdTypeDefinition) GetNamespace() int16 {
+	return m._SubType.GetNamespace()
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
@@ -337,7 +345,7 @@ func (m *_NodeIdTypeDefinition) GetTypeName() string {
 	return "NodeIdTypeDefinition"
 }
 
-func (m *_NodeIdTypeDefinition) getLengthInBits(ctx context.Context) uint16 {
+func (m *_NodeIdTypeDefinition) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (nodeType)
 	lengthInBits += 6

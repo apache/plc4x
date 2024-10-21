@@ -206,7 +206,7 @@ func (m *_KnxNetIpDeviceManagement) GetTypeName() string {
 }
 
 func (m *_KnxNetIpDeviceManagement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ServiceIdContract.(*_ServiceId).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ServiceIdContract.(*_ServiceId).GetLengthInBits(ctx))
 
 	// Simple field (version)
 	lengthInBits += 8

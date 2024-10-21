@@ -283,7 +283,7 @@ func (m *_ReplyEncodedReply) GetTypeName() string {
 }
 
 func (m *_ReplyEncodedReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ReplyContract.(*_Reply).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ReplyContract.(*_Reply).GetLengthInBits(ctx))
 
 	// Manual Field (encodedReply)
 	lengthInBits += uint16(int32((int32(m.GetEncodedReply().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))

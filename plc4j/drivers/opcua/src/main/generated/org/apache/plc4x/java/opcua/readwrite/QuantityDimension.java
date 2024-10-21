@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class QuantityDimension extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "32440";
+  public Integer getExtensionId() {
+    return (int) 32440;
   }
 
   // Properties.
@@ -184,7 +184,7 @@ public class QuantityDimension extends ExtensionObjectDefinition implements Mess
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("QuantityDimension");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

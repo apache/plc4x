@@ -46,6 +46,8 @@ public abstract class NodeIdTypeDefinition implements Message {
 
   public abstract String getIdentifier();
 
+  public abstract short getNamespace();
+
   protected abstract void serializeNodeIdTypeDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException;
 

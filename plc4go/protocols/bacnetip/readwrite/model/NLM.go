@@ -681,7 +681,7 @@ func (m *_NLM) GetTypeName() string {
 	return "NLM"
 }
 
-func (m *_NLM) getLengthInBits(ctx context.Context) uint16 {
+func (m *_NLM) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 8

@@ -229,7 +229,7 @@ func (m *_ModbusPDUReadInputRegistersRequest) GetTypeName() string {
 }
 
 func (m *_ModbusPDUReadInputRegistersRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).GetLengthInBits(ctx))
 
 	// Simple field (startingAddress)
 	lengthInBits += 16

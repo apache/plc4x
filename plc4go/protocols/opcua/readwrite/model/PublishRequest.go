@@ -41,11 +41,9 @@ type PublishRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
-	// GetNoOfSubscriptionAcknowledgements returns NoOfSubscriptionAcknowledgements (property field)
-	GetNoOfSubscriptionAcknowledgements() int32
+	GetRequestHeader() RequestHeader
 	// GetSubscriptionAcknowledgements returns SubscriptionAcknowledgements (property field)
-	GetSubscriptionAcknowledgements() []ExtensionObjectDefinition
+	GetSubscriptionAcknowledgements() []SubscriptionAcknowledgement
 	// IsPublishRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPublishRequest()
 	// CreateBuilder creates a PublishRequestBuilder
@@ -55,23 +53,21 @@ type PublishRequest interface {
 // _PublishRequest is the data-structure of this message
 type _PublishRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader                    ExtensionObjectDefinition
-	NoOfSubscriptionAcknowledgements int32
-	SubscriptionAcknowledgements     []ExtensionObjectDefinition
+	RequestHeader                RequestHeader
+	SubscriptionAcknowledgements []SubscriptionAcknowledgement
 }
 
 var _ PublishRequest = (*_PublishRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PublishRequest)(nil)
 
 // NewPublishRequest factory function for _PublishRequest
-func NewPublishRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) *_PublishRequest {
+func NewPublishRequest(requestHeader RequestHeader, subscriptionAcknowledgements []SubscriptionAcknowledgement) *_PublishRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for PublishRequest must not be nil")
+		panic("requestHeader of type RequestHeader for PublishRequest must not be nil")
 	}
 	_result := &_PublishRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
-		NoOfSubscriptionAcknowledgements:  noOfSubscriptionAcknowledgements,
 		SubscriptionAcknowledgements:      subscriptionAcknowledgements,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -87,15 +83,13 @@ func NewPublishRequest(requestHeader ExtensionObjectDefinition, noOfSubscription
 type PublishRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) PublishRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, subscriptionAcknowledgements []SubscriptionAcknowledgement) PublishRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) PublishRequestBuilder
+	WithRequestHeader(RequestHeader) PublishRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) PublishRequestBuilder
-	// WithNoOfSubscriptionAcknowledgements adds NoOfSubscriptionAcknowledgements (property field)
-	WithNoOfSubscriptionAcknowledgements(int32) PublishRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) PublishRequestBuilder
 	// WithSubscriptionAcknowledgements adds SubscriptionAcknowledgements (property field)
-	WithSubscriptionAcknowledgements(...ExtensionObjectDefinition) PublishRequestBuilder
+	WithSubscriptionAcknowledgements(...SubscriptionAcknowledgement) PublishRequestBuilder
 	// Build builds the PublishRequest or returns an error if something is wrong
 	Build() (PublishRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,34 +115,29 @@ func (b *_PublishRequestBuilder) setParent(contract ExtensionObjectDefinitionCon
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_PublishRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) PublishRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfSubscriptionAcknowledgements(noOfSubscriptionAcknowledgements).WithSubscriptionAcknowledgements(subscriptionAcknowledgements...)
+func (b *_PublishRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionAcknowledgements []SubscriptionAcknowledgement) PublishRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithSubscriptionAcknowledgements(subscriptionAcknowledgements...)
 }
 
-func (b *_PublishRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) PublishRequestBuilder {
+func (b *_PublishRequestBuilder) WithRequestHeader(requestHeader RequestHeader) PublishRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_PublishRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) PublishRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_PublishRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) PublishRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_PublishRequestBuilder) WithNoOfSubscriptionAcknowledgements(noOfSubscriptionAcknowledgements int32) PublishRequestBuilder {
-	b.NoOfSubscriptionAcknowledgements = noOfSubscriptionAcknowledgements
-	return b
-}
-
-func (b *_PublishRequestBuilder) WithSubscriptionAcknowledgements(subscriptionAcknowledgements ...ExtensionObjectDefinition) PublishRequestBuilder {
+func (b *_PublishRequestBuilder) WithSubscriptionAcknowledgements(subscriptionAcknowledgements ...SubscriptionAcknowledgement) PublishRequestBuilder {
 	b.SubscriptionAcknowledgements = subscriptionAcknowledgements
 	return b
 }
@@ -209,8 +198,8 @@ func (b *_PublishRequest) CreatePublishRequestBuilder() PublishRequestBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_PublishRequest) GetIdentifier() string {
-	return "826"
+func (m *_PublishRequest) GetExtensionId() int32 {
+	return int32(826)
 }
 
 ///////////////////////
@@ -227,15 +216,11 @@ func (m *_PublishRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_PublishRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_PublishRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
-func (m *_PublishRequest) GetNoOfSubscriptionAcknowledgements() int32 {
-	return m.NoOfSubscriptionAcknowledgements
-}
-
-func (m *_PublishRequest) GetSubscriptionAcknowledgements() []ExtensionObjectDefinition {
+func (m *_PublishRequest) GetSubscriptionAcknowledgements() []SubscriptionAcknowledgement {
 	return m.SubscriptionAcknowledgements
 }
 
@@ -260,12 +245,12 @@ func (m *_PublishRequest) GetTypeName() string {
 }
 
 func (m *_PublishRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfSubscriptionAcknowledgements)
+	// Implicit Field (noOfSubscriptionAcknowledgements)
 	lengthInBits += 32
 
 	// Array field
@@ -285,7 +270,7 @@ func (m *_PublishRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_PublishRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__publishRequest PublishRequest, err error) {
+func (m *_PublishRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__publishRequest PublishRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -296,19 +281,19 @@ func (m *_PublishRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfSubscriptionAcknowledgements, err := ReadSimpleField(ctx, "noOfSubscriptionAcknowledgements", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSubscriptionAcknowledgements, err := ReadImplicitField[int32](ctx, "noOfSubscriptionAcknowledgements", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSubscriptionAcknowledgements' field"))
 	}
-	m.NoOfSubscriptionAcknowledgements = noOfSubscriptionAcknowledgements
+	_ = noOfSubscriptionAcknowledgements
 
-	subscriptionAcknowledgements, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "subscriptionAcknowledgements", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("823")), readBuffer), uint64(noOfSubscriptionAcknowledgements))
+	subscriptionAcknowledgements, err := ReadCountArrayField[SubscriptionAcknowledgement](ctx, "subscriptionAcknowledgements", ReadComplex[SubscriptionAcknowledgement](ExtensionObjectDefinitionParseWithBufferProducer[SubscriptionAcknowledgement]((int32)(int32(823))), readBuffer), uint64(noOfSubscriptionAcknowledgements))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionAcknowledgements' field"))
 	}
@@ -339,11 +324,11 @@ func (m *_PublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for PublishRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfSubscriptionAcknowledgements", m.GetNoOfSubscriptionAcknowledgements(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfSubscriptionAcknowledgements := int32(utils.InlineIf(bool((m.GetSubscriptionAcknowledgements()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSubscriptionAcknowledgements()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfSubscriptionAcknowledgements", noOfSubscriptionAcknowledgements, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSubscriptionAcknowledgements' field")
 		}
 
@@ -371,9 +356,8 @@ func (m *_PublishRequest) deepCopy() *_PublishRequest {
 	}
 	_PublishRequestCopy := &_PublishRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfSubscriptionAcknowledgements,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.SubscriptionAcknowledgements),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopySlice[SubscriptionAcknowledgement, SubscriptionAcknowledgement](m.SubscriptionAcknowledgements),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _PublishRequestCopy

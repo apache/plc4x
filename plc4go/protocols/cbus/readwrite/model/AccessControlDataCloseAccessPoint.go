@@ -175,7 +175,7 @@ func (m *_AccessControlDataCloseAccessPoint) GetTypeName() string {
 }
 
 func (m *_AccessControlDataCloseAccessPoint) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AccessControlDataContract.(*_AccessControlData).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

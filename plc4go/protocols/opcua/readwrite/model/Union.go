@@ -150,8 +150,8 @@ func (b *_Union) CreateUnionBuilder() UnionBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_Union) GetIdentifier() string {
-	return "12758"
+func (m *_Union) GetExtensionId() int32 {
+	return int32(12758)
 }
 
 ///////////////////////
@@ -179,7 +179,7 @@ func (m *_Union) GetTypeName() string {
 }
 
 func (m *_Union) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -188,7 +188,7 @@ func (m *_Union) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_Union) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__union Union, err error) {
+func (m *_Union) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__union Union, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

@@ -38,25 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class NodeTypeDescription extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "575";
+  public Integer getExtensionId() {
+    return (int) 575;
   }
 
   // Properties.
   protected final ExpandedNodeId typeDefinitionNode;
   protected final boolean includeSubTypes;
-  protected final int noOfDataToReturn;
-  protected final List<ExtensionObjectDefinition> dataToReturn;
+  protected final List<QueryDataDescription> dataToReturn;
 
   public NodeTypeDescription(
       ExpandedNodeId typeDefinitionNode,
       boolean includeSubTypes,
-      int noOfDataToReturn,
-      List<ExtensionObjectDefinition> dataToReturn) {
+      List<QueryDataDescription> dataToReturn) {
     super();
     this.typeDefinitionNode = typeDefinitionNode;
     this.includeSubTypes = includeSubTypes;
-    this.noOfDataToReturn = noOfDataToReturn;
     this.dataToReturn = dataToReturn;
   }
 
@@ -68,11 +65,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     return includeSubTypes;
   }
 
-  public int getNoOfDataToReturn() {
-    return noOfDataToReturn;
-  }
-
-  public List<ExtensionObjectDefinition> getDataToReturn() {
+  public List<QueryDataDescription> getDataToReturn() {
     return dataToReturn;
   }
 
@@ -92,8 +85,11 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     // Simple Field (includeSubTypes)
     writeSimpleField("includeSubTypes", includeSubTypes, writeBoolean(writeBuffer));
 
-    // Simple Field (noOfDataToReturn)
-    writeSimpleField("noOfDataToReturn", noOfDataToReturn, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfDataToReturn) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfDataToReturn =
+        (int) ((((getDataToReturn()) == (null)) ? -(1) : COUNT(getDataToReturn())));
+    writeImplicitField("noOfDataToReturn", noOfDataToReturn, writeSignedInt(writeBuffer, 32));
 
     // Array Field (dataToReturn)
     writeComplexTypeArrayField("dataToReturn", dataToReturn, writeBuffer);
@@ -121,13 +117,13 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     // Simple field (includeSubTypes)
     lengthInBits += 1;
 
-    // Simple field (noOfDataToReturn)
+    // Implicit Field (noOfDataToReturn)
     lengthInBits += 32;
 
     // Array field
     if (dataToReturn != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : dataToReturn) {
+      for (QueryDataDescription element : dataToReturn) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataToReturn.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -137,7 +133,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("NodeTypeDescription");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -152,44 +148,41 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
 
     boolean includeSubTypes = readSimpleField("includeSubTypes", readBoolean(readBuffer));
 
-    int noOfDataToReturn = readSimpleField("noOfDataToReturn", readSignedInt(readBuffer, 32));
+    int noOfDataToReturn = readImplicitField("noOfDataToReturn", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> dataToReturn =
+    List<QueryDataDescription> dataToReturn =
         readCountArrayField(
             "dataToReturn",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("572")),
+                () ->
+                    (QueryDataDescription)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (572)),
                 readBuffer),
             noOfDataToReturn);
 
     readBuffer.closeContext("NodeTypeDescription");
     // Create the instance
-    return new NodeTypeDescriptionBuilderImpl(
-        typeDefinitionNode, includeSubTypes, noOfDataToReturn, dataToReturn);
+    return new NodeTypeDescriptionBuilderImpl(typeDefinitionNode, includeSubTypes, dataToReturn);
   }
 
   public static class NodeTypeDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExpandedNodeId typeDefinitionNode;
     private final boolean includeSubTypes;
-    private final int noOfDataToReturn;
-    private final List<ExtensionObjectDefinition> dataToReturn;
+    private final List<QueryDataDescription> dataToReturn;
 
     public NodeTypeDescriptionBuilderImpl(
         ExpandedNodeId typeDefinitionNode,
         boolean includeSubTypes,
-        int noOfDataToReturn,
-        List<ExtensionObjectDefinition> dataToReturn) {
+        List<QueryDataDescription> dataToReturn) {
       this.typeDefinitionNode = typeDefinitionNode;
       this.includeSubTypes = includeSubTypes;
-      this.noOfDataToReturn = noOfDataToReturn;
       this.dataToReturn = dataToReturn;
     }
 
     public NodeTypeDescription build() {
       NodeTypeDescription nodeTypeDescription =
-          new NodeTypeDescription(
-              typeDefinitionNode, includeSubTypes, noOfDataToReturn, dataToReturn);
+          new NodeTypeDescription(typeDefinitionNode, includeSubTypes, dataToReturn);
       return nodeTypeDescription;
     }
   }
@@ -205,7 +198,6 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     NodeTypeDescription that = (NodeTypeDescription) o;
     return (getTypeDefinitionNode() == that.getTypeDefinitionNode())
         && (getIncludeSubTypes() == that.getIncludeSubTypes())
-        && (getNoOfDataToReturn() == that.getNoOfDataToReturn())
         && (getDataToReturn() == that.getDataToReturn())
         && super.equals(that)
         && true;
@@ -214,11 +206,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getTypeDefinitionNode(),
-        getIncludeSubTypes(),
-        getNoOfDataToReturn(),
-        getDataToReturn());
+        super.hashCode(), getTypeDefinitionNode(), getIncludeSubTypes(), getDataToReturn());
   }
 
   @Override

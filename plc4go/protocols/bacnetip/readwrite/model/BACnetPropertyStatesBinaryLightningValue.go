@@ -226,7 +226,7 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesBinaryLightningValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).GetLengthInBits(ctx))
 
 	// Simple field (binaryLightningValue)
 	lengthInBits += m.BinaryLightningValue.GetLengthInBits(ctx)

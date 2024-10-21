@@ -38,31 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class TransferResult extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "838";
+  public Integer getExtensionId() {
+    return (int) 838;
   }
 
   // Properties.
   protected final StatusCode statusCode;
-  protected final int noOfAvailableSequenceNumbers;
   protected final List<Long> availableSequenceNumbers;
 
-  public TransferResult(
-      StatusCode statusCode,
-      int noOfAvailableSequenceNumbers,
-      List<Long> availableSequenceNumbers) {
+  public TransferResult(StatusCode statusCode, List<Long> availableSequenceNumbers) {
     super();
     this.statusCode = statusCode;
-    this.noOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers;
     this.availableSequenceNumbers = availableSequenceNumbers;
   }
 
   public StatusCode getStatusCode() {
     return statusCode;
-  }
-
-  public int getNoOfAvailableSequenceNumbers() {
-    return noOfAvailableSequenceNumbers;
   }
 
   public List<Long> getAvailableSequenceNumbers() {
@@ -79,8 +70,14 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
     // Simple Field (statusCode)
     writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
-    // Simple Field (noOfAvailableSequenceNumbers)
-    writeSimpleField(
+    // Implicit Field (noOfAvailableSequenceNumbers) (Used for parsing, but its value is not stored
+    // as it's implicitly given by the objects content)
+    int noOfAvailableSequenceNumbers =
+        (int)
+            ((((getAvailableSequenceNumbers()) == (null))
+                ? -(1)
+                : COUNT(getAvailableSequenceNumbers())));
+    writeImplicitField(
         "noOfAvailableSequenceNumbers",
         noOfAvailableSequenceNumbers,
         writeSignedInt(writeBuffer, 32));
@@ -106,7 +103,7 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
 
-    // Simple field (noOfAvailableSequenceNumbers)
+    // Implicit Field (noOfAvailableSequenceNumbers)
     lengthInBits += 32;
 
     // Array field
@@ -118,7 +115,7 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("TransferResult");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -128,7 +125,7 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
             "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     int noOfAvailableSequenceNumbers =
-        readSimpleField("noOfAvailableSequenceNumbers", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfAvailableSequenceNumbers", readSignedInt(readBuffer, 32));
 
     List<Long> availableSequenceNumbers =
         readCountArrayField(
@@ -138,28 +135,21 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("TransferResult");
     // Create the instance
-    return new TransferResultBuilderImpl(
-        statusCode, noOfAvailableSequenceNumbers, availableSequenceNumbers);
+    return new TransferResultBuilderImpl(statusCode, availableSequenceNumbers);
   }
 
   public static class TransferResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
-    private final int noOfAvailableSequenceNumbers;
     private final List<Long> availableSequenceNumbers;
 
-    public TransferResultBuilderImpl(
-        StatusCode statusCode,
-        int noOfAvailableSequenceNumbers,
-        List<Long> availableSequenceNumbers) {
+    public TransferResultBuilderImpl(StatusCode statusCode, List<Long> availableSequenceNumbers) {
       this.statusCode = statusCode;
-      this.noOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers;
       this.availableSequenceNumbers = availableSequenceNumbers;
     }
 
     public TransferResult build() {
-      TransferResult transferResult =
-          new TransferResult(statusCode, noOfAvailableSequenceNumbers, availableSequenceNumbers);
+      TransferResult transferResult = new TransferResult(statusCode, availableSequenceNumbers);
       return transferResult;
     }
   }
@@ -174,7 +164,6 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
     }
     TransferResult that = (TransferResult) o;
     return (getStatusCode() == that.getStatusCode())
-        && (getNoOfAvailableSequenceNumbers() == that.getNoOfAvailableSequenceNumbers())
         && (getAvailableSequenceNumbers() == that.getAvailableSequenceNumbers())
         && super.equals(that)
         && true;
@@ -182,11 +171,7 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getStatusCode(),
-        getNoOfAvailableSequenceNumbers(),
-        getAvailableSequenceNumbers());
+    return Objects.hash(super.hashCode(), getStatusCode(), getAvailableSequenceNumbers());
   }
 
   @Override

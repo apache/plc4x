@@ -38,25 +38,19 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AdditionalParametersType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "16315";
+  public Integer getExtensionId() {
+    return (int) 16315;
   }
 
   // Properties.
-  protected final int noOfParameters;
-  protected final List<ExtensionObjectDefinition> parameters;
+  protected final List<KeyValuePair> parameters;
 
-  public AdditionalParametersType(int noOfParameters, List<ExtensionObjectDefinition> parameters) {
+  public AdditionalParametersType(List<KeyValuePair> parameters) {
     super();
-    this.noOfParameters = noOfParameters;
     this.parameters = parameters;
   }
 
-  public int getNoOfParameters() {
-    return noOfParameters;
-  }
-
-  public List<ExtensionObjectDefinition> getParameters() {
+  public List<KeyValuePair> getParameters() {
     return parameters;
   }
 
@@ -67,8 +61,10 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("AdditionalParametersType");
 
-    // Simple Field (noOfParameters)
-    writeSimpleField("noOfParameters", noOfParameters, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfParameters) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfParameters = (int) ((((getParameters()) == (null)) ? -(1) : COUNT(getParameters())));
+    writeImplicitField("noOfParameters", noOfParameters, writeSignedInt(writeBuffer, 32));
 
     // Array Field (parameters)
     writeComplexTypeArrayField("parameters", parameters, writeBuffer);
@@ -87,13 +83,13 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
     AdditionalParametersType _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (noOfParameters)
+    // Implicit Field (noOfParameters)
     lengthInBits += 32;
 
     // Array field
     if (parameters != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : parameters) {
+      for (KeyValuePair element : parameters) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= parameters.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -103,40 +99,37 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("AdditionalParametersType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int noOfParameters = readSimpleField("noOfParameters", readSignedInt(readBuffer, 32));
+    int noOfParameters = readImplicitField("noOfParameters", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> parameters =
+    List<KeyValuePair> parameters =
         readCountArrayField(
             "parameters",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
+                () ->
+                    (KeyValuePair) ExtensionObjectDefinition.staticParse(readBuffer, (int) (14535)),
                 readBuffer),
             noOfParameters);
 
     readBuffer.closeContext("AdditionalParametersType");
     // Create the instance
-    return new AdditionalParametersTypeBuilderImpl(noOfParameters, parameters);
+    return new AdditionalParametersTypeBuilderImpl(parameters);
   }
 
   public static class AdditionalParametersTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final int noOfParameters;
-    private final List<ExtensionObjectDefinition> parameters;
+    private final List<KeyValuePair> parameters;
 
-    public AdditionalParametersTypeBuilderImpl(
-        int noOfParameters, List<ExtensionObjectDefinition> parameters) {
-      this.noOfParameters = noOfParameters;
+    public AdditionalParametersTypeBuilderImpl(List<KeyValuePair> parameters) {
       this.parameters = parameters;
     }
 
     public AdditionalParametersType build() {
-      AdditionalParametersType additionalParametersType =
-          new AdditionalParametersType(noOfParameters, parameters);
+      AdditionalParametersType additionalParametersType = new AdditionalParametersType(parameters);
       return additionalParametersType;
     }
   }
@@ -150,15 +143,12 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
       return false;
     }
     AdditionalParametersType that = (AdditionalParametersType) o;
-    return (getNoOfParameters() == that.getNoOfParameters())
-        && (getParameters() == that.getParameters())
-        && super.equals(that)
-        && true;
+    return (getParameters() == that.getParameters()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getNoOfParameters(), getParameters());
+    return Objects.hash(super.hashCode(), getParameters());
   }
 
   @Override

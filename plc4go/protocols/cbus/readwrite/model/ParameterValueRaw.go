@@ -206,7 +206,7 @@ func (m *_ParameterValueRaw) GetTypeName() string {
 }
 
 func (m *_ParameterValueRaw) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {

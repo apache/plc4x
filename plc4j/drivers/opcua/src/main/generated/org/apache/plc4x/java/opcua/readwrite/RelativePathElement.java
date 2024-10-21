@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RelativePathElement extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "539";
+  public Integer getExtensionId() {
+    return (int) 539;
   }
 
   // Properties.
@@ -131,7 +131,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RelativePathElement");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

@@ -183,7 +183,7 @@ func (m *_SysexCommandCapabilityQuery) GetTypeName() string {
 }
 
 func (m *_SysexCommandCapabilityQuery) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

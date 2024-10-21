@@ -249,7 +249,7 @@ func (m *_OpcuaMessageError) GetTypeName() string {
 }
 
 func (m *_OpcuaMessageError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).getLengthInBits(ctx))
+	lengthInBits := uint16(m.MessagePDUContract.(*_MessagePDU).GetLengthInBits(ctx))
 
 	// Simple field (error)
 	lengthInBits += 32

@@ -31,6 +31,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
@@ -59,7 +60,7 @@ func generateNodeId(tag Tag) (readWriteModel.NodeId, error) {
 		}
 		nodeId = readWriteModel.NewNodeId(readWriteModel.NewNodeIdGuid( /*TODO: do we want to check for overflow?*/ uint16(tag.GetNamespace()), guidBytes))
 	} else if tag.GetIdentifierType() == readWriteModel.OpcuaIdentifierType_STRING_IDENTIFIER {
-		nodeId = readWriteModel.NewNodeId(readWriteModel.NewNodeIdString( /*TODO: do we want to check for overflow?*/ uint16(tag.GetNamespace()), readWriteModel.NewPascalString(tag.GetIdentifier())))
+		nodeId = readWriteModel.NewNodeId(readWriteModel.NewNodeIdString( /*TODO: do we want to check for overflow?*/ uint16(tag.GetNamespace()), readWriteModel.NewPascalString(utils.ToPtr(tag.GetIdentifier()))))
 	}
 	return nodeId, nil
 }
@@ -153,7 +154,7 @@ func readResponse(localLog zerolog.Logger, readRequestIn apiModel.PlcReadRequest
 				array := variant.GetValue()
 				stringValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
-					stringValues[i] = spiValues.NewPlcSTRING(t.GetStringValue())
+					stringValues[i] = spiValues.NewPlcSTRING(*t.GetStringValue())
 				}
 				value = spiValues.NewPlcList(stringValues)
 			case readWriteModel.VariantDateTime:
@@ -185,7 +186,7 @@ func readResponse(localLog zerolog.Logger, readRequestIn apiModel.PlcReadRequest
 				array := variant.GetValue()
 				xmlElementValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
-					xmlElementValues[i] = spiValues.NewPlcSTRING(t.GetStringValue())
+					xmlElementValues[i] = spiValues.NewPlcSTRING(*t.GetStringValue())
 				}
 				value = spiValues.NewPlcList(xmlElementValues)
 			case readWriteModel.VariantLocalizedText:
@@ -194,10 +195,10 @@ func readResponse(localLog zerolog.Logger, readRequestIn apiModel.PlcReadRequest
 				for i, t := range array {
 					v := ""
 					if t.GetLocaleSpecified() {
-						v += t.GetLocale().GetStringValue() + "|"
+						v += *t.GetLocale().GetStringValue() + "|"
 					}
 					if t.GetTextSpecified() {
-						v += t.GetText().GetStringValue()
+						v += *t.GetText().GetStringValue()
 					}
 					localizedTextValues[i] = spiValues.NewPlcSTRING(v)
 				}
@@ -206,7 +207,7 @@ func readResponse(localLog zerolog.Logger, readRequestIn apiModel.PlcReadRequest
 				array := variant.GetValue()
 				qualifiedNameValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
-					qualifiedNameValues[i] = spiValues.NewPlcSTRING(fmt.Sprintf("ns=%d;s=%s", t.GetNamespaceIndex(), t.GetName().GetStringValue()))
+					qualifiedNameValues[i] = spiValues.NewPlcSTRING(fmt.Sprintf("ns=%d;s=%s", t.GetNamespaceIndex(), *t.GetName().GetStringValue()))
 				}
 				value = spiValues.NewPlcList(qualifiedNameValues)
 			case readWriteModel.VariantExtensionObject:

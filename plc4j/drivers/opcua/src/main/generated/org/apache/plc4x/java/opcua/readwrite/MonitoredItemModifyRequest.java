@@ -38,16 +38,16 @@ import org.apache.plc4x.java.spi.generation.*;
 public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "757";
+  public Integer getExtensionId() {
+    return (int) 757;
   }
 
   // Properties.
   protected final long monitoredItemId;
-  protected final ExtensionObjectDefinition requestedParameters;
+  protected final MonitoringParameters requestedParameters;
 
   public MonitoredItemModifyRequest(
-      long monitoredItemId, ExtensionObjectDefinition requestedParameters) {
+      long monitoredItemId, MonitoringParameters requestedParameters) {
     super();
     this.monitoredItemId = monitoredItemId;
     this.requestedParameters = requestedParameters;
@@ -57,7 +57,7 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
     return monitoredItemId;
   }
 
-  public ExtensionObjectDefinition getRequestedParameters() {
+  public MonitoringParameters getRequestedParameters() {
     return requestedParameters;
   }
 
@@ -98,18 +98,20 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("MonitoredItemModifyRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long monitoredItemId = readSimpleField("monitoredItemId", readUnsignedLong(readBuffer, 32));
 
-    ExtensionObjectDefinition requestedParameters =
+    MonitoringParameters requestedParameters =
         readSimpleField(
             "requestedParameters",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("742")),
+                () ->
+                    (MonitoringParameters)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (742)),
                 readBuffer));
 
     readBuffer.closeContext("MonitoredItemModifyRequest");
@@ -120,10 +122,10 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
   public static class MonitoredItemModifyRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long monitoredItemId;
-    private final ExtensionObjectDefinition requestedParameters;
+    private final MonitoringParameters requestedParameters;
 
     public MonitoredItemModifyRequestBuilderImpl(
-        long monitoredItemId, ExtensionObjectDefinition requestedParameters) {
+        long monitoredItemId, MonitoringParameters requestedParameters) {
       this.monitoredItemId = monitoredItemId;
       this.requestedParameters = requestedParameters;
     }

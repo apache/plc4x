@@ -536,7 +536,7 @@ func (m *_EipPacket) GetTypeName() string {
 	return "EipPacket"
 }
 
-func (m *_EipPacket) getLengthInBits(ctx context.Context) uint16 {
+func (m *_EipPacket) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (command)
 	lengthInBits += 16

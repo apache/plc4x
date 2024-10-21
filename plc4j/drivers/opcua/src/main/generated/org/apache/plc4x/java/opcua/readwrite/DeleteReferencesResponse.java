@@ -38,45 +38,31 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DeleteReferencesResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "509";
+  public Integer getExtensionId() {
+    return (int) 509;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
-  protected final int noOfResults;
+  protected final ResponseHeader responseHeader;
   protected final List<StatusCode> results;
-  protected final int noOfDiagnosticInfos;
   protected final List<DiagnosticInfo> diagnosticInfos;
 
   public DeleteReferencesResponse(
-      ExtensionObjectDefinition responseHeader,
-      int noOfResults,
+      ResponseHeader responseHeader,
       List<StatusCode> results,
-      int noOfDiagnosticInfos,
       List<DiagnosticInfo> diagnosticInfos) {
     super();
     this.responseHeader = responseHeader;
-    this.noOfResults = noOfResults;
     this.results = results;
-    this.noOfDiagnosticInfos = noOfDiagnosticInfos;
     this.diagnosticInfos = diagnosticInfos;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
-  }
-
-  public int getNoOfResults() {
-    return noOfResults;
   }
 
   public List<StatusCode> getResults() {
     return results;
-  }
-
-  public int getNoOfDiagnosticInfos() {
-    return noOfDiagnosticInfos;
   }
 
   public List<DiagnosticInfo> getDiagnosticInfos() {
@@ -93,14 +79,19 @@ public class DeleteReferencesResponse extends ExtensionObjectDefinition implemen
     // Simple Field (responseHeader)
     writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfResults)
-    writeSimpleField("noOfResults", noOfResults, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfResults) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfResults = (int) ((((getResults()) == (null)) ? -(1) : COUNT(getResults())));
+    writeImplicitField("noOfResults", noOfResults, writeSignedInt(writeBuffer, 32));
 
     // Array Field (results)
     writeComplexTypeArrayField("results", results, writeBuffer);
 
-    // Simple Field (noOfDiagnosticInfos)
-    writeSimpleField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfDiagnosticInfos) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfDiagnosticInfos =
+        (int) ((((getDiagnosticInfos()) == (null)) ? -(1) : COUNT(getDiagnosticInfos())));
+    writeImplicitField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
 
     // Array Field (diagnosticInfos)
     writeComplexTypeArrayField("diagnosticInfos", diagnosticInfos, writeBuffer);
@@ -122,7 +113,7 @@ public class DeleteReferencesResponse extends ExtensionObjectDefinition implemen
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
 
-    // Simple field (noOfResults)
+    // Implicit Field (noOfResults)
     lengthInBits += 32;
 
     // Array field
@@ -134,7 +125,7 @@ public class DeleteReferencesResponse extends ExtensionObjectDefinition implemen
       }
     }
 
-    // Simple field (noOfDiagnosticInfos)
+    // Implicit Field (noOfDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -150,19 +141,20 @@ public class DeleteReferencesResponse extends ExtensionObjectDefinition implemen
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DeleteReferencesResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
-    int noOfResults = readSimpleField("noOfResults", readSignedInt(readBuffer, 32));
+    int noOfResults = readImplicitField("noOfResults", readSignedInt(readBuffer, 32));
 
     List<StatusCode> results =
         readCountArrayField(
@@ -170,7 +162,8 @@ public class DeleteReferencesResponse extends ExtensionObjectDefinition implemen
             readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfResults);
 
-    int noOfDiagnosticInfos = readSimpleField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
+    int noOfDiagnosticInfos =
+        readImplicitField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
@@ -180,35 +173,27 @@ public class DeleteReferencesResponse extends ExtensionObjectDefinition implemen
 
     readBuffer.closeContext("DeleteReferencesResponse");
     // Create the instance
-    return new DeleteReferencesResponseBuilderImpl(
-        responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
+    return new DeleteReferencesResponseBuilderImpl(responseHeader, results, diagnosticInfos);
   }
 
   public static class DeleteReferencesResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
-    private final int noOfResults;
+    private final ResponseHeader responseHeader;
     private final List<StatusCode> results;
-    private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
     public DeleteReferencesResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
-        int noOfResults,
+        ResponseHeader responseHeader,
         List<StatusCode> results,
-        int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
       this.responseHeader = responseHeader;
-      this.noOfResults = noOfResults;
       this.results = results;
-      this.noOfDiagnosticInfos = noOfDiagnosticInfos;
       this.diagnosticInfos = diagnosticInfos;
     }
 
     public DeleteReferencesResponse build() {
       DeleteReferencesResponse deleteReferencesResponse =
-          new DeleteReferencesResponse(
-              responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
+          new DeleteReferencesResponse(responseHeader, results, diagnosticInfos);
       return deleteReferencesResponse;
     }
   }
@@ -223,9 +208,7 @@ public class DeleteReferencesResponse extends ExtensionObjectDefinition implemen
     }
     DeleteReferencesResponse that = (DeleteReferencesResponse) o;
     return (getResponseHeader() == that.getResponseHeader())
-        && (getNoOfResults() == that.getNoOfResults())
         && (getResults() == that.getResults())
-        && (getNoOfDiagnosticInfos() == that.getNoOfDiagnosticInfos())
         && (getDiagnosticInfos() == that.getDiagnosticInfos())
         && super.equals(that)
         && true;
@@ -233,13 +216,7 @@ public class DeleteReferencesResponse extends ExtensionObjectDefinition implemen
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getResponseHeader(),
-        getNoOfResults(),
-        getResults(),
-        getNoOfDiagnosticInfos(),
-        getDiagnosticInfos());
+    return Objects.hash(super.hashCode(), getResponseHeader(), getResults(), getDiagnosticInfos());
   }
 
   @Override

@@ -206,7 +206,7 @@ func (m *_COTPParameterTpduSize) GetTypeName() string {
 }
 
 func (m *_COTPParameterTpduSize) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
+	lengthInBits := uint16(m.COTPParameterContract.(*_COTPParameter).GetLengthInBits(ctx))
 
 	// Simple field (tpduSize)
 	lengthInBits += 8

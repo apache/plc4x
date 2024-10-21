@@ -233,7 +233,7 @@ func (m *_CBusCommandDeviceManagement) GetTypeName() string {
 }
 
 func (m *_CBusCommandDeviceManagement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CBusCommandContract.(*_CBusCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CBusCommandContract.(*_CBusCommand).GetLengthInBits(ctx))
 
 	// Simple field (paramNo)
 	lengthInBits += 8

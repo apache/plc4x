@@ -214,7 +214,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetTypeName() string 
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.Items) > 0 {

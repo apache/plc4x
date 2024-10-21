@@ -281,7 +281,7 @@ func (m *_MPropReadCon) GetTypeName() string {
 }
 
 func (m *_MPropReadCon) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIContract.(*_CEMI).GetLengthInBits(ctx))
 
 	// Simple field (interfaceObjectType)
 	lengthInBits += 16

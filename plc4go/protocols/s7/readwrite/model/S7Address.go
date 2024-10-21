@@ -214,7 +214,7 @@ func (m *_S7Address) GetTypeName() string {
 	return "S7Address"
 }
 
-func (m *_S7Address) getLengthInBits(ctx context.Context) uint16 {
+func (m *_S7Address) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (addressType)
 	lengthInBits += 8

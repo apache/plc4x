@@ -38,19 +38,19 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CreateSubscriptionResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "790";
+  public Integer getExtensionId() {
+    return (int) 790;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
+  protected final ResponseHeader responseHeader;
   protected final long subscriptionId;
   protected final double revisedPublishingInterval;
   protected final long revisedLifetimeCount;
   protected final long revisedMaxKeepAliveCount;
 
   public CreateSubscriptionResponse(
-      ExtensionObjectDefinition responseHeader,
+      ResponseHeader responseHeader,
       long subscriptionId,
       double revisedPublishingInterval,
       long revisedLifetimeCount,
@@ -63,7 +63,7 @@ public class CreateSubscriptionResponse extends ExtensionObjectDefinition implem
     this.revisedMaxKeepAliveCount = revisedMaxKeepAliveCount;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
@@ -141,16 +141,17 @@ public class CreateSubscriptionResponse extends ExtensionObjectDefinition implem
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CreateSubscriptionResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     long subscriptionId = readSimpleField("subscriptionId", readUnsignedLong(readBuffer, 32));
@@ -176,14 +177,14 @@ public class CreateSubscriptionResponse extends ExtensionObjectDefinition implem
 
   public static class CreateSubscriptionResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
+    private final ResponseHeader responseHeader;
     private final long subscriptionId;
     private final double revisedPublishingInterval;
     private final long revisedLifetimeCount;
     private final long revisedMaxKeepAliveCount;
 
     public CreateSubscriptionResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
+        ResponseHeader responseHeader,
         long subscriptionId,
         double revisedPublishingInterval,
         long revisedLifetimeCount,

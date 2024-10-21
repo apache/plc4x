@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class LinearConversionDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "32437";
+  public Integer getExtensionId() {
+    return (int) 32437;
   }
 
   // Properties.
@@ -122,7 +122,7 @@ public class LinearConversionDataType extends ExtensionObjectDefinition implemen
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("LinearConversionDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

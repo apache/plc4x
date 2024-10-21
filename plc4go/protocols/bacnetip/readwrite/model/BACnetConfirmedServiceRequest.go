@@ -889,7 +889,7 @@ func (m *_BACnetConfirmedServiceRequest) GetTypeName() string {
 	return "BACnetConfirmedServiceRequest"
 }
 
-func (m *_BACnetConfirmedServiceRequest) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequest) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8

@@ -206,7 +206,7 @@ func (m *_AdsDiscoveryBlockFingerprint) GetTypeName() string {
 }
 
 func (m *_AdsDiscoveryBlockFingerprint) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).GetLengthInBits(ctx))
 
 	// Implicit Field (dataLen)
 	lengthInBits += 16

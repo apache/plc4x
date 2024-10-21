@@ -727,7 +727,7 @@ func (m *_CipService) GetTypeName() string {
 	return "CipService"
 }
 
-func (m *_CipService) getLengthInBits(ctx context.Context) uint16 {
+func (m *_CipService) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (response)
 	lengthInBits += 1

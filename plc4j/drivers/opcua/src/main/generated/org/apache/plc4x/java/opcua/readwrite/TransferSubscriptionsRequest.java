@@ -38,34 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class TransferSubscriptionsRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "841";
+  public Integer getExtensionId() {
+    return (int) 841;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final int noOfSubscriptionIds;
+  protected final RequestHeader requestHeader;
   protected final List<Long> subscriptionIds;
   protected final boolean sendInitialValues;
 
   public TransferSubscriptionsRequest(
-      ExtensionObjectDefinition requestHeader,
-      int noOfSubscriptionIds,
-      List<Long> subscriptionIds,
-      boolean sendInitialValues) {
+      RequestHeader requestHeader, List<Long> subscriptionIds, boolean sendInitialValues) {
     super();
     this.requestHeader = requestHeader;
-    this.noOfSubscriptionIds = noOfSubscriptionIds;
     this.subscriptionIds = subscriptionIds;
     this.sendInitialValues = sendInitialValues;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
-  }
-
-  public int getNoOfSubscriptionIds() {
-    return noOfSubscriptionIds;
   }
 
   public List<Long> getSubscriptionIds() {
@@ -86,8 +77,11 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
     // Simple Field (requestHeader)
     writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfSubscriptionIds)
-    writeSimpleField("noOfSubscriptionIds", noOfSubscriptionIds, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfSubscriptionIds) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfSubscriptionIds =
+        (int) ((((getSubscriptionIds()) == (null)) ? -(1) : COUNT(getSubscriptionIds())));
+    writeImplicitField("noOfSubscriptionIds", noOfSubscriptionIds, writeSignedInt(writeBuffer, 32));
 
     // Array Field (subscriptionIds)
     writeSimpleTypeArrayField(
@@ -116,7 +110,7 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
 
-    // Simple field (noOfSubscriptionIds)
+    // Implicit Field (noOfSubscriptionIds)
     lengthInBits += 32;
 
     // Array field
@@ -134,19 +128,21 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("TransferSubscriptionsRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    int noOfSubscriptionIds = readSimpleField("noOfSubscriptionIds", readSignedInt(readBuffer, 32));
+    int noOfSubscriptionIds =
+        readImplicitField("noOfSubscriptionIds", readSignedInt(readBuffer, 32));
 
     List<Long> subscriptionIds =
         readCountArrayField(
@@ -160,31 +156,25 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
     readBuffer.closeContext("TransferSubscriptionsRequest");
     // Create the instance
     return new TransferSubscriptionsRequestBuilderImpl(
-        requestHeader, noOfSubscriptionIds, subscriptionIds, sendInitialValues);
+        requestHeader, subscriptionIds, sendInitialValues);
   }
 
   public static class TransferSubscriptionsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final int noOfSubscriptionIds;
+    private final RequestHeader requestHeader;
     private final List<Long> subscriptionIds;
     private final boolean sendInitialValues;
 
     public TransferSubscriptionsRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        int noOfSubscriptionIds,
-        List<Long> subscriptionIds,
-        boolean sendInitialValues) {
+        RequestHeader requestHeader, List<Long> subscriptionIds, boolean sendInitialValues) {
       this.requestHeader = requestHeader;
-      this.noOfSubscriptionIds = noOfSubscriptionIds;
       this.subscriptionIds = subscriptionIds;
       this.sendInitialValues = sendInitialValues;
     }
 
     public TransferSubscriptionsRequest build() {
       TransferSubscriptionsRequest transferSubscriptionsRequest =
-          new TransferSubscriptionsRequest(
-              requestHeader, noOfSubscriptionIds, subscriptionIds, sendInitialValues);
+          new TransferSubscriptionsRequest(requestHeader, subscriptionIds, sendInitialValues);
       return transferSubscriptionsRequest;
     }
   }
@@ -199,7 +189,6 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
     }
     TransferSubscriptionsRequest that = (TransferSubscriptionsRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
-        && (getNoOfSubscriptionIds() == that.getNoOfSubscriptionIds())
         && (getSubscriptionIds() == that.getSubscriptionIds())
         && (getSendInitialValues() == that.getSendInitialValues())
         && super.equals(that)
@@ -209,11 +198,7 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getRequestHeader(),
-        getNoOfSubscriptionIds(),
-        getSubscriptionIds(),
-        getSendInitialValues());
+        super.hashCode(), getRequestHeader(), getSubscriptionIds(), getSendInitialValues());
   }
 
   @Override

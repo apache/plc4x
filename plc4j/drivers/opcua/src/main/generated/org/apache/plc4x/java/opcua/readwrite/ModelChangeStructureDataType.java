@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ModelChangeStructureDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "879";
+  public Integer getExtensionId() {
+    return (int) 879;
   }
 
   // Properties.
@@ -109,7 +109,7 @@ public class ModelChangeStructureDataType extends ExtensionObjectDefinition impl
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ModelChangeStructureDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

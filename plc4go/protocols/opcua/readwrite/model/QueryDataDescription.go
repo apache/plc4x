@@ -41,7 +41,7 @@ type QueryDataDescription interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRelativePath returns RelativePath (property field)
-	GetRelativePath() ExtensionObjectDefinition
+	GetRelativePath() RelativePath
 	// GetAttributeId returns AttributeId (property field)
 	GetAttributeId() uint32
 	// GetIndexRange returns IndexRange (property field)
@@ -55,7 +55,7 @@ type QueryDataDescription interface {
 // _QueryDataDescription is the data-structure of this message
 type _QueryDataDescription struct {
 	ExtensionObjectDefinitionContract
-	RelativePath ExtensionObjectDefinition
+	RelativePath RelativePath
 	AttributeId  uint32
 	IndexRange   PascalString
 }
@@ -64,9 +64,9 @@ var _ QueryDataDescription = (*_QueryDataDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryDataDescription)(nil)
 
 // NewQueryDataDescription factory function for _QueryDataDescription
-func NewQueryDataDescription(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) *_QueryDataDescription {
+func NewQueryDataDescription(relativePath RelativePath, attributeId uint32, indexRange PascalString) *_QueryDataDescription {
 	if relativePath == nil {
-		panic("relativePath of type ExtensionObjectDefinition for QueryDataDescription must not be nil")
+		panic("relativePath of type RelativePath for QueryDataDescription must not be nil")
 	}
 	if indexRange == nil {
 		panic("indexRange of type PascalString for QueryDataDescription must not be nil")
@@ -90,11 +90,11 @@ func NewQueryDataDescription(relativePath ExtensionObjectDefinition, attributeId
 type QueryDataDescriptionBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) QueryDataDescriptionBuilder
+	WithMandatoryFields(relativePath RelativePath, attributeId uint32, indexRange PascalString) QueryDataDescriptionBuilder
 	// WithRelativePath adds RelativePath (property field)
-	WithRelativePath(ExtensionObjectDefinition) QueryDataDescriptionBuilder
+	WithRelativePath(RelativePath) QueryDataDescriptionBuilder
 	// WithRelativePathBuilder adds RelativePath (property field) which is build by the builder
-	WithRelativePathBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryDataDescriptionBuilder
+	WithRelativePathBuilder(func(RelativePathBuilder) RelativePathBuilder) QueryDataDescriptionBuilder
 	// WithAttributeId adds AttributeId (property field)
 	WithAttributeId(uint32) QueryDataDescriptionBuilder
 	// WithIndexRange adds IndexRange (property field)
@@ -126,24 +126,24 @@ func (b *_QueryDataDescriptionBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_QueryDataDescriptionBuilder) WithMandatoryFields(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) QueryDataDescriptionBuilder {
+func (b *_QueryDataDescriptionBuilder) WithMandatoryFields(relativePath RelativePath, attributeId uint32, indexRange PascalString) QueryDataDescriptionBuilder {
 	return b.WithRelativePath(relativePath).WithAttributeId(attributeId).WithIndexRange(indexRange)
 }
 
-func (b *_QueryDataDescriptionBuilder) WithRelativePath(relativePath ExtensionObjectDefinition) QueryDataDescriptionBuilder {
+func (b *_QueryDataDescriptionBuilder) WithRelativePath(relativePath RelativePath) QueryDataDescriptionBuilder {
 	b.RelativePath = relativePath
 	return b
 }
 
-func (b *_QueryDataDescriptionBuilder) WithRelativePathBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryDataDescriptionBuilder {
-	builder := builderSupplier(b.RelativePath.CreateExtensionObjectDefinitionBuilder())
+func (b *_QueryDataDescriptionBuilder) WithRelativePathBuilder(builderSupplier func(RelativePathBuilder) RelativePathBuilder) QueryDataDescriptionBuilder {
+	builder := builderSupplier(b.RelativePath.CreateRelativePathBuilder())
 	var err error
 	b.RelativePath, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RelativePathBuilder failed"))
 	}
 	return b
 }
@@ -233,8 +233,8 @@ func (b *_QueryDataDescription) CreateQueryDataDescriptionBuilder() QueryDataDes
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_QueryDataDescription) GetIdentifier() string {
-	return "572"
+func (m *_QueryDataDescription) GetExtensionId() int32 {
+	return int32(572)
 }
 
 ///////////////////////
@@ -251,7 +251,7 @@ func (m *_QueryDataDescription) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_QueryDataDescription) GetRelativePath() ExtensionObjectDefinition {
+func (m *_QueryDataDescription) GetRelativePath() RelativePath {
 	return m.RelativePath
 }
 
@@ -284,7 +284,7 @@ func (m *_QueryDataDescription) GetTypeName() string {
 }
 
 func (m *_QueryDataDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (relativePath)
 	lengthInBits += m.RelativePath.GetLengthInBits(ctx)
@@ -302,7 +302,7 @@ func (m *_QueryDataDescription) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_QueryDataDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__queryDataDescription QueryDataDescription, err error) {
+func (m *_QueryDataDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__queryDataDescription QueryDataDescription, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -313,7 +313,7 @@ func (m *_QueryDataDescription) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	relativePath, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "relativePath", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("542")), readBuffer))
+	relativePath, err := ReadSimpleField[RelativePath](ctx, "relativePath", ReadComplex[RelativePath](ExtensionObjectDefinitionParseWithBufferProducer[RelativePath]((int32)(int32(542))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relativePath' field"))
 	}
@@ -356,7 +356,7 @@ func (m *_QueryDataDescription) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for QueryDataDescription")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "relativePath", m.GetRelativePath(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RelativePath](ctx, "relativePath", m.GetRelativePath(), WriteComplex[RelativePath](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'relativePath' field")
 		}
 
@@ -388,7 +388,7 @@ func (m *_QueryDataDescription) deepCopy() *_QueryDataDescription {
 	}
 	_QueryDataDescriptionCopy := &_QueryDataDescription{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RelativePath.DeepCopy().(ExtensionObjectDefinition),
+		m.RelativePath.DeepCopy().(RelativePath),
 		m.AttributeId,
 		m.IndexRange.DeepCopy().(PascalString),
 	}

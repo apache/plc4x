@@ -226,7 +226,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetTypeName() str
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).GetLengthInBits(ctx))
 
 	// Simple field (bitmask)
 	lengthInBits += m.Bitmask.GetLengthInBits(ctx)

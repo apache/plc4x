@@ -38,17 +38,16 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "867";
+  public Integer getExtensionId() {
+    return (int) 867;
   }
 
   // Properties.
   protected final NodeId sessionId;
   protected final PascalString sessionName;
-  protected final ExtensionObjectDefinition clientDescription;
+  protected final ApplicationDescription clientDescription;
   protected final PascalString serverUri;
   protected final PascalString endpointUrl;
-  protected final int noOfLocaleIds;
   protected final List<PascalString> localeIds;
   protected final double actualSessionTimeout;
   protected final long maxResponseMessageSize;
@@ -57,44 +56,43 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
   protected final long currentSubscriptionsCount;
   protected final long currentMonitoredItemsCount;
   protected final long currentPublishRequestsInQueue;
-  protected final ExtensionObjectDefinition totalRequestCount;
+  protected final ServiceCounterDataType totalRequestCount;
   protected final long unauthorizedRequestCount;
-  protected final ExtensionObjectDefinition readCount;
-  protected final ExtensionObjectDefinition historyReadCount;
-  protected final ExtensionObjectDefinition writeCount;
-  protected final ExtensionObjectDefinition historyUpdateCount;
-  protected final ExtensionObjectDefinition callCount;
-  protected final ExtensionObjectDefinition createMonitoredItemsCount;
-  protected final ExtensionObjectDefinition modifyMonitoredItemsCount;
-  protected final ExtensionObjectDefinition setMonitoringModeCount;
-  protected final ExtensionObjectDefinition setTriggeringCount;
-  protected final ExtensionObjectDefinition deleteMonitoredItemsCount;
-  protected final ExtensionObjectDefinition createSubscriptionCount;
-  protected final ExtensionObjectDefinition modifySubscriptionCount;
-  protected final ExtensionObjectDefinition setPublishingModeCount;
-  protected final ExtensionObjectDefinition publishCount;
-  protected final ExtensionObjectDefinition republishCount;
-  protected final ExtensionObjectDefinition transferSubscriptionsCount;
-  protected final ExtensionObjectDefinition deleteSubscriptionsCount;
-  protected final ExtensionObjectDefinition addNodesCount;
-  protected final ExtensionObjectDefinition addReferencesCount;
-  protected final ExtensionObjectDefinition deleteNodesCount;
-  protected final ExtensionObjectDefinition deleteReferencesCount;
-  protected final ExtensionObjectDefinition browseCount;
-  protected final ExtensionObjectDefinition browseNextCount;
-  protected final ExtensionObjectDefinition translateBrowsePathsToNodeIdsCount;
-  protected final ExtensionObjectDefinition queryFirstCount;
-  protected final ExtensionObjectDefinition queryNextCount;
-  protected final ExtensionObjectDefinition registerNodesCount;
-  protected final ExtensionObjectDefinition unregisterNodesCount;
+  protected final ServiceCounterDataType readCount;
+  protected final ServiceCounterDataType historyReadCount;
+  protected final ServiceCounterDataType writeCount;
+  protected final ServiceCounterDataType historyUpdateCount;
+  protected final ServiceCounterDataType callCount;
+  protected final ServiceCounterDataType createMonitoredItemsCount;
+  protected final ServiceCounterDataType modifyMonitoredItemsCount;
+  protected final ServiceCounterDataType setMonitoringModeCount;
+  protected final ServiceCounterDataType setTriggeringCount;
+  protected final ServiceCounterDataType deleteMonitoredItemsCount;
+  protected final ServiceCounterDataType createSubscriptionCount;
+  protected final ServiceCounterDataType modifySubscriptionCount;
+  protected final ServiceCounterDataType setPublishingModeCount;
+  protected final ServiceCounterDataType publishCount;
+  protected final ServiceCounterDataType republishCount;
+  protected final ServiceCounterDataType transferSubscriptionsCount;
+  protected final ServiceCounterDataType deleteSubscriptionsCount;
+  protected final ServiceCounterDataType addNodesCount;
+  protected final ServiceCounterDataType addReferencesCount;
+  protected final ServiceCounterDataType deleteNodesCount;
+  protected final ServiceCounterDataType deleteReferencesCount;
+  protected final ServiceCounterDataType browseCount;
+  protected final ServiceCounterDataType browseNextCount;
+  protected final ServiceCounterDataType translateBrowsePathsToNodeIdsCount;
+  protected final ServiceCounterDataType queryFirstCount;
+  protected final ServiceCounterDataType queryNextCount;
+  protected final ServiceCounterDataType registerNodesCount;
+  protected final ServiceCounterDataType unregisterNodesCount;
 
   public SessionDiagnosticsDataType(
       NodeId sessionId,
       PascalString sessionName,
-      ExtensionObjectDefinition clientDescription,
+      ApplicationDescription clientDescription,
       PascalString serverUri,
       PascalString endpointUrl,
-      int noOfLocaleIds,
       List<PascalString> localeIds,
       double actualSessionTimeout,
       long maxResponseMessageSize,
@@ -103,43 +101,42 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
       long currentSubscriptionsCount,
       long currentMonitoredItemsCount,
       long currentPublishRequestsInQueue,
-      ExtensionObjectDefinition totalRequestCount,
+      ServiceCounterDataType totalRequestCount,
       long unauthorizedRequestCount,
-      ExtensionObjectDefinition readCount,
-      ExtensionObjectDefinition historyReadCount,
-      ExtensionObjectDefinition writeCount,
-      ExtensionObjectDefinition historyUpdateCount,
-      ExtensionObjectDefinition callCount,
-      ExtensionObjectDefinition createMonitoredItemsCount,
-      ExtensionObjectDefinition modifyMonitoredItemsCount,
-      ExtensionObjectDefinition setMonitoringModeCount,
-      ExtensionObjectDefinition setTriggeringCount,
-      ExtensionObjectDefinition deleteMonitoredItemsCount,
-      ExtensionObjectDefinition createSubscriptionCount,
-      ExtensionObjectDefinition modifySubscriptionCount,
-      ExtensionObjectDefinition setPublishingModeCount,
-      ExtensionObjectDefinition publishCount,
-      ExtensionObjectDefinition republishCount,
-      ExtensionObjectDefinition transferSubscriptionsCount,
-      ExtensionObjectDefinition deleteSubscriptionsCount,
-      ExtensionObjectDefinition addNodesCount,
-      ExtensionObjectDefinition addReferencesCount,
-      ExtensionObjectDefinition deleteNodesCount,
-      ExtensionObjectDefinition deleteReferencesCount,
-      ExtensionObjectDefinition browseCount,
-      ExtensionObjectDefinition browseNextCount,
-      ExtensionObjectDefinition translateBrowsePathsToNodeIdsCount,
-      ExtensionObjectDefinition queryFirstCount,
-      ExtensionObjectDefinition queryNextCount,
-      ExtensionObjectDefinition registerNodesCount,
-      ExtensionObjectDefinition unregisterNodesCount) {
+      ServiceCounterDataType readCount,
+      ServiceCounterDataType historyReadCount,
+      ServiceCounterDataType writeCount,
+      ServiceCounterDataType historyUpdateCount,
+      ServiceCounterDataType callCount,
+      ServiceCounterDataType createMonitoredItemsCount,
+      ServiceCounterDataType modifyMonitoredItemsCount,
+      ServiceCounterDataType setMonitoringModeCount,
+      ServiceCounterDataType setTriggeringCount,
+      ServiceCounterDataType deleteMonitoredItemsCount,
+      ServiceCounterDataType createSubscriptionCount,
+      ServiceCounterDataType modifySubscriptionCount,
+      ServiceCounterDataType setPublishingModeCount,
+      ServiceCounterDataType publishCount,
+      ServiceCounterDataType republishCount,
+      ServiceCounterDataType transferSubscriptionsCount,
+      ServiceCounterDataType deleteSubscriptionsCount,
+      ServiceCounterDataType addNodesCount,
+      ServiceCounterDataType addReferencesCount,
+      ServiceCounterDataType deleteNodesCount,
+      ServiceCounterDataType deleteReferencesCount,
+      ServiceCounterDataType browseCount,
+      ServiceCounterDataType browseNextCount,
+      ServiceCounterDataType translateBrowsePathsToNodeIdsCount,
+      ServiceCounterDataType queryFirstCount,
+      ServiceCounterDataType queryNextCount,
+      ServiceCounterDataType registerNodesCount,
+      ServiceCounterDataType unregisterNodesCount) {
     super();
     this.sessionId = sessionId;
     this.sessionName = sessionName;
     this.clientDescription = clientDescription;
     this.serverUri = serverUri;
     this.endpointUrl = endpointUrl;
-    this.noOfLocaleIds = noOfLocaleIds;
     this.localeIds = localeIds;
     this.actualSessionTimeout = actualSessionTimeout;
     this.maxResponseMessageSize = maxResponseMessageSize;
@@ -188,7 +185,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     return sessionName;
   }
 
-  public ExtensionObjectDefinition getClientDescription() {
+  public ApplicationDescription getClientDescription() {
     return clientDescription;
   }
 
@@ -198,10 +195,6 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
 
   public PascalString getEndpointUrl() {
     return endpointUrl;
-  }
-
-  public int getNoOfLocaleIds() {
-    return noOfLocaleIds;
   }
 
   public List<PascalString> getLocaleIds() {
@@ -236,7 +229,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     return currentPublishRequestsInQueue;
   }
 
-  public ExtensionObjectDefinition getTotalRequestCount() {
+  public ServiceCounterDataType getTotalRequestCount() {
     return totalRequestCount;
   }
 
@@ -244,115 +237,115 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     return unauthorizedRequestCount;
   }
 
-  public ExtensionObjectDefinition getReadCount() {
+  public ServiceCounterDataType getReadCount() {
     return readCount;
   }
 
-  public ExtensionObjectDefinition getHistoryReadCount() {
+  public ServiceCounterDataType getHistoryReadCount() {
     return historyReadCount;
   }
 
-  public ExtensionObjectDefinition getWriteCount() {
+  public ServiceCounterDataType getWriteCount() {
     return writeCount;
   }
 
-  public ExtensionObjectDefinition getHistoryUpdateCount() {
+  public ServiceCounterDataType getHistoryUpdateCount() {
     return historyUpdateCount;
   }
 
-  public ExtensionObjectDefinition getCallCount() {
+  public ServiceCounterDataType getCallCount() {
     return callCount;
   }
 
-  public ExtensionObjectDefinition getCreateMonitoredItemsCount() {
+  public ServiceCounterDataType getCreateMonitoredItemsCount() {
     return createMonitoredItemsCount;
   }
 
-  public ExtensionObjectDefinition getModifyMonitoredItemsCount() {
+  public ServiceCounterDataType getModifyMonitoredItemsCount() {
     return modifyMonitoredItemsCount;
   }
 
-  public ExtensionObjectDefinition getSetMonitoringModeCount() {
+  public ServiceCounterDataType getSetMonitoringModeCount() {
     return setMonitoringModeCount;
   }
 
-  public ExtensionObjectDefinition getSetTriggeringCount() {
+  public ServiceCounterDataType getSetTriggeringCount() {
     return setTriggeringCount;
   }
 
-  public ExtensionObjectDefinition getDeleteMonitoredItemsCount() {
+  public ServiceCounterDataType getDeleteMonitoredItemsCount() {
     return deleteMonitoredItemsCount;
   }
 
-  public ExtensionObjectDefinition getCreateSubscriptionCount() {
+  public ServiceCounterDataType getCreateSubscriptionCount() {
     return createSubscriptionCount;
   }
 
-  public ExtensionObjectDefinition getModifySubscriptionCount() {
+  public ServiceCounterDataType getModifySubscriptionCount() {
     return modifySubscriptionCount;
   }
 
-  public ExtensionObjectDefinition getSetPublishingModeCount() {
+  public ServiceCounterDataType getSetPublishingModeCount() {
     return setPublishingModeCount;
   }
 
-  public ExtensionObjectDefinition getPublishCount() {
+  public ServiceCounterDataType getPublishCount() {
     return publishCount;
   }
 
-  public ExtensionObjectDefinition getRepublishCount() {
+  public ServiceCounterDataType getRepublishCount() {
     return republishCount;
   }
 
-  public ExtensionObjectDefinition getTransferSubscriptionsCount() {
+  public ServiceCounterDataType getTransferSubscriptionsCount() {
     return transferSubscriptionsCount;
   }
 
-  public ExtensionObjectDefinition getDeleteSubscriptionsCount() {
+  public ServiceCounterDataType getDeleteSubscriptionsCount() {
     return deleteSubscriptionsCount;
   }
 
-  public ExtensionObjectDefinition getAddNodesCount() {
+  public ServiceCounterDataType getAddNodesCount() {
     return addNodesCount;
   }
 
-  public ExtensionObjectDefinition getAddReferencesCount() {
+  public ServiceCounterDataType getAddReferencesCount() {
     return addReferencesCount;
   }
 
-  public ExtensionObjectDefinition getDeleteNodesCount() {
+  public ServiceCounterDataType getDeleteNodesCount() {
     return deleteNodesCount;
   }
 
-  public ExtensionObjectDefinition getDeleteReferencesCount() {
+  public ServiceCounterDataType getDeleteReferencesCount() {
     return deleteReferencesCount;
   }
 
-  public ExtensionObjectDefinition getBrowseCount() {
+  public ServiceCounterDataType getBrowseCount() {
     return browseCount;
   }
 
-  public ExtensionObjectDefinition getBrowseNextCount() {
+  public ServiceCounterDataType getBrowseNextCount() {
     return browseNextCount;
   }
 
-  public ExtensionObjectDefinition getTranslateBrowsePathsToNodeIdsCount() {
+  public ServiceCounterDataType getTranslateBrowsePathsToNodeIdsCount() {
     return translateBrowsePathsToNodeIdsCount;
   }
 
-  public ExtensionObjectDefinition getQueryFirstCount() {
+  public ServiceCounterDataType getQueryFirstCount() {
     return queryFirstCount;
   }
 
-  public ExtensionObjectDefinition getQueryNextCount() {
+  public ServiceCounterDataType getQueryNextCount() {
     return queryNextCount;
   }
 
-  public ExtensionObjectDefinition getRegisterNodesCount() {
+  public ServiceCounterDataType getRegisterNodesCount() {
     return registerNodesCount;
   }
 
-  public ExtensionObjectDefinition getUnregisterNodesCount() {
+  public ServiceCounterDataType getUnregisterNodesCount() {
     return unregisterNodesCount;
   }
 
@@ -378,8 +371,10 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     // Simple Field (endpointUrl)
     writeSimpleField("endpointUrl", endpointUrl, writeComplex(writeBuffer));
 
-    // Simple Field (noOfLocaleIds)
-    writeSimpleField("noOfLocaleIds", noOfLocaleIds, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfLocaleIds) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfLocaleIds = (int) ((((getLocaleIds()) == (null)) ? -(1) : COUNT(getLocaleIds())));
+    writeImplicitField("noOfLocaleIds", noOfLocaleIds, writeSignedInt(writeBuffer, 32));
 
     // Array Field (localeIds)
     writeComplexTypeArrayField("localeIds", localeIds, writeBuffer);
@@ -543,7 +538,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     // Simple field (endpointUrl)
     lengthInBits += endpointUrl.getLengthInBits();
 
-    // Simple field (noOfLocaleIds)
+    // Implicit Field (noOfLocaleIds)
     lengthInBits += 32;
 
     // Array field
@@ -670,7 +665,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SessionDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -682,11 +677,13 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
         readSimpleField(
             "sessionName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    ExtensionObjectDefinition clientDescription =
+    ApplicationDescription clientDescription =
         readSimpleField(
             "clientDescription",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("310")),
+                () ->
+                    (ApplicationDescription)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (310)),
                 readBuffer));
 
     PascalString serverUri =
@@ -697,7 +694,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
         readSimpleField(
             "endpointUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    int noOfLocaleIds = readSimpleField("noOfLocaleIds", readSignedInt(readBuffer, 32));
+    int noOfLocaleIds = readImplicitField("noOfLocaleIds", readSignedInt(readBuffer, 32));
 
     List<PascalString> localeIds =
         readCountArrayField(
@@ -726,210 +723,268 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     long currentPublishRequestsInQueue =
         readSimpleField("currentPublishRequestsInQueue", readUnsignedLong(readBuffer, 32));
 
-    ExtensionObjectDefinition totalRequestCount =
+    ServiceCounterDataType totalRequestCount =
         readSimpleField(
             "totalRequestCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
     long unauthorizedRequestCount =
         readSimpleField("unauthorizedRequestCount", readUnsignedLong(readBuffer, 32));
 
-    ExtensionObjectDefinition readCount =
+    ServiceCounterDataType readCount =
         readSimpleField(
             "readCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition historyReadCount =
+    ServiceCounterDataType historyReadCount =
         readSimpleField(
             "historyReadCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition writeCount =
+    ServiceCounterDataType writeCount =
         readSimpleField(
             "writeCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition historyUpdateCount =
+    ServiceCounterDataType historyUpdateCount =
         readSimpleField(
             "historyUpdateCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition callCount =
+    ServiceCounterDataType callCount =
         readSimpleField(
             "callCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition createMonitoredItemsCount =
+    ServiceCounterDataType createMonitoredItemsCount =
         readSimpleField(
             "createMonitoredItemsCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition modifyMonitoredItemsCount =
+    ServiceCounterDataType modifyMonitoredItemsCount =
         readSimpleField(
             "modifyMonitoredItemsCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition setMonitoringModeCount =
+    ServiceCounterDataType setMonitoringModeCount =
         readSimpleField(
             "setMonitoringModeCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition setTriggeringCount =
+    ServiceCounterDataType setTriggeringCount =
         readSimpleField(
             "setTriggeringCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition deleteMonitoredItemsCount =
+    ServiceCounterDataType deleteMonitoredItemsCount =
         readSimpleField(
             "deleteMonitoredItemsCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition createSubscriptionCount =
+    ServiceCounterDataType createSubscriptionCount =
         readSimpleField(
             "createSubscriptionCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition modifySubscriptionCount =
+    ServiceCounterDataType modifySubscriptionCount =
         readSimpleField(
             "modifySubscriptionCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition setPublishingModeCount =
+    ServiceCounterDataType setPublishingModeCount =
         readSimpleField(
             "setPublishingModeCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition publishCount =
+    ServiceCounterDataType publishCount =
         readSimpleField(
             "publishCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition republishCount =
+    ServiceCounterDataType republishCount =
         readSimpleField(
             "republishCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition transferSubscriptionsCount =
+    ServiceCounterDataType transferSubscriptionsCount =
         readSimpleField(
             "transferSubscriptionsCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition deleteSubscriptionsCount =
+    ServiceCounterDataType deleteSubscriptionsCount =
         readSimpleField(
             "deleteSubscriptionsCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition addNodesCount =
+    ServiceCounterDataType addNodesCount =
         readSimpleField(
             "addNodesCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition addReferencesCount =
+    ServiceCounterDataType addReferencesCount =
         readSimpleField(
             "addReferencesCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition deleteNodesCount =
+    ServiceCounterDataType deleteNodesCount =
         readSimpleField(
             "deleteNodesCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition deleteReferencesCount =
+    ServiceCounterDataType deleteReferencesCount =
         readSimpleField(
             "deleteReferencesCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition browseCount =
+    ServiceCounterDataType browseCount =
         readSimpleField(
             "browseCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition browseNextCount =
+    ServiceCounterDataType browseNextCount =
         readSimpleField(
             "browseNextCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition translateBrowsePathsToNodeIdsCount =
+    ServiceCounterDataType translateBrowsePathsToNodeIdsCount =
         readSimpleField(
             "translateBrowsePathsToNodeIdsCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition queryFirstCount =
+    ServiceCounterDataType queryFirstCount =
         readSimpleField(
             "queryFirstCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition queryNextCount =
+    ServiceCounterDataType queryNextCount =
         readSimpleField(
             "queryNextCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition registerNodesCount =
+    ServiceCounterDataType registerNodesCount =
         readSimpleField(
             "registerNodesCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
-    ExtensionObjectDefinition unregisterNodesCount =
+    ServiceCounterDataType unregisterNodesCount =
         readSimpleField(
             "unregisterNodesCount",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
+                () ->
+                    (ServiceCounterDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (873)),
                 readBuffer));
 
     readBuffer.closeContext("SessionDiagnosticsDataType");
@@ -940,7 +995,6 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
         clientDescription,
         serverUri,
         endpointUrl,
-        noOfLocaleIds,
         localeIds,
         actualSessionTimeout,
         maxResponseMessageSize,
@@ -985,10 +1039,9 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId sessionId;
     private final PascalString sessionName;
-    private final ExtensionObjectDefinition clientDescription;
+    private final ApplicationDescription clientDescription;
     private final PascalString serverUri;
     private final PascalString endpointUrl;
-    private final int noOfLocaleIds;
     private final List<PascalString> localeIds;
     private final double actualSessionTimeout;
     private final long maxResponseMessageSize;
@@ -997,44 +1050,43 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     private final long currentSubscriptionsCount;
     private final long currentMonitoredItemsCount;
     private final long currentPublishRequestsInQueue;
-    private final ExtensionObjectDefinition totalRequestCount;
+    private final ServiceCounterDataType totalRequestCount;
     private final long unauthorizedRequestCount;
-    private final ExtensionObjectDefinition readCount;
-    private final ExtensionObjectDefinition historyReadCount;
-    private final ExtensionObjectDefinition writeCount;
-    private final ExtensionObjectDefinition historyUpdateCount;
-    private final ExtensionObjectDefinition callCount;
-    private final ExtensionObjectDefinition createMonitoredItemsCount;
-    private final ExtensionObjectDefinition modifyMonitoredItemsCount;
-    private final ExtensionObjectDefinition setMonitoringModeCount;
-    private final ExtensionObjectDefinition setTriggeringCount;
-    private final ExtensionObjectDefinition deleteMonitoredItemsCount;
-    private final ExtensionObjectDefinition createSubscriptionCount;
-    private final ExtensionObjectDefinition modifySubscriptionCount;
-    private final ExtensionObjectDefinition setPublishingModeCount;
-    private final ExtensionObjectDefinition publishCount;
-    private final ExtensionObjectDefinition republishCount;
-    private final ExtensionObjectDefinition transferSubscriptionsCount;
-    private final ExtensionObjectDefinition deleteSubscriptionsCount;
-    private final ExtensionObjectDefinition addNodesCount;
-    private final ExtensionObjectDefinition addReferencesCount;
-    private final ExtensionObjectDefinition deleteNodesCount;
-    private final ExtensionObjectDefinition deleteReferencesCount;
-    private final ExtensionObjectDefinition browseCount;
-    private final ExtensionObjectDefinition browseNextCount;
-    private final ExtensionObjectDefinition translateBrowsePathsToNodeIdsCount;
-    private final ExtensionObjectDefinition queryFirstCount;
-    private final ExtensionObjectDefinition queryNextCount;
-    private final ExtensionObjectDefinition registerNodesCount;
-    private final ExtensionObjectDefinition unregisterNodesCount;
+    private final ServiceCounterDataType readCount;
+    private final ServiceCounterDataType historyReadCount;
+    private final ServiceCounterDataType writeCount;
+    private final ServiceCounterDataType historyUpdateCount;
+    private final ServiceCounterDataType callCount;
+    private final ServiceCounterDataType createMonitoredItemsCount;
+    private final ServiceCounterDataType modifyMonitoredItemsCount;
+    private final ServiceCounterDataType setMonitoringModeCount;
+    private final ServiceCounterDataType setTriggeringCount;
+    private final ServiceCounterDataType deleteMonitoredItemsCount;
+    private final ServiceCounterDataType createSubscriptionCount;
+    private final ServiceCounterDataType modifySubscriptionCount;
+    private final ServiceCounterDataType setPublishingModeCount;
+    private final ServiceCounterDataType publishCount;
+    private final ServiceCounterDataType republishCount;
+    private final ServiceCounterDataType transferSubscriptionsCount;
+    private final ServiceCounterDataType deleteSubscriptionsCount;
+    private final ServiceCounterDataType addNodesCount;
+    private final ServiceCounterDataType addReferencesCount;
+    private final ServiceCounterDataType deleteNodesCount;
+    private final ServiceCounterDataType deleteReferencesCount;
+    private final ServiceCounterDataType browseCount;
+    private final ServiceCounterDataType browseNextCount;
+    private final ServiceCounterDataType translateBrowsePathsToNodeIdsCount;
+    private final ServiceCounterDataType queryFirstCount;
+    private final ServiceCounterDataType queryNextCount;
+    private final ServiceCounterDataType registerNodesCount;
+    private final ServiceCounterDataType unregisterNodesCount;
 
     public SessionDiagnosticsDataTypeBuilderImpl(
         NodeId sessionId,
         PascalString sessionName,
-        ExtensionObjectDefinition clientDescription,
+        ApplicationDescription clientDescription,
         PascalString serverUri,
         PascalString endpointUrl,
-        int noOfLocaleIds,
         List<PascalString> localeIds,
         double actualSessionTimeout,
         long maxResponseMessageSize,
@@ -1043,42 +1095,41 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
         long currentSubscriptionsCount,
         long currentMonitoredItemsCount,
         long currentPublishRequestsInQueue,
-        ExtensionObjectDefinition totalRequestCount,
+        ServiceCounterDataType totalRequestCount,
         long unauthorizedRequestCount,
-        ExtensionObjectDefinition readCount,
-        ExtensionObjectDefinition historyReadCount,
-        ExtensionObjectDefinition writeCount,
-        ExtensionObjectDefinition historyUpdateCount,
-        ExtensionObjectDefinition callCount,
-        ExtensionObjectDefinition createMonitoredItemsCount,
-        ExtensionObjectDefinition modifyMonitoredItemsCount,
-        ExtensionObjectDefinition setMonitoringModeCount,
-        ExtensionObjectDefinition setTriggeringCount,
-        ExtensionObjectDefinition deleteMonitoredItemsCount,
-        ExtensionObjectDefinition createSubscriptionCount,
-        ExtensionObjectDefinition modifySubscriptionCount,
-        ExtensionObjectDefinition setPublishingModeCount,
-        ExtensionObjectDefinition publishCount,
-        ExtensionObjectDefinition republishCount,
-        ExtensionObjectDefinition transferSubscriptionsCount,
-        ExtensionObjectDefinition deleteSubscriptionsCount,
-        ExtensionObjectDefinition addNodesCount,
-        ExtensionObjectDefinition addReferencesCount,
-        ExtensionObjectDefinition deleteNodesCount,
-        ExtensionObjectDefinition deleteReferencesCount,
-        ExtensionObjectDefinition browseCount,
-        ExtensionObjectDefinition browseNextCount,
-        ExtensionObjectDefinition translateBrowsePathsToNodeIdsCount,
-        ExtensionObjectDefinition queryFirstCount,
-        ExtensionObjectDefinition queryNextCount,
-        ExtensionObjectDefinition registerNodesCount,
-        ExtensionObjectDefinition unregisterNodesCount) {
+        ServiceCounterDataType readCount,
+        ServiceCounterDataType historyReadCount,
+        ServiceCounterDataType writeCount,
+        ServiceCounterDataType historyUpdateCount,
+        ServiceCounterDataType callCount,
+        ServiceCounterDataType createMonitoredItemsCount,
+        ServiceCounterDataType modifyMonitoredItemsCount,
+        ServiceCounterDataType setMonitoringModeCount,
+        ServiceCounterDataType setTriggeringCount,
+        ServiceCounterDataType deleteMonitoredItemsCount,
+        ServiceCounterDataType createSubscriptionCount,
+        ServiceCounterDataType modifySubscriptionCount,
+        ServiceCounterDataType setPublishingModeCount,
+        ServiceCounterDataType publishCount,
+        ServiceCounterDataType republishCount,
+        ServiceCounterDataType transferSubscriptionsCount,
+        ServiceCounterDataType deleteSubscriptionsCount,
+        ServiceCounterDataType addNodesCount,
+        ServiceCounterDataType addReferencesCount,
+        ServiceCounterDataType deleteNodesCount,
+        ServiceCounterDataType deleteReferencesCount,
+        ServiceCounterDataType browseCount,
+        ServiceCounterDataType browseNextCount,
+        ServiceCounterDataType translateBrowsePathsToNodeIdsCount,
+        ServiceCounterDataType queryFirstCount,
+        ServiceCounterDataType queryNextCount,
+        ServiceCounterDataType registerNodesCount,
+        ServiceCounterDataType unregisterNodesCount) {
       this.sessionId = sessionId;
       this.sessionName = sessionName;
       this.clientDescription = clientDescription;
       this.serverUri = serverUri;
       this.endpointUrl = endpointUrl;
-      this.noOfLocaleIds = noOfLocaleIds;
       this.localeIds = localeIds;
       this.actualSessionTimeout = actualSessionTimeout;
       this.maxResponseMessageSize = maxResponseMessageSize;
@@ -1127,7 +1178,6 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
               clientDescription,
               serverUri,
               endpointUrl,
-              noOfLocaleIds,
               localeIds,
               actualSessionTimeout,
               maxResponseMessageSize,
@@ -1184,7 +1234,6 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
         && (getClientDescription() == that.getClientDescription())
         && (getServerUri() == that.getServerUri())
         && (getEndpointUrl() == that.getEndpointUrl())
-        && (getNoOfLocaleIds() == that.getNoOfLocaleIds())
         && (getLocaleIds() == that.getLocaleIds())
         && (getActualSessionTimeout() == that.getActualSessionTimeout())
         && (getMaxResponseMessageSize() == that.getMaxResponseMessageSize())
@@ -1236,7 +1285,6 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
         getClientDescription(),
         getServerUri(),
         getEndpointUrl(),
-        getNoOfLocaleIds(),
         getLocaleIds(),
         getActualSessionTimeout(),
         getMaxResponseMessageSize(),

@@ -79,12 +79,6 @@ func (m OpcuaParserHelper) Parse(typeName string, arguments []string, io utils.R
 		return AudioDataTypeParseWithBuffer(context.Background(), io)
 	case "SecurityHeader":
 		return SecurityHeaderParseWithBuffer(context.Background(), io)
-	case "UserIdentityTokenDefinition":
-		identifier, err := utils.StrToString(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return UserIdentityTokenDefinitionParseWithBuffer[UserIdentityTokenDefinition](context.Background(), io, identifier)
 	case "ContinuationPoint":
 		return ContinuationPointParseWithBuffer(context.Background(), io)
 	case "Variant":
@@ -107,8 +101,6 @@ func (m OpcuaParserHelper) Parse(typeName string, arguments []string, io utils.R
 		return StructureParseWithBuffer(context.Background(), io)
 	case "OpcuaConstants":
 		return OpcuaConstantsParseWithBuffer(context.Background(), io)
-	case "ExtensionHeader":
-		return ExtensionHeaderParseWithBuffer(context.Background(), io)
 	case "UtcTime":
 		return UtcTimeParseWithBuffer(context.Background(), io)
 	case "MessagePDU":
@@ -130,7 +122,7 @@ func (m OpcuaParserHelper) Parse(typeName string, arguments []string, io utils.R
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return ExtensionObjectParseWithBuffer(context.Background(), io, includeEncodingMask)
+		return ExtensionObjectParseWithBuffer[ExtensionObject](context.Background(), io, includeEncodingMask)
 	case "LocalizedText":
 		return LocalizedTextParseWithBuffer(context.Background(), io)
 	case "IntegerId":
@@ -160,11 +152,11 @@ func (m OpcuaParserHelper) Parse(typeName string, arguments []string, io utils.R
 	case "ImageBMP":
 		return ImageBMPParseWithBuffer(context.Background(), io)
 	case "ExtensionObjectDefinition":
-		identifier, err := utils.StrToString(arguments[0])
+		extensionId, err := utils.StrToInt32(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return ExtensionObjectDefinitionParseWithBuffer[ExtensionObjectDefinition](context.Background(), io, identifier)
+		return ExtensionObjectDefinitionParseWithBuffer[ExtensionObjectDefinition](context.Background(), io, extensionId)
 	case "ExpandedNodeId":
 		return ExpandedNodeIdParseWithBuffer(context.Background(), io)
 	case "OpcuaProtocolLimits":

@@ -280,7 +280,7 @@ func (m *_StatusRequest) GetTypeName() string {
 	return "StatusRequest"
 }
 
-func (m *_StatusRequest) getLengthInBits(ctx context.Context) uint16 {
+func (m *_StatusRequest) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

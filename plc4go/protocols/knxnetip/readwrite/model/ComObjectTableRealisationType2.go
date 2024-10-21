@@ -236,7 +236,7 @@ func (m *_ComObjectTableRealisationType2) GetTypeName() string {
 }
 
 func (m *_ComObjectTableRealisationType2) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ComObjectTableContract.(*_ComObjectTable).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ComObjectTableContract.(*_ComObjectTable).GetLengthInBits(ctx))
 
 	// Simple field (numEntries)
 	lengthInBits += 8

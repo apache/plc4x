@@ -42,8 +42,6 @@ type ContentFilterElement interface {
 	ExtensionObjectDefinition
 	// GetFilterOperator returns FilterOperator (property field)
 	GetFilterOperator() FilterOperator
-	// GetNoOfFilterOperands returns NoOfFilterOperands (property field)
-	GetNoOfFilterOperands() int32
 	// GetFilterOperands returns FilterOperands (property field)
 	GetFilterOperands() []ExtensionObject
 	// IsContentFilterElement is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -55,20 +53,18 @@ type ContentFilterElement interface {
 // _ContentFilterElement is the data-structure of this message
 type _ContentFilterElement struct {
 	ExtensionObjectDefinitionContract
-	FilterOperator     FilterOperator
-	NoOfFilterOperands int32
-	FilterOperands     []ExtensionObject
+	FilterOperator FilterOperator
+	FilterOperands []ExtensionObject
 }
 
 var _ ContentFilterElement = (*_ContentFilterElement)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ContentFilterElement)(nil)
 
 // NewContentFilterElement factory function for _ContentFilterElement
-func NewContentFilterElement(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) *_ContentFilterElement {
+func NewContentFilterElement(filterOperator FilterOperator, filterOperands []ExtensionObject) *_ContentFilterElement {
 	_result := &_ContentFilterElement{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		FilterOperator:                    filterOperator,
-		NoOfFilterOperands:                noOfFilterOperands,
 		FilterOperands:                    filterOperands,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -84,11 +80,9 @@ func NewContentFilterElement(filterOperator FilterOperator, noOfFilterOperands i
 type ContentFilterElementBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) ContentFilterElementBuilder
+	WithMandatoryFields(filterOperator FilterOperator, filterOperands []ExtensionObject) ContentFilterElementBuilder
 	// WithFilterOperator adds FilterOperator (property field)
 	WithFilterOperator(FilterOperator) ContentFilterElementBuilder
-	// WithNoOfFilterOperands adds NoOfFilterOperands (property field)
-	WithNoOfFilterOperands(int32) ContentFilterElementBuilder
 	// WithFilterOperands adds FilterOperands (property field)
 	WithFilterOperands(...ExtensionObject) ContentFilterElementBuilder
 	// Build builds the ContentFilterElement or returns an error if something is wrong
@@ -116,17 +110,12 @@ func (b *_ContentFilterElementBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ContentFilterElementBuilder) WithMandatoryFields(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) ContentFilterElementBuilder {
-	return b.WithFilterOperator(filterOperator).WithNoOfFilterOperands(noOfFilterOperands).WithFilterOperands(filterOperands...)
+func (b *_ContentFilterElementBuilder) WithMandatoryFields(filterOperator FilterOperator, filterOperands []ExtensionObject) ContentFilterElementBuilder {
+	return b.WithFilterOperator(filterOperator).WithFilterOperands(filterOperands...)
 }
 
 func (b *_ContentFilterElementBuilder) WithFilterOperator(filterOperator FilterOperator) ContentFilterElementBuilder {
 	b.FilterOperator = filterOperator
-	return b
-}
-
-func (b *_ContentFilterElementBuilder) WithNoOfFilterOperands(noOfFilterOperands int32) ContentFilterElementBuilder {
-	b.NoOfFilterOperands = noOfFilterOperands
 	return b
 }
 
@@ -185,8 +174,8 @@ func (b *_ContentFilterElement) CreateContentFilterElementBuilder() ContentFilte
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ContentFilterElement) GetIdentifier() string {
-	return "585"
+func (m *_ContentFilterElement) GetExtensionId() int32 {
+	return int32(585)
 }
 
 ///////////////////////
@@ -205,10 +194,6 @@ func (m *_ContentFilterElement) GetParent() ExtensionObjectDefinitionContract {
 
 func (m *_ContentFilterElement) GetFilterOperator() FilterOperator {
 	return m.FilterOperator
-}
-
-func (m *_ContentFilterElement) GetNoOfFilterOperands() int32 {
-	return m.NoOfFilterOperands
 }
 
 func (m *_ContentFilterElement) GetFilterOperands() []ExtensionObject {
@@ -236,12 +221,12 @@ func (m *_ContentFilterElement) GetTypeName() string {
 }
 
 func (m *_ContentFilterElement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (filterOperator)
 	lengthInBits += 32
 
-	// Simple field (noOfFilterOperands)
+	// Implicit Field (noOfFilterOperands)
 	lengthInBits += 32
 
 	// Array field
@@ -261,7 +246,7 @@ func (m *_ContentFilterElement) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ContentFilterElement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__contentFilterElement ContentFilterElement, err error) {
+func (m *_ContentFilterElement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__contentFilterElement ContentFilterElement, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -278,13 +263,13 @@ func (m *_ContentFilterElement) parse(ctx context.Context, readBuffer utils.Read
 	}
 	m.FilterOperator = filterOperator
 
-	noOfFilterOperands, err := ReadSimpleField(ctx, "noOfFilterOperands", ReadSignedInt(readBuffer, uint8(32)))
+	noOfFilterOperands, err := ReadImplicitField[int32](ctx, "noOfFilterOperands", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfFilterOperands' field"))
 	}
-	m.NoOfFilterOperands = noOfFilterOperands
+	_ = noOfFilterOperands
 
-	filterOperands, err := ReadCountArrayField[ExtensionObject](ctx, "filterOperands", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer), uint64(noOfFilterOperands))
+	filterOperands, err := ReadCountArrayField[ExtensionObject](ctx, "filterOperands", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), uint64(noOfFilterOperands))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterOperands' field"))
 	}
@@ -318,8 +303,8 @@ func (m *_ContentFilterElement) SerializeWithWriteBuffer(ctx context.Context, wr
 		if err := WriteSimpleEnumField[FilterOperator](ctx, "filterOperator", "FilterOperator", m.GetFilterOperator(), WriteEnum[FilterOperator, uint32](FilterOperator.GetValue, FilterOperator.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
 			return errors.Wrap(err, "Error serializing 'filterOperator' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfFilterOperands", m.GetNoOfFilterOperands(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfFilterOperands := int32(utils.InlineIf(bool((m.GetFilterOperands()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetFilterOperands()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfFilterOperands", noOfFilterOperands, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfFilterOperands' field")
 		}
 
@@ -348,7 +333,6 @@ func (m *_ContentFilterElement) deepCopy() *_ContentFilterElement {
 	_ContentFilterElementCopy := &_ContentFilterElement{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.FilterOperator,
-		m.NoOfFilterOperands,
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.FilterOperands),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
