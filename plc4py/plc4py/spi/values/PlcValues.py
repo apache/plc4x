@@ -19,7 +19,7 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
-from ...api.value.PlcValue import PlcValue
+from plc4py.api.value.PlcValue import PlcValue
 
 
 class PlcINT(PlcValue[int]):

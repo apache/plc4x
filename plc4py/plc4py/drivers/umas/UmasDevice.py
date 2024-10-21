@@ -100,6 +100,16 @@ from plc4py.protocols.umas.readwrite.VariableReadRequestReference import (
 from plc4py.spi.generation.ReadBuffer import ReadBufferByteBased
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.utils.GenericTypes import ByteOrder
+from plc4py.protocols.umas.readwrite.UmasPDUWriteVariableRequest import (
+    UmasPDUWriteVariableRequestBuilder,
+)
+from plc4py.protocols.umas.readwrite.UmasPDUWriteVariableResponse import (
+    UmasPDUWriteVariableResponse,
+)
+from plc4py.protocols.umas.readwrite.VariableWriteRequestReference import (
+    VariableWriteRequestReference,
+)
+from plc4py.spi.values.PlcValues import PlcNull
 
 
 @dataclass
@@ -171,7 +181,7 @@ class UmasDevice:
         return_dict = {}
         for kea, tag in tags.items():
             temp_variable = UmasVariableBuilder(
-                kea, tag, data_types, data_type_children, base_offset=tag.base_offset
+                kea, tag, data_types, data_type_children, base_offset=0
             ).build()
             if temp_variable is not None:
                 return_dict[kea] = temp_variable
@@ -413,6 +423,52 @@ class UmasDevice:
         response = PlcReadResponse(PlcResponseCode.OK, values)
         return response
 
+    async def _send_write_variable_request(
+        self,
+        transport: Transport,
+        loop: AbstractEventLoop,
+        request,
+        sorted_tags,
+    ):
+        message_future = loop.create_future()
+
+        sorted_variable_list: List[VariableWriteRequestReference] = [
+            variable_reference[1] for variable_reference in sorted_tags
+        ]
+        request_pdu = UmasPDUWriteVariableRequestBuilder(
+            crc=self.project_crc,
+            variable_count=len(sorted_variable_list),
+            variables=sorted_variable_list,
+        ).build(0, 0)
+
+        protocol = transport.protocol
+        protocol.write_wait_for_response(
+            request_pdu,
+            transport,
+            message_future,
+        )
+
+        await message_future
+        variable_name_response: UmasPDUWriteVariableResponse = message_future.result()
+
+        values: Dict[str, ResponseItem[PlcValue]] = {}
+        for key, tag in sorted_tags:
+            if variable_name_response.umas_request_function_key != 254:
+                response_item = ResponseItem(
+                    PlcResponseCode.OK,
+                    PlcNull(None),
+                )
+            else:
+                response_item = ResponseItem(
+                    PlcResponseCode.REMOTE_ERROR,
+                    PlcNull(None),
+                )
+
+            values[key] = response_item
+
+        response = PlcReadResponse(PlcResponseCode.OK, values)
+        return response
+
     def _sort_tags_based_on_memory_address(self, request):
         tag_list: List[List[Tuple[str, VariableReadRequestReference]]] = [[]]
         current_list_index = 0
@@ -432,11 +488,46 @@ class UmasDevice:
             current_list.append(
                 (
                     kea,
-                    variable.get_variable_reference(umas_tag.tag_name),
+                    variable.get_read_variable_reference(umas_tag.tag_name),
                 )
             )
 
         sorted_tag_lists: List[List[Tuple[str, VariableReadRequestReference]]] = []
+        for request in tag_list:
+            sorted_tags = sorted(
+                request,
+                key=lambda x: (x[1].block * 100000) + x[1].base_offset + x[1].offset,
+            )
+            sorted_tag_lists.append(sorted_tags)
+
+        return sorted_tag_lists
+
+    def _sort_write_tags_based_on_memory_address(self, request):
+        tag_list: List[List[Tuple[str, VariableWriteRequestReference]]] = [[]]
+        current_list_index = 0
+        current_list = tag_list[current_list_index]
+        byte_count: int = 0
+        for kea, tag in request.tags.items():
+            umas_tag = cast(UmasTag, tag)
+            base_tag_name = umas_tag.tag_name.split(".")[0]
+            variable = self.variables[base_tag_name]
+
+            if byte_count + variable.get_byte_length() > self.max_frame_size:
+                current_list_index += 1
+                tag_list.append([])
+                current_list = tag_list[current_list_index]
+                byte_count = 0
+            byte_count += variable.get_byte_length()
+            current_list.append(
+                (
+                    kea,
+                    variable.get_write_variable_reference(
+                        umas_tag.tag_name, request.values[kea]
+                    ),
+                )
+            )
+
+        sorted_tag_lists: List[List[Tuple[str, VariableWriteRequestReference]]] = []
         for request in tag_list:
             sorted_tags = sorted(
                 request,
@@ -470,7 +561,17 @@ class UmasDevice:
         """
         Writes one field from the UMAS Device
         """
-        pass
+        loop = asyncio.get_running_loop()
+        await self._update_plc_project_info(transport, loop)
+        sorted_tag_list = self._sort_write_tags_based_on_memory_address(request)
+        response = PlcWriteResponse(PlcResponseCode.OK, {})
+        for sorted_tags in sorted_tag_list:
+            response_chunk = await self._send_write_variable_request(
+                transport, loop, request, sorted_tags
+            )
+            response.code = response_chunk.response_code
+            response.tags = {**response.tags, **response_chunk.tags}
+        return response
 
     async def browse(
         self, request: PlcBrowseRequest, transport: Transport

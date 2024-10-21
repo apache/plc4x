@@ -20,6 +20,7 @@ import re
 from dataclasses import dataclass
 from typing import AnyStr, Dict, List, Pattern, Union
 
+from plc4py.api.value.PlcValue import PlcValue
 from plc4py.api.exceptions.exceptions import PlcDataTypeNotFoundException
 from plc4py.protocols.umas.readwrite.UmasDataType import UmasDataType
 from plc4py.protocols.umas.readwrite.UmasDatatypeReference import (
@@ -32,6 +33,12 @@ from plc4py.protocols.umas.readwrite.UmasUnlocatedVariableReference import (
 from plc4py.protocols.umas.readwrite.VariableReadRequestReference import (
     VariableReadRequestReference,
 )
+from plc4py.protocols.umas.readwrite.VariableWriteRequestReference import (
+    VariableWriteRequestReference,
+)
+from plc4py.protocols.umas.readwrite.DataItem import DataItem
+from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
+from plc4py.utils.GenericTypes import ByteOrder
 
 
 @dataclass
@@ -42,7 +49,14 @@ class UmasVariable:
     base_offset: int
     offset: int
 
-    def get_variable_reference(self, address: str) -> VariableReadRequestReference:
+    def get_read_variable_reference(self, address: str) -> VariableReadRequestReference:
+        raise NotImplementedError(
+            f"UmasVariable subclass not implemented for variable {self.variable_name}"
+        )
+
+    def get_write_variable_reference(
+        self, address: str, value: PlcValue
+    ) -> VariableWriteRequestReference:
         raise NotImplementedError(
             f"UmasVariable subclass not implemented for variable {self.variable_name}"
         )
@@ -55,14 +69,16 @@ class UmasVariable:
 
 @dataclass
 class UmasElementryVariable(UmasVariable):
-    def get_variable_reference(self, address: str) -> VariableReadRequestReference:
+    def get_read_variable_reference(self, address: str) -> VariableReadRequestReference:
+        base_offset = self.base_offset + (self.offset // 0x100)
+        offset = self.offset % 0x100
         if self.data_type == UmasDataType.STRING.value:
             return VariableReadRequestReference(
                 is_array=1,
                 data_size_index=UmasDataType(self.data_type).request_size,
                 block=self.block_no,
-                base_offset=self.base_offset,
-                offset=self.offset,
+                base_offset=base_offset,
+                offset=offset,
                 array_length=16,
             )
         else:
@@ -70,9 +86,44 @@ class UmasElementryVariable(UmasVariable):
                 is_array=0,
                 data_size_index=UmasDataType(self.data_type).request_size,
                 block=self.block_no,
-                base_offset=self.base_offset,
-                offset=self.offset,
+                base_offset=base_offset,
+                offset=offset,
                 array_length=None,
+            )
+
+    def get_write_variable_reference(
+        self, address: str, value: PlcValue
+    ) -> VariableWriteRequestReference:
+        ss = UmasDataType(self.data_type).data_type_size
+        write_buffer = WriteBufferByteBased(
+            UmasDataType(self.data_type).data_type_size, ByteOrder.LITTLE_ENDIAN
+        )
+        DataItem.static_serialize(
+            write_buffer,
+            value,
+            UmasDataType(self.data_type),
+            1,
+            ByteOrder.LITTLE_ENDIAN,
+        )
+        if self.data_type == UmasDataType.STRING.value:
+            return VariableWriteRequestReference(
+                is_array=1,
+                data_size_index=UmasDataType(self.data_type).request_size,
+                block=self.block_no,
+                base_offset=self.offset,
+                offset=self.base_offset,
+                array_length=16,
+                record_data=bytearray(write_buffer.bb),
+            )
+        else:
+            return VariableWriteRequestReference(
+                is_array=0,
+                data_size_index=UmasDataType(self.data_type).request_size,
+                block=self.block_no,
+                base_offset=self.offset,
+                offset=self.base_offset,
+                array_length=None,
+                record_data=bytearray(write_buffer.bb),
             )
 
     def get_byte_length(self) -> int:
@@ -83,16 +134,29 @@ class UmasElementryVariable(UmasVariable):
 class UmasCustomVariable(UmasVariable):
     children: Dict[str, UmasVariable]
 
-    def get_variable_reference(self, address: str) -> VariableReadRequestReference:
+    def get_read_variable_reference(self, address: str) -> VariableReadRequestReference:
         split_tag_address: List[str] = address.split(".")
         child_index = None
         if len(split_tag_address) > 1:
             child_index = split_tag_address[1]
-            return self.children[child_index].get_variable_reference(
+            return self.children[child_index].get_read_variable_reference(
                 ".".join(split_tag_address[1:])
             )
         else:
             raise NotImplementedError("Unable to read structures of UDT's")
+
+    def get_write_variable_reference(
+        self, address: str, value: PlcValue
+    ) -> VariableWriteRequestReference:
+        split_tag_address: List[str] = address.split(".")
+        child_index = None
+        if len(split_tag_address) > 1:
+            child_index = split_tag_address[1]
+            return self.children[child_index].get_write_variable_reference(
+                ".".join(split_tag_address[1:])
+            )
+        else:
+            raise NotImplementedError("Unable to write structures of UDT's")
 
     def get_byte_length(self) -> int:
         byte_count = 0
@@ -106,7 +170,7 @@ class UmasArrayVariable(UmasVariable):
     start_index: int
     end_index: int
 
-    def get_variable_reference(self, address: str) -> VariableReadRequestReference:
+    def get_read_variable_reference(self, address: str) -> VariableReadRequestReference:
         split_tag_address: List[str] = address.split(".")
         address_index = None
         if len(split_tag_address) > 1:
@@ -130,6 +194,36 @@ class UmasArrayVariable(UmasVariable):
                 base_offset=self.base_offset,
                 offset=self.offset,
                 array_length=self.end_index - self.start_index + 1,
+            )
+
+    def get_write_variable_reference(
+        self, address: str, value: PlcValue
+    ) -> VariableWriteRequestReference:
+        split_tag_address: List[str] = address.split(".")
+        address_index = None
+        if len(split_tag_address) > 1:
+            address_index = int(split_tag_address[1])
+        data_type_enum = UmasDataType(self.data_type)
+        if address_index:
+            return VariableWriteRequestReference(
+                is_array=0,
+                data_size_index=data_type_enum.request_size,
+                block=self.block_no,
+                base_offset=self.base_offset,
+                offset=self.offset
+                + (address_index - self.start_index) * data_type_enum.data_type_size,
+                array_length=None,
+                record_data=None,
+            )
+        else:
+            return VariableWriteRequestReference(
+                is_array=1,
+                data_size_index=data_type_enum.request_size,
+                block=self.block_no,
+                base_offset=self.base_offset,
+                offset=self.offset,
+                array_length=self.end_index - self.start_index + 1,
+                record_data=None,
             )
 
     def get_byte_length(self) -> int:

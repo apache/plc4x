@@ -29,6 +29,8 @@ from plc4py.api.messages.PlcRequest import (
     PlcReadRequest,
     PlcRequest,
     ReadRequestBuilder,
+    WriteRequestBuilder,
+    PlcWriteRequest,
 )
 from plc4py.api.messages.PlcResponse import (
     PlcResponse,
@@ -46,12 +48,16 @@ from plc4py.spi.messages.PlcReader import DefaultPlcReader
 from plc4py.spi.messages.PlcRequest import (
     DefaultBrowseRequestBuilder,
     DefaultReadRequestBuilder,
+    DefaultWriteRequestBuilder,
 )
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
+from plc4py.spi.messages.PlcWriter import DefaultPlcWriter
 
 
-class UmasConnection(PlcConnection, DefaultPlcReader, DefaultPlcBrowser):
+class UmasConnection(
+    PlcConnection, DefaultPlcReader, DefaultPlcWriter, DefaultPlcBrowser
+):
     """
     Umas TCP PLC connection implementation
     """
@@ -115,6 +121,12 @@ class UmasConnection(PlcConnection, DefaultPlcReader, DefaultPlcBrowser):
         """
         return DefaultReadRequestBuilder(UmasTagBuilder)
 
+    def write_request_builder(self) -> WriteRequestBuilder:
+        """
+        :return: write request builder.
+        """
+        return DefaultWriteRequestBuilder(UmasTagBuilder)
+
     def browse_request_builder(self) -> BrowseRequestBuilder:
         """
         :return: browse request builder.
@@ -132,6 +144,9 @@ class UmasConnection(PlcConnection, DefaultPlcReader, DefaultPlcBrowser):
 
         if isinstance(request, PlcReadRequest):
             return await self._read(request)
+
+        if isinstance(request, PlcWriteRequest):
+            return await self._write(request)
 
         if isinstance(request, PlcBrowseRequest):
             return await self._browse(request)

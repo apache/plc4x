@@ -47,6 +47,7 @@ setup(
         "bitarray",
         "typing_extensions",
         "pluggy",
+        "xsdata",
     ],
     extras_require={
         "dev": [

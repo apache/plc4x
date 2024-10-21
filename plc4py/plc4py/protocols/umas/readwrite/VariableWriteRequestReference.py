@@ -38,7 +38,6 @@ class VariableWriteRequestReference:
     offset: int
     array_length: int
     record_data: List[int]
-    UNKNOWN1: int = 0x01
 
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("VariableWriteRequestReference")
@@ -58,17 +57,14 @@ class VariableWriteRequestReference:
             self.block, bit_length=16, logical_name="block"
         )
 
-        # Const Field (unknown1)
-        write_buffer.write_unsigned_byte(self.UNKNOWN1, logical_name="unknown1")
-
         # Simple Field (baseOffset)
         write_buffer.write_unsigned_short(
             self.base_offset, bit_length=16, logical_name="baseOffset"
         )
 
         # Simple Field (offset)
-        write_buffer.write_unsigned_byte(
-            self.offset, bit_length=8, logical_name="offset"
+        write_buffer.write_unsigned_short(
+            self.offset, bit_length=16, logical_name="offset"
         )
 
         # Optional Field (arrayLength) (Can be skipped, if the value is null)
@@ -98,14 +94,11 @@ class VariableWriteRequestReference:
         # Simple field (block)
         length_in_bits += 16
 
-        # Const Field (unknown1)
-        length_in_bits += 8
-
         # Simple field (baseOffset)
         length_in_bits += 16
 
         # Simple field (offset)
-        length_in_bits += 8
+        length_in_bits += 16
 
         # Optional Field (arrayLength)
         if self.is_array:
@@ -137,14 +130,12 @@ class VariableWriteRequestReference:
             logical_name="block", bit_length=16
         )
 
-        UNKNOWN1: int = read_buffer.read_unsigned_byte(logical_name="unknown1")
-
         base_offset: int = read_buffer.read_unsigned_short(
             logical_name="base_offset", bit_length=16
         )
 
-        offset: int = read_buffer.read_unsigned_byte(
-            logical_name="offset", bit_length=8
+        offset: int = read_buffer.read_unsigned_short(
+            logical_name="offset", bit_length=16
         )
 
         array_length: int = None

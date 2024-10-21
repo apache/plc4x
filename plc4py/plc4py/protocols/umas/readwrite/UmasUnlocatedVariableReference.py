@@ -31,10 +31,8 @@ import math
 @dataclass
 class UmasUnlocatedVariableReference:
     data_type: int
-    unknown1: int
     block: int
     offset: int
-    base_offset: int
     unknown4: int
     string_length: int
     value: str
@@ -43,13 +41,8 @@ class UmasUnlocatedVariableReference:
         write_buffer.push_context("UmasUnlocatedVariableReference")
 
         # Simple Field (dataType)
-        write_buffer.write_unsigned_byte(
-            self.data_type, bit_length=8, logical_name="dataType"
-        )
-
-        # Simple Field (unknown1)
-        write_buffer.write_unsigned_byte(
-            self.unknown1, bit_length=8, logical_name="unknown1"
+        write_buffer.write_unsigned_short(
+            self.data_type, bit_length=16, logical_name="dataType"
         )
 
         # Simple Field (block)
@@ -58,13 +51,8 @@ class UmasUnlocatedVariableReference:
         )
 
         # Simple Field (offset)
-        write_buffer.write_unsigned_byte(
-            self.offset, bit_length=8, logical_name="offset"
-        )
-
-        # Simple Field (baseOffset)
-        write_buffer.write_unsigned_byte(
-            self.base_offset, bit_length=8, logical_name="baseOffset"
+        write_buffer.write_unsigned_short(
+            self.offset, bit_length=16, logical_name="offset"
         )
 
         # Simple Field (unknown4)
@@ -94,19 +82,13 @@ class UmasUnlocatedVariableReference:
         _value: UmasUnlocatedVariableReference = self
 
         # Simple field (dataType)
-        length_in_bits += 8
-
-        # Simple field (unknown1)
-        length_in_bits += 8
+        length_in_bits += 16
 
         # Simple field (block)
         length_in_bits += 16
 
         # Simple field (offset)
-        length_in_bits += 8
-
-        # Simple field (baseOffset)
-        length_in_bits += 8
+        length_in_bits += 16
 
         # Simple field (unknown4)
         length_in_bits += 16
@@ -127,24 +109,16 @@ class UmasUnlocatedVariableReference:
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("UmasUnlocatedVariableReference")
 
-        data_type: int = read_buffer.read_unsigned_byte(
-            logical_name="data_type", bit_length=8
-        )
-
-        unknown1: int = read_buffer.read_unsigned_byte(
-            logical_name="unknown1", bit_length=8
+        data_type: int = read_buffer.read_unsigned_short(
+            logical_name="data_type", bit_length=16
         )
 
         block: int = read_buffer.read_unsigned_short(
             logical_name="block", bit_length=16
         )
 
-        offset: int = read_buffer.read_unsigned_byte(
-            logical_name="offset", bit_length=8
-        )
-
-        base_offset: int = read_buffer.read_unsigned_byte(
-            logical_name="base_offset", bit_length=8
+        offset: int = read_buffer.read_unsigned_short(
+            logical_name="offset", bit_length=16
         )
 
         unknown4: int = read_buffer.read_unsigned_short(
@@ -166,14 +140,7 @@ class UmasUnlocatedVariableReference:
         # Create the instance
         _umas_unlocated_variable_reference: UmasUnlocatedVariableReference = (
             UmasUnlocatedVariableReference(
-                data_type,
-                unknown1,
-                block,
-                offset,
-                base_offset,
-                unknown4,
-                string_length,
-                value,
+                data_type, block, offset, unknown4, string_length, value
             )
         )
         return _umas_unlocated_variable_reference
@@ -188,10 +155,8 @@ class UmasUnlocatedVariableReference:
         that: UmasUnlocatedVariableReference = UmasUnlocatedVariableReference(o)
         return (
             (self.data_type == that.data_type)
-            and (self.unknown1 == that.unknown1)
             and (self.block == that.block)
             and (self.offset == that.offset)
-            and (self.base_offset == that.base_offset)
             and (self.unknown4 == that.unknown4)
             and (self.string_length == that.string_length)
             and (self.value == that.value)

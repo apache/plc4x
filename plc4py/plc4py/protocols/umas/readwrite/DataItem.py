@@ -72,6 +72,32 @@ class DataItem:
                 value.append(PlcBOOL(bool(read_buffer.read_bit(""))))
 
             return PlcList(value)
+        if data_type == UmasDataType.EBOOL and number_of_values == int(1):  # BOOL
+
+            # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+            reserved: int = read_buffer.read_unsigned_short(7, logical_name="")
+            if reserved != int(0x0000):
+                logging.warning(
+                    "Expected constant value "
+                    + str(0x0000)
+                    + " but got "
+                    + str(reserved)
+                    + " for reserved field."
+                )
+
+            # Simple Field (value)
+            value: bool = read_buffer.read_bit("")
+
+            return PlcBOOL(value)
+        if data_type == UmasDataType.EBOOL:  # List
+            # Array field (value)
+            # Count array
+            item_count: int = int(number_of_values)
+            value: List[PlcValue] = []
+            for _ in range(item_count):
+                value.append(PlcBOOL(bool(read_buffer.read_bit(""))))
+
+            return PlcList(value)
         if data_type == UmasDataType.BYTE and number_of_values == int(1):  # BYTE
 
             # Simple Field (value)
@@ -223,6 +249,19 @@ class DataItem:
                 value: bool = val.get_bool()
                 write_buffer.write_bit((value), "value")
 
+        elif data_type == UmasDataType.EBOOL and number_of_values == int(1):  # BOOL
+            # Reserved Field
+            write_buffer.write_byte(int(0x0000), 7, "int0x0000")
+            # Simple Field (value)
+            value: bool = _value.get_bool()
+            write_buffer.write_bit((value), "value")
+
+        elif data_type == UmasDataType.EBOOL:  # List
+            values: PlcList = cast(PlcList, _value)
+            for val in values.get_list():
+                value: bool = val.get_bool()
+                write_buffer.write_bit((value), "value")
+
         elif data_type == UmasDataType.BYTE and number_of_values == int(1):  # BYTE
             # Simple Field (value)
             value: int = _value.get_int()
@@ -330,6 +369,14 @@ class DataItem:
             # Simple Field (value)
             size_in_bits += 1
         elif data_type == UmasDataType.BOOL:  # List
+            values: PlcList = cast(PlcList, _value)
+            size_in_bits += len(values.get_list()) * 1
+        elif data_type == UmasDataType.EBOOL and number_of_values == int(1):  # BOOL
+            # Reserved Field
+            size_in_bits += 7
+            # Simple Field (value)
+            size_in_bits += 1
+        elif data_type == UmasDataType.EBOOL:  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 1
         elif data_type == UmasDataType.BYTE and number_of_values == int(1):  # BYTE

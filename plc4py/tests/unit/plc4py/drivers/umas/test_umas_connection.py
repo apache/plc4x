@@ -22,7 +22,9 @@ import time
 
 import pytest
 
+from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.PlcDriverManager import PlcDriverManager
+from plc4py.spi.values.PlcValues import PlcBOOL, PlcINT, PlcREAL
 
 
 @pytest.mark.asyncio
@@ -40,15 +42,37 @@ async def test_plc_driver_umas_read():
     log = logging.getLogger(__name__)
 
     driver_manager = PlcDriverManager()
-    async with driver_manager.connection("umas://192.168.190.174:502") as connection:
+    async with driver_manager.connection("umas://192.168.190.152:502") as connection:
         with connection.read_request_builder() as builder:
-            builder.add_item(f"Random Tag {1}", "blurbe:REAL")
+            #builder.add_item(f"Random Tag {1}", "TESTING_10:BOOL")
+            builder.add_item(f"Random Tag {2}", "TESTING_REAL:REAL")
+
             request = builder.build()
 
         future = connection.execute(request)
         response = await future
         value = response.tags["Random Tag 1"].value
         assert value == 0.0
+
+
+@pytest.mark.asyncio
+@pytest.mark.xfail
+async def test_plc_driver_umas_write():
+    log = logging.getLogger(__name__)
+
+    driver_manager = PlcDriverManager()
+    async with driver_manager.connection("umas://192.168.190.152:502") as connection:
+        with connection.write_request_builder() as builder:
+            # builder.add_item(f"Random Tag {1}", "TESTING_10:BOOL", PlcBOOL(True))
+            # builder.add_item(f"Random Tag {2}", "TESTING_INT:INT", PlcINT(10))
+            # builder.add_item(f"Random Tag {3}", "TESTING_EBOOL:BOOL", PlcBOOL(True))
+            builder.add_item(f"Random Tag {4}", "TESTING_REAL:REAL", PlcREAL(3.18))
+            request = builder.build()
+
+        future = connection.execute(request)
+        response = await future
+        value = response.tags["Random Tag 1"].response_code
+        assert value == PlcResponseCode.OK
 
 
 @pytest.mark.asyncio
@@ -61,6 +85,6 @@ async def test_plc_driver_umas_browse():
             request = builder.build()
 
         future = connection.execute(request)
-        await future
-        response = future.result()
+        response = await future
+
         pass

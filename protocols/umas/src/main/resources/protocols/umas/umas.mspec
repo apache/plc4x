@@ -196,19 +196,16 @@
     [simple     uint 4           isArray]
     [simple     uint 4           dataSizeIndex]
     [simple     uint 16          block]
-    [const      uint 8           unknown1 0x01]
     [simple     uint 16          baseOffset]
-    [simple     uint 8           offset]
+    [simple     uint 16          offset]
     [optional   uint 16          arrayLength 'isArray']
-    [array      byte       recordData     length  'isArray == 1 ? dataSizeIndex * arrayLength : dataSizeIndex']
+    [array      byte             recordData     length  'isArray == 1 ? dataSizeIndex * arrayLength : dataSizeIndex']
 ]
 
 [type UmasUnlocatedVariableReference
-    [simple     uint 8           dataType]
-    [simple     uint 8           unknown1]
+    [simple     uint 16          dataType]
     [simple     uint 16          block]
-    [simple     uint 8           offset]
-    [simple     uint 8           baseOffset]
+    [simple     uint 16          offset]
     [simple     uint 16          unknown4]
     [simple     uint 16          stringLength]
     [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)']
@@ -247,6 +244,15 @@
             [simple   bit     value                            ]
         ]
         ['BOOL'      List
+            // TODO: Handle adding some reserved bits at the end to fill up the last word.
+            [array    bit     value count 'numberOfValues'     ]
+        ]
+        ['EBOOL','1'  BOOL
+            // TODO: Possibly change the order of the bit and the reserved part.
+            [reserved uint 7 '0x0000'                         ]
+            [simple   bit     value                            ]
+        ]
+        ['EBOOL'      List
             // TODO: Handle adding some reserved bits at the end to fill up the last word.
             [array    bit     value count 'numberOfValues'     ]
         ]
