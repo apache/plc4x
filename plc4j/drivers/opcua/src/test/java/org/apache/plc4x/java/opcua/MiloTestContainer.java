@@ -36,8 +36,15 @@ public class MiloTestContainer extends GenericContainer<MiloTestContainer> {
     public MiloTestContainer() {
         super(IMAGE);
 
-        waitingFor(Wait.forLogMessage("Server started\\s*", 1));
+        waitingFor(Wait.forLogMessage("Server started\\s*", 1))
+            // Uncomment below to debug Milo server
+            //.withStartupTimeout(Duration.ofMinutes(10))
+        ;
         addExposedPort(12686);
+
+        // Uncomment below to enable server debug
+        //withEnv("JAVA_TOOL_OPTIONS", "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=y");
+        //addFixedExposedPort(8000, 8000);
     }
 
     private static ImageFromDockerfile inlineImage() {

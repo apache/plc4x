@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
+import java.io.ByteArrayOutputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Stream;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
@@ -27,8 +28,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.MiloTestContainer;
 import org.apache.plc4x.java.opcua.OpcuaPlcDriverTest;
-import org.apache.plc4x.test.DisableOnJenkinsFlag;
-import org.apache.plc4x.test.DisableOnParallelsVmFlag;
+import org.apache.plc4x.java.opcua.KeystoreGenerator;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -36,13 +36,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
-import org.testcontainers.containers.BindMode;
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.images.builder.Transferable;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -64,10 +60,8 @@ public class OpcuaSubscriptionHandleTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
 
     @Container
-    public final GenericContainer milo = new MiloTestContainer()
-        //.withCreateContainerCmdModifier(cmd -> cmd.withHostName("test-opcua-server"))
-        .withLogConsumer(new Slf4jLogConsumer(LOGGER))
-        .withFileSystemBind("target/tmp/server/security", "/tmp/server/security", BindMode.READ_WRITE);
+    public final MiloTestContainer milo = new MiloTestContainer()
+        .withLogConsumer(new Slf4jLogConsumer(LOGGER));
 
     // Address of local milo server
     private static final String miloLocalAddress = "%s:%d/milo";
@@ -102,16 +96,7 @@ public class OpcuaSubscriptionHandleTest {
         // When switching JDK versions from a newer to an older version,
         // this can cause the server to not start correctly.
         // Deleting the directory makes sure the key-store is initialized correctly.
-
         String tcpConnectionAddress = String.format(opcPattern + miloLocalAddress, milo.getHost(), milo.getMappedPort(12686)) + "?endpoint-port=12686";
-
-        Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
-        try {
-            Files.delete(securityBaseDir);
-        } catch (Exception e) {
-            // Ignore this ...
-        }
-
         //Connect
         opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
         assertThat(opcuaConnection).extracting(PlcConnection::isConnected).isEqualTo(true);

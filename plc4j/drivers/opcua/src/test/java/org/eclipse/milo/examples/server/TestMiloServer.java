@@ -123,8 +123,6 @@ public class TestMiloServer {
         );
 
         DefaultTrustListManager trustListManager = new DefaultTrustListManager(pkiDir);
-        trustListManager.setTrustedCertificates(new ArrayList<>(certificateManager.getCertificates()));
-
         DefaultServerCertificateValidator certificateValidator =
             new DefaultServerCertificateValidator(trustListManager);
 
