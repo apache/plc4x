@@ -52,8 +52,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 // cdutz: I have done way more than my fair share on tracking down this issue and am simply giving up on it.
 // I tracked it down into the core of Milo several times now, but got lost in there.
 // It's not a big issue as the GitHub runners and the Apache Jenkins still run the test.
-@DisableOnJenkinsFlag
-@DisableOnParallelsVmFlag
 @Testcontainers(disabledWithoutDocker = true)
 public class OpcuaSubscriptionHandleTest {
 
