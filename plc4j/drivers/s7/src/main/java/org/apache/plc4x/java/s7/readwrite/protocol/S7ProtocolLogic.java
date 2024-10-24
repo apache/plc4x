@@ -1570,10 +1570,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                             if (item instanceof S7PayloadDiagnosticMessage) {
                                 final S7PayloadDiagnosticMessage pload = (S7PayloadDiagnosticMessage) item; 
                                 if ((pload.getEventId() >= 0x0A000) & (pload.getEventId() <= 0x0BFFF)) {
-                                    S7UserEvent userEvent = new S7UserEvent(pload);
+                                    S7UserEvent userEvent = S7UserEvent.of(pload);
                                     eventQueue.add(userEvent);                                
                                 } else {
-                                    S7SysEvent sysEvent = new S7SysEvent(pload);
+                                    S7SysEvent sysEvent = S7SysEvent.of(pload);
                                     eventQueue.add(sysEvent);                                        
                                 }
                             } 
@@ -1589,7 +1589,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                             (myParameter.getCpuSubfunction() == 0x16))) { //(04)
                         
                         payload.getItems().forEach(item ->{
-                            S7AlarmEvent alrmEvent = new S7AlarmEvent(item);
+                            S7AlarmEvent alrmEvent = S7AlarmEvent.of(item);
                             eventQueue.add(alrmEvent);                                
                         });
                         

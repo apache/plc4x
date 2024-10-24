@@ -34,6 +34,8 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.metadata.Metadata;
+import org.apache.plc4x.java.api.metadata.time.TimeSource;
 import org.apache.plc4x.java.api.model.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
@@ -1493,9 +1495,16 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         if (msg.getUserdata() instanceof AdsDeviceNotificationRequest) {
             AdsDeviceNotificationRequest notificationData = (AdsDeviceNotificationRequest) msg.getUserdata();
             List<AdsStampHeader> stamps = notificationData.getAdsStampHeaders();
+            long receiveTs = System.currentTimeMillis();
             for (AdsStampHeader stamp : stamps) {
                 // convert Windows FILETIME format to unix epoch
                 long unixEpochTimestamp = stamp.getTimestamp().divide(BigInteger.valueOf(10000L)).longValue() - 11644473600000L;
+                // result metadata
+                Metadata eventMetadata = new Metadata.Builder()
+                    .put(PlcMetadataKeys.RECEIVE_TIMESTAMP, receiveTs)
+                    .put(PlcMetadataKeys.TIMESTAMP, unixEpochTimestamp)
+                    .put(PlcMetadataKeys.TIMESTAMP_SOURCE, TimeSource.SOFTWARE)
+                    .build();
                 List<AdsNotificationSample> samples = stamp.getAdsNotificationSamples();
                 for (AdsNotificationSample sample : samples) {
                     long handle = sample.getNotificationHandle();
@@ -1503,10 +1512,12 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         for (PlcSubscriptionHandle subscriptionHandle : registration.getSubscriptionHandles()) {
                             if (subscriptionHandle instanceof AdsSubscriptionHandle) {
                                 AdsSubscriptionHandle adsHandle = (AdsSubscriptionHandle) subscriptionHandle;
-                                if (adsHandle.getNotificationHandle() == handle)
-                                    consumers.get(registration).accept(
-                                        new DefaultPlcSubscriptionEvent(Instant.ofEpochMilli(unixEpochTimestamp),
-                                            convertSampleToPlc4XResult(adsHandle, sample.getData())));
+                                if (adsHandle.getNotificationHandle() == handle) {
+                                    Map<String, Metadata> metadata = new HashMap<>();
+                                    Instant timestamp = Instant.ofEpochMilli(unixEpochTimestamp);
+                                    DefaultPlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(timestamp, convertSampleToPlc4XResult(adsHandle, sample.getData(), metadata, eventMetadata));
+                                    consumers.get(registration).accept(event);
+                                }
                             }
                         }
                     }
@@ -1515,12 +1526,13 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         }
     }
 
-    private Map<String, PlcResponseItem<PlcValue>> convertSampleToPlc4XResult(AdsSubscriptionHandle subscriptionHandle, byte[] data) throws
+    private Map<String, PlcResponseItem<PlcValue>> convertSampleToPlc4XResult(AdsSubscriptionHandle subscriptionHandle, byte[] data, Map<String, Metadata> tagMetadata, Metadata metadata) throws
         ParseException {
         Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN);
         values.put(subscriptionHandle.getTagName(), new DefaultPlcResponseItem<>(PlcResponseCode.OK,
             DataItem.staticParse(readBuffer, getPlcValueTypeForAdsDataType(subscriptionHandle.getAdsDataType()), data.length)));
+        tagMetadata.put(subscriptionHandle.getTagName(), new Metadata.Builder(metadata).build());
         return values;
     }
 
