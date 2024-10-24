@@ -67,7 +67,10 @@ type BACnetUnconfirmedServiceRequestRequirements interface {
 
 // _BACnetUnconfirmedServiceRequest is the data-structure of this message
 type _BACnetUnconfirmedServiceRequest struct {
-	_SubType BACnetUnconfirmedServiceRequest
+	_SubType interface {
+		BACnetUnconfirmedServiceRequestContract
+		BACnetUnconfirmedServiceRequestRequirements
+	}
 
 	// Arguments.
 	ServiceRequestLength uint16

@@ -63,7 +63,10 @@ type ErrorReportingSystemCategoryTypeRequirements interface {
 
 // _ErrorReportingSystemCategoryType is the data-structure of this message
 type _ErrorReportingSystemCategoryType struct {
-	_SubType ErrorReportingSystemCategoryType
+	_SubType interface {
+		ErrorReportingSystemCategoryTypeContract
+		ErrorReportingSystemCategoryTypeRequirements
+	}
 }
 
 var _ ErrorReportingSystemCategoryTypeContract = (*_ErrorReportingSystemCategoryType)(nil)

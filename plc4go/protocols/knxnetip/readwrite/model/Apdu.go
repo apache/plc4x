@@ -71,7 +71,10 @@ type ApduRequirements interface {
 
 // _Apdu is the data-structure of this message
 type _Apdu struct {
-	_SubType Apdu
+	_SubType interface {
+		ApduContract
+		ApduRequirements
+	}
 	Numbered bool
 	Counter  uint8
 

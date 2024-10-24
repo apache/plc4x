@@ -79,7 +79,10 @@ type RequestRequirements interface {
 
 // _Request is the data-structure of this message
 type _Request struct {
-	_SubType    Request
+	_SubType interface {
+		RequestContract
+		RequestRequirements
+	}
 	PeekedByte  RequestType
 	StartingCR  *RequestType
 	ResetMode   *RequestType

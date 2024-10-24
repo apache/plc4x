@@ -69,7 +69,10 @@ type BACnetProcessIdSelectionRequirements interface {
 
 // _BACnetProcessIdSelection is the data-structure of this message
 type _BACnetProcessIdSelection struct {
-	_SubType        BACnetProcessIdSelection
+	_SubType interface {
+		BACnetProcessIdSelectionContract
+		BACnetProcessIdSelectionRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

@@ -199,7 +199,10 @@ type _${type.name} struct {
 	${type.parentType.orElseThrow().name}Contract
 </#if>
 <#if type.isDiscriminatedParentTypeDefinition()>
-	_SubType ${type.name}
+	_SubType interface {
+		${type.name}Contract
+		${type.name}Requirements
+	}
 </#if>
 <#-- Property fields are fields that require a property in the pojo -->
 <#if type.propertyFields?has_content>

@@ -71,7 +71,10 @@ type MediaTransportControlDataRequirements interface {
 
 // _MediaTransportControlData is the data-structure of this message
 type _MediaTransportControlData struct {
-	_SubType             MediaTransportControlData
+	_SubType interface {
+		MediaTransportControlDataContract
+		MediaTransportControlDataRequirements
+	}
 	CommandTypeContainer MediaTransportControlCommandTypeContainer
 	MediaLinkGroup       byte
 }

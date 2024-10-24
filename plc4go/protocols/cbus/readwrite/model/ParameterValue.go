@@ -65,7 +65,10 @@ type ParameterValueRequirements interface {
 
 // _ParameterValue is the data-structure of this message
 type _ParameterValue struct {
-	_SubType ParameterValue
+	_SubType interface {
+		ParameterValueContract
+		ParameterValueRequirements
+	}
 
 	// Arguments.
 	NumBytes uint8

@@ -73,7 +73,10 @@ type DF1RequestMessageRequirements interface {
 
 // _DF1RequestMessage is the data-structure of this message
 type _DF1RequestMessage struct {
-	_SubType           DF1RequestMessage
+	_SubType interface {
+		DF1RequestMessageContract
+		DF1RequestMessageRequirements
+	}
 	DestinationAddress uint8
 	SourceAddress      uint8
 	Status             uint8

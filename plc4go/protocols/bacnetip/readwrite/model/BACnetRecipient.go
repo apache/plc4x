@@ -69,7 +69,10 @@ type BACnetRecipientRequirements interface {
 
 // _BACnetRecipient is the data-structure of this message
 type _BACnetRecipient struct {
-	_SubType        BACnetRecipient
+	_SubType interface {
+		BACnetRecipientContract
+		BACnetRecipientRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

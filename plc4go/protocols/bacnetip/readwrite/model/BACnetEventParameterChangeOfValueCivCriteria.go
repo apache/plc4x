@@ -75,7 +75,10 @@ type BACnetEventParameterChangeOfValueCivCriteriaRequirements interface {
 
 // _BACnetEventParameterChangeOfValueCivCriteria is the data-structure of this message
 type _BACnetEventParameterChangeOfValueCivCriteria struct {
-	_SubType        BACnetEventParameterChangeOfValueCivCriteria
+	_SubType interface {
+		BACnetEventParameterChangeOfValueCivCriteriaContract
+		BACnetEventParameterChangeOfValueCivCriteriaRequirements
+	}
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag

@@ -65,7 +65,10 @@ type ApduControlRequirements interface {
 
 // _ApduControl is the data-structure of this message
 type _ApduControl struct {
-	_SubType ApduControl
+	_SubType interface {
+		ApduControlContract
+		ApduControlRequirements
+	}
 }
 
 var _ ApduControlContract = (*_ApduControl)(nil)

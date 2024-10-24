@@ -67,7 +67,10 @@ type SysexCommandRequirements interface {
 
 // _SysexCommand is the data-structure of this message
 type _SysexCommand struct {
-	_SubType SysexCommand
+	_SubType interface {
+		SysexCommandContract
+		SysexCommandRequirements
+	}
 }
 
 var _ SysexCommandContract = (*_SysexCommand)(nil)

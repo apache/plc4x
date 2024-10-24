@@ -69,7 +69,10 @@ type BACnetLandingCallStatusCommandRequirements interface {
 
 // _BACnetLandingCallStatusCommand is the data-structure of this message
 type _BACnetLandingCallStatusCommand struct {
-	_SubType        BACnetLandingCallStatusCommand
+	_SubType interface {
+		BACnetLandingCallStatusCommandContract
+		BACnetLandingCallStatusCommandRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

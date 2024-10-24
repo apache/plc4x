@@ -67,7 +67,10 @@ type CBusMessageRequirements interface {
 
 // _CBusMessage is the data-structure of this message
 type _CBusMessage struct {
-	_SubType CBusMessage
+	_SubType interface {
+		CBusMessageContract
+		CBusMessageRequirements
+	}
 
 	// Arguments.
 	RequestContext RequestContext

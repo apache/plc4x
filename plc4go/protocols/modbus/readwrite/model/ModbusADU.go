@@ -66,7 +66,10 @@ type ModbusADURequirements interface {
 
 // _ModbusADU is the data-structure of this message
 type _ModbusADU struct {
-	_SubType ModbusADU
+	_SubType interface {
+		ModbusADUContract
+		ModbusADURequirements
+	}
 
 	// Arguments.
 	Response bool

@@ -75,7 +75,10 @@ type VariantRequirements interface {
 
 // _Variant is the data-structure of this message
 type _Variant struct {
-	_SubType                 Variant
+	_SubType interface {
+		VariantContract
+		VariantRequirements
+	}
 	ArrayLengthSpecified     bool
 	ArrayDimensionsSpecified bool
 	NoOfArrayDimensions      *int32

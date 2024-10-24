@@ -73,7 +73,10 @@ type EncodedReplyRequirements interface {
 
 // _EncodedReply is the data-structure of this message
 type _EncodedReply struct {
-	_SubType   EncodedReply
+	_SubType interface {
+		EncodedReplyContract
+		EncodedReplyRequirements
+	}
 	PeekedByte byte
 
 	// Arguments.

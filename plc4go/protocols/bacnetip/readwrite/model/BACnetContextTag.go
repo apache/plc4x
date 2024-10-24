@@ -73,8 +73,11 @@ type BACnetContextTagRequirements interface {
 
 // _BACnetContextTag is the data-structure of this message
 type _BACnetContextTag struct {
-	_SubType BACnetContextTag
-	Header   BACnetTagHeader
+	_SubType interface {
+		BACnetContextTagContract
+		BACnetContextTagRequirements
+	}
+	Header BACnetTagHeader
 
 	// Arguments.
 	TagNumberArgument uint8

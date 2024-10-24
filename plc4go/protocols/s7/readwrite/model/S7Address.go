@@ -65,7 +65,10 @@ type S7AddressRequirements interface {
 
 // _S7Address is the data-structure of this message
 type _S7Address struct {
-	_SubType S7Address
+	_SubType interface {
+		S7AddressContract
+		S7AddressRequirements
+	}
 }
 
 var _ S7AddressContract = (*_S7Address)(nil)

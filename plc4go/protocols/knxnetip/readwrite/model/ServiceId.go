@@ -65,7 +65,10 @@ type ServiceIdRequirements interface {
 
 // _ServiceId is the data-structure of this message
 type _ServiceId struct {
-	_SubType ServiceId
+	_SubType interface {
+		ServiceIdContract
+		ServiceIdRequirements
+	}
 }
 
 var _ ServiceIdContract = (*_ServiceId)(nil)

@@ -63,7 +63,10 @@ type BACnetErrorRequirements interface {
 
 // _BACnetError is the data-structure of this message
 type _BACnetError struct {
-	_SubType BACnetError
+	_SubType interface {
+		BACnetErrorContract
+		BACnetErrorRequirements
+	}
 }
 
 var _ BACnetErrorContract = (*_BACnetError)(nil)

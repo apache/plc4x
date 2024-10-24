@@ -65,7 +65,10 @@ type CommandSpecificDataItemRequirements interface {
 
 // _CommandSpecificDataItem is the data-structure of this message
 type _CommandSpecificDataItem struct {
-	_SubType CommandSpecificDataItem
+	_SubType interface {
+		CommandSpecificDataItemContract
+		CommandSpecificDataItemRequirements
+	}
 }
 
 var _ CommandSpecificDataItemContract = (*_CommandSpecificDataItem)(nil)

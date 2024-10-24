@@ -85,8 +85,11 @@ type LevelInformationRequirements interface {
 
 // _LevelInformation is the data-structure of this message
 type _LevelInformation struct {
-	_SubType LevelInformation
-	Raw      uint16
+	_SubType interface {
+		LevelInformationContract
+		LevelInformationRequirements
+	}
+	Raw uint16
 }
 
 var _ LevelInformationContract = (*_LevelInformation)(nil)

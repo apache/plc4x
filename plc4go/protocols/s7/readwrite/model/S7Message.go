@@ -74,7 +74,10 @@ type S7MessageRequirements interface {
 
 // _S7Message is the data-structure of this message
 type _S7Message struct {
-	_SubType      S7Message
+	_SubType interface {
+		S7MessageContract
+		S7MessageRequirements
+	}
 	TpduReference uint16
 	Parameter     S7Parameter
 	Payload       S7Payload

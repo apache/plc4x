@@ -69,7 +69,10 @@ type NodeIdTypeDefinitionRequirements interface {
 
 // _NodeIdTypeDefinition is the data-structure of this message
 type _NodeIdTypeDefinition struct {
-	_SubType NodeIdTypeDefinition
+	_SubType interface {
+		NodeIdTypeDefinitionContract
+		NodeIdTypeDefinitionRequirements
+	}
 }
 
 var _ NodeIdTypeDefinitionContract = (*_NodeIdTypeDefinition)(nil)

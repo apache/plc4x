@@ -77,7 +77,10 @@ type CALDataRequirements interface {
 
 // _CALData is the data-structure of this message
 type _CALData struct {
-	_SubType             CALData
+	_SubType interface {
+		CALDataContract
+		CALDataRequirements
+	}
 	CommandTypeContainer CALCommandTypeContainer
 	AdditionalData       CALData
 

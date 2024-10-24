@@ -73,7 +73,10 @@ type BACnetConfirmedServiceRequestReadRangeRangeRequirements interface {
 
 // _BACnetConfirmedServiceRequestReadRangeRange is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadRangeRange struct {
-	_SubType        BACnetConfirmedServiceRequestReadRangeRange
+	_SubType interface {
+		BACnetConfirmedServiceRequestReadRangeRangeContract
+		BACnetConfirmedServiceRequestReadRangeRangeRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 	OpeningTag      BACnetOpeningTag
 	ClosingTag      BACnetClosingTag

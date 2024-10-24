@@ -65,7 +65,10 @@ type AdsDiscoveryBlockRequirements interface {
 
 // _AdsDiscoveryBlock is the data-structure of this message
 type _AdsDiscoveryBlock struct {
-	_SubType AdsDiscoveryBlock
+	_SubType interface {
+		AdsDiscoveryBlockContract
+		AdsDiscoveryBlockRequirements
+	}
 }
 
 var _ AdsDiscoveryBlockContract = (*_AdsDiscoveryBlock)(nil)

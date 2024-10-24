@@ -69,7 +69,10 @@ type BACnetHostAddressRequirements interface {
 
 // _BACnetHostAddress is the data-structure of this message
 type _BACnetHostAddress struct {
-	_SubType        BACnetHostAddress
+	_SubType interface {
+		BACnetHostAddressContract
+		BACnetHostAddressRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

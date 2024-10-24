@@ -65,7 +65,10 @@ type ConnectionRequestInformationRequirements interface {
 
 // _ConnectionRequestInformation is the data-structure of this message
 type _ConnectionRequestInformation struct {
-	_SubType ConnectionRequestInformation
+	_SubType interface {
+		ConnectionRequestInformationContract
+		ConnectionRequestInformationRequirements
+	}
 }
 
 var _ ConnectionRequestInformationContract = (*_ConnectionRequestInformation)(nil)

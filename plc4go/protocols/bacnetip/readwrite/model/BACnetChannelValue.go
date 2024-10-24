@@ -73,7 +73,10 @@ type BACnetChannelValueRequirements interface {
 
 // _BACnetChannelValue is the data-structure of this message
 type _BACnetChannelValue struct {
-	_SubType        BACnetChannelValue
+	_SubType interface {
+		BACnetChannelValueContract
+		BACnetChannelValueRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

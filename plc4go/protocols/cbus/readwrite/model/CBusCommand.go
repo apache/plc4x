@@ -75,8 +75,11 @@ type CBusCommandRequirements interface {
 
 // _CBusCommand is the data-structure of this message
 type _CBusCommand struct {
-	_SubType CBusCommand
-	Header   CBusHeader
+	_SubType interface {
+		CBusCommandContract
+		CBusCommandRequirements
+	}
+	Header CBusHeader
 
 	// Arguments.
 	CBusOptions CBusOptions

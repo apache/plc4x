@@ -69,7 +69,10 @@ type BACnetConfirmedServiceRequestRequirements interface {
 
 // _BACnetConfirmedServiceRequest is the data-structure of this message
 type _BACnetConfirmedServiceRequest struct {
-	_SubType BACnetConfirmedServiceRequest
+	_SubType interface {
+		BACnetConfirmedServiceRequestContract
+		BACnetConfirmedServiceRequestRequirements
+	}
 
 	// Arguments.
 	ServiceRequestLength uint32

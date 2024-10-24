@@ -67,7 +67,10 @@ type FirmataCommandRequirements interface {
 
 // _FirmataCommand is the data-structure of this message
 type _FirmataCommand struct {
-	_SubType FirmataCommand
+	_SubType interface {
+		FirmataCommandContract
+		FirmataCommandRequirements
+	}
 
 	// Arguments.
 	Response bool

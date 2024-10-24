@@ -69,7 +69,10 @@ type ModbusPDURequirements interface {
 
 // _ModbusPDU is the data-structure of this message
 type _ModbusPDU struct {
-	_SubType ModbusPDU
+	_SubType interface {
+		ModbusPDUContract
+		ModbusPDURequirements
+	}
 }
 
 var _ ModbusPDUContract = (*_ModbusPDU)(nil)

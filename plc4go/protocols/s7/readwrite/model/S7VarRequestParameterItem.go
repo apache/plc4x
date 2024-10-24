@@ -65,7 +65,10 @@ type S7VarRequestParameterItemRequirements interface {
 
 // _S7VarRequestParameterItem is the data-structure of this message
 type _S7VarRequestParameterItem struct {
-	_SubType S7VarRequestParameterItem
+	_SubType interface {
+		S7VarRequestParameterItemContract
+		S7VarRequestParameterItemRequirements
+	}
 }
 
 var _ S7VarRequestParameterItemContract = (*_S7VarRequestParameterItem)(nil)

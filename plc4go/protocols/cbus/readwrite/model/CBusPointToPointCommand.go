@@ -73,7 +73,10 @@ type CBusPointToPointCommandRequirements interface {
 
 // _CBusPointToPointCommand is the data-structure of this message
 type _CBusPointToPointCommand struct {
-	_SubType               CBusPointToPointCommand
+	_SubType interface {
+		CBusPointToPointCommandContract
+		CBusPointToPointCommandRequirements
+	}
 	BridgeAddressCountPeek uint16
 	CalData                CALData
 

@@ -63,7 +63,10 @@ type OpenChannelMessageRequirements interface {
 
 // _OpenChannelMessage is the data-structure of this message
 type _OpenChannelMessage struct {
-	_SubType OpenChannelMessage
+	_SubType interface {
+		OpenChannelMessageContract
+		OpenChannelMessageRequirements
+	}
 }
 
 var _ OpenChannelMessageContract = (*_OpenChannelMessage)(nil)

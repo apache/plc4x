@@ -69,7 +69,10 @@ type BACnetValueSourceRequirements interface {
 
 // _BACnetValueSource is the data-structure of this message
 type _BACnetValueSource struct {
-	_SubType        BACnetValueSource
+	_SubType interface {
+		BACnetValueSourceContract
+		BACnetValueSourceRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

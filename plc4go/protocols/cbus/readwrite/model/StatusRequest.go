@@ -67,7 +67,10 @@ type StatusRequestRequirements interface {
 
 // _StatusRequest is the data-structure of this message
 type _StatusRequest struct {
-	_SubType   StatusRequest
+	_SubType interface {
+		StatusRequestContract
+		StatusRequestRequirements
+	}
 	StatusType byte
 }
 

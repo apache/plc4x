@@ -69,7 +69,10 @@ type BACnetUnconfirmedServiceRequestWhoHasObjectRequirements interface {
 
 // _BACnetUnconfirmedServiceRequestWhoHasObject is the data-structure of this message
 type _BACnetUnconfirmedServiceRequestWhoHasObject struct {
-	_SubType        BACnetUnconfirmedServiceRequestWhoHasObject
+	_SubType interface {
+		BACnetUnconfirmedServiceRequestWhoHasObjectContract
+		BACnetUnconfirmedServiceRequestWhoHasObjectRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

@@ -67,7 +67,10 @@ type ApduDataRequirements interface {
 
 // _ApduData is the data-structure of this message
 type _ApduData struct {
-	_SubType ApduData
+	_SubType interface {
+		ApduDataContract
+		ApduDataRequirements
+	}
 
 	// Arguments.
 	DataLength uint8

@@ -67,8 +67,11 @@ type SALDataRequirements interface {
 
 // _SALData is the data-structure of this message
 type _SALData struct {
-	_SubType SALData
-	SalData  SALData
+	_SubType interface {
+		SALDataContract
+		SALDataRequirements
+	}
+	SalData SALData
 }
 
 var _ SALDataContract = (*_SALData)(nil)

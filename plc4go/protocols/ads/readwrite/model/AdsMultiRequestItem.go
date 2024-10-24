@@ -63,7 +63,10 @@ type AdsMultiRequestItemRequirements interface {
 
 // _AdsMultiRequestItem is the data-structure of this message
 type _AdsMultiRequestItem struct {
-	_SubType AdsMultiRequestItem
+	_SubType interface {
+		AdsMultiRequestItemContract
+		AdsMultiRequestItemRequirements
+	}
 }
 
 var _ AdsMultiRequestItemContract = (*_AdsMultiRequestItem)(nil)

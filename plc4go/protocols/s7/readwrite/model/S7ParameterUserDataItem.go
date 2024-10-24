@@ -65,7 +65,10 @@ type S7ParameterUserDataItemRequirements interface {
 
 // _S7ParameterUserDataItem is the data-structure of this message
 type _S7ParameterUserDataItem struct {
-	_SubType S7ParameterUserDataItem
+	_SubType interface {
+		S7ParameterUserDataItemContract
+		S7ParameterUserDataItemRequirements
+	}
 }
 
 var _ S7ParameterUserDataItemContract = (*_S7ParameterUserDataItem)(nil)

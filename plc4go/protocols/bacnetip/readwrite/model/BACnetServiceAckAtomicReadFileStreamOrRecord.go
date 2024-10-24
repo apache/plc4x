@@ -73,7 +73,10 @@ type BACnetServiceAckAtomicReadFileStreamOrRecordRequirements interface {
 
 // _BACnetServiceAckAtomicReadFileStreamOrRecord is the data-structure of this message
 type _BACnetServiceAckAtomicReadFileStreamOrRecord struct {
-	_SubType        BACnetServiceAckAtomicReadFileStreamOrRecord
+	_SubType interface {
+		BACnetServiceAckAtomicReadFileStreamOrRecordContract
+		BACnetServiceAckAtomicReadFileStreamOrRecordRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 	OpeningTag      BACnetOpeningTag
 	ClosingTag      BACnetClosingTag

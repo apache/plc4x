@@ -69,7 +69,10 @@ type S7DataAlarmMessageRequirements interface {
 
 // _S7DataAlarmMessage is the data-structure of this message
 type _S7DataAlarmMessage struct {
-	_SubType S7DataAlarmMessage
+	_SubType interface {
+		S7DataAlarmMessageContract
+		S7DataAlarmMessageRequirements
+	}
 }
 
 var _ S7DataAlarmMessageContract = (*_S7DataAlarmMessage)(nil)

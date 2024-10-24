@@ -65,7 +65,10 @@ type ConnectionResponseDataBlockRequirements interface {
 
 // _ConnectionResponseDataBlock is the data-structure of this message
 type _ConnectionResponseDataBlock struct {
-	_SubType ConnectionResponseDataBlock
+	_SubType interface {
+		ConnectionResponseDataBlockContract
+		ConnectionResponseDataBlockRequirements
+	}
 }
 
 var _ ConnectionResponseDataBlockContract = (*_ConnectionResponseDataBlock)(nil)

@@ -71,8 +71,11 @@ type BACnetApplicationTagRequirements interface {
 
 // _BACnetApplicationTag is the data-structure of this message
 type _BACnetApplicationTag struct {
-	_SubType BACnetApplicationTag
-	Header   BACnetTagHeader
+	_SubType interface {
+		BACnetApplicationTagContract
+		BACnetApplicationTagRequirements
+	}
+	Header BACnetTagHeader
 }
 
 var _ BACnetApplicationTagContract = (*_BACnetApplicationTag)(nil)

@@ -70,7 +70,10 @@ type KnxNetIpMessageRequirements interface {
 
 // _KnxNetIpMessage is the data-structure of this message
 type _KnxNetIpMessage struct {
-	_SubType KnxNetIpMessage
+	_SubType interface {
+		KnxNetIpMessageContract
+		KnxNetIpMessageRequirements
+	}
 }
 
 var _ KnxNetIpMessageContract = (*_KnxNetIpMessage)(nil)

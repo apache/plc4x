@@ -69,7 +69,10 @@ type BACnetOptionalREALRequirements interface {
 
 // _BACnetOptionalREAL is the data-structure of this message
 type _BACnetOptionalREAL struct {
-	_SubType        BACnetOptionalREAL
+	_SubType interface {
+		BACnetOptionalREALContract
+		BACnetOptionalREALRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

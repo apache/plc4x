@@ -69,7 +69,10 @@ type BACnetScaleRequirements interface {
 
 // _BACnetScale is the data-structure of this message
 type _BACnetScale struct {
-	_SubType        BACnetScale
+	_SubType interface {
+		BACnetScaleContract
+		BACnetScaleRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

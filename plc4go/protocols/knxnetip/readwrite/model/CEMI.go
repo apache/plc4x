@@ -67,7 +67,10 @@ type CEMIRequirements interface {
 
 // _CEMI is the data-structure of this message
 type _CEMI struct {
-	_SubType CEMI
+	_SubType interface {
+		CEMIContract
+		CEMIRequirements
+	}
 
 	// Arguments.
 	Size uint16

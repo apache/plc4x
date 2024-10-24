@@ -69,7 +69,10 @@ type BACnetOptionalUnsignedRequirements interface {
 
 // _BACnetOptionalUnsigned is the data-structure of this message
 type _BACnetOptionalUnsigned struct {
-	_SubType        BACnetOptionalUnsigned
+	_SubType interface {
+		BACnetOptionalUnsignedContract
+		BACnetOptionalUnsignedRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

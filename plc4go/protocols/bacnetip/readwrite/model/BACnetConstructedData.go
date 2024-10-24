@@ -81,7 +81,10 @@ type BACnetConstructedDataRequirements interface {
 
 // _BACnetConstructedData is the data-structure of this message
 type _BACnetConstructedData struct {
-	_SubType        BACnetConstructedData
+	_SubType interface {
+		BACnetConstructedDataContract
+		BACnetConstructedDataRequirements
+	}
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag

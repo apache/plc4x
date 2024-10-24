@@ -77,7 +77,10 @@ type BACnetNotificationParametersRequirements interface {
 
 // _BACnetNotificationParameters is the data-structure of this message
 type _BACnetNotificationParameters struct {
-	_SubType        BACnetNotificationParameters
+	_SubType interface {
+		BACnetNotificationParametersContract
+		BACnetNotificationParametersRequirements
+	}
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag

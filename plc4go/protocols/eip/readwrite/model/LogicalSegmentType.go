@@ -65,7 +65,10 @@ type LogicalSegmentTypeRequirements interface {
 
 // _LogicalSegmentType is the data-structure of this message
 type _LogicalSegmentType struct {
-	_SubType LogicalSegmentType
+	_SubType interface {
+		LogicalSegmentTypeContract
+		LogicalSegmentTypeRequirements
+	}
 }
 
 var _ LogicalSegmentTypeContract = (*_LogicalSegmentType)(nil)

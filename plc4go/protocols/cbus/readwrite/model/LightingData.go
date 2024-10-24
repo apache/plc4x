@@ -69,7 +69,10 @@ type LightingDataRequirements interface {
 
 // _LightingData is the data-structure of this message
 type _LightingData struct {
-	_SubType             LightingData
+	_SubType interface {
+		LightingDataContract
+		LightingDataRequirements
+	}
 	CommandTypeContainer LightingCommandTypeContainer
 }
 

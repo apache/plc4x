@@ -69,7 +69,10 @@ type BACnetTimeStampRequirements interface {
 
 // _BACnetTimeStamp is the data-structure of this message
 type _BACnetTimeStamp struct {
-	_SubType        BACnetTimeStamp
+	_SubType interface {
+		BACnetTimeStampContract
+		BACnetTimeStampRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

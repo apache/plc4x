@@ -75,7 +75,10 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements i
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass struct {
-	_SubType        BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
+	_SubType interface {
+		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract
+		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements
+	}
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag

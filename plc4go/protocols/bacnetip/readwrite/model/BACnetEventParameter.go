@@ -69,7 +69,10 @@ type BACnetEventParameterRequirements interface {
 
 // _BACnetEventParameter is the data-structure of this message
 type _BACnetEventParameter struct {
-	_SubType        BACnetEventParameter
+	_SubType interface {
+		BACnetEventParameterContract
+		BACnetEventParameterRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

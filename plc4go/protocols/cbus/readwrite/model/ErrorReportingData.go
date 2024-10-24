@@ -69,7 +69,10 @@ type ErrorReportingDataRequirements interface {
 
 // _ErrorReportingData is the data-structure of this message
 type _ErrorReportingData struct {
-	_SubType             ErrorReportingData
+	_SubType interface {
+		ErrorReportingDataContract
+		ErrorReportingDataRequirements
+	}
 	CommandTypeContainer ErrorReportingCommandTypeContainer
 }
 

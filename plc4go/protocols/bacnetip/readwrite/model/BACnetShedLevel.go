@@ -69,7 +69,10 @@ type BACnetShedLevelRequirements interface {
 
 // _BACnetShedLevel is the data-structure of this message
 type _BACnetShedLevel struct {
-	_SubType        BACnetShedLevel
+	_SubType interface {
+		BACnetShedLevelContract
+		BACnetShedLevelRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

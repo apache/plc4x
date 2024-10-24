@@ -73,7 +73,10 @@ type SecurityDataRequirements interface {
 
 // _SecurityData is the data-structure of this message
 type _SecurityData struct {
-	_SubType             SecurityData
+	_SubType interface {
+		SecurityDataContract
+		SecurityDataRequirements
+	}
 	CommandTypeContainer SecurityCommandTypeContainer
 	Argument             byte
 }

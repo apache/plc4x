@@ -65,7 +65,10 @@ type DF1RequestCommandRequirements interface {
 
 // _DF1RequestCommand is the data-structure of this message
 type _DF1RequestCommand struct {
-	_SubType DF1RequestCommand
+	_SubType interface {
+		DF1RequestCommandContract
+		DF1RequestCommandRequirements
+	}
 }
 
 var _ DF1RequestCommandContract = (*_DF1RequestCommand)(nil)

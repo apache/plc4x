@@ -69,7 +69,10 @@ type DF1CommandRequirements interface {
 
 // _DF1Command is the data-structure of this message
 type _DF1Command struct {
-	_SubType           DF1Command
+	_SubType interface {
+		DF1CommandContract
+		DF1CommandRequirements
+	}
 	Status             uint8
 	TransactionCounter uint16
 }

@@ -75,7 +75,10 @@ type BACnetNotificationParametersChangeOfValueNewValueRequirements interface {
 
 // _BACnetNotificationParametersChangeOfValueNewValue is the data-structure of this message
 type _BACnetNotificationParametersChangeOfValueNewValue struct {
-	_SubType        BACnetNotificationParametersChangeOfValueNewValue
+	_SubType interface {
+		BACnetNotificationParametersChangeOfValueNewValueContract
+		BACnetNotificationParametersChangeOfValueNewValueRequirements
+	}
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag

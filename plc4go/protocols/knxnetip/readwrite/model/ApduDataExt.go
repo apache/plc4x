@@ -67,7 +67,10 @@ type ApduDataExtRequirements interface {
 
 // _ApduDataExt is the data-structure of this message
 type _ApduDataExt struct {
-	_SubType ApduDataExt
+	_SubType interface {
+		ApduDataExtContract
+		ApduDataExtRequirements
+	}
 
 	// Arguments.
 	Length uint8

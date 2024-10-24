@@ -69,7 +69,10 @@ type BACnetOptionalBinaryPVRequirements interface {
 
 // _BACnetOptionalBinaryPV is the data-structure of this message
 type _BACnetOptionalBinaryPV struct {
-	_SubType        BACnetOptionalBinaryPV
+	_SubType interface {
+		BACnetOptionalBinaryPVContract
+		BACnetOptionalBinaryPVRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

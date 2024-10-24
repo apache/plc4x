@@ -63,7 +63,10 @@ type KnxGroupAddressRequirements interface {
 
 // _KnxGroupAddress is the data-structure of this message
 type _KnxGroupAddress struct {
-	_SubType KnxGroupAddress
+	_SubType interface {
+		KnxGroupAddressContract
+		KnxGroupAddressRequirements
+	}
 }
 
 var _ KnxGroupAddressContract = (*_KnxGroupAddress)(nil)

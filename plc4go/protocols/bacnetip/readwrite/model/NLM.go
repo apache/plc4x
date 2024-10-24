@@ -71,7 +71,10 @@ type NLMRequirements interface {
 
 // _NLM is the data-structure of this message
 type _NLM struct {
-	_SubType NLM
+	_SubType interface {
+		NLMContract
+		NLMRequirements
+	}
 
 	// Arguments.
 	ApduLength uint16

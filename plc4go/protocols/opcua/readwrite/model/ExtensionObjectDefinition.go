@@ -63,7 +63,10 @@ type ExtensionObjectDefinitionRequirements interface {
 
 // _ExtensionObjectDefinition is the data-structure of this message
 type _ExtensionObjectDefinition struct {
-	_SubType ExtensionObjectDefinition
+	_SubType interface {
+		ExtensionObjectDefinitionContract
+		ExtensionObjectDefinitionRequirements
+	}
 }
 
 var _ ExtensionObjectDefinitionContract = (*_ExtensionObjectDefinition)(nil)

@@ -69,7 +69,10 @@ type PayloadRequirements interface {
 
 // _Payload is the data-structure of this message
 type _Payload struct {
-	_SubType       Payload
+	_SubType interface {
+		PayloadContract
+		PayloadRequirements
+	}
 	SequenceHeader SequenceHeader
 
 	// Arguments.

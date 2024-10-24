@@ -65,7 +65,10 @@ type CEMIAdditionalInformationRequirements interface {
 
 // _CEMIAdditionalInformation is the data-structure of this message
 type _CEMIAdditionalInformation struct {
-	_SubType CEMIAdditionalInformation
+	_SubType interface {
+		CEMIAdditionalInformationContract
+		CEMIAdditionalInformationRequirements
+	}
 }
 
 var _ CEMIAdditionalInformationContract = (*_CEMIAdditionalInformation)(nil)

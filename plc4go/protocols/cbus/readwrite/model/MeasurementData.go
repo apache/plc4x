@@ -69,7 +69,10 @@ type MeasurementDataRequirements interface {
 
 // _MeasurementData is the data-structure of this message
 type _MeasurementData struct {
-	_SubType             MeasurementData
+	_SubType interface {
+		MeasurementDataContract
+		MeasurementDataRequirements
+	}
 	CommandTypeContainer MeasurementCommandTypeContainer
 }
 

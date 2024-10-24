@@ -73,7 +73,10 @@ type ClockAndTimekeepingDataRequirements interface {
 
 // _ClockAndTimekeepingData is the data-structure of this message
 type _ClockAndTimekeepingData struct {
-	_SubType             ClockAndTimekeepingData
+	_SubType interface {
+		ClockAndTimekeepingDataContract
+		ClockAndTimekeepingDataRequirements
+	}
 	CommandTypeContainer ClockAndTimekeepingCommandTypeContainer
 	Argument             byte
 }

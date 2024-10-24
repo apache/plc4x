@@ -73,7 +73,10 @@ type TriggerControlDataRequirements interface {
 
 // _TriggerControlData is the data-structure of this message
 type _TriggerControlData struct {
-	_SubType             TriggerControlData
+	_SubType interface {
+		TriggerControlDataContract
+		TriggerControlDataRequirements
+	}
 	CommandTypeContainer TriggerControlCommandTypeContainer
 	TriggerGroup         byte
 }

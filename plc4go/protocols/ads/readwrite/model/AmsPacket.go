@@ -91,7 +91,10 @@ type AmsPacketRequirements interface {
 
 // _AmsPacket is the data-structure of this message
 type _AmsPacket struct {
-	_SubType       AmsPacket
+	_SubType interface {
+		AmsPacketContract
+		AmsPacketRequirements
+	}
 	TargetAmsNetId AmsNetId
 	TargetAmsPort  uint16
 	SourceAmsNetId AmsNetId

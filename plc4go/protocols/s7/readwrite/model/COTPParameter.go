@@ -67,7 +67,10 @@ type COTPParameterRequirements interface {
 
 // _COTPParameter is the data-structure of this message
 type _COTPParameter struct {
-	_SubType COTPParameter
+	_SubType interface {
+		COTPParameterContract
+		COTPParameterRequirements
+	}
 
 	// Arguments.
 	Rest uint8

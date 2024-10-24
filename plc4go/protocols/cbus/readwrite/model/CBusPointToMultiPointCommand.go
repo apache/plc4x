@@ -69,7 +69,10 @@ type CBusPointToMultiPointCommandRequirements interface {
 
 // _CBusPointToMultiPointCommand is the data-structure of this message
 type _CBusPointToMultiPointCommand struct {
-	_SubType          CBusPointToMultiPointCommand
+	_SubType interface {
+		CBusPointToMultiPointCommandContract
+		CBusPointToMultiPointCommandRequirements
+	}
 	PeekedApplication byte
 
 	// Arguments.

@@ -73,9 +73,12 @@ type CALReplyRequirements interface {
 
 // _CALReply is the data-structure of this message
 type _CALReply struct {
-	_SubType CALReply
-	CalType  byte
-	CalData  CALData
+	_SubType interface {
+		CALReplyContract
+		CALReplyRequirements
+	}
+	CalType byte
+	CalData CALData
 
 	// Arguments.
 	CBusOptions    CBusOptions

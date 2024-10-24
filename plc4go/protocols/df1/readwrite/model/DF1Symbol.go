@@ -70,7 +70,10 @@ type DF1SymbolRequirements interface {
 
 // _DF1Symbol is the data-structure of this message
 type _DF1Symbol struct {
-	_SubType DF1Symbol
+	_SubType interface {
+		DF1SymbolContract
+		DF1SymbolRequirements
+	}
 }
 
 var _ DF1SymbolContract = (*_DF1Symbol)(nil)

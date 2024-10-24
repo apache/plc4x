@@ -67,7 +67,10 @@ type S7ParameterRequirements interface {
 
 // _S7Parameter is the data-structure of this message
 type _S7Parameter struct {
-	_SubType S7Parameter
+	_SubType interface {
+		S7ParameterContract
+		S7ParameterRequirements
+	}
 }
 
 var _ S7ParameterContract = (*_S7Parameter)(nil)

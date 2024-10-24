@@ -65,7 +65,10 @@ type PathSegmentRequirements interface {
 
 // _PathSegment is the data-structure of this message
 type _PathSegment struct {
-	_SubType PathSegment
+	_SubType interface {
+		PathSegmentContract
+		PathSegmentRequirements
+	}
 }
 
 var _ PathSegmentContract = (*_PathSegment)(nil)

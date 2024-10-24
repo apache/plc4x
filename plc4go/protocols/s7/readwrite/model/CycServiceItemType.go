@@ -72,7 +72,10 @@ type CycServiceItemTypeRequirements interface {
 
 // _CycServiceItemType is the data-structure of this message
 type _CycServiceItemType struct {
-	_SubType   CycServiceItemType
+	_SubType interface {
+		CycServiceItemTypeContract
+		CycServiceItemTypeRequirements
+	}
 	ByteLength uint8
 	SyntaxId   uint8
 }

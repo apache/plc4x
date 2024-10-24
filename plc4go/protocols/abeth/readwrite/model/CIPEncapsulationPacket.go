@@ -75,7 +75,10 @@ type CIPEncapsulationPacketRequirements interface {
 
 // _CIPEncapsulationPacket is the data-structure of this message
 type _CIPEncapsulationPacket struct {
-	_SubType      CIPEncapsulationPacket
+	_SubType interface {
+		CIPEncapsulationPacketContract
+		CIPEncapsulationPacketRequirements
+	}
 	SessionHandle uint32
 	Status        uint32
 	SenderContext []uint8

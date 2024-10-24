@@ -73,7 +73,10 @@ type TelephonyDataRequirements interface {
 
 // _TelephonyData is the data-structure of this message
 type _TelephonyData struct {
-	_SubType             TelephonyData
+	_SubType interface {
+		TelephonyDataContract
+		TelephonyDataRequirements
+	}
 	CommandTypeContainer TelephonyCommandTypeContainer
 	Argument             byte
 }

@@ -69,8 +69,11 @@ type MessagePDURequirements interface {
 
 // _MessagePDU is the data-structure of this message
 type _MessagePDU struct {
-	_SubType MessagePDU
-	Chunk    ChunkType
+	_SubType interface {
+		MessagePDUContract
+		MessagePDURequirements
+	}
+	Chunk ChunkType
 }
 
 var _ MessagePDUContract = (*_MessagePDU)(nil)

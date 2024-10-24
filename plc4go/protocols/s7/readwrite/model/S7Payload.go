@@ -67,7 +67,10 @@ type S7PayloadRequirements interface {
 
 // _S7Payload is the data-structure of this message
 type _S7Payload struct {
-	_SubType S7Payload
+	_SubType interface {
+		S7PayloadContract
+		S7PayloadRequirements
+	}
 
 	// Arguments.
 	Parameter S7Parameter

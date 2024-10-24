@@ -77,7 +77,10 @@ type S7PayloadUserDataItemRequirements interface {
 
 // _S7PayloadUserDataItem is the data-structure of this message
 type _S7PayloadUserDataItem struct {
-	_SubType      S7PayloadUserDataItem
+	_SubType interface {
+		S7PayloadUserDataItemContract
+		S7PayloadUserDataItemRequirements
+	}
 	ReturnCode    DataTransportErrorCode
 	TransportSize DataTransportSize
 	DataLength    uint16

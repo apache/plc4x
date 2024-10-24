@@ -73,7 +73,10 @@ type BACnetFaultParameterFaultExtendedParametersEntryRequirements interface {
 
 // _BACnetFaultParameterFaultExtendedParametersEntry is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntry struct {
-	_SubType        BACnetFaultParameterFaultExtendedParametersEntry
+	_SubType interface {
+		BACnetFaultParameterFaultExtendedParametersEntryContract
+		BACnetFaultParameterFaultExtendedParametersEntryRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

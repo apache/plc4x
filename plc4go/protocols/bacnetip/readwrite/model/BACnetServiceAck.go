@@ -69,7 +69,10 @@ type BACnetServiceAckRequirements interface {
 
 // _BACnetServiceAck is the data-structure of this message
 type _BACnetServiceAck struct {
-	_SubType BACnetServiceAck
+	_SubType interface {
+		BACnetServiceAckContract
+		BACnetServiceAckRequirements
+	}
 
 	// Arguments.
 	ServiceAckLength uint32

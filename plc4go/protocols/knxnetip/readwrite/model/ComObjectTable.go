@@ -63,7 +63,10 @@ type ComObjectTableRequirements interface {
 
 // _ComObjectTable is the data-structure of this message
 type _ComObjectTable struct {
-	_SubType ComObjectTable
+	_SubType interface {
+		ComObjectTableContract
+		ComObjectTableRequirements
+	}
 }
 
 var _ ComObjectTableContract = (*_ComObjectTable)(nil)

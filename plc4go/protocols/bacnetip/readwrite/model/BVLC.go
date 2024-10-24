@@ -72,7 +72,10 @@ type BVLCRequirements interface {
 
 // _BVLC is the data-structure of this message
 type _BVLC struct {
-	_SubType BVLC
+	_SubType interface {
+		BVLCContract
+		BVLCRequirements
+	}
 }
 
 var _ BVLCContract = (*_BVLC)(nil)

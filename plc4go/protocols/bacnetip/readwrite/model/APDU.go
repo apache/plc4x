@@ -67,7 +67,10 @@ type APDURequirements interface {
 
 // _APDU is the data-structure of this message
 type _APDU struct {
-	_SubType APDU
+	_SubType interface {
+		APDUContract
+		APDURequirements
+	}
 
 	// Arguments.
 	ApduLength uint16

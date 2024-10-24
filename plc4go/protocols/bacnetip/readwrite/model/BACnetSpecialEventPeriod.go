@@ -69,7 +69,10 @@ type BACnetSpecialEventPeriodRequirements interface {
 
 // _BACnetSpecialEventPeriod is the data-structure of this message
 type _BACnetSpecialEventPeriod struct {
-	_SubType        BACnetSpecialEventPeriod
+	_SubType interface {
+		BACnetSpecialEventPeriodContract
+		BACnetSpecialEventPeriodRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

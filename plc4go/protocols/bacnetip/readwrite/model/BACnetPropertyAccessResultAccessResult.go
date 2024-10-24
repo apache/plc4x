@@ -75,7 +75,10 @@ type BACnetPropertyAccessResultAccessResultRequirements interface {
 
 // _BACnetPropertyAccessResultAccessResult is the data-structure of this message
 type _BACnetPropertyAccessResultAccessResult struct {
-	_SubType        BACnetPropertyAccessResultAccessResult
+	_SubType interface {
+		BACnetPropertyAccessResultAccessResultContract
+		BACnetPropertyAccessResultAccessResultRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 
 	// Arguments.

@@ -77,7 +77,10 @@ type LDataFrameRequirements interface {
 
 // _LDataFrame is the data-structure of this message
 type _LDataFrame struct {
-	_SubType             LDataFrame
+	_SubType interface {
+		LDataFrameContract
+		LDataFrameRequirements
+	}
 	FrameType            bool
 	NotRepeated          bool
 	Priority             CEMIPriority

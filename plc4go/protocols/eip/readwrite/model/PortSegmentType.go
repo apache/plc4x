@@ -65,7 +65,10 @@ type PortSegmentTypeRequirements interface {
 
 // _PortSegmentType is the data-structure of this message
 type _PortSegmentType struct {
-	_SubType PortSegmentType
+	_SubType interface {
+		PortSegmentTypeContract
+		PortSegmentTypeRequirements
+	}
 }
 
 var _ PortSegmentTypeContract = (*_PortSegmentType)(nil)

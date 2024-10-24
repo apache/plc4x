@@ -73,7 +73,10 @@ type AccessControlDataRequirements interface {
 
 // _AccessControlData is the data-structure of this message
 type _AccessControlData struct {
-	_SubType             AccessControlData
+	_SubType interface {
+		AccessControlDataContract
+		AccessControlDataRequirements
+	}
 	CommandTypeContainer AccessControlCommandTypeContainer
 	NetworkId            byte
 	AccessPointId        byte

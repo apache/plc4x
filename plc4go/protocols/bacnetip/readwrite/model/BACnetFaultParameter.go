@@ -69,7 +69,10 @@ type BACnetFaultParameterRequirements interface {
 
 // _BACnetFaultParameter is the data-structure of this message
 type _BACnetFaultParameter struct {
-	_SubType        BACnetFaultParameter
+	_SubType interface {
+		BACnetFaultParameterContract
+		BACnetFaultParameterRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

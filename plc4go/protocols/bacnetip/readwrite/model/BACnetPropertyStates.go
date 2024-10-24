@@ -69,7 +69,10 @@ type BACnetPropertyStatesRequirements interface {
 
 // _BACnetPropertyStates is the data-structure of this message
 type _BACnetPropertyStates struct {
-	_SubType        BACnetPropertyStates
+	_SubType interface {
+		BACnetPropertyStatesContract
+		BACnetPropertyStatesRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

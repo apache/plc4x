@@ -75,7 +75,10 @@ type BACnetTimerStateChangeValueRequirements interface {
 
 // _BACnetTimerStateChangeValue is the data-structure of this message
 type _BACnetTimerStateChangeValue struct {
-	_SubType        BACnetTimerStateChangeValue
+	_SubType interface {
+		BACnetTimerStateChangeValueContract
+		BACnetTimerStateChangeValueRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 
 	// Arguments.

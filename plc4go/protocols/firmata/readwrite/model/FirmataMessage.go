@@ -69,7 +69,10 @@ type FirmataMessageRequirements interface {
 
 // _FirmataMessage is the data-structure of this message
 type _FirmataMessage struct {
-	_SubType FirmataMessage
+	_SubType interface {
+		FirmataMessageContract
+		FirmataMessageRequirements
+	}
 
 	// Arguments.
 	Response bool

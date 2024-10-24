@@ -75,7 +75,10 @@ type BACnetPriorityValueRequirements interface {
 
 // _BACnetPriorityValue is the data-structure of this message
 type _BACnetPriorityValue struct {
-	_SubType        BACnetPriorityValue
+	_SubType interface {
+		BACnetPriorityValueContract
+		BACnetPriorityValueRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 
 	// Arguments.

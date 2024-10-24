@@ -71,7 +71,10 @@ type COTPPacketRequirements interface {
 
 // _COTPPacket is the data-structure of this message
 type _COTPPacket struct {
-	_SubType   COTPPacket
+	_SubType interface {
+		COTPPacketContract
+		COTPPacketRequirements
+	}
 	Parameters []COTPParameter
 	Payload    S7Message
 

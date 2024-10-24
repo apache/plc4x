@@ -75,7 +75,10 @@ type ReplyOrConfirmationRequirements interface {
 
 // _ReplyOrConfirmation is the data-structure of this message
 type _ReplyOrConfirmation struct {
-	_SubType   ReplyOrConfirmation
+	_SubType interface {
+		ReplyOrConfirmationContract
+		ReplyOrConfirmationRequirements
+	}
 	PeekedByte byte
 
 	// Arguments.

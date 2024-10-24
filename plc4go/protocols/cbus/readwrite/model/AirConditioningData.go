@@ -69,7 +69,10 @@ type AirConditioningDataRequirements interface {
 
 // _AirConditioningData is the data-structure of this message
 type _AirConditioningData struct {
-	_SubType             AirConditioningData
+	_SubType interface {
+		AirConditioningDataContract
+		AirConditioningDataRequirements
+	}
 	CommandTypeContainer AirConditioningCommandTypeContainer
 }
 

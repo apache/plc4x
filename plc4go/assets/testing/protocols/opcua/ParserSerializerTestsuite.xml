@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Licensed to the Apache Software Foundation (ASF) under one
-  or more contributor license agreements.  See the NOTICE file
-  distributed with this work for additional information
-  regarding copyright ownership.  The ASF licenses this file
-  to you under the Apache License, Version 2.0 (the
-  "License"); you may not use this file except in compliance
-  with the License.  You may obtain a copy of the License at
-
-      https://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing,
-  software distributed under the License is distributed on an
-  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  KIND, either express or implied.  See the License for the
-  specific language governing permissions and limitations
-  under the License.
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
   -->
 <test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
-                byteOrder="LITTLE_ENDIAN">
+  byteOrder="LITTLE_ENDIAN">
 
   <name>OPCUA</name>
 
@@ -65,7 +65,7 @@
   <testcase>
     <name>OPC UA Anonymous Identity Token</name>
     <raw>09000000616e6f6e796d6f7573</raw>
-    <root-type>UserIdentityToken</root-type>
+    <root-type>ExtensionObjectDefinition</root-type>
     <parser-arguments>
       <extensionId>321</extensionId>
     </parser-arguments>
@@ -142,7 +142,7 @@
   <testcase>
     <name>OPC UA Activate Session request</name>
     <raw>0500002000000084428062123302a3e7470f91899aa477deeab6ba1d83368c8a8e1a5bfffefa6de065de8f04edda010200000000000000ffffffff30750000000000ffffffffffffffff000000000000000001004101010d00000009000000616e6f6e796d6f7573ffffffffffffffff</raw>
-    <root-type>ActivateSessionRequest</root-type>
+    <root-type>ExtensionObjectDefinition</root-type>
     <parser-arguments>
       <extensionId>467</extensionId>
     </parser-arguments>
@@ -311,7 +311,7 @@
   <testcase>
     <name>OPC UA Publish Response Payload (data change)</name>
     <raw>20427b9004edda01350000000000000000ffffffff000000010000000100000001000000000100000020427b9004edda010100000001002b03012200000001000000010000000d0620000000f0cc098e04edda017089e98f04edda01000000000000000000000000</raw>
-    <root-type>PublishResponse</root-type>
+    <root-type>ExtensionObjectDefinition</root-type>
     <parser-arguments>
       <extensionId>829</extensionId>
     </parser-arguments>
@@ -484,7 +484,7 @@
   <testcase>
     <name>OPC UA Publish Response Payload (event notification)</name>
     <raw>a07f7459ddf3da016c0200000000000000ffffffff0000000300000001000000010000000001000000a07f7459ddf3da010100000001009403012301000003000000050000000b0000000000000f08000000000000000000001a0c06000000536572766572050100110100cd081503000000000d000000526566726573682053746172740d5040e158ddf3da01110100e30a110000050000000b00000001000100000f10000000000000000000001700000000000000120c070000004d794c6576656c05f40111030600070000004d794c6576656c1503000000000e0000004c6576656c2065786365656465640d20110558ddf3da011101000a25110306000d0000004d794c6576656c2e416c61726d050000000b0000000000000f08000000000000000000001b0c06000000536572766572050100110100cd081503000000000b0000005265667265736820456e640d6067e158ddf3da01110100e40a1100000100000000002880ffffffff</raw>
-    <root-type>PublishResponse</root-type>
+    <root-type>ExtensionObjectDefinition</root-type>
     <parser-arguments>
       <extensionId>829</extensionId>
     </parser-arguments>
@@ -1244,7 +1244,7 @@
   <testcase>
     <name>OPC UA Notification Message</name>
     <raw>010000008084ff018fedda010100000001002b03012200000001000000010000000d062000000000222ffb8eedda0120d592008fedda0100000000</raw>
-    <root-type>PublishResponse</root-type>
+    <root-type>ExtensionObjectDefinition</root-type>
     <parser-arguments>
       <extensionId>805</extensionId>
     </parser-arguments>
@@ -1427,7 +1427,7 @@
   <testcase>
     <name>OPC UA Monitored Item Notification</name>
     <raw>010000000d062000000000222ffb8eedda0120d592008fedda01</raw>
-    <root-type>MonitoredItemNotification</root-type>
+    <root-type>ExtensionObjectDefinition</root-type>
     <parser-arguments>
       <extensionId>808</extensionId>
     </parser-arguments>

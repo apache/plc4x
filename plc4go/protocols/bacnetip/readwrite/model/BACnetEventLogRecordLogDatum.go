@@ -75,7 +75,10 @@ type BACnetEventLogRecordLogDatumRequirements interface {
 
 // _BACnetEventLogRecordLogDatum is the data-structure of this message
 type _BACnetEventLogRecordLogDatum struct {
-	_SubType        BACnetEventLogRecordLogDatum
+	_SubType interface {
+		BACnetEventLogRecordLogDatumContract
+		BACnetEventLogRecordLogDatumRequirements
+	}
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag

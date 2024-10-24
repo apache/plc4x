@@ -69,8 +69,11 @@ type MonitoredSALRequirements interface {
 
 // _MonitoredSAL is the data-structure of this message
 type _MonitoredSAL struct {
-	_SubType MonitoredSAL
-	SalType  byte
+	_SubType interface {
+		MonitoredSALContract
+		MonitoredSALRequirements
+	}
+	SalType byte
 
 	// Arguments.
 	CBusOptions CBusOptions

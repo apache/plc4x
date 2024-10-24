@@ -79,7 +79,10 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements inter
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValue is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValue struct {
-	_SubType        BACnetNotificationParametersChangeOfDiscreteValueNewValue
+	_SubType interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements
+	}
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag

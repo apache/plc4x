@@ -65,7 +65,10 @@ type IdentifyReplyCommandRequirements interface {
 
 // _IdentifyReplyCommand is the data-structure of this message
 type _IdentifyReplyCommand struct {
-	_SubType IdentifyReplyCommand
+	_SubType interface {
+		IdentifyReplyCommandContract
+		IdentifyReplyCommandRequirements
+	}
 
 	// Arguments.
 	NumBytes uint8

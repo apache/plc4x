@@ -71,7 +71,10 @@ type ReplyRequirements interface {
 
 // _Reply is the data-structure of this message
 type _Reply struct {
-	_SubType   Reply
+	_SubType interface {
+		ReplyContract
+		ReplyRequirements
+	}
 	PeekedByte byte
 
 	// Arguments.

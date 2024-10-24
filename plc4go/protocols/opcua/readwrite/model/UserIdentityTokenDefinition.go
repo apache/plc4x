@@ -63,7 +63,10 @@ type UserIdentityTokenDefinitionRequirements interface {
 
 // _UserIdentityTokenDefinition is the data-structure of this message
 type _UserIdentityTokenDefinition struct {
-	_SubType UserIdentityTokenDefinition
+	_SubType interface {
+		UserIdentityTokenDefinitionContract
+		UserIdentityTokenDefinitionRequirements
+	}
 }
 
 var _ UserIdentityTokenDefinitionContract = (*_UserIdentityTokenDefinition)(nil)

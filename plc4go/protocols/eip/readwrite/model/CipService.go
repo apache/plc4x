@@ -71,7 +71,10 @@ type CipServiceRequirements interface {
 
 // _CipService is the data-structure of this message
 type _CipService struct {
-	_SubType CipService
+	_SubType interface {
+		CipServiceContract
+		CipServiceRequirements
+	}
 
 	// Arguments.
 	ServiceLen uint16

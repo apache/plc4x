@@ -65,7 +65,10 @@ type DataSegmentTypeRequirements interface {
 
 // _DataSegmentType is the data-structure of this message
 type _DataSegmentType struct {
-	_SubType DataSegmentType
+	_SubType interface {
+		DataSegmentTypeContract
+		DataSegmentTypeRequirements
+	}
 }
 
 var _ DataSegmentTypeContract = (*_DataSegmentType)(nil)

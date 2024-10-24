@@ -69,7 +69,10 @@ type BACnetClientCOVRequirements interface {
 
 // _BACnetClientCOV is the data-structure of this message
 type _BACnetClientCOV struct {
-	_SubType        BACnetClientCOV
+	_SubType interface {
+		BACnetClientCOVContract
+		BACnetClientCOVRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

@@ -77,7 +77,10 @@ type EipPacketRequirements interface {
 
 // _EipPacket is the data-structure of this message
 type _EipPacket struct {
-	_SubType      EipPacket
+	_SubType interface {
+		EipPacketContract
+		EipPacketRequirements
+	}
 	SessionHandle uint32
 	Status        uint32
 	SenderContext []byte

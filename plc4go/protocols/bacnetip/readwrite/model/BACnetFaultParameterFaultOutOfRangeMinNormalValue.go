@@ -75,7 +75,10 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueRequirements interface {
 
 // _BACnetFaultParameterFaultOutOfRangeMinNormalValue is the data-structure of this message
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValue struct {
-	_SubType        BACnetFaultParameterFaultOutOfRangeMinNormalValue
+	_SubType interface {
+		BACnetFaultParameterFaultOutOfRangeMinNormalValueContract
+		BACnetFaultParameterFaultOutOfRangeMinNormalValueRequirements
+	}
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag

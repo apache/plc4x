@@ -75,7 +75,10 @@ type BACnetLogDataRequirements interface {
 
 // _BACnetLogData is the data-structure of this message
 type _BACnetLogData struct {
-	_SubType        BACnetLogData
+	_SubType interface {
+		BACnetLogDataContract
+		BACnetLogDataRequirements
+	}
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag

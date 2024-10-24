@@ -69,7 +69,10 @@ type BACnetOptionalCharacterStringRequirements interface {
 
 // _BACnetOptionalCharacterString is the data-structure of this message
 type _BACnetOptionalCharacterString struct {
-	_SubType        BACnetOptionalCharacterString
+	_SubType interface {
+		BACnetOptionalCharacterStringContract
+		BACnetOptionalCharacterStringRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 

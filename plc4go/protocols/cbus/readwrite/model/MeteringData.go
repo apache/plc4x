@@ -73,7 +73,10 @@ type MeteringDataRequirements interface {
 
 // _MeteringData is the data-structure of this message
 type _MeteringData struct {
-	_SubType             MeteringData
+	_SubType interface {
+		MeteringDataContract
+		MeteringDataRequirements
+	}
 	CommandTypeContainer MeteringCommandTypeContainer
 	Argument             byte
 }

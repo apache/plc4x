@@ -73,7 +73,10 @@ type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements inter
 
 // _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord is the data-structure of this message
 type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord struct {
-	_SubType        BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
+	_SubType interface {
+		BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract
+		BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 	OpeningTag      BACnetOpeningTag
 	ClosingTag      BACnetClosingTag

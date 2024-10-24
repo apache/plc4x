@@ -69,7 +69,10 @@ type BACnetCalendarEntryRequirements interface {
 
 // _BACnetCalendarEntry is the data-structure of this message
 type _BACnetCalendarEntry struct {
-	_SubType        BACnetCalendarEntry
+	_SubType interface {
+		BACnetCalendarEntryContract
+		BACnetCalendarEntryRequirements
+	}
 	PeekedTagHeader BACnetTagHeader
 }
 
