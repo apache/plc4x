@@ -87,6 +87,7 @@
         <item name="PROFINET" href="users/protocols/profinet.html"/>
         <item name="S7 (Step7)" href="users/protocols/s7.html"/>
         <item name="Simulated" href="users/protocols/simulated.html"/>
+        <item name="UMAS" href="users/protocols/umas.html"/>
       </item>
       <item name="Transports" href="users/transports/index.html">
         <item name="TCP" href="users/transports/tcp.html"/>

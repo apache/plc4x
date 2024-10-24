@@ -153,7 +153,7 @@ class UmasCustomVariable(UmasVariable):
         if len(split_tag_address) > 1:
             child_index = split_tag_address[1]
             return self.children[child_index].get_write_variable_reference(
-                ".".join(split_tag_address[1:])
+                ".".join(split_tag_address[1:]), value
             )
         else:
             raise NotImplementedError("Unable to write structures of UDT's")

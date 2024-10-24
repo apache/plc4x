@@ -298,7 +298,7 @@ class DataItem:
         if data_type == "CHAR" and number_of_values == int(1):  # CHAR
 
             # Simple Field (value)
-            value: str = read_buffer.read_str(8, logical_name="", encoding="")
+            value: str = read_buffer.read_str(8, logical_name="", encoding='"UTF-8"')
 
             return PlcCHAR(value)
         if data_type == "CHAR":  # List
@@ -309,7 +309,9 @@ class DataItem:
             for _ in range(item_count):
                 value.append(
                     PlcSTRING(
-                        str(read_buffer.read_str(8, logical_name="", encoding=""))
+                        str(
+                            read_buffer.read_str(8, logical_name="", encoding='"UTF-8"')
+                        )
                     )
                 )
 
@@ -317,7 +319,7 @@ class DataItem:
         if data_type == "WCHAR" and number_of_values == int(1):  # WCHAR
 
             # Simple Field (value)
-            value: str = read_buffer.read_str(16, logical_name="", encoding="")
+            value: str = read_buffer.read_str(16, logical_name="", encoding='"UTF-16"')
 
             return PlcWCHAR(value)
         if data_type == "WCHAR":  # List
@@ -328,7 +330,11 @@ class DataItem:
             for _ in range(item_count):
                 value.append(
                     PlcSTRING(
-                        str(read_buffer.read_str(16, logical_name="", encoding=""))
+                        str(
+                            read_buffer.read_str(
+                                16, logical_name="", encoding='"UTF-16"'
+                            )
+                        )
                     )
                 )
 
@@ -336,13 +342,13 @@ class DataItem:
         if data_type == "STRING":  # STRING
 
             # Simple Field (value)
-            value: str = read_buffer.read_str(255, logical_name="", encoding="")
+            value: str = read_buffer.read_str(255, logical_name="", encoding='"UTF-8"')
 
             return PlcSTRING(value)
         if data_type == "WSTRING":  # STRING
 
             # Simple Field (value)
-            value: str = read_buffer.read_str(255, logical_name="", encoding="")
+            value: str = read_buffer.read_str(255, logical_name="", encoding='"UTF-16"')
 
             return PlcSTRING(value)
         return None

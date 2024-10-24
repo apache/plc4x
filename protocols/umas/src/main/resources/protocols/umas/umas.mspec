@@ -257,11 +257,10 @@
             [array    bit     value count 'numberOfValues'     ]
         ]
         ['BYTE','1'  BYTE
-            [simple uint 8 value]
+            [simple byte value]
         ]
         ['BYTE' List
-            // TODO: If the number of values is odd, add a reserved byte
-            [array    bit     value count 'numberOfValues * 8' ]
+            [array    byte     value count 'numberOfValues * 8' ]
         ]
         ['WORD'      WORD
             [simple   uint 16 value]
@@ -305,6 +304,32 @@
         ['STRING' List
             [array float 32 value count 'numberOfValues']
         ]
+        ['TIME','1' TIME
+            [simple uint 32 value]
+        ]
+        ['TIME' List
+            [array uint 32 value count 'numberOfValues']
+        ]
+        ['DATE','1' DATE
+            [simple uint 8 day encoding='BCD']
+            [simple uint 8 month encoding='BCD']
+            [simple uint 16 year encoding='BCD']
+        ]
+        ['TOD','1' TIME_OF_DAY
+            [simple uint 32 value]
+        ]
+        ['TOD' List
+            [array uint 32 value count 'numberOfValues']
+        ]
+        ['DT','1' DATE_AND_TIME
+            [simple uint 8 unused]
+            [simple uint 8 seconds encoding='BCD']
+            [simple uint 8 minutes encoding='BCD']
+            [simple uint 8 hour encoding='BCD']
+            [simple uint 8 day encoding='BCD']
+            [simple uint 8 month encoding='BCD']
+            [simple uint 16 year encoding='BCD']
+        ]
     ]
 ]
 
@@ -324,7 +349,7 @@
     ['13' UNKNOWN13 ['1','1']]
     ['14' DATE ['4','3']]
     ['15' TOD ['4','3']]
-    ['16' DT ['4','3']]
+    ['16' DT ['8','4']]
     ['17' UNKNOWN17 ['1','1']]
     ['18' UNKNOWN18 ['1','1']]
     ['19' UNKNOWN19 ['1','1']]

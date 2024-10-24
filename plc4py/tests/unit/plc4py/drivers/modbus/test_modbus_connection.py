@@ -28,7 +28,7 @@ import logging
 from plc4py.spi.values.PlcValues import PlcINT, PlcREAL, PlcList
 
 logger = logging.getLogger("testing")
-TEST_SERVER_IP = "192.168.190.174"
+TEST_SERVER_IP = "192.168.190.152"
 
 
 @pytest.mark.asyncio

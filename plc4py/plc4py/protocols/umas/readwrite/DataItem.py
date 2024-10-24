@@ -24,12 +24,17 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.spi.values.PlcValues import PlcBOOL
 from plc4py.spi.values.PlcValues import PlcBYTE
+from plc4py.spi.values.PlcValues import PlcDATE
+from plc4py.spi.values.PlcValues import PlcDATE_AND_TIME
 from plc4py.spi.values.PlcValues import PlcDINT
 from plc4py.spi.values.PlcValues import PlcDWORD
 from plc4py.spi.values.PlcValues import PlcINT
 from plc4py.spi.values.PlcValues import PlcList
 from plc4py.spi.values.PlcValues import PlcREAL
+from plc4py.spi.values.PlcValues import PlcSINT
 from plc4py.spi.values.PlcValues import PlcSTRING
+from plc4py.spi.values.PlcValues import PlcTIME
+from plc4py.spi.values.PlcValues import PlcTIME_OF_DAY
 from plc4py.spi.values.PlcValues import PlcUDINT
 from plc4py.spi.values.PlcValues import PlcUINT
 from plc4py.spi.values.PlcValues import PlcULINT
@@ -37,6 +42,7 @@ from plc4py.spi.values.PlcValues import PlcWORD
 from plc4py.utils.GenericTypes import ByteOrder
 from typing import List
 from typing import cast
+import datetime
 import logging
 import math
 
@@ -101,7 +107,7 @@ class DataItem:
         if data_type == UmasDataType.BYTE and number_of_values == int(1):  # BYTE
 
             # Simple Field (value)
-            value: int = read_buffer.read_unsigned_short(8, logical_name="")
+            value: int = read_buffer.read_byte("")
 
             return PlcBYTE(value)
         if data_type == UmasDataType.BYTE:  # List
@@ -110,7 +116,7 @@ class DataItem:
             item_count: int = int(number_of_values * int(8))
             value: List[PlcValue] = []
             for _ in range(item_count):
-                value.append(PlcBOOL(bool(read_buffer.read_bit(""))))
+                value.append(PlcBYTE(int(read_buffer.read_byte(""))))
 
             return PlcList(value)
         if data_type == UmasDataType.WORD:  # WORD
@@ -226,6 +232,98 @@ class DataItem:
                 )
 
             return PlcList(value)
+        if data_type == UmasDataType.TIME and number_of_values == int(1):  # TIME
+
+            # Simple Field (value)
+            value: int = read_buffer.read_unsigned_long(32, logical_name="")
+
+            return PlcTIME(value)
+        if data_type == UmasDataType.TIME:  # List
+            # Array field (value)
+            # Count array
+            item_count: int = int(number_of_values)
+            value: List[PlcValue] = []
+            for _ in range(item_count):
+                value.append(
+                    PlcULINT(int(read_buffer.read_unsigned_long(32, logical_name="")))
+                )
+
+            return PlcList(value)
+        if data_type == UmasDataType.DATE and number_of_values == int(1):  # DATE
+
+            # Simple Field (day)
+            day: int = read_buffer.read_unsigned_short(
+                8, logical_name="", encoding="BCD"
+            )
+
+            # Simple Field (month)
+            month: int = read_buffer.read_unsigned_short(
+                8, logical_name="", encoding="BCD"
+            )
+
+            # Simple Field (year)
+            year: int = read_buffer.read_unsigned_int(
+                16, logical_name="", encoding="BCD"
+            )
+
+            value: datetime = datetime.datetime(int(year), int(month), int(day))
+            return PlcDATE(value)
+        if data_type == UmasDataType.TOD and number_of_values == int(1):  # TIME_OF_DAY
+
+            # Simple Field (value)
+            value: int = read_buffer.read_unsigned_long(32, logical_name="")
+
+            return PlcTIME_OF_DAY(value)
+        if data_type == UmasDataType.TOD:  # List
+            # Array field (value)
+            # Count array
+            item_count: int = int(number_of_values)
+            value: List[PlcValue] = []
+            for _ in range(item_count):
+                value.append(
+                    PlcULINT(int(read_buffer.read_unsigned_long(32, logical_name="")))
+                )
+
+            return PlcList(value)
+        if data_type == UmasDataType.DT and number_of_values == int(1):  # DATE_AND_TIME
+
+            # Simple Field (unused)
+            unused: int = read_buffer.read_unsigned_short(8, logical_name="")
+
+            # Simple Field (seconds)
+            seconds: int = read_buffer.read_unsigned_short(
+                8, logical_name="", encoding="BCD"
+            )
+
+            # Simple Field (minutes)
+            minutes: int = read_buffer.read_unsigned_short(
+                8, logical_name="", encoding="BCD"
+            )
+
+            # Simple Field (hour)
+            hour: int = read_buffer.read_unsigned_short(
+                8, logical_name="", encoding="BCD"
+            )
+
+            # Simple Field (day)
+            day: int = read_buffer.read_unsigned_short(
+                8, logical_name="", encoding="BCD"
+            )
+
+            # Simple Field (month)
+            month: int = read_buffer.read_unsigned_short(
+                8, logical_name="", encoding="BCD"
+            )
+
+            # Simple Field (year)
+            year: int = read_buffer.read_unsigned_int(
+                16, logical_name="", encoding="BCD"
+            )
+
+            value: datetime = datetime.datetime(
+                int(year), int(month), int(day), int(hour), int(minutes), int(seconds)
+            )
+            return PlcDATE_AND_TIME(value)
         return None
 
     @staticmethod
@@ -265,13 +363,13 @@ class DataItem:
         elif data_type == UmasDataType.BYTE and number_of_values == int(1):  # BYTE
             # Simple Field (value)
             value: int = _value.get_int()
-            write_buffer.write_byte((value), 8, "value")
+            write_buffer.write_byte((value), "value")
 
         elif data_type == UmasDataType.BYTE:  # List
             values: PlcList = cast(PlcList, _value)
             for val in values.get_list():
-                value: bool = val.get_bool()
-                write_buffer.write_bit((value), "value")
+                value: List[int] = val.get_raw()
+                write_buffer.write_byte_array("", value)
 
         elif data_type == UmasDataType.WORD:  # WORD
             # Simple Field (value)
@@ -347,6 +445,74 @@ class DataItem:
                 value: float = val.get_float()
                 write_buffer.write_float((value), 32, "value")
 
+        elif data_type == UmasDataType.TIME and number_of_values == int(1):  # TIME
+            # Simple Field (value)
+            value: int = _value.get_int()
+            write_buffer.write_unsigned_int((value), 32, "value")
+
+        elif data_type == UmasDataType.TIME:  # List
+            values: PlcList = cast(PlcList, _value)
+            for val in values.get_list():
+                value: int = val.get_int()
+                write_buffer.write_unsigned_int((value), 32, "value")
+
+        elif data_type == UmasDataType.DATE and number_of_values == int(1):  # DATE
+            # Simple Field (day)
+            day: int = 0
+            write_buffer.write_byte((day), 8, "day")
+
+            # Simple Field (month)
+            month: int = 0
+            write_buffer.write_byte((month), 8, "month")
+
+            # Simple Field (year)
+            year: int = 0
+            write_buffer.write_unsigned_short((year), 16, "year")
+
+        elif data_type == UmasDataType.TOD and number_of_values == int(
+            1
+        ):  # TIME_OF_DAY
+            # Simple Field (value)
+            value: int = _value.get_int()
+            write_buffer.write_unsigned_int((value), 32, "value")
+
+        elif data_type == UmasDataType.TOD:  # List
+            values: PlcList = cast(PlcList, _value)
+            for val in values.get_list():
+                value: int = val.get_int()
+                write_buffer.write_unsigned_int((value), 32, "value")
+
+        elif data_type == UmasDataType.DT and number_of_values == int(
+            1
+        ):  # DATE_AND_TIME
+            # Simple Field (unused)
+            unused: int = 0
+            write_buffer.write_byte((unused), 8, "unused")
+
+            # Simple Field (seconds)
+            seconds: int = 0
+            write_buffer.write_byte((seconds), 8, "seconds")
+
+            # Simple Field (minutes)
+            minutes: int = 0
+            write_buffer.write_byte((minutes), 8, "minutes")
+
+            # Simple Field (hour)
+            hour: int = 0
+            write_buffer.write_byte((hour), 8, "hour")
+
+            # Simple Field (day)
+            day: int = 0
+            write_buffer.write_byte((day), 8, "day")
+
+            # Simple Field (month)
+            month: int = 0
+            write_buffer.write_byte((month), 8, "month")
+
+            # Simple Field (year)
+            year: int = 0
+            write_buffer.write_unsigned_short((year), 16, "year")
+
     @staticmethod
     def get_length_in_bytes(
         _value: PlcValue, data_type: UmasDataType, number_of_values: int
@@ -384,7 +550,7 @@ class DataItem:
             size_in_bits += 8
         elif data_type == UmasDataType.BYTE:  # List
             values: PlcList = cast(PlcList, _value)
-            size_in_bits += len(values.get_list()) * 1
+            size_in_bits += len(values.get_list()) * 8
         elif data_type == UmasDataType.WORD:  # WORD
             # Simple Field (value)
             size_in_bits += 16
@@ -427,5 +593,43 @@ class DataItem:
         elif data_type == UmasDataType.STRING:  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 32
+        elif data_type == UmasDataType.TIME and number_of_values == int(1):  # TIME
+            # Simple Field (value)
+            size_in_bits += 32
+        elif data_type == UmasDataType.TIME:  # List
+            values: PlcList = cast(PlcList, _value)
+            size_in_bits += len(values.get_list()) * 32
+        elif data_type == UmasDataType.DATE and number_of_values == int(1):  # DATE
+            # Simple Field (day)
+            size_in_bits += 8
+            # Simple Field (month)
+            size_in_bits += 8
+            # Simple Field (year)
+            size_in_bits += 16
+        elif data_type == UmasDataType.TOD and number_of_values == int(
+            1
+        ):  # TIME_OF_DAY
+            # Simple Field (value)
+            size_in_bits += 32
+        elif data_type == UmasDataType.TOD:  # List
+            values: PlcList = cast(PlcList, _value)
+            size_in_bits += len(values.get_list()) * 32
+        elif data_type == UmasDataType.DT and number_of_values == int(
+            1
+        ):  # DATE_AND_TIME
+            # Simple Field (unused)
+            size_in_bits += 8
+            # Simple Field (seconds)
+            size_in_bits += 8
+            # Simple Field (minutes)
+            size_in_bits += 8
+            # Simple Field (hour)
+            size_in_bits += 8
+            # Simple Field (day)
+            size_in_bits += 8
+            # Simple Field (month)
+            size_in_bits += 8
+            # Simple Field (year)
+            size_in_bits += 16
 
         return size_in_bits

@@ -89,6 +89,7 @@ class ${type.name}:
                 <#switch field.typeName>
                     <#case "array">
                         <#assign arrayField = field.asArrayField().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
                         <#assign elementTypeReference=arrayField.type.elementTypeReference>
             # Array field (${helper.camelCaseToSnakeCase(arrayField.name)})
             <#-- Only update curPos if the length expression uses it -->
@@ -103,7 +104,7 @@ class ${type.name}:
             <@emitImport import="from plc4py.api.value.PlcValue import PlcValue" />
             ${helper.camelCaseToSnakeCase(arrayField.name)}: List[PlcValue] = []
             for _ in range(item_count):
-                ${helper.camelCaseToSnakeCase(arrayField.name)}.append(${helper.getPlcValueTypeForTypeReference(elementTypeReference)}(${helper.getLanguageTypeNameForTypeReference(elementTypeReference, false)}(<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})<#else>${elementTypeReference.asComplexTypeReference().orElseThrow().name}IO.static_parse(read_buffer<#if elementTypeReference.params.isPresent()>, <#list elementTypeReference.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, elementTypeReference, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>))
+                ${helper.camelCaseToSnakeCase(arrayField.name)}.append(${helper.getPlcValueTypeForTypeReference(elementTypeReference)}(${helper.getLanguageTypeNameForTypeReference(elementTypeReference, false)}(<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)}${helper.getFieldOptions(typedField, parserArguments)}))<#else>${elementTypeReference.asComplexTypeReference().orElseThrow().name}IO.static_parse(read_buffer<#if elementTypeReference.params.isPresent()>, <#list elementTypeReference.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, elementTypeReference, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>))
 
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
                         <#else>
@@ -118,7 +119,7 @@ class ${type.name}:
             while read_buffer.get_pos() < ${helper.camelCaseToSnakeCase(arrayField.name)}_end_pos):
                 value.append(<@compress single_line=true>
                 <#if elementTypeReference.isSimpleTypeReference()>
-                    ${helper.getPlcValueTypeForTypeReference(elementTypeReference)}(${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})
+                    ${helper.getPlcValueTypeForTypeReference(elementTypeReference)}(${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)}${helper.getFieldOptions(typedField, parserArguments)}))
                 <#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.static_parse(readBuffer
                     <#if elementTypeReference.params.isPresent()>,
                         <#list elementTypeReference.params.orElseThrow() as parserArgument>
@@ -136,7 +137,7 @@ class ${type.name}:
             # Terminated array
             ${arrayField.name}: ${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)} = new LinkedList<>()
             while not bool(${helper.camelCaseToSnakeCase(helper.toParseExpression(arrayField, helper.boolTypeReference, arrayField.loopExpression,parserArguments))})):
-                ${helper.camelCaseToSnakeCase(arrayField.name)}.append(<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)}<#else>${elementTypeReference.asComplexTypeReference().orElseThrow().name}IO.static_parse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>)
+                ${helper.camelCaseToSnakeCase(arrayField.name)}.append(<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)}${helper.getFieldOptions(typedField, parserArguments)})<#else>${elementTypeReference.asComplexTypeReference().orElseThrow().name}IO.static_parse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>)
 
                 <#-- After parsing, update the current position, but only if it's needed -->
                                 <#if arrayField.loopExpression.contains("curPos")>
@@ -151,9 +152,10 @@ class ${type.name}:
                     <#break>
                     <#case "const">
                         <#assign constField=field.asConstField().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
 
             # Const Field (${helper.camelCaseToSnakeCase(constField.name)})
-            ${helper.camelCaseToSnakeCase(constField.name)}: ${helper.getNonPrimitiveLanguageTypeNameForField(constField)} = ${helper.getReadBufferReadMethodCall(constField.type.asSimpleTypeReference().orElseThrow(), "", constField)}
+            ${helper.camelCaseToSnakeCase(constField.name)}: ${helper.getNonPrimitiveLanguageTypeNameForField(constField)} = ${helper.getReadBufferReadMethodCall(constField.type.asSimpleTypeReference().orElseThrow(), "", constField)}${helper.getFieldOptions(typedField, parserArguments)})
             if ${helper.camelCaseToSnakeCase(constField.name)} != ${dataIoTypeDefinition.name}.${constField.name?upper_case}):
                 <@emitImport import="from plc4py.api.exceptions.exceptions import ParseException" />
                 raise ParseException("Expected constant value " + ${dataIoTypeDefinition.name}.${constField.name?upper_case} + " but got " + ${helper.camelCaseToSnakeCase(constField.name)})
@@ -164,9 +166,10 @@ class ${type.name}:
                     <#break>
                     <#case "enum">
                         <#assign enumField=field.asEnumField().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
 
             # Enum field (${helper.camelCaseToSnakeCase(enumField.name)})
-            ${helper.camelCaseToSnakeCase(enumField.name)}: ${helper.getNonPrimitiveLanguageTypeNameForField(enumField)} = ${helper.getNonPrimitiveLanguageTypeNameForField(enumField)}.enum_for_value(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type.asSimpleTypeReference().orElseThrow()), "", enumField)})
+            ${helper.camelCaseToSnakeCase(enumField.name)}: ${helper.getNonPrimitiveLanguageTypeNameForField(enumField)} = ${helper.getNonPrimitiveLanguageTypeNameForField(enumField)}.enum_for_value(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type.asSimpleTypeReference().orElseThrow()), "", enumField)}${helper.getFieldOptions(typedField, parserArguments)}))
                         <#if enumField.name == "value">
                             <#assign valueDefined=true>
                         </#if>
@@ -182,22 +185,24 @@ class ${type.name}:
                     <#break>
                     <#case "reserved">
                         <#assign reservedField=field.asReservedField().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
 
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-            reserved: ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(reservedField.type.asSimpleTypeReference().orElseThrow(), "", reservedField)}
+            reserved: ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(reservedField.type.asSimpleTypeReference().orElseThrow(), "", reservedField)}${helper.getFieldOptions(typedField, parserArguments)})
             if reserved != ${helper.getReservedValue(reservedField)}:
                 <@emitImport import="import logging" />
                 logging.warning("Expected constant value " + str(${reservedField.referenceValue}) + " but got " + str(reserved) + " for reserved field.")
                     <#break>
                     <#case "simple">
                         <#assign simpleField=field.asSimpleField().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
 
                         <#if helper.isEnumField(simpleField)>
             # Enum field (${simpleField.name})
-            ${helper.camelCaseToSnakeCase(simpleField.name)}: ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)} = ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)}(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(simpleField.type), "", simpleField)})
+            ${helper.camelCaseToSnakeCase(simpleField.name)}: ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)} = ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)}(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(simpleField.type), "", simpleField)}${helper.getFieldOptions(typedField, parserArguments)}))
                         <#else>
             # Simple Field (${simpleField.name})
-            ${helper.camelCaseToSnakeCase(simpleField.name)}: ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)} = <#if simpleField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "", simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if simpleField.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument>${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}(${helper.toParseExpression(simpleField, simpleField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
+            ${helper.camelCaseToSnakeCase(simpleField.name)}: ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)} = <#if simpleField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "", simpleField)}${helper.getFieldOptions(typedField, parserArguments)})<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if simpleField.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument>${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}(${helper.toParseExpression(simpleField, simpleField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>${helper.getFieldOptions(typedField, parserArguments)})</#if>
                         </#if>
                         <#if case.name == "Struct" ||
                             ((case.name == "DATE_AND_TIME") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day") || (simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds"))) ||
@@ -289,7 +294,8 @@ class ${type.name}:
                     <#break>
                     <#case "DATE">
                     <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day")>
-            value: LocalDate = LocalDate(int(year), (month == 0) ? 1 : int(month), (day == 0) ? 1 : int(day))
+            <@emitImport import="import datetime" />
+            value: datetime = datetime.datetime(int(year), int(month), int(day))
                     </#if>
             <@emitImport import="from plc4py.spi.values.PlcValues import PlcDATE" />
             return PlcDATE(value)
@@ -304,12 +310,10 @@ class ${type.name}:
             return PlcTIME_OF_DAY(value)
                     <#break>
                     <#case "DATE_AND_TIME">
-                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nanos")>
-            value: LocalDateTime = LocalDateTime(int(year), (month == 0) ? 1 : int(month), (day == 0) ? 1 : int(day), int(hour), int(minutes), int(seconds), int(nanos))
+                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "microseconds")>
+            value: datetime = datetime.datetime(int(year), int(month), int(day), int(hour), int(minutes), int(seconds), int(microseconds))
                     <#elseif helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds")>
-            value: LocalDateTime = LocalDateTime(int(year), (month == 0) ? 1 : int(month), (day == 0) ? 1 : int(day), int(hour), int(minutes), int(seconds))
-                    <#elseif helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
-            value: LocalDateTime = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0, ZoneOffset.UTC)
+            value: datetime = datetime.datetime(int(year), int(month), int(day), int(hour), int(minutes), int(seconds))
                     </#if>
             <@emitImport import="from plc4py.spi.values.PlcValues import PlcDATE_AND_TIME" />
             return PlcDATE_AND_TIME(value)

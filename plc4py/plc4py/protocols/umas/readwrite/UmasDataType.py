@@ -38,7 +38,7 @@ class UmasDataType(AutoNumberEnum):
     UNKNOWN13 = (13, int(1), int(1))
     DATE = (14, int(3), int(4))
     TOD = (15, int(3), int(4))
-    DT = (16, int(3), int(4))
+    DT = (16, int(4), int(8))
     UNKNOWN17 = (17, int(1), int(1))
     UNKNOWN18 = (18, int(1), int(1))
     UNKNOWN19 = (19, int(1), int(1))

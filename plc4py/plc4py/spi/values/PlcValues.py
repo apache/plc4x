@@ -17,6 +17,7 @@
 # under the License.
 #
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any, Dict, List
 
 from plc4py.api.value.PlcValue import PlcValue
@@ -34,11 +35,11 @@ class PlcCHAR(PlcValue[str]):
     pass
 
 
-class PlcDATE(PlcValue[int]):
+class PlcDATE(PlcValue[datetime]):
     pass
 
 
-class PlcDATE_AND_TIME(PlcValue[int]):
+class PlcDATE_AND_TIME(PlcValue[datetime]):
     pass
 
 

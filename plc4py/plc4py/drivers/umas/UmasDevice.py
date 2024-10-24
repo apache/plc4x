@@ -21,6 +21,7 @@ from asyncio import AbstractEventLoop, Transport
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple, cast
 
+from plc4py.api.exceptions.exceptions import PlcFieldParseException
 from plc4py.api.messages.PlcRequest import (
     PlcBrowseRequest,
     PlcReadRequest,
@@ -34,7 +35,11 @@ from plc4py.api.messages.PlcResponse import (
 from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
 from plc4py.drivers.umas.UmasConfiguration import UmasConfiguration
 from plc4py.drivers.umas.UmasTag import UmasTag
-from plc4py.drivers.umas.UmasVariables import UmasVariable, UmasVariableBuilder
+from plc4py.drivers.umas.UmasVariables import (
+    UmasVariable,
+    UmasVariableBuilder,
+    UmasElementryVariable,
+)
 from plc4py.protocols.umas.readwrite import (
     UmasPDUReadUnlocatedVariableResponse,
 )
@@ -110,6 +115,7 @@ from plc4py.protocols.umas.readwrite.VariableWriteRequestReference import (
     VariableWriteRequestReference,
 )
 from plc4py.spi.values.PlcValues import PlcNull
+from plc4py.protocols.umas.readwrite.UmasDataType import UmasDataType
 
 
 @dataclass
@@ -413,9 +419,17 @@ class UmasDevice:
             else:
                 quantity = 1
 
+            if request_tag.data_type == None:
+                request_tag.data_type = UmasDataType(
+                    self.variables[request_tag.tag_name].data_type
+                )
+
+            value = DataItem.static_parse(
+                read_buffer, request_tag.data_type, request_tag.quantity
+            )
             response_item = ResponseItem(
                 PlcResponseCode.OK,
-                DataItem.static_parse(read_buffer, request_tag.data_type, quantity),
+                value,
             )
 
             values[key] = response_item
@@ -469,6 +483,32 @@ class UmasDevice:
         response = PlcReadResponse(PlcResponseCode.OK, values)
         return response
 
+    def _get_internal_words(self, tag) -> UmasElementryVariable:
+        system_word_block = 0x002B
+        area = tag[1:3].upper()
+        if area == "SW":
+            area_offset = 80
+            word_number = (int(tag[3:]) * 2) + area_offset
+            data_type = UmasDataType.INT.value
+            base_offset = word_number // 0x100
+            offset = word_number % 0x100
+            return UmasElementryVariable(
+                tag, data_type, system_word_block, base_offset, offset
+            )
+
+        area = tag[1:2].upper()
+        if area == "S":
+            area_offset = 50
+            word_number = (int(tag[3:]) * 2) + area_offset
+            data_type = UmasDataType.BOOL.value
+            base_offset = word_number // 0x100
+            offset = word_number % 0x100
+            return UmasElementryVariable(
+                tag, data_type, system_word_block, base_offset, offset
+            )
+        else:
+            raise PlcFieldParseException("Unable to read non system addresses")
+
     def _sort_tags_based_on_memory_address(self, request):
         tag_list: List[List[Tuple[str, VariableReadRequestReference]]] = [[]]
         current_list_index = 0
@@ -477,7 +517,10 @@ class UmasDevice:
         for kea, tag in request.tags.items():
             umas_tag = cast(UmasTag, tag)
             base_tag_name = umas_tag.tag_name.split(".")[0]
-            variable = self.variables[base_tag_name]
+            if base_tag_name[:1] != "%":
+                variable = self.variables[base_tag_name]
+            else:
+                variable = self._get_internal_words(base_tag_name)
 
             if byte_count + variable.get_byte_length() > self.max_frame_size:
                 current_list_index += 1
@@ -510,14 +553,17 @@ class UmasDevice:
         for kea, tag in request.tags.items():
             umas_tag = cast(UmasTag, tag)
             base_tag_name = umas_tag.tag_name.split(".")[0]
-            variable = self.variables[base_tag_name]
+            if base_tag_name[:1] != "%":
+                variable = self.variables[base_tag_name]
+            else:
+                variable = self._get_internal_words(base_tag_name)
 
             if byte_count + variable.get_byte_length() > self.max_frame_size:
                 current_list_index += 1
                 tag_list.append([])
                 current_list = tag_list[current_list_index]
                 byte_count = 0
-            byte_count += variable.get_byte_length()
+            byte_count += variable.get_byte_length() + variable.data_type
             current_list.append(
                 (
                     kea,

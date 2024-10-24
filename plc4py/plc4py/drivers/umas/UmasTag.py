@@ -64,7 +64,7 @@ class UmasTag(PlcTag):
             if "dataType" in matcher.groupdict()
             and matcher.group("dataType") is not None
             and len(matcher.group("dataType")) is not 0
-            else cls._DEFAULT_DATA_TYPE
+            else None
         )
         return cls(tag_name, quantity, data_type)
 

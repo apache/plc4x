@@ -21,18 +21,20 @@
 
 === Connection String Options
 
-==== Modbus TCP
+[cols="2,2a,2a,2a,4a"]
+|===
+|Name |Type |Default Value |Required |Description
+|Name 4+|UMAS
+|Code 4+|`umas`
+|Default Transport 4+|`tcp`
+|Supported Transports 4+|
+ - `tcp`
+5+|Config options:
+|`request-timeout` |INT |5000| |Default timeout for all types of requests.
+|`default-unit-identifier` |INT |1| |Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.
++++
 
-include::../../../plc4j/drivers/all/src/site/generated/modbus-tcp.adoc[]
-
-==== Modbus RTU
-
-include::../../../plc4j/drivers/all/src/site/generated/modbus-rtu.adoc[]
-
-==== Modbus ASCII
-
-include::../../../plc4j/drivers/all/src/site/generated/modbus-ascii.adoc[]
-
+|===
 === Supported Operations
 
 [cols="2,2a,5a"]
@@ -46,19 +48,22 @@ include::../../../plc4j/drivers/all/src/site/generated/modbus-ascii.adoc[]
 
 |
 2+| `write`
+
+|
+2+| `browse`
 |===
 
 === Individual Resource Address Format
 
 ==== Connection String
 
-Modbus has the following connection string format:-
+UMAS has the following connection string format:-
 ----
-modbus-tcp:{transport}://{ip-address}:{port}?{options}
+umas:{transport}://{ip-address}:{port}?{options}
 ----
 An example connection string would look like:-
 ----
-modbus-tcp:tcp://127.0.0.1:502
+umas:tcp://127.0.0.1:502
 ----
 Note the transport, port and option fields are optional.
 
@@ -68,23 +73,14 @@ Note the transport, port and option fields are optional.
 In general all Modbus addresses have this format:
 
 ----
-{memory-Area}{start-address}:{data-type}[{array-size}]:{name-value-tag-options}
+{tag-name}.{child-name}.{child-name}:{data-type}[{array-size}]
 ----
 
+Depending on the type of tag the child-name parameters are optional.
+e.g. A tag with a BOOL data type could be 'TESTING_BOOL_1' whereas
+if it is a UDT the tag name is followed by the child 'TESTING_UDT_1.START' which in itself could be a BOOL.
 If the array-size part is omitted, the size-default of `1` is assumed.
-If the data-type part is omitted, it defaults to BOOL for Coils and Discrete Inputs and INT for input, holding and extended registers.
-If the name-value-tag-options part is omitted, simply no configuration fine-tuning is applied.
-
-Additionally address can contain tag configuration:
-----
-{unit-id: 123}
-----
-Specifying this value overrides value of `default-unit-id` parameter specified at the connection string.
-
-----
-{byte-order: 'LITTLE_ENDIAN'}
-----
-With this, can the default byte-order be overridden on a per-tag basis. If not provided the default-byte-order from the connection string is used, or BIG_ENDIAN, if this is also not provided.
+If the data-type part is omitted, it defaults to the data type of the tag read from the PLC.
 
 ==== Memory Areas
 
