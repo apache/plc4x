@@ -205,7 +205,7 @@ func (m *_DF1UnprotectedReadResponse) GetTypeName() string {
 }
 
 func (m *_DF1UnprotectedReadResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1CommandContract.(*_DF1Command).getLengthInBits(ctx))
+	lengthInBits := uint16(m.DF1CommandContract.(*_DF1Command).GetLengthInBits(ctx))
 
 	// Manual Array Field (data)
 	lengthInBits += uint16(DataLength(ctx, m.GetData()))

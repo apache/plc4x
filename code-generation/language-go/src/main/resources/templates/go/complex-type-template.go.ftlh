@@ -700,7 +700,7 @@ func (m *_${type.name}) GetTypeName() string {
 <#if !type.isDiscriminatedParentTypeDefinition()>
 func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint16 {
 		<#if type.isDiscriminatedChildTypeDefinition()>
-	lengthInBits := uint16(m.${type.getParentType().orElseThrow().name}Contract.(*_${type.getParentType().orElseThrow().name}).getLengthInBits(ctx))
+	lengthInBits := uint16(m.${type.getParentType().orElseThrow().name}Contract.(*_${type.getParentType().orElseThrow().name}).GetLengthInBits(ctx))
 		<#else>
 	lengthInBits := uint16(0)
 		</#if>
@@ -767,7 +767,7 @@ func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint16 {
 		<#elseif helper.isEnumField(discriminatorField)>
 		lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
 		<#else>
-		lengthInBits += ${discriminatorField.name}.getLengthInBits();
+		lengthInBits += ${discriminatorField.name}.GetLengthInBits();
 		</#if>
 					<#break>
 				<#case "enum">
@@ -877,7 +877,7 @@ func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint16 {
 </#if>
 
 <#if type.isDiscriminatedParentTypeDefinition()>
-func (m *_${type.name}) getLengthInBits(ctx context.Context) uint16 {
+func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	<#list type.fields as field>
 		<#switch field.typeName>

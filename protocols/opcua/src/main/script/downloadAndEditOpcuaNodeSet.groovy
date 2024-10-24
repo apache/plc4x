@@ -96,6 +96,7 @@ download("https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/Opc.Ua.T
 download("https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/StatusCode.csv", "StatusCode.csv")
 download("https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/Opc.Ua.NodeSet2.Services.xml", "Opc.Ua.NodeSet2.Services.xml")
 download("https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/NodeIds.csv", "Opc.Ua.NodeIds.Services.csv")
+download("https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/AttributeIds.csv", "AttributeIds.csv")
 
 
 def servicesFile = new File(project.getBasedir(), "target/downloads/Opc.Ua.NodeIds.Services.csv")

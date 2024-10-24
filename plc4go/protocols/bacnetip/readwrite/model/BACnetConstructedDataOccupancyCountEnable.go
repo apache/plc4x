@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataOccupancyCountEnable) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataOccupancyCountEnable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (occupancyCountEnable)
 	lengthInBits += m.OccupancyCountEnable.GetLengthInBits(ctx)

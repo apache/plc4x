@@ -471,7 +471,7 @@ func (m *_Request) GetTypeName() string {
 	return "Request"
 }
 
-func (m *_Request) getLengthInBits(ctx context.Context) uint16 {
+func (m *_Request) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Optional Field (startingCR)

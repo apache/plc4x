@@ -226,7 +226,7 @@ func (m *_BACnetTimerStateChangeValueNoValue) GetTypeName() string {
 }
 
 func (m *_BACnetTimerStateChangeValueNoValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).GetLengthInBits(ctx))
 
 	// Simple field (noValue)
 	lengthInBits += m.NoValue.GetLengthInBits(ctx)

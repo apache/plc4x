@@ -226,7 +226,7 @@ func (m *_BACnetPropertyStatesPolarity) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesPolarity) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).GetLengthInBits(ctx))
 
 	// Simple field (polarity)
 	lengthInBits += m.Polarity.GetLengthInBits(ctx)

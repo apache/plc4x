@@ -204,7 +204,7 @@ func (m *_TelephonyDataRinging) GetTypeName() string {
 }
 
 func (m *_TelephonyDataRinging) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).GetLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8

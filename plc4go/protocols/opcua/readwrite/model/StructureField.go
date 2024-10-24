@@ -48,8 +48,6 @@ type StructureField interface {
 	GetDataType() NodeId
 	// GetValueRank returns ValueRank (property field)
 	GetValueRank() int32
-	// GetNoOfArrayDimensions returns NoOfArrayDimensions (property field)
-	GetNoOfArrayDimensions() int32
 	// GetArrayDimensions returns ArrayDimensions (property field)
 	GetArrayDimensions() []uint32
 	// GetMaxStringLength returns MaxStringLength (property field)
@@ -65,14 +63,13 @@ type StructureField interface {
 // _StructureField is the data-structure of this message
 type _StructureField struct {
 	ExtensionObjectDefinitionContract
-	Name                PascalString
-	Description         LocalizedText
-	DataType            NodeId
-	ValueRank           int32
-	NoOfArrayDimensions int32
-	ArrayDimensions     []uint32
-	MaxStringLength     uint32
-	IsOptional          bool
+	Name            PascalString
+	Description     LocalizedText
+	DataType        NodeId
+	ValueRank       int32
+	ArrayDimensions []uint32
+	MaxStringLength uint32
+	IsOptional      bool
 	// Reserved Fields
 	reservedField0 *uint8
 }
@@ -81,7 +78,7 @@ var _ StructureField = (*_StructureField)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_StructureField)(nil)
 
 // NewStructureField factory function for _StructureField
-func NewStructureField(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) *_StructureField {
+func NewStructureField(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) *_StructureField {
 	if name == nil {
 		panic("name of type PascalString for StructureField must not be nil")
 	}
@@ -97,7 +94,6 @@ func NewStructureField(name PascalString, description LocalizedText, dataType No
 		Description:                       description,
 		DataType:                          dataType,
 		ValueRank:                         valueRank,
-		NoOfArrayDimensions:               noOfArrayDimensions,
 		ArrayDimensions:                   arrayDimensions,
 		MaxStringLength:                   maxStringLength,
 		IsOptional:                        isOptional,
@@ -115,7 +111,7 @@ func NewStructureField(name PascalString, description LocalizedText, dataType No
 type StructureFieldBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) StructureFieldBuilder
+	WithMandatoryFields(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) StructureFieldBuilder
 	// WithName adds Name (property field)
 	WithName(PascalString) StructureFieldBuilder
 	// WithNameBuilder adds Name (property field) which is build by the builder
@@ -130,8 +126,6 @@ type StructureFieldBuilder interface {
 	WithDataTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) StructureFieldBuilder
 	// WithValueRank adds ValueRank (property field)
 	WithValueRank(int32) StructureFieldBuilder
-	// WithNoOfArrayDimensions adds NoOfArrayDimensions (property field)
-	WithNoOfArrayDimensions(int32) StructureFieldBuilder
 	// WithArrayDimensions adds ArrayDimensions (property field)
 	WithArrayDimensions(...uint32) StructureFieldBuilder
 	// WithMaxStringLength adds MaxStringLength (property field)
@@ -163,8 +157,8 @@ func (b *_StructureFieldBuilder) setParent(contract ExtensionObjectDefinitionCon
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_StructureFieldBuilder) WithMandatoryFields(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) StructureFieldBuilder {
-	return b.WithName(name).WithDescription(description).WithDataType(dataType).WithValueRank(valueRank).WithNoOfArrayDimensions(noOfArrayDimensions).WithArrayDimensions(arrayDimensions...).WithMaxStringLength(maxStringLength).WithIsOptional(isOptional)
+func (b *_StructureFieldBuilder) WithMandatoryFields(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) StructureFieldBuilder {
+	return b.WithName(name).WithDescription(description).WithDataType(dataType).WithValueRank(valueRank).WithArrayDimensions(arrayDimensions...).WithMaxStringLength(maxStringLength).WithIsOptional(isOptional)
 }
 
 func (b *_StructureFieldBuilder) WithName(name PascalString) StructureFieldBuilder {
@@ -223,11 +217,6 @@ func (b *_StructureFieldBuilder) WithDataTypeBuilder(builderSupplier func(NodeId
 
 func (b *_StructureFieldBuilder) WithValueRank(valueRank int32) StructureFieldBuilder {
 	b.ValueRank = valueRank
-	return b
-}
-
-func (b *_StructureFieldBuilder) WithNoOfArrayDimensions(noOfArrayDimensions int32) StructureFieldBuilder {
-	b.NoOfArrayDimensions = noOfArrayDimensions
 	return b
 }
 
@@ -314,8 +303,8 @@ func (b *_StructureField) CreateStructureFieldBuilder() StructureFieldBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_StructureField) GetIdentifier() string {
-	return "103"
+func (m *_StructureField) GetExtensionId() int32 {
+	return int32(103)
 }
 
 ///////////////////////
@@ -346,10 +335,6 @@ func (m *_StructureField) GetDataType() NodeId {
 
 func (m *_StructureField) GetValueRank() int32 {
 	return m.ValueRank
-}
-
-func (m *_StructureField) GetNoOfArrayDimensions() int32 {
-	return m.NoOfArrayDimensions
 }
 
 func (m *_StructureField) GetArrayDimensions() []uint32 {
@@ -385,7 +370,7 @@ func (m *_StructureField) GetTypeName() string {
 }
 
 func (m *_StructureField) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (name)
 	lengthInBits += m.Name.GetLengthInBits(ctx)
@@ -399,7 +384,7 @@ func (m *_StructureField) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (valueRank)
 	lengthInBits += 32
 
-	// Simple field (noOfArrayDimensions)
+	// Implicit Field (noOfArrayDimensions)
 	lengthInBits += 32
 
 	// Array field
@@ -423,7 +408,7 @@ func (m *_StructureField) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_StructureField) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__structureField StructureField, err error) {
+func (m *_StructureField) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__structureField StructureField, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -458,11 +443,11 @@ func (m *_StructureField) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 	m.ValueRank = valueRank
 
-	noOfArrayDimensions, err := ReadSimpleField(ctx, "noOfArrayDimensions", ReadSignedInt(readBuffer, uint8(32)))
+	noOfArrayDimensions, err := ReadImplicitField[int32](ctx, "noOfArrayDimensions", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfArrayDimensions' field"))
 	}
-	m.NoOfArrayDimensions = noOfArrayDimensions
+	_ = noOfArrayDimensions
 
 	arrayDimensions, err := ReadCountArrayField[uint32](ctx, "arrayDimensions", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfArrayDimensions))
 	if err != nil {
@@ -528,8 +513,8 @@ func (m *_StructureField) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		if err := WriteSimpleField[int32](ctx, "valueRank", m.GetValueRank(), WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'valueRank' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfArrayDimensions", m.GetNoOfArrayDimensions(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfArrayDimensions := int32(utils.InlineIf(bool((m.GetArrayDimensions()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetArrayDimensions()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfArrayDimensions", noOfArrayDimensions, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfArrayDimensions' field")
 		}
 
@@ -573,7 +558,6 @@ func (m *_StructureField) deepCopy() *_StructureField {
 		m.Description.DeepCopy().(LocalizedText),
 		m.DataType.DeepCopy().(NodeId),
 		m.ValueRank,
-		m.NoOfArrayDimensions,
 		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
 		m.MaxStringLength,
 		m.IsOptional,

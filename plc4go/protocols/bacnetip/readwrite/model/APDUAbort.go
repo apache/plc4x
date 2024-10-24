@@ -262,7 +262,7 @@ func (m *_APDUAbort) GetTypeName() string {
 }
 
 func (m *_APDUAbort) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.APDUContract.(*_APDU).getLengthInBits(ctx))
+	lengthInBits := uint16(m.APDUContract.(*_APDU).GetLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 3

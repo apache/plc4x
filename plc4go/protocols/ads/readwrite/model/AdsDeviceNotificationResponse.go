@@ -183,7 +183,7 @@ func (m *_AdsDeviceNotificationResponse) GetTypeName() string {
 }
 
 func (m *_AdsDeviceNotificationResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

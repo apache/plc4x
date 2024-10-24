@@ -277,7 +277,7 @@ func (m *_ApduControl) GetTypeName() string {
 	return "ApduControl"
 }
 
-func (m *_ApduControl) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ApduControl) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (controlType)
 	lengthInBits += 2

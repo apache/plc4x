@@ -534,7 +534,7 @@ func (m *_ApduData) GetTypeName() string {
 	return "ApduData"
 }
 
-func (m *_ApduData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ApduData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (apciType)
 	lengthInBits += 4

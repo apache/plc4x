@@ -38,34 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CallRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "712";
+  public Integer getExtensionId() {
+    return (int) 712;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final int noOfMethodsToCall;
-  protected final List<ExtensionObjectDefinition> methodsToCall;
+  protected final RequestHeader requestHeader;
+  protected final List<CallMethodRequest> methodsToCall;
 
-  public CallRequest(
-      ExtensionObjectDefinition requestHeader,
-      int noOfMethodsToCall,
-      List<ExtensionObjectDefinition> methodsToCall) {
+  public CallRequest(RequestHeader requestHeader, List<CallMethodRequest> methodsToCall) {
     super();
     this.requestHeader = requestHeader;
-    this.noOfMethodsToCall = noOfMethodsToCall;
     this.methodsToCall = methodsToCall;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public int getNoOfMethodsToCall() {
-    return noOfMethodsToCall;
-  }
-
-  public List<ExtensionObjectDefinition> getMethodsToCall() {
+  public List<CallMethodRequest> getMethodsToCall() {
     return methodsToCall;
   }
 
@@ -79,8 +70,11 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
     // Simple Field (requestHeader)
     writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfMethodsToCall)
-    writeSimpleField("noOfMethodsToCall", noOfMethodsToCall, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfMethodsToCall) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfMethodsToCall =
+        (int) ((((getMethodsToCall()) == (null)) ? -(1) : COUNT(getMethodsToCall())));
+    writeImplicitField("noOfMethodsToCall", noOfMethodsToCall, writeSignedInt(writeBuffer, 32));
 
     // Array Field (methodsToCall)
     writeComplexTypeArrayField("methodsToCall", methodsToCall, writeBuffer);
@@ -102,13 +96,13 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
 
-    // Simple field (noOfMethodsToCall)
+    // Implicit Field (noOfMethodsToCall)
     lengthInBits += 32;
 
     // Array field
     if (methodsToCall != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : methodsToCall) {
+      for (CallMethodRequest element : methodsToCall) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= methodsToCall.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -118,50 +112,49 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CallRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    int noOfMethodsToCall = readSimpleField("noOfMethodsToCall", readSignedInt(readBuffer, 32));
+    int noOfMethodsToCall = readImplicitField("noOfMethodsToCall", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> methodsToCall =
+    List<CallMethodRequest> methodsToCall =
         readCountArrayField(
             "methodsToCall",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("706")),
+                () ->
+                    (CallMethodRequest)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (706)),
                 readBuffer),
             noOfMethodsToCall);
 
     readBuffer.closeContext("CallRequest");
     // Create the instance
-    return new CallRequestBuilderImpl(requestHeader, noOfMethodsToCall, methodsToCall);
+    return new CallRequestBuilderImpl(requestHeader, methodsToCall);
   }
 
   public static class CallRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final int noOfMethodsToCall;
-    private final List<ExtensionObjectDefinition> methodsToCall;
+    private final RequestHeader requestHeader;
+    private final List<CallMethodRequest> methodsToCall;
 
     public CallRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        int noOfMethodsToCall,
-        List<ExtensionObjectDefinition> methodsToCall) {
+        RequestHeader requestHeader, List<CallMethodRequest> methodsToCall) {
       this.requestHeader = requestHeader;
-      this.noOfMethodsToCall = noOfMethodsToCall;
       this.methodsToCall = methodsToCall;
     }
 
     public CallRequest build() {
-      CallRequest callRequest = new CallRequest(requestHeader, noOfMethodsToCall, methodsToCall);
+      CallRequest callRequest = new CallRequest(requestHeader, methodsToCall);
       return callRequest;
     }
   }
@@ -176,7 +169,6 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
     }
     CallRequest that = (CallRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
-        && (getNoOfMethodsToCall() == that.getNoOfMethodsToCall())
         && (getMethodsToCall() == that.getMethodsToCall())
         && super.equals(that)
         && true;
@@ -184,8 +176,7 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getRequestHeader(), getNoOfMethodsToCall(), getMethodsToCall());
+    return Objects.hash(super.hashCode(), getRequestHeader(), getMethodsToCall());
   }
 
   @Override

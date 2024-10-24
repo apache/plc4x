@@ -44,16 +44,12 @@ type RegisteredServer interface {
 	GetServerUri() PascalString
 	// GetProductUri returns ProductUri (property field)
 	GetProductUri() PascalString
-	// GetNoOfServerNames returns NoOfServerNames (property field)
-	GetNoOfServerNames() int32
 	// GetServerNames returns ServerNames (property field)
 	GetServerNames() []LocalizedText
 	// GetServerType returns ServerType (property field)
 	GetServerType() ApplicationType
 	// GetGatewayServerUri returns GatewayServerUri (property field)
 	GetGatewayServerUri() PascalString
-	// GetNoOfDiscoveryUrls returns NoOfDiscoveryUrls (property field)
-	GetNoOfDiscoveryUrls() int32
 	// GetDiscoveryUrls returns DiscoveryUrls (property field)
 	GetDiscoveryUrls() []PascalString
 	// GetSemaphoreFilePath returns SemaphoreFilePath (property field)
@@ -71,11 +67,9 @@ type _RegisteredServer struct {
 	ExtensionObjectDefinitionContract
 	ServerUri         PascalString
 	ProductUri        PascalString
-	NoOfServerNames   int32
 	ServerNames       []LocalizedText
 	ServerType        ApplicationType
 	GatewayServerUri  PascalString
-	NoOfDiscoveryUrls int32
 	DiscoveryUrls     []PascalString
 	SemaphoreFilePath PascalString
 	IsOnline          bool
@@ -87,7 +81,7 @@ var _ RegisteredServer = (*_RegisteredServer)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisteredServer)(nil)
 
 // NewRegisteredServer factory function for _RegisteredServer
-func NewRegisteredServer(serverUri PascalString, productUri PascalString, noOfServerNames int32, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) *_RegisteredServer {
+func NewRegisteredServer(serverUri PascalString, productUri PascalString, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) *_RegisteredServer {
 	if serverUri == nil {
 		panic("serverUri of type PascalString for RegisteredServer must not be nil")
 	}
@@ -104,11 +98,9 @@ func NewRegisteredServer(serverUri PascalString, productUri PascalString, noOfSe
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ServerUri:                         serverUri,
 		ProductUri:                        productUri,
-		NoOfServerNames:                   noOfServerNames,
 		ServerNames:                       serverNames,
 		ServerType:                        serverType,
 		GatewayServerUri:                  gatewayServerUri,
-		NoOfDiscoveryUrls:                 noOfDiscoveryUrls,
 		DiscoveryUrls:                     discoveryUrls,
 		SemaphoreFilePath:                 semaphoreFilePath,
 		IsOnline:                          isOnline,
@@ -126,7 +118,7 @@ func NewRegisteredServer(serverUri PascalString, productUri PascalString, noOfSe
 type RegisteredServerBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(serverUri PascalString, productUri PascalString, noOfServerNames int32, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) RegisteredServerBuilder
+	WithMandatoryFields(serverUri PascalString, productUri PascalString, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) RegisteredServerBuilder
 	// WithServerUri adds ServerUri (property field)
 	WithServerUri(PascalString) RegisteredServerBuilder
 	// WithServerUriBuilder adds ServerUri (property field) which is build by the builder
@@ -135,8 +127,6 @@ type RegisteredServerBuilder interface {
 	WithProductUri(PascalString) RegisteredServerBuilder
 	// WithProductUriBuilder adds ProductUri (property field) which is build by the builder
 	WithProductUriBuilder(func(PascalStringBuilder) PascalStringBuilder) RegisteredServerBuilder
-	// WithNoOfServerNames adds NoOfServerNames (property field)
-	WithNoOfServerNames(int32) RegisteredServerBuilder
 	// WithServerNames adds ServerNames (property field)
 	WithServerNames(...LocalizedText) RegisteredServerBuilder
 	// WithServerType adds ServerType (property field)
@@ -145,8 +135,6 @@ type RegisteredServerBuilder interface {
 	WithGatewayServerUri(PascalString) RegisteredServerBuilder
 	// WithGatewayServerUriBuilder adds GatewayServerUri (property field) which is build by the builder
 	WithGatewayServerUriBuilder(func(PascalStringBuilder) PascalStringBuilder) RegisteredServerBuilder
-	// WithNoOfDiscoveryUrls adds NoOfDiscoveryUrls (property field)
-	WithNoOfDiscoveryUrls(int32) RegisteredServerBuilder
 	// WithDiscoveryUrls adds DiscoveryUrls (property field)
 	WithDiscoveryUrls(...PascalString) RegisteredServerBuilder
 	// WithSemaphoreFilePath adds SemaphoreFilePath (property field)
@@ -180,8 +168,8 @@ func (b *_RegisteredServerBuilder) setParent(contract ExtensionObjectDefinitionC
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisteredServerBuilder) WithMandatoryFields(serverUri PascalString, productUri PascalString, noOfServerNames int32, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) RegisteredServerBuilder {
-	return b.WithServerUri(serverUri).WithProductUri(productUri).WithNoOfServerNames(noOfServerNames).WithServerNames(serverNames...).WithServerType(serverType).WithGatewayServerUri(gatewayServerUri).WithNoOfDiscoveryUrls(noOfDiscoveryUrls).WithDiscoveryUrls(discoveryUrls...).WithSemaphoreFilePath(semaphoreFilePath).WithIsOnline(isOnline)
+func (b *_RegisteredServerBuilder) WithMandatoryFields(serverUri PascalString, productUri PascalString, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) RegisteredServerBuilder {
+	return b.WithServerUri(serverUri).WithProductUri(productUri).WithServerNames(serverNames...).WithServerType(serverType).WithGatewayServerUri(gatewayServerUri).WithDiscoveryUrls(discoveryUrls...).WithSemaphoreFilePath(semaphoreFilePath).WithIsOnline(isOnline)
 }
 
 func (b *_RegisteredServerBuilder) WithServerUri(serverUri PascalString) RegisteredServerBuilder {
@@ -220,11 +208,6 @@ func (b *_RegisteredServerBuilder) WithProductUriBuilder(builderSupplier func(Pa
 	return b
 }
 
-func (b *_RegisteredServerBuilder) WithNoOfServerNames(noOfServerNames int32) RegisteredServerBuilder {
-	b.NoOfServerNames = noOfServerNames
-	return b
-}
-
 func (b *_RegisteredServerBuilder) WithServerNames(serverNames ...LocalizedText) RegisteredServerBuilder {
 	b.ServerNames = serverNames
 	return b
@@ -250,11 +233,6 @@ func (b *_RegisteredServerBuilder) WithGatewayServerUriBuilder(builderSupplier f
 		}
 		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return b
-}
-
-func (b *_RegisteredServerBuilder) WithNoOfDiscoveryUrls(noOfDiscoveryUrls int32) RegisteredServerBuilder {
-	b.NoOfDiscoveryUrls = noOfDiscoveryUrls
 	return b
 }
 
@@ -360,8 +338,8 @@ func (b *_RegisteredServer) CreateRegisteredServerBuilder() RegisteredServerBuil
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RegisteredServer) GetIdentifier() string {
-	return "434"
+func (m *_RegisteredServer) GetExtensionId() int32 {
+	return int32(434)
 }
 
 ///////////////////////
@@ -386,10 +364,6 @@ func (m *_RegisteredServer) GetProductUri() PascalString {
 	return m.ProductUri
 }
 
-func (m *_RegisteredServer) GetNoOfServerNames() int32 {
-	return m.NoOfServerNames
-}
-
 func (m *_RegisteredServer) GetServerNames() []LocalizedText {
 	return m.ServerNames
 }
@@ -400,10 +374,6 @@ func (m *_RegisteredServer) GetServerType() ApplicationType {
 
 func (m *_RegisteredServer) GetGatewayServerUri() PascalString {
 	return m.GatewayServerUri
-}
-
-func (m *_RegisteredServer) GetNoOfDiscoveryUrls() int32 {
-	return m.NoOfDiscoveryUrls
 }
 
 func (m *_RegisteredServer) GetDiscoveryUrls() []PascalString {
@@ -439,7 +409,7 @@ func (m *_RegisteredServer) GetTypeName() string {
 }
 
 func (m *_RegisteredServer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (serverUri)
 	lengthInBits += m.ServerUri.GetLengthInBits(ctx)
@@ -447,7 +417,7 @@ func (m *_RegisteredServer) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (productUri)
 	lengthInBits += m.ProductUri.GetLengthInBits(ctx)
 
-	// Simple field (noOfServerNames)
+	// Implicit Field (noOfServerNames)
 	lengthInBits += 32
 
 	// Array field
@@ -466,7 +436,7 @@ func (m *_RegisteredServer) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (gatewayServerUri)
 	lengthInBits += m.GatewayServerUri.GetLengthInBits(ctx)
 
-	// Simple field (noOfDiscoveryUrls)
+	// Implicit Field (noOfDiscoveryUrls)
 	lengthInBits += 32
 
 	// Array field
@@ -495,7 +465,7 @@ func (m *_RegisteredServer) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RegisteredServer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__registeredServer RegisteredServer, err error) {
+func (m *_RegisteredServer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__registeredServer RegisteredServer, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -518,11 +488,11 @@ func (m *_RegisteredServer) parse(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	m.ProductUri = productUri
 
-	noOfServerNames, err := ReadSimpleField(ctx, "noOfServerNames", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServerNames, err := ReadImplicitField[int32](ctx, "noOfServerNames", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerNames' field"))
 	}
-	m.NoOfServerNames = noOfServerNames
+	_ = noOfServerNames
 
 	serverNames, err := ReadCountArrayField[LocalizedText](ctx, "serverNames", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer), uint64(noOfServerNames))
 	if err != nil {
@@ -542,11 +512,11 @@ func (m *_RegisteredServer) parse(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	m.GatewayServerUri = gatewayServerUri
 
-	noOfDiscoveryUrls, err := ReadSimpleField(ctx, "noOfDiscoveryUrls", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiscoveryUrls, err := ReadImplicitField[int32](ctx, "noOfDiscoveryUrls", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiscoveryUrls' field"))
 	}
-	m.NoOfDiscoveryUrls = noOfDiscoveryUrls
+	_ = noOfDiscoveryUrls
 
 	discoveryUrls, err := ReadCountArrayField[PascalString](ctx, "discoveryUrls", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfDiscoveryUrls))
 	if err != nil {
@@ -604,8 +574,8 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 		if err := WriteSimpleField[PascalString](ctx, "productUri", m.GetProductUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'productUri' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfServerNames", m.GetNoOfServerNames(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfServerNames := int32(utils.InlineIf(bool((m.GetServerNames()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServerNames()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfServerNames", noOfServerNames, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServerNames' field")
 		}
 
@@ -620,8 +590,8 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 		if err := WriteSimpleField[PascalString](ctx, "gatewayServerUri", m.GetGatewayServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'gatewayServerUri' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiscoveryUrls", m.GetNoOfDiscoveryUrls(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiscoveryUrls := int32(utils.InlineIf(bool((m.GetDiscoveryUrls()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiscoveryUrls()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiscoveryUrls", noOfDiscoveryUrls, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiscoveryUrls' field")
 		}
 
@@ -663,11 +633,9 @@ func (m *_RegisteredServer) deepCopy() *_RegisteredServer {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ServerUri.DeepCopy().(PascalString),
 		m.ProductUri.DeepCopy().(PascalString),
-		m.NoOfServerNames,
 		utils.DeepCopySlice[LocalizedText, LocalizedText](m.ServerNames),
 		m.ServerType,
 		m.GatewayServerUri.DeepCopy().(PascalString),
-		m.NoOfDiscoveryUrls,
 		utils.DeepCopySlice[PascalString, PascalString](m.DiscoveryUrls),
 		m.SemaphoreFilePath.DeepCopy().(PascalString),
 		m.IsOnline,

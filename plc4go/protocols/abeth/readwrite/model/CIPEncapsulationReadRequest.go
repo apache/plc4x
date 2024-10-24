@@ -232,7 +232,7 @@ func (m *_CIPEncapsulationReadRequest) GetTypeName() string {
 }
 
 func (m *_CIPEncapsulationReadRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).GetLengthInBits(ctx))
 
 	// Simple field (request)
 	lengthInBits += m.Request.GetLengthInBits(ctx)

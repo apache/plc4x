@@ -38,28 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ParsingResult extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "612";
+  public Integer getExtensionId() {
+    return (int) 612;
   }
 
   // Properties.
   protected final StatusCode statusCode;
-  protected final int noOfDataStatusCodes;
   protected final List<StatusCode> dataStatusCodes;
-  protected final int noOfDataDiagnosticInfos;
   protected final List<DiagnosticInfo> dataDiagnosticInfos;
 
   public ParsingResult(
       StatusCode statusCode,
-      int noOfDataStatusCodes,
       List<StatusCode> dataStatusCodes,
-      int noOfDataDiagnosticInfos,
       List<DiagnosticInfo> dataDiagnosticInfos) {
     super();
     this.statusCode = statusCode;
-    this.noOfDataStatusCodes = noOfDataStatusCodes;
     this.dataStatusCodes = dataStatusCodes;
-    this.noOfDataDiagnosticInfos = noOfDataDiagnosticInfos;
     this.dataDiagnosticInfos = dataDiagnosticInfos;
   }
 
@@ -67,16 +61,8 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     return statusCode;
   }
 
-  public int getNoOfDataStatusCodes() {
-    return noOfDataStatusCodes;
-  }
-
   public List<StatusCode> getDataStatusCodes() {
     return dataStatusCodes;
-  }
-
-  public int getNoOfDataDiagnosticInfos() {
-    return noOfDataDiagnosticInfos;
   }
 
   public List<DiagnosticInfo> getDataDiagnosticInfos() {
@@ -93,14 +79,20 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     // Simple Field (statusCode)
     writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
-    // Simple Field (noOfDataStatusCodes)
-    writeSimpleField("noOfDataStatusCodes", noOfDataStatusCodes, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfDataStatusCodes) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfDataStatusCodes =
+        (int) ((((getDataStatusCodes()) == (null)) ? -(1) : COUNT(getDataStatusCodes())));
+    writeImplicitField("noOfDataStatusCodes", noOfDataStatusCodes, writeSignedInt(writeBuffer, 32));
 
     // Array Field (dataStatusCodes)
     writeComplexTypeArrayField("dataStatusCodes", dataStatusCodes, writeBuffer);
 
-    // Simple Field (noOfDataDiagnosticInfos)
-    writeSimpleField(
+    // Implicit Field (noOfDataDiagnosticInfos) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfDataDiagnosticInfos =
+        (int) ((((getDataDiagnosticInfos()) == (null)) ? -(1) : COUNT(getDataDiagnosticInfos())));
+    writeImplicitField(
         "noOfDataDiagnosticInfos", noOfDataDiagnosticInfos, writeSignedInt(writeBuffer, 32));
 
     // Array Field (dataDiagnosticInfos)
@@ -123,7 +115,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
 
-    // Simple field (noOfDataStatusCodes)
+    // Implicit Field (noOfDataStatusCodes)
     lengthInBits += 32;
 
     // Array field
@@ -135,7 +127,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
       }
     }
 
-    // Simple field (noOfDataDiagnosticInfos)
+    // Implicit Field (noOfDataDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -151,7 +143,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ParsingResult");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -160,7 +152,8 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
         readSimpleField(
             "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
-    int noOfDataStatusCodes = readSimpleField("noOfDataStatusCodes", readSignedInt(readBuffer, 32));
+    int noOfDataStatusCodes =
+        readImplicitField("noOfDataStatusCodes", readSignedInt(readBuffer, 32));
 
     List<StatusCode> dataStatusCodes =
         readCountArrayField(
@@ -169,7 +162,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
             noOfDataStatusCodes);
 
     int noOfDataDiagnosticInfos =
-        readSimpleField("noOfDataDiagnosticInfos", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfDataDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> dataDiagnosticInfos =
         readCountArrayField(
@@ -179,43 +172,27 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("ParsingResult");
     // Create the instance
-    return new ParsingResultBuilderImpl(
-        statusCode,
-        noOfDataStatusCodes,
-        dataStatusCodes,
-        noOfDataDiagnosticInfos,
-        dataDiagnosticInfos);
+    return new ParsingResultBuilderImpl(statusCode, dataStatusCodes, dataDiagnosticInfos);
   }
 
   public static class ParsingResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
-    private final int noOfDataStatusCodes;
     private final List<StatusCode> dataStatusCodes;
-    private final int noOfDataDiagnosticInfos;
     private final List<DiagnosticInfo> dataDiagnosticInfos;
 
     public ParsingResultBuilderImpl(
         StatusCode statusCode,
-        int noOfDataStatusCodes,
         List<StatusCode> dataStatusCodes,
-        int noOfDataDiagnosticInfos,
         List<DiagnosticInfo> dataDiagnosticInfos) {
       this.statusCode = statusCode;
-      this.noOfDataStatusCodes = noOfDataStatusCodes;
       this.dataStatusCodes = dataStatusCodes;
-      this.noOfDataDiagnosticInfos = noOfDataDiagnosticInfos;
       this.dataDiagnosticInfos = dataDiagnosticInfos;
     }
 
     public ParsingResult build() {
       ParsingResult parsingResult =
-          new ParsingResult(
-              statusCode,
-              noOfDataStatusCodes,
-              dataStatusCodes,
-              noOfDataDiagnosticInfos,
-              dataDiagnosticInfos);
+          new ParsingResult(statusCode, dataStatusCodes, dataDiagnosticInfos);
       return parsingResult;
     }
   }
@@ -230,9 +207,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     }
     ParsingResult that = (ParsingResult) o;
     return (getStatusCode() == that.getStatusCode())
-        && (getNoOfDataStatusCodes() == that.getNoOfDataStatusCodes())
         && (getDataStatusCodes() == that.getDataStatusCodes())
-        && (getNoOfDataDiagnosticInfos() == that.getNoOfDataDiagnosticInfos())
         && (getDataDiagnosticInfos() == that.getDataDiagnosticInfos())
         && super.equals(that)
         && true;
@@ -241,12 +216,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getStatusCode(),
-        getNoOfDataStatusCodes(),
-        getDataStatusCodes(),
-        getNoOfDataDiagnosticInfos(),
-        getDataDiagnosticInfos());
+        super.hashCode(), getStatusCode(), getDataStatusCodes(), getDataDiagnosticInfos());
   }
 
   @Override

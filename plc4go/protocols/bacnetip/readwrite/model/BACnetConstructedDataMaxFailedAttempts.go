@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataMaxFailedAttempts) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (maxFailedAttempts)
 	lengthInBits += m.MaxFailedAttempts.GetLengthInBits(ctx)

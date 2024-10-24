@@ -311,7 +311,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) GetTypeName() string {
 }
 
 func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem).getLengthInBits(ctx))
+	lengthInBits := uint16(m.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem).GetLengthInBits(ctx))
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8

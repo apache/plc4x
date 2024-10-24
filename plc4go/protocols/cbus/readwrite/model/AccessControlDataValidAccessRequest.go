@@ -217,7 +217,7 @@ func (m *_AccessControlDataValidAccessRequest) GetTypeName() string {
 }
 
 func (m *_AccessControlDataValidAccessRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AccessControlDataContract.(*_AccessControlData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AccessControlDataContract.(*_AccessControlData).GetLengthInBits(ctx))
 
 	// Simple field (accessControlDirection)
 	lengthInBits += 8

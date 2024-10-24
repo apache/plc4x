@@ -305,7 +305,7 @@ func (m *_FirmataMessage) GetTypeName() string {
 	return "FirmataMessage"
 }
 
-func (m *_FirmataMessage) getLengthInBits(ctx context.Context) uint16 {
+func (m *_FirmataMessage) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 4

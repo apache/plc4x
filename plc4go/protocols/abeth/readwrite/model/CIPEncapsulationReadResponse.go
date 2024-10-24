@@ -235,7 +235,7 @@ func (m *_CIPEncapsulationReadResponse) GetTypeName() string {
 }
 
 func (m *_CIPEncapsulationReadResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).GetLengthInBits(ctx))
 
 	// Simple field (response)
 	lengthInBits += m.Response.GetLengthInBits(ctx)

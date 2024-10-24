@@ -221,7 +221,7 @@ func (m *_IdentifyReplyCommandDelays) GetTypeName() string {
 }
 
 func (m *_IdentifyReplyCommandDelays) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.TerminalLevels) > 0 {

@@ -265,7 +265,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetTypeName() s
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).GetLengthInBits(ctx))
 
 	// Simple field (referenceIndex)
 	lengthInBits += m.ReferenceIndex.GetLengthInBits(ctx)

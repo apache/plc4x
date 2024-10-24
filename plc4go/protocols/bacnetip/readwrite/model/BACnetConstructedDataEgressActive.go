@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataEgressActive) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataEgressActive) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (egressActive)
 	lengthInBits += m.EgressActive.GetLengthInBits(ctx)

@@ -364,7 +364,7 @@ func (m *_CipUnconnectedRequest) GetTypeName() string {
 }
 
 func (m *_CipUnconnectedRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CipServiceContract.(*_CipService).GetLengthInBits(ctx))
 
 	// Implicit Field (requestPathSize)
 	lengthInBits += 8

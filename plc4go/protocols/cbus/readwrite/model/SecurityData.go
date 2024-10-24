@@ -1259,7 +1259,7 @@ func (m *_SecurityData) GetTypeName() string {
 	return "SecurityData"
 }
 
-func (m *_SecurityData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_SecurityData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)

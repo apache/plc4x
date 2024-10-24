@@ -349,8 +349,8 @@ func (b *_FieldTargetDataType) CreateFieldTargetDataTypeBuilder() FieldTargetDat
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_FieldTargetDataType) GetIdentifier() string {
-	return "14746"
+func (m *_FieldTargetDataType) GetExtensionId() int32 {
+	return int32(14746)
 }
 
 ///////////////////////
@@ -416,7 +416,7 @@ func (m *_FieldTargetDataType) GetTypeName() string {
 }
 
 func (m *_FieldTargetDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (dataSetFieldId)
 	lengthInBits += m.DataSetFieldId.GetLengthInBits(ctx)
@@ -446,7 +446,7 @@ func (m *_FieldTargetDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_FieldTargetDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__fieldTargetDataType FieldTargetDataType, err error) {
+func (m *_FieldTargetDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__fieldTargetDataType FieldTargetDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataTraceFlag) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataTraceFlag) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (traceFlag)
 	lengthInBits += m.TraceFlag.GetLengthInBits(ctx)

@@ -226,7 +226,7 @@ func (m *_BACnetTimeStampTime) GetTypeName() string {
 }
 
 func (m *_BACnetTimeStampTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetTimeStampContract.(*_BACnetTimeStamp).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetTimeStampContract.(*_BACnetTimeStamp).GetLengthInBits(ctx))
 
 	// Simple field (timeValue)
 	lengthInBits += m.TimeValue.GetLengthInBits(ctx)

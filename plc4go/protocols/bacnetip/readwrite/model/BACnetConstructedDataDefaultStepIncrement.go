@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDefaultStepIncrement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (defaultStepIncrement)
 	lengthInBits += m.DefaultStepIncrement.GetLengthInBits(ctx)

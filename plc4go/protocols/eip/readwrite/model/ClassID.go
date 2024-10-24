@@ -221,7 +221,7 @@ func (m *_ClassID) GetTypeName() string {
 }
 
 func (m *_ClassID) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LogicalSegmentTypeContract.(*_LogicalSegmentType).getLengthInBits(ctx))
+	lengthInBits := uint16(m.LogicalSegmentTypeContract.(*_LogicalSegmentType).GetLengthInBits(ctx))
 
 	// Simple field (format)
 	lengthInBits += 2

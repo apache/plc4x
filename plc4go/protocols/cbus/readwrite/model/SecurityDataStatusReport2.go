@@ -202,7 +202,7 @@ func (m *_SecurityDataStatusReport2) GetTypeName() string {
 }
 
 func (m *_SecurityDataStatusReport2) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.ZoneStatus) > 0 {

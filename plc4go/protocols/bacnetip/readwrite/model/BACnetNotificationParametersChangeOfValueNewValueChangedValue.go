@@ -226,7 +226,7 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetType
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue).GetLengthInBits(ctx))
 
 	// Simple field (changedValue)
 	lengthInBits += m.ChangedValue.GetLengthInBits(ctx)

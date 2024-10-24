@@ -38,34 +38,26 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AddReferencesRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "494";
+  public Integer getExtensionId() {
+    return (int) 494;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final int noOfReferencesToAdd;
-  protected final List<ExtensionObjectDefinition> referencesToAdd;
+  protected final RequestHeader requestHeader;
+  protected final List<AddReferencesItem> referencesToAdd;
 
   public AddReferencesRequest(
-      ExtensionObjectDefinition requestHeader,
-      int noOfReferencesToAdd,
-      List<ExtensionObjectDefinition> referencesToAdd) {
+      RequestHeader requestHeader, List<AddReferencesItem> referencesToAdd) {
     super();
     this.requestHeader = requestHeader;
-    this.noOfReferencesToAdd = noOfReferencesToAdd;
     this.referencesToAdd = referencesToAdd;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public int getNoOfReferencesToAdd() {
-    return noOfReferencesToAdd;
-  }
-
-  public List<ExtensionObjectDefinition> getReferencesToAdd() {
+  public List<AddReferencesItem> getReferencesToAdd() {
     return referencesToAdd;
   }
 
@@ -79,8 +71,11 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
     // Simple Field (requestHeader)
     writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfReferencesToAdd)
-    writeSimpleField("noOfReferencesToAdd", noOfReferencesToAdd, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfReferencesToAdd) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfReferencesToAdd =
+        (int) ((((getReferencesToAdd()) == (null)) ? -(1) : COUNT(getReferencesToAdd())));
+    writeImplicitField("noOfReferencesToAdd", noOfReferencesToAdd, writeSignedInt(writeBuffer, 32));
 
     // Array Field (referencesToAdd)
     writeComplexTypeArrayField("referencesToAdd", referencesToAdd, writeBuffer);
@@ -102,13 +97,13 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
 
-    // Simple field (noOfReferencesToAdd)
+    // Implicit Field (noOfReferencesToAdd)
     lengthInBits += 32;
 
     // Array field
     if (referencesToAdd != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : referencesToAdd) {
+      for (AddReferencesItem element : referencesToAdd) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= referencesToAdd.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -118,51 +113,51 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("AddReferencesRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    int noOfReferencesToAdd = readSimpleField("noOfReferencesToAdd", readSignedInt(readBuffer, 32));
+    int noOfReferencesToAdd =
+        readImplicitField("noOfReferencesToAdd", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> referencesToAdd =
+    List<AddReferencesItem> referencesToAdd =
         readCountArrayField(
             "referencesToAdd",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("381")),
+                () ->
+                    (AddReferencesItem)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (381)),
                 readBuffer),
             noOfReferencesToAdd);
 
     readBuffer.closeContext("AddReferencesRequest");
     // Create the instance
-    return new AddReferencesRequestBuilderImpl(requestHeader, noOfReferencesToAdd, referencesToAdd);
+    return new AddReferencesRequestBuilderImpl(requestHeader, referencesToAdd);
   }
 
   public static class AddReferencesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final int noOfReferencesToAdd;
-    private final List<ExtensionObjectDefinition> referencesToAdd;
+    private final RequestHeader requestHeader;
+    private final List<AddReferencesItem> referencesToAdd;
 
     public AddReferencesRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        int noOfReferencesToAdd,
-        List<ExtensionObjectDefinition> referencesToAdd) {
+        RequestHeader requestHeader, List<AddReferencesItem> referencesToAdd) {
       this.requestHeader = requestHeader;
-      this.noOfReferencesToAdd = noOfReferencesToAdd;
       this.referencesToAdd = referencesToAdd;
     }
 
     public AddReferencesRequest build() {
       AddReferencesRequest addReferencesRequest =
-          new AddReferencesRequest(requestHeader, noOfReferencesToAdd, referencesToAdd);
+          new AddReferencesRequest(requestHeader, referencesToAdd);
       return addReferencesRequest;
     }
   }
@@ -177,7 +172,6 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
     }
     AddReferencesRequest that = (AddReferencesRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
-        && (getNoOfReferencesToAdd() == that.getNoOfReferencesToAdd())
         && (getReferencesToAdd() == that.getReferencesToAdd())
         && super.equals(that)
         && true;
@@ -185,8 +179,7 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getRequestHeader(), getNoOfReferencesToAdd(), getReferencesToAdd());
+    return Objects.hash(super.hashCode(), getRequestHeader(), getReferencesToAdd());
   }
 
   @Override

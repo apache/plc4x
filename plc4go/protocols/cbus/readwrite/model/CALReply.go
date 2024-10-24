@@ -305,7 +305,7 @@ func (m *_CALReply) GetTypeName() string {
 	return "CALReply"
 }
 
-func (m *_CALReply) getLengthInBits(ctx context.Context) uint16 {
+func (m *_CALReply) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (calData)

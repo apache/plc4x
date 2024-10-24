@@ -217,7 +217,7 @@ func (m *_BACnetLogRecordLogDatumAnyValue) GetTypeName() string {
 }
 
 func (m *_BACnetLogRecordLogDatumAnyValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).GetLengthInBits(ctx))
 
 	// Optional Field (anyValue)
 	if m.AnyValue != nil {

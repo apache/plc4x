@@ -38,27 +38,20 @@ import org.apache.plc4x.java.spi.generation.*;
 public class UserIdentityToken extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "316";
+  public Integer getExtensionId() {
+    return (int) 318;
   }
 
   // Properties.
   protected final PascalString policyId;
-  protected final UserIdentityTokenDefinition userIdentityTokenDefinition;
 
-  public UserIdentityToken(
-      PascalString policyId, UserIdentityTokenDefinition userIdentityTokenDefinition) {
+  public UserIdentityToken(PascalString policyId) {
     super();
     this.policyId = policyId;
-    this.userIdentityTokenDefinition = userIdentityTokenDefinition;
   }
 
   public PascalString getPolicyId() {
     return policyId;
-  }
-
-  public UserIdentityTokenDefinition getUserIdentityTokenDefinition() {
-    return userIdentityTokenDefinition;
   }
 
   @Override
@@ -68,20 +61,8 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("UserIdentityToken");
 
-    // Implicit Field (policyLength) (Used for parsing, but its value is not stored as it's
-    // implicitly given by the objects content)
-    int policyLength =
-        (int)
-            ((getPolicyId().getLengthInBytes())
-                + (getUserIdentityTokenDefinition().getLengthInBytes()));
-    writeImplicitField("policyLength", policyLength, writeSignedInt(writeBuffer, 32));
-
     // Simple Field (policyId)
     writeSimpleField("policyId", policyId, writeComplex(writeBuffer));
-
-    // Simple Field (userIdentityTokenDefinition)
-    writeSimpleField(
-        "userIdentityTokenDefinition", userIdentityTokenDefinition, writeComplex(writeBuffer));
 
     writeBuffer.popContext("UserIdentityToken");
   }
@@ -97,58 +78,37 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
     UserIdentityToken _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Implicit Field (policyLength)
-    lengthInBits += 32;
-
     // Simple field (policyId)
     lengthInBits += policyId.getLengthInBits();
-
-    // Simple field (userIdentityTokenDefinition)
-    lengthInBits += userIdentityTokenDefinition.getLengthInBits();
 
     return lengthInBits;
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("UserIdentityToken");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-
-    int policyLength = readImplicitField("policyLength", readSignedInt(readBuffer, 32));
 
     PascalString policyId =
         readSimpleField(
             "policyId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    UserIdentityTokenDefinition userIdentityTokenDefinition =
-        readSimpleField(
-            "userIdentityTokenDefinition",
-            readComplex(
-                () ->
-                    UserIdentityTokenDefinition.staticParse(
-                        readBuffer, (String) (policyId.getStringValue())),
-                readBuffer));
-
     readBuffer.closeContext("UserIdentityToken");
     // Create the instance
-    return new UserIdentityTokenBuilderImpl(policyId, userIdentityTokenDefinition);
+    return new UserIdentityTokenBuilderImpl(policyId);
   }
 
   public static class UserIdentityTokenBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString policyId;
-    private final UserIdentityTokenDefinition userIdentityTokenDefinition;
 
-    public UserIdentityTokenBuilderImpl(
-        PascalString policyId, UserIdentityTokenDefinition userIdentityTokenDefinition) {
+    public UserIdentityTokenBuilderImpl(PascalString policyId) {
       this.policyId = policyId;
-      this.userIdentityTokenDefinition = userIdentityTokenDefinition;
     }
 
     public UserIdentityToken build() {
-      UserIdentityToken userIdentityToken =
-          new UserIdentityToken(policyId, userIdentityTokenDefinition);
+      UserIdentityToken userIdentityToken = new UserIdentityToken(policyId);
       return userIdentityToken;
     }
   }
@@ -162,15 +122,12 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
       return false;
     }
     UserIdentityToken that = (UserIdentityToken) o;
-    return (getPolicyId() == that.getPolicyId())
-        && (getUserIdentityTokenDefinition() == that.getUserIdentityTokenDefinition())
-        && super.equals(that)
-        && true;
+    return (getPolicyId() == that.getPolicyId()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getPolicyId(), getUserIdentityTokenDefinition());
+    return Objects.hash(super.hashCode(), getPolicyId());
   }
 
   @Override

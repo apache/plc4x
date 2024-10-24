@@ -214,7 +214,7 @@ func (m *_ModbusPDUReadFifoQueueRequest) GetTypeName() string {
 }
 
 func (m *_ModbusPDUReadFifoQueueRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).GetLengthInBits(ctx))
 
 	// Simple field (fifoPointerAddress)
 	lengthInBits += 16

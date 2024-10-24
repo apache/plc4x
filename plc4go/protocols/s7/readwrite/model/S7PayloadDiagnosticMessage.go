@@ -328,7 +328,7 @@ func (m *_S7PayloadDiagnosticMessage) GetTypeName() string {
 }
 
 func (m *_S7PayloadDiagnosticMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).GetLengthInBits(ctx))
 
 	// Simple field (eventId)
 	lengthInBits += 16

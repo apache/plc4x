@@ -41,11 +41,9 @@ type CallRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
-	// GetNoOfMethodsToCall returns NoOfMethodsToCall (property field)
-	GetNoOfMethodsToCall() int32
+	GetRequestHeader() RequestHeader
 	// GetMethodsToCall returns MethodsToCall (property field)
-	GetMethodsToCall() []ExtensionObjectDefinition
+	GetMethodsToCall() []CallMethodRequest
 	// IsCallRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCallRequest()
 	// CreateBuilder creates a CallRequestBuilder
@@ -55,23 +53,21 @@ type CallRequest interface {
 // _CallRequest is the data-structure of this message
 type _CallRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader     ExtensionObjectDefinition
-	NoOfMethodsToCall int32
-	MethodsToCall     []ExtensionObjectDefinition
+	RequestHeader RequestHeader
+	MethodsToCall []CallMethodRequest
 }
 
 var _ CallRequest = (*_CallRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CallRequest)(nil)
 
 // NewCallRequest factory function for _CallRequest
-func NewCallRequest(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) *_CallRequest {
+func NewCallRequest(requestHeader RequestHeader, methodsToCall []CallMethodRequest) *_CallRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CallRequest must not be nil")
+		panic("requestHeader of type RequestHeader for CallRequest must not be nil")
 	}
 	_result := &_CallRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
-		NoOfMethodsToCall:                 noOfMethodsToCall,
 		MethodsToCall:                     methodsToCall,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -87,15 +83,13 @@ func NewCallRequest(requestHeader ExtensionObjectDefinition, noOfMethodsToCall i
 type CallRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) CallRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, methodsToCall []CallMethodRequest) CallRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) CallRequestBuilder
+	WithRequestHeader(RequestHeader) CallRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CallRequestBuilder
-	// WithNoOfMethodsToCall adds NoOfMethodsToCall (property field)
-	WithNoOfMethodsToCall(int32) CallRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) CallRequestBuilder
 	// WithMethodsToCall adds MethodsToCall (property field)
-	WithMethodsToCall(...ExtensionObjectDefinition) CallRequestBuilder
+	WithMethodsToCall(...CallMethodRequest) CallRequestBuilder
 	// Build builds the CallRequest or returns an error if something is wrong
 	Build() (CallRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,34 +115,29 @@ func (b *_CallRequestBuilder) setParent(contract ExtensionObjectDefinitionContra
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CallRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) CallRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfMethodsToCall(noOfMethodsToCall).WithMethodsToCall(methodsToCall...)
+func (b *_CallRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, methodsToCall []CallMethodRequest) CallRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithMethodsToCall(methodsToCall...)
 }
 
-func (b *_CallRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CallRequestBuilder {
+func (b *_CallRequestBuilder) WithRequestHeader(requestHeader RequestHeader) CallRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_CallRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CallRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CallRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) CallRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_CallRequestBuilder) WithNoOfMethodsToCall(noOfMethodsToCall int32) CallRequestBuilder {
-	b.NoOfMethodsToCall = noOfMethodsToCall
-	return b
-}
-
-func (b *_CallRequestBuilder) WithMethodsToCall(methodsToCall ...ExtensionObjectDefinition) CallRequestBuilder {
+func (b *_CallRequestBuilder) WithMethodsToCall(methodsToCall ...CallMethodRequest) CallRequestBuilder {
 	b.MethodsToCall = methodsToCall
 	return b
 }
@@ -209,8 +198,8 @@ func (b *_CallRequest) CreateCallRequestBuilder() CallRequestBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CallRequest) GetIdentifier() string {
-	return "712"
+func (m *_CallRequest) GetExtensionId() int32 {
+	return int32(712)
 }
 
 ///////////////////////
@@ -227,15 +216,11 @@ func (m *_CallRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CallRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_CallRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
-func (m *_CallRequest) GetNoOfMethodsToCall() int32 {
-	return m.NoOfMethodsToCall
-}
-
-func (m *_CallRequest) GetMethodsToCall() []ExtensionObjectDefinition {
+func (m *_CallRequest) GetMethodsToCall() []CallMethodRequest {
 	return m.MethodsToCall
 }
 
@@ -260,12 +245,12 @@ func (m *_CallRequest) GetTypeName() string {
 }
 
 func (m *_CallRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfMethodsToCall)
+	// Implicit Field (noOfMethodsToCall)
 	lengthInBits += 32
 
 	// Array field
@@ -285,7 +270,7 @@ func (m *_CallRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CallRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__callRequest CallRequest, err error) {
+func (m *_CallRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__callRequest CallRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -296,19 +281,19 @@ func (m *_CallRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, p
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfMethodsToCall, err := ReadSimpleField(ctx, "noOfMethodsToCall", ReadSignedInt(readBuffer, uint8(32)))
+	noOfMethodsToCall, err := ReadImplicitField[int32](ctx, "noOfMethodsToCall", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfMethodsToCall' field"))
 	}
-	m.NoOfMethodsToCall = noOfMethodsToCall
+	_ = noOfMethodsToCall
 
-	methodsToCall, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "methodsToCall", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("706")), readBuffer), uint64(noOfMethodsToCall))
+	methodsToCall, err := ReadCountArrayField[CallMethodRequest](ctx, "methodsToCall", ReadComplex[CallMethodRequest](ExtensionObjectDefinitionParseWithBufferProducer[CallMethodRequest]((int32)(int32(706))), readBuffer), uint64(noOfMethodsToCall))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'methodsToCall' field"))
 	}
@@ -339,11 +324,11 @@ func (m *_CallRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for CallRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfMethodsToCall", m.GetNoOfMethodsToCall(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfMethodsToCall := int32(utils.InlineIf(bool((m.GetMethodsToCall()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetMethodsToCall()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfMethodsToCall", noOfMethodsToCall, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfMethodsToCall' field")
 		}
 
@@ -371,9 +356,8 @@ func (m *_CallRequest) deepCopy() *_CallRequest {
 	}
 	_CallRequestCopy := &_CallRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfMethodsToCall,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.MethodsToCall),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopySlice[CallMethodRequest, CallMethodRequest](m.MethodsToCall),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CallRequestCopy

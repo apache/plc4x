@@ -166,10 +166,10 @@
 ]
 
 [discriminatedType Payload (bit extensible, uint 32 byteCount)
-    [simple SequenceHeader                    sequenceHeader ]
+    [simple SequenceHeader                    sequenceHeader            ]
     [typeSwitch extensible
         ['true'       ExtensiblePayload
-            [simple   ExtensionObject('false') payload ]
+            [simple   RootExtensionObject('false') payload                   ]
         ]
         ['false'      BinaryPayload
             [array    byte                     payload count 'byteCount']
@@ -199,87 +199,53 @@
     [simple bit namespaceURISpecified]
     [simple bit serverIndexSpecified]
     [simple NodeIdTypeDefinition nodeId]
-    [virtual vstring '-1' identifier 'nodeId.identifier']
     [optional PascalString namespaceURI 'namespaceURISpecified']
     [optional uint 32 serverIndex 'serverIndexSpecified']
 ]
 
-[type ExtensionHeader
-    [reserved int 5 '0x00']
-    [simple bit xmlbody]
-    [simple bit binaryBody]
-]
+
 
 [type ExtensionObjectEncodingMask
     [reserved int 5 '0x00']
     [simple bit typeIdSpecified]
-    [simple bit xmlbody]
+    [simple bit xmlBody]
     [simple bit binaryBody]
 ]
 
-[type ExtensionObject(bit includeEncodingMask)
-    //A serialized object prefixed with its data type identifier.
+[discriminatedType ExtensionObject(bit includeEncodingMask)
+    [abstract ExtensionObjectDefinition body]
     [simple ExpandedNodeId typeId]
-    [optional ExtensionObjectEncodingMask encodingMask 'includeEncodingMask']
-    [virtual vstring '-1' identifier 'typeId.identifier']
-    [simple ExtensionObjectDefinition('identifier') body]
+    [virtual int 32 extensionId 'typeId == null ? 0 : STATIC_CALL("extensionId", typeId)']
+    [typeSwitch includeEncodingMask
+        ['false' RootExtensionObject (int 32 extensionId)
+            [simple ExtensionObjectDefinition('extensionId') body]
+        ]
+        ['true' ExtensionObjectWithMask (int 32 extensionId)
+            [simple ExtensionObjectEncodingMask encodingMask]
+            [typeSwitch encodingMask.xmlBody, encodingMask.binaryBody
+                ['false', 'true' BinaryExtensionObjectWithMask
+                    [implicit int 32 bodyLength 'body == null ? 0 : body.lengthInBytes']
+                    [simple ExtensionObjectDefinition('extensionId') body]
+                ]
+                ['false', 'false' NullExtensionObjectWithMask
+                    [virtual ExtensionObjectDefinition('0') body 'null']
+                ]
+            ]
+        ]
+    ]
 ]
 
-[discriminatedType ExtensionObjectDefinition(vstring '-1' identifier)
-    [typeSwitch identifier
-        ['"0"' NullExtension
+[discriminatedType ExtensionObjectDefinition(int 32 extensionId)
+    [typeSwitch extensionId
+        ['0' NullExtension
         ]
 
-        <xsl:for-each select="/opc:TypeDictionary/opc:StructuredType[(@BaseType = 'ua:ExtensionObject') and not(@Name = 'UserIdentityToken') and not(@Name = 'PublishedDataSetDataType') and not(@Name = 'DataSetReaderDataType') and not(@Name = 'PubSubConfigurationValueDataType') and not(@Name = 'PortableNodeId')]">
+        <xsl:for-each select="/opc:TypeDictionary/opc:StructuredType[((@BaseType = 'ua:ExtensionObject') or (starts-with(@BaseType, 'tns:')))]">
             <xsl:variable name="extensionName" select="@Name"/>
             <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName=$extensionName]"/>
         </xsl:for-each>
-
-        ['"811"' DataChangeNotification
-            [implicit int 32 notificationLength 'lengthInBytes']
-            [simple int 32 noOfMonitoredItems]
-            [array ExtensionObjectDefinition('"808"')  monitoredItems count 'noOfMonitoredItems']
-            [simple int 32 noOfDiagnosticInfos]
-            [array DiagnosticInfo  diagnosticInfos count 'noOfDiagnosticInfos']
-        ]
-        ['"916"' EventNotificationList
-            [implicit int 32 notificationLength 'lengthInBytes']
-            [simple int 32 noOfEvents]
-            [array ExtensionObjectDefinition('"919"')  events count 'noOfEvents']
-        ]
-        ['"820"' StatusChangeNotification
-            [implicit int 32 notificationLength 'lengthInBytes']
-            [simple StatusCode status]
-            [simple DiagnosticInfo diagnosticInfo]
-        ]
-
-        ['"316"' UserIdentityToken
-            [implicit int 32 policyLength 'policyId.lengthInBytes  + userIdentityTokenDefinition.lengthInBytes']
-            [simple PascalString policyId]
-            [simple UserIdentityTokenDefinition('policyId.stringValue') userIdentityTokenDefinition]
-        ]
     ]
 ]
-
-[discriminatedType UserIdentityTokenDefinition(vstring '-1' identifier)
-    [typeSwitch identifier
-        ['"anonymous"' AnonymousIdentityToken
-        ]
-        ['"username"' UserNameIdentityToken
-            [simple PascalString userName]
-            [simple PascalByteString password]
-            [simple PascalString encryptionAlgorithm]
-        ]
-        ['"certificate"' X509IdentityToken
-            [simple PascalByteString certificateData]
-        ]
-        ['"identity"' IssuedIdentityToken
-            [simple PascalByteString tokenData]
-            [simple PascalString encryptionAlgorithm]
-        ]
-    ]
-]
-
 
 [discriminatedType Variant
     [simple bit arrayLengthSpecified]
@@ -393,38 +359,55 @@
     [array bit arrayDimensions count 'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
 ]
 
+// node type, with two leading reserved bytes
+[enum uint 6 NodeIdType
+    ['0' TwoByte         ]
+    ['1' FourByte        ]
+    ['2' Numeric         ]
+    ['3' String          ]
+    ['4' Guid            ]
+    ['5' ByteString      ]
+]
+
 [discriminatedType NodeIdTypeDefinition
     [abstract vstring '-1' identifier]
+    [abstract int 16 namespace]
     [discriminator NodeIdType nodeType]
     [typeSwitch nodeType
         ['nodeIdTypeTwoByte' NodeIdTwoByte
             [simple uint 8 id]
             [virtual vstring '-1' identifier 'id']
+            [virtual int 16 namespace '-1'] // cause an error
         ]
         ['nodeIdTypeFourByte' NodeIdFourByte
             [simple uint 8 namespaceIndex]
             [simple uint 16 id]
             [virtual vstring '-1' identifier 'id']
+            [virtual int 16 namespace 'namespaceIndex']
         ]
         ['nodeIdTypeNumeric' NodeIdNumeric
             [simple uint 16 namespaceIndex]
             [simple uint 32 id]
             [virtual vstring '-1' identifier 'id']
+            [virtual int 16 namespace 'namespaceIndex']
         ]
         ['nodeIdTypeString' NodeIdString
             [simple uint 16 namespaceIndex]
             [simple PascalString id]
             [virtual vstring '-1' identifier 'id.stringValue']
+            [virtual int 16 namespace 'namespaceIndex']
         ]
         ['nodeIdTypeGuid' NodeIdGuid
             [simple uint 16 namespaceIndex]
             [array byte id count '16']
             [virtual vstring '-1' identifier 'id']
+            [virtual int 16 namespace 'namespaceIndex']
         ]
         ['nodeIdTypeByteString' NodeIdByteString
             [simple uint 16 namespaceIndex]
             [simple PascalByteString id]
             [virtual vstring '-1' identifier 'id.stringValue']
+            [virtual int 16 namespace 'namespaceIndex']
         ]
     ]
 ]
@@ -432,13 +415,12 @@
 [type NodeId
     [reserved int 2 '0x00']
     [simple NodeIdTypeDefinition nodeId]
-    [virtual vstring '-1' id 'nodeId.identifier']
 ]
 
 [type PascalString
     [implicit int 32    sLength      'STATIC_CALL("utf8LengthToPascalLength", stringValue)' ]
     [virtual  int 32    stringLength 'STATIC_CALL("pascalLengthToUtf8Length", sLength)'     ]
-    [simple   vstring   'stringLength*8' stringValue                                        ]
+    [optional vstring   'stringLength*8' stringValue 'sLength != -1']
 ]
 
 [type PascalByteString

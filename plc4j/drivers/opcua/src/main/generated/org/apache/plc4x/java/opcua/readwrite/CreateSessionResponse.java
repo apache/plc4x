@@ -38,36 +38,32 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CreateSessionResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "464";
+  public Integer getExtensionId() {
+    return (int) 464;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
+  protected final ResponseHeader responseHeader;
   protected final NodeId sessionId;
   protected final NodeId authenticationToken;
   protected final double revisedSessionTimeout;
   protected final PascalByteString serverNonce;
   protected final PascalByteString serverCertificate;
-  protected final int noOfServerEndpoints;
-  protected final List<ExtensionObjectDefinition> serverEndpoints;
-  protected final int noOfServerSoftwareCertificates;
-  protected final List<ExtensionObjectDefinition> serverSoftwareCertificates;
-  protected final ExtensionObjectDefinition serverSignature;
+  protected final List<EndpointDescription> serverEndpoints;
+  protected final List<SignedSoftwareCertificate> serverSoftwareCertificates;
+  protected final SignatureData serverSignature;
   protected final long maxRequestMessageSize;
 
   public CreateSessionResponse(
-      ExtensionObjectDefinition responseHeader,
+      ResponseHeader responseHeader,
       NodeId sessionId,
       NodeId authenticationToken,
       double revisedSessionTimeout,
       PascalByteString serverNonce,
       PascalByteString serverCertificate,
-      int noOfServerEndpoints,
-      List<ExtensionObjectDefinition> serverEndpoints,
-      int noOfServerSoftwareCertificates,
-      List<ExtensionObjectDefinition> serverSoftwareCertificates,
-      ExtensionObjectDefinition serverSignature,
+      List<EndpointDescription> serverEndpoints,
+      List<SignedSoftwareCertificate> serverSoftwareCertificates,
+      SignatureData serverSignature,
       long maxRequestMessageSize) {
     super();
     this.responseHeader = responseHeader;
@@ -76,15 +72,13 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     this.revisedSessionTimeout = revisedSessionTimeout;
     this.serverNonce = serverNonce;
     this.serverCertificate = serverCertificate;
-    this.noOfServerEndpoints = noOfServerEndpoints;
     this.serverEndpoints = serverEndpoints;
-    this.noOfServerSoftwareCertificates = noOfServerSoftwareCertificates;
     this.serverSoftwareCertificates = serverSoftwareCertificates;
     this.serverSignature = serverSignature;
     this.maxRequestMessageSize = maxRequestMessageSize;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
@@ -108,23 +102,15 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     return serverCertificate;
   }
 
-  public int getNoOfServerEndpoints() {
-    return noOfServerEndpoints;
-  }
-
-  public List<ExtensionObjectDefinition> getServerEndpoints() {
+  public List<EndpointDescription> getServerEndpoints() {
     return serverEndpoints;
   }
 
-  public int getNoOfServerSoftwareCertificates() {
-    return noOfServerSoftwareCertificates;
-  }
-
-  public List<ExtensionObjectDefinition> getServerSoftwareCertificates() {
+  public List<SignedSoftwareCertificate> getServerSoftwareCertificates() {
     return serverSoftwareCertificates;
   }
 
-  public ExtensionObjectDefinition getServerSignature() {
+  public SignatureData getServerSignature() {
     return serverSignature;
   }
 
@@ -157,14 +143,23 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     // Simple Field (serverCertificate)
     writeSimpleField("serverCertificate", serverCertificate, writeComplex(writeBuffer));
 
-    // Simple Field (noOfServerEndpoints)
-    writeSimpleField("noOfServerEndpoints", noOfServerEndpoints, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfServerEndpoints) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfServerEndpoints =
+        (int) ((((getServerEndpoints()) == (null)) ? -(1) : COUNT(getServerEndpoints())));
+    writeImplicitField("noOfServerEndpoints", noOfServerEndpoints, writeSignedInt(writeBuffer, 32));
 
     // Array Field (serverEndpoints)
     writeComplexTypeArrayField("serverEndpoints", serverEndpoints, writeBuffer);
 
-    // Simple Field (noOfServerSoftwareCertificates)
-    writeSimpleField(
+    // Implicit Field (noOfServerSoftwareCertificates) (Used for parsing, but its value is not
+    // stored as it's implicitly given by the objects content)
+    int noOfServerSoftwareCertificates =
+        (int)
+            ((((getServerSoftwareCertificates()) == (null))
+                ? -(1)
+                : COUNT(getServerSoftwareCertificates())));
+    writeImplicitField(
         "noOfServerSoftwareCertificates",
         noOfServerSoftwareCertificates,
         writeSignedInt(writeBuffer, 32));
@@ -212,25 +207,25 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     // Simple field (serverCertificate)
     lengthInBits += serverCertificate.getLengthInBits();
 
-    // Simple field (noOfServerEndpoints)
+    // Implicit Field (noOfServerEndpoints)
     lengthInBits += 32;
 
     // Array field
     if (serverEndpoints != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : serverEndpoints) {
+      for (EndpointDescription element : serverEndpoints) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverEndpoints.size());
         lengthInBits += element.getLengthInBits();
       }
     }
 
-    // Simple field (noOfServerSoftwareCertificates)
+    // Implicit Field (noOfServerSoftwareCertificates)
     lengthInBits += 32;
 
     // Array field
     if (serverSoftwareCertificates != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : serverSoftwareCertificates) {
+      for (SignedSoftwareCertificate element : serverSoftwareCertificates) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverSoftwareCertificates.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -246,16 +241,17 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CreateSessionResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     NodeId sessionId =
@@ -277,32 +273,38 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
             "serverCertificate",
             readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
-    int noOfServerEndpoints = readSimpleField("noOfServerEndpoints", readSignedInt(readBuffer, 32));
+    int noOfServerEndpoints =
+        readImplicitField("noOfServerEndpoints", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> serverEndpoints =
+    List<EndpointDescription> serverEndpoints =
         readCountArrayField(
             "serverEndpoints",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("314")),
+                () ->
+                    (EndpointDescription)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (314)),
                 readBuffer),
             noOfServerEndpoints);
 
     int noOfServerSoftwareCertificates =
-        readSimpleField("noOfServerSoftwareCertificates", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfServerSoftwareCertificates", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> serverSoftwareCertificates =
+    List<SignedSoftwareCertificate> serverSoftwareCertificates =
         readCountArrayField(
             "serverSoftwareCertificates",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("346")),
+                () ->
+                    (SignedSoftwareCertificate)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (346)),
                 readBuffer),
             noOfServerSoftwareCertificates);
 
-    ExtensionObjectDefinition serverSignature =
+    SignatureData serverSignature =
         readSimpleField(
             "serverSignature",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("458")),
+                () ->
+                    (SignatureData) ExtensionObjectDefinition.staticParse(readBuffer, (int) (458)),
                 readBuffer));
 
     long maxRequestMessageSize =
@@ -317,9 +319,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
         revisedSessionTimeout,
         serverNonce,
         serverCertificate,
-        noOfServerEndpoints,
         serverEndpoints,
-        noOfServerSoftwareCertificates,
         serverSoftwareCertificates,
         serverSignature,
         maxRequestMessageSize);
@@ -327,31 +327,27 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
 
   public static class CreateSessionResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
+    private final ResponseHeader responseHeader;
     private final NodeId sessionId;
     private final NodeId authenticationToken;
     private final double revisedSessionTimeout;
     private final PascalByteString serverNonce;
     private final PascalByteString serverCertificate;
-    private final int noOfServerEndpoints;
-    private final List<ExtensionObjectDefinition> serverEndpoints;
-    private final int noOfServerSoftwareCertificates;
-    private final List<ExtensionObjectDefinition> serverSoftwareCertificates;
-    private final ExtensionObjectDefinition serverSignature;
+    private final List<EndpointDescription> serverEndpoints;
+    private final List<SignedSoftwareCertificate> serverSoftwareCertificates;
+    private final SignatureData serverSignature;
     private final long maxRequestMessageSize;
 
     public CreateSessionResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
+        ResponseHeader responseHeader,
         NodeId sessionId,
         NodeId authenticationToken,
         double revisedSessionTimeout,
         PascalByteString serverNonce,
         PascalByteString serverCertificate,
-        int noOfServerEndpoints,
-        List<ExtensionObjectDefinition> serverEndpoints,
-        int noOfServerSoftwareCertificates,
-        List<ExtensionObjectDefinition> serverSoftwareCertificates,
-        ExtensionObjectDefinition serverSignature,
+        List<EndpointDescription> serverEndpoints,
+        List<SignedSoftwareCertificate> serverSoftwareCertificates,
+        SignatureData serverSignature,
         long maxRequestMessageSize) {
       this.responseHeader = responseHeader;
       this.sessionId = sessionId;
@@ -359,9 +355,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
       this.revisedSessionTimeout = revisedSessionTimeout;
       this.serverNonce = serverNonce;
       this.serverCertificate = serverCertificate;
-      this.noOfServerEndpoints = noOfServerEndpoints;
       this.serverEndpoints = serverEndpoints;
-      this.noOfServerSoftwareCertificates = noOfServerSoftwareCertificates;
       this.serverSoftwareCertificates = serverSoftwareCertificates;
       this.serverSignature = serverSignature;
       this.maxRequestMessageSize = maxRequestMessageSize;
@@ -376,9 +370,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
               revisedSessionTimeout,
               serverNonce,
               serverCertificate,
-              noOfServerEndpoints,
               serverEndpoints,
-              noOfServerSoftwareCertificates,
               serverSoftwareCertificates,
               serverSignature,
               maxRequestMessageSize);
@@ -401,9 +393,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
         && (getRevisedSessionTimeout() == that.getRevisedSessionTimeout())
         && (getServerNonce() == that.getServerNonce())
         && (getServerCertificate() == that.getServerCertificate())
-        && (getNoOfServerEndpoints() == that.getNoOfServerEndpoints())
         && (getServerEndpoints() == that.getServerEndpoints())
-        && (getNoOfServerSoftwareCertificates() == that.getNoOfServerSoftwareCertificates())
         && (getServerSoftwareCertificates() == that.getServerSoftwareCertificates())
         && (getServerSignature() == that.getServerSignature())
         && (getMaxRequestMessageSize() == that.getMaxRequestMessageSize())
@@ -421,9 +411,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
         getRevisedSessionTimeout(),
         getServerNonce(),
         getServerCertificate(),
-        getNoOfServerEndpoints(),
         getServerEndpoints(),
-        getNoOfServerSoftwareCertificates(),
         getServerSoftwareCertificates(),
         getServerSignature(),
         getMaxRequestMessageSize());

@@ -221,7 +221,7 @@ func (m *_FirmataCommandProtocolVersion) GetTypeName() string {
 }
 
 func (m *_FirmataCommandProtocolVersion) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).GetLengthInBits(ctx))
 
 	// Simple field (majorVersion)
 	lengthInBits += 8

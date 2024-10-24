@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataCarPosition) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataCarPosition) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (carPosition)
 	lengthInBits += m.CarPosition.GetLengthInBits(ctx)

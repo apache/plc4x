@@ -266,7 +266,7 @@ func (m *_ApduDataExtPropertyValueResponse) GetTypeName() string {
 }
 
 func (m *_ApduDataExtPropertyValueResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).GetLengthInBits(ctx))
 
 	// Simple field (objectIndex)
 	lengthInBits += 8

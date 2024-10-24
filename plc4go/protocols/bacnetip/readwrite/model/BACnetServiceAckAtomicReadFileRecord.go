@@ -280,7 +280,7 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) GetTypeName() string {
 }
 
 func (m *_BACnetServiceAckAtomicReadFileRecord) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord).GetLengthInBits(ctx))
 
 	// Simple field (fileStartRecord)
 	lengthInBits += m.FileStartRecord.GetLengthInBits(ctx)

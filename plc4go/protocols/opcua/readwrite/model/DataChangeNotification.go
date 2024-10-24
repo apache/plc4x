@@ -40,12 +40,8 @@ type DataChangeNotification interface {
 	utils.Serializable
 	utils.Copyable
 	ExtensionObjectDefinition
-	// GetNoOfMonitoredItems returns NoOfMonitoredItems (property field)
-	GetNoOfMonitoredItems() int32
 	// GetMonitoredItems returns MonitoredItems (property field)
-	GetMonitoredItems() []ExtensionObjectDefinition
-	// GetNoOfDiagnosticInfos returns NoOfDiagnosticInfos (property field)
-	GetNoOfDiagnosticInfos() int32
+	GetMonitoredItems() []MonitoredItemNotification
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsDataChangeNotification is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -57,22 +53,18 @@ type DataChangeNotification interface {
 // _DataChangeNotification is the data-structure of this message
 type _DataChangeNotification struct {
 	ExtensionObjectDefinitionContract
-	NoOfMonitoredItems  int32
-	MonitoredItems      []ExtensionObjectDefinition
-	NoOfDiagnosticInfos int32
-	DiagnosticInfos     []DiagnosticInfo
+	MonitoredItems  []MonitoredItemNotification
+	DiagnosticInfos []DiagnosticInfo
 }
 
 var _ DataChangeNotification = (*_DataChangeNotification)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataChangeNotification)(nil)
 
 // NewDataChangeNotification factory function for _DataChangeNotification
-func NewDataChangeNotification(noOfMonitoredItems int32, monitoredItems []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DataChangeNotification {
+func NewDataChangeNotification(monitoredItems []MonitoredItemNotification, diagnosticInfos []DiagnosticInfo) *_DataChangeNotification {
 	_result := &_DataChangeNotification{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfMonitoredItems:                noOfMonitoredItems,
 		MonitoredItems:                    monitoredItems,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
 		DiagnosticInfos:                   diagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -88,13 +80,9 @@ func NewDataChangeNotification(noOfMonitoredItems int32, monitoredItems []Extens
 type DataChangeNotificationBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfMonitoredItems int32, monitoredItems []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DataChangeNotificationBuilder
-	// WithNoOfMonitoredItems adds NoOfMonitoredItems (property field)
-	WithNoOfMonitoredItems(int32) DataChangeNotificationBuilder
+	WithMandatoryFields(monitoredItems []MonitoredItemNotification, diagnosticInfos []DiagnosticInfo) DataChangeNotificationBuilder
 	// WithMonitoredItems adds MonitoredItems (property field)
-	WithMonitoredItems(...ExtensionObjectDefinition) DataChangeNotificationBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) DataChangeNotificationBuilder
+	WithMonitoredItems(...MonitoredItemNotification) DataChangeNotificationBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) DataChangeNotificationBuilder
 	// Build builds the DataChangeNotification or returns an error if something is wrong
@@ -122,22 +110,12 @@ func (b *_DataChangeNotificationBuilder) setParent(contract ExtensionObjectDefin
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_DataChangeNotificationBuilder) WithMandatoryFields(noOfMonitoredItems int32, monitoredItems []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DataChangeNotificationBuilder {
-	return b.WithNoOfMonitoredItems(noOfMonitoredItems).WithMonitoredItems(monitoredItems...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_DataChangeNotificationBuilder) WithMandatoryFields(monitoredItems []MonitoredItemNotification, diagnosticInfos []DiagnosticInfo) DataChangeNotificationBuilder {
+	return b.WithMonitoredItems(monitoredItems...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_DataChangeNotificationBuilder) WithNoOfMonitoredItems(noOfMonitoredItems int32) DataChangeNotificationBuilder {
-	b.NoOfMonitoredItems = noOfMonitoredItems
-	return b
-}
-
-func (b *_DataChangeNotificationBuilder) WithMonitoredItems(monitoredItems ...ExtensionObjectDefinition) DataChangeNotificationBuilder {
+func (b *_DataChangeNotificationBuilder) WithMonitoredItems(monitoredItems ...MonitoredItemNotification) DataChangeNotificationBuilder {
 	b.MonitoredItems = monitoredItems
-	return b
-}
-
-func (b *_DataChangeNotificationBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) DataChangeNotificationBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -196,8 +174,8 @@ func (b *_DataChangeNotification) CreateDataChangeNotificationBuilder() DataChan
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DataChangeNotification) GetIdentifier() string {
-	return "811"
+func (m *_DataChangeNotification) GetExtensionId() int32 {
+	return int32(811)
 }
 
 ///////////////////////
@@ -214,16 +192,8 @@ func (m *_DataChangeNotification) GetParent() ExtensionObjectDefinitionContract 
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_DataChangeNotification) GetNoOfMonitoredItems() int32 {
-	return m.NoOfMonitoredItems
-}
-
-func (m *_DataChangeNotification) GetMonitoredItems() []ExtensionObjectDefinition {
+func (m *_DataChangeNotification) GetMonitoredItems() []MonitoredItemNotification {
 	return m.MonitoredItems
-}
-
-func (m *_DataChangeNotification) GetNoOfDiagnosticInfos() int32 {
-	return m.NoOfDiagnosticInfos
 }
 
 func (m *_DataChangeNotification) GetDiagnosticInfos() []DiagnosticInfo {
@@ -251,12 +221,9 @@ func (m *_DataChangeNotification) GetTypeName() string {
 }
 
 func (m *_DataChangeNotification) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
-	// Implicit Field (notificationLength)
-	lengthInBits += 32
-
-	// Simple field (noOfMonitoredItems)
+	// Implicit Field (noOfMonitoredItems)
 	lengthInBits += 32
 
 	// Array field
@@ -269,7 +236,7 @@ func (m *_DataChangeNotification) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfDiagnosticInfos)
+	// Implicit Field (noOfDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -289,7 +256,7 @@ func (m *_DataChangeNotification) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DataChangeNotification) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataChangeNotification DataChangeNotification, err error) {
+func (m *_DataChangeNotification) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__dataChangeNotification DataChangeNotification, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -300,29 +267,23 @@ func (m *_DataChangeNotification) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	notificationLength, err := ReadImplicitField[int32](ctx, "notificationLength", ReadSignedInt(readBuffer, uint8(32)))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationLength' field"))
-	}
-	_ = notificationLength
-
-	noOfMonitoredItems, err := ReadSimpleField(ctx, "noOfMonitoredItems", ReadSignedInt(readBuffer, uint8(32)))
+	noOfMonitoredItems, err := ReadImplicitField[int32](ctx, "noOfMonitoredItems", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfMonitoredItems' field"))
 	}
-	m.NoOfMonitoredItems = noOfMonitoredItems
+	_ = noOfMonitoredItems
 
-	monitoredItems, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "monitoredItems", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("808")), readBuffer), uint64(noOfMonitoredItems))
+	monitoredItems, err := ReadCountArrayField[MonitoredItemNotification](ctx, "monitoredItems", ReadComplex[MonitoredItemNotification](ExtensionObjectDefinitionParseWithBufferProducer[MonitoredItemNotification]((int32)(int32(808))), readBuffer), uint64(noOfMonitoredItems))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredItems' field"))
 	}
 	m.MonitoredItems = monitoredItems
 
-	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	_ = noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {
@@ -354,20 +315,16 @@ func (m *_DataChangeNotification) SerializeWithWriteBuffer(ctx context.Context, 
 		if pushErr := writeBuffer.PushContext("DataChangeNotification"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for DataChangeNotification")
 		}
-		notificationLength := int32(int32(m.GetLengthInBytes(ctx)))
-		if err := WriteImplicitField(ctx, "notificationLength", notificationLength, WriteSignedInt(writeBuffer, 32)); err != nil {
-			return errors.Wrap(err, "Error serializing 'notificationLength' field")
-		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfMonitoredItems", m.GetNoOfMonitoredItems(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfMonitoredItems := int32(utils.InlineIf(bool((m.GetMonitoredItems()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetMonitoredItems()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfMonitoredItems", noOfMonitoredItems, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfMonitoredItems' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "monitoredItems", m.GetMonitoredItems(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'monitoredItems' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiagnosticInfos := int32(utils.InlineIf(bool((m.GetDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiagnosticInfos", noOfDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
@@ -395,9 +352,7 @@ func (m *_DataChangeNotification) deepCopy() *_DataChangeNotification {
 	}
 	_DataChangeNotificationCopy := &_DataChangeNotification{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfMonitoredItems,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.MonitoredItems),
-		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[MonitoredItemNotification, MonitoredItemNotification](m.MonitoredItems),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

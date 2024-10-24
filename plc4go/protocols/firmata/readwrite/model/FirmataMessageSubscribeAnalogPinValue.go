@@ -225,7 +225,7 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) GetTypeName() string {
 }
 
 func (m *_FirmataMessageSubscribeAnalogPinValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.FirmataMessageContract.(*_FirmataMessage).getLengthInBits(ctx))
+	lengthInBits := uint16(m.FirmataMessageContract.(*_FirmataMessage).GetLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 4

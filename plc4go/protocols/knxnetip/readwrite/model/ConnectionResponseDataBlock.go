@@ -235,7 +235,7 @@ func (m *_ConnectionResponseDataBlock) GetTypeName() string {
 	return "ConnectionResponseDataBlock"
 }
 
-func (m *_ConnectionResponseDataBlock) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ConnectionResponseDataBlock) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)

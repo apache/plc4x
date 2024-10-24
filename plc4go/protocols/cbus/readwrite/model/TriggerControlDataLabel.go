@@ -271,7 +271,7 @@ func (m *_TriggerControlDataLabel) GetTypeName() string {
 }
 
 func (m *_TriggerControlDataLabel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TriggerControlDataContract.(*_TriggerControlData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.TriggerControlDataContract.(*_TriggerControlData).GetLengthInBits(ctx))
 
 	// Simple field (triggerControlOptions)
 	lengthInBits += m.TriggerControlOptions.GetLengthInBits(ctx)

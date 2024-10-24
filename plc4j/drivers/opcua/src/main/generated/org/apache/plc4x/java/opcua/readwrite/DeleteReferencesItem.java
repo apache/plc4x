@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DeleteReferencesItem extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "387";
+  public Integer getExtensionId() {
+    return (int) 387;
   }
 
   // Properties.
@@ -150,7 +150,7 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DeleteReferencesItem");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

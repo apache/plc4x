@@ -41,11 +41,9 @@ type SetPublishingModeRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetPublishingEnabled returns PublishingEnabled (property field)
 	GetPublishingEnabled() bool
-	// GetNoOfSubscriptionIds returns NoOfSubscriptionIds (property field)
-	GetNoOfSubscriptionIds() int32
 	// GetSubscriptionIds returns SubscriptionIds (property field)
 	GetSubscriptionIds() []uint32
 	// IsSetPublishingModeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -57,10 +55,9 @@ type SetPublishingModeRequest interface {
 // _SetPublishingModeRequest is the data-structure of this message
 type _SetPublishingModeRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader       ExtensionObjectDefinition
-	PublishingEnabled   bool
-	NoOfSubscriptionIds int32
-	SubscriptionIds     []uint32
+	RequestHeader     RequestHeader
+	PublishingEnabled bool
+	SubscriptionIds   []uint32
 	// Reserved Fields
 	reservedField0 *uint8
 }
@@ -69,15 +66,14 @@ var _ SetPublishingModeRequest = (*_SetPublishingModeRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetPublishingModeRequest)(nil)
 
 // NewSetPublishingModeRequest factory function for _SetPublishingModeRequest
-func NewSetPublishingModeRequest(requestHeader ExtensionObjectDefinition, publishingEnabled bool, noOfSubscriptionIds int32, subscriptionIds []uint32) *_SetPublishingModeRequest {
+func NewSetPublishingModeRequest(requestHeader RequestHeader, publishingEnabled bool, subscriptionIds []uint32) *_SetPublishingModeRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for SetPublishingModeRequest must not be nil")
+		panic("requestHeader of type RequestHeader for SetPublishingModeRequest must not be nil")
 	}
 	_result := &_SetPublishingModeRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
 		PublishingEnabled:                 publishingEnabled,
-		NoOfSubscriptionIds:               noOfSubscriptionIds,
 		SubscriptionIds:                   subscriptionIds,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -93,15 +89,13 @@ func NewSetPublishingModeRequest(requestHeader ExtensionObjectDefinition, publis
 type SetPublishingModeRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, publishingEnabled bool, noOfSubscriptionIds int32, subscriptionIds []uint32) SetPublishingModeRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, publishingEnabled bool, subscriptionIds []uint32) SetPublishingModeRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) SetPublishingModeRequestBuilder
+	WithRequestHeader(RequestHeader) SetPublishingModeRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetPublishingModeRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) SetPublishingModeRequestBuilder
 	// WithPublishingEnabled adds PublishingEnabled (property field)
 	WithPublishingEnabled(bool) SetPublishingModeRequestBuilder
-	// WithNoOfSubscriptionIds adds NoOfSubscriptionIds (property field)
-	WithNoOfSubscriptionIds(int32) SetPublishingModeRequestBuilder
 	// WithSubscriptionIds adds SubscriptionIds (property field)
 	WithSubscriptionIds(...uint32) SetPublishingModeRequestBuilder
 	// Build builds the SetPublishingModeRequest or returns an error if something is wrong
@@ -129,35 +123,30 @@ func (b *_SetPublishingModeRequestBuilder) setParent(contract ExtensionObjectDef
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_SetPublishingModeRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, publishingEnabled bool, noOfSubscriptionIds int32, subscriptionIds []uint32) SetPublishingModeRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithPublishingEnabled(publishingEnabled).WithNoOfSubscriptionIds(noOfSubscriptionIds).WithSubscriptionIds(subscriptionIds...)
+func (b *_SetPublishingModeRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, publishingEnabled bool, subscriptionIds []uint32) SetPublishingModeRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithPublishingEnabled(publishingEnabled).WithSubscriptionIds(subscriptionIds...)
 }
 
-func (b *_SetPublishingModeRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) SetPublishingModeRequestBuilder {
+func (b *_SetPublishingModeRequestBuilder) WithRequestHeader(requestHeader RequestHeader) SetPublishingModeRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_SetPublishingModeRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetPublishingModeRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_SetPublishingModeRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) SetPublishingModeRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
 func (b *_SetPublishingModeRequestBuilder) WithPublishingEnabled(publishingEnabled bool) SetPublishingModeRequestBuilder {
 	b.PublishingEnabled = publishingEnabled
-	return b
-}
-
-func (b *_SetPublishingModeRequestBuilder) WithNoOfSubscriptionIds(noOfSubscriptionIds int32) SetPublishingModeRequestBuilder {
-	b.NoOfSubscriptionIds = noOfSubscriptionIds
 	return b
 }
 
@@ -222,8 +211,8 @@ func (b *_SetPublishingModeRequest) CreateSetPublishingModeRequestBuilder() SetP
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SetPublishingModeRequest) GetIdentifier() string {
-	return "799"
+func (m *_SetPublishingModeRequest) GetExtensionId() int32 {
+	return int32(799)
 }
 
 ///////////////////////
@@ -240,16 +229,12 @@ func (m *_SetPublishingModeRequest) GetParent() ExtensionObjectDefinitionContrac
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_SetPublishingModeRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_SetPublishingModeRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
 func (m *_SetPublishingModeRequest) GetPublishingEnabled() bool {
 	return m.PublishingEnabled
-}
-
-func (m *_SetPublishingModeRequest) GetNoOfSubscriptionIds() int32 {
-	return m.NoOfSubscriptionIds
 }
 
 func (m *_SetPublishingModeRequest) GetSubscriptionIds() []uint32 {
@@ -277,7 +262,7 @@ func (m *_SetPublishingModeRequest) GetTypeName() string {
 }
 
 func (m *_SetPublishingModeRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -288,7 +273,7 @@ func (m *_SetPublishingModeRequest) GetLengthInBits(ctx context.Context) uint16 
 	// Simple field (publishingEnabled)
 	lengthInBits += 1
 
-	// Simple field (noOfSubscriptionIds)
+	// Implicit Field (noOfSubscriptionIds)
 	lengthInBits += 32
 
 	// Array field
@@ -303,7 +288,7 @@ func (m *_SetPublishingModeRequest) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SetPublishingModeRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__setPublishingModeRequest SetPublishingModeRequest, err error) {
+func (m *_SetPublishingModeRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__setPublishingModeRequest SetPublishingModeRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -314,7 +299,7 @@ func (m *_SetPublishingModeRequest) parse(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -332,11 +317,11 @@ func (m *_SetPublishingModeRequest) parse(ctx context.Context, readBuffer utils.
 	}
 	m.PublishingEnabled = publishingEnabled
 
-	noOfSubscriptionIds, err := ReadSimpleField(ctx, "noOfSubscriptionIds", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSubscriptionIds, err := ReadImplicitField[int32](ctx, "noOfSubscriptionIds", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSubscriptionIds' field"))
 	}
-	m.NoOfSubscriptionIds = noOfSubscriptionIds
+	_ = noOfSubscriptionIds
 
 	subscriptionIds, err := ReadCountArrayField[uint32](ctx, "subscriptionIds", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfSubscriptionIds))
 	if err != nil {
@@ -369,7 +354,7 @@ func (m *_SetPublishingModeRequest) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for SetPublishingModeRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
@@ -380,8 +365,8 @@ func (m *_SetPublishingModeRequest) SerializeWithWriteBuffer(ctx context.Context
 		if err := WriteSimpleField[bool](ctx, "publishingEnabled", m.GetPublishingEnabled(), WriteBoolean(writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishingEnabled' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfSubscriptionIds", m.GetNoOfSubscriptionIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfSubscriptionIds := int32(utils.InlineIf(bool((m.GetSubscriptionIds()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSubscriptionIds()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfSubscriptionIds", noOfSubscriptionIds, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSubscriptionIds' field")
 		}
 
@@ -409,9 +394,8 @@ func (m *_SetPublishingModeRequest) deepCopy() *_SetPublishingModeRequest {
 	}
 	_SetPublishingModeRequestCopy := &_SetPublishingModeRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.PublishingEnabled,
-		m.NoOfSubscriptionIds,
 		utils.DeepCopySlice[uint32, uint32](m.SubscriptionIds),
 		m.reservedField0,
 	}

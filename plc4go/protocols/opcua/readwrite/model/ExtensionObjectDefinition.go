@@ -57,8 +57,8 @@ type ExtensionObjectDefinitionContract interface {
 type ExtensionObjectDefinitionRequirements interface {
 	GetLengthInBits(ctx context.Context) uint16
 	GetLengthInBytes(ctx context.Context) uint16
-	// GetIdentifier returns Identifier (discriminator field)
-	GetIdentifier() string
+	// GetExtensionId returns ExtensionId (discriminator field)
+	GetExtensionId() int32
 }
 
 // _ExtensionObjectDefinition is the data-structure of this message
@@ -188,14 +188,44 @@ type ExtensionObjectDefinitionBuilder interface {
 		DataTypeDescriptionBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsStructureDescription converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsStructureDescription() interface {
+		StructureDescriptionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsEnumDescription converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsEnumDescription() interface {
+		EnumDescriptionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsSimpleTypeDescription converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsSimpleTypeDescription() interface {
+		SimpleTypeDescriptionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUABinaryFileDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUABinaryFileDataType() interface {
+		UABinaryFileDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsPortableQualifiedName converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPortableQualifiedName() interface {
 		PortableQualifiedNameBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsPortableNodeId converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPortableNodeId() interface {
+		PortableNodeIdBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsUnsignedRationalNumber converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsUnsignedRationalNumber() interface {
 		UnsignedRationalNumberBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDataSetMetaDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDataSetMetaDataType() interface {
+		DataSetMetaDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsFieldMetaData converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -208,6 +238,11 @@ type ExtensionObjectDefinitionBuilder interface {
 		ConfigurationVersionDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsPublishedDataSetDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPublishedDataSetDataType() interface {
+		PublishedDataSetDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsPublishedDataSetSourceDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPublishedDataSetSourceDataType() interface {
 		PublishedDataSetSourceDataTypeBuilder
@@ -216,6 +251,21 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsPublishedVariableDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPublishedVariableDataType() interface {
 		PublishedVariableDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsPublishedDataItemsDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPublishedDataItemsDataType() interface {
+		PublishedDataItemsDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsPublishedEventsDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPublishedEventsDataType() interface {
+		PublishedEventsDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsPublishedDataSetCustomSourceDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPublishedDataSetCustomSourceDataType() interface {
+		PublishedDataSetCustomSourceDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsDataSetWriterDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -236,6 +286,11 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsPubSubGroupDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPubSubGroupDataType() interface {
 		PubSubGroupDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsWriterGroupDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsWriterGroupDataType() interface {
+		WriterGroupDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsWriterGroupTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -263,6 +318,16 @@ type ExtensionObjectDefinitionBuilder interface {
 		NetworkAddressDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsNetworkAddressUrlDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsNetworkAddressUrlDataType() interface {
+		NetworkAddressUrlDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReaderGroupDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReaderGroupDataType() interface {
+		ReaderGroupDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsReaderGroupTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsReaderGroupTransportDataType() interface {
 		ReaderGroupTransportDataTypeBuilder
@@ -271,6 +336,11 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsReaderGroupMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsReaderGroupMessageDataType() interface {
 		ReaderGroupMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDataSetReaderDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDataSetReaderDataType() interface {
+		DataSetReaderDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsDataSetReaderTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -288,14 +358,34 @@ type ExtensionObjectDefinitionBuilder interface {
 		SubscribedDataSetDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsTargetVariablesDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsTargetVariablesDataType() interface {
+		TargetVariablesDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsFieldTargetDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsFieldTargetDataType() interface {
 		FieldTargetDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsSubscribedDataSetMirrorDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsSubscribedDataSetMirrorDataType() interface {
+		SubscribedDataSetMirrorDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsPubSubConfigurationDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPubSubConfigurationDataType() interface {
 		PubSubConfigurationDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsStandaloneSubscribedDataSetRefDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsStandaloneSubscribedDataSetRefDataType() interface {
+		StandaloneSubscribedDataSetRefDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsStandaloneSubscribedDataSetDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsStandaloneSubscribedDataSetDataType() interface {
+		StandaloneSubscribedDataSetDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsSecurityGroupDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -308,14 +398,119 @@ type ExtensionObjectDefinitionBuilder interface {
 		PubSubKeyPushTargetDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsPubSubConfiguration2DataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPubSubConfiguration2DataType() interface {
+		PubSubConfiguration2DataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUadpWriterGroupMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUadpWriterGroupMessageDataType() interface {
+		UadpWriterGroupMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUadpDataSetWriterMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUadpDataSetWriterMessageDataType() interface {
+		UadpDataSetWriterMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUadpDataSetReaderMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUadpDataSetReaderMessageDataType() interface {
+		UadpDataSetReaderMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsJsonWriterGroupMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonWriterGroupMessageDataType() interface {
+		JsonWriterGroupMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsJsonDataSetWriterMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonDataSetWriterMessageDataType() interface {
+		JsonDataSetWriterMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsJsonDataSetReaderMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonDataSetReaderMessageDataType() interface {
+		JsonDataSetReaderMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsQosDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsQosDataType() interface {
 		QosDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsTransmitQosDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsTransmitQosDataType() interface {
+		TransmitQosDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsTransmitQosPriorityDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsTransmitQosPriorityDataType() interface {
+		TransmitQosPriorityDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReceiveQosDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReceiveQosDataType() interface {
+		ReceiveQosDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReceiveQosPriorityDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReceiveQosPriorityDataType() interface {
+		ReceiveQosPriorityDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDatagramConnectionTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDatagramConnectionTransportDataType() interface {
+		DatagramConnectionTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDatagramConnectionTransport2DataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDatagramConnectionTransport2DataType() interface {
+		DatagramConnectionTransport2DataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDatagramWriterGroupTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDatagramWriterGroupTransportDataType() interface {
+		DatagramWriterGroupTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDatagramWriterGroupTransport2DataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDatagramWriterGroupTransport2DataType() interface {
+		DatagramWriterGroupTransport2DataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDatagramDataSetReaderTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDatagramDataSetReaderTransportDataType() interface {
+		DatagramDataSetReaderTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsBrokerConnectionTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsBrokerConnectionTransportDataType() interface {
+		BrokerConnectionTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsBrokerWriterGroupTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsBrokerWriterGroupTransportDataType() interface {
+		BrokerWriterGroupTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsBrokerDataSetWriterTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsBrokerDataSetWriterTransportDataType() interface {
+		BrokerDataSetWriterTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsBrokerDataSetReaderTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsBrokerDataSetReaderTransportDataType() interface {
+		BrokerDataSetReaderTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsPubSubConfigurationRefDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPubSubConfigurationRefDataType() interface {
 		PubSubConfigurationRefDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsPubSubConfigurationValueDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPubSubConfigurationValueDataType() interface {
+		PubSubConfigurationValueDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsAliasNameDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -358,6 +553,16 @@ type ExtensionObjectDefinitionBuilder interface {
 		StructureFieldBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsStructureDefinition converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsStructureDefinition() interface {
+		StructureDefinitionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsEnumDefinition converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsEnumDefinition() interface {
+		EnumDefinitionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsArgument converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsArgument() interface {
 		ArgumentBuilder
@@ -366,6 +571,11 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsEnumValueType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsEnumValueType() interface {
 		EnumValueTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsEnumField converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsEnumField() interface {
+		EnumFieldBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsOptionSet converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -473,6 +683,11 @@ type ExtensionObjectDefinitionBuilder interface {
 		DiscoveryConfigurationBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsMdnsDiscoveryConfiguration converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsMdnsDiscoveryConfiguration() interface {
+		MdnsDiscoveryConfigurationBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsRegisterServer2Request converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsRegisterServer2Request() interface {
 		RegisterServer2RequestBuilder
@@ -528,6 +743,31 @@ type ExtensionObjectDefinitionBuilder interface {
 		CreateSessionResponseBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsUserIdentityToken converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUserIdentityToken() interface {
+		UserIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsAnonymousIdentityToken converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsAnonymousIdentityToken() interface {
+		AnonymousIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUserNameIdentityToken converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUserNameIdentityToken() interface {
+		UserNameIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsX509IdentityToken converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsX509IdentityToken() interface {
+		X509IdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsIssuedIdentityToken converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsIssuedIdentityToken() interface {
+		IssuedIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsActivateSessionRequest converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsActivateSessionRequest() interface {
 		ActivateSessionRequestBuilder
@@ -563,9 +803,54 @@ type ExtensionObjectDefinitionBuilder interface {
 		NodeAttributesBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsObjectAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsObjectAttributes() interface {
+		ObjectAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsVariableAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsVariableAttributes() interface {
+		VariableAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsMethodAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsMethodAttributes() interface {
+		MethodAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsObjectTypeAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsObjectTypeAttributes() interface {
+		ObjectTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsVariableTypeAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsVariableTypeAttributes() interface {
+		VariableTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReferenceTypeAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReferenceTypeAttributes() interface {
+		ReferenceTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDataTypeAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDataTypeAttributes() interface {
+		DataTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsViewAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsViewAttributes() interface {
+		ViewAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsGenericAttributeValue converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsGenericAttributeValue() interface {
 		GenericAttributeValueBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsGenericAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsGenericAttributes() interface {
+		GenericAttributesBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsAddNodesItem converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -768,6 +1053,26 @@ type ExtensionObjectDefinitionBuilder interface {
 		FilterOperandBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsElementOperand converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsElementOperand() interface {
+		ElementOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsLiteralOperand converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsLiteralOperand() interface {
+		LiteralOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsAttributeOperand converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsAttributeOperand() interface {
+		AttributeOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsSimpleAttributeOperand converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsSimpleAttributeOperand() interface {
+		SimpleAttributeOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsContentFilterElementResult converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsContentFilterElementResult() interface {
 		ContentFilterElementResultBuilder
@@ -833,6 +1138,36 @@ type ExtensionObjectDefinitionBuilder interface {
 		HistoryReadDetailsBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsReadEventDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReadEventDetails() interface {
+		ReadEventDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReadEventDetails2 converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReadEventDetails2() interface {
+		ReadEventDetails2Builder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReadRawModifiedDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReadRawModifiedDetails() interface {
+		ReadRawModifiedDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReadProcessedDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReadProcessedDetails() interface {
+		ReadProcessedDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReadAtTimeDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReadAtTimeDetails() interface {
+		ReadAtTimeDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReadAnnotationDataDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReadAnnotationDataDetails() interface {
+		ReadAnnotationDataDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsHistoryData converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsHistoryData() interface {
 		HistoryDataBuilder
@@ -843,9 +1178,19 @@ type ExtensionObjectDefinitionBuilder interface {
 		ModificationInfoBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsHistoryModifiedData converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsHistoryModifiedData() interface {
+		HistoryModifiedDataBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsHistoryEvent converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsHistoryEvent() interface {
 		HistoryEventBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsHistoryModifiedEvent converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsHistoryModifiedEvent() interface {
+		HistoryModifiedEventBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsHistoryReadRequest converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -876,6 +1221,36 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsHistoryUpdateDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsHistoryUpdateDetails() interface {
 		HistoryUpdateDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUpdateDataDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUpdateDataDetails() interface {
+		UpdateDataDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUpdateStructureDataDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUpdateStructureDataDetails() interface {
+		UpdateStructureDataDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUpdateEventDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUpdateEventDetails() interface {
+		UpdateEventDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDeleteRawModifiedDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDeleteRawModifiedDetails() interface {
+		DeleteRawModifiedDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDeleteAtTimeDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDeleteAtTimeDetails() interface {
+		DeleteAtTimeDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDeleteEventDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDeleteEventDetails() interface {
+		DeleteEventDetailsBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsHistoryUpdateResult converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -918,14 +1293,39 @@ type ExtensionObjectDefinitionBuilder interface {
 		MonitoringFilterBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsDataChangeFilter converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDataChangeFilter() interface {
+		DataChangeFilterBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsEventFilter converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsEventFilter() interface {
+		EventFilterBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsAggregateConfiguration converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsAggregateConfiguration() interface {
 		AggregateConfigurationBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsAggregateFilter converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsAggregateFilter() interface {
+		AggregateFilterBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsMonitoringFilterResult converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsMonitoringFilterResult() interface {
 		MonitoringFilterResultBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsEventFilterResult converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsEventFilterResult() interface {
+		EventFilterResultBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsAggregateFilterResult converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsAggregateFilterResult() interface {
+		AggregateFilterResultBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsMonitoringParameters converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -1043,9 +1443,19 @@ type ExtensionObjectDefinitionBuilder interface {
 		NotificationDataBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsDataChangeNotification converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDataChangeNotification() interface {
+		DataChangeNotificationBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsMonitoredItemNotification converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsMonitoredItemNotification() interface {
 		MonitoredItemNotificationBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsEventNotificationList converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsEventNotificationList() interface {
+		EventNotificationListBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsEventFieldList converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -1056,6 +1466,11 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsHistoryEventFieldList converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsHistoryEventFieldList() interface {
 		HistoryEventFieldListBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsStatusChangeNotification converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsStatusChangeNotification() interface {
+		StatusChangeNotificationBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsSubscriptionAcknowledgement converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -1221,26 +1636,6 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsAnnotation converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsAnnotation() interface {
 		AnnotationBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}
-	// AsDataChangeNotification converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
-	AsDataChangeNotification() interface {
-		DataChangeNotificationBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}
-	// AsEventNotificationList converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
-	AsEventNotificationList() interface {
-		EventNotificationListBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}
-	// AsStatusChangeNotification converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
-	AsStatusChangeNotification() interface {
-		StatusChangeNotificationBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}
-	// AsUserIdentityToken converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
-	AsUserIdentityToken() interface {
-		UserIdentityTokenBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// Build builds the ExtensionObjectDefinition or returns an error if something is wrong
@@ -1629,6 +2024,70 @@ func (b *_ExtensionObjectDefinitionBuilder) AsDataTypeDescription() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsStructureDescription() interface {
+	StructureDescriptionBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		StructureDescriptionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewStructureDescriptionBuilder().(*_StructureDescriptionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsEnumDescription() interface {
+	EnumDescriptionBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EnumDescriptionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEnumDescriptionBuilder().(*_EnumDescriptionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsSimpleTypeDescription() interface {
+	SimpleTypeDescriptionBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SimpleTypeDescriptionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSimpleTypeDescriptionBuilder().(*_SimpleTypeDescriptionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUABinaryFileDataType() interface {
+	UABinaryFileDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UABinaryFileDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUABinaryFileDataTypeBuilder().(*_UABinaryFileDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsPortableQualifiedName() interface {
 	PortableQualifiedNameBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -1645,6 +2104,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPortableQualifiedName() interface 
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsPortableNodeId() interface {
+	PortableNodeIdBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PortableNodeIdBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPortableNodeIdBuilder().(*_PortableNodeIdBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsUnsignedRationalNumber() interface {
 	UnsignedRationalNumberBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -1656,6 +2131,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsUnsignedRationalNumber() interface
 		return cb
 	}
 	cb := NewUnsignedRationalNumberBuilder().(*_UnsignedRationalNumberBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDataSetMetaDataType() interface {
+	DataSetMetaDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DataSetMetaDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDataSetMetaDataTypeBuilder().(*_DataSetMetaDataTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -1693,6 +2184,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsConfigurationVersionDataType() int
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsPublishedDataSetDataType() interface {
+	PublishedDataSetDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PublishedDataSetDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPublishedDataSetDataTypeBuilder().(*_PublishedDataSetDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsPublishedDataSetSourceDataType() interface {
 	PublishedDataSetSourceDataTypeBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -1720,6 +2227,54 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPublishedVariableDataType() interf
 		return cb
 	}
 	cb := NewPublishedVariableDataTypeBuilder().(*_PublishedVariableDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsPublishedDataItemsDataType() interface {
+	PublishedDataItemsDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PublishedDataItemsDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPublishedDataItemsDataTypeBuilder().(*_PublishedDataItemsDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsPublishedEventsDataType() interface {
+	PublishedEventsDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PublishedEventsDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPublishedEventsDataTypeBuilder().(*_PublishedEventsDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsPublishedDataSetCustomSourceDataType() interface {
+	PublishedDataSetCustomSourceDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PublishedDataSetCustomSourceDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPublishedDataSetCustomSourceDataTypeBuilder().(*_PublishedDataSetCustomSourceDataTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -1784,6 +2339,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPubSubGroupDataType() interface {
 		return cb
 	}
 	cb := NewPubSubGroupDataTypeBuilder().(*_PubSubGroupDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsWriterGroupDataType() interface {
+	WriterGroupDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		WriterGroupDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewWriterGroupDataTypeBuilder().(*_WriterGroupDataTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -1869,6 +2440,38 @@ func (b *_ExtensionObjectDefinitionBuilder) AsNetworkAddressDataType() interface
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsNetworkAddressUrlDataType() interface {
+	NetworkAddressUrlDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NetworkAddressUrlDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNetworkAddressUrlDataTypeBuilder().(*_NetworkAddressUrlDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReaderGroupDataType() interface {
+	ReaderGroupDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReaderGroupDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReaderGroupDataTypeBuilder().(*_ReaderGroupDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsReaderGroupTransportDataType() interface {
 	ReaderGroupTransportDataTypeBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -1896,6 +2499,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsReaderGroupMessageDataType() inter
 		return cb
 	}
 	cb := NewReaderGroupMessageDataTypeBuilder().(*_ReaderGroupMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDataSetReaderDataType() interface {
+	DataSetReaderDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DataSetReaderDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDataSetReaderDataTypeBuilder().(*_DataSetReaderDataTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -1949,6 +2568,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsSubscribedDataSetDataType() interf
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsTargetVariablesDataType() interface {
+	TargetVariablesDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TargetVariablesDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTargetVariablesDataTypeBuilder().(*_TargetVariablesDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsFieldTargetDataType() interface {
 	FieldTargetDataTypeBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -1965,6 +2600,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsFieldTargetDataType() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsSubscribedDataSetMirrorDataType() interface {
+	SubscribedDataSetMirrorDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SubscribedDataSetMirrorDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSubscribedDataSetMirrorDataTypeBuilder().(*_SubscribedDataSetMirrorDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsPubSubConfigurationDataType() interface {
 	PubSubConfigurationDataTypeBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -1976,6 +2627,38 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPubSubConfigurationDataType() inte
 		return cb
 	}
 	cb := NewPubSubConfigurationDataTypeBuilder().(*_PubSubConfigurationDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsStandaloneSubscribedDataSetRefDataType() interface {
+	StandaloneSubscribedDataSetRefDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		StandaloneSubscribedDataSetRefDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewStandaloneSubscribedDataSetRefDataTypeBuilder().(*_StandaloneSubscribedDataSetRefDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsStandaloneSubscribedDataSetDataType() interface {
+	StandaloneSubscribedDataSetDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		StandaloneSubscribedDataSetDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewStandaloneSubscribedDataSetDataTypeBuilder().(*_StandaloneSubscribedDataSetDataTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -2013,6 +2696,118 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPubSubKeyPushTargetDataType() inte
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsPubSubConfiguration2DataType() interface {
+	PubSubConfiguration2DataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PubSubConfiguration2DataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPubSubConfiguration2DataTypeBuilder().(*_PubSubConfiguration2DataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUadpWriterGroupMessageDataType() interface {
+	UadpWriterGroupMessageDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UadpWriterGroupMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUadpWriterGroupMessageDataTypeBuilder().(*_UadpWriterGroupMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUadpDataSetWriterMessageDataType() interface {
+	UadpDataSetWriterMessageDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UadpDataSetWriterMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUadpDataSetWriterMessageDataTypeBuilder().(*_UadpDataSetWriterMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUadpDataSetReaderMessageDataType() interface {
+	UadpDataSetReaderMessageDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UadpDataSetReaderMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUadpDataSetReaderMessageDataTypeBuilder().(*_UadpDataSetReaderMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonWriterGroupMessageDataType() interface {
+	JsonWriterGroupMessageDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		JsonWriterGroupMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewJsonWriterGroupMessageDataTypeBuilder().(*_JsonWriterGroupMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonDataSetWriterMessageDataType() interface {
+	JsonDataSetWriterMessageDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		JsonDataSetWriterMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewJsonDataSetWriterMessageDataTypeBuilder().(*_JsonDataSetWriterMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonDataSetReaderMessageDataType() interface {
+	JsonDataSetReaderMessageDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		JsonDataSetReaderMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewJsonDataSetReaderMessageDataTypeBuilder().(*_JsonDataSetReaderMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsQosDataType() interface {
 	QosDataTypeBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -2029,6 +2824,214 @@ func (b *_ExtensionObjectDefinitionBuilder) AsQosDataType() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsTransmitQosDataType() interface {
+	TransmitQosDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TransmitQosDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTransmitQosDataTypeBuilder().(*_TransmitQosDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsTransmitQosPriorityDataType() interface {
+	TransmitQosPriorityDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TransmitQosPriorityDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTransmitQosPriorityDataTypeBuilder().(*_TransmitQosPriorityDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReceiveQosDataType() interface {
+	ReceiveQosDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReceiveQosDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReceiveQosDataTypeBuilder().(*_ReceiveQosDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReceiveQosPriorityDataType() interface {
+	ReceiveQosPriorityDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReceiveQosPriorityDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReceiveQosPriorityDataTypeBuilder().(*_ReceiveQosPriorityDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDatagramConnectionTransportDataType() interface {
+	DatagramConnectionTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DatagramConnectionTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDatagramConnectionTransportDataTypeBuilder().(*_DatagramConnectionTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDatagramConnectionTransport2DataType() interface {
+	DatagramConnectionTransport2DataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DatagramConnectionTransport2DataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDatagramConnectionTransport2DataTypeBuilder().(*_DatagramConnectionTransport2DataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDatagramWriterGroupTransportDataType() interface {
+	DatagramWriterGroupTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DatagramWriterGroupTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDatagramWriterGroupTransportDataTypeBuilder().(*_DatagramWriterGroupTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDatagramWriterGroupTransport2DataType() interface {
+	DatagramWriterGroupTransport2DataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DatagramWriterGroupTransport2DataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDatagramWriterGroupTransport2DataTypeBuilder().(*_DatagramWriterGroupTransport2DataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDatagramDataSetReaderTransportDataType() interface {
+	DatagramDataSetReaderTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DatagramDataSetReaderTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDatagramDataSetReaderTransportDataTypeBuilder().(*_DatagramDataSetReaderTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsBrokerConnectionTransportDataType() interface {
+	BrokerConnectionTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BrokerConnectionTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBrokerConnectionTransportDataTypeBuilder().(*_BrokerConnectionTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsBrokerWriterGroupTransportDataType() interface {
+	BrokerWriterGroupTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BrokerWriterGroupTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBrokerWriterGroupTransportDataTypeBuilder().(*_BrokerWriterGroupTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsBrokerDataSetWriterTransportDataType() interface {
+	BrokerDataSetWriterTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BrokerDataSetWriterTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBrokerDataSetWriterTransportDataTypeBuilder().(*_BrokerDataSetWriterTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsBrokerDataSetReaderTransportDataType() interface {
+	BrokerDataSetReaderTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BrokerDataSetReaderTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBrokerDataSetReaderTransportDataTypeBuilder().(*_BrokerDataSetReaderTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsPubSubConfigurationRefDataType() interface {
 	PubSubConfigurationRefDataTypeBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -2040,6 +3043,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPubSubConfigurationRefDataType() i
 		return cb
 	}
 	cb := NewPubSubConfigurationRefDataTypeBuilder().(*_PubSubConfigurationRefDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsPubSubConfigurationValueDataType() interface {
+	PubSubConfigurationValueDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PubSubConfigurationValueDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPubSubConfigurationValueDataTypeBuilder().(*_PubSubConfigurationValueDataTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -2173,6 +3192,38 @@ func (b *_ExtensionObjectDefinitionBuilder) AsStructureField() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsStructureDefinition() interface {
+	StructureDefinitionBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		StructureDefinitionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewStructureDefinitionBuilder().(*_StructureDefinitionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsEnumDefinition() interface {
+	EnumDefinitionBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EnumDefinitionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEnumDefinitionBuilder().(*_EnumDefinitionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsArgument() interface {
 	ArgumentBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -2200,6 +3251,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsEnumValueType() interface {
 		return cb
 	}
 	cb := NewEnumValueTypeBuilder().(*_EnumValueTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsEnumField() interface {
+	EnumFieldBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EnumFieldBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEnumFieldBuilder().(*_EnumFieldBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -2541,6 +3608,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsDiscoveryConfiguration() interface
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsMdnsDiscoveryConfiguration() interface {
+	MdnsDiscoveryConfigurationBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		MdnsDiscoveryConfigurationBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewMdnsDiscoveryConfigurationBuilder().(*_MdnsDiscoveryConfigurationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsRegisterServer2Request() interface {
 	RegisterServer2RequestBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -2717,6 +3800,86 @@ func (b *_ExtensionObjectDefinitionBuilder) AsCreateSessionResponse() interface 
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsUserIdentityToken() interface {
+	UserIdentityTokenBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UserIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUserIdentityTokenBuilder().(*_UserIdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsAnonymousIdentityToken() interface {
+	AnonymousIdentityTokenBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AnonymousIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAnonymousIdentityTokenBuilder().(*_AnonymousIdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUserNameIdentityToken() interface {
+	UserNameIdentityTokenBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UserNameIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUserNameIdentityTokenBuilder().(*_UserNameIdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsX509IdentityToken() interface {
+	X509IdentityTokenBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		X509IdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewX509IdentityTokenBuilder().(*_X509IdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsIssuedIdentityToken() interface {
+	IssuedIdentityTokenBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IssuedIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIssuedIdentityTokenBuilder().(*_IssuedIdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsActivateSessionRequest() interface {
 	ActivateSessionRequestBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -2829,6 +3992,134 @@ func (b *_ExtensionObjectDefinitionBuilder) AsNodeAttributes() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsObjectAttributes() interface {
+	ObjectAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ObjectAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewObjectAttributesBuilder().(*_ObjectAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsVariableAttributes() interface {
+	VariableAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariableAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariableAttributesBuilder().(*_VariableAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsMethodAttributes() interface {
+	MethodAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		MethodAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewMethodAttributesBuilder().(*_MethodAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsObjectTypeAttributes() interface {
+	ObjectTypeAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ObjectTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewObjectTypeAttributesBuilder().(*_ObjectTypeAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsVariableTypeAttributes() interface {
+	VariableTypeAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariableTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariableTypeAttributesBuilder().(*_VariableTypeAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReferenceTypeAttributes() interface {
+	ReferenceTypeAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReferenceTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReferenceTypeAttributesBuilder().(*_ReferenceTypeAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDataTypeAttributes() interface {
+	DataTypeAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DataTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDataTypeAttributesBuilder().(*_DataTypeAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsViewAttributes() interface {
+	ViewAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ViewAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewViewAttributesBuilder().(*_ViewAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsGenericAttributeValue() interface {
 	GenericAttributeValueBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -2840,6 +4131,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsGenericAttributeValue() interface 
 		return cb
 	}
 	cb := NewGenericAttributeValueBuilder().(*_GenericAttributeValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsGenericAttributes() interface {
+	GenericAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		GenericAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewGenericAttributesBuilder().(*_GenericAttributesBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -3485,6 +4792,70 @@ func (b *_ExtensionObjectDefinitionBuilder) AsFilterOperand() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsElementOperand() interface {
+	ElementOperandBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ElementOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewElementOperandBuilder().(*_ElementOperandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsLiteralOperand() interface {
+	LiteralOperandBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LiteralOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLiteralOperandBuilder().(*_LiteralOperandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsAttributeOperand() interface {
+	AttributeOperandBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AttributeOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAttributeOperandBuilder().(*_AttributeOperandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsSimpleAttributeOperand() interface {
+	SimpleAttributeOperandBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SimpleAttributeOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSimpleAttributeOperandBuilder().(*_SimpleAttributeOperandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsContentFilterElementResult() interface {
 	ContentFilterElementResultBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -3693,6 +5064,102 @@ func (b *_ExtensionObjectDefinitionBuilder) AsHistoryReadDetails() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsReadEventDetails() interface {
+	ReadEventDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReadEventDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReadEventDetailsBuilder().(*_ReadEventDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReadEventDetails2() interface {
+	ReadEventDetails2Builder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReadEventDetails2Builder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReadEventDetails2Builder().(*_ReadEventDetails2Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReadRawModifiedDetails() interface {
+	ReadRawModifiedDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReadRawModifiedDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReadRawModifiedDetailsBuilder().(*_ReadRawModifiedDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReadProcessedDetails() interface {
+	ReadProcessedDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReadProcessedDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReadProcessedDetailsBuilder().(*_ReadProcessedDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReadAtTimeDetails() interface {
+	ReadAtTimeDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReadAtTimeDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReadAtTimeDetailsBuilder().(*_ReadAtTimeDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReadAnnotationDataDetails() interface {
+	ReadAnnotationDataDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReadAnnotationDataDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReadAnnotationDataDetailsBuilder().(*_ReadAnnotationDataDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsHistoryData() interface {
 	HistoryDataBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -3725,6 +5192,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsModificationInfo() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsHistoryModifiedData() interface {
+	HistoryModifiedDataBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		HistoryModifiedDataBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewHistoryModifiedDataBuilder().(*_HistoryModifiedDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsHistoryEvent() interface {
 	HistoryEventBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -3736,6 +5219,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsHistoryEvent() interface {
 		return cb
 	}
 	cb := NewHistoryEventBuilder().(*_HistoryEventBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsHistoryModifiedEvent() interface {
+	HistoryModifiedEventBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		HistoryModifiedEventBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewHistoryModifiedEventBuilder().(*_HistoryModifiedEventBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -3832,6 +5331,102 @@ func (b *_ExtensionObjectDefinitionBuilder) AsHistoryUpdateDetails() interface {
 		return cb
 	}
 	cb := NewHistoryUpdateDetailsBuilder().(*_HistoryUpdateDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUpdateDataDetails() interface {
+	UpdateDataDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UpdateDataDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUpdateDataDetailsBuilder().(*_UpdateDataDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUpdateStructureDataDetails() interface {
+	UpdateStructureDataDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UpdateStructureDataDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUpdateStructureDataDetailsBuilder().(*_UpdateStructureDataDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUpdateEventDetails() interface {
+	UpdateEventDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UpdateEventDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUpdateEventDetailsBuilder().(*_UpdateEventDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDeleteRawModifiedDetails() interface {
+	DeleteRawModifiedDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DeleteRawModifiedDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDeleteRawModifiedDetailsBuilder().(*_DeleteRawModifiedDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDeleteAtTimeDetails() interface {
+	DeleteAtTimeDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DeleteAtTimeDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDeleteAtTimeDetailsBuilder().(*_DeleteAtTimeDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDeleteEventDetails() interface {
+	DeleteEventDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DeleteEventDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDeleteEventDetailsBuilder().(*_DeleteEventDetailsBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -3965,6 +5560,38 @@ func (b *_ExtensionObjectDefinitionBuilder) AsMonitoringFilter() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsDataChangeFilter() interface {
+	DataChangeFilterBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DataChangeFilterBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDataChangeFilterBuilder().(*_DataChangeFilterBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsEventFilter() interface {
+	EventFilterBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EventFilterBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEventFilterBuilder().(*_EventFilterBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsAggregateConfiguration() interface {
 	AggregateConfigurationBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -3981,6 +5608,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsAggregateConfiguration() interface
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsAggregateFilter() interface {
+	AggregateFilterBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AggregateFilterBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAggregateFilterBuilder().(*_AggregateFilterBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsMonitoringFilterResult() interface {
 	MonitoringFilterResultBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -3992,6 +5635,38 @@ func (b *_ExtensionObjectDefinitionBuilder) AsMonitoringFilterResult() interface
 		return cb
 	}
 	cb := NewMonitoringFilterResultBuilder().(*_MonitoringFilterResultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsEventFilterResult() interface {
+	EventFilterResultBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EventFilterResultBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEventFilterResultBuilder().(*_EventFilterResultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsAggregateFilterResult() interface {
+	AggregateFilterResultBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AggregateFilterResultBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAggregateFilterResultBuilder().(*_AggregateFilterResultBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -4365,6 +6040,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsNotificationData() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsDataChangeNotification() interface {
+	DataChangeNotificationBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DataChangeNotificationBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDataChangeNotificationBuilder().(*_DataChangeNotificationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsMonitoredItemNotification() interface {
 	MonitoredItemNotificationBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -4376,6 +6067,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsMonitoredItemNotification() interf
 		return cb
 	}
 	cb := NewMonitoredItemNotificationBuilder().(*_MonitoredItemNotificationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsEventNotificationList() interface {
+	EventNotificationListBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EventNotificationListBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEventNotificationListBuilder().(*_EventNotificationListBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -4408,6 +6115,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsHistoryEventFieldList() interface 
 		return cb
 	}
 	cb := NewHistoryEventFieldListBuilder().(*_HistoryEventFieldListBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsStatusChangeNotification() interface {
+	StatusChangeNotificationBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		StatusChangeNotificationBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewStatusChangeNotificationBuilder().(*_StatusChangeNotificationBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -4941,70 +6664,6 @@ func (b *_ExtensionObjectDefinitionBuilder) AsAnnotation() interface {
 	return cb
 }
 
-func (b *_ExtensionObjectDefinitionBuilder) AsDataChangeNotification() interface {
-	DataChangeNotificationBuilder
-	Done() ExtensionObjectDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DataChangeNotificationBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}); ok {
-		return cb
-	}
-	cb := NewDataChangeNotificationBuilder().(*_DataChangeNotificationBuilder)
-	cb.parentBuilder = b
-	b.childBuilder = cb
-	return cb
-}
-
-func (b *_ExtensionObjectDefinitionBuilder) AsEventNotificationList() interface {
-	EventNotificationListBuilder
-	Done() ExtensionObjectDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		EventNotificationListBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}); ok {
-		return cb
-	}
-	cb := NewEventNotificationListBuilder().(*_EventNotificationListBuilder)
-	cb.parentBuilder = b
-	b.childBuilder = cb
-	return cb
-}
-
-func (b *_ExtensionObjectDefinitionBuilder) AsStatusChangeNotification() interface {
-	StatusChangeNotificationBuilder
-	Done() ExtensionObjectDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		StatusChangeNotificationBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}); ok {
-		return cb
-	}
-	cb := NewStatusChangeNotificationBuilder().(*_StatusChangeNotificationBuilder)
-	cb.parentBuilder = b
-	b.childBuilder = cb
-	return cb
-}
-
-func (b *_ExtensionObjectDefinitionBuilder) AsUserIdentityToken() interface {
-	UserIdentityTokenBuilder
-	Done() ExtensionObjectDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		UserIdentityTokenBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}); ok {
-		return cb
-	}
-	cb := NewUserIdentityTokenBuilder().(*_UserIdentityTokenBuilder)
-	cb.parentBuilder = b
-	b.childBuilder = cb
-	return cb
-}
-
 func (b *_ExtensionObjectDefinitionBuilder) Build() (ExtensionObjectDefinition, error) {
 	v, err := b.PartialBuild()
 	if err != nil {
@@ -5063,7 +6722,7 @@ func (m *_ExtensionObjectDefinition) GetTypeName() string {
 	return "ExtensionObjectDefinition"
 }
 
-func (m *_ExtensionObjectDefinition) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ExtensionObjectDefinition) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
@@ -5073,13 +6732,13 @@ func (m *_ExtensionObjectDefinition) GetLengthInBytes(ctx context.Context) uint1
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func ExtensionObjectDefinitionParse[T ExtensionObjectDefinition](ctx context.Context, theBytes []byte, identifier string) (T, error) {
-	return ExtensionObjectDefinitionParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), identifier)
+func ExtensionObjectDefinitionParse[T ExtensionObjectDefinition](ctx context.Context, theBytes []byte, extensionId int32) (T, error) {
+	return ExtensionObjectDefinitionParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), extensionId)
 }
 
-func ExtensionObjectDefinitionParseWithBufferProducer[T ExtensionObjectDefinition](identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+func ExtensionObjectDefinitionParseWithBufferProducer[T ExtensionObjectDefinition](extensionId int32) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
 	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer[T](ctx, readBuffer, identifier)
+		v, err := ExtensionObjectDefinitionParseWithBuffer[T](ctx, readBuffer, extensionId)
 		if err != nil {
 			var zero T
 			return zero, err
@@ -5088,8 +6747,8 @@ func ExtensionObjectDefinitionParseWithBufferProducer[T ExtensionObjectDefinitio
 	}
 }
 
-func ExtensionObjectDefinitionParseWithBuffer[T ExtensionObjectDefinition](ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (T, error) {
-	v, err := (&_ExtensionObjectDefinition{}).parse(ctx, readBuffer, identifier)
+func ExtensionObjectDefinitionParseWithBuffer[T ExtensionObjectDefinition](ctx context.Context, readBuffer utils.ReadBuffer, extensionId int32) (T, error) {
+	v, err := (&_ExtensionObjectDefinition{}).parse(ctx, readBuffer, extensionId)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -5102,7 +6761,7 @@ func ExtensionObjectDefinitionParseWithBuffer[T ExtensionObjectDefinition](ctx c
 	return vc, nil
 }
 
-func (m *_ExtensionObjectDefinition) parse(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (__extensionObjectDefinition ExtensionObjectDefinition, err error) {
+func (m *_ExtensionObjectDefinition) parse(ctx context.Context, readBuffer utils.ReadBuffer, extensionId int32) (__extensionObjectDefinition ExtensionObjectDefinition, err error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ExtensionObjectDefinition"); pullErr != nil {
@@ -5114,936 +6773,1252 @@ func (m *_ExtensionObjectDefinition) parse(ctx context.Context, readBuffer utils
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _child ExtensionObjectDefinition
 	switch {
-	case identifier == "0": // NullExtension
-		if _child, err = new(_NullExtension).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(0): // NullExtension
+		if _child, err = new(_NullExtension).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NullExtension for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "12758": // Union
-		if _child, err = new(_Union).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(12758): // Union
+		if _child, err = new(_Union).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type Union for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "14535": // KeyValuePair
-		if _child, err = new(_KeyValuePair).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(14535): // KeyValuePair
+		if _child, err = new(_KeyValuePair).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KeyValuePair for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "16315": // AdditionalParametersType
-		if _child, err = new(_AdditionalParametersType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(16315): // AdditionalParametersType
+		if _child, err = new(_AdditionalParametersType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdditionalParametersType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "17550": // EphemeralKeyType
-		if _child, err = new(_EphemeralKeyType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(17550): // EphemeralKeyType
+		if _child, err = new(_EphemeralKeyType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type EphemeralKeyType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15530": // EndpointType
-		if _child, err = new(_EndpointType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15530): // EndpointType
+		if _child, err = new(_EndpointType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type EndpointType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "32423": // BitFieldDefinition
-		if _child, err = new(_BitFieldDefinition).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(32423): // BitFieldDefinition
+		if _child, err = new(_BitFieldDefinition).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BitFieldDefinition for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "18808": // RationalNumber
-		if _child, err = new(_RationalNumber).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(18808): // RationalNumber
+		if _child, err = new(_RationalNumber).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RationalNumber for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "18809": // OpcuaVector
-		if _child, err = new(_OpcuaVector).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(18809): // OpcuaVector
+		if _child, err = new(_OpcuaVector).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaVector for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "18811": // CartesianCoordinates
-		if _child, err = new(_CartesianCoordinates).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(18811): // CartesianCoordinates
+		if _child, err = new(_CartesianCoordinates).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CartesianCoordinates for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "18813": // Orientation
-		if _child, err = new(_Orientation).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(18813): // Orientation
+		if _child, err = new(_Orientation).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type Orientation for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "18815": // Frame
-		if _child, err = new(_Frame).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(18815): // Frame
+		if _child, err = new(_Frame).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type Frame for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15636": // IdentityMappingRuleType
-		if _child, err = new(_IdentityMappingRuleType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15636): // IdentityMappingRuleType
+		if _child, err = new(_IdentityMappingRuleType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IdentityMappingRuleType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "23500": // CurrencyUnitType
-		if _child, err = new(_CurrencyUnitType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(23500): // CurrencyUnitType
+		if _child, err = new(_CurrencyUnitType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CurrencyUnitType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "32436": // AnnotationDataType
-		if _child, err = new(_AnnotationDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(32436): // AnnotationDataType
+		if _child, err = new(_AnnotationDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AnnotationDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "32437": // LinearConversionDataType
-		if _child, err = new(_LinearConversionDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(32437): // LinearConversionDataType
+		if _child, err = new(_LinearConversionDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LinearConversionDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "32440": // QuantityDimension
-		if _child, err = new(_QuantityDimension).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(32440): // QuantityDimension
+		if _child, err = new(_QuantityDimension).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type QuantityDimension for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "12556": // TrustListDataType
-		if _child, err = new(_TrustListDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(12556): // TrustListDataType
+		if _child, err = new(_TrustListDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TrustListDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "32287": // TransactionErrorType
-		if _child, err = new(_TransactionErrorType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(32287): // TransactionErrorType
+		if _child, err = new(_TransactionErrorType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TransactionErrorType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15536": // DataTypeSchemaHeader
-		if _child, err = new(_DataTypeSchemaHeader).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15536): // DataTypeSchemaHeader
+		if _child, err = new(_DataTypeSchemaHeader).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DataTypeSchemaHeader for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "14527": // DataTypeDescription
-		if _child, err = new(_DataTypeDescription).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(14527): // DataTypeDescription
+		if _child, err = new(_DataTypeDescription).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DataTypeDescription for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "24107": // PortableQualifiedName
-		if _child, err = new(_PortableQualifiedName).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15489): // StructureDescription
+		if _child, err = new(_StructureDescription).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type StructureDescription for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15490): // EnumDescription
+		if _child, err = new(_EnumDescription).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EnumDescription for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15007): // SimpleTypeDescription
+		if _child, err = new(_SimpleTypeDescription).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SimpleTypeDescription for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15008): // UABinaryFileDataType
+		if _child, err = new(_UABinaryFileDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UABinaryFileDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(24107): // PortableQualifiedName
+		if _child, err = new(_PortableQualifiedName).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PortableQualifiedName for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "24109": // UnsignedRationalNumber
-		if _child, err = new(_UnsignedRationalNumber).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(24108): // PortableNodeId
+		if _child, err = new(_PortableNodeId).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PortableNodeId for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(24109): // UnsignedRationalNumber
+		if _child, err = new(_UnsignedRationalNumber).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type UnsignedRationalNumber for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "14526": // FieldMetaData
-		if _child, err = new(_FieldMetaData).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(14525): // DataSetMetaDataType
+		if _child, err = new(_DataSetMetaDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataSetMetaDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(14526): // FieldMetaData
+		if _child, err = new(_FieldMetaData).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FieldMetaData for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "14595": // ConfigurationVersionDataType
-		if _child, err = new(_ConfigurationVersionDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(14595): // ConfigurationVersionDataType
+		if _child, err = new(_ConfigurationVersionDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConfigurationVersionDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15582": // PublishedDataSetSourceDataType
-		if _child, err = new(_PublishedDataSetSourceDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15580): // PublishedDataSetDataType
+		if _child, err = new(_PublishedDataSetDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PublishedDataSetDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15582): // PublishedDataSetSourceDataType
+		if _child, err = new(_PublishedDataSetSourceDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PublishedDataSetSourceDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "14275": // PublishedVariableDataType
-		if _child, err = new(_PublishedVariableDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(14275): // PublishedVariableDataType
+		if _child, err = new(_PublishedVariableDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PublishedVariableDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15599": // DataSetWriterDataType
-		if _child, err = new(_DataSetWriterDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15583): // PublishedDataItemsDataType
+		if _child, err = new(_PublishedDataItemsDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PublishedDataItemsDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15584): // PublishedEventsDataType
+		if _child, err = new(_PublishedEventsDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PublishedEventsDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(25271): // PublishedDataSetCustomSourceDataType
+		if _child, err = new(_PublishedDataSetCustomSourceDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PublishedDataSetCustomSourceDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15599): // DataSetWriterDataType
+		if _child, err = new(_DataSetWriterDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DataSetWriterDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15600": // DataSetWriterTransportDataType
-		if _child, err = new(_DataSetWriterTransportDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15600): // DataSetWriterTransportDataType
+		if _child, err = new(_DataSetWriterTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DataSetWriterTransportDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15607": // DataSetWriterMessageDataType
-		if _child, err = new(_DataSetWriterMessageDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15607): // DataSetWriterMessageDataType
+		if _child, err = new(_DataSetWriterMessageDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DataSetWriterMessageDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15611": // PubSubGroupDataType
-		if _child, err = new(_PubSubGroupDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15611): // PubSubGroupDataType
+		if _child, err = new(_PubSubGroupDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PubSubGroupDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15613": // WriterGroupTransportDataType
-		if _child, err = new(_WriterGroupTransportDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15482): // WriterGroupDataType
+		if _child, err = new(_WriterGroupDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type WriterGroupDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15613): // WriterGroupTransportDataType
+		if _child, err = new(_WriterGroupTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type WriterGroupTransportDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15618": // WriterGroupMessageDataType
-		if _child, err = new(_WriterGroupMessageDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15618): // WriterGroupMessageDataType
+		if _child, err = new(_WriterGroupMessageDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type WriterGroupMessageDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15619": // PubSubConnectionDataType
-		if _child, err = new(_PubSubConnectionDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15619): // PubSubConnectionDataType
+		if _child, err = new(_PubSubConnectionDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PubSubConnectionDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15620": // ConnectionTransportDataType
-		if _child, err = new(_ConnectionTransportDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15620): // ConnectionTransportDataType
+		if _child, err = new(_ConnectionTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionTransportDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15504": // NetworkAddressDataType
-		if _child, err = new(_NetworkAddressDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15504): // NetworkAddressDataType
+		if _child, err = new(_NetworkAddressDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NetworkAddressDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15623": // ReaderGroupTransportDataType
-		if _child, err = new(_ReaderGroupTransportDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15512): // NetworkAddressUrlDataType
+		if _child, err = new(_NetworkAddressUrlDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NetworkAddressUrlDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15522): // ReaderGroupDataType
+		if _child, err = new(_ReaderGroupDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReaderGroupDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15623): // ReaderGroupTransportDataType
+		if _child, err = new(_ReaderGroupTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReaderGroupTransportDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15624": // ReaderGroupMessageDataType
-		if _child, err = new(_ReaderGroupMessageDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15624): // ReaderGroupMessageDataType
+		if _child, err = new(_ReaderGroupMessageDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReaderGroupMessageDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15630": // DataSetReaderTransportDataType
-		if _child, err = new(_DataSetReaderTransportDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15625): // DataSetReaderDataType
+		if _child, err = new(_DataSetReaderDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataSetReaderDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15630): // DataSetReaderTransportDataType
+		if _child, err = new(_DataSetReaderTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DataSetReaderTransportDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15631": // DataSetReaderMessageDataType
-		if _child, err = new(_DataSetReaderMessageDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15631): // DataSetReaderMessageDataType
+		if _child, err = new(_DataSetReaderMessageDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DataSetReaderMessageDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15632": // SubscribedDataSetDataType
-		if _child, err = new(_SubscribedDataSetDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15632): // SubscribedDataSetDataType
+		if _child, err = new(_SubscribedDataSetDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SubscribedDataSetDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "14746": // FieldTargetDataType
-		if _child, err = new(_FieldTargetDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15633): // TargetVariablesDataType
+		if _child, err = new(_TargetVariablesDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TargetVariablesDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(14746): // FieldTargetDataType
+		if _child, err = new(_FieldTargetDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FieldTargetDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15532": // PubSubConfigurationDataType
-		if _child, err = new(_PubSubConfigurationDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15637): // SubscribedDataSetMirrorDataType
+		if _child, err = new(_SubscribedDataSetMirrorDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SubscribedDataSetMirrorDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15532): // PubSubConfigurationDataType
+		if _child, err = new(_PubSubConfigurationDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PubSubConfigurationDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "23603": // SecurityGroupDataType
-		if _child, err = new(_SecurityGroupDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(23601): // StandaloneSubscribedDataSetRefDataType
+		if _child, err = new(_StandaloneSubscribedDataSetRefDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type StandaloneSubscribedDataSetRefDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(23602): // StandaloneSubscribedDataSetDataType
+		if _child, err = new(_StandaloneSubscribedDataSetDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type StandaloneSubscribedDataSetDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(23603): // SecurityGroupDataType
+		if _child, err = new(_SecurityGroupDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityGroupDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "25272": // PubSubKeyPushTargetDataType
-		if _child, err = new(_PubSubKeyPushTargetDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(25272): // PubSubKeyPushTargetDataType
+		if _child, err = new(_PubSubKeyPushTargetDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PubSubKeyPushTargetDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "23605": // QosDataType
-		if _child, err = new(_QosDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(23604): // PubSubConfiguration2DataType
+		if _child, err = new(_PubSubConfiguration2DataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PubSubConfiguration2DataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15647): // UadpWriterGroupMessageDataType
+		if _child, err = new(_UadpWriterGroupMessageDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UadpWriterGroupMessageDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15654): // UadpDataSetWriterMessageDataType
+		if _child, err = new(_UadpDataSetWriterMessageDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UadpDataSetWriterMessageDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15655): // UadpDataSetReaderMessageDataType
+		if _child, err = new(_UadpDataSetReaderMessageDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UadpDataSetReaderMessageDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15659): // JsonWriterGroupMessageDataType
+		if _child, err = new(_JsonWriterGroupMessageDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonWriterGroupMessageDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15666): // JsonDataSetWriterMessageDataType
+		if _child, err = new(_JsonDataSetWriterMessageDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonDataSetWriterMessageDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15667): // JsonDataSetReaderMessageDataType
+		if _child, err = new(_JsonDataSetReaderMessageDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonDataSetReaderMessageDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(23605): // QosDataType
+		if _child, err = new(_QosDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type QosDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "25521": // PubSubConfigurationRefDataType
-		if _child, err = new(_PubSubConfigurationRefDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(23606): // TransmitQosDataType
+		if _child, err = new(_TransmitQosDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TransmitQosDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(23607): // TransmitQosPriorityDataType
+		if _child, err = new(_TransmitQosPriorityDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TransmitQosPriorityDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(23610): // ReceiveQosDataType
+		if _child, err = new(_ReceiveQosDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReceiveQosDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(23611): // ReceiveQosPriorityDataType
+		if _child, err = new(_ReceiveQosPriorityDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReceiveQosPriorityDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(17469): // DatagramConnectionTransportDataType
+		if _child, err = new(_DatagramConnectionTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DatagramConnectionTransportDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(23614): // DatagramConnectionTransport2DataType
+		if _child, err = new(_DatagramConnectionTransport2DataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DatagramConnectionTransport2DataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15534): // DatagramWriterGroupTransportDataType
+		if _child, err = new(_DatagramWriterGroupTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DatagramWriterGroupTransportDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(23615): // DatagramWriterGroupTransport2DataType
+		if _child, err = new(_DatagramWriterGroupTransport2DataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DatagramWriterGroupTransport2DataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(23616): // DatagramDataSetReaderTransportDataType
+		if _child, err = new(_DatagramDataSetReaderTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DatagramDataSetReaderTransportDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15009): // BrokerConnectionTransportDataType
+		if _child, err = new(_BrokerConnectionTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrokerConnectionTransportDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15669): // BrokerWriterGroupTransportDataType
+		if _child, err = new(_BrokerWriterGroupTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrokerWriterGroupTransportDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15671): // BrokerDataSetWriterTransportDataType
+		if _child, err = new(_BrokerDataSetWriterTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrokerDataSetWriterTransportDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(15672): // BrokerDataSetReaderTransportDataType
+		if _child, err = new(_BrokerDataSetReaderTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrokerDataSetReaderTransportDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(25521): // PubSubConfigurationRefDataType
+		if _child, err = new(_PubSubConfigurationRefDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PubSubConfigurationRefDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "23470": // AliasNameDataType
-		if _child, err = new(_AliasNameDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(25522): // PubSubConfigurationValueDataType
+		if _child, err = new(_PubSubConfigurationValueDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PubSubConfigurationValueDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(23470): // AliasNameDataType
+		if _child, err = new(_AliasNameDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AliasNameDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "24283": // UserManagementDataType
-		if _child, err = new(_UserManagementDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(24283): // UserManagementDataType
+		if _child, err = new(_UserManagementDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type UserManagementDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "25222": // PriorityMappingEntryType
-		if _child, err = new(_PriorityMappingEntryType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(25222): // PriorityMappingEntryType
+		if _child, err = new(_PriorityMappingEntryType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PriorityMappingEntryType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "32661": // ReferenceDescriptionDataType
-		if _child, err = new(_ReferenceDescriptionDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(32661): // ReferenceDescriptionDataType
+		if _child, err = new(_ReferenceDescriptionDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReferenceDescriptionDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "32662": // ReferenceListEntryDataType
-		if _child, err = new(_ReferenceListEntryDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(32662): // ReferenceListEntryDataType
+		if _child, err = new(_ReferenceListEntryDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReferenceListEntryDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "98": // RolePermissionType
-		if _child, err = new(_RolePermissionType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(98): // RolePermissionType
+		if _child, err = new(_RolePermissionType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RolePermissionType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "99": // DataTypeDefinition
-		if _child, err = new(_DataTypeDefinition).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(99): // DataTypeDefinition
+		if _child, err = new(_DataTypeDefinition).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DataTypeDefinition for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "103": // StructureField
-		if _child, err = new(_StructureField).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(103): // StructureField
+		if _child, err = new(_StructureField).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type StructureField for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "298": // Argument
-		if _child, err = new(_Argument).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(101): // StructureDefinition
+		if _child, err = new(_StructureDefinition).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type StructureDefinition for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(102): // EnumDefinition
+		if _child, err = new(_EnumDefinition).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EnumDefinition for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(298): // Argument
+		if _child, err = new(_Argument).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type Argument for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "7596": // EnumValueType
-		if _child, err = new(_EnumValueType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(7596): // EnumValueType
+		if _child, err = new(_EnumValueType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type EnumValueType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "12757": // OptionSet
-		if _child, err = new(_OptionSet).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(104): // EnumField
+		if _child, err = new(_EnumField).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EnumField for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(12757): // OptionSet
+		if _child, err = new(_OptionSet).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OptionSet for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "8914": // TimeZoneDataType
-		if _child, err = new(_TimeZoneDataType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(8914): // TimeZoneDataType
+		if _child, err = new(_TimeZoneDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TimeZoneDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "310": // ApplicationDescription
-		if _child, err = new(_ApplicationDescription).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(310): // ApplicationDescription
+		if _child, err = new(_ApplicationDescription).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApplicationDescription for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "391": // RequestHeader
-		if _child, err = new(_RequestHeader).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(391): // RequestHeader
+		if _child, err = new(_RequestHeader).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestHeader for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "394": // ResponseHeader
-		if _child, err = new(_ResponseHeader).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(394): // ResponseHeader
+		if _child, err = new(_ResponseHeader).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ResponseHeader for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "397": // ServiceFault
-		if _child, err = new(_ServiceFault).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(397): // ServiceFault
+		if _child, err = new(_ServiceFault).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ServiceFault for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "15903": // SessionlessInvokeRequestType
-		if _child, err = new(_SessionlessInvokeRequestType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(15903): // SessionlessInvokeRequestType
+		if _child, err = new(_SessionlessInvokeRequestType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SessionlessInvokeRequestType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "21001": // SessionlessInvokeResponseType
-		if _child, err = new(_SessionlessInvokeResponseType).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(21001): // SessionlessInvokeResponseType
+		if _child, err = new(_SessionlessInvokeResponseType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SessionlessInvokeResponseType for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "422": // FindServersRequest
-		if _child, err = new(_FindServersRequest).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(422): // FindServersRequest
+		if _child, err = new(_FindServersRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FindServersRequest for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "425": // FindServersResponse
-		if _child, err = new(_FindServersResponse).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(425): // FindServersResponse
+		if _child, err = new(_FindServersResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FindServersResponse for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "12191": // ServerOnNetwork
-		if _child, err = new(_ServerOnNetwork).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(12191): // ServerOnNetwork
+		if _child, err = new(_ServerOnNetwork).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ServerOnNetwork for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "12192": // FindServersOnNetworkRequest
-		if _child, err = new(_FindServersOnNetworkRequest).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(12192): // FindServersOnNetworkRequest
+		if _child, err = new(_FindServersOnNetworkRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FindServersOnNetworkRequest for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "12193": // FindServersOnNetworkResponse
-		if _child, err = new(_FindServersOnNetworkResponse).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(12193): // FindServersOnNetworkResponse
+		if _child, err = new(_FindServersOnNetworkResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FindServersOnNetworkResponse for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "306": // UserTokenPolicy
-		if _child, err = new(_UserTokenPolicy).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(306): // UserTokenPolicy
+		if _child, err = new(_UserTokenPolicy).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type UserTokenPolicy for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "314": // EndpointDescription
-		if _child, err = new(_EndpointDescription).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(314): // EndpointDescription
+		if _child, err = new(_EndpointDescription).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type EndpointDescription for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "428": // GetEndpointsRequest
-		if _child, err = new(_GetEndpointsRequest).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(428): // GetEndpointsRequest
+		if _child, err = new(_GetEndpointsRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type GetEndpointsRequest for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "431": // GetEndpointsResponse
-		if _child, err = new(_GetEndpointsResponse).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(431): // GetEndpointsResponse
+		if _child, err = new(_GetEndpointsResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type GetEndpointsResponse for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "434": // RegisteredServer
-		if _child, err = new(_RegisteredServer).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(434): // RegisteredServer
+		if _child, err = new(_RegisteredServer).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RegisteredServer for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "437": // RegisterServerRequest
-		if _child, err = new(_RegisterServerRequest).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(437): // RegisterServerRequest
+		if _child, err = new(_RegisterServerRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RegisterServerRequest for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "440": // RegisterServerResponse
-		if _child, err = new(_RegisterServerResponse).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(440): // RegisterServerResponse
+		if _child, err = new(_RegisterServerResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RegisterServerResponse for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "12892": // DiscoveryConfiguration
-		if _child, err = new(_DiscoveryConfiguration).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(12892): // DiscoveryConfiguration
+		if _child, err = new(_DiscoveryConfiguration).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DiscoveryConfiguration for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "12195": // RegisterServer2Request
-		if _child, err = new(_RegisterServer2Request).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(12893): // MdnsDiscoveryConfiguration
+		if _child, err = new(_MdnsDiscoveryConfiguration).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MdnsDiscoveryConfiguration for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(12195): // RegisterServer2Request
+		if _child, err = new(_RegisterServer2Request).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RegisterServer2Request for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "12196": // RegisterServer2Response
-		if _child, err = new(_RegisterServer2Response).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(12196): // RegisterServer2Response
+		if _child, err = new(_RegisterServer2Response).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RegisterServer2Response for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "443": // ChannelSecurityToken
-		if _child, err = new(_ChannelSecurityToken).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(443): // ChannelSecurityToken
+		if _child, err = new(_ChannelSecurityToken).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ChannelSecurityToken for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "446": // OpenSecureChannelRequest
-		if _child, err = new(_OpenSecureChannelRequest).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(446): // OpenSecureChannelRequest
+		if _child, err = new(_OpenSecureChannelRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpenSecureChannelRequest for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "449": // OpenSecureChannelResponse
-		if _child, err = new(_OpenSecureChannelResponse).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(449): // OpenSecureChannelResponse
+		if _child, err = new(_OpenSecureChannelResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpenSecureChannelResponse for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "452": // CloseSecureChannelRequest
-		if _child, err = new(_CloseSecureChannelRequest).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(452): // CloseSecureChannelRequest
+		if _child, err = new(_CloseSecureChannelRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CloseSecureChannelRequest for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "455": // CloseSecureChannelResponse
-		if _child, err = new(_CloseSecureChannelResponse).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(455): // CloseSecureChannelResponse
+		if _child, err = new(_CloseSecureChannelResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CloseSecureChannelResponse for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "346": // SignedSoftwareCertificate
-		if _child, err = new(_SignedSoftwareCertificate).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(346): // SignedSoftwareCertificate
+		if _child, err = new(_SignedSoftwareCertificate).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SignedSoftwareCertificate for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "458": // SignatureData
-		if _child, err = new(_SignatureData).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(458): // SignatureData
+		if _child, err = new(_SignatureData).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SignatureData for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "461": // CreateSessionRequest
-		if _child, err = new(_CreateSessionRequest).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(461): // CreateSessionRequest
+		if _child, err = new(_CreateSessionRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CreateSessionRequest for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "464": // CreateSessionResponse
-		if _child, err = new(_CreateSessionResponse).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(464): // CreateSessionResponse
+		if _child, err = new(_CreateSessionResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CreateSessionResponse for type-switch of ExtensionObjectDefinition")
 		}
-	case identifier == "467": // ActivateSessionRequest
-		if _child, err = new(_ActivateSessionRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ActivateSessionRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "470": // ActivateSessionResponse
-		if _child, err = new(_ActivateSessionResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ActivateSessionResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "473": // CloseSessionRequest
-		if _child, err = new(_CloseSessionRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type CloseSessionRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "476": // CloseSessionResponse
-		if _child, err = new(_CloseSessionResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type CloseSessionResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "479": // CancelRequest
-		if _child, err = new(_CancelRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type CancelRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "482": // CancelResponse
-		if _child, err = new(_CancelResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type CancelResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "351": // NodeAttributes
-		if _child, err = new(_NodeAttributes).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type NodeAttributes for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "17608": // GenericAttributeValue
-		if _child, err = new(_GenericAttributeValue).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type GenericAttributeValue for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "378": // AddNodesItem
-		if _child, err = new(_AddNodesItem).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type AddNodesItem for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "485": // AddNodesResult
-		if _child, err = new(_AddNodesResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type AddNodesResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "488": // AddNodesRequest
-		if _child, err = new(_AddNodesRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type AddNodesRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "491": // AddNodesResponse
-		if _child, err = new(_AddNodesResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type AddNodesResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "381": // AddReferencesItem
-		if _child, err = new(_AddReferencesItem).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type AddReferencesItem for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "494": // AddReferencesRequest
-		if _child, err = new(_AddReferencesRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type AddReferencesRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "497": // AddReferencesResponse
-		if _child, err = new(_AddReferencesResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type AddReferencesResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "384": // DeleteNodesItem
-		if _child, err = new(_DeleteNodesItem).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type DeleteNodesItem for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "500": // DeleteNodesRequest
-		if _child, err = new(_DeleteNodesRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type DeleteNodesRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "503": // DeleteNodesResponse
-		if _child, err = new(_DeleteNodesResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type DeleteNodesResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "387": // DeleteReferencesItem
-		if _child, err = new(_DeleteReferencesItem).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type DeleteReferencesItem for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "506": // DeleteReferencesRequest
-		if _child, err = new(_DeleteReferencesRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type DeleteReferencesRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "509": // DeleteReferencesResponse
-		if _child, err = new(_DeleteReferencesResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type DeleteReferencesResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "513": // ViewDescription
-		if _child, err = new(_ViewDescription).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ViewDescription for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "516": // BrowseDescription
-		if _child, err = new(_BrowseDescription).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type BrowseDescription for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "520": // ReferenceDescription
-		if _child, err = new(_ReferenceDescription).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ReferenceDescription for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "524": // BrowseResult
-		if _child, err = new(_BrowseResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type BrowseResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "527": // BrowseRequest
-		if _child, err = new(_BrowseRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type BrowseRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "530": // BrowseResponse
-		if _child, err = new(_BrowseResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type BrowseResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "533": // BrowseNextRequest
-		if _child, err = new(_BrowseNextRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type BrowseNextRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "536": // BrowseNextResponse
-		if _child, err = new(_BrowseNextResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type BrowseNextResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "539": // RelativePathElement
-		if _child, err = new(_RelativePathElement).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type RelativePathElement for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "542": // RelativePath
-		if _child, err = new(_RelativePath).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type RelativePath for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "545": // BrowsePath
-		if _child, err = new(_BrowsePath).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type BrowsePath for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "548": // BrowsePathTarget
-		if _child, err = new(_BrowsePathTarget).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type BrowsePathTarget for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "551": // BrowsePathResult
-		if _child, err = new(_BrowsePathResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type BrowsePathResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "554": // TranslateBrowsePathsToNodeIdsRequest
-		if _child, err = new(_TranslateBrowsePathsToNodeIdsRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type TranslateBrowsePathsToNodeIdsRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "557": // TranslateBrowsePathsToNodeIdsResponse
-		if _child, err = new(_TranslateBrowsePathsToNodeIdsResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type TranslateBrowsePathsToNodeIdsResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "560": // RegisterNodesRequest
-		if _child, err = new(_RegisterNodesRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type RegisterNodesRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "563": // RegisterNodesResponse
-		if _child, err = new(_RegisterNodesResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type RegisterNodesResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "566": // UnregisterNodesRequest
-		if _child, err = new(_UnregisterNodesRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type UnregisterNodesRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "569": // UnregisterNodesResponse
-		if _child, err = new(_UnregisterNodesResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type UnregisterNodesResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "333": // EndpointConfiguration
-		if _child, err = new(_EndpointConfiguration).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type EndpointConfiguration for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "572": // QueryDataDescription
-		if _child, err = new(_QueryDataDescription).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type QueryDataDescription for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "575": // NodeTypeDescription
-		if _child, err = new(_NodeTypeDescription).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type NodeTypeDescription for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "579": // QueryDataSet
-		if _child, err = new(_QueryDataSet).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type QueryDataSet for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "582": // NodeReference
-		if _child, err = new(_NodeReference).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type NodeReference for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "585": // ContentFilterElement
-		if _child, err = new(_ContentFilterElement).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ContentFilterElement for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "588": // ContentFilter
-		if _child, err = new(_ContentFilter).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ContentFilter for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "591": // FilterOperand
-		if _child, err = new(_FilterOperand).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type FilterOperand for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "606": // ContentFilterElementResult
-		if _child, err = new(_ContentFilterElementResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ContentFilterElementResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "609": // ContentFilterResult
-		if _child, err = new(_ContentFilterResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ContentFilterResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "612": // ParsingResult
-		if _child, err = new(_ParsingResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ParsingResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "615": // QueryFirstRequest
-		if _child, err = new(_QueryFirstRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type QueryFirstRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "618": // QueryFirstResponse
-		if _child, err = new(_QueryFirstResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type QueryFirstResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "621": // QueryNextRequest
-		if _child, err = new(_QueryNextRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type QueryNextRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "624": // QueryNextResponse
-		if _child, err = new(_QueryNextResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type QueryNextResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "628": // ReadValueId
-		if _child, err = new(_ReadValueId).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ReadValueId for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "631": // ReadRequest
-		if _child, err = new(_ReadRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ReadRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "634": // ReadResponse
-		if _child, err = new(_ReadResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ReadResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "637": // HistoryReadValueId
-		if _child, err = new(_HistoryReadValueId).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadValueId for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "640": // HistoryReadResult
-		if _child, err = new(_HistoryReadResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "643": // HistoryReadDetails
-		if _child, err = new(_HistoryReadDetails).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadDetails for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "658": // HistoryData
-		if _child, err = new(_HistoryData).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type HistoryData for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "11218": // ModificationInfo
-		if _child, err = new(_ModificationInfo).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ModificationInfo for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "661": // HistoryEvent
-		if _child, err = new(_HistoryEvent).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type HistoryEvent for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "664": // HistoryReadRequest
-		if _child, err = new(_HistoryReadRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "667": // HistoryReadResponse
-		if _child, err = new(_HistoryReadResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "670": // WriteValue
-		if _child, err = new(_WriteValue).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type WriteValue for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "673": // WriteRequest
-		if _child, err = new(_WriteRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type WriteRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "676": // WriteResponse
-		if _child, err = new(_WriteResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type WriteResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "679": // HistoryUpdateDetails
-		if _child, err = new(_HistoryUpdateDetails).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type HistoryUpdateDetails for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "697": // HistoryUpdateResult
-		if _child, err = new(_HistoryUpdateResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type HistoryUpdateResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "700": // HistoryUpdateRequest
-		if _child, err = new(_HistoryUpdateRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type HistoryUpdateRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "703": // HistoryUpdateResponse
-		if _child, err = new(_HistoryUpdateResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type HistoryUpdateResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "706": // CallMethodRequest
-		if _child, err = new(_CallMethodRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type CallMethodRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "709": // CallMethodResult
-		if _child, err = new(_CallMethodResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type CallMethodResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "712": // CallRequest
-		if _child, err = new(_CallRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type CallRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "715": // CallResponse
-		if _child, err = new(_CallResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type CallResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "721": // MonitoringFilter
-		if _child, err = new(_MonitoringFilter).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type MonitoringFilter for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "950": // AggregateConfiguration
-		if _child, err = new(_AggregateConfiguration).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type AggregateConfiguration for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "733": // MonitoringFilterResult
-		if _child, err = new(_MonitoringFilterResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type MonitoringFilterResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "742": // MonitoringParameters
-		if _child, err = new(_MonitoringParameters).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type MonitoringParameters for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "745": // MonitoredItemCreateRequest
-		if _child, err = new(_MonitoredItemCreateRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemCreateRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "748": // MonitoredItemCreateResult
-		if _child, err = new(_MonitoredItemCreateResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemCreateResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "751": // CreateMonitoredItemsRequest
-		if _child, err = new(_CreateMonitoredItemsRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type CreateMonitoredItemsRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "754": // CreateMonitoredItemsResponse
-		if _child, err = new(_CreateMonitoredItemsResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type CreateMonitoredItemsResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "757": // MonitoredItemModifyRequest
-		if _child, err = new(_MonitoredItemModifyRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemModifyRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "760": // MonitoredItemModifyResult
-		if _child, err = new(_MonitoredItemModifyResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemModifyResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "763": // ModifyMonitoredItemsRequest
-		if _child, err = new(_ModifyMonitoredItemsRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ModifyMonitoredItemsRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "766": // ModifyMonitoredItemsResponse
-		if _child, err = new(_ModifyMonitoredItemsResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ModifyMonitoredItemsResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "769": // SetMonitoringModeRequest
-		if _child, err = new(_SetMonitoringModeRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type SetMonitoringModeRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "772": // SetMonitoringModeResponse
-		if _child, err = new(_SetMonitoringModeResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type SetMonitoringModeResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "775": // SetTriggeringRequest
-		if _child, err = new(_SetTriggeringRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type SetTriggeringRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "778": // SetTriggeringResponse
-		if _child, err = new(_SetTriggeringResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type SetTriggeringResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "781": // DeleteMonitoredItemsRequest
-		if _child, err = new(_DeleteMonitoredItemsRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type DeleteMonitoredItemsRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "784": // DeleteMonitoredItemsResponse
-		if _child, err = new(_DeleteMonitoredItemsResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type DeleteMonitoredItemsResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "787": // CreateSubscriptionRequest
-		if _child, err = new(_CreateSubscriptionRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type CreateSubscriptionRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "790": // CreateSubscriptionResponse
-		if _child, err = new(_CreateSubscriptionResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type CreateSubscriptionResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "793": // ModifySubscriptionRequest
-		if _child, err = new(_ModifySubscriptionRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ModifySubscriptionRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "796": // ModifySubscriptionResponse
-		if _child, err = new(_ModifySubscriptionResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ModifySubscriptionResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "799": // SetPublishingModeRequest
-		if _child, err = new(_SetPublishingModeRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type SetPublishingModeRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "802": // SetPublishingModeResponse
-		if _child, err = new(_SetPublishingModeResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type SetPublishingModeResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "805": // NotificationMessage
-		if _child, err = new(_NotificationMessage).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type NotificationMessage for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "947": // NotificationData
-		if _child, err = new(_NotificationData).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type NotificationData for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "808": // MonitoredItemNotification
-		if _child, err = new(_MonitoredItemNotification).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemNotification for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "919": // EventFieldList
-		if _child, err = new(_EventFieldList).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type EventFieldList for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "922": // HistoryEventFieldList
-		if _child, err = new(_HistoryEventFieldList).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type HistoryEventFieldList for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "823": // SubscriptionAcknowledgement
-		if _child, err = new(_SubscriptionAcknowledgement).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type SubscriptionAcknowledgement for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "826": // PublishRequest
-		if _child, err = new(_PublishRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type PublishRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "829": // PublishResponse
-		if _child, err = new(_PublishResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type PublishResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "832": // RepublishRequest
-		if _child, err = new(_RepublishRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type RepublishRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "835": // RepublishResponse
-		if _child, err = new(_RepublishResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type RepublishResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "838": // TransferResult
-		if _child, err = new(_TransferResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type TransferResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "841": // TransferSubscriptionsRequest
-		if _child, err = new(_TransferSubscriptionsRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type TransferSubscriptionsRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "844": // TransferSubscriptionsResponse
-		if _child, err = new(_TransferSubscriptionsResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type TransferSubscriptionsResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "847": // DeleteSubscriptionsRequest
-		if _child, err = new(_DeleteSubscriptionsRequest).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type DeleteSubscriptionsRequest for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "850": // DeleteSubscriptionsResponse
-		if _child, err = new(_DeleteSubscriptionsResponse).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type DeleteSubscriptionsResponse for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "340": // BuildInfo
-		if _child, err = new(_BuildInfo).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type BuildInfo for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "855": // RedundantServerDataType
-		if _child, err = new(_RedundantServerDataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type RedundantServerDataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "11945": // EndpointUrlListDataType
-		if _child, err = new(_EndpointUrlListDataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type EndpointUrlListDataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "11946": // NetworkGroupDataType
-		if _child, err = new(_NetworkGroupDataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type NetworkGroupDataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "858": // SamplingIntervalDiagnosticsDataType
-		if _child, err = new(_SamplingIntervalDiagnosticsDataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type SamplingIntervalDiagnosticsDataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "861": // ServerDiagnosticsSummaryDataType
-		if _child, err = new(_ServerDiagnosticsSummaryDataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ServerDiagnosticsSummaryDataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "864": // ServerStatusDataType
-		if _child, err = new(_ServerStatusDataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ServerStatusDataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "867": // SessionDiagnosticsDataType
-		if _child, err = new(_SessionDiagnosticsDataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type SessionDiagnosticsDataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "870": // SessionSecurityDiagnosticsDataType
-		if _child, err = new(_SessionSecurityDiagnosticsDataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type SessionSecurityDiagnosticsDataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "873": // ServiceCounterDataType
-		if _child, err = new(_ServiceCounterDataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ServiceCounterDataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "301": // StatusResult
-		if _child, err = new(_StatusResult).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type StatusResult for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "876": // SubscriptionDiagnosticsDataType
-		if _child, err = new(_SubscriptionDiagnosticsDataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type SubscriptionDiagnosticsDataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "879": // ModelChangeStructureDataType
-		if _child, err = new(_ModelChangeStructureDataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ModelChangeStructureDataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "899": // SemanticChangeStructureDataType
-		if _child, err = new(_SemanticChangeStructureDataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type SemanticChangeStructureDataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "886": // Range
-		if _child, err = new(_Range).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type Range for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "889": // EUInformation
-		if _child, err = new(_EUInformation).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type EUInformation for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "12173": // ComplexNumberType
-		if _child, err = new(_ComplexNumberType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ComplexNumberType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "12174": // DoubleComplexNumberType
-		if _child, err = new(_DoubleComplexNumberType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type DoubleComplexNumberType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "12081": // AxisInformation
-		if _child, err = new(_AxisInformation).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type AxisInformation for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "12082": // XVType
-		if _child, err = new(_XVType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type XVType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "896": // ProgramDiagnosticDataType
-		if _child, err = new(_ProgramDiagnosticDataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ProgramDiagnosticDataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "24035": // ProgramDiagnostic2DataType
-		if _child, err = new(_ProgramDiagnostic2DataType).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ProgramDiagnostic2DataType for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "893": // Annotation
-		if _child, err = new(_Annotation).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type Annotation for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "811": // DataChangeNotification
-		if _child, err = new(_DataChangeNotification).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type DataChangeNotification for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "916": // EventNotificationList
-		if _child, err = new(_EventNotificationList).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type EventNotificationList for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "820": // StatusChangeNotification
-		if _child, err = new(_StatusChangeNotification).parse(ctx, readBuffer, m, identifier); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type StatusChangeNotification for type-switch of ExtensionObjectDefinition")
-		}
-	case identifier == "316": // UserIdentityToken
-		if _child, err = new(_UserIdentityToken).parse(ctx, readBuffer, m, identifier); err != nil {
+	case extensionId == int32(318): // UserIdentityToken
+		if _child, err = new(_UserIdentityToken).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type UserIdentityToken for type-switch of ExtensionObjectDefinition")
 		}
+	case extensionId == int32(321): // AnonymousIdentityToken
+		if _child, err = new(_AnonymousIdentityToken).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AnonymousIdentityToken for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(324): // UserNameIdentityToken
+		if _child, err = new(_UserNameIdentityToken).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UserNameIdentityToken for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(327): // X509IdentityToken
+		if _child, err = new(_X509IdentityToken).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type X509IdentityToken for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(940): // IssuedIdentityToken
+		if _child, err = new(_IssuedIdentityToken).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type IssuedIdentityToken for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(467): // ActivateSessionRequest
+		if _child, err = new(_ActivateSessionRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ActivateSessionRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(470): // ActivateSessionResponse
+		if _child, err = new(_ActivateSessionResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ActivateSessionResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(473): // CloseSessionRequest
+		if _child, err = new(_CloseSessionRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CloseSessionRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(476): // CloseSessionResponse
+		if _child, err = new(_CloseSessionResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CloseSessionResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(479): // CancelRequest
+		if _child, err = new(_CancelRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CancelRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(482): // CancelResponse
+		if _child, err = new(_CancelResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CancelResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(351): // NodeAttributes
+		if _child, err = new(_NodeAttributes).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NodeAttributes for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(354): // ObjectAttributes
+		if _child, err = new(_ObjectAttributes).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ObjectAttributes for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(357): // VariableAttributes
+		if _child, err = new(_VariableAttributes).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type VariableAttributes for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(360): // MethodAttributes
+		if _child, err = new(_MethodAttributes).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MethodAttributes for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(363): // ObjectTypeAttributes
+		if _child, err = new(_ObjectTypeAttributes).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ObjectTypeAttributes for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(366): // VariableTypeAttributes
+		if _child, err = new(_VariableTypeAttributes).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type VariableTypeAttributes for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(369): // ReferenceTypeAttributes
+		if _child, err = new(_ReferenceTypeAttributes).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReferenceTypeAttributes for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(372): // DataTypeAttributes
+		if _child, err = new(_DataTypeAttributes).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataTypeAttributes for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(375): // ViewAttributes
+		if _child, err = new(_ViewAttributes).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ViewAttributes for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(17608): // GenericAttributeValue
+		if _child, err = new(_GenericAttributeValue).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type GenericAttributeValue for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(17609): // GenericAttributes
+		if _child, err = new(_GenericAttributes).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type GenericAttributes for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(378): // AddNodesItem
+		if _child, err = new(_AddNodesItem).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddNodesItem for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(485): // AddNodesResult
+		if _child, err = new(_AddNodesResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddNodesResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(488): // AddNodesRequest
+		if _child, err = new(_AddNodesRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddNodesRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(491): // AddNodesResponse
+		if _child, err = new(_AddNodesResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddNodesResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(381): // AddReferencesItem
+		if _child, err = new(_AddReferencesItem).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddReferencesItem for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(494): // AddReferencesRequest
+		if _child, err = new(_AddReferencesRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddReferencesRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(497): // AddReferencesResponse
+		if _child, err = new(_AddReferencesResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AddReferencesResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(384): // DeleteNodesItem
+		if _child, err = new(_DeleteNodesItem).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteNodesItem for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(500): // DeleteNodesRequest
+		if _child, err = new(_DeleteNodesRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteNodesRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(503): // DeleteNodesResponse
+		if _child, err = new(_DeleteNodesResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteNodesResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(387): // DeleteReferencesItem
+		if _child, err = new(_DeleteReferencesItem).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteReferencesItem for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(506): // DeleteReferencesRequest
+		if _child, err = new(_DeleteReferencesRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteReferencesRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(509): // DeleteReferencesResponse
+		if _child, err = new(_DeleteReferencesResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteReferencesResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(513): // ViewDescription
+		if _child, err = new(_ViewDescription).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ViewDescription for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(516): // BrowseDescription
+		if _child, err = new(_BrowseDescription).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowseDescription for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(520): // ReferenceDescription
+		if _child, err = new(_ReferenceDescription).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReferenceDescription for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(524): // BrowseResult
+		if _child, err = new(_BrowseResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowseResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(527): // BrowseRequest
+		if _child, err = new(_BrowseRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowseRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(530): // BrowseResponse
+		if _child, err = new(_BrowseResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowseResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(533): // BrowseNextRequest
+		if _child, err = new(_BrowseNextRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowseNextRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(536): // BrowseNextResponse
+		if _child, err = new(_BrowseNextResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowseNextResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(539): // RelativePathElement
+		if _child, err = new(_RelativePathElement).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RelativePathElement for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(542): // RelativePath
+		if _child, err = new(_RelativePath).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RelativePath for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(545): // BrowsePath
+		if _child, err = new(_BrowsePath).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowsePath for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(548): // BrowsePathTarget
+		if _child, err = new(_BrowsePathTarget).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowsePathTarget for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(551): // BrowsePathResult
+		if _child, err = new(_BrowsePathResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BrowsePathResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(554): // TranslateBrowsePathsToNodeIdsRequest
+		if _child, err = new(_TranslateBrowsePathsToNodeIdsRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TranslateBrowsePathsToNodeIdsRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(557): // TranslateBrowsePathsToNodeIdsResponse
+		if _child, err = new(_TranslateBrowsePathsToNodeIdsResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TranslateBrowsePathsToNodeIdsResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(560): // RegisterNodesRequest
+		if _child, err = new(_RegisterNodesRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RegisterNodesRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(563): // RegisterNodesResponse
+		if _child, err = new(_RegisterNodesResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RegisterNodesResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(566): // UnregisterNodesRequest
+		if _child, err = new(_UnregisterNodesRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UnregisterNodesRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(569): // UnregisterNodesResponse
+		if _child, err = new(_UnregisterNodesResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UnregisterNodesResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(333): // EndpointConfiguration
+		if _child, err = new(_EndpointConfiguration).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EndpointConfiguration for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(572): // QueryDataDescription
+		if _child, err = new(_QueryDataDescription).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QueryDataDescription for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(575): // NodeTypeDescription
+		if _child, err = new(_NodeTypeDescription).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NodeTypeDescription for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(579): // QueryDataSet
+		if _child, err = new(_QueryDataSet).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QueryDataSet for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(582): // NodeReference
+		if _child, err = new(_NodeReference).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NodeReference for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(585): // ContentFilterElement
+		if _child, err = new(_ContentFilterElement).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ContentFilterElement for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(588): // ContentFilter
+		if _child, err = new(_ContentFilter).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ContentFilter for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(591): // FilterOperand
+		if _child, err = new(_FilterOperand).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type FilterOperand for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(594): // ElementOperand
+		if _child, err = new(_ElementOperand).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ElementOperand for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(597): // LiteralOperand
+		if _child, err = new(_LiteralOperand).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type LiteralOperand for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(600): // AttributeOperand
+		if _child, err = new(_AttributeOperand).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AttributeOperand for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(603): // SimpleAttributeOperand
+		if _child, err = new(_SimpleAttributeOperand).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SimpleAttributeOperand for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(606): // ContentFilterElementResult
+		if _child, err = new(_ContentFilterElementResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ContentFilterElementResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(609): // ContentFilterResult
+		if _child, err = new(_ContentFilterResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ContentFilterResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(612): // ParsingResult
+		if _child, err = new(_ParsingResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ParsingResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(615): // QueryFirstRequest
+		if _child, err = new(_QueryFirstRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QueryFirstRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(618): // QueryFirstResponse
+		if _child, err = new(_QueryFirstResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QueryFirstResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(621): // QueryNextRequest
+		if _child, err = new(_QueryNextRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QueryNextRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(624): // QueryNextResponse
+		if _child, err = new(_QueryNextResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type QueryNextResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(628): // ReadValueId
+		if _child, err = new(_ReadValueId).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReadValueId for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(631): // ReadRequest
+		if _child, err = new(_ReadRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReadRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(634): // ReadResponse
+		if _child, err = new(_ReadResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReadResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(637): // HistoryReadValueId
+		if _child, err = new(_HistoryReadValueId).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadValueId for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(640): // HistoryReadResult
+		if _child, err = new(_HistoryReadResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(643): // HistoryReadDetails
+		if _child, err = new(_HistoryReadDetails).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadDetails for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(646): // ReadEventDetails
+		if _child, err = new(_ReadEventDetails).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReadEventDetails for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(32801): // ReadEventDetails2
+		if _child, err = new(_ReadEventDetails2).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReadEventDetails2 for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(649): // ReadRawModifiedDetails
+		if _child, err = new(_ReadRawModifiedDetails).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReadRawModifiedDetails for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(652): // ReadProcessedDetails
+		if _child, err = new(_ReadProcessedDetails).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReadProcessedDetails for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(655): // ReadAtTimeDetails
+		if _child, err = new(_ReadAtTimeDetails).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReadAtTimeDetails for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(23499): // ReadAnnotationDataDetails
+		if _child, err = new(_ReadAnnotationDataDetails).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReadAnnotationDataDetails for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(658): // HistoryData
+		if _child, err = new(_HistoryData).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryData for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(11218): // ModificationInfo
+		if _child, err = new(_ModificationInfo).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ModificationInfo for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(11219): // HistoryModifiedData
+		if _child, err = new(_HistoryModifiedData).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryModifiedData for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(661): // HistoryEvent
+		if _child, err = new(_HistoryEvent).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryEvent for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(32826): // HistoryModifiedEvent
+		if _child, err = new(_HistoryModifiedEvent).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryModifiedEvent for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(664): // HistoryReadRequest
+		if _child, err = new(_HistoryReadRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(667): // HistoryReadResponse
+		if _child, err = new(_HistoryReadResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryReadResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(670): // WriteValue
+		if _child, err = new(_WriteValue).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type WriteValue for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(673): // WriteRequest
+		if _child, err = new(_WriteRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type WriteRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(676): // WriteResponse
+		if _child, err = new(_WriteResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type WriteResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(679): // HistoryUpdateDetails
+		if _child, err = new(_HistoryUpdateDetails).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryUpdateDetails for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(682): // UpdateDataDetails
+		if _child, err = new(_UpdateDataDetails).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UpdateDataDetails for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(11297): // UpdateStructureDataDetails
+		if _child, err = new(_UpdateStructureDataDetails).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UpdateStructureDataDetails for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(685): // UpdateEventDetails
+		if _child, err = new(_UpdateEventDetails).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type UpdateEventDetails for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(688): // DeleteRawModifiedDetails
+		if _child, err = new(_DeleteRawModifiedDetails).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteRawModifiedDetails for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(691): // DeleteAtTimeDetails
+		if _child, err = new(_DeleteAtTimeDetails).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteAtTimeDetails for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(694): // DeleteEventDetails
+		if _child, err = new(_DeleteEventDetails).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteEventDetails for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(697): // HistoryUpdateResult
+		if _child, err = new(_HistoryUpdateResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryUpdateResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(700): // HistoryUpdateRequest
+		if _child, err = new(_HistoryUpdateRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryUpdateRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(703): // HistoryUpdateResponse
+		if _child, err = new(_HistoryUpdateResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryUpdateResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(706): // CallMethodRequest
+		if _child, err = new(_CallMethodRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CallMethodRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(709): // CallMethodResult
+		if _child, err = new(_CallMethodResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CallMethodResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(712): // CallRequest
+		if _child, err = new(_CallRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CallRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(715): // CallResponse
+		if _child, err = new(_CallResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CallResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(721): // MonitoringFilter
+		if _child, err = new(_MonitoringFilter).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoringFilter for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(724): // DataChangeFilter
+		if _child, err = new(_DataChangeFilter).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataChangeFilter for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(727): // EventFilter
+		if _child, err = new(_EventFilter).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EventFilter for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(950): // AggregateConfiguration
+		if _child, err = new(_AggregateConfiguration).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AggregateConfiguration for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(730): // AggregateFilter
+		if _child, err = new(_AggregateFilter).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AggregateFilter for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(733): // MonitoringFilterResult
+		if _child, err = new(_MonitoringFilterResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoringFilterResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(736): // EventFilterResult
+		if _child, err = new(_EventFilterResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EventFilterResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(739): // AggregateFilterResult
+		if _child, err = new(_AggregateFilterResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AggregateFilterResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(742): // MonitoringParameters
+		if _child, err = new(_MonitoringParameters).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoringParameters for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(745): // MonitoredItemCreateRequest
+		if _child, err = new(_MonitoredItemCreateRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemCreateRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(748): // MonitoredItemCreateResult
+		if _child, err = new(_MonitoredItemCreateResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemCreateResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(751): // CreateMonitoredItemsRequest
+		if _child, err = new(_CreateMonitoredItemsRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CreateMonitoredItemsRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(754): // CreateMonitoredItemsResponse
+		if _child, err = new(_CreateMonitoredItemsResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CreateMonitoredItemsResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(757): // MonitoredItemModifyRequest
+		if _child, err = new(_MonitoredItemModifyRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemModifyRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(760): // MonitoredItemModifyResult
+		if _child, err = new(_MonitoredItemModifyResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemModifyResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(763): // ModifyMonitoredItemsRequest
+		if _child, err = new(_ModifyMonitoredItemsRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ModifyMonitoredItemsRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(766): // ModifyMonitoredItemsResponse
+		if _child, err = new(_ModifyMonitoredItemsResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ModifyMonitoredItemsResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(769): // SetMonitoringModeRequest
+		if _child, err = new(_SetMonitoringModeRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SetMonitoringModeRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(772): // SetMonitoringModeResponse
+		if _child, err = new(_SetMonitoringModeResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SetMonitoringModeResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(775): // SetTriggeringRequest
+		if _child, err = new(_SetTriggeringRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SetTriggeringRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(778): // SetTriggeringResponse
+		if _child, err = new(_SetTriggeringResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SetTriggeringResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(781): // DeleteMonitoredItemsRequest
+		if _child, err = new(_DeleteMonitoredItemsRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteMonitoredItemsRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(784): // DeleteMonitoredItemsResponse
+		if _child, err = new(_DeleteMonitoredItemsResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteMonitoredItemsResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(787): // CreateSubscriptionRequest
+		if _child, err = new(_CreateSubscriptionRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CreateSubscriptionRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(790): // CreateSubscriptionResponse
+		if _child, err = new(_CreateSubscriptionResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type CreateSubscriptionResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(793): // ModifySubscriptionRequest
+		if _child, err = new(_ModifySubscriptionRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ModifySubscriptionRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(796): // ModifySubscriptionResponse
+		if _child, err = new(_ModifySubscriptionResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ModifySubscriptionResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(799): // SetPublishingModeRequest
+		if _child, err = new(_SetPublishingModeRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SetPublishingModeRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(802): // SetPublishingModeResponse
+		if _child, err = new(_SetPublishingModeResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SetPublishingModeResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(805): // NotificationMessage
+		if _child, err = new(_NotificationMessage).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NotificationMessage for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(947): // NotificationData
+		if _child, err = new(_NotificationData).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NotificationData for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(811): // DataChangeNotification
+		if _child, err = new(_DataChangeNotification).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DataChangeNotification for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(808): // MonitoredItemNotification
+		if _child, err = new(_MonitoredItemNotification).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredItemNotification for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(916): // EventNotificationList
+		if _child, err = new(_EventNotificationList).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EventNotificationList for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(919): // EventFieldList
+		if _child, err = new(_EventFieldList).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EventFieldList for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(922): // HistoryEventFieldList
+		if _child, err = new(_HistoryEventFieldList).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type HistoryEventFieldList for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(820): // StatusChangeNotification
+		if _child, err = new(_StatusChangeNotification).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type StatusChangeNotification for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(823): // SubscriptionAcknowledgement
+		if _child, err = new(_SubscriptionAcknowledgement).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SubscriptionAcknowledgement for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(826): // PublishRequest
+		if _child, err = new(_PublishRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PublishRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(829): // PublishResponse
+		if _child, err = new(_PublishResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PublishResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(832): // RepublishRequest
+		if _child, err = new(_RepublishRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RepublishRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(835): // RepublishResponse
+		if _child, err = new(_RepublishResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RepublishResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(838): // TransferResult
+		if _child, err = new(_TransferResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TransferResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(841): // TransferSubscriptionsRequest
+		if _child, err = new(_TransferSubscriptionsRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TransferSubscriptionsRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(844): // TransferSubscriptionsResponse
+		if _child, err = new(_TransferSubscriptionsResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type TransferSubscriptionsResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(847): // DeleteSubscriptionsRequest
+		if _child, err = new(_DeleteSubscriptionsRequest).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteSubscriptionsRequest for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(850): // DeleteSubscriptionsResponse
+		if _child, err = new(_DeleteSubscriptionsResponse).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DeleteSubscriptionsResponse for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(340): // BuildInfo
+		if _child, err = new(_BuildInfo).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BuildInfo for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(855): // RedundantServerDataType
+		if _child, err = new(_RedundantServerDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type RedundantServerDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(11945): // EndpointUrlListDataType
+		if _child, err = new(_EndpointUrlListDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EndpointUrlListDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(11946): // NetworkGroupDataType
+		if _child, err = new(_NetworkGroupDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type NetworkGroupDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(858): // SamplingIntervalDiagnosticsDataType
+		if _child, err = new(_SamplingIntervalDiagnosticsDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SamplingIntervalDiagnosticsDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(861): // ServerDiagnosticsSummaryDataType
+		if _child, err = new(_ServerDiagnosticsSummaryDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ServerDiagnosticsSummaryDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(864): // ServerStatusDataType
+		if _child, err = new(_ServerStatusDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ServerStatusDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(867): // SessionDiagnosticsDataType
+		if _child, err = new(_SessionDiagnosticsDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SessionDiagnosticsDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(870): // SessionSecurityDiagnosticsDataType
+		if _child, err = new(_SessionSecurityDiagnosticsDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SessionSecurityDiagnosticsDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(873): // ServiceCounterDataType
+		if _child, err = new(_ServiceCounterDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ServiceCounterDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(301): // StatusResult
+		if _child, err = new(_StatusResult).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type StatusResult for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(876): // SubscriptionDiagnosticsDataType
+		if _child, err = new(_SubscriptionDiagnosticsDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SubscriptionDiagnosticsDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(879): // ModelChangeStructureDataType
+		if _child, err = new(_ModelChangeStructureDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ModelChangeStructureDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(899): // SemanticChangeStructureDataType
+		if _child, err = new(_SemanticChangeStructureDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SemanticChangeStructureDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(886): // Range
+		if _child, err = new(_Range).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type Range for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(889): // EUInformation
+		if _child, err = new(_EUInformation).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type EUInformation for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(12173): // ComplexNumberType
+		if _child, err = new(_ComplexNumberType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ComplexNumberType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(12174): // DoubleComplexNumberType
+		if _child, err = new(_DoubleComplexNumberType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DoubleComplexNumberType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(12081): // AxisInformation
+		if _child, err = new(_AxisInformation).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AxisInformation for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(12082): // XVType
+		if _child, err = new(_XVType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type XVType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(896): // ProgramDiagnosticDataType
+		if _child, err = new(_ProgramDiagnosticDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ProgramDiagnosticDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(24035): // ProgramDiagnostic2DataType
+		if _child, err = new(_ProgramDiagnostic2DataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ProgramDiagnostic2DataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(893): // Annotation
+		if _child, err = new(_Annotation).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type Annotation for type-switch of ExtensionObjectDefinition")
+		}
 	default:
-		return nil, errors.Errorf("Unmapped type for parameters [identifier=%v]", identifier)
+		return nil, errors.Errorf("Unmapped type for parameters [extensionId=%v]", extensionId)
 	}
 
 	if closeErr := readBuffer.CloseContext("ExtensionObjectDefinition"); closeErr != nil {

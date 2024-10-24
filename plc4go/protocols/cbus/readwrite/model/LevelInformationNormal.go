@@ -242,7 +242,7 @@ func (m *_LevelInformationNormal) GetTypeName() string {
 }
 
 func (m *_LevelInformationNormal) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LevelInformationContract.(*_LevelInformation).getLengthInBits(ctx))
+	lengthInBits := uint16(m.LevelInformationContract.(*_LevelInformation).GetLengthInBits(ctx))
 
 	// Simple field (pair1)
 	lengthInBits += 8

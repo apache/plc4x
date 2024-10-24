@@ -223,7 +223,7 @@ func (m *_FirmataCommandSetDigitalPinValue) GetTypeName() string {
 }
 
 func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).GetLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8

@@ -510,7 +510,7 @@ func (m *_SysexCommand) GetTypeName() string {
 	return "SysexCommand"
 }
 
-func (m *_SysexCommand) getLengthInBits(ctx context.Context) uint16 {
+func (m *_SysexCommand) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (commandType)
 	lengthInBits += 8

@@ -274,7 +274,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetTypeN
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).GetLengthInBits(ctx))
 
 	// Simple field (result)
 	lengthInBits += 8

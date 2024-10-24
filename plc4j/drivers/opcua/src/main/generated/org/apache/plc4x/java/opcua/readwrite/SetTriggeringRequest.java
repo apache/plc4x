@@ -38,38 +38,32 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SetTriggeringRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "775";
+  public Integer getExtensionId() {
+    return (int) 775;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final long subscriptionId;
   protected final long triggeringItemId;
-  protected final int noOfLinksToAdd;
   protected final List<Long> linksToAdd;
-  protected final int noOfLinksToRemove;
   protected final List<Long> linksToRemove;
 
   public SetTriggeringRequest(
-      ExtensionObjectDefinition requestHeader,
+      RequestHeader requestHeader,
       long subscriptionId,
       long triggeringItemId,
-      int noOfLinksToAdd,
       List<Long> linksToAdd,
-      int noOfLinksToRemove,
       List<Long> linksToRemove) {
     super();
     this.requestHeader = requestHeader;
     this.subscriptionId = subscriptionId;
     this.triggeringItemId = triggeringItemId;
-    this.noOfLinksToAdd = noOfLinksToAdd;
     this.linksToAdd = linksToAdd;
-    this.noOfLinksToRemove = noOfLinksToRemove;
     this.linksToRemove = linksToRemove;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -81,16 +75,8 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
     return triggeringItemId;
   }
 
-  public int getNoOfLinksToAdd() {
-    return noOfLinksToAdd;
-  }
-
   public List<Long> getLinksToAdd() {
     return linksToAdd;
-  }
-
-  public int getNoOfLinksToRemove() {
-    return noOfLinksToRemove;
   }
 
   public List<Long> getLinksToRemove() {
@@ -113,14 +99,19 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
     // Simple Field (triggeringItemId)
     writeSimpleField("triggeringItemId", triggeringItemId, writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (noOfLinksToAdd)
-    writeSimpleField("noOfLinksToAdd", noOfLinksToAdd, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfLinksToAdd) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfLinksToAdd = (int) ((((getLinksToAdd()) == (null)) ? -(1) : COUNT(getLinksToAdd())));
+    writeImplicitField("noOfLinksToAdd", noOfLinksToAdd, writeSignedInt(writeBuffer, 32));
 
     // Array Field (linksToAdd)
     writeSimpleTypeArrayField("linksToAdd", linksToAdd, writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (noOfLinksToRemove)
-    writeSimpleField("noOfLinksToRemove", noOfLinksToRemove, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfLinksToRemove) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfLinksToRemove =
+        (int) ((((getLinksToRemove()) == (null)) ? -(1) : COUNT(getLinksToRemove())));
+    writeImplicitField("noOfLinksToRemove", noOfLinksToRemove, writeSignedInt(writeBuffer, 32));
 
     // Array Field (linksToRemove)
     writeSimpleTypeArrayField("linksToRemove", linksToRemove, writeUnsignedLong(writeBuffer, 32));
@@ -148,7 +139,7 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
     // Simple field (triggeringItemId)
     lengthInBits += 32;
 
-    // Simple field (noOfLinksToAdd)
+    // Implicit Field (noOfLinksToAdd)
     lengthInBits += 32;
 
     // Array field
@@ -156,7 +147,7 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
       lengthInBits += 32 * linksToAdd.size();
     }
 
-    // Simple field (noOfLinksToRemove)
+    // Implicit Field (noOfLinksToRemove)
     lengthInBits += 32;
 
     // Array field
@@ -168,28 +159,29 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SetTriggeringRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     long subscriptionId = readSimpleField("subscriptionId", readUnsignedLong(readBuffer, 32));
 
     long triggeringItemId = readSimpleField("triggeringItemId", readUnsignedLong(readBuffer, 32));
 
-    int noOfLinksToAdd = readSimpleField("noOfLinksToAdd", readSignedInt(readBuffer, 32));
+    int noOfLinksToAdd = readImplicitField("noOfLinksToAdd", readSignedInt(readBuffer, 32));
 
     List<Long> linksToAdd =
         readCountArrayField("linksToAdd", readUnsignedLong(readBuffer, 32), noOfLinksToAdd);
 
-    int noOfLinksToRemove = readSimpleField("noOfLinksToRemove", readSignedInt(readBuffer, 32));
+    int noOfLinksToRemove = readImplicitField("noOfLinksToRemove", readSignedInt(readBuffer, 32));
 
     List<Long> linksToRemove =
         readCountArrayField("linksToRemove", readUnsignedLong(readBuffer, 32), noOfLinksToRemove);
@@ -197,52 +189,34 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
     readBuffer.closeContext("SetTriggeringRequest");
     // Create the instance
     return new SetTriggeringRequestBuilderImpl(
-        requestHeader,
-        subscriptionId,
-        triggeringItemId,
-        noOfLinksToAdd,
-        linksToAdd,
-        noOfLinksToRemove,
-        linksToRemove);
+        requestHeader, subscriptionId, triggeringItemId, linksToAdd, linksToRemove);
   }
 
   public static class SetTriggeringRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final long subscriptionId;
     private final long triggeringItemId;
-    private final int noOfLinksToAdd;
     private final List<Long> linksToAdd;
-    private final int noOfLinksToRemove;
     private final List<Long> linksToRemove;
 
     public SetTriggeringRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
+        RequestHeader requestHeader,
         long subscriptionId,
         long triggeringItemId,
-        int noOfLinksToAdd,
         List<Long> linksToAdd,
-        int noOfLinksToRemove,
         List<Long> linksToRemove) {
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.triggeringItemId = triggeringItemId;
-      this.noOfLinksToAdd = noOfLinksToAdd;
       this.linksToAdd = linksToAdd;
-      this.noOfLinksToRemove = noOfLinksToRemove;
       this.linksToRemove = linksToRemove;
     }
 
     public SetTriggeringRequest build() {
       SetTriggeringRequest setTriggeringRequest =
           new SetTriggeringRequest(
-              requestHeader,
-              subscriptionId,
-              triggeringItemId,
-              noOfLinksToAdd,
-              linksToAdd,
-              noOfLinksToRemove,
-              linksToRemove);
+              requestHeader, subscriptionId, triggeringItemId, linksToAdd, linksToRemove);
       return setTriggeringRequest;
     }
   }
@@ -259,9 +233,7 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
     return (getRequestHeader() == that.getRequestHeader())
         && (getSubscriptionId() == that.getSubscriptionId())
         && (getTriggeringItemId() == that.getTriggeringItemId())
-        && (getNoOfLinksToAdd() == that.getNoOfLinksToAdd())
         && (getLinksToAdd() == that.getLinksToAdd())
-        && (getNoOfLinksToRemove() == that.getNoOfLinksToRemove())
         && (getLinksToRemove() == that.getLinksToRemove())
         && super.equals(that)
         && true;
@@ -274,9 +246,7 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
         getRequestHeader(),
         getSubscriptionId(),
         getTriggeringItemId(),
-        getNoOfLinksToAdd(),
         getLinksToAdd(),
-        getNoOfLinksToRemove(),
         getLinksToRemove());
   }
 

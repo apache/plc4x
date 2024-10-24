@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ReferenceDescriptionDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "32661";
+  public Integer getExtensionId() {
+    return (int) 32661;
   }
 
   // Properties.
@@ -128,7 +128,7 @@ public class ReferenceDescriptionDataType extends ExtensionObjectDefinition impl
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ReferenceDescriptionDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

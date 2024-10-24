@@ -590,7 +590,7 @@ func (m *_BACnetPriorityValue) GetTypeName() string {
 	return "BACnetPriorityValue"
 }
 
-func (m *_BACnetPriorityValue) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetPriorityValue) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.

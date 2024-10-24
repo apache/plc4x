@@ -38,31 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RegisterNodesRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "560";
+  public Integer getExtensionId() {
+    return (int) 560;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final int noOfNodesToRegister;
+  protected final RequestHeader requestHeader;
   protected final List<NodeId> nodesToRegister;
 
-  public RegisterNodesRequest(
-      ExtensionObjectDefinition requestHeader,
-      int noOfNodesToRegister,
-      List<NodeId> nodesToRegister) {
+  public RegisterNodesRequest(RequestHeader requestHeader, List<NodeId> nodesToRegister) {
     super();
     this.requestHeader = requestHeader;
-    this.noOfNodesToRegister = noOfNodesToRegister;
     this.nodesToRegister = nodesToRegister;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
-  }
-
-  public int getNoOfNodesToRegister() {
-    return noOfNodesToRegister;
   }
 
   public List<NodeId> getNodesToRegister() {
@@ -79,8 +70,11 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
     // Simple Field (requestHeader)
     writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfNodesToRegister)
-    writeSimpleField("noOfNodesToRegister", noOfNodesToRegister, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfNodesToRegister) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfNodesToRegister =
+        (int) ((((getNodesToRegister()) == (null)) ? -(1) : COUNT(getNodesToRegister())));
+    writeImplicitField("noOfNodesToRegister", noOfNodesToRegister, writeSignedInt(writeBuffer, 32));
 
     // Array Field (nodesToRegister)
     writeComplexTypeArrayField("nodesToRegister", nodesToRegister, writeBuffer);
@@ -102,7 +96,7 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
 
-    // Simple field (noOfNodesToRegister)
+    // Implicit Field (noOfNodesToRegister)
     lengthInBits += 32;
 
     // Array field
@@ -118,19 +112,21 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RegisterNodesRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    int noOfNodesToRegister = readSimpleField("noOfNodesToRegister", readSignedInt(readBuffer, 32));
+    int noOfNodesToRegister =
+        readImplicitField("noOfNodesToRegister", readSignedInt(readBuffer, 32));
 
     List<NodeId> nodesToRegister =
         readCountArrayField(
@@ -140,27 +136,23 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("RegisterNodesRequest");
     // Create the instance
-    return new RegisterNodesRequestBuilderImpl(requestHeader, noOfNodesToRegister, nodesToRegister);
+    return new RegisterNodesRequestBuilderImpl(requestHeader, nodesToRegister);
   }
 
   public static class RegisterNodesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final int noOfNodesToRegister;
+    private final RequestHeader requestHeader;
     private final List<NodeId> nodesToRegister;
 
     public RegisterNodesRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        int noOfNodesToRegister,
-        List<NodeId> nodesToRegister) {
+        RequestHeader requestHeader, List<NodeId> nodesToRegister) {
       this.requestHeader = requestHeader;
-      this.noOfNodesToRegister = noOfNodesToRegister;
       this.nodesToRegister = nodesToRegister;
     }
 
     public RegisterNodesRequest build() {
       RegisterNodesRequest registerNodesRequest =
-          new RegisterNodesRequest(requestHeader, noOfNodesToRegister, nodesToRegister);
+          new RegisterNodesRequest(requestHeader, nodesToRegister);
       return registerNodesRequest;
     }
   }
@@ -175,7 +167,6 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
     }
     RegisterNodesRequest that = (RegisterNodesRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
-        && (getNoOfNodesToRegister() == that.getNoOfNodesToRegister())
         && (getNodesToRegister() == that.getNodesToRegister())
         && super.equals(that)
         && true;
@@ -183,8 +174,7 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getRequestHeader(), getNoOfNodesToRegister(), getNodesToRegister());
+    return Objects.hash(super.hashCode(), getRequestHeader(), getNodesToRegister());
   }
 
   @Override

@@ -289,7 +289,7 @@ func (m *_CycServiceItemType) GetTypeName() string {
 	return "CycServiceItemType"
 }
 
-func (m *_CycServiceItemType) getLengthInBits(ctx context.Context) uint16 {
+func (m *_CycServiceItemType) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (functionId)

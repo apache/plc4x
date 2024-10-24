@@ -40,10 +40,8 @@ type HistoryEvent interface {
 	utils.Serializable
 	utils.Copyable
 	ExtensionObjectDefinition
-	// GetNoOfEvents returns NoOfEvents (property field)
-	GetNoOfEvents() int32
 	// GetEvents returns Events (property field)
-	GetEvents() []ExtensionObjectDefinition
+	GetEvents() []HistoryEventFieldList
 	// IsHistoryEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryEvent()
 	// CreateBuilder creates a HistoryEventBuilder
@@ -53,18 +51,16 @@ type HistoryEvent interface {
 // _HistoryEvent is the data-structure of this message
 type _HistoryEvent struct {
 	ExtensionObjectDefinitionContract
-	NoOfEvents int32
-	Events     []ExtensionObjectDefinition
+	Events []HistoryEventFieldList
 }
 
 var _ HistoryEvent = (*_HistoryEvent)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryEvent)(nil)
 
 // NewHistoryEvent factory function for _HistoryEvent
-func NewHistoryEvent(noOfEvents int32, events []ExtensionObjectDefinition) *_HistoryEvent {
+func NewHistoryEvent(events []HistoryEventFieldList) *_HistoryEvent {
 	_result := &_HistoryEvent{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEvents:                        noOfEvents,
 		Events:                            events,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -80,11 +76,9 @@ func NewHistoryEvent(noOfEvents int32, events []ExtensionObjectDefinition) *_His
 type HistoryEventBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) HistoryEventBuilder
-	// WithNoOfEvents adds NoOfEvents (property field)
-	WithNoOfEvents(int32) HistoryEventBuilder
+	WithMandatoryFields(events []HistoryEventFieldList) HistoryEventBuilder
 	// WithEvents adds Events (property field)
-	WithEvents(...ExtensionObjectDefinition) HistoryEventBuilder
+	WithEvents(...HistoryEventFieldList) HistoryEventBuilder
 	// Build builds the HistoryEvent or returns an error if something is wrong
 	Build() (HistoryEvent, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,16 +104,11 @@ func (b *_HistoryEventBuilder) setParent(contract ExtensionObjectDefinitionContr
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_HistoryEventBuilder) WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) HistoryEventBuilder {
-	return b.WithNoOfEvents(noOfEvents).WithEvents(events...)
+func (b *_HistoryEventBuilder) WithMandatoryFields(events []HistoryEventFieldList) HistoryEventBuilder {
+	return b.WithEvents(events...)
 }
 
-func (b *_HistoryEventBuilder) WithNoOfEvents(noOfEvents int32) HistoryEventBuilder {
-	b.NoOfEvents = noOfEvents
-	return b
-}
-
-func (b *_HistoryEventBuilder) WithEvents(events ...ExtensionObjectDefinition) HistoryEventBuilder {
+func (b *_HistoryEventBuilder) WithEvents(events ...HistoryEventFieldList) HistoryEventBuilder {
 	b.Events = events
 	return b
 }
@@ -174,8 +163,8 @@ func (b *_HistoryEvent) CreateHistoryEventBuilder() HistoryEventBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_HistoryEvent) GetIdentifier() string {
-	return "661"
+func (m *_HistoryEvent) GetExtensionId() int32 {
+	return int32(661)
 }
 
 ///////////////////////
@@ -192,11 +181,7 @@ func (m *_HistoryEvent) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_HistoryEvent) GetNoOfEvents() int32 {
-	return m.NoOfEvents
-}
-
-func (m *_HistoryEvent) GetEvents() []ExtensionObjectDefinition {
+func (m *_HistoryEvent) GetEvents() []HistoryEventFieldList {
 	return m.Events
 }
 
@@ -221,9 +206,9 @@ func (m *_HistoryEvent) GetTypeName() string {
 }
 
 func (m *_HistoryEvent) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
-	// Simple field (noOfEvents)
+	// Implicit Field (noOfEvents)
 	lengthInBits += 32
 
 	// Array field
@@ -243,7 +228,7 @@ func (m *_HistoryEvent) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_HistoryEvent) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyEvent HistoryEvent, err error) {
+func (m *_HistoryEvent) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__historyEvent HistoryEvent, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -254,13 +239,13 @@ func (m *_HistoryEvent) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfEvents, err := ReadSimpleField(ctx, "noOfEvents", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEvents, err := ReadImplicitField[int32](ctx, "noOfEvents", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEvents' field"))
 	}
-	m.NoOfEvents = noOfEvents
+	_ = noOfEvents
 
-	events, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "events", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("922")), readBuffer), uint64(noOfEvents))
+	events, err := ReadCountArrayField[HistoryEventFieldList](ctx, "events", ReadComplex[HistoryEventFieldList](ExtensionObjectDefinitionParseWithBufferProducer[HistoryEventFieldList]((int32)(int32(922))), readBuffer), uint64(noOfEvents))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'events' field"))
 	}
@@ -290,8 +275,8 @@ func (m *_HistoryEvent) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		if pushErr := writeBuffer.PushContext("HistoryEvent"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for HistoryEvent")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfEvents", m.GetNoOfEvents(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfEvents := int32(utils.InlineIf(bool((m.GetEvents()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEvents()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfEvents", noOfEvents, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEvents' field")
 		}
 
@@ -319,8 +304,7 @@ func (m *_HistoryEvent) deepCopy() *_HistoryEvent {
 	}
 	_HistoryEventCopy := &_HistoryEvent{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfEvents,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Events),
+		utils.DeepCopySlice[HistoryEventFieldList, HistoryEventFieldList](m.Events),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _HistoryEventCopy

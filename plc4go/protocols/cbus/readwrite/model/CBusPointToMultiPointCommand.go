@@ -264,7 +264,7 @@ func (m *_CBusPointToMultiPointCommand) GetTypeName() string {
 	return "CBusPointToMultiPointCommand"
 }
 
-func (m *_CBusPointToMultiPointCommand) getLengthInBits(ctx context.Context) uint16 {
+func (m *_CBusPointToMultiPointCommand) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

@@ -179,7 +179,7 @@ func (m *_VariantNull) GetTypeName() string {
 }
 
 func (m *_VariantNull) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
+	lengthInBits := uint16(m.VariantContract.(*_Variant).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

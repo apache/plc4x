@@ -41,13 +41,9 @@ type DeleteSubscriptionsResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
-	// GetNoOfResults returns NoOfResults (property field)
-	GetNoOfResults() int32
+	GetResponseHeader() ResponseHeader
 	// GetResults returns Results (property field)
 	GetResults() []StatusCode
-	// GetNoOfDiagnosticInfos returns NoOfDiagnosticInfos (property field)
-	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsDeleteSubscriptionsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,27 +55,23 @@ type DeleteSubscriptionsResponse interface {
 // _DeleteSubscriptionsResponse is the data-structure of this message
 type _DeleteSubscriptionsResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader      ExtensionObjectDefinition
-	NoOfResults         int32
-	Results             []StatusCode
-	NoOfDiagnosticInfos int32
-	DiagnosticInfos     []DiagnosticInfo
+	ResponseHeader  ResponseHeader
+	Results         []StatusCode
+	DiagnosticInfos []DiagnosticInfo
 }
 
 var _ DeleteSubscriptionsResponse = (*_DeleteSubscriptionsResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteSubscriptionsResponse)(nil)
 
 // NewDeleteSubscriptionsResponse factory function for _DeleteSubscriptionsResponse
-func NewDeleteSubscriptionsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteSubscriptionsResponse {
+func NewDeleteSubscriptionsResponse(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) *_DeleteSubscriptionsResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for DeleteSubscriptionsResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for DeleteSubscriptionsResponse must not be nil")
 	}
 	_result := &_DeleteSubscriptionsResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
 		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
 		DiagnosticInfos:                   diagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -95,17 +87,13 @@ func NewDeleteSubscriptionsResponse(responseHeader ExtensionObjectDefinition, no
 type DeleteSubscriptionsResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteSubscriptionsResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) DeleteSubscriptionsResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) DeleteSubscriptionsResponseBuilder
+	WithResponseHeader(ResponseHeader) DeleteSubscriptionsResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteSubscriptionsResponseBuilder
-	// WithNoOfResults adds NoOfResults (property field)
-	WithNoOfResults(int32) DeleteSubscriptionsResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) DeleteSubscriptionsResponseBuilder
 	// WithResults adds Results (property field)
 	WithResults(...StatusCode) DeleteSubscriptionsResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) DeleteSubscriptionsResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) DeleteSubscriptionsResponseBuilder
 	// Build builds the DeleteSubscriptionsResponse or returns an error if something is wrong
@@ -133,40 +121,30 @@ func (b *_DeleteSubscriptionsResponseBuilder) setParent(contract ExtensionObject
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_DeleteSubscriptionsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteSubscriptionsResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_DeleteSubscriptionsResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) DeleteSubscriptionsResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithResults(results...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_DeleteSubscriptionsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) DeleteSubscriptionsResponseBuilder {
+func (b *_DeleteSubscriptionsResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) DeleteSubscriptionsResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_DeleteSubscriptionsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteSubscriptionsResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_DeleteSubscriptionsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) DeleteSubscriptionsResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_DeleteSubscriptionsResponseBuilder) WithNoOfResults(noOfResults int32) DeleteSubscriptionsResponseBuilder {
-	b.NoOfResults = noOfResults
 	return b
 }
 
 func (b *_DeleteSubscriptionsResponseBuilder) WithResults(results ...StatusCode) DeleteSubscriptionsResponseBuilder {
 	b.Results = results
-	return b
-}
-
-func (b *_DeleteSubscriptionsResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) DeleteSubscriptionsResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -231,8 +209,8 @@ func (b *_DeleteSubscriptionsResponse) CreateDeleteSubscriptionsResponseBuilder(
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DeleteSubscriptionsResponse) GetIdentifier() string {
-	return "850"
+func (m *_DeleteSubscriptionsResponse) GetExtensionId() int32 {
+	return int32(850)
 }
 
 ///////////////////////
@@ -249,20 +227,12 @@ func (m *_DeleteSubscriptionsResponse) GetParent() ExtensionObjectDefinitionCont
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_DeleteSubscriptionsResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_DeleteSubscriptionsResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
-}
-
-func (m *_DeleteSubscriptionsResponse) GetNoOfResults() int32 {
-	return m.NoOfResults
 }
 
 func (m *_DeleteSubscriptionsResponse) GetResults() []StatusCode {
 	return m.Results
-}
-
-func (m *_DeleteSubscriptionsResponse) GetNoOfDiagnosticInfos() int32 {
-	return m.NoOfDiagnosticInfos
 }
 
 func (m *_DeleteSubscriptionsResponse) GetDiagnosticInfos() []DiagnosticInfo {
@@ -290,12 +260,12 @@ func (m *_DeleteSubscriptionsResponse) GetTypeName() string {
 }
 
 func (m *_DeleteSubscriptionsResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfResults)
+	// Implicit Field (noOfResults)
 	lengthInBits += 32
 
 	// Array field
@@ -308,7 +278,7 @@ func (m *_DeleteSubscriptionsResponse) GetLengthInBits(ctx context.Context) uint
 		}
 	}
 
-	// Simple field (noOfDiagnosticInfos)
+	// Implicit Field (noOfDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -328,7 +298,7 @@ func (m *_DeleteSubscriptionsResponse) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DeleteSubscriptionsResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteSubscriptionsResponse DeleteSubscriptionsResponse, err error) {
+func (m *_DeleteSubscriptionsResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__deleteSubscriptionsResponse DeleteSubscriptionsResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -339,17 +309,17 @@ func (m *_DeleteSubscriptionsResponse) parse(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfResults, err := ReadSimpleField(ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfResults, err := ReadImplicitField[int32](ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfResults' field"))
 	}
-	m.NoOfResults = noOfResults
+	_ = noOfResults
 
 	results, err := ReadCountArrayField[StatusCode](ctx, "results", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfResults))
 	if err != nil {
@@ -357,11 +327,11 @@ func (m *_DeleteSubscriptionsResponse) parse(ctx context.Context, readBuffer uti
 	}
 	m.Results = results
 
-	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	_ = noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {
@@ -394,19 +364,19 @@ func (m *_DeleteSubscriptionsResponse) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for DeleteSubscriptionsResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfResults", m.GetNoOfResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfResults := int32(utils.InlineIf(bool((m.GetResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfResults", noOfResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "results", m.GetResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'results' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiagnosticInfos := int32(utils.InlineIf(bool((m.GetDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiagnosticInfos", noOfDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
@@ -434,10 +404,8 @@ func (m *_DeleteSubscriptionsResponse) deepCopy() *_DeleteSubscriptionsResponse 
 	}
 	_DeleteSubscriptionsResponseCopy := &_DeleteSubscriptionsResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfResults,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
-		m.NoOfDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -272,7 +272,7 @@ func (m *_S7ParameterModeTransition) GetTypeName() string {
 }
 
 func (m *_S7ParameterModeTransition) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7ParameterContract.(*_S7Parameter).getLengthInBits(ctx))
+	lengthInBits := uint16(m.S7ParameterContract.(*_S7Parameter).GetLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 16

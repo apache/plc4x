@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataLogInterval) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataLogInterval) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (logInterval)
 	lengthInBits += m.LogInterval.GetLengthInBits(ctx)

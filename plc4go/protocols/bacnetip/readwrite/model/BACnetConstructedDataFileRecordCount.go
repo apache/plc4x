@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataFileRecordCount) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataFileRecordCount) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (recordCount)
 	lengthInBits += m.RecordCount.GetLengthInBits(ctx)

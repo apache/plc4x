@@ -38,28 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class NodeReference extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "582";
+  public Integer getExtensionId() {
+    return (int) 582;
   }
 
   // Properties.
   protected final NodeId nodeId;
   protected final NodeId referenceTypeId;
   protected final boolean isForward;
-  protected final int noOfReferencedNodeIds;
   protected final List<NodeId> referencedNodeIds;
 
   public NodeReference(
-      NodeId nodeId,
-      NodeId referenceTypeId,
-      boolean isForward,
-      int noOfReferencedNodeIds,
-      List<NodeId> referencedNodeIds) {
+      NodeId nodeId, NodeId referenceTypeId, boolean isForward, List<NodeId> referencedNodeIds) {
     super();
     this.nodeId = nodeId;
     this.referenceTypeId = referenceTypeId;
     this.isForward = isForward;
-    this.noOfReferencedNodeIds = noOfReferencedNodeIds;
     this.referencedNodeIds = referencedNodeIds;
   }
 
@@ -73,10 +67,6 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
 
   public boolean getIsForward() {
     return isForward;
-  }
-
-  public int getNoOfReferencedNodeIds() {
-    return noOfReferencedNodeIds;
   }
 
   public List<NodeId> getReferencedNodeIds() {
@@ -102,8 +92,11 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
     // Simple Field (isForward)
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
 
-    // Simple Field (noOfReferencedNodeIds)
-    writeSimpleField(
+    // Implicit Field (noOfReferencedNodeIds) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfReferencedNodeIds =
+        (int) ((((getReferencedNodeIds()) == (null)) ? -(1) : COUNT(getReferencedNodeIds())));
+    writeImplicitField(
         "noOfReferencedNodeIds", noOfReferencedNodeIds, writeSignedInt(writeBuffer, 32));
 
     // Array Field (referencedNodeIds)
@@ -135,7 +128,7 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
     // Simple field (isForward)
     lengthInBits += 1;
 
-    // Simple field (noOfReferencedNodeIds)
+    // Implicit Field (noOfReferencedNodeIds)
     lengthInBits += 32;
 
     // Array field
@@ -151,7 +144,7 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("NodeReference");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -169,7 +162,7 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
     boolean isForward = readSimpleField("isForward", readBoolean(readBuffer));
 
     int noOfReferencedNodeIds =
-        readSimpleField("noOfReferencedNodeIds", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfReferencedNodeIds", readSignedInt(readBuffer, 32));
 
     List<NodeId> referencedNodeIds =
         readCountArrayField(
@@ -179,8 +172,7 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("NodeReference");
     // Create the instance
-    return new NodeReferenceBuilderImpl(
-        nodeId, referenceTypeId, isForward, noOfReferencedNodeIds, referencedNodeIds);
+    return new NodeReferenceBuilderImpl(nodeId, referenceTypeId, isForward, referencedNodeIds);
   }
 
   public static class NodeReferenceBuilderImpl
@@ -188,26 +180,19 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
     private final NodeId nodeId;
     private final NodeId referenceTypeId;
     private final boolean isForward;
-    private final int noOfReferencedNodeIds;
     private final List<NodeId> referencedNodeIds;
 
     public NodeReferenceBuilderImpl(
-        NodeId nodeId,
-        NodeId referenceTypeId,
-        boolean isForward,
-        int noOfReferencedNodeIds,
-        List<NodeId> referencedNodeIds) {
+        NodeId nodeId, NodeId referenceTypeId, boolean isForward, List<NodeId> referencedNodeIds) {
       this.nodeId = nodeId;
       this.referenceTypeId = referenceTypeId;
       this.isForward = isForward;
-      this.noOfReferencedNodeIds = noOfReferencedNodeIds;
       this.referencedNodeIds = referencedNodeIds;
     }
 
     public NodeReference build() {
       NodeReference nodeReference =
-          new NodeReference(
-              nodeId, referenceTypeId, isForward, noOfReferencedNodeIds, referencedNodeIds);
+          new NodeReference(nodeId, referenceTypeId, isForward, referencedNodeIds);
       return nodeReference;
     }
   }
@@ -224,7 +209,6 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
     return (getNodeId() == that.getNodeId())
         && (getReferenceTypeId() == that.getReferenceTypeId())
         && (getIsForward() == that.getIsForward())
-        && (getNoOfReferencedNodeIds() == that.getNoOfReferencedNodeIds())
         && (getReferencedNodeIds() == that.getReferencedNodeIds())
         && super.equals(that)
         && true;
@@ -237,7 +221,6 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
         getNodeId(),
         getReferenceTypeId(),
         getIsForward(),
-        getNoOfReferencedNodeIds(),
         getReferencedNodeIds());
   }
 

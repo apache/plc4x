@@ -41,13 +41,9 @@ type RegisterServer2Response interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
-	// GetNoOfConfigurationResults returns NoOfConfigurationResults (property field)
-	GetNoOfConfigurationResults() int32
+	GetResponseHeader() ResponseHeader
 	// GetConfigurationResults returns ConfigurationResults (property field)
 	GetConfigurationResults() []StatusCode
-	// GetNoOfDiagnosticInfos returns NoOfDiagnosticInfos (property field)
-	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsRegisterServer2Response is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,27 +55,23 @@ type RegisterServer2Response interface {
 // _RegisterServer2Response is the data-structure of this message
 type _RegisterServer2Response struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader           ExtensionObjectDefinition
-	NoOfConfigurationResults int32
-	ConfigurationResults     []StatusCode
-	NoOfDiagnosticInfos      int32
-	DiagnosticInfos          []DiagnosticInfo
+	ResponseHeader       ResponseHeader
+	ConfigurationResults []StatusCode
+	DiagnosticInfos      []DiagnosticInfo
 }
 
 var _ RegisterServer2Response = (*_RegisterServer2Response)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterServer2Response)(nil)
 
 // NewRegisterServer2Response factory function for _RegisterServer2Response
-func NewRegisterServer2Response(responseHeader ExtensionObjectDefinition, noOfConfigurationResults int32, configurationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_RegisterServer2Response {
+func NewRegisterServer2Response(responseHeader ResponseHeader, configurationResults []StatusCode, diagnosticInfos []DiagnosticInfo) *_RegisterServer2Response {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for RegisterServer2Response must not be nil")
+		panic("responseHeader of type ResponseHeader for RegisterServer2Response must not be nil")
 	}
 	_result := &_RegisterServer2Response{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
-		NoOfConfigurationResults:          noOfConfigurationResults,
 		ConfigurationResults:              configurationResults,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
 		DiagnosticInfos:                   diagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -95,17 +87,13 @@ func NewRegisterServer2Response(responseHeader ExtensionObjectDefinition, noOfCo
 type RegisterServer2ResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfConfigurationResults int32, configurationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) RegisterServer2ResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, configurationResults []StatusCode, diagnosticInfos []DiagnosticInfo) RegisterServer2ResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) RegisterServer2ResponseBuilder
+	WithResponseHeader(ResponseHeader) RegisterServer2ResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServer2ResponseBuilder
-	// WithNoOfConfigurationResults adds NoOfConfigurationResults (property field)
-	WithNoOfConfigurationResults(int32) RegisterServer2ResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterServer2ResponseBuilder
 	// WithConfigurationResults adds ConfigurationResults (property field)
 	WithConfigurationResults(...StatusCode) RegisterServer2ResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) RegisterServer2ResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) RegisterServer2ResponseBuilder
 	// Build builds the RegisterServer2Response or returns an error if something is wrong
@@ -133,40 +121,30 @@ func (b *_RegisterServer2ResponseBuilder) setParent(contract ExtensionObjectDefi
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisterServer2ResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfConfigurationResults int32, configurationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) RegisterServer2ResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfConfigurationResults(noOfConfigurationResults).WithConfigurationResults(configurationResults...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_RegisterServer2ResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, configurationResults []StatusCode, diagnosticInfos []DiagnosticInfo) RegisterServer2ResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithConfigurationResults(configurationResults...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_RegisterServer2ResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RegisterServer2ResponseBuilder {
+func (b *_RegisterServer2ResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) RegisterServer2ResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_RegisterServer2ResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServer2ResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterServer2ResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterServer2ResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_RegisterServer2ResponseBuilder) WithNoOfConfigurationResults(noOfConfigurationResults int32) RegisterServer2ResponseBuilder {
-	b.NoOfConfigurationResults = noOfConfigurationResults
 	return b
 }
 
 func (b *_RegisterServer2ResponseBuilder) WithConfigurationResults(configurationResults ...StatusCode) RegisterServer2ResponseBuilder {
 	b.ConfigurationResults = configurationResults
-	return b
-}
-
-func (b *_RegisterServer2ResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) RegisterServer2ResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -231,8 +209,8 @@ func (b *_RegisterServer2Response) CreateRegisterServer2ResponseBuilder() Regist
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RegisterServer2Response) GetIdentifier() string {
-	return "12196"
+func (m *_RegisterServer2Response) GetExtensionId() int32 {
+	return int32(12196)
 }
 
 ///////////////////////
@@ -249,20 +227,12 @@ func (m *_RegisterServer2Response) GetParent() ExtensionObjectDefinitionContract
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RegisterServer2Response) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_RegisterServer2Response) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
-}
-
-func (m *_RegisterServer2Response) GetNoOfConfigurationResults() int32 {
-	return m.NoOfConfigurationResults
 }
 
 func (m *_RegisterServer2Response) GetConfigurationResults() []StatusCode {
 	return m.ConfigurationResults
-}
-
-func (m *_RegisterServer2Response) GetNoOfDiagnosticInfos() int32 {
-	return m.NoOfDiagnosticInfos
 }
 
 func (m *_RegisterServer2Response) GetDiagnosticInfos() []DiagnosticInfo {
@@ -290,12 +260,12 @@ func (m *_RegisterServer2Response) GetTypeName() string {
 }
 
 func (m *_RegisterServer2Response) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfConfigurationResults)
+	// Implicit Field (noOfConfigurationResults)
 	lengthInBits += 32
 
 	// Array field
@@ -308,7 +278,7 @@ func (m *_RegisterServer2Response) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfDiagnosticInfos)
+	// Implicit Field (noOfDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -328,7 +298,7 @@ func (m *_RegisterServer2Response) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RegisterServer2Response) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__registerServer2Response RegisterServer2Response, err error) {
+func (m *_RegisterServer2Response) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__registerServer2Response RegisterServer2Response, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -339,17 +309,17 @@ func (m *_RegisterServer2Response) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfConfigurationResults, err := ReadSimpleField(ctx, "noOfConfigurationResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfConfigurationResults, err := ReadImplicitField[int32](ctx, "noOfConfigurationResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfConfigurationResults' field"))
 	}
-	m.NoOfConfigurationResults = noOfConfigurationResults
+	_ = noOfConfigurationResults
 
 	configurationResults, err := ReadCountArrayField[StatusCode](ctx, "configurationResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfConfigurationResults))
 	if err != nil {
@@ -357,11 +327,11 @@ func (m *_RegisterServer2Response) parse(ctx context.Context, readBuffer utils.R
 	}
 	m.ConfigurationResults = configurationResults
 
-	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	_ = noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {
@@ -394,19 +364,19 @@ func (m *_RegisterServer2Response) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for RegisterServer2Response")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfConfigurationResults", m.GetNoOfConfigurationResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfConfigurationResults := int32(utils.InlineIf(bool((m.GetConfigurationResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetConfigurationResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfConfigurationResults", noOfConfigurationResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfConfigurationResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "configurationResults", m.GetConfigurationResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'configurationResults' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiagnosticInfos := int32(utils.InlineIf(bool((m.GetDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiagnosticInfos", noOfDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
@@ -434,10 +404,8 @@ func (m *_RegisterServer2Response) deepCopy() *_RegisterServer2Response {
 	}
 	_RegisterServer2ResponseCopy := &_RegisterServer2Response{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfConfigurationResults,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.ConfigurationResults),
-		m.NoOfDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

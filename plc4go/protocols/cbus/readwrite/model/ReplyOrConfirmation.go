@@ -308,7 +308,7 @@ func (m *_ReplyOrConfirmation) GetTypeName() string {
 	return "ReplyOrConfirmation"
 }
 
-func (m *_ReplyOrConfirmation) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ReplyOrConfirmation) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.

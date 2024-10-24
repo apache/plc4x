@@ -46,8 +46,6 @@ type ServerOnNetwork interface {
 	GetServerName() PascalString
 	// GetDiscoveryUrl returns DiscoveryUrl (property field)
 	GetDiscoveryUrl() PascalString
-	// GetNoOfServerCapabilities returns NoOfServerCapabilities (property field)
-	GetNoOfServerCapabilities() int32
 	// GetServerCapabilities returns ServerCapabilities (property field)
 	GetServerCapabilities() []PascalString
 	// IsServerOnNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,18 +57,17 @@ type ServerOnNetwork interface {
 // _ServerOnNetwork is the data-structure of this message
 type _ServerOnNetwork struct {
 	ExtensionObjectDefinitionContract
-	RecordId               uint32
-	ServerName             PascalString
-	DiscoveryUrl           PascalString
-	NoOfServerCapabilities int32
-	ServerCapabilities     []PascalString
+	RecordId           uint32
+	ServerName         PascalString
+	DiscoveryUrl       PascalString
+	ServerCapabilities []PascalString
 }
 
 var _ ServerOnNetwork = (*_ServerOnNetwork)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServerOnNetwork)(nil)
 
 // NewServerOnNetwork factory function for _ServerOnNetwork
-func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) *_ServerOnNetwork {
+func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl PascalString, serverCapabilities []PascalString) *_ServerOnNetwork {
 	if serverName == nil {
 		panic("serverName of type PascalString for ServerOnNetwork must not be nil")
 	}
@@ -82,7 +79,6 @@ func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl P
 		RecordId:                          recordId,
 		ServerName:                        serverName,
 		DiscoveryUrl:                      discoveryUrl,
-		NoOfServerCapabilities:            noOfServerCapabilities,
 		ServerCapabilities:                serverCapabilities,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -98,7 +94,7 @@ func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl P
 type ServerOnNetworkBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) ServerOnNetworkBuilder
+	WithMandatoryFields(recordId uint32, serverName PascalString, discoveryUrl PascalString, serverCapabilities []PascalString) ServerOnNetworkBuilder
 	// WithRecordId adds RecordId (property field)
 	WithRecordId(uint32) ServerOnNetworkBuilder
 	// WithServerName adds ServerName (property field)
@@ -109,8 +105,6 @@ type ServerOnNetworkBuilder interface {
 	WithDiscoveryUrl(PascalString) ServerOnNetworkBuilder
 	// WithDiscoveryUrlBuilder adds DiscoveryUrl (property field) which is build by the builder
 	WithDiscoveryUrlBuilder(func(PascalStringBuilder) PascalStringBuilder) ServerOnNetworkBuilder
-	// WithNoOfServerCapabilities adds NoOfServerCapabilities (property field)
-	WithNoOfServerCapabilities(int32) ServerOnNetworkBuilder
 	// WithServerCapabilities adds ServerCapabilities (property field)
 	WithServerCapabilities(...PascalString) ServerOnNetworkBuilder
 	// Build builds the ServerOnNetwork or returns an error if something is wrong
@@ -138,8 +132,8 @@ func (b *_ServerOnNetworkBuilder) setParent(contract ExtensionObjectDefinitionCo
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ServerOnNetworkBuilder) WithMandatoryFields(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) ServerOnNetworkBuilder {
-	return b.WithRecordId(recordId).WithServerName(serverName).WithDiscoveryUrl(discoveryUrl).WithNoOfServerCapabilities(noOfServerCapabilities).WithServerCapabilities(serverCapabilities...)
+func (b *_ServerOnNetworkBuilder) WithMandatoryFields(recordId uint32, serverName PascalString, discoveryUrl PascalString, serverCapabilities []PascalString) ServerOnNetworkBuilder {
+	return b.WithRecordId(recordId).WithServerName(serverName).WithDiscoveryUrl(discoveryUrl).WithServerCapabilities(serverCapabilities...)
 }
 
 func (b *_ServerOnNetworkBuilder) WithRecordId(recordId uint32) ServerOnNetworkBuilder {
@@ -180,11 +174,6 @@ func (b *_ServerOnNetworkBuilder) WithDiscoveryUrlBuilder(builderSupplier func(P
 		}
 		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return b
-}
-
-func (b *_ServerOnNetworkBuilder) WithNoOfServerCapabilities(noOfServerCapabilities int32) ServerOnNetworkBuilder {
-	b.NoOfServerCapabilities = noOfServerCapabilities
 	return b
 }
 
@@ -255,8 +244,8 @@ func (b *_ServerOnNetwork) CreateServerOnNetworkBuilder() ServerOnNetworkBuilder
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ServerOnNetwork) GetIdentifier() string {
-	return "12191"
+func (m *_ServerOnNetwork) GetExtensionId() int32 {
+	return int32(12191)
 }
 
 ///////////////////////
@@ -285,10 +274,6 @@ func (m *_ServerOnNetwork) GetDiscoveryUrl() PascalString {
 	return m.DiscoveryUrl
 }
 
-func (m *_ServerOnNetwork) GetNoOfServerCapabilities() int32 {
-	return m.NoOfServerCapabilities
-}
-
 func (m *_ServerOnNetwork) GetServerCapabilities() []PascalString {
 	return m.ServerCapabilities
 }
@@ -314,7 +299,7 @@ func (m *_ServerOnNetwork) GetTypeName() string {
 }
 
 func (m *_ServerOnNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (recordId)
 	lengthInBits += 32
@@ -325,7 +310,7 @@ func (m *_ServerOnNetwork) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (discoveryUrl)
 	lengthInBits += m.DiscoveryUrl.GetLengthInBits(ctx)
 
-	// Simple field (noOfServerCapabilities)
+	// Implicit Field (noOfServerCapabilities)
 	lengthInBits += 32
 
 	// Array field
@@ -345,7 +330,7 @@ func (m *_ServerOnNetwork) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ServerOnNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__serverOnNetwork ServerOnNetwork, err error) {
+func (m *_ServerOnNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__serverOnNetwork ServerOnNetwork, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -374,11 +359,11 @@ func (m *_ServerOnNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 	m.DiscoveryUrl = discoveryUrl
 
-	noOfServerCapabilities, err := ReadSimpleField(ctx, "noOfServerCapabilities", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServerCapabilities, err := ReadImplicitField[int32](ctx, "noOfServerCapabilities", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerCapabilities' field"))
 	}
-	m.NoOfServerCapabilities = noOfServerCapabilities
+	_ = noOfServerCapabilities
 
 	serverCapabilities, err := ReadCountArrayField[PascalString](ctx, "serverCapabilities", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerCapabilities))
 	if err != nil {
@@ -422,8 +407,8 @@ func (m *_ServerOnNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		if err := WriteSimpleField[PascalString](ctx, "discoveryUrl", m.GetDiscoveryUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'discoveryUrl' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfServerCapabilities", m.GetNoOfServerCapabilities(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfServerCapabilities := int32(utils.InlineIf(bool((m.GetServerCapabilities()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServerCapabilities()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfServerCapabilities", noOfServerCapabilities, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServerCapabilities' field")
 		}
 
@@ -454,7 +439,6 @@ func (m *_ServerOnNetwork) deepCopy() *_ServerOnNetwork {
 		m.RecordId,
 		m.ServerName.DeepCopy().(PascalString),
 		m.DiscoveryUrl.DeepCopy().(PascalString),
-		m.NoOfServerCapabilities,
 		utils.DeepCopySlice[PascalString, PascalString](m.ServerCapabilities),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

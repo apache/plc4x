@@ -259,7 +259,7 @@ func (m *_MultipleServiceRequest) GetTypeName() string {
 }
 
 func (m *_MultipleServiceRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CipServiceContract.(*_CipService).GetLengthInBits(ctx))
 
 	// Const Field (requestPathSize)
 	lengthInBits += 8

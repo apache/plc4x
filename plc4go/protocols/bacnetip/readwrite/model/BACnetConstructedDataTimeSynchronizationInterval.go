@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetTypeName() string
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (timeSynchronization)
 	lengthInBits += m.TimeSynchronization.GetLengthInBits(ctx)

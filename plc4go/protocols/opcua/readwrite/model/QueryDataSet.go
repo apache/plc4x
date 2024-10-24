@@ -44,8 +44,6 @@ type QueryDataSet interface {
 	GetNodeId() ExpandedNodeId
 	// GetTypeDefinitionNode returns TypeDefinitionNode (property field)
 	GetTypeDefinitionNode() ExpandedNodeId
-	// GetNoOfValues returns NoOfValues (property field)
-	GetNoOfValues() int32
 	// GetValues returns Values (property field)
 	GetValues() []Variant
 	// IsQueryDataSet is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,7 +57,6 @@ type _QueryDataSet struct {
 	ExtensionObjectDefinitionContract
 	NodeId             ExpandedNodeId
 	TypeDefinitionNode ExpandedNodeId
-	NoOfValues         int32
 	Values             []Variant
 }
 
@@ -67,7 +64,7 @@ var _ QueryDataSet = (*_QueryDataSet)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryDataSet)(nil)
 
 // NewQueryDataSet factory function for _QueryDataSet
-func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) *_QueryDataSet {
+func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, values []Variant) *_QueryDataSet {
 	if nodeId == nil {
 		panic("nodeId of type ExpandedNodeId for QueryDataSet must not be nil")
 	}
@@ -78,7 +75,6 @@ func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, n
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		NodeId:                            nodeId,
 		TypeDefinitionNode:                typeDefinitionNode,
-		NoOfValues:                        noOfValues,
 		Values:                            values,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -94,7 +90,7 @@ func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, n
 type QueryDataSetBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) QueryDataSetBuilder
+	WithMandatoryFields(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, values []Variant) QueryDataSetBuilder
 	// WithNodeId adds NodeId (property field)
 	WithNodeId(ExpandedNodeId) QueryDataSetBuilder
 	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
@@ -103,8 +99,6 @@ type QueryDataSetBuilder interface {
 	WithTypeDefinitionNode(ExpandedNodeId) QueryDataSetBuilder
 	// WithTypeDefinitionNodeBuilder adds TypeDefinitionNode (property field) which is build by the builder
 	WithTypeDefinitionNodeBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) QueryDataSetBuilder
-	// WithNoOfValues adds NoOfValues (property field)
-	WithNoOfValues(int32) QueryDataSetBuilder
 	// WithValues adds Values (property field)
 	WithValues(...Variant) QueryDataSetBuilder
 	// Build builds the QueryDataSet or returns an error if something is wrong
@@ -132,8 +126,8 @@ func (b *_QueryDataSetBuilder) setParent(contract ExtensionObjectDefinitionContr
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_QueryDataSetBuilder) WithMandatoryFields(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) QueryDataSetBuilder {
-	return b.WithNodeId(nodeId).WithTypeDefinitionNode(typeDefinitionNode).WithNoOfValues(noOfValues).WithValues(values...)
+func (b *_QueryDataSetBuilder) WithMandatoryFields(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, values []Variant) QueryDataSetBuilder {
+	return b.WithNodeId(nodeId).WithTypeDefinitionNode(typeDefinitionNode).WithValues(values...)
 }
 
 func (b *_QueryDataSetBuilder) WithNodeId(nodeId ExpandedNodeId) QueryDataSetBuilder {
@@ -169,11 +163,6 @@ func (b *_QueryDataSetBuilder) WithTypeDefinitionNodeBuilder(builderSupplier fun
 		}
 		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
-	return b
-}
-
-func (b *_QueryDataSetBuilder) WithNoOfValues(noOfValues int32) QueryDataSetBuilder {
-	b.NoOfValues = noOfValues
 	return b
 }
 
@@ -244,8 +233,8 @@ func (b *_QueryDataSet) CreateQueryDataSetBuilder() QueryDataSetBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_QueryDataSet) GetIdentifier() string {
-	return "579"
+func (m *_QueryDataSet) GetExtensionId() int32 {
+	return int32(579)
 }
 
 ///////////////////////
@@ -268,10 +257,6 @@ func (m *_QueryDataSet) GetNodeId() ExpandedNodeId {
 
 func (m *_QueryDataSet) GetTypeDefinitionNode() ExpandedNodeId {
 	return m.TypeDefinitionNode
-}
-
-func (m *_QueryDataSet) GetNoOfValues() int32 {
-	return m.NoOfValues
 }
 
 func (m *_QueryDataSet) GetValues() []Variant {
@@ -299,7 +284,7 @@ func (m *_QueryDataSet) GetTypeName() string {
 }
 
 func (m *_QueryDataSet) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (nodeId)
 	lengthInBits += m.NodeId.GetLengthInBits(ctx)
@@ -307,7 +292,7 @@ func (m *_QueryDataSet) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (typeDefinitionNode)
 	lengthInBits += m.TypeDefinitionNode.GetLengthInBits(ctx)
 
-	// Simple field (noOfValues)
+	// Implicit Field (noOfValues)
 	lengthInBits += 32
 
 	// Array field
@@ -327,7 +312,7 @@ func (m *_QueryDataSet) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_QueryDataSet) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__queryDataSet QueryDataSet, err error) {
+func (m *_QueryDataSet) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__queryDataSet QueryDataSet, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -350,11 +335,11 @@ func (m *_QueryDataSet) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	}
 	m.TypeDefinitionNode = typeDefinitionNode
 
-	noOfValues, err := ReadSimpleField(ctx, "noOfValues", ReadSignedInt(readBuffer, uint8(32)))
+	noOfValues, err := ReadImplicitField[int32](ctx, "noOfValues", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfValues' field"))
 	}
-	m.NoOfValues = noOfValues
+	_ = noOfValues
 
 	values, err := ReadCountArrayField[Variant](ctx, "values", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfValues))
 	if err != nil {
@@ -394,8 +379,8 @@ func (m *_QueryDataSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		if err := WriteSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", m.GetTypeDefinitionNode(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'typeDefinitionNode' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfValues", m.GetNoOfValues(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfValues := int32(utils.InlineIf(bool((m.GetValues()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetValues()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfValues", noOfValues, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfValues' field")
 		}
 
@@ -425,7 +410,6 @@ func (m *_QueryDataSet) deepCopy() *_QueryDataSet {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NodeId.DeepCopy().(ExpandedNodeId),
 		m.TypeDefinitionNode.DeepCopy().(ExpandedNodeId),
-		m.NoOfValues,
 		utils.DeepCopySlice[Variant, Variant](m.Values),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -299,7 +299,7 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetTypeName() string {
 }
 
 func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).GetLengthInBits(ctx))
 
 	// Simple field (vendorId)
 	lengthInBits += m.VendorId.GetLengthInBits(ctx)

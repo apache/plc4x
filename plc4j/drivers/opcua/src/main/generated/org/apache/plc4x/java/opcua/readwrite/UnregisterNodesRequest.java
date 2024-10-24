@@ -38,31 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class UnregisterNodesRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "566";
+  public Integer getExtensionId() {
+    return (int) 566;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final int noOfNodesToUnregister;
+  protected final RequestHeader requestHeader;
   protected final List<NodeId> nodesToUnregister;
 
-  public UnregisterNodesRequest(
-      ExtensionObjectDefinition requestHeader,
-      int noOfNodesToUnregister,
-      List<NodeId> nodesToUnregister) {
+  public UnregisterNodesRequest(RequestHeader requestHeader, List<NodeId> nodesToUnregister) {
     super();
     this.requestHeader = requestHeader;
-    this.noOfNodesToUnregister = noOfNodesToUnregister;
     this.nodesToUnregister = nodesToUnregister;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
-  }
-
-  public int getNoOfNodesToUnregister() {
-    return noOfNodesToUnregister;
   }
 
   public List<NodeId> getNodesToUnregister() {
@@ -79,8 +70,11 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
     // Simple Field (requestHeader)
     writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfNodesToUnregister)
-    writeSimpleField(
+    // Implicit Field (noOfNodesToUnregister) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfNodesToUnregister =
+        (int) ((((getNodesToUnregister()) == (null)) ? -(1) : COUNT(getNodesToUnregister())));
+    writeImplicitField(
         "noOfNodesToUnregister", noOfNodesToUnregister, writeSignedInt(writeBuffer, 32));
 
     // Array Field (nodesToUnregister)
@@ -103,7 +97,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
 
-    // Simple field (noOfNodesToUnregister)
+    // Implicit Field (noOfNodesToUnregister)
     lengthInBits += 32;
 
     // Array field
@@ -119,20 +113,21 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("UnregisterNodesRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     int noOfNodesToUnregister =
-        readSimpleField("noOfNodesToUnregister", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfNodesToUnregister", readSignedInt(readBuffer, 32));
 
     List<NodeId> nodesToUnregister =
         readCountArrayField(
@@ -142,28 +137,23 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("UnregisterNodesRequest");
     // Create the instance
-    return new UnregisterNodesRequestBuilderImpl(
-        requestHeader, noOfNodesToUnregister, nodesToUnregister);
+    return new UnregisterNodesRequestBuilderImpl(requestHeader, nodesToUnregister);
   }
 
   public static class UnregisterNodesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final int noOfNodesToUnregister;
+    private final RequestHeader requestHeader;
     private final List<NodeId> nodesToUnregister;
 
     public UnregisterNodesRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        int noOfNodesToUnregister,
-        List<NodeId> nodesToUnregister) {
+        RequestHeader requestHeader, List<NodeId> nodesToUnregister) {
       this.requestHeader = requestHeader;
-      this.noOfNodesToUnregister = noOfNodesToUnregister;
       this.nodesToUnregister = nodesToUnregister;
     }
 
     public UnregisterNodesRequest build() {
       UnregisterNodesRequest unregisterNodesRequest =
-          new UnregisterNodesRequest(requestHeader, noOfNodesToUnregister, nodesToUnregister);
+          new UnregisterNodesRequest(requestHeader, nodesToUnregister);
       return unregisterNodesRequest;
     }
   }
@@ -178,7 +168,6 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
     }
     UnregisterNodesRequest that = (UnregisterNodesRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
-        && (getNoOfNodesToUnregister() == that.getNoOfNodesToUnregister())
         && (getNodesToUnregister() == that.getNodesToUnregister())
         && super.equals(that)
         && true;
@@ -186,8 +175,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getRequestHeader(), getNoOfNodesToUnregister(), getNodesToUnregister());
+    return Objects.hash(super.hashCode(), getRequestHeader(), getNodesToUnregister());
   }
 
   @Override

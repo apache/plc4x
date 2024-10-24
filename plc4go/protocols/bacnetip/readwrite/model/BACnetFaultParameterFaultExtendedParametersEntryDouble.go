@@ -226,7 +226,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetTypeName() 
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).GetLengthInBits(ctx))
 
 	// Simple field (doubleValue)
 	lengthInBits += m.DoubleValue.GetLengthInBits(ctx)

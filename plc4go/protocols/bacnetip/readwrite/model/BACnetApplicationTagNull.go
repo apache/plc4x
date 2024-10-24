@@ -175,7 +175,7 @@ func (m *_BACnetApplicationTagNull) GetTypeName() string {
 }
 
 func (m *_BACnetApplicationTagNull) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetApplicationTagContract.(*_BACnetApplicationTag).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetApplicationTagContract.(*_BACnetApplicationTag).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

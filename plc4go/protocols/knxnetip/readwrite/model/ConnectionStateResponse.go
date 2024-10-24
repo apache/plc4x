@@ -223,7 +223,7 @@ func (m *_ConnectionStateResponse) GetTypeName() string {
 }
 
 func (m *_ConnectionStateResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).GetLengthInBits(ctx))
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8

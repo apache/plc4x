@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DataSetWriterDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "15599";
+  public Integer getExtensionId() {
+    return (int) 15599;
   }
 
   // Properties.
@@ -49,8 +49,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
   protected final DataSetFieldContentMask dataSetFieldContentMask;
   protected final long keyFrameCount;
   protected final PascalString dataSetName;
-  protected final int noOfDataSetWriterProperties;
-  protected final List<ExtensionObjectDefinition> dataSetWriterProperties;
+  protected final List<KeyValuePair> dataSetWriterProperties;
   protected final ExtensionObject transportSettings;
   protected final ExtensionObject messageSettings;
 
@@ -61,8 +60,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
       DataSetFieldContentMask dataSetFieldContentMask,
       long keyFrameCount,
       PascalString dataSetName,
-      int noOfDataSetWriterProperties,
-      List<ExtensionObjectDefinition> dataSetWriterProperties,
+      List<KeyValuePair> dataSetWriterProperties,
       ExtensionObject transportSettings,
       ExtensionObject messageSettings) {
     super();
@@ -72,7 +70,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     this.dataSetFieldContentMask = dataSetFieldContentMask;
     this.keyFrameCount = keyFrameCount;
     this.dataSetName = dataSetName;
-    this.noOfDataSetWriterProperties = noOfDataSetWriterProperties;
     this.dataSetWriterProperties = dataSetWriterProperties;
     this.transportSettings = transportSettings;
     this.messageSettings = messageSettings;
@@ -102,11 +99,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     return dataSetName;
   }
 
-  public int getNoOfDataSetWriterProperties() {
-    return noOfDataSetWriterProperties;
-  }
-
-  public List<ExtensionObjectDefinition> getDataSetWriterProperties() {
+  public List<KeyValuePair> getDataSetWriterProperties() {
     return dataSetWriterProperties;
   }
 
@@ -153,8 +146,14 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     // Simple Field (dataSetName)
     writeSimpleField("dataSetName", dataSetName, writeComplex(writeBuffer));
 
-    // Simple Field (noOfDataSetWriterProperties)
-    writeSimpleField(
+    // Implicit Field (noOfDataSetWriterProperties) (Used for parsing, but its value is not stored
+    // as it's implicitly given by the objects content)
+    int noOfDataSetWriterProperties =
+        (int)
+            ((((getDataSetWriterProperties()) == (null))
+                ? -(1)
+                : COUNT(getDataSetWriterProperties())));
+    writeImplicitField(
         "noOfDataSetWriterProperties",
         noOfDataSetWriterProperties,
         writeSignedInt(writeBuffer, 32));
@@ -203,13 +202,13 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     // Simple field (dataSetName)
     lengthInBits += dataSetName.getLengthInBits();
 
-    // Simple field (noOfDataSetWriterProperties)
+    // Implicit Field (noOfDataSetWriterProperties)
     lengthInBits += 32;
 
     // Array field
     if (dataSetWriterProperties != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : dataSetWriterProperties) {
+      for (KeyValuePair element : dataSetWriterProperties) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataSetWriterProperties.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -225,7 +224,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DataSetWriterDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -254,13 +253,14 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
             "dataSetName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfDataSetWriterProperties =
-        readSimpleField("noOfDataSetWriterProperties", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfDataSetWriterProperties", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> dataSetWriterProperties =
+    List<KeyValuePair> dataSetWriterProperties =
         readCountArrayField(
             "dataSetWriterProperties",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
+                () ->
+                    (KeyValuePair) ExtensionObjectDefinition.staticParse(readBuffer, (int) (14535)),
                 readBuffer),
             noOfDataSetWriterProperties);
 
@@ -285,7 +285,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         dataSetFieldContentMask,
         keyFrameCount,
         dataSetName,
-        noOfDataSetWriterProperties,
         dataSetWriterProperties,
         transportSettings,
         messageSettings);
@@ -299,8 +298,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     private final DataSetFieldContentMask dataSetFieldContentMask;
     private final long keyFrameCount;
     private final PascalString dataSetName;
-    private final int noOfDataSetWriterProperties;
-    private final List<ExtensionObjectDefinition> dataSetWriterProperties;
+    private final List<KeyValuePair> dataSetWriterProperties;
     private final ExtensionObject transportSettings;
     private final ExtensionObject messageSettings;
 
@@ -311,8 +309,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         DataSetFieldContentMask dataSetFieldContentMask,
         long keyFrameCount,
         PascalString dataSetName,
-        int noOfDataSetWriterProperties,
-        List<ExtensionObjectDefinition> dataSetWriterProperties,
+        List<KeyValuePair> dataSetWriterProperties,
         ExtensionObject transportSettings,
         ExtensionObject messageSettings) {
       this.name = name;
@@ -321,7 +318,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
       this.dataSetFieldContentMask = dataSetFieldContentMask;
       this.keyFrameCount = keyFrameCount;
       this.dataSetName = dataSetName;
-      this.noOfDataSetWriterProperties = noOfDataSetWriterProperties;
       this.dataSetWriterProperties = dataSetWriterProperties;
       this.transportSettings = transportSettings;
       this.messageSettings = messageSettings;
@@ -336,7 +332,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
               dataSetFieldContentMask,
               keyFrameCount,
               dataSetName,
-              noOfDataSetWriterProperties,
               dataSetWriterProperties,
               transportSettings,
               messageSettings);
@@ -359,7 +354,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         && (getDataSetFieldContentMask() == that.getDataSetFieldContentMask())
         && (getKeyFrameCount() == that.getKeyFrameCount())
         && (getDataSetName() == that.getDataSetName())
-        && (getNoOfDataSetWriterProperties() == that.getNoOfDataSetWriterProperties())
         && (getDataSetWriterProperties() == that.getDataSetWriterProperties())
         && (getTransportSettings() == that.getTransportSettings())
         && (getMessageSettings() == that.getMessageSettings())
@@ -377,7 +371,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         getDataSetFieldContentMask(),
         getKeyFrameCount(),
         getDataSetName(),
-        getNoOfDataSetWriterProperties(),
         getDataSetWriterProperties(),
         getTransportSettings(),
         getMessageSettings());

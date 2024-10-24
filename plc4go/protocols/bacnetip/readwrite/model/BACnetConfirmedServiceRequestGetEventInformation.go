@@ -221,7 +221,7 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetTypeName() string
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).GetLengthInBits(ctx))
 
 	// Optional Field (lastReceivedObjectIdentifier)
 	if m.LastReceivedObjectIdentifier != nil {

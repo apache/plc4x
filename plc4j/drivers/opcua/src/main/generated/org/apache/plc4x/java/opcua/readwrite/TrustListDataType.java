@@ -38,40 +38,28 @@ import org.apache.plc4x.java.spi.generation.*;
 public class TrustListDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "12556";
+  public Integer getExtensionId() {
+    return (int) 12556;
   }
 
   // Properties.
   protected final long specifiedLists;
-  protected final int noOfTrustedCertificates;
   protected final List<PascalByteString> trustedCertificates;
-  protected final int noOfTrustedCrls;
   protected final List<PascalByteString> trustedCrls;
-  protected final int noOfIssuerCertificates;
   protected final List<PascalByteString> issuerCertificates;
-  protected final int noOfIssuerCrls;
   protected final List<PascalByteString> issuerCrls;
 
   public TrustListDataType(
       long specifiedLists,
-      int noOfTrustedCertificates,
       List<PascalByteString> trustedCertificates,
-      int noOfTrustedCrls,
       List<PascalByteString> trustedCrls,
-      int noOfIssuerCertificates,
       List<PascalByteString> issuerCertificates,
-      int noOfIssuerCrls,
       List<PascalByteString> issuerCrls) {
     super();
     this.specifiedLists = specifiedLists;
-    this.noOfTrustedCertificates = noOfTrustedCertificates;
     this.trustedCertificates = trustedCertificates;
-    this.noOfTrustedCrls = noOfTrustedCrls;
     this.trustedCrls = trustedCrls;
-    this.noOfIssuerCertificates = noOfIssuerCertificates;
     this.issuerCertificates = issuerCertificates;
-    this.noOfIssuerCrls = noOfIssuerCrls;
     this.issuerCrls = issuerCrls;
   }
 
@@ -79,32 +67,16 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     return specifiedLists;
   }
 
-  public int getNoOfTrustedCertificates() {
-    return noOfTrustedCertificates;
-  }
-
   public List<PascalByteString> getTrustedCertificates() {
     return trustedCertificates;
-  }
-
-  public int getNoOfTrustedCrls() {
-    return noOfTrustedCrls;
   }
 
   public List<PascalByteString> getTrustedCrls() {
     return trustedCrls;
   }
 
-  public int getNoOfIssuerCertificates() {
-    return noOfIssuerCertificates;
-  }
-
   public List<PascalByteString> getIssuerCertificates() {
     return issuerCertificates;
-  }
-
-  public int getNoOfIssuerCrls() {
-    return noOfIssuerCrls;
   }
 
   public List<PascalByteString> getIssuerCrls() {
@@ -121,28 +93,38 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     // Simple Field (specifiedLists)
     writeSimpleField("specifiedLists", specifiedLists, writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (noOfTrustedCertificates)
-    writeSimpleField(
+    // Implicit Field (noOfTrustedCertificates) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfTrustedCertificates =
+        (int) ((((getTrustedCertificates()) == (null)) ? -(1) : COUNT(getTrustedCertificates())));
+    writeImplicitField(
         "noOfTrustedCertificates", noOfTrustedCertificates, writeSignedInt(writeBuffer, 32));
 
     // Array Field (trustedCertificates)
     writeComplexTypeArrayField("trustedCertificates", trustedCertificates, writeBuffer);
 
-    // Simple Field (noOfTrustedCrls)
-    writeSimpleField("noOfTrustedCrls", noOfTrustedCrls, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfTrustedCrls) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfTrustedCrls = (int) ((((getTrustedCrls()) == (null)) ? -(1) : COUNT(getTrustedCrls())));
+    writeImplicitField("noOfTrustedCrls", noOfTrustedCrls, writeSignedInt(writeBuffer, 32));
 
     // Array Field (trustedCrls)
     writeComplexTypeArrayField("trustedCrls", trustedCrls, writeBuffer);
 
-    // Simple Field (noOfIssuerCertificates)
-    writeSimpleField(
+    // Implicit Field (noOfIssuerCertificates) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfIssuerCertificates =
+        (int) ((((getIssuerCertificates()) == (null)) ? -(1) : COUNT(getIssuerCertificates())));
+    writeImplicitField(
         "noOfIssuerCertificates", noOfIssuerCertificates, writeSignedInt(writeBuffer, 32));
 
     // Array Field (issuerCertificates)
     writeComplexTypeArrayField("issuerCertificates", issuerCertificates, writeBuffer);
 
-    // Simple Field (noOfIssuerCrls)
-    writeSimpleField("noOfIssuerCrls", noOfIssuerCrls, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfIssuerCrls) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfIssuerCrls = (int) ((((getIssuerCrls()) == (null)) ? -(1) : COUNT(getIssuerCrls())));
+    writeImplicitField("noOfIssuerCrls", noOfIssuerCrls, writeSignedInt(writeBuffer, 32));
 
     // Array Field (issuerCrls)
     writeComplexTypeArrayField("issuerCrls", issuerCrls, writeBuffer);
@@ -164,7 +146,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     // Simple field (specifiedLists)
     lengthInBits += 32;
 
-    // Simple field (noOfTrustedCertificates)
+    // Implicit Field (noOfTrustedCertificates)
     lengthInBits += 32;
 
     // Array field
@@ -176,7 +158,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
       }
     }
 
-    // Simple field (noOfTrustedCrls)
+    // Implicit Field (noOfTrustedCrls)
     lengthInBits += 32;
 
     // Array field
@@ -188,7 +170,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
       }
     }
 
-    // Simple field (noOfIssuerCertificates)
+    // Implicit Field (noOfIssuerCertificates)
     lengthInBits += 32;
 
     // Array field
@@ -200,7 +182,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
       }
     }
 
-    // Simple field (noOfIssuerCrls)
+    // Implicit Field (noOfIssuerCrls)
     lengthInBits += 32;
 
     // Array field
@@ -216,7 +198,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("TrustListDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -224,7 +206,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     long specifiedLists = readSimpleField("specifiedLists", readUnsignedLong(readBuffer, 32));
 
     int noOfTrustedCertificates =
-        readSimpleField("noOfTrustedCertificates", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfTrustedCertificates", readSignedInt(readBuffer, 32));
 
     List<PascalByteString> trustedCertificates =
         readCountArrayField(
@@ -232,7 +214,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
             readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer),
             noOfTrustedCertificates);
 
-    int noOfTrustedCrls = readSimpleField("noOfTrustedCrls", readSignedInt(readBuffer, 32));
+    int noOfTrustedCrls = readImplicitField("noOfTrustedCrls", readSignedInt(readBuffer, 32));
 
     List<PascalByteString> trustedCrls =
         readCountArrayField(
@@ -241,7 +223,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
             noOfTrustedCrls);
 
     int noOfIssuerCertificates =
-        readSimpleField("noOfIssuerCertificates", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfIssuerCertificates", readSignedInt(readBuffer, 32));
 
     List<PascalByteString> issuerCertificates =
         readCountArrayField(
@@ -249,7 +231,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
             readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer),
             noOfIssuerCertificates);
 
-    int noOfIssuerCrls = readSimpleField("noOfIssuerCrls", readSignedInt(readBuffer, 32));
+    int noOfIssuerCrls = readImplicitField("noOfIssuerCrls", readSignedInt(readBuffer, 32));
 
     List<PascalByteString> issuerCrls =
         readCountArrayField(
@@ -260,62 +242,34 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     readBuffer.closeContext("TrustListDataType");
     // Create the instance
     return new TrustListDataTypeBuilderImpl(
-        specifiedLists,
-        noOfTrustedCertificates,
-        trustedCertificates,
-        noOfTrustedCrls,
-        trustedCrls,
-        noOfIssuerCertificates,
-        issuerCertificates,
-        noOfIssuerCrls,
-        issuerCrls);
+        specifiedLists, trustedCertificates, trustedCrls, issuerCertificates, issuerCrls);
   }
 
   public static class TrustListDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long specifiedLists;
-    private final int noOfTrustedCertificates;
     private final List<PascalByteString> trustedCertificates;
-    private final int noOfTrustedCrls;
     private final List<PascalByteString> trustedCrls;
-    private final int noOfIssuerCertificates;
     private final List<PascalByteString> issuerCertificates;
-    private final int noOfIssuerCrls;
     private final List<PascalByteString> issuerCrls;
 
     public TrustListDataTypeBuilderImpl(
         long specifiedLists,
-        int noOfTrustedCertificates,
         List<PascalByteString> trustedCertificates,
-        int noOfTrustedCrls,
         List<PascalByteString> trustedCrls,
-        int noOfIssuerCertificates,
         List<PascalByteString> issuerCertificates,
-        int noOfIssuerCrls,
         List<PascalByteString> issuerCrls) {
       this.specifiedLists = specifiedLists;
-      this.noOfTrustedCertificates = noOfTrustedCertificates;
       this.trustedCertificates = trustedCertificates;
-      this.noOfTrustedCrls = noOfTrustedCrls;
       this.trustedCrls = trustedCrls;
-      this.noOfIssuerCertificates = noOfIssuerCertificates;
       this.issuerCertificates = issuerCertificates;
-      this.noOfIssuerCrls = noOfIssuerCrls;
       this.issuerCrls = issuerCrls;
     }
 
     public TrustListDataType build() {
       TrustListDataType trustListDataType =
           new TrustListDataType(
-              specifiedLists,
-              noOfTrustedCertificates,
-              trustedCertificates,
-              noOfTrustedCrls,
-              trustedCrls,
-              noOfIssuerCertificates,
-              issuerCertificates,
-              noOfIssuerCrls,
-              issuerCrls);
+              specifiedLists, trustedCertificates, trustedCrls, issuerCertificates, issuerCrls);
       return trustListDataType;
     }
   }
@@ -330,13 +284,9 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     }
     TrustListDataType that = (TrustListDataType) o;
     return (getSpecifiedLists() == that.getSpecifiedLists())
-        && (getNoOfTrustedCertificates() == that.getNoOfTrustedCertificates())
         && (getTrustedCertificates() == that.getTrustedCertificates())
-        && (getNoOfTrustedCrls() == that.getNoOfTrustedCrls())
         && (getTrustedCrls() == that.getTrustedCrls())
-        && (getNoOfIssuerCertificates() == that.getNoOfIssuerCertificates())
         && (getIssuerCertificates() == that.getIssuerCertificates())
-        && (getNoOfIssuerCrls() == that.getNoOfIssuerCrls())
         && (getIssuerCrls() == that.getIssuerCrls())
         && super.equals(that)
         && true;
@@ -347,13 +297,9 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     return Objects.hash(
         super.hashCode(),
         getSpecifiedLists(),
-        getNoOfTrustedCertificates(),
         getTrustedCertificates(),
-        getNoOfTrustedCrls(),
         getTrustedCrls(),
-        getNoOfIssuerCertificates(),
         getIssuerCertificates(),
-        getNoOfIssuerCrls(),
         getIssuerCrls());
   }
 

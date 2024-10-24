@@ -302,7 +302,7 @@ func (m *_MeasurementDataChannelMeasurementData) GetTypeName() string {
 }
 
 func (m *_MeasurementDataChannelMeasurementData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MeasurementDataContract.(*_MeasurementData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.MeasurementDataContract.(*_MeasurementData).GetLengthInBits(ctx))
 
 	// Simple field (deviceId)
 	lengthInBits += 8

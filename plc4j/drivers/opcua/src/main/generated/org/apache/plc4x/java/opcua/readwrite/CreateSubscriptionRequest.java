@@ -38,12 +38,12 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CreateSubscriptionRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "787";
+  public Integer getExtensionId() {
+    return (int) 787;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final double requestedPublishingInterval;
   protected final long requestedLifetimeCount;
   protected final long requestedMaxKeepAliveCount;
@@ -52,7 +52,7 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
   protected final short priority;
 
   public CreateSubscriptionRequest(
-      ExtensionObjectDefinition requestHeader,
+      RequestHeader requestHeader,
       double requestedPublishingInterval,
       long requestedLifetimeCount,
       long requestedMaxKeepAliveCount,
@@ -69,7 +69,7 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
     this.priority = priority;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -178,16 +178,17 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CreateSubscriptionRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     double requestedPublishingInterval =
@@ -223,7 +224,7 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
 
   public static class CreateSubscriptionRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final double requestedPublishingInterval;
     private final long requestedLifetimeCount;
     private final long requestedMaxKeepAliveCount;
@@ -232,7 +233,7 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
     private final short priority;
 
     public CreateSubscriptionRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
+        RequestHeader requestHeader,
         double requestedPublishingInterval,
         long requestedLifetimeCount,
         long requestedMaxKeepAliveCount,

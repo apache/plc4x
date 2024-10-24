@@ -226,7 +226,7 @@ func (m *_CBusCommandPointToPoint) GetTypeName() string {
 }
 
 func (m *_CBusCommandPointToPoint) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CBusCommandContract.(*_CBusCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CBusCommandContract.(*_CBusCommand).GetLengthInBits(ctx))
 
 	// Simple field (command)
 	lengthInBits += m.Command.GetLengthInBits(ctx)

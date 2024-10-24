@@ -221,7 +221,7 @@ func (m *_S7MessageResponse) GetTypeName() string {
 }
 
 func (m *_S7MessageResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7MessageContract.(*_S7Message).getLengthInBits(ctx))
+	lengthInBits := uint16(m.S7MessageContract.(*_S7Message).GetLengthInBits(ctx))
 
 	// Simple field (errorClass)
 	lengthInBits += 8

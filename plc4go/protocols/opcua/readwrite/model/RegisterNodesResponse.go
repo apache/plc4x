@@ -41,9 +41,7 @@ type RegisterNodesResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
-	// GetNoOfRegisteredNodeIds returns NoOfRegisteredNodeIds (property field)
-	GetNoOfRegisteredNodeIds() int32
+	GetResponseHeader() ResponseHeader
 	// GetRegisteredNodeIds returns RegisteredNodeIds (property field)
 	GetRegisteredNodeIds() []NodeId
 	// IsRegisterNodesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -55,23 +53,21 @@ type RegisterNodesResponse interface {
 // _RegisterNodesResponse is the data-structure of this message
 type _RegisterNodesResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader        ExtensionObjectDefinition
-	NoOfRegisteredNodeIds int32
-	RegisteredNodeIds     []NodeId
+	ResponseHeader    ResponseHeader
+	RegisteredNodeIds []NodeId
 }
 
 var _ RegisterNodesResponse = (*_RegisterNodesResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterNodesResponse)(nil)
 
 // NewRegisterNodesResponse factory function for _RegisterNodesResponse
-func NewRegisterNodesResponse(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) *_RegisterNodesResponse {
+func NewRegisterNodesResponse(responseHeader ResponseHeader, registeredNodeIds []NodeId) *_RegisterNodesResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for RegisterNodesResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for RegisterNodesResponse must not be nil")
 	}
 	_result := &_RegisterNodesResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
-		NoOfRegisteredNodeIds:             noOfRegisteredNodeIds,
 		RegisteredNodeIds:                 registeredNodeIds,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -87,13 +83,11 @@ func NewRegisterNodesResponse(responseHeader ExtensionObjectDefinition, noOfRegi
 type RegisterNodesResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) RegisterNodesResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, registeredNodeIds []NodeId) RegisterNodesResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) RegisterNodesResponseBuilder
+	WithResponseHeader(ResponseHeader) RegisterNodesResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterNodesResponseBuilder
-	// WithNoOfRegisteredNodeIds adds NoOfRegisteredNodeIds (property field)
-	WithNoOfRegisteredNodeIds(int32) RegisterNodesResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterNodesResponseBuilder
 	// WithRegisteredNodeIds adds RegisteredNodeIds (property field)
 	WithRegisteredNodeIds(...NodeId) RegisterNodesResponseBuilder
 	// Build builds the RegisterNodesResponse or returns an error if something is wrong
@@ -121,30 +115,25 @@ func (b *_RegisterNodesResponseBuilder) setParent(contract ExtensionObjectDefini
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisterNodesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) RegisterNodesResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfRegisteredNodeIds(noOfRegisteredNodeIds).WithRegisteredNodeIds(registeredNodeIds...)
+func (b *_RegisterNodesResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, registeredNodeIds []NodeId) RegisterNodesResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithRegisteredNodeIds(registeredNodeIds...)
 }
 
-func (b *_RegisterNodesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RegisterNodesResponseBuilder {
+func (b *_RegisterNodesResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) RegisterNodesResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_RegisterNodesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterNodesResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterNodesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterNodesResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_RegisterNodesResponseBuilder) WithNoOfRegisteredNodeIds(noOfRegisteredNodeIds int32) RegisterNodesResponseBuilder {
-	b.NoOfRegisteredNodeIds = noOfRegisteredNodeIds
 	return b
 }
 
@@ -209,8 +198,8 @@ func (b *_RegisterNodesResponse) CreateRegisterNodesResponseBuilder() RegisterNo
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RegisterNodesResponse) GetIdentifier() string {
-	return "563"
+func (m *_RegisterNodesResponse) GetExtensionId() int32 {
+	return int32(563)
 }
 
 ///////////////////////
@@ -227,12 +216,8 @@ func (m *_RegisterNodesResponse) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RegisterNodesResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_RegisterNodesResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
-}
-
-func (m *_RegisterNodesResponse) GetNoOfRegisteredNodeIds() int32 {
-	return m.NoOfRegisteredNodeIds
 }
 
 func (m *_RegisterNodesResponse) GetRegisteredNodeIds() []NodeId {
@@ -260,12 +245,12 @@ func (m *_RegisterNodesResponse) GetTypeName() string {
 }
 
 func (m *_RegisterNodesResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfRegisteredNodeIds)
+	// Implicit Field (noOfRegisteredNodeIds)
 	lengthInBits += 32
 
 	// Array field
@@ -285,7 +270,7 @@ func (m *_RegisterNodesResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RegisterNodesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__registerNodesResponse RegisterNodesResponse, err error) {
+func (m *_RegisterNodesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__registerNodesResponse RegisterNodesResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -296,17 +281,17 @@ func (m *_RegisterNodesResponse) parse(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfRegisteredNodeIds, err := ReadSimpleField(ctx, "noOfRegisteredNodeIds", ReadSignedInt(readBuffer, uint8(32)))
+	noOfRegisteredNodeIds, err := ReadImplicitField[int32](ctx, "noOfRegisteredNodeIds", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRegisteredNodeIds' field"))
 	}
-	m.NoOfRegisteredNodeIds = noOfRegisteredNodeIds
+	_ = noOfRegisteredNodeIds
 
 	registeredNodeIds, err := ReadCountArrayField[NodeId](ctx, "registeredNodeIds", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfRegisteredNodeIds))
 	if err != nil {
@@ -339,11 +324,11 @@ func (m *_RegisterNodesResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for RegisterNodesResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfRegisteredNodeIds", m.GetNoOfRegisteredNodeIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfRegisteredNodeIds := int32(utils.InlineIf(bool((m.GetRegisteredNodeIds()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetRegisteredNodeIds()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfRegisteredNodeIds", noOfRegisteredNodeIds, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfRegisteredNodeIds' field")
 		}
 
@@ -371,8 +356,7 @@ func (m *_RegisterNodesResponse) deepCopy() *_RegisterNodesResponse {
 	}
 	_RegisterNodesResponseCopy := &_RegisterNodesResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfRegisteredNodeIds,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		utils.DeepCopySlice[NodeId, NodeId](m.RegisteredNodeIds),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

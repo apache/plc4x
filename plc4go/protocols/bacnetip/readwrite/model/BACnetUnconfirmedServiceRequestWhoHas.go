@@ -290,7 +290,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetTypeName() string {
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).GetLengthInBits(ctx))
 
 	// Optional Field (deviceInstanceRangeLowLimit)
 	if m.DeviceInstanceRangeLowLimit != nil {

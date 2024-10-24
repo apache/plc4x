@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataPriorityForWriting) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataPriorityForWriting) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (priorityForWriting)
 	lengthInBits += m.PriorityForWriting.GetLengthInBits(ctx)

@@ -282,7 +282,7 @@ func (m *_DF1RequestMessage) GetTypeName() string {
 	return "DF1RequestMessage"
 }
 
-func (m *_DF1RequestMessage) getLengthInBits(ctx context.Context) uint16 {
+func (m *_DF1RequestMessage) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (destinationAddress)

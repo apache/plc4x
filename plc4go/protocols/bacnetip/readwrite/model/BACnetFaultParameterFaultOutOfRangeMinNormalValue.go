@@ -424,7 +424,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetTypeName() strin
 	return "BACnetFaultParameterFaultOutOfRangeMinNormalValue"
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)

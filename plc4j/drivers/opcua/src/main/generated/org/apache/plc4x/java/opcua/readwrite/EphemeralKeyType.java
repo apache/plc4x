@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class EphemeralKeyType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "17550";
+  public Integer getExtensionId() {
+    return (int) 17550;
   }
 
   // Properties.
@@ -97,7 +97,7 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("EphemeralKeyType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

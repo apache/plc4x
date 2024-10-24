@@ -41,13 +41,9 @@ type CallResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
-	// GetNoOfResults returns NoOfResults (property field)
-	GetNoOfResults() int32
+	GetResponseHeader() ResponseHeader
 	// GetResults returns Results (property field)
-	GetResults() []ExtensionObjectDefinition
-	// GetNoOfDiagnosticInfos returns NoOfDiagnosticInfos (property field)
-	GetNoOfDiagnosticInfos() int32
+	GetResults() []CallMethodResult
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsCallResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,27 +55,23 @@ type CallResponse interface {
 // _CallResponse is the data-structure of this message
 type _CallResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader      ExtensionObjectDefinition
-	NoOfResults         int32
-	Results             []ExtensionObjectDefinition
-	NoOfDiagnosticInfos int32
-	DiagnosticInfos     []DiagnosticInfo
+	ResponseHeader  ResponseHeader
+	Results         []CallMethodResult
+	DiagnosticInfos []DiagnosticInfo
 }
 
 var _ CallResponse = (*_CallResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CallResponse)(nil)
 
 // NewCallResponse factory function for _CallResponse
-func NewCallResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_CallResponse {
+func NewCallResponse(responseHeader ResponseHeader, results []CallMethodResult, diagnosticInfos []DiagnosticInfo) *_CallResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CallResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for CallResponse must not be nil")
 	}
 	_result := &_CallResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
 		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
 		DiagnosticInfos:                   diagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -95,17 +87,13 @@ func NewCallResponse(responseHeader ExtensionObjectDefinition, noOfResults int32
 type CallResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) CallResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, results []CallMethodResult, diagnosticInfos []DiagnosticInfo) CallResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) CallResponseBuilder
+	WithResponseHeader(ResponseHeader) CallResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CallResponseBuilder
-	// WithNoOfResults adds NoOfResults (property field)
-	WithNoOfResults(int32) CallResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) CallResponseBuilder
 	// WithResults adds Results (property field)
-	WithResults(...ExtensionObjectDefinition) CallResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) CallResponseBuilder
+	WithResults(...CallMethodResult) CallResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) CallResponseBuilder
 	// Build builds the CallResponse or returns an error if something is wrong
@@ -133,40 +121,30 @@ func (b *_CallResponseBuilder) setParent(contract ExtensionObjectDefinitionContr
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CallResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) CallResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_CallResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []CallMethodResult, diagnosticInfos []DiagnosticInfo) CallResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithResults(results...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_CallResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CallResponseBuilder {
+func (b *_CallResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) CallResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_CallResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CallResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CallResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) CallResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_CallResponseBuilder) WithNoOfResults(noOfResults int32) CallResponseBuilder {
-	b.NoOfResults = noOfResults
-	return b
-}
-
-func (b *_CallResponseBuilder) WithResults(results ...ExtensionObjectDefinition) CallResponseBuilder {
+func (b *_CallResponseBuilder) WithResults(results ...CallMethodResult) CallResponseBuilder {
 	b.Results = results
-	return b
-}
-
-func (b *_CallResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) CallResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -231,8 +209,8 @@ func (b *_CallResponse) CreateCallResponseBuilder() CallResponseBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CallResponse) GetIdentifier() string {
-	return "715"
+func (m *_CallResponse) GetExtensionId() int32 {
+	return int32(715)
 }
 
 ///////////////////////
@@ -249,20 +227,12 @@ func (m *_CallResponse) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CallResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_CallResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
-func (m *_CallResponse) GetNoOfResults() int32 {
-	return m.NoOfResults
-}
-
-func (m *_CallResponse) GetResults() []ExtensionObjectDefinition {
+func (m *_CallResponse) GetResults() []CallMethodResult {
 	return m.Results
-}
-
-func (m *_CallResponse) GetNoOfDiagnosticInfos() int32 {
-	return m.NoOfDiagnosticInfos
 }
 
 func (m *_CallResponse) GetDiagnosticInfos() []DiagnosticInfo {
@@ -290,12 +260,12 @@ func (m *_CallResponse) GetTypeName() string {
 }
 
 func (m *_CallResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfResults)
+	// Implicit Field (noOfResults)
 	lengthInBits += 32
 
 	// Array field
@@ -308,7 +278,7 @@ func (m *_CallResponse) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfDiagnosticInfos)
+	// Implicit Field (noOfDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -328,7 +298,7 @@ func (m *_CallResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CallResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__callResponse CallResponse, err error) {
+func (m *_CallResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__callResponse CallResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -339,29 +309,29 @@ func (m *_CallResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfResults, err := ReadSimpleField(ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfResults, err := ReadImplicitField[int32](ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfResults' field"))
 	}
-	m.NoOfResults = noOfResults
+	_ = noOfResults
 
-	results, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "results", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("709")), readBuffer), uint64(noOfResults))
+	results, err := ReadCountArrayField[CallMethodResult](ctx, "results", ReadComplex[CallMethodResult](ExtensionObjectDefinitionParseWithBufferProducer[CallMethodResult]((int32)(int32(709))), readBuffer), uint64(noOfResults))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'results' field"))
 	}
 	m.Results = results
 
-	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	_ = noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {
@@ -394,19 +364,19 @@ func (m *_CallResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for CallResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfResults", m.GetNoOfResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfResults := int32(utils.InlineIf(bool((m.GetResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfResults", noOfResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "results", m.GetResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'results' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiagnosticInfos := int32(utils.InlineIf(bool((m.GetDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiagnosticInfos", noOfDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
@@ -434,10 +404,8 @@ func (m *_CallResponse) deepCopy() *_CallResponse {
 	}
 	_CallResponseCopy := &_CallResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfResults,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
-		m.NoOfDiagnosticInfos,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopySlice[CallMethodResult, CallMethodResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

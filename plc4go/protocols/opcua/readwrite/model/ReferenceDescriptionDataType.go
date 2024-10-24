@@ -270,8 +270,8 @@ func (b *_ReferenceDescriptionDataType) CreateReferenceDescriptionDataTypeBuilde
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ReferenceDescriptionDataType) GetIdentifier() string {
-	return "32661"
+func (m *_ReferenceDescriptionDataType) GetExtensionId() int32 {
+	return int32(32661)
 }
 
 ///////////////////////
@@ -325,7 +325,7 @@ func (m *_ReferenceDescriptionDataType) GetTypeName() string {
 }
 
 func (m *_ReferenceDescriptionDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (sourceNode)
 	lengthInBits += m.SourceNode.GetLengthInBits(ctx)
@@ -349,7 +349,7 @@ func (m *_ReferenceDescriptionDataType) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ReferenceDescriptionDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__referenceDescriptionDataType ReferenceDescriptionDataType, err error) {
+func (m *_ReferenceDescriptionDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__referenceDescriptionDataType ReferenceDescriptionDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

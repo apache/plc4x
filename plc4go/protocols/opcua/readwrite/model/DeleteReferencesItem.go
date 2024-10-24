@@ -282,8 +282,8 @@ func (b *_DeleteReferencesItem) CreateDeleteReferencesItemBuilder() DeleteRefere
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DeleteReferencesItem) GetIdentifier() string {
-	return "387"
+func (m *_DeleteReferencesItem) GetExtensionId() int32 {
+	return int32(387)
 }
 
 ///////////////////////
@@ -341,7 +341,7 @@ func (m *_DeleteReferencesItem) GetTypeName() string {
 }
 
 func (m *_DeleteReferencesItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (sourceNodeId)
 	lengthInBits += m.SourceNodeId.GetLengthInBits(ctx)
@@ -371,7 +371,7 @@ func (m *_DeleteReferencesItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DeleteReferencesItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteReferencesItem DeleteReferencesItem, err error) {
+func (m *_DeleteReferencesItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__deleteReferencesItem DeleteReferencesItem, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

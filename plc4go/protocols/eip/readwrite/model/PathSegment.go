@@ -256,7 +256,7 @@ func (m *_PathSegment) GetTypeName() string {
 	return "PathSegment"
 }
 
-func (m *_PathSegment) getLengthInBits(ctx context.Context) uint16 {
+func (m *_PathSegment) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (pathSegment)
 	lengthInBits += 3

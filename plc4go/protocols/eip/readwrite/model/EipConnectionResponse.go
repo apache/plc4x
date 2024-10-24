@@ -211,7 +211,7 @@ func (m *_EipConnectionResponse) GetTypeName() string {
 }
 
 func (m *_EipConnectionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
+	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).GetLengthInBits(ctx))
 
 	// Const Field (protocolVersion)
 	lengthInBits += 16

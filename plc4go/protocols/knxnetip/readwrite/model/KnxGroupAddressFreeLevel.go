@@ -206,7 +206,7 @@ func (m *_KnxGroupAddressFreeLevel) GetTypeName() string {
 }
 
 func (m *_KnxGroupAddressFreeLevel) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxGroupAddressContract.(*_KnxGroupAddress).getLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxGroupAddressContract.(*_KnxGroupAddress).GetLengthInBits(ctx))
 
 	// Simple field (subGroup)
 	lengthInBits += 16

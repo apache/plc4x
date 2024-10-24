@@ -240,7 +240,7 @@ func (m *_SysexCommandReportFirmwareResponse) GetTypeName() string {
 }
 
 func (m *_SysexCommandReportFirmwareResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).GetLengthInBits(ctx))
 
 	// Simple field (majorVersion)
 	lengthInBits += 8

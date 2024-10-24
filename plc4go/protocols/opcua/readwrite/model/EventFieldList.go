@@ -42,8 +42,6 @@ type EventFieldList interface {
 	ExtensionObjectDefinition
 	// GetClientHandle returns ClientHandle (property field)
 	GetClientHandle() uint32
-	// GetNoOfEventFields returns NoOfEventFields (property field)
-	GetNoOfEventFields() int32
 	// GetEventFields returns EventFields (property field)
 	GetEventFields() []Variant
 	// IsEventFieldList is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -55,20 +53,18 @@ type EventFieldList interface {
 // _EventFieldList is the data-structure of this message
 type _EventFieldList struct {
 	ExtensionObjectDefinitionContract
-	ClientHandle    uint32
-	NoOfEventFields int32
-	EventFields     []Variant
+	ClientHandle uint32
+	EventFields  []Variant
 }
 
 var _ EventFieldList = (*_EventFieldList)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EventFieldList)(nil)
 
 // NewEventFieldList factory function for _EventFieldList
-func NewEventFieldList(clientHandle uint32, noOfEventFields int32, eventFields []Variant) *_EventFieldList {
+func NewEventFieldList(clientHandle uint32, eventFields []Variant) *_EventFieldList {
 	_result := &_EventFieldList{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ClientHandle:                      clientHandle,
-		NoOfEventFields:                   noOfEventFields,
 		EventFields:                       eventFields,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -84,11 +80,9 @@ func NewEventFieldList(clientHandle uint32, noOfEventFields int32, eventFields [
 type EventFieldListBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(clientHandle uint32, noOfEventFields int32, eventFields []Variant) EventFieldListBuilder
+	WithMandatoryFields(clientHandle uint32, eventFields []Variant) EventFieldListBuilder
 	// WithClientHandle adds ClientHandle (property field)
 	WithClientHandle(uint32) EventFieldListBuilder
-	// WithNoOfEventFields adds NoOfEventFields (property field)
-	WithNoOfEventFields(int32) EventFieldListBuilder
 	// WithEventFields adds EventFields (property field)
 	WithEventFields(...Variant) EventFieldListBuilder
 	// Build builds the EventFieldList or returns an error if something is wrong
@@ -116,17 +110,12 @@ func (b *_EventFieldListBuilder) setParent(contract ExtensionObjectDefinitionCon
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_EventFieldListBuilder) WithMandatoryFields(clientHandle uint32, noOfEventFields int32, eventFields []Variant) EventFieldListBuilder {
-	return b.WithClientHandle(clientHandle).WithNoOfEventFields(noOfEventFields).WithEventFields(eventFields...)
+func (b *_EventFieldListBuilder) WithMandatoryFields(clientHandle uint32, eventFields []Variant) EventFieldListBuilder {
+	return b.WithClientHandle(clientHandle).WithEventFields(eventFields...)
 }
 
 func (b *_EventFieldListBuilder) WithClientHandle(clientHandle uint32) EventFieldListBuilder {
 	b.ClientHandle = clientHandle
-	return b
-}
-
-func (b *_EventFieldListBuilder) WithNoOfEventFields(noOfEventFields int32) EventFieldListBuilder {
-	b.NoOfEventFields = noOfEventFields
 	return b
 }
 
@@ -185,8 +174,8 @@ func (b *_EventFieldList) CreateEventFieldListBuilder() EventFieldListBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_EventFieldList) GetIdentifier() string {
-	return "919"
+func (m *_EventFieldList) GetExtensionId() int32 {
+	return int32(919)
 }
 
 ///////////////////////
@@ -205,10 +194,6 @@ func (m *_EventFieldList) GetParent() ExtensionObjectDefinitionContract {
 
 func (m *_EventFieldList) GetClientHandle() uint32 {
 	return m.ClientHandle
-}
-
-func (m *_EventFieldList) GetNoOfEventFields() int32 {
-	return m.NoOfEventFields
 }
 
 func (m *_EventFieldList) GetEventFields() []Variant {
@@ -236,12 +221,12 @@ func (m *_EventFieldList) GetTypeName() string {
 }
 
 func (m *_EventFieldList) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (clientHandle)
 	lengthInBits += 32
 
-	// Simple field (noOfEventFields)
+	// Implicit Field (noOfEventFields)
 	lengthInBits += 32
 
 	// Array field
@@ -261,7 +246,7 @@ func (m *_EventFieldList) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_EventFieldList) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__eventFieldList EventFieldList, err error) {
+func (m *_EventFieldList) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__eventFieldList EventFieldList, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -278,11 +263,11 @@ func (m *_EventFieldList) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 	m.ClientHandle = clientHandle
 
-	noOfEventFields, err := ReadSimpleField(ctx, "noOfEventFields", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEventFields, err := ReadImplicitField[int32](ctx, "noOfEventFields", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEventFields' field"))
 	}
-	m.NoOfEventFields = noOfEventFields
+	_ = noOfEventFields
 
 	eventFields, err := ReadCountArrayField[Variant](ctx, "eventFields", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfEventFields))
 	if err != nil {
@@ -318,8 +303,8 @@ func (m *_EventFieldList) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		if err := WriteSimpleField[uint32](ctx, "clientHandle", m.GetClientHandle(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'clientHandle' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfEventFields", m.GetNoOfEventFields(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfEventFields := int32(utils.InlineIf(bool((m.GetEventFields()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEventFields()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfEventFields", noOfEventFields, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEventFields' field")
 		}
 
@@ -348,7 +333,6 @@ func (m *_EventFieldList) deepCopy() *_EventFieldList {
 	_EventFieldListCopy := &_EventFieldList{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ClientHandle,
-		m.NoOfEventFields,
 		utils.DeepCopySlice[Variant, Variant](m.EventFields),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

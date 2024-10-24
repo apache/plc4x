@@ -41,13 +41,9 @@ type DeleteReferencesResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
-	// GetNoOfResults returns NoOfResults (property field)
-	GetNoOfResults() int32
+	GetResponseHeader() ResponseHeader
 	// GetResults returns Results (property field)
 	GetResults() []StatusCode
-	// GetNoOfDiagnosticInfos returns NoOfDiagnosticInfos (property field)
-	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsDeleteReferencesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,27 +55,23 @@ type DeleteReferencesResponse interface {
 // _DeleteReferencesResponse is the data-structure of this message
 type _DeleteReferencesResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader      ExtensionObjectDefinition
-	NoOfResults         int32
-	Results             []StatusCode
-	NoOfDiagnosticInfos int32
-	DiagnosticInfos     []DiagnosticInfo
+	ResponseHeader  ResponseHeader
+	Results         []StatusCode
+	DiagnosticInfos []DiagnosticInfo
 }
 
 var _ DeleteReferencesResponse = (*_DeleteReferencesResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteReferencesResponse)(nil)
 
 // NewDeleteReferencesResponse factory function for _DeleteReferencesResponse
-func NewDeleteReferencesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteReferencesResponse {
+func NewDeleteReferencesResponse(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) *_DeleteReferencesResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for DeleteReferencesResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for DeleteReferencesResponse must not be nil")
 	}
 	_result := &_DeleteReferencesResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
 		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
 		DiagnosticInfos:                   diagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -95,17 +87,13 @@ func NewDeleteReferencesResponse(responseHeader ExtensionObjectDefinition, noOfR
 type DeleteReferencesResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteReferencesResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) DeleteReferencesResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) DeleteReferencesResponseBuilder
+	WithResponseHeader(ResponseHeader) DeleteReferencesResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteReferencesResponseBuilder
-	// WithNoOfResults adds NoOfResults (property field)
-	WithNoOfResults(int32) DeleteReferencesResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) DeleteReferencesResponseBuilder
 	// WithResults adds Results (property field)
 	WithResults(...StatusCode) DeleteReferencesResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) DeleteReferencesResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) DeleteReferencesResponseBuilder
 	// Build builds the DeleteReferencesResponse or returns an error if something is wrong
@@ -133,40 +121,30 @@ func (b *_DeleteReferencesResponseBuilder) setParent(contract ExtensionObjectDef
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_DeleteReferencesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteReferencesResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_DeleteReferencesResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) DeleteReferencesResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithResults(results...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_DeleteReferencesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) DeleteReferencesResponseBuilder {
+func (b *_DeleteReferencesResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) DeleteReferencesResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_DeleteReferencesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteReferencesResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_DeleteReferencesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) DeleteReferencesResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_DeleteReferencesResponseBuilder) WithNoOfResults(noOfResults int32) DeleteReferencesResponseBuilder {
-	b.NoOfResults = noOfResults
 	return b
 }
 
 func (b *_DeleteReferencesResponseBuilder) WithResults(results ...StatusCode) DeleteReferencesResponseBuilder {
 	b.Results = results
-	return b
-}
-
-func (b *_DeleteReferencesResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) DeleteReferencesResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -231,8 +209,8 @@ func (b *_DeleteReferencesResponse) CreateDeleteReferencesResponseBuilder() Dele
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DeleteReferencesResponse) GetIdentifier() string {
-	return "509"
+func (m *_DeleteReferencesResponse) GetExtensionId() int32 {
+	return int32(509)
 }
 
 ///////////////////////
@@ -249,20 +227,12 @@ func (m *_DeleteReferencesResponse) GetParent() ExtensionObjectDefinitionContrac
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_DeleteReferencesResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_DeleteReferencesResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
-}
-
-func (m *_DeleteReferencesResponse) GetNoOfResults() int32 {
-	return m.NoOfResults
 }
 
 func (m *_DeleteReferencesResponse) GetResults() []StatusCode {
 	return m.Results
-}
-
-func (m *_DeleteReferencesResponse) GetNoOfDiagnosticInfos() int32 {
-	return m.NoOfDiagnosticInfos
 }
 
 func (m *_DeleteReferencesResponse) GetDiagnosticInfos() []DiagnosticInfo {
@@ -290,12 +260,12 @@ func (m *_DeleteReferencesResponse) GetTypeName() string {
 }
 
 func (m *_DeleteReferencesResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfResults)
+	// Implicit Field (noOfResults)
 	lengthInBits += 32
 
 	// Array field
@@ -308,7 +278,7 @@ func (m *_DeleteReferencesResponse) GetLengthInBits(ctx context.Context) uint16 
 		}
 	}
 
-	// Simple field (noOfDiagnosticInfos)
+	// Implicit Field (noOfDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -328,7 +298,7 @@ func (m *_DeleteReferencesResponse) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DeleteReferencesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteReferencesResponse DeleteReferencesResponse, err error) {
+func (m *_DeleteReferencesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__deleteReferencesResponse DeleteReferencesResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -339,17 +309,17 @@ func (m *_DeleteReferencesResponse) parse(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfResults, err := ReadSimpleField(ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfResults, err := ReadImplicitField[int32](ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfResults' field"))
 	}
-	m.NoOfResults = noOfResults
+	_ = noOfResults
 
 	results, err := ReadCountArrayField[StatusCode](ctx, "results", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfResults))
 	if err != nil {
@@ -357,11 +327,11 @@ func (m *_DeleteReferencesResponse) parse(ctx context.Context, readBuffer utils.
 	}
 	m.Results = results
 
-	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	_ = noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {
@@ -394,19 +364,19 @@ func (m *_DeleteReferencesResponse) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for DeleteReferencesResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfResults", m.GetNoOfResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfResults := int32(utils.InlineIf(bool((m.GetResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfResults", noOfResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "results", m.GetResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'results' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiagnosticInfos := int32(utils.InlineIf(bool((m.GetDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiagnosticInfos", noOfDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
@@ -434,10 +404,8 @@ func (m *_DeleteReferencesResponse) deepCopy() *_DeleteReferencesResponse {
 	}
 	_DeleteReferencesResponseCopy := &_DeleteReferencesResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfResults,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
-		m.NoOfDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

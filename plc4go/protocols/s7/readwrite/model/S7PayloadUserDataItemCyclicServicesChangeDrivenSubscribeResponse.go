@@ -229,7 +229,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) GetT
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).GetLengthInBits(ctx))
 
 	// Simple field (itemsCount)
 	lengthInBits += 16

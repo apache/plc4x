@@ -222,8 +222,8 @@ func (b *_EphemeralKeyType) CreateEphemeralKeyTypeBuilder() EphemeralKeyTypeBuil
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_EphemeralKeyType) GetIdentifier() string {
-	return "17550"
+func (m *_EphemeralKeyType) GetExtensionId() int32 {
+	return int32(17550)
 }
 
 ///////////////////////
@@ -269,7 +269,7 @@ func (m *_EphemeralKeyType) GetTypeName() string {
 }
 
 func (m *_EphemeralKeyType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (publicKey)
 	lengthInBits += m.PublicKey.GetLengthInBits(ctx)
@@ -284,7 +284,7 @@ func (m *_EphemeralKeyType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_EphemeralKeyType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__ephemeralKeyType EphemeralKeyType, err error) {
+func (m *_EphemeralKeyType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__ephemeralKeyType EphemeralKeyType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

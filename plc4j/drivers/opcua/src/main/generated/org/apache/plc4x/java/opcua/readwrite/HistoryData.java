@@ -38,22 +38,16 @@ import org.apache.plc4x.java.spi.generation.*;
 public class HistoryData extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "658";
+  public Integer getExtensionId() {
+    return (int) 658;
   }
 
   // Properties.
-  protected final int noOfDataValues;
   protected final List<DataValue> dataValues;
 
-  public HistoryData(int noOfDataValues, List<DataValue> dataValues) {
+  public HistoryData(List<DataValue> dataValues) {
     super();
-    this.noOfDataValues = noOfDataValues;
     this.dataValues = dataValues;
-  }
-
-  public int getNoOfDataValues() {
-    return noOfDataValues;
   }
 
   public List<DataValue> getDataValues() {
@@ -67,8 +61,10 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("HistoryData");
 
-    // Simple Field (noOfDataValues)
-    writeSimpleField("noOfDataValues", noOfDataValues, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfDataValues) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfDataValues = (int) ((((getDataValues()) == (null)) ? -(1) : COUNT(getDataValues())));
+    writeImplicitField("noOfDataValues", noOfDataValues, writeSignedInt(writeBuffer, 32));
 
     // Array Field (dataValues)
     writeComplexTypeArrayField("dataValues", dataValues, writeBuffer);
@@ -87,7 +83,7 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
     HistoryData _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (noOfDataValues)
+    // Implicit Field (noOfDataValues)
     lengthInBits += 32;
 
     // Array field
@@ -103,12 +99,12 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("HistoryData");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int noOfDataValues = readSimpleField("noOfDataValues", readSignedInt(readBuffer, 32));
+    int noOfDataValues = readImplicitField("noOfDataValues", readSignedInt(readBuffer, 32));
 
     List<DataValue> dataValues =
         readCountArrayField(
@@ -118,21 +114,19 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("HistoryData");
     // Create the instance
-    return new HistoryDataBuilderImpl(noOfDataValues, dataValues);
+    return new HistoryDataBuilderImpl(dataValues);
   }
 
   public static class HistoryDataBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final int noOfDataValues;
     private final List<DataValue> dataValues;
 
-    public HistoryDataBuilderImpl(int noOfDataValues, List<DataValue> dataValues) {
-      this.noOfDataValues = noOfDataValues;
+    public HistoryDataBuilderImpl(List<DataValue> dataValues) {
       this.dataValues = dataValues;
     }
 
     public HistoryData build() {
-      HistoryData historyData = new HistoryData(noOfDataValues, dataValues);
+      HistoryData historyData = new HistoryData(dataValues);
       return historyData;
     }
   }
@@ -146,15 +140,12 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
       return false;
     }
     HistoryData that = (HistoryData) o;
-    return (getNoOfDataValues() == that.getNoOfDataValues())
-        && (getDataValues() == that.getDataValues())
-        && super.equals(that)
-        && true;
+    return (getDataValues() == that.getDataValues()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getNoOfDataValues(), getDataValues());
+    return Objects.hash(super.hashCode(), getDataValues());
   }
 
   @Override

@@ -38,24 +38,24 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RepublishRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "832";
+  public Integer getExtensionId() {
+    return (int) 832;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final long subscriptionId;
   protected final long retransmitSequenceNumber;
 
   public RepublishRequest(
-      ExtensionObjectDefinition requestHeader, long subscriptionId, long retransmitSequenceNumber) {
+      RequestHeader requestHeader, long subscriptionId, long retransmitSequenceNumber) {
     super();
     this.requestHeader = requestHeader;
     this.subscriptionId = subscriptionId;
     this.retransmitSequenceNumber = retransmitSequenceNumber;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -111,16 +111,17 @@ public class RepublishRequest extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RepublishRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     long subscriptionId = readSimpleField("subscriptionId", readUnsignedLong(readBuffer, 32));
@@ -135,14 +136,12 @@ public class RepublishRequest extends ExtensionObjectDefinition implements Messa
 
   public static class RepublishRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final long subscriptionId;
     private final long retransmitSequenceNumber;
 
     public RepublishRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        long subscriptionId,
-        long retransmitSequenceNumber) {
+        RequestHeader requestHeader, long subscriptionId, long retransmitSequenceNumber) {
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.retransmitSequenceNumber = retransmitSequenceNumber;

@@ -40,10 +40,8 @@ type AdditionalParametersType interface {
 	utils.Serializable
 	utils.Copyable
 	ExtensionObjectDefinition
-	// GetNoOfParameters returns NoOfParameters (property field)
-	GetNoOfParameters() int32
 	// GetParameters returns Parameters (property field)
-	GetParameters() []ExtensionObjectDefinition
+	GetParameters() []KeyValuePair
 	// IsAdditionalParametersType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdditionalParametersType()
 	// CreateBuilder creates a AdditionalParametersTypeBuilder
@@ -53,18 +51,16 @@ type AdditionalParametersType interface {
 // _AdditionalParametersType is the data-structure of this message
 type _AdditionalParametersType struct {
 	ExtensionObjectDefinitionContract
-	NoOfParameters int32
-	Parameters     []ExtensionObjectDefinition
+	Parameters []KeyValuePair
 }
 
 var _ AdditionalParametersType = (*_AdditionalParametersType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AdditionalParametersType)(nil)
 
 // NewAdditionalParametersType factory function for _AdditionalParametersType
-func NewAdditionalParametersType(noOfParameters int32, parameters []ExtensionObjectDefinition) *_AdditionalParametersType {
+func NewAdditionalParametersType(parameters []KeyValuePair) *_AdditionalParametersType {
 	_result := &_AdditionalParametersType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfParameters:                    noOfParameters,
 		Parameters:                        parameters,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -80,11 +76,9 @@ func NewAdditionalParametersType(noOfParameters int32, parameters []ExtensionObj
 type AdditionalParametersTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfParameters int32, parameters []ExtensionObjectDefinition) AdditionalParametersTypeBuilder
-	// WithNoOfParameters adds NoOfParameters (property field)
-	WithNoOfParameters(int32) AdditionalParametersTypeBuilder
+	WithMandatoryFields(parameters []KeyValuePair) AdditionalParametersTypeBuilder
 	// WithParameters adds Parameters (property field)
-	WithParameters(...ExtensionObjectDefinition) AdditionalParametersTypeBuilder
+	WithParameters(...KeyValuePair) AdditionalParametersTypeBuilder
 	// Build builds the AdditionalParametersType or returns an error if something is wrong
 	Build() (AdditionalParametersType, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,16 +104,11 @@ func (b *_AdditionalParametersTypeBuilder) setParent(contract ExtensionObjectDef
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_AdditionalParametersTypeBuilder) WithMandatoryFields(noOfParameters int32, parameters []ExtensionObjectDefinition) AdditionalParametersTypeBuilder {
-	return b.WithNoOfParameters(noOfParameters).WithParameters(parameters...)
+func (b *_AdditionalParametersTypeBuilder) WithMandatoryFields(parameters []KeyValuePair) AdditionalParametersTypeBuilder {
+	return b.WithParameters(parameters...)
 }
 
-func (b *_AdditionalParametersTypeBuilder) WithNoOfParameters(noOfParameters int32) AdditionalParametersTypeBuilder {
-	b.NoOfParameters = noOfParameters
-	return b
-}
-
-func (b *_AdditionalParametersTypeBuilder) WithParameters(parameters ...ExtensionObjectDefinition) AdditionalParametersTypeBuilder {
+func (b *_AdditionalParametersTypeBuilder) WithParameters(parameters ...KeyValuePair) AdditionalParametersTypeBuilder {
 	b.Parameters = parameters
 	return b
 }
@@ -174,8 +163,8 @@ func (b *_AdditionalParametersType) CreateAdditionalParametersTypeBuilder() Addi
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_AdditionalParametersType) GetIdentifier() string {
-	return "16315"
+func (m *_AdditionalParametersType) GetExtensionId() int32 {
+	return int32(16315)
 }
 
 ///////////////////////
@@ -192,11 +181,7 @@ func (m *_AdditionalParametersType) GetParent() ExtensionObjectDefinitionContrac
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_AdditionalParametersType) GetNoOfParameters() int32 {
-	return m.NoOfParameters
-}
-
-func (m *_AdditionalParametersType) GetParameters() []ExtensionObjectDefinition {
+func (m *_AdditionalParametersType) GetParameters() []KeyValuePair {
 	return m.Parameters
 }
 
@@ -221,9 +206,9 @@ func (m *_AdditionalParametersType) GetTypeName() string {
 }
 
 func (m *_AdditionalParametersType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
-	// Simple field (noOfParameters)
+	// Implicit Field (noOfParameters)
 	lengthInBits += 32
 
 	// Array field
@@ -243,7 +228,7 @@ func (m *_AdditionalParametersType) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_AdditionalParametersType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__additionalParametersType AdditionalParametersType, err error) {
+func (m *_AdditionalParametersType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__additionalParametersType AdditionalParametersType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -254,13 +239,13 @@ func (m *_AdditionalParametersType) parse(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfParameters, err := ReadSimpleField(ctx, "noOfParameters", ReadSignedInt(readBuffer, uint8(32)))
+	noOfParameters, err := ReadImplicitField[int32](ctx, "noOfParameters", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfParameters' field"))
 	}
-	m.NoOfParameters = noOfParameters
+	_ = noOfParameters
 
-	parameters, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "parameters", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("14535")), readBuffer), uint64(noOfParameters))
+	parameters, err := ReadCountArrayField[KeyValuePair](ctx, "parameters", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfParameters))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameters' field"))
 	}
@@ -290,8 +275,8 @@ func (m *_AdditionalParametersType) SerializeWithWriteBuffer(ctx context.Context
 		if pushErr := writeBuffer.PushContext("AdditionalParametersType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for AdditionalParametersType")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfParameters", m.GetNoOfParameters(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfParameters := int32(utils.InlineIf(bool((m.GetParameters()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetParameters()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfParameters", noOfParameters, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfParameters' field")
 		}
 
@@ -319,8 +304,7 @@ func (m *_AdditionalParametersType) deepCopy() *_AdditionalParametersType {
 	}
 	_AdditionalParametersTypeCopy := &_AdditionalParametersType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfParameters,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Parameters),
+		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.Parameters),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AdditionalParametersTypeCopy

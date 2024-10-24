@@ -226,7 +226,7 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) GetTypeName
 }
 
 func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult).GetLengthInBits(ctx))
 
 	// Simple field (propertyAccessError)
 	lengthInBits += m.PropertyAccessError.GetLengthInBits(ctx)

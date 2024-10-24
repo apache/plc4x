@@ -52,20 +52,12 @@ type ProgramDiagnostic2DataType interface {
 	GetLastMethodCall() PascalString
 	// GetLastMethodSessionId returns LastMethodSessionId (property field)
 	GetLastMethodSessionId() NodeId
-	// GetNoOfLastMethodInputArguments returns NoOfLastMethodInputArguments (property field)
-	GetNoOfLastMethodInputArguments() int32
 	// GetLastMethodInputArguments returns LastMethodInputArguments (property field)
-	GetLastMethodInputArguments() []ExtensionObjectDefinition
-	// GetNoOfLastMethodOutputArguments returns NoOfLastMethodOutputArguments (property field)
-	GetNoOfLastMethodOutputArguments() int32
+	GetLastMethodInputArguments() []Argument
 	// GetLastMethodOutputArguments returns LastMethodOutputArguments (property field)
-	GetLastMethodOutputArguments() []ExtensionObjectDefinition
-	// GetNoOfLastMethodInputValues returns NoOfLastMethodInputValues (property field)
-	GetNoOfLastMethodInputValues() int32
+	GetLastMethodOutputArguments() []Argument
 	// GetLastMethodInputValues returns LastMethodInputValues (property field)
 	GetLastMethodInputValues() []Variant
-	// GetNoOfLastMethodOutputValues returns NoOfLastMethodOutputValues (property field)
-	GetNoOfLastMethodOutputValues() int32
 	// GetLastMethodOutputValues returns LastMethodOutputValues (property field)
 	GetLastMethodOutputValues() []Variant
 	// GetLastMethodCallTime returns LastMethodCallTime (property field)
@@ -81,29 +73,25 @@ type ProgramDiagnostic2DataType interface {
 // _ProgramDiagnostic2DataType is the data-structure of this message
 type _ProgramDiagnostic2DataType struct {
 	ExtensionObjectDefinitionContract
-	CreateSessionId               NodeId
-	CreateClientName              PascalString
-	InvocationCreationTime        int64
-	LastTransitionTime            int64
-	LastMethodCall                PascalString
-	LastMethodSessionId           NodeId
-	NoOfLastMethodInputArguments  int32
-	LastMethodInputArguments      []ExtensionObjectDefinition
-	NoOfLastMethodOutputArguments int32
-	LastMethodOutputArguments     []ExtensionObjectDefinition
-	NoOfLastMethodInputValues     int32
-	LastMethodInputValues         []Variant
-	NoOfLastMethodOutputValues    int32
-	LastMethodOutputValues        []Variant
-	LastMethodCallTime            int64
-	LastMethodReturnStatus        StatusCode
+	CreateSessionId           NodeId
+	CreateClientName          PascalString
+	InvocationCreationTime    int64
+	LastTransitionTime        int64
+	LastMethodCall            PascalString
+	LastMethodSessionId       NodeId
+	LastMethodInputArguments  []Argument
+	LastMethodOutputArguments []Argument
+	LastMethodInputValues     []Variant
+	LastMethodOutputValues    []Variant
+	LastMethodCallTime        int64
+	LastMethodReturnStatus    StatusCode
 }
 
 var _ ProgramDiagnostic2DataType = (*_ProgramDiagnostic2DataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ProgramDiagnostic2DataType)(nil)
 
 // NewProgramDiagnostic2DataType factory function for _ProgramDiagnostic2DataType
-func NewProgramDiagnostic2DataType(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, noOfLastMethodInputArguments int32, lastMethodInputArguments []ExtensionObjectDefinition, noOfLastMethodOutputArguments int32, lastMethodOutputArguments []ExtensionObjectDefinition, noOfLastMethodInputValues int32, lastMethodInputValues []Variant, noOfLastMethodOutputValues int32, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) *_ProgramDiagnostic2DataType {
+func NewProgramDiagnostic2DataType(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, lastMethodInputArguments []Argument, lastMethodOutputArguments []Argument, lastMethodInputValues []Variant, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) *_ProgramDiagnostic2DataType {
 	if createSessionId == nil {
 		panic("createSessionId of type NodeId for ProgramDiagnostic2DataType must not be nil")
 	}
@@ -127,13 +115,9 @@ func NewProgramDiagnostic2DataType(createSessionId NodeId, createClientName Pasc
 		LastTransitionTime:                lastTransitionTime,
 		LastMethodCall:                    lastMethodCall,
 		LastMethodSessionId:               lastMethodSessionId,
-		NoOfLastMethodInputArguments:      noOfLastMethodInputArguments,
 		LastMethodInputArguments:          lastMethodInputArguments,
-		NoOfLastMethodOutputArguments:     noOfLastMethodOutputArguments,
 		LastMethodOutputArguments:         lastMethodOutputArguments,
-		NoOfLastMethodInputValues:         noOfLastMethodInputValues,
 		LastMethodInputValues:             lastMethodInputValues,
-		NoOfLastMethodOutputValues:        noOfLastMethodOutputValues,
 		LastMethodOutputValues:            lastMethodOutputValues,
 		LastMethodCallTime:                lastMethodCallTime,
 		LastMethodReturnStatus:            lastMethodReturnStatus,
@@ -151,7 +135,7 @@ func NewProgramDiagnostic2DataType(createSessionId NodeId, createClientName Pasc
 type ProgramDiagnostic2DataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, noOfLastMethodInputArguments int32, lastMethodInputArguments []ExtensionObjectDefinition, noOfLastMethodOutputArguments int32, lastMethodOutputArguments []ExtensionObjectDefinition, noOfLastMethodInputValues int32, lastMethodInputValues []Variant, noOfLastMethodOutputValues int32, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) ProgramDiagnostic2DataTypeBuilder
+	WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, lastMethodInputArguments []Argument, lastMethodOutputArguments []Argument, lastMethodInputValues []Variant, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) ProgramDiagnostic2DataTypeBuilder
 	// WithCreateSessionId adds CreateSessionId (property field)
 	WithCreateSessionId(NodeId) ProgramDiagnostic2DataTypeBuilder
 	// WithCreateSessionIdBuilder adds CreateSessionId (property field) which is build by the builder
@@ -172,20 +156,12 @@ type ProgramDiagnostic2DataTypeBuilder interface {
 	WithLastMethodSessionId(NodeId) ProgramDiagnostic2DataTypeBuilder
 	// WithLastMethodSessionIdBuilder adds LastMethodSessionId (property field) which is build by the builder
 	WithLastMethodSessionIdBuilder(func(NodeIdBuilder) NodeIdBuilder) ProgramDiagnostic2DataTypeBuilder
-	// WithNoOfLastMethodInputArguments adds NoOfLastMethodInputArguments (property field)
-	WithNoOfLastMethodInputArguments(int32) ProgramDiagnostic2DataTypeBuilder
 	// WithLastMethodInputArguments adds LastMethodInputArguments (property field)
-	WithLastMethodInputArguments(...ExtensionObjectDefinition) ProgramDiagnostic2DataTypeBuilder
-	// WithNoOfLastMethodOutputArguments adds NoOfLastMethodOutputArguments (property field)
-	WithNoOfLastMethodOutputArguments(int32) ProgramDiagnostic2DataTypeBuilder
+	WithLastMethodInputArguments(...Argument) ProgramDiagnostic2DataTypeBuilder
 	// WithLastMethodOutputArguments adds LastMethodOutputArguments (property field)
-	WithLastMethodOutputArguments(...ExtensionObjectDefinition) ProgramDiagnostic2DataTypeBuilder
-	// WithNoOfLastMethodInputValues adds NoOfLastMethodInputValues (property field)
-	WithNoOfLastMethodInputValues(int32) ProgramDiagnostic2DataTypeBuilder
+	WithLastMethodOutputArguments(...Argument) ProgramDiagnostic2DataTypeBuilder
 	// WithLastMethodInputValues adds LastMethodInputValues (property field)
 	WithLastMethodInputValues(...Variant) ProgramDiagnostic2DataTypeBuilder
-	// WithNoOfLastMethodOutputValues adds NoOfLastMethodOutputValues (property field)
-	WithNoOfLastMethodOutputValues(int32) ProgramDiagnostic2DataTypeBuilder
 	// WithLastMethodOutputValues adds LastMethodOutputValues (property field)
 	WithLastMethodOutputValues(...Variant) ProgramDiagnostic2DataTypeBuilder
 	// WithLastMethodCallTime adds LastMethodCallTime (property field)
@@ -219,8 +195,8 @@ func (b *_ProgramDiagnostic2DataTypeBuilder) setParent(contract ExtensionObjectD
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, noOfLastMethodInputArguments int32, lastMethodInputArguments []ExtensionObjectDefinition, noOfLastMethodOutputArguments int32, lastMethodOutputArguments []ExtensionObjectDefinition, noOfLastMethodInputValues int32, lastMethodInputValues []Variant, noOfLastMethodOutputValues int32, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) ProgramDiagnostic2DataTypeBuilder {
-	return b.WithCreateSessionId(createSessionId).WithCreateClientName(createClientName).WithInvocationCreationTime(invocationCreationTime).WithLastTransitionTime(lastTransitionTime).WithLastMethodCall(lastMethodCall).WithLastMethodSessionId(lastMethodSessionId).WithNoOfLastMethodInputArguments(noOfLastMethodInputArguments).WithLastMethodInputArguments(lastMethodInputArguments...).WithNoOfLastMethodOutputArguments(noOfLastMethodOutputArguments).WithLastMethodOutputArguments(lastMethodOutputArguments...).WithNoOfLastMethodInputValues(noOfLastMethodInputValues).WithLastMethodInputValues(lastMethodInputValues...).WithNoOfLastMethodOutputValues(noOfLastMethodOutputValues).WithLastMethodOutputValues(lastMethodOutputValues...).WithLastMethodCallTime(lastMethodCallTime).WithLastMethodReturnStatus(lastMethodReturnStatus)
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, lastMethodInputArguments []Argument, lastMethodOutputArguments []Argument, lastMethodInputValues []Variant, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) ProgramDiagnostic2DataTypeBuilder {
+	return b.WithCreateSessionId(createSessionId).WithCreateClientName(createClientName).WithInvocationCreationTime(invocationCreationTime).WithLastTransitionTime(lastTransitionTime).WithLastMethodCall(lastMethodCall).WithLastMethodSessionId(lastMethodSessionId).WithLastMethodInputArguments(lastMethodInputArguments...).WithLastMethodOutputArguments(lastMethodOutputArguments...).WithLastMethodInputValues(lastMethodInputValues...).WithLastMethodOutputValues(lastMethodOutputValues...).WithLastMethodCallTime(lastMethodCallTime).WithLastMethodReturnStatus(lastMethodReturnStatus)
 }
 
 func (b *_ProgramDiagnostic2DataTypeBuilder) WithCreateSessionId(createSessionId NodeId) ProgramDiagnostic2DataTypeBuilder {
@@ -305,38 +281,18 @@ func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodSessionIdBuilder(buil
 	return b
 }
 
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodInputArguments(noOfLastMethodInputArguments int32) ProgramDiagnostic2DataTypeBuilder {
-	b.NoOfLastMethodInputArguments = noOfLastMethodInputArguments
-	return b
-}
-
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodInputArguments(lastMethodInputArguments ...ExtensionObjectDefinition) ProgramDiagnostic2DataTypeBuilder {
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodInputArguments(lastMethodInputArguments ...Argument) ProgramDiagnostic2DataTypeBuilder {
 	b.LastMethodInputArguments = lastMethodInputArguments
 	return b
 }
 
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodOutputArguments(noOfLastMethodOutputArguments int32) ProgramDiagnostic2DataTypeBuilder {
-	b.NoOfLastMethodOutputArguments = noOfLastMethodOutputArguments
-	return b
-}
-
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodOutputArguments(lastMethodOutputArguments ...ExtensionObjectDefinition) ProgramDiagnostic2DataTypeBuilder {
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodOutputArguments(lastMethodOutputArguments ...Argument) ProgramDiagnostic2DataTypeBuilder {
 	b.LastMethodOutputArguments = lastMethodOutputArguments
-	return b
-}
-
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodInputValues(noOfLastMethodInputValues int32) ProgramDiagnostic2DataTypeBuilder {
-	b.NoOfLastMethodInputValues = noOfLastMethodInputValues
 	return b
 }
 
 func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodInputValues(lastMethodInputValues ...Variant) ProgramDiagnostic2DataTypeBuilder {
 	b.LastMethodInputValues = lastMethodInputValues
-	return b
-}
-
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodOutputValues(noOfLastMethodOutputValues int32) ProgramDiagnostic2DataTypeBuilder {
-	b.NoOfLastMethodOutputValues = noOfLastMethodOutputValues
 	return b
 }
 
@@ -448,8 +404,8 @@ func (b *_ProgramDiagnostic2DataType) CreateProgramDiagnostic2DataTypeBuilder() 
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ProgramDiagnostic2DataType) GetIdentifier() string {
-	return "24035"
+func (m *_ProgramDiagnostic2DataType) GetExtensionId() int32 {
+	return int32(24035)
 }
 
 ///////////////////////
@@ -490,32 +446,16 @@ func (m *_ProgramDiagnostic2DataType) GetLastMethodSessionId() NodeId {
 	return m.LastMethodSessionId
 }
 
-func (m *_ProgramDiagnostic2DataType) GetNoOfLastMethodInputArguments() int32 {
-	return m.NoOfLastMethodInputArguments
-}
-
-func (m *_ProgramDiagnostic2DataType) GetLastMethodInputArguments() []ExtensionObjectDefinition {
+func (m *_ProgramDiagnostic2DataType) GetLastMethodInputArguments() []Argument {
 	return m.LastMethodInputArguments
 }
 
-func (m *_ProgramDiagnostic2DataType) GetNoOfLastMethodOutputArguments() int32 {
-	return m.NoOfLastMethodOutputArguments
-}
-
-func (m *_ProgramDiagnostic2DataType) GetLastMethodOutputArguments() []ExtensionObjectDefinition {
+func (m *_ProgramDiagnostic2DataType) GetLastMethodOutputArguments() []Argument {
 	return m.LastMethodOutputArguments
-}
-
-func (m *_ProgramDiagnostic2DataType) GetNoOfLastMethodInputValues() int32 {
-	return m.NoOfLastMethodInputValues
 }
 
 func (m *_ProgramDiagnostic2DataType) GetLastMethodInputValues() []Variant {
 	return m.LastMethodInputValues
-}
-
-func (m *_ProgramDiagnostic2DataType) GetNoOfLastMethodOutputValues() int32 {
-	return m.NoOfLastMethodOutputValues
 }
 
 func (m *_ProgramDiagnostic2DataType) GetLastMethodOutputValues() []Variant {
@@ -551,7 +491,7 @@ func (m *_ProgramDiagnostic2DataType) GetTypeName() string {
 }
 
 func (m *_ProgramDiagnostic2DataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (createSessionId)
 	lengthInBits += m.CreateSessionId.GetLengthInBits(ctx)
@@ -571,7 +511,7 @@ func (m *_ProgramDiagnostic2DataType) GetLengthInBits(ctx context.Context) uint1
 	// Simple field (lastMethodSessionId)
 	lengthInBits += m.LastMethodSessionId.GetLengthInBits(ctx)
 
-	// Simple field (noOfLastMethodInputArguments)
+	// Implicit Field (noOfLastMethodInputArguments)
 	lengthInBits += 32
 
 	// Array field
@@ -584,7 +524,7 @@ func (m *_ProgramDiagnostic2DataType) GetLengthInBits(ctx context.Context) uint1
 		}
 	}
 
-	// Simple field (noOfLastMethodOutputArguments)
+	// Implicit Field (noOfLastMethodOutputArguments)
 	lengthInBits += 32
 
 	// Array field
@@ -597,7 +537,7 @@ func (m *_ProgramDiagnostic2DataType) GetLengthInBits(ctx context.Context) uint1
 		}
 	}
 
-	// Simple field (noOfLastMethodInputValues)
+	// Implicit Field (noOfLastMethodInputValues)
 	lengthInBits += 32
 
 	// Array field
@@ -610,7 +550,7 @@ func (m *_ProgramDiagnostic2DataType) GetLengthInBits(ctx context.Context) uint1
 		}
 	}
 
-	// Simple field (noOfLastMethodOutputValues)
+	// Implicit Field (noOfLastMethodOutputValues)
 	lengthInBits += 32
 
 	// Array field
@@ -636,7 +576,7 @@ func (m *_ProgramDiagnostic2DataType) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ProgramDiagnostic2DataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__programDiagnostic2DataType ProgramDiagnostic2DataType, err error) {
+func (m *_ProgramDiagnostic2DataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__programDiagnostic2DataType ProgramDiagnostic2DataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -683,35 +623,35 @@ func (m *_ProgramDiagnostic2DataType) parse(ctx context.Context, readBuffer util
 	}
 	m.LastMethodSessionId = lastMethodSessionId
 
-	noOfLastMethodInputArguments, err := ReadSimpleField(ctx, "noOfLastMethodInputArguments", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLastMethodInputArguments, err := ReadImplicitField[int32](ctx, "noOfLastMethodInputArguments", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLastMethodInputArguments' field"))
 	}
-	m.NoOfLastMethodInputArguments = noOfLastMethodInputArguments
+	_ = noOfLastMethodInputArguments
 
-	lastMethodInputArguments, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "lastMethodInputArguments", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("298")), readBuffer), uint64(noOfLastMethodInputArguments))
+	lastMethodInputArguments, err := ReadCountArrayField[Argument](ctx, "lastMethodInputArguments", ReadComplex[Argument](ExtensionObjectDefinitionParseWithBufferProducer[Argument]((int32)(int32(298))), readBuffer), uint64(noOfLastMethodInputArguments))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodInputArguments' field"))
 	}
 	m.LastMethodInputArguments = lastMethodInputArguments
 
-	noOfLastMethodOutputArguments, err := ReadSimpleField(ctx, "noOfLastMethodOutputArguments", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLastMethodOutputArguments, err := ReadImplicitField[int32](ctx, "noOfLastMethodOutputArguments", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLastMethodOutputArguments' field"))
 	}
-	m.NoOfLastMethodOutputArguments = noOfLastMethodOutputArguments
+	_ = noOfLastMethodOutputArguments
 
-	lastMethodOutputArguments, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "lastMethodOutputArguments", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("298")), readBuffer), uint64(noOfLastMethodOutputArguments))
+	lastMethodOutputArguments, err := ReadCountArrayField[Argument](ctx, "lastMethodOutputArguments", ReadComplex[Argument](ExtensionObjectDefinitionParseWithBufferProducer[Argument]((int32)(int32(298))), readBuffer), uint64(noOfLastMethodOutputArguments))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodOutputArguments' field"))
 	}
 	m.LastMethodOutputArguments = lastMethodOutputArguments
 
-	noOfLastMethodInputValues, err := ReadSimpleField(ctx, "noOfLastMethodInputValues", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLastMethodInputValues, err := ReadImplicitField[int32](ctx, "noOfLastMethodInputValues", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLastMethodInputValues' field"))
 	}
-	m.NoOfLastMethodInputValues = noOfLastMethodInputValues
+	_ = noOfLastMethodInputValues
 
 	lastMethodInputValues, err := ReadCountArrayField[Variant](ctx, "lastMethodInputValues", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfLastMethodInputValues))
 	if err != nil {
@@ -719,11 +659,11 @@ func (m *_ProgramDiagnostic2DataType) parse(ctx context.Context, readBuffer util
 	}
 	m.LastMethodInputValues = lastMethodInputValues
 
-	noOfLastMethodOutputValues, err := ReadSimpleField(ctx, "noOfLastMethodOutputValues", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLastMethodOutputValues, err := ReadImplicitField[int32](ctx, "noOfLastMethodOutputValues", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLastMethodOutputValues' field"))
 	}
-	m.NoOfLastMethodOutputValues = noOfLastMethodOutputValues
+	_ = noOfLastMethodOutputValues
 
 	lastMethodOutputValues, err := ReadCountArrayField[Variant](ctx, "lastMethodOutputValues", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfLastMethodOutputValues))
 	if err != nil {
@@ -791,32 +731,32 @@ func (m *_ProgramDiagnostic2DataType) SerializeWithWriteBuffer(ctx context.Conte
 		if err := WriteSimpleField[NodeId](ctx, "lastMethodSessionId", m.GetLastMethodSessionId(), WriteComplex[NodeId](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastMethodSessionId' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfLastMethodInputArguments", m.GetNoOfLastMethodInputArguments(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfLastMethodInputArguments := int32(utils.InlineIf(bool((m.GetLastMethodInputArguments()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLastMethodInputArguments()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfLastMethodInputArguments", noOfLastMethodInputArguments, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLastMethodInputArguments' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "lastMethodInputArguments", m.GetLastMethodInputArguments(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastMethodInputArguments' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfLastMethodOutputArguments", m.GetNoOfLastMethodOutputArguments(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfLastMethodOutputArguments := int32(utils.InlineIf(bool((m.GetLastMethodOutputArguments()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLastMethodOutputArguments()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfLastMethodOutputArguments", noOfLastMethodOutputArguments, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLastMethodOutputArguments' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "lastMethodOutputArguments", m.GetLastMethodOutputArguments(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastMethodOutputArguments' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfLastMethodInputValues", m.GetNoOfLastMethodInputValues(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfLastMethodInputValues := int32(utils.InlineIf(bool((m.GetLastMethodInputValues()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLastMethodInputValues()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfLastMethodInputValues", noOfLastMethodInputValues, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLastMethodInputValues' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "lastMethodInputValues", m.GetLastMethodInputValues(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastMethodInputValues' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfLastMethodOutputValues", m.GetNoOfLastMethodOutputValues(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfLastMethodOutputValues := int32(utils.InlineIf(bool((m.GetLastMethodOutputValues()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLastMethodOutputValues()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfLastMethodOutputValues", noOfLastMethodOutputValues, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLastMethodOutputValues' field")
 		}
 
@@ -858,13 +798,9 @@ func (m *_ProgramDiagnostic2DataType) deepCopy() *_ProgramDiagnostic2DataType {
 		m.LastTransitionTime,
 		m.LastMethodCall.DeepCopy().(PascalString),
 		m.LastMethodSessionId.DeepCopy().(NodeId),
-		m.NoOfLastMethodInputArguments,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.LastMethodInputArguments),
-		m.NoOfLastMethodOutputArguments,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.LastMethodOutputArguments),
-		m.NoOfLastMethodInputValues,
+		utils.DeepCopySlice[Argument, Argument](m.LastMethodInputArguments),
+		utils.DeepCopySlice[Argument, Argument](m.LastMethodOutputArguments),
 		utils.DeepCopySlice[Variant, Variant](m.LastMethodInputValues),
-		m.NoOfLastMethodOutputValues,
 		utils.DeepCopySlice[Variant, Variant](m.LastMethodOutputValues),
 		m.LastMethodCallTime,
 		m.LastMethodReturnStatus.DeepCopy().(StatusCode),

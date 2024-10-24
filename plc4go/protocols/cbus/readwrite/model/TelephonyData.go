@@ -503,7 +503,7 @@ func (m *_TelephonyData) GetTypeName() string {
 	return "TelephonyData"
 }
 
-func (m *_TelephonyData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_TelephonyData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)

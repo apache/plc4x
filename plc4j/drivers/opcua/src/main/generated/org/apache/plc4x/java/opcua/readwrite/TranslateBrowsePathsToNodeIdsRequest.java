@@ -39,34 +39,26 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
     implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "554";
+  public Integer getExtensionId() {
+    return (int) 554;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final int noOfBrowsePaths;
-  protected final List<ExtensionObjectDefinition> browsePaths;
+  protected final RequestHeader requestHeader;
+  protected final List<BrowsePath> browsePaths;
 
   public TranslateBrowsePathsToNodeIdsRequest(
-      ExtensionObjectDefinition requestHeader,
-      int noOfBrowsePaths,
-      List<ExtensionObjectDefinition> browsePaths) {
+      RequestHeader requestHeader, List<BrowsePath> browsePaths) {
     super();
     this.requestHeader = requestHeader;
-    this.noOfBrowsePaths = noOfBrowsePaths;
     this.browsePaths = browsePaths;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public int getNoOfBrowsePaths() {
-    return noOfBrowsePaths;
-  }
-
-  public List<ExtensionObjectDefinition> getBrowsePaths() {
+  public List<BrowsePath> getBrowsePaths() {
     return browsePaths;
   }
 
@@ -80,8 +72,10 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
     // Simple Field (requestHeader)
     writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfBrowsePaths)
-    writeSimpleField("noOfBrowsePaths", noOfBrowsePaths, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfBrowsePaths) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfBrowsePaths = (int) ((((getBrowsePaths()) == (null)) ? -(1) : COUNT(getBrowsePaths())));
+    writeImplicitField("noOfBrowsePaths", noOfBrowsePaths, writeSignedInt(writeBuffer, 32));
 
     // Array Field (browsePaths)
     writeComplexTypeArrayField("browsePaths", browsePaths, writeBuffer);
@@ -103,13 +97,13 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
 
-    // Simple field (noOfBrowsePaths)
+    // Implicit Field (noOfBrowsePaths)
     lengthInBits += 32;
 
     // Array field
     if (browsePaths != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : browsePaths) {
+      for (BrowsePath element : browsePaths) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= browsePaths.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -119,52 +113,48 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("TranslateBrowsePathsToNodeIdsRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    int noOfBrowsePaths = readSimpleField("noOfBrowsePaths", readSignedInt(readBuffer, 32));
+    int noOfBrowsePaths = readImplicitField("noOfBrowsePaths", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> browsePaths =
+    List<BrowsePath> browsePaths =
         readCountArrayField(
             "browsePaths",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("545")),
+                () -> (BrowsePath) ExtensionObjectDefinition.staticParse(readBuffer, (int) (545)),
                 readBuffer),
             noOfBrowsePaths);
 
     readBuffer.closeContext("TranslateBrowsePathsToNodeIdsRequest");
     // Create the instance
-    return new TranslateBrowsePathsToNodeIdsRequestBuilderImpl(
-        requestHeader, noOfBrowsePaths, browsePaths);
+    return new TranslateBrowsePathsToNodeIdsRequestBuilderImpl(requestHeader, browsePaths);
   }
 
   public static class TranslateBrowsePathsToNodeIdsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final int noOfBrowsePaths;
-    private final List<ExtensionObjectDefinition> browsePaths;
+    private final RequestHeader requestHeader;
+    private final List<BrowsePath> browsePaths;
 
     public TranslateBrowsePathsToNodeIdsRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        int noOfBrowsePaths,
-        List<ExtensionObjectDefinition> browsePaths) {
+        RequestHeader requestHeader, List<BrowsePath> browsePaths) {
       this.requestHeader = requestHeader;
-      this.noOfBrowsePaths = noOfBrowsePaths;
       this.browsePaths = browsePaths;
     }
 
     public TranslateBrowsePathsToNodeIdsRequest build() {
       TranslateBrowsePathsToNodeIdsRequest translateBrowsePathsToNodeIdsRequest =
-          new TranslateBrowsePathsToNodeIdsRequest(requestHeader, noOfBrowsePaths, browsePaths);
+          new TranslateBrowsePathsToNodeIdsRequest(requestHeader, browsePaths);
       return translateBrowsePathsToNodeIdsRequest;
     }
   }
@@ -179,7 +169,6 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
     }
     TranslateBrowsePathsToNodeIdsRequest that = (TranslateBrowsePathsToNodeIdsRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
-        && (getNoOfBrowsePaths() == that.getNoOfBrowsePaths())
         && (getBrowsePaths() == that.getBrowsePaths())
         && super.equals(that)
         && true;
@@ -187,8 +176,7 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getRequestHeader(), getNoOfBrowsePaths(), getBrowsePaths());
+    return Objects.hash(super.hashCode(), getRequestHeader(), getBrowsePaths());
   }
 
   @Override

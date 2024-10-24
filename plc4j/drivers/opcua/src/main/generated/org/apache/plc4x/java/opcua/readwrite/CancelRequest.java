@@ -38,21 +38,21 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CancelRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "479";
+  public Integer getExtensionId() {
+    return (int) 479;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final long requestHandle;
 
-  public CancelRequest(ExtensionObjectDefinition requestHeader, long requestHandle) {
+  public CancelRequest(RequestHeader requestHeader, long requestHandle) {
     super();
     this.requestHeader = requestHeader;
     this.requestHandle = requestHandle;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -97,16 +97,17 @@ public class CancelRequest extends ExtensionObjectDefinition implements Message 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CancelRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     long requestHandle = readSimpleField("requestHandle", readUnsignedLong(readBuffer, 32));
@@ -118,10 +119,10 @@ public class CancelRequest extends ExtensionObjectDefinition implements Message 
 
   public static class CancelRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final long requestHandle;
 
-    public CancelRequestBuilderImpl(ExtensionObjectDefinition requestHeader, long requestHandle) {
+    public CancelRequestBuilderImpl(RequestHeader requestHeader, long requestHandle) {
       this.requestHeader = requestHeader;
       this.requestHandle = requestHandle;
     }

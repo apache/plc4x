@@ -222,8 +222,8 @@ func (b *_SignedSoftwareCertificate) CreateSignedSoftwareCertificateBuilder() Si
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SignedSoftwareCertificate) GetIdentifier() string {
-	return "346"
+func (m *_SignedSoftwareCertificate) GetExtensionId() int32 {
+	return int32(346)
 }
 
 ///////////////////////
@@ -269,7 +269,7 @@ func (m *_SignedSoftwareCertificate) GetTypeName() string {
 }
 
 func (m *_SignedSoftwareCertificate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (certificateData)
 	lengthInBits += m.CertificateData.GetLengthInBits(ctx)
@@ -284,7 +284,7 @@ func (m *_SignedSoftwareCertificate) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SignedSoftwareCertificate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__signedSoftwareCertificate SignedSoftwareCertificate, err error) {
+func (m *_SignedSoftwareCertificate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__signedSoftwareCertificate SignedSoftwareCertificate, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

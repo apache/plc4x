@@ -254,7 +254,7 @@ func (m *_AdsMultiRequestItem) GetTypeName() string {
 	return "AdsMultiRequestItem"
 }
 
-func (m *_AdsMultiRequestItem) getLengthInBits(ctx context.Context) uint16 {
+func (m *_AdsMultiRequestItem) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

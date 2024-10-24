@@ -209,7 +209,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetTypeName() string {
 }
 
 func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetServiceAckContract.(*_BACnetServiceAck).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.BytesOfRemovedService) > 0 {

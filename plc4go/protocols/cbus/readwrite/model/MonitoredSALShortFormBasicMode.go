@@ -292,7 +292,7 @@ func (m *_MonitoredSALShortFormBasicMode) GetTypeName() string {
 }
 
 func (m *_MonitoredSALShortFormBasicMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MonitoredSALContract.(*_MonitoredSAL).getLengthInBits(ctx))
+	lengthInBits := uint16(m.MonitoredSALContract.(*_MonitoredSAL).GetLengthInBits(ctx))
 
 	// Optional Field (bridgeCount)
 	if m.BridgeCount != nil {

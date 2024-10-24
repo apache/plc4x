@@ -209,7 +209,7 @@ func (m *_BACnetConfirmedServiceRequestUnknown) GetTypeName() string {
 }
 
 func (m *_BACnetConfirmedServiceRequestUnknown) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.UnknownBytes) > 0 {

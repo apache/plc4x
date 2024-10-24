@@ -42,20 +42,12 @@ type TrustListDataType interface {
 	ExtensionObjectDefinition
 	// GetSpecifiedLists returns SpecifiedLists (property field)
 	GetSpecifiedLists() uint32
-	// GetNoOfTrustedCertificates returns NoOfTrustedCertificates (property field)
-	GetNoOfTrustedCertificates() int32
 	// GetTrustedCertificates returns TrustedCertificates (property field)
 	GetTrustedCertificates() []PascalByteString
-	// GetNoOfTrustedCrls returns NoOfTrustedCrls (property field)
-	GetNoOfTrustedCrls() int32
 	// GetTrustedCrls returns TrustedCrls (property field)
 	GetTrustedCrls() []PascalByteString
-	// GetNoOfIssuerCertificates returns NoOfIssuerCertificates (property field)
-	GetNoOfIssuerCertificates() int32
 	// GetIssuerCertificates returns IssuerCertificates (property field)
 	GetIssuerCertificates() []PascalByteString
-	// GetNoOfIssuerCrls returns NoOfIssuerCrls (property field)
-	GetNoOfIssuerCrls() int32
 	// GetIssuerCrls returns IssuerCrls (property field)
 	GetIssuerCrls() []PascalByteString
 	// IsTrustListDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -67,32 +59,24 @@ type TrustListDataType interface {
 // _TrustListDataType is the data-structure of this message
 type _TrustListDataType struct {
 	ExtensionObjectDefinitionContract
-	SpecifiedLists          uint32
-	NoOfTrustedCertificates int32
-	TrustedCertificates     []PascalByteString
-	NoOfTrustedCrls         int32
-	TrustedCrls             []PascalByteString
-	NoOfIssuerCertificates  int32
-	IssuerCertificates      []PascalByteString
-	NoOfIssuerCrls          int32
-	IssuerCrls              []PascalByteString
+	SpecifiedLists      uint32
+	TrustedCertificates []PascalByteString
+	TrustedCrls         []PascalByteString
+	IssuerCertificates  []PascalByteString
+	IssuerCrls          []PascalByteString
 }
 
 var _ TrustListDataType = (*_TrustListDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TrustListDataType)(nil)
 
 // NewTrustListDataType factory function for _TrustListDataType
-func NewTrustListDataType(specifiedLists uint32, noOfTrustedCertificates int32, trustedCertificates []PascalByteString, noOfTrustedCrls int32, trustedCrls []PascalByteString, noOfIssuerCertificates int32, issuerCertificates []PascalByteString, noOfIssuerCrls int32, issuerCrls []PascalByteString) *_TrustListDataType {
+func NewTrustListDataType(specifiedLists uint32, trustedCertificates []PascalByteString, trustedCrls []PascalByteString, issuerCertificates []PascalByteString, issuerCrls []PascalByteString) *_TrustListDataType {
 	_result := &_TrustListDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		SpecifiedLists:                    specifiedLists,
-		NoOfTrustedCertificates:           noOfTrustedCertificates,
 		TrustedCertificates:               trustedCertificates,
-		NoOfTrustedCrls:                   noOfTrustedCrls,
 		TrustedCrls:                       trustedCrls,
-		NoOfIssuerCertificates:            noOfIssuerCertificates,
 		IssuerCertificates:                issuerCertificates,
-		NoOfIssuerCrls:                    noOfIssuerCrls,
 		IssuerCrls:                        issuerCrls,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -108,23 +92,15 @@ func NewTrustListDataType(specifiedLists uint32, noOfTrustedCertificates int32, 
 type TrustListDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(specifiedLists uint32, noOfTrustedCertificates int32, trustedCertificates []PascalByteString, noOfTrustedCrls int32, trustedCrls []PascalByteString, noOfIssuerCertificates int32, issuerCertificates []PascalByteString, noOfIssuerCrls int32, issuerCrls []PascalByteString) TrustListDataTypeBuilder
+	WithMandatoryFields(specifiedLists uint32, trustedCertificates []PascalByteString, trustedCrls []PascalByteString, issuerCertificates []PascalByteString, issuerCrls []PascalByteString) TrustListDataTypeBuilder
 	// WithSpecifiedLists adds SpecifiedLists (property field)
 	WithSpecifiedLists(uint32) TrustListDataTypeBuilder
-	// WithNoOfTrustedCertificates adds NoOfTrustedCertificates (property field)
-	WithNoOfTrustedCertificates(int32) TrustListDataTypeBuilder
 	// WithTrustedCertificates adds TrustedCertificates (property field)
 	WithTrustedCertificates(...PascalByteString) TrustListDataTypeBuilder
-	// WithNoOfTrustedCrls adds NoOfTrustedCrls (property field)
-	WithNoOfTrustedCrls(int32) TrustListDataTypeBuilder
 	// WithTrustedCrls adds TrustedCrls (property field)
 	WithTrustedCrls(...PascalByteString) TrustListDataTypeBuilder
-	// WithNoOfIssuerCertificates adds NoOfIssuerCertificates (property field)
-	WithNoOfIssuerCertificates(int32) TrustListDataTypeBuilder
 	// WithIssuerCertificates adds IssuerCertificates (property field)
 	WithIssuerCertificates(...PascalByteString) TrustListDataTypeBuilder
-	// WithNoOfIssuerCrls adds NoOfIssuerCrls (property field)
-	WithNoOfIssuerCrls(int32) TrustListDataTypeBuilder
 	// WithIssuerCrls adds IssuerCrls (property field)
 	WithIssuerCrls(...PascalByteString) TrustListDataTypeBuilder
 	// Build builds the TrustListDataType or returns an error if something is wrong
@@ -152,17 +128,12 @@ func (b *_TrustListDataTypeBuilder) setParent(contract ExtensionObjectDefinition
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_TrustListDataTypeBuilder) WithMandatoryFields(specifiedLists uint32, noOfTrustedCertificates int32, trustedCertificates []PascalByteString, noOfTrustedCrls int32, trustedCrls []PascalByteString, noOfIssuerCertificates int32, issuerCertificates []PascalByteString, noOfIssuerCrls int32, issuerCrls []PascalByteString) TrustListDataTypeBuilder {
-	return b.WithSpecifiedLists(specifiedLists).WithNoOfTrustedCertificates(noOfTrustedCertificates).WithTrustedCertificates(trustedCertificates...).WithNoOfTrustedCrls(noOfTrustedCrls).WithTrustedCrls(trustedCrls...).WithNoOfIssuerCertificates(noOfIssuerCertificates).WithIssuerCertificates(issuerCertificates...).WithNoOfIssuerCrls(noOfIssuerCrls).WithIssuerCrls(issuerCrls...)
+func (b *_TrustListDataTypeBuilder) WithMandatoryFields(specifiedLists uint32, trustedCertificates []PascalByteString, trustedCrls []PascalByteString, issuerCertificates []PascalByteString, issuerCrls []PascalByteString) TrustListDataTypeBuilder {
+	return b.WithSpecifiedLists(specifiedLists).WithTrustedCertificates(trustedCertificates...).WithTrustedCrls(trustedCrls...).WithIssuerCertificates(issuerCertificates...).WithIssuerCrls(issuerCrls...)
 }
 
 func (b *_TrustListDataTypeBuilder) WithSpecifiedLists(specifiedLists uint32) TrustListDataTypeBuilder {
 	b.SpecifiedLists = specifiedLists
-	return b
-}
-
-func (b *_TrustListDataTypeBuilder) WithNoOfTrustedCertificates(noOfTrustedCertificates int32) TrustListDataTypeBuilder {
-	b.NoOfTrustedCertificates = noOfTrustedCertificates
 	return b
 }
 
@@ -171,28 +142,13 @@ func (b *_TrustListDataTypeBuilder) WithTrustedCertificates(trustedCertificates 
 	return b
 }
 
-func (b *_TrustListDataTypeBuilder) WithNoOfTrustedCrls(noOfTrustedCrls int32) TrustListDataTypeBuilder {
-	b.NoOfTrustedCrls = noOfTrustedCrls
-	return b
-}
-
 func (b *_TrustListDataTypeBuilder) WithTrustedCrls(trustedCrls ...PascalByteString) TrustListDataTypeBuilder {
 	b.TrustedCrls = trustedCrls
 	return b
 }
 
-func (b *_TrustListDataTypeBuilder) WithNoOfIssuerCertificates(noOfIssuerCertificates int32) TrustListDataTypeBuilder {
-	b.NoOfIssuerCertificates = noOfIssuerCertificates
-	return b
-}
-
 func (b *_TrustListDataTypeBuilder) WithIssuerCertificates(issuerCertificates ...PascalByteString) TrustListDataTypeBuilder {
 	b.IssuerCertificates = issuerCertificates
-	return b
-}
-
-func (b *_TrustListDataTypeBuilder) WithNoOfIssuerCrls(noOfIssuerCrls int32) TrustListDataTypeBuilder {
-	b.NoOfIssuerCrls = noOfIssuerCrls
 	return b
 }
 
@@ -251,8 +207,8 @@ func (b *_TrustListDataType) CreateTrustListDataTypeBuilder() TrustListDataTypeB
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_TrustListDataType) GetIdentifier() string {
-	return "12556"
+func (m *_TrustListDataType) GetExtensionId() int32 {
+	return int32(12556)
 }
 
 ///////////////////////
@@ -273,32 +229,16 @@ func (m *_TrustListDataType) GetSpecifiedLists() uint32 {
 	return m.SpecifiedLists
 }
 
-func (m *_TrustListDataType) GetNoOfTrustedCertificates() int32 {
-	return m.NoOfTrustedCertificates
-}
-
 func (m *_TrustListDataType) GetTrustedCertificates() []PascalByteString {
 	return m.TrustedCertificates
-}
-
-func (m *_TrustListDataType) GetNoOfTrustedCrls() int32 {
-	return m.NoOfTrustedCrls
 }
 
 func (m *_TrustListDataType) GetTrustedCrls() []PascalByteString {
 	return m.TrustedCrls
 }
 
-func (m *_TrustListDataType) GetNoOfIssuerCertificates() int32 {
-	return m.NoOfIssuerCertificates
-}
-
 func (m *_TrustListDataType) GetIssuerCertificates() []PascalByteString {
 	return m.IssuerCertificates
-}
-
-func (m *_TrustListDataType) GetNoOfIssuerCrls() int32 {
-	return m.NoOfIssuerCrls
 }
 
 func (m *_TrustListDataType) GetIssuerCrls() []PascalByteString {
@@ -326,12 +266,12 @@ func (m *_TrustListDataType) GetTypeName() string {
 }
 
 func (m *_TrustListDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (specifiedLists)
 	lengthInBits += 32
 
-	// Simple field (noOfTrustedCertificates)
+	// Implicit Field (noOfTrustedCertificates)
 	lengthInBits += 32
 
 	// Array field
@@ -344,7 +284,7 @@ func (m *_TrustListDataType) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfTrustedCrls)
+	// Implicit Field (noOfTrustedCrls)
 	lengthInBits += 32
 
 	// Array field
@@ -357,7 +297,7 @@ func (m *_TrustListDataType) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfIssuerCertificates)
+	// Implicit Field (noOfIssuerCertificates)
 	lengthInBits += 32
 
 	// Array field
@@ -370,7 +310,7 @@ func (m *_TrustListDataType) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfIssuerCrls)
+	// Implicit Field (noOfIssuerCrls)
 	lengthInBits += 32
 
 	// Array field
@@ -390,7 +330,7 @@ func (m *_TrustListDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_TrustListDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__trustListDataType TrustListDataType, err error) {
+func (m *_TrustListDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__trustListDataType TrustListDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -407,11 +347,11 @@ func (m *_TrustListDataType) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	m.SpecifiedLists = specifiedLists
 
-	noOfTrustedCertificates, err := ReadSimpleField(ctx, "noOfTrustedCertificates", ReadSignedInt(readBuffer, uint8(32)))
+	noOfTrustedCertificates, err := ReadImplicitField[int32](ctx, "noOfTrustedCertificates", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfTrustedCertificates' field"))
 	}
-	m.NoOfTrustedCertificates = noOfTrustedCertificates
+	_ = noOfTrustedCertificates
 
 	trustedCertificates, err := ReadCountArrayField[PascalByteString](ctx, "trustedCertificates", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfTrustedCertificates))
 	if err != nil {
@@ -419,11 +359,11 @@ func (m *_TrustListDataType) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	m.TrustedCertificates = trustedCertificates
 
-	noOfTrustedCrls, err := ReadSimpleField(ctx, "noOfTrustedCrls", ReadSignedInt(readBuffer, uint8(32)))
+	noOfTrustedCrls, err := ReadImplicitField[int32](ctx, "noOfTrustedCrls", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfTrustedCrls' field"))
 	}
-	m.NoOfTrustedCrls = noOfTrustedCrls
+	_ = noOfTrustedCrls
 
 	trustedCrls, err := ReadCountArrayField[PascalByteString](ctx, "trustedCrls", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfTrustedCrls))
 	if err != nil {
@@ -431,11 +371,11 @@ func (m *_TrustListDataType) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	m.TrustedCrls = trustedCrls
 
-	noOfIssuerCertificates, err := ReadSimpleField(ctx, "noOfIssuerCertificates", ReadSignedInt(readBuffer, uint8(32)))
+	noOfIssuerCertificates, err := ReadImplicitField[int32](ctx, "noOfIssuerCertificates", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfIssuerCertificates' field"))
 	}
-	m.NoOfIssuerCertificates = noOfIssuerCertificates
+	_ = noOfIssuerCertificates
 
 	issuerCertificates, err := ReadCountArrayField[PascalByteString](ctx, "issuerCertificates", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfIssuerCertificates))
 	if err != nil {
@@ -443,11 +383,11 @@ func (m *_TrustListDataType) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	m.IssuerCertificates = issuerCertificates
 
-	noOfIssuerCrls, err := ReadSimpleField(ctx, "noOfIssuerCrls", ReadSignedInt(readBuffer, uint8(32)))
+	noOfIssuerCrls, err := ReadImplicitField[int32](ctx, "noOfIssuerCrls", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfIssuerCrls' field"))
 	}
-	m.NoOfIssuerCrls = noOfIssuerCrls
+	_ = noOfIssuerCrls
 
 	issuerCrls, err := ReadCountArrayField[PascalByteString](ctx, "issuerCrls", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfIssuerCrls))
 	if err != nil {
@@ -483,32 +423,32 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 		if err := WriteSimpleField[uint32](ctx, "specifiedLists", m.GetSpecifiedLists(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'specifiedLists' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfTrustedCertificates", m.GetNoOfTrustedCertificates(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfTrustedCertificates := int32(utils.InlineIf(bool((m.GetTrustedCertificates()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetTrustedCertificates()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfTrustedCertificates", noOfTrustedCertificates, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfTrustedCertificates' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "trustedCertificates", m.GetTrustedCertificates(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'trustedCertificates' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfTrustedCrls", m.GetNoOfTrustedCrls(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfTrustedCrls := int32(utils.InlineIf(bool((m.GetTrustedCrls()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetTrustedCrls()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfTrustedCrls", noOfTrustedCrls, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfTrustedCrls' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "trustedCrls", m.GetTrustedCrls(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'trustedCrls' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfIssuerCertificates", m.GetNoOfIssuerCertificates(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfIssuerCertificates := int32(utils.InlineIf(bool((m.GetIssuerCertificates()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetIssuerCertificates()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfIssuerCertificates", noOfIssuerCertificates, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfIssuerCertificates' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "issuerCertificates", m.GetIssuerCertificates(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'issuerCertificates' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfIssuerCrls", m.GetNoOfIssuerCrls(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfIssuerCrls := int32(utils.InlineIf(bool((m.GetIssuerCrls()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetIssuerCrls()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfIssuerCrls", noOfIssuerCrls, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfIssuerCrls' field")
 		}
 
@@ -537,13 +477,9 @@ func (m *_TrustListDataType) deepCopy() *_TrustListDataType {
 	_TrustListDataTypeCopy := &_TrustListDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SpecifiedLists,
-		m.NoOfTrustedCertificates,
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.TrustedCertificates),
-		m.NoOfTrustedCrls,
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.TrustedCrls),
-		m.NoOfIssuerCertificates,
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.IssuerCertificates),
-		m.NoOfIssuerCrls,
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.IssuerCrls),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

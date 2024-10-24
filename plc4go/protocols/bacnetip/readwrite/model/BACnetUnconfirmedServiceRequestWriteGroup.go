@@ -338,7 +338,7 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetTypeName() string {
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).GetLengthInBits(ctx))
 
 	// Simple field (groupNumber)
 	lengthInBits += m.GroupNumber.GetLengthInBits(ctx)

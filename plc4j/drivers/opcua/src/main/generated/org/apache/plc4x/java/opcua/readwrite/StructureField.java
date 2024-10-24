@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class StructureField extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "103";
+  public Integer getExtensionId() {
+    return (int) 103;
   }
 
   // Properties.
@@ -47,7 +47,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
   protected final LocalizedText description;
   protected final NodeId dataType;
   protected final int valueRank;
-  protected final int noOfArrayDimensions;
   protected final List<Long> arrayDimensions;
   protected final long maxStringLength;
   protected final boolean isOptional;
@@ -57,7 +56,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
       LocalizedText description,
       NodeId dataType,
       int valueRank,
-      int noOfArrayDimensions,
       List<Long> arrayDimensions,
       long maxStringLength,
       boolean isOptional) {
@@ -66,7 +64,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     this.description = description;
     this.dataType = dataType;
     this.valueRank = valueRank;
-    this.noOfArrayDimensions = noOfArrayDimensions;
     this.arrayDimensions = arrayDimensions;
     this.maxStringLength = maxStringLength;
     this.isOptional = isOptional;
@@ -86,10 +83,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
 
   public int getValueRank() {
     return valueRank;
-  }
-
-  public int getNoOfArrayDimensions() {
-    return noOfArrayDimensions;
   }
 
   public List<Long> getArrayDimensions() {
@@ -123,8 +116,11 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     // Simple Field (valueRank)
     writeSimpleField("valueRank", valueRank, writeSignedInt(writeBuffer, 32));
 
-    // Simple Field (noOfArrayDimensions)
-    writeSimpleField("noOfArrayDimensions", noOfArrayDimensions, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfArrayDimensions) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfArrayDimensions =
+        (int) ((((getArrayDimensions()) == (null)) ? -(1) : COUNT(getArrayDimensions())));
+    writeImplicitField("noOfArrayDimensions", noOfArrayDimensions, writeSignedInt(writeBuffer, 32));
 
     // Array Field (arrayDimensions)
     writeSimpleTypeArrayField(
@@ -165,7 +161,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     // Simple field (valueRank)
     lengthInBits += 32;
 
-    // Simple field (noOfArrayDimensions)
+    // Implicit Field (noOfArrayDimensions)
     lengthInBits += 32;
 
     // Array field
@@ -186,7 +182,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("StructureField");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -204,7 +200,8 @@ public class StructureField extends ExtensionObjectDefinition implements Message
 
     int valueRank = readSimpleField("valueRank", readSignedInt(readBuffer, 32));
 
-    int noOfArrayDimensions = readSimpleField("noOfArrayDimensions", readSignedInt(readBuffer, 32));
+    int noOfArrayDimensions =
+        readImplicitField("noOfArrayDimensions", readSignedInt(readBuffer, 32));
 
     List<Long> arrayDimensions =
         readCountArrayField(
@@ -220,14 +217,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     readBuffer.closeContext("StructureField");
     // Create the instance
     return new StructureFieldBuilderImpl(
-        name,
-        description,
-        dataType,
-        valueRank,
-        noOfArrayDimensions,
-        arrayDimensions,
-        maxStringLength,
-        isOptional);
+        name, description, dataType, valueRank, arrayDimensions, maxStringLength, isOptional);
   }
 
   public static class StructureFieldBuilderImpl
@@ -236,7 +226,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     private final LocalizedText description;
     private final NodeId dataType;
     private final int valueRank;
-    private final int noOfArrayDimensions;
     private final List<Long> arrayDimensions;
     private final long maxStringLength;
     private final boolean isOptional;
@@ -246,7 +235,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
         LocalizedText description,
         NodeId dataType,
         int valueRank,
-        int noOfArrayDimensions,
         List<Long> arrayDimensions,
         long maxStringLength,
         boolean isOptional) {
@@ -254,7 +242,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
       this.description = description;
       this.dataType = dataType;
       this.valueRank = valueRank;
-      this.noOfArrayDimensions = noOfArrayDimensions;
       this.arrayDimensions = arrayDimensions;
       this.maxStringLength = maxStringLength;
       this.isOptional = isOptional;
@@ -263,14 +250,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     public StructureField build() {
       StructureField structureField =
           new StructureField(
-              name,
-              description,
-              dataType,
-              valueRank,
-              noOfArrayDimensions,
-              arrayDimensions,
-              maxStringLength,
-              isOptional);
+              name, description, dataType, valueRank, arrayDimensions, maxStringLength, isOptional);
       return structureField;
     }
   }
@@ -288,7 +268,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
         && (getDescription() == that.getDescription())
         && (getDataType() == that.getDataType())
         && (getValueRank() == that.getValueRank())
-        && (getNoOfArrayDimensions() == that.getNoOfArrayDimensions())
         && (getArrayDimensions() == that.getArrayDimensions())
         && (getMaxStringLength() == that.getMaxStringLength())
         && (getIsOptional() == that.getIsOptional())
@@ -304,7 +283,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
         getDescription(),
         getDataType(),
         getValueRank(),
-        getNoOfArrayDimensions(),
         getArrayDimensions(),
         getMaxStringLength(),
         getIsOptional());

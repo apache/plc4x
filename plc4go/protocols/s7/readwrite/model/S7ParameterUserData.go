@@ -210,7 +210,7 @@ func (m *_S7ParameterUserData) GetTypeName() string {
 }
 
 func (m *_S7ParameterUserData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7ParameterContract.(*_S7Parameter).getLengthInBits(ctx))
+	lengthInBits := uint16(m.S7ParameterContract.(*_S7Parameter).GetLengthInBits(ctx))
 
 	// Implicit Field (numItems)
 	lengthInBits += 8

@@ -38,29 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ContentFilterElement extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "585";
+  public Integer getExtensionId() {
+    return (int) 585;
   }
 
   // Properties.
   protected final FilterOperator filterOperator;
-  protected final int noOfFilterOperands;
   protected final List<ExtensionObject> filterOperands;
 
-  public ContentFilterElement(
-      FilterOperator filterOperator, int noOfFilterOperands, List<ExtensionObject> filterOperands) {
+  public ContentFilterElement(FilterOperator filterOperator, List<ExtensionObject> filterOperands) {
     super();
     this.filterOperator = filterOperator;
-    this.noOfFilterOperands = noOfFilterOperands;
     this.filterOperands = filterOperands;
   }
 
   public FilterOperator getFilterOperator() {
     return filterOperator;
-  }
-
-  public int getNoOfFilterOperands() {
-    return noOfFilterOperands;
   }
 
   public List<ExtensionObject> getFilterOperands() {
@@ -82,8 +75,11 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
         writeEnum(
             FilterOperator::getValue, FilterOperator::name, writeUnsignedLong(writeBuffer, 32)));
 
-    // Simple Field (noOfFilterOperands)
-    writeSimpleField("noOfFilterOperands", noOfFilterOperands, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfFilterOperands) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfFilterOperands =
+        (int) ((((getFilterOperands()) == (null)) ? -(1) : COUNT(getFilterOperands())));
+    writeImplicitField("noOfFilterOperands", noOfFilterOperands, writeSignedInt(writeBuffer, 32));
 
     // Array Field (filterOperands)
     writeComplexTypeArrayField("filterOperands", filterOperands, writeBuffer);
@@ -105,7 +101,7 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
     // Simple field (filterOperator)
     lengthInBits += 32;
 
-    // Simple field (noOfFilterOperands)
+    // Implicit Field (noOfFilterOperands)
     lengthInBits += 32;
 
     // Array field
@@ -121,7 +117,7 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ContentFilterElement");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -132,7 +128,7 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
             "FilterOperator",
             readEnum(FilterOperator::enumForValue, readUnsignedLong(readBuffer, 32)));
 
-    int noOfFilterOperands = readSimpleField("noOfFilterOperands", readSignedInt(readBuffer, 32));
+    int noOfFilterOperands = readImplicitField("noOfFilterOperands", readSignedInt(readBuffer, 32));
 
     List<ExtensionObject> filterOperands =
         readCountArrayField(
@@ -143,27 +139,23 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("ContentFilterElement");
     // Create the instance
-    return new ContentFilterElementBuilderImpl(filterOperator, noOfFilterOperands, filterOperands);
+    return new ContentFilterElementBuilderImpl(filterOperator, filterOperands);
   }
 
   public static class ContentFilterElementBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final FilterOperator filterOperator;
-    private final int noOfFilterOperands;
     private final List<ExtensionObject> filterOperands;
 
     public ContentFilterElementBuilderImpl(
-        FilterOperator filterOperator,
-        int noOfFilterOperands,
-        List<ExtensionObject> filterOperands) {
+        FilterOperator filterOperator, List<ExtensionObject> filterOperands) {
       this.filterOperator = filterOperator;
-      this.noOfFilterOperands = noOfFilterOperands;
       this.filterOperands = filterOperands;
     }
 
     public ContentFilterElement build() {
       ContentFilterElement contentFilterElement =
-          new ContentFilterElement(filterOperator, noOfFilterOperands, filterOperands);
+          new ContentFilterElement(filterOperator, filterOperands);
       return contentFilterElement;
     }
   }
@@ -178,7 +170,6 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
     }
     ContentFilterElement that = (ContentFilterElement) o;
     return (getFilterOperator() == that.getFilterOperator())
-        && (getNoOfFilterOperands() == that.getNoOfFilterOperands())
         && (getFilterOperands() == that.getFilterOperands())
         && super.equals(that)
         && true;
@@ -186,8 +177,7 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getFilterOperator(), getNoOfFilterOperands(), getFilterOperands());
+    return Objects.hash(super.hashCode(), getFilterOperator(), getFilterOperands());
   }
 
   @Override

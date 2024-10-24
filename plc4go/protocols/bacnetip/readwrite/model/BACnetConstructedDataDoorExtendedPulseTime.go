@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (doorExtendedPulseTime)
 	lengthInBits += m.DoorExtendedPulseTime.GetLengthInBits(ctx)

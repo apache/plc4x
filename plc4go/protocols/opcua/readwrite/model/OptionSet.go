@@ -222,8 +222,8 @@ func (b *_OptionSet) CreateOptionSetBuilder() OptionSetBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_OptionSet) GetIdentifier() string {
-	return "12757"
+func (m *_OptionSet) GetExtensionId() int32 {
+	return int32(12757)
 }
 
 ///////////////////////
@@ -269,7 +269,7 @@ func (m *_OptionSet) GetTypeName() string {
 }
 
 func (m *_OptionSet) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (value)
 	lengthInBits += m.Value.GetLengthInBits(ctx)
@@ -284,7 +284,7 @@ func (m *_OptionSet) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_OptionSet) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__optionSet OptionSet, err error) {
+func (m *_OptionSet) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__optionSet OptionSet, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

@@ -338,7 +338,7 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetTypeName() string
 }
 
 func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).GetLengthInBits(ctx))
 
 	// Simple field (requestingProcessIdentifier)
 	lengthInBits += m.RequestingProcessIdentifier.GetLengthInBits(ctx)

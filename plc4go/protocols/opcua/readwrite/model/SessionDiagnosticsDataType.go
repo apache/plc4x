@@ -45,13 +45,11 @@ type SessionDiagnosticsDataType interface {
 	// GetSessionName returns SessionName (property field)
 	GetSessionName() PascalString
 	// GetClientDescription returns ClientDescription (property field)
-	GetClientDescription() ExtensionObjectDefinition
+	GetClientDescription() ApplicationDescription
 	// GetServerUri returns ServerUri (property field)
 	GetServerUri() PascalString
 	// GetEndpointUrl returns EndpointUrl (property field)
 	GetEndpointUrl() PascalString
-	// GetNoOfLocaleIds returns NoOfLocaleIds (property field)
-	GetNoOfLocaleIds() int32
 	// GetLocaleIds returns LocaleIds (property field)
 	GetLocaleIds() []PascalString
 	// GetActualSessionTimeout returns ActualSessionTimeout (property field)
@@ -69,65 +67,65 @@ type SessionDiagnosticsDataType interface {
 	// GetCurrentPublishRequestsInQueue returns CurrentPublishRequestsInQueue (property field)
 	GetCurrentPublishRequestsInQueue() uint32
 	// GetTotalRequestCount returns TotalRequestCount (property field)
-	GetTotalRequestCount() ExtensionObjectDefinition
+	GetTotalRequestCount() ServiceCounterDataType
 	// GetUnauthorizedRequestCount returns UnauthorizedRequestCount (property field)
 	GetUnauthorizedRequestCount() uint32
 	// GetReadCount returns ReadCount (property field)
-	GetReadCount() ExtensionObjectDefinition
+	GetReadCount() ServiceCounterDataType
 	// GetHistoryReadCount returns HistoryReadCount (property field)
-	GetHistoryReadCount() ExtensionObjectDefinition
+	GetHistoryReadCount() ServiceCounterDataType
 	// GetWriteCount returns WriteCount (property field)
-	GetWriteCount() ExtensionObjectDefinition
+	GetWriteCount() ServiceCounterDataType
 	// GetHistoryUpdateCount returns HistoryUpdateCount (property field)
-	GetHistoryUpdateCount() ExtensionObjectDefinition
+	GetHistoryUpdateCount() ServiceCounterDataType
 	// GetCallCount returns CallCount (property field)
-	GetCallCount() ExtensionObjectDefinition
+	GetCallCount() ServiceCounterDataType
 	// GetCreateMonitoredItemsCount returns CreateMonitoredItemsCount (property field)
-	GetCreateMonitoredItemsCount() ExtensionObjectDefinition
+	GetCreateMonitoredItemsCount() ServiceCounterDataType
 	// GetModifyMonitoredItemsCount returns ModifyMonitoredItemsCount (property field)
-	GetModifyMonitoredItemsCount() ExtensionObjectDefinition
+	GetModifyMonitoredItemsCount() ServiceCounterDataType
 	// GetSetMonitoringModeCount returns SetMonitoringModeCount (property field)
-	GetSetMonitoringModeCount() ExtensionObjectDefinition
+	GetSetMonitoringModeCount() ServiceCounterDataType
 	// GetSetTriggeringCount returns SetTriggeringCount (property field)
-	GetSetTriggeringCount() ExtensionObjectDefinition
+	GetSetTriggeringCount() ServiceCounterDataType
 	// GetDeleteMonitoredItemsCount returns DeleteMonitoredItemsCount (property field)
-	GetDeleteMonitoredItemsCount() ExtensionObjectDefinition
+	GetDeleteMonitoredItemsCount() ServiceCounterDataType
 	// GetCreateSubscriptionCount returns CreateSubscriptionCount (property field)
-	GetCreateSubscriptionCount() ExtensionObjectDefinition
+	GetCreateSubscriptionCount() ServiceCounterDataType
 	// GetModifySubscriptionCount returns ModifySubscriptionCount (property field)
-	GetModifySubscriptionCount() ExtensionObjectDefinition
+	GetModifySubscriptionCount() ServiceCounterDataType
 	// GetSetPublishingModeCount returns SetPublishingModeCount (property field)
-	GetSetPublishingModeCount() ExtensionObjectDefinition
+	GetSetPublishingModeCount() ServiceCounterDataType
 	// GetPublishCount returns PublishCount (property field)
-	GetPublishCount() ExtensionObjectDefinition
+	GetPublishCount() ServiceCounterDataType
 	// GetRepublishCount returns RepublishCount (property field)
-	GetRepublishCount() ExtensionObjectDefinition
+	GetRepublishCount() ServiceCounterDataType
 	// GetTransferSubscriptionsCount returns TransferSubscriptionsCount (property field)
-	GetTransferSubscriptionsCount() ExtensionObjectDefinition
+	GetTransferSubscriptionsCount() ServiceCounterDataType
 	// GetDeleteSubscriptionsCount returns DeleteSubscriptionsCount (property field)
-	GetDeleteSubscriptionsCount() ExtensionObjectDefinition
+	GetDeleteSubscriptionsCount() ServiceCounterDataType
 	// GetAddNodesCount returns AddNodesCount (property field)
-	GetAddNodesCount() ExtensionObjectDefinition
+	GetAddNodesCount() ServiceCounterDataType
 	// GetAddReferencesCount returns AddReferencesCount (property field)
-	GetAddReferencesCount() ExtensionObjectDefinition
+	GetAddReferencesCount() ServiceCounterDataType
 	// GetDeleteNodesCount returns DeleteNodesCount (property field)
-	GetDeleteNodesCount() ExtensionObjectDefinition
+	GetDeleteNodesCount() ServiceCounterDataType
 	// GetDeleteReferencesCount returns DeleteReferencesCount (property field)
-	GetDeleteReferencesCount() ExtensionObjectDefinition
+	GetDeleteReferencesCount() ServiceCounterDataType
 	// GetBrowseCount returns BrowseCount (property field)
-	GetBrowseCount() ExtensionObjectDefinition
+	GetBrowseCount() ServiceCounterDataType
 	// GetBrowseNextCount returns BrowseNextCount (property field)
-	GetBrowseNextCount() ExtensionObjectDefinition
+	GetBrowseNextCount() ServiceCounterDataType
 	// GetTranslateBrowsePathsToNodeIdsCount returns TranslateBrowsePathsToNodeIdsCount (property field)
-	GetTranslateBrowsePathsToNodeIdsCount() ExtensionObjectDefinition
+	GetTranslateBrowsePathsToNodeIdsCount() ServiceCounterDataType
 	// GetQueryFirstCount returns QueryFirstCount (property field)
-	GetQueryFirstCount() ExtensionObjectDefinition
+	GetQueryFirstCount() ServiceCounterDataType
 	// GetQueryNextCount returns QueryNextCount (property field)
-	GetQueryNextCount() ExtensionObjectDefinition
+	GetQueryNextCount() ServiceCounterDataType
 	// GetRegisterNodesCount returns RegisterNodesCount (property field)
-	GetRegisterNodesCount() ExtensionObjectDefinition
+	GetRegisterNodesCount() ServiceCounterDataType
 	// GetUnregisterNodesCount returns UnregisterNodesCount (property field)
-	GetUnregisterNodesCount() ExtensionObjectDefinition
+	GetUnregisterNodesCount() ServiceCounterDataType
 	// IsSessionDiagnosticsDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSessionDiagnosticsDataType()
 	// CreateBuilder creates a SessionDiagnosticsDataTypeBuilder
@@ -139,10 +137,9 @@ type _SessionDiagnosticsDataType struct {
 	ExtensionObjectDefinitionContract
 	SessionId                          NodeId
 	SessionName                        PascalString
-	ClientDescription                  ExtensionObjectDefinition
+	ClientDescription                  ApplicationDescription
 	ServerUri                          PascalString
 	EndpointUrl                        PascalString
-	NoOfLocaleIds                      int32
 	LocaleIds                          []PascalString
 	ActualSessionTimeout               float64
 	MaxResponseMessageSize             uint32
@@ -151,43 +148,43 @@ type _SessionDiagnosticsDataType struct {
 	CurrentSubscriptionsCount          uint32
 	CurrentMonitoredItemsCount         uint32
 	CurrentPublishRequestsInQueue      uint32
-	TotalRequestCount                  ExtensionObjectDefinition
+	TotalRequestCount                  ServiceCounterDataType
 	UnauthorizedRequestCount           uint32
-	ReadCount                          ExtensionObjectDefinition
-	HistoryReadCount                   ExtensionObjectDefinition
-	WriteCount                         ExtensionObjectDefinition
-	HistoryUpdateCount                 ExtensionObjectDefinition
-	CallCount                          ExtensionObjectDefinition
-	CreateMonitoredItemsCount          ExtensionObjectDefinition
-	ModifyMonitoredItemsCount          ExtensionObjectDefinition
-	SetMonitoringModeCount             ExtensionObjectDefinition
-	SetTriggeringCount                 ExtensionObjectDefinition
-	DeleteMonitoredItemsCount          ExtensionObjectDefinition
-	CreateSubscriptionCount            ExtensionObjectDefinition
-	ModifySubscriptionCount            ExtensionObjectDefinition
-	SetPublishingModeCount             ExtensionObjectDefinition
-	PublishCount                       ExtensionObjectDefinition
-	RepublishCount                     ExtensionObjectDefinition
-	TransferSubscriptionsCount         ExtensionObjectDefinition
-	DeleteSubscriptionsCount           ExtensionObjectDefinition
-	AddNodesCount                      ExtensionObjectDefinition
-	AddReferencesCount                 ExtensionObjectDefinition
-	DeleteNodesCount                   ExtensionObjectDefinition
-	DeleteReferencesCount              ExtensionObjectDefinition
-	BrowseCount                        ExtensionObjectDefinition
-	BrowseNextCount                    ExtensionObjectDefinition
-	TranslateBrowsePathsToNodeIdsCount ExtensionObjectDefinition
-	QueryFirstCount                    ExtensionObjectDefinition
-	QueryNextCount                     ExtensionObjectDefinition
-	RegisterNodesCount                 ExtensionObjectDefinition
-	UnregisterNodesCount               ExtensionObjectDefinition
+	ReadCount                          ServiceCounterDataType
+	HistoryReadCount                   ServiceCounterDataType
+	WriteCount                         ServiceCounterDataType
+	HistoryUpdateCount                 ServiceCounterDataType
+	CallCount                          ServiceCounterDataType
+	CreateMonitoredItemsCount          ServiceCounterDataType
+	ModifyMonitoredItemsCount          ServiceCounterDataType
+	SetMonitoringModeCount             ServiceCounterDataType
+	SetTriggeringCount                 ServiceCounterDataType
+	DeleteMonitoredItemsCount          ServiceCounterDataType
+	CreateSubscriptionCount            ServiceCounterDataType
+	ModifySubscriptionCount            ServiceCounterDataType
+	SetPublishingModeCount             ServiceCounterDataType
+	PublishCount                       ServiceCounterDataType
+	RepublishCount                     ServiceCounterDataType
+	TransferSubscriptionsCount         ServiceCounterDataType
+	DeleteSubscriptionsCount           ServiceCounterDataType
+	AddNodesCount                      ServiceCounterDataType
+	AddReferencesCount                 ServiceCounterDataType
+	DeleteNodesCount                   ServiceCounterDataType
+	DeleteReferencesCount              ServiceCounterDataType
+	BrowseCount                        ServiceCounterDataType
+	BrowseNextCount                    ServiceCounterDataType
+	TranslateBrowsePathsToNodeIdsCount ServiceCounterDataType
+	QueryFirstCount                    ServiceCounterDataType
+	QueryNextCount                     ServiceCounterDataType
+	RegisterNodesCount                 ServiceCounterDataType
+	UnregisterNodesCount               ServiceCounterDataType
 }
 
 var _ SessionDiagnosticsDataType = (*_SessionDiagnosticsDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SessionDiagnosticsDataType)(nil)
 
 // NewSessionDiagnosticsDataType factory function for _SessionDiagnosticsDataType
-func NewSessionDiagnosticsDataType(sessionId NodeId, sessionName PascalString, clientDescription ExtensionObjectDefinition, serverUri PascalString, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, actualSessionTimeout float64, maxResponseMessageSize uint32, clientConnectionTime int64, clientLastContactTime int64, currentSubscriptionsCount uint32, currentMonitoredItemsCount uint32, currentPublishRequestsInQueue uint32, totalRequestCount ExtensionObjectDefinition, unauthorizedRequestCount uint32, readCount ExtensionObjectDefinition, historyReadCount ExtensionObjectDefinition, writeCount ExtensionObjectDefinition, historyUpdateCount ExtensionObjectDefinition, callCount ExtensionObjectDefinition, createMonitoredItemsCount ExtensionObjectDefinition, modifyMonitoredItemsCount ExtensionObjectDefinition, setMonitoringModeCount ExtensionObjectDefinition, setTriggeringCount ExtensionObjectDefinition, deleteMonitoredItemsCount ExtensionObjectDefinition, createSubscriptionCount ExtensionObjectDefinition, modifySubscriptionCount ExtensionObjectDefinition, setPublishingModeCount ExtensionObjectDefinition, publishCount ExtensionObjectDefinition, republishCount ExtensionObjectDefinition, transferSubscriptionsCount ExtensionObjectDefinition, deleteSubscriptionsCount ExtensionObjectDefinition, addNodesCount ExtensionObjectDefinition, addReferencesCount ExtensionObjectDefinition, deleteNodesCount ExtensionObjectDefinition, deleteReferencesCount ExtensionObjectDefinition, browseCount ExtensionObjectDefinition, browseNextCount ExtensionObjectDefinition, translateBrowsePathsToNodeIdsCount ExtensionObjectDefinition, queryFirstCount ExtensionObjectDefinition, queryNextCount ExtensionObjectDefinition, registerNodesCount ExtensionObjectDefinition, unregisterNodesCount ExtensionObjectDefinition) *_SessionDiagnosticsDataType {
+func NewSessionDiagnosticsDataType(sessionId NodeId, sessionName PascalString, clientDescription ApplicationDescription, serverUri PascalString, endpointUrl PascalString, localeIds []PascalString, actualSessionTimeout float64, maxResponseMessageSize uint32, clientConnectionTime int64, clientLastContactTime int64, currentSubscriptionsCount uint32, currentMonitoredItemsCount uint32, currentPublishRequestsInQueue uint32, totalRequestCount ServiceCounterDataType, unauthorizedRequestCount uint32, readCount ServiceCounterDataType, historyReadCount ServiceCounterDataType, writeCount ServiceCounterDataType, historyUpdateCount ServiceCounterDataType, callCount ServiceCounterDataType, createMonitoredItemsCount ServiceCounterDataType, modifyMonitoredItemsCount ServiceCounterDataType, setMonitoringModeCount ServiceCounterDataType, setTriggeringCount ServiceCounterDataType, deleteMonitoredItemsCount ServiceCounterDataType, createSubscriptionCount ServiceCounterDataType, modifySubscriptionCount ServiceCounterDataType, setPublishingModeCount ServiceCounterDataType, publishCount ServiceCounterDataType, republishCount ServiceCounterDataType, transferSubscriptionsCount ServiceCounterDataType, deleteSubscriptionsCount ServiceCounterDataType, addNodesCount ServiceCounterDataType, addReferencesCount ServiceCounterDataType, deleteNodesCount ServiceCounterDataType, deleteReferencesCount ServiceCounterDataType, browseCount ServiceCounterDataType, browseNextCount ServiceCounterDataType, translateBrowsePathsToNodeIdsCount ServiceCounterDataType, queryFirstCount ServiceCounterDataType, queryNextCount ServiceCounterDataType, registerNodesCount ServiceCounterDataType, unregisterNodesCount ServiceCounterDataType) *_SessionDiagnosticsDataType {
 	if sessionId == nil {
 		panic("sessionId of type NodeId for SessionDiagnosticsDataType must not be nil")
 	}
@@ -195,7 +192,7 @@ func NewSessionDiagnosticsDataType(sessionId NodeId, sessionName PascalString, c
 		panic("sessionName of type PascalString for SessionDiagnosticsDataType must not be nil")
 	}
 	if clientDescription == nil {
-		panic("clientDescription of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("clientDescription of type ApplicationDescription for SessionDiagnosticsDataType must not be nil")
 	}
 	if serverUri == nil {
 		panic("serverUri of type PascalString for SessionDiagnosticsDataType must not be nil")
@@ -204,91 +201,91 @@ func NewSessionDiagnosticsDataType(sessionId NodeId, sessionName PascalString, c
 		panic("endpointUrl of type PascalString for SessionDiagnosticsDataType must not be nil")
 	}
 	if totalRequestCount == nil {
-		panic("totalRequestCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("totalRequestCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if readCount == nil {
-		panic("readCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("readCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if historyReadCount == nil {
-		panic("historyReadCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("historyReadCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if writeCount == nil {
-		panic("writeCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("writeCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if historyUpdateCount == nil {
-		panic("historyUpdateCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("historyUpdateCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if callCount == nil {
-		panic("callCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("callCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if createMonitoredItemsCount == nil {
-		panic("createMonitoredItemsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("createMonitoredItemsCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if modifyMonitoredItemsCount == nil {
-		panic("modifyMonitoredItemsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("modifyMonitoredItemsCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if setMonitoringModeCount == nil {
-		panic("setMonitoringModeCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("setMonitoringModeCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if setTriggeringCount == nil {
-		panic("setTriggeringCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("setTriggeringCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if deleteMonitoredItemsCount == nil {
-		panic("deleteMonitoredItemsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("deleteMonitoredItemsCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if createSubscriptionCount == nil {
-		panic("createSubscriptionCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("createSubscriptionCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if modifySubscriptionCount == nil {
-		panic("modifySubscriptionCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("modifySubscriptionCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if setPublishingModeCount == nil {
-		panic("setPublishingModeCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("setPublishingModeCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if publishCount == nil {
-		panic("publishCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("publishCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if republishCount == nil {
-		panic("republishCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("republishCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if transferSubscriptionsCount == nil {
-		panic("transferSubscriptionsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("transferSubscriptionsCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if deleteSubscriptionsCount == nil {
-		panic("deleteSubscriptionsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("deleteSubscriptionsCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if addNodesCount == nil {
-		panic("addNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("addNodesCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if addReferencesCount == nil {
-		panic("addReferencesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("addReferencesCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if deleteNodesCount == nil {
-		panic("deleteNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("deleteNodesCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if deleteReferencesCount == nil {
-		panic("deleteReferencesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("deleteReferencesCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if browseCount == nil {
-		panic("browseCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("browseCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if browseNextCount == nil {
-		panic("browseNextCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("browseNextCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if translateBrowsePathsToNodeIdsCount == nil {
-		panic("translateBrowsePathsToNodeIdsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("translateBrowsePathsToNodeIdsCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if queryFirstCount == nil {
-		panic("queryFirstCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("queryFirstCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if queryNextCount == nil {
-		panic("queryNextCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("queryNextCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if registerNodesCount == nil {
-		panic("registerNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("registerNodesCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	if unregisterNodesCount == nil {
-		panic("unregisterNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+		panic("unregisterNodesCount of type ServiceCounterDataType for SessionDiagnosticsDataType must not be nil")
 	}
 	_result := &_SessionDiagnosticsDataType{
 		ExtensionObjectDefinitionContract:  NewExtensionObjectDefinition(),
@@ -297,7 +294,6 @@ func NewSessionDiagnosticsDataType(sessionId NodeId, sessionName PascalString, c
 		ClientDescription:                  clientDescription,
 		ServerUri:                          serverUri,
 		EndpointUrl:                        endpointUrl,
-		NoOfLocaleIds:                      noOfLocaleIds,
 		LocaleIds:                          localeIds,
 		ActualSessionTimeout:               actualSessionTimeout,
 		MaxResponseMessageSize:             maxResponseMessageSize,
@@ -350,7 +346,7 @@ func NewSessionDiagnosticsDataType(sessionId NodeId, sessionName PascalString, c
 type SessionDiagnosticsDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(sessionId NodeId, sessionName PascalString, clientDescription ExtensionObjectDefinition, serverUri PascalString, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, actualSessionTimeout float64, maxResponseMessageSize uint32, clientConnectionTime int64, clientLastContactTime int64, currentSubscriptionsCount uint32, currentMonitoredItemsCount uint32, currentPublishRequestsInQueue uint32, totalRequestCount ExtensionObjectDefinition, unauthorizedRequestCount uint32, readCount ExtensionObjectDefinition, historyReadCount ExtensionObjectDefinition, writeCount ExtensionObjectDefinition, historyUpdateCount ExtensionObjectDefinition, callCount ExtensionObjectDefinition, createMonitoredItemsCount ExtensionObjectDefinition, modifyMonitoredItemsCount ExtensionObjectDefinition, setMonitoringModeCount ExtensionObjectDefinition, setTriggeringCount ExtensionObjectDefinition, deleteMonitoredItemsCount ExtensionObjectDefinition, createSubscriptionCount ExtensionObjectDefinition, modifySubscriptionCount ExtensionObjectDefinition, setPublishingModeCount ExtensionObjectDefinition, publishCount ExtensionObjectDefinition, republishCount ExtensionObjectDefinition, transferSubscriptionsCount ExtensionObjectDefinition, deleteSubscriptionsCount ExtensionObjectDefinition, addNodesCount ExtensionObjectDefinition, addReferencesCount ExtensionObjectDefinition, deleteNodesCount ExtensionObjectDefinition, deleteReferencesCount ExtensionObjectDefinition, browseCount ExtensionObjectDefinition, browseNextCount ExtensionObjectDefinition, translateBrowsePathsToNodeIdsCount ExtensionObjectDefinition, queryFirstCount ExtensionObjectDefinition, queryNextCount ExtensionObjectDefinition, registerNodesCount ExtensionObjectDefinition, unregisterNodesCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithMandatoryFields(sessionId NodeId, sessionName PascalString, clientDescription ApplicationDescription, serverUri PascalString, endpointUrl PascalString, localeIds []PascalString, actualSessionTimeout float64, maxResponseMessageSize uint32, clientConnectionTime int64, clientLastContactTime int64, currentSubscriptionsCount uint32, currentMonitoredItemsCount uint32, currentPublishRequestsInQueue uint32, totalRequestCount ServiceCounterDataType, unauthorizedRequestCount uint32, readCount ServiceCounterDataType, historyReadCount ServiceCounterDataType, writeCount ServiceCounterDataType, historyUpdateCount ServiceCounterDataType, callCount ServiceCounterDataType, createMonitoredItemsCount ServiceCounterDataType, modifyMonitoredItemsCount ServiceCounterDataType, setMonitoringModeCount ServiceCounterDataType, setTriggeringCount ServiceCounterDataType, deleteMonitoredItemsCount ServiceCounterDataType, createSubscriptionCount ServiceCounterDataType, modifySubscriptionCount ServiceCounterDataType, setPublishingModeCount ServiceCounterDataType, publishCount ServiceCounterDataType, republishCount ServiceCounterDataType, transferSubscriptionsCount ServiceCounterDataType, deleteSubscriptionsCount ServiceCounterDataType, addNodesCount ServiceCounterDataType, addReferencesCount ServiceCounterDataType, deleteNodesCount ServiceCounterDataType, deleteReferencesCount ServiceCounterDataType, browseCount ServiceCounterDataType, browseNextCount ServiceCounterDataType, translateBrowsePathsToNodeIdsCount ServiceCounterDataType, queryFirstCount ServiceCounterDataType, queryNextCount ServiceCounterDataType, registerNodesCount ServiceCounterDataType, unregisterNodesCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithSessionId adds SessionId (property field)
 	WithSessionId(NodeId) SessionDiagnosticsDataTypeBuilder
 	// WithSessionIdBuilder adds SessionId (property field) which is build by the builder
@@ -360,9 +356,9 @@ type SessionDiagnosticsDataTypeBuilder interface {
 	// WithSessionNameBuilder adds SessionName (property field) which is build by the builder
 	WithSessionNameBuilder(func(PascalStringBuilder) PascalStringBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithClientDescription adds ClientDescription (property field)
-	WithClientDescription(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithClientDescription(ApplicationDescription) SessionDiagnosticsDataTypeBuilder
 	// WithClientDescriptionBuilder adds ClientDescription (property field) which is build by the builder
-	WithClientDescriptionBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithClientDescriptionBuilder(func(ApplicationDescriptionBuilder) ApplicationDescriptionBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithServerUri adds ServerUri (property field)
 	WithServerUri(PascalString) SessionDiagnosticsDataTypeBuilder
 	// WithServerUriBuilder adds ServerUri (property field) which is build by the builder
@@ -371,8 +367,6 @@ type SessionDiagnosticsDataTypeBuilder interface {
 	WithEndpointUrl(PascalString) SessionDiagnosticsDataTypeBuilder
 	// WithEndpointUrlBuilder adds EndpointUrl (property field) which is build by the builder
 	WithEndpointUrlBuilder(func(PascalStringBuilder) PascalStringBuilder) SessionDiagnosticsDataTypeBuilder
-	// WithNoOfLocaleIds adds NoOfLocaleIds (property field)
-	WithNoOfLocaleIds(int32) SessionDiagnosticsDataTypeBuilder
 	// WithLocaleIds adds LocaleIds (property field)
 	WithLocaleIds(...PascalString) SessionDiagnosticsDataTypeBuilder
 	// WithActualSessionTimeout adds ActualSessionTimeout (property field)
@@ -390,123 +384,123 @@ type SessionDiagnosticsDataTypeBuilder interface {
 	// WithCurrentPublishRequestsInQueue adds CurrentPublishRequestsInQueue (property field)
 	WithCurrentPublishRequestsInQueue(uint32) SessionDiagnosticsDataTypeBuilder
 	// WithTotalRequestCount adds TotalRequestCount (property field)
-	WithTotalRequestCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithTotalRequestCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithTotalRequestCountBuilder adds TotalRequestCount (property field) which is build by the builder
-	WithTotalRequestCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithTotalRequestCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithUnauthorizedRequestCount adds UnauthorizedRequestCount (property field)
 	WithUnauthorizedRequestCount(uint32) SessionDiagnosticsDataTypeBuilder
 	// WithReadCount adds ReadCount (property field)
-	WithReadCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithReadCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithReadCountBuilder adds ReadCount (property field) which is build by the builder
-	WithReadCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithReadCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithHistoryReadCount adds HistoryReadCount (property field)
-	WithHistoryReadCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithHistoryReadCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithHistoryReadCountBuilder adds HistoryReadCount (property field) which is build by the builder
-	WithHistoryReadCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithHistoryReadCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithWriteCount adds WriteCount (property field)
-	WithWriteCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithWriteCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithWriteCountBuilder adds WriteCount (property field) which is build by the builder
-	WithWriteCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithWriteCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithHistoryUpdateCount adds HistoryUpdateCount (property field)
-	WithHistoryUpdateCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithHistoryUpdateCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithHistoryUpdateCountBuilder adds HistoryUpdateCount (property field) which is build by the builder
-	WithHistoryUpdateCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithHistoryUpdateCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithCallCount adds CallCount (property field)
-	WithCallCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithCallCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithCallCountBuilder adds CallCount (property field) which is build by the builder
-	WithCallCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithCallCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithCreateMonitoredItemsCount adds CreateMonitoredItemsCount (property field)
-	WithCreateMonitoredItemsCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithCreateMonitoredItemsCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithCreateMonitoredItemsCountBuilder adds CreateMonitoredItemsCount (property field) which is build by the builder
-	WithCreateMonitoredItemsCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithCreateMonitoredItemsCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithModifyMonitoredItemsCount adds ModifyMonitoredItemsCount (property field)
-	WithModifyMonitoredItemsCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithModifyMonitoredItemsCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithModifyMonitoredItemsCountBuilder adds ModifyMonitoredItemsCount (property field) which is build by the builder
-	WithModifyMonitoredItemsCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithModifyMonitoredItemsCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithSetMonitoringModeCount adds SetMonitoringModeCount (property field)
-	WithSetMonitoringModeCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithSetMonitoringModeCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithSetMonitoringModeCountBuilder adds SetMonitoringModeCount (property field) which is build by the builder
-	WithSetMonitoringModeCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithSetMonitoringModeCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithSetTriggeringCount adds SetTriggeringCount (property field)
-	WithSetTriggeringCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithSetTriggeringCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithSetTriggeringCountBuilder adds SetTriggeringCount (property field) which is build by the builder
-	WithSetTriggeringCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithSetTriggeringCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithDeleteMonitoredItemsCount adds DeleteMonitoredItemsCount (property field)
-	WithDeleteMonitoredItemsCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithDeleteMonitoredItemsCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithDeleteMonitoredItemsCountBuilder adds DeleteMonitoredItemsCount (property field) which is build by the builder
-	WithDeleteMonitoredItemsCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithDeleteMonitoredItemsCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithCreateSubscriptionCount adds CreateSubscriptionCount (property field)
-	WithCreateSubscriptionCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithCreateSubscriptionCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithCreateSubscriptionCountBuilder adds CreateSubscriptionCount (property field) which is build by the builder
-	WithCreateSubscriptionCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithCreateSubscriptionCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithModifySubscriptionCount adds ModifySubscriptionCount (property field)
-	WithModifySubscriptionCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithModifySubscriptionCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithModifySubscriptionCountBuilder adds ModifySubscriptionCount (property field) which is build by the builder
-	WithModifySubscriptionCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithModifySubscriptionCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithSetPublishingModeCount adds SetPublishingModeCount (property field)
-	WithSetPublishingModeCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithSetPublishingModeCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithSetPublishingModeCountBuilder adds SetPublishingModeCount (property field) which is build by the builder
-	WithSetPublishingModeCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithSetPublishingModeCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithPublishCount adds PublishCount (property field)
-	WithPublishCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithPublishCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithPublishCountBuilder adds PublishCount (property field) which is build by the builder
-	WithPublishCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithPublishCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithRepublishCount adds RepublishCount (property field)
-	WithRepublishCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithRepublishCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithRepublishCountBuilder adds RepublishCount (property field) which is build by the builder
-	WithRepublishCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithRepublishCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithTransferSubscriptionsCount adds TransferSubscriptionsCount (property field)
-	WithTransferSubscriptionsCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithTransferSubscriptionsCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithTransferSubscriptionsCountBuilder adds TransferSubscriptionsCount (property field) which is build by the builder
-	WithTransferSubscriptionsCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithTransferSubscriptionsCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithDeleteSubscriptionsCount adds DeleteSubscriptionsCount (property field)
-	WithDeleteSubscriptionsCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithDeleteSubscriptionsCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithDeleteSubscriptionsCountBuilder adds DeleteSubscriptionsCount (property field) which is build by the builder
-	WithDeleteSubscriptionsCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithDeleteSubscriptionsCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithAddNodesCount adds AddNodesCount (property field)
-	WithAddNodesCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithAddNodesCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithAddNodesCountBuilder adds AddNodesCount (property field) which is build by the builder
-	WithAddNodesCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithAddNodesCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithAddReferencesCount adds AddReferencesCount (property field)
-	WithAddReferencesCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithAddReferencesCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithAddReferencesCountBuilder adds AddReferencesCount (property field) which is build by the builder
-	WithAddReferencesCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithAddReferencesCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithDeleteNodesCount adds DeleteNodesCount (property field)
-	WithDeleteNodesCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithDeleteNodesCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithDeleteNodesCountBuilder adds DeleteNodesCount (property field) which is build by the builder
-	WithDeleteNodesCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithDeleteNodesCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithDeleteReferencesCount adds DeleteReferencesCount (property field)
-	WithDeleteReferencesCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithDeleteReferencesCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithDeleteReferencesCountBuilder adds DeleteReferencesCount (property field) which is build by the builder
-	WithDeleteReferencesCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithDeleteReferencesCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithBrowseCount adds BrowseCount (property field)
-	WithBrowseCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithBrowseCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithBrowseCountBuilder adds BrowseCount (property field) which is build by the builder
-	WithBrowseCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithBrowseCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithBrowseNextCount adds BrowseNextCount (property field)
-	WithBrowseNextCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithBrowseNextCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithBrowseNextCountBuilder adds BrowseNextCount (property field) which is build by the builder
-	WithBrowseNextCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithBrowseNextCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithTranslateBrowsePathsToNodeIdsCount adds TranslateBrowsePathsToNodeIdsCount (property field)
-	WithTranslateBrowsePathsToNodeIdsCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithTranslateBrowsePathsToNodeIdsCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithTranslateBrowsePathsToNodeIdsCountBuilder adds TranslateBrowsePathsToNodeIdsCount (property field) which is build by the builder
-	WithTranslateBrowsePathsToNodeIdsCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithTranslateBrowsePathsToNodeIdsCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithQueryFirstCount adds QueryFirstCount (property field)
-	WithQueryFirstCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithQueryFirstCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithQueryFirstCountBuilder adds QueryFirstCount (property field) which is build by the builder
-	WithQueryFirstCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithQueryFirstCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithQueryNextCount adds QueryNextCount (property field)
-	WithQueryNextCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithQueryNextCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithQueryNextCountBuilder adds QueryNextCount (property field) which is build by the builder
-	WithQueryNextCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithQueryNextCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithRegisterNodesCount adds RegisterNodesCount (property field)
-	WithRegisterNodesCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithRegisterNodesCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithRegisterNodesCountBuilder adds RegisterNodesCount (property field) which is build by the builder
-	WithRegisterNodesCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithRegisterNodesCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// WithUnregisterNodesCount adds UnregisterNodesCount (property field)
-	WithUnregisterNodesCount(ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder
+	WithUnregisterNodesCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithUnregisterNodesCountBuilder adds UnregisterNodesCount (property field) which is build by the builder
-	WithUnregisterNodesCountBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder
+	WithUnregisterNodesCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
 	// Build builds the SessionDiagnosticsDataType or returns an error if something is wrong
 	Build() (SessionDiagnosticsDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -532,8 +526,8 @@ func (b *_SessionDiagnosticsDataTypeBuilder) setParent(contract ExtensionObjectD
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithMandatoryFields(sessionId NodeId, sessionName PascalString, clientDescription ExtensionObjectDefinition, serverUri PascalString, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, actualSessionTimeout float64, maxResponseMessageSize uint32, clientConnectionTime int64, clientLastContactTime int64, currentSubscriptionsCount uint32, currentMonitoredItemsCount uint32, currentPublishRequestsInQueue uint32, totalRequestCount ExtensionObjectDefinition, unauthorizedRequestCount uint32, readCount ExtensionObjectDefinition, historyReadCount ExtensionObjectDefinition, writeCount ExtensionObjectDefinition, historyUpdateCount ExtensionObjectDefinition, callCount ExtensionObjectDefinition, createMonitoredItemsCount ExtensionObjectDefinition, modifyMonitoredItemsCount ExtensionObjectDefinition, setMonitoringModeCount ExtensionObjectDefinition, setTriggeringCount ExtensionObjectDefinition, deleteMonitoredItemsCount ExtensionObjectDefinition, createSubscriptionCount ExtensionObjectDefinition, modifySubscriptionCount ExtensionObjectDefinition, setPublishingModeCount ExtensionObjectDefinition, publishCount ExtensionObjectDefinition, republishCount ExtensionObjectDefinition, transferSubscriptionsCount ExtensionObjectDefinition, deleteSubscriptionsCount ExtensionObjectDefinition, addNodesCount ExtensionObjectDefinition, addReferencesCount ExtensionObjectDefinition, deleteNodesCount ExtensionObjectDefinition, deleteReferencesCount ExtensionObjectDefinition, browseCount ExtensionObjectDefinition, browseNextCount ExtensionObjectDefinition, translateBrowsePathsToNodeIdsCount ExtensionObjectDefinition, queryFirstCount ExtensionObjectDefinition, queryNextCount ExtensionObjectDefinition, registerNodesCount ExtensionObjectDefinition, unregisterNodesCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
-	return b.WithSessionId(sessionId).WithSessionName(sessionName).WithClientDescription(clientDescription).WithServerUri(serverUri).WithEndpointUrl(endpointUrl).WithNoOfLocaleIds(noOfLocaleIds).WithLocaleIds(localeIds...).WithActualSessionTimeout(actualSessionTimeout).WithMaxResponseMessageSize(maxResponseMessageSize).WithClientConnectionTime(clientConnectionTime).WithClientLastContactTime(clientLastContactTime).WithCurrentSubscriptionsCount(currentSubscriptionsCount).WithCurrentMonitoredItemsCount(currentMonitoredItemsCount).WithCurrentPublishRequestsInQueue(currentPublishRequestsInQueue).WithTotalRequestCount(totalRequestCount).WithUnauthorizedRequestCount(unauthorizedRequestCount).WithReadCount(readCount).WithHistoryReadCount(historyReadCount).WithWriteCount(writeCount).WithHistoryUpdateCount(historyUpdateCount).WithCallCount(callCount).WithCreateMonitoredItemsCount(createMonitoredItemsCount).WithModifyMonitoredItemsCount(modifyMonitoredItemsCount).WithSetMonitoringModeCount(setMonitoringModeCount).WithSetTriggeringCount(setTriggeringCount).WithDeleteMonitoredItemsCount(deleteMonitoredItemsCount).WithCreateSubscriptionCount(createSubscriptionCount).WithModifySubscriptionCount(modifySubscriptionCount).WithSetPublishingModeCount(setPublishingModeCount).WithPublishCount(publishCount).WithRepublishCount(republishCount).WithTransferSubscriptionsCount(transferSubscriptionsCount).WithDeleteSubscriptionsCount(deleteSubscriptionsCount).WithAddNodesCount(addNodesCount).WithAddReferencesCount(addReferencesCount).WithDeleteNodesCount(deleteNodesCount).WithDeleteReferencesCount(deleteReferencesCount).WithBrowseCount(browseCount).WithBrowseNextCount(browseNextCount).WithTranslateBrowsePathsToNodeIdsCount(translateBrowsePathsToNodeIdsCount).WithQueryFirstCount(queryFirstCount).WithQueryNextCount(queryNextCount).WithRegisterNodesCount(registerNodesCount).WithUnregisterNodesCount(unregisterNodesCount)
+func (b *_SessionDiagnosticsDataTypeBuilder) WithMandatoryFields(sessionId NodeId, sessionName PascalString, clientDescription ApplicationDescription, serverUri PascalString, endpointUrl PascalString, localeIds []PascalString, actualSessionTimeout float64, maxResponseMessageSize uint32, clientConnectionTime int64, clientLastContactTime int64, currentSubscriptionsCount uint32, currentMonitoredItemsCount uint32, currentPublishRequestsInQueue uint32, totalRequestCount ServiceCounterDataType, unauthorizedRequestCount uint32, readCount ServiceCounterDataType, historyReadCount ServiceCounterDataType, writeCount ServiceCounterDataType, historyUpdateCount ServiceCounterDataType, callCount ServiceCounterDataType, createMonitoredItemsCount ServiceCounterDataType, modifyMonitoredItemsCount ServiceCounterDataType, setMonitoringModeCount ServiceCounterDataType, setTriggeringCount ServiceCounterDataType, deleteMonitoredItemsCount ServiceCounterDataType, createSubscriptionCount ServiceCounterDataType, modifySubscriptionCount ServiceCounterDataType, setPublishingModeCount ServiceCounterDataType, publishCount ServiceCounterDataType, republishCount ServiceCounterDataType, transferSubscriptionsCount ServiceCounterDataType, deleteSubscriptionsCount ServiceCounterDataType, addNodesCount ServiceCounterDataType, addReferencesCount ServiceCounterDataType, deleteNodesCount ServiceCounterDataType, deleteReferencesCount ServiceCounterDataType, browseCount ServiceCounterDataType, browseNextCount ServiceCounterDataType, translateBrowsePathsToNodeIdsCount ServiceCounterDataType, queryFirstCount ServiceCounterDataType, queryNextCount ServiceCounterDataType, registerNodesCount ServiceCounterDataType, unregisterNodesCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
+	return b.WithSessionId(sessionId).WithSessionName(sessionName).WithClientDescription(clientDescription).WithServerUri(serverUri).WithEndpointUrl(endpointUrl).WithLocaleIds(localeIds...).WithActualSessionTimeout(actualSessionTimeout).WithMaxResponseMessageSize(maxResponseMessageSize).WithClientConnectionTime(clientConnectionTime).WithClientLastContactTime(clientLastContactTime).WithCurrentSubscriptionsCount(currentSubscriptionsCount).WithCurrentMonitoredItemsCount(currentMonitoredItemsCount).WithCurrentPublishRequestsInQueue(currentPublishRequestsInQueue).WithTotalRequestCount(totalRequestCount).WithUnauthorizedRequestCount(unauthorizedRequestCount).WithReadCount(readCount).WithHistoryReadCount(historyReadCount).WithWriteCount(writeCount).WithHistoryUpdateCount(historyUpdateCount).WithCallCount(callCount).WithCreateMonitoredItemsCount(createMonitoredItemsCount).WithModifyMonitoredItemsCount(modifyMonitoredItemsCount).WithSetMonitoringModeCount(setMonitoringModeCount).WithSetTriggeringCount(setTriggeringCount).WithDeleteMonitoredItemsCount(deleteMonitoredItemsCount).WithCreateSubscriptionCount(createSubscriptionCount).WithModifySubscriptionCount(modifySubscriptionCount).WithSetPublishingModeCount(setPublishingModeCount).WithPublishCount(publishCount).WithRepublishCount(republishCount).WithTransferSubscriptionsCount(transferSubscriptionsCount).WithDeleteSubscriptionsCount(deleteSubscriptionsCount).WithAddNodesCount(addNodesCount).WithAddReferencesCount(addReferencesCount).WithDeleteNodesCount(deleteNodesCount).WithDeleteReferencesCount(deleteReferencesCount).WithBrowseCount(browseCount).WithBrowseNextCount(browseNextCount).WithTranslateBrowsePathsToNodeIdsCount(translateBrowsePathsToNodeIdsCount).WithQueryFirstCount(queryFirstCount).WithQueryNextCount(queryNextCount).WithRegisterNodesCount(registerNodesCount).WithUnregisterNodesCount(unregisterNodesCount)
 }
 
 func (b *_SessionDiagnosticsDataTypeBuilder) WithSessionId(sessionId NodeId) SessionDiagnosticsDataTypeBuilder {
@@ -572,20 +566,20 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithSessionNameBuilder(builderSuppl
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithClientDescription(clientDescription ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithClientDescription(clientDescription ApplicationDescription) SessionDiagnosticsDataTypeBuilder {
 	b.ClientDescription = clientDescription
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithClientDescriptionBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.ClientDescription.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithClientDescriptionBuilder(builderSupplier func(ApplicationDescriptionBuilder) ApplicationDescriptionBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.ClientDescription.CreateApplicationDescriptionBuilder())
 	var err error
 	b.ClientDescription, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ApplicationDescriptionBuilder failed"))
 	}
 	return b
 }
@@ -623,11 +617,6 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithEndpointUrlBuilder(builderSuppl
 		}
 		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return b
-}
-
-func (b *_SessionDiagnosticsDataTypeBuilder) WithNoOfLocaleIds(noOfLocaleIds int32) SessionDiagnosticsDataTypeBuilder {
-	b.NoOfLocaleIds = noOfLocaleIds
 	return b
 }
 
@@ -671,20 +660,20 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithCurrentPublishRequestsInQueue(c
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithTotalRequestCount(totalRequestCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithTotalRequestCount(totalRequestCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.TotalRequestCount = totalRequestCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithTotalRequestCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.TotalRequestCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithTotalRequestCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.TotalRequestCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.TotalRequestCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -694,506 +683,506 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithUnauthorizedRequestCount(unauth
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithReadCount(readCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithReadCount(readCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.ReadCount = readCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithReadCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.ReadCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithReadCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.ReadCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.ReadCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithHistoryReadCount(historyReadCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithHistoryReadCount(historyReadCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.HistoryReadCount = historyReadCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithHistoryReadCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.HistoryReadCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithHistoryReadCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.HistoryReadCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.HistoryReadCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithWriteCount(writeCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithWriteCount(writeCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.WriteCount = writeCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithWriteCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.WriteCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithWriteCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.WriteCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.WriteCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithHistoryUpdateCount(historyUpdateCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithHistoryUpdateCount(historyUpdateCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.HistoryUpdateCount = historyUpdateCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithHistoryUpdateCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.HistoryUpdateCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithHistoryUpdateCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.HistoryUpdateCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.HistoryUpdateCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithCallCount(callCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithCallCount(callCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.CallCount = callCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithCallCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.CallCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithCallCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.CallCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.CallCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithCreateMonitoredItemsCount(createMonitoredItemsCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithCreateMonitoredItemsCount(createMonitoredItemsCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.CreateMonitoredItemsCount = createMonitoredItemsCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithCreateMonitoredItemsCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.CreateMonitoredItemsCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithCreateMonitoredItemsCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.CreateMonitoredItemsCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.CreateMonitoredItemsCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithModifyMonitoredItemsCount(modifyMonitoredItemsCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithModifyMonitoredItemsCount(modifyMonitoredItemsCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.ModifyMonitoredItemsCount = modifyMonitoredItemsCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithModifyMonitoredItemsCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.ModifyMonitoredItemsCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithModifyMonitoredItemsCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.ModifyMonitoredItemsCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.ModifyMonitoredItemsCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithSetMonitoringModeCount(setMonitoringModeCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithSetMonitoringModeCount(setMonitoringModeCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.SetMonitoringModeCount = setMonitoringModeCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithSetMonitoringModeCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.SetMonitoringModeCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithSetMonitoringModeCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.SetMonitoringModeCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.SetMonitoringModeCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithSetTriggeringCount(setTriggeringCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithSetTriggeringCount(setTriggeringCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.SetTriggeringCount = setTriggeringCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithSetTriggeringCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.SetTriggeringCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithSetTriggeringCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.SetTriggeringCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.SetTriggeringCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteMonitoredItemsCount(deleteMonitoredItemsCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteMonitoredItemsCount(deleteMonitoredItemsCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.DeleteMonitoredItemsCount = deleteMonitoredItemsCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteMonitoredItemsCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.DeleteMonitoredItemsCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteMonitoredItemsCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.DeleteMonitoredItemsCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.DeleteMonitoredItemsCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithCreateSubscriptionCount(createSubscriptionCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithCreateSubscriptionCount(createSubscriptionCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.CreateSubscriptionCount = createSubscriptionCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithCreateSubscriptionCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.CreateSubscriptionCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithCreateSubscriptionCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.CreateSubscriptionCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.CreateSubscriptionCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithModifySubscriptionCount(modifySubscriptionCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithModifySubscriptionCount(modifySubscriptionCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.ModifySubscriptionCount = modifySubscriptionCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithModifySubscriptionCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.ModifySubscriptionCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithModifySubscriptionCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.ModifySubscriptionCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.ModifySubscriptionCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithSetPublishingModeCount(setPublishingModeCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithSetPublishingModeCount(setPublishingModeCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.SetPublishingModeCount = setPublishingModeCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithSetPublishingModeCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.SetPublishingModeCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithSetPublishingModeCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.SetPublishingModeCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.SetPublishingModeCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithPublishCount(publishCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithPublishCount(publishCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.PublishCount = publishCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithPublishCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.PublishCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithPublishCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.PublishCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.PublishCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithRepublishCount(republishCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithRepublishCount(republishCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.RepublishCount = republishCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithRepublishCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.RepublishCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithRepublishCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.RepublishCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.RepublishCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithTransferSubscriptionsCount(transferSubscriptionsCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithTransferSubscriptionsCount(transferSubscriptionsCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.TransferSubscriptionsCount = transferSubscriptionsCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithTransferSubscriptionsCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.TransferSubscriptionsCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithTransferSubscriptionsCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.TransferSubscriptionsCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.TransferSubscriptionsCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteSubscriptionsCount(deleteSubscriptionsCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteSubscriptionsCount(deleteSubscriptionsCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.DeleteSubscriptionsCount = deleteSubscriptionsCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteSubscriptionsCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.DeleteSubscriptionsCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteSubscriptionsCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.DeleteSubscriptionsCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.DeleteSubscriptionsCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithAddNodesCount(addNodesCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithAddNodesCount(addNodesCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.AddNodesCount = addNodesCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithAddNodesCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.AddNodesCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithAddNodesCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.AddNodesCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.AddNodesCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithAddReferencesCount(addReferencesCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithAddReferencesCount(addReferencesCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.AddReferencesCount = addReferencesCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithAddReferencesCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.AddReferencesCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithAddReferencesCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.AddReferencesCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.AddReferencesCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteNodesCount(deleteNodesCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteNodesCount(deleteNodesCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.DeleteNodesCount = deleteNodesCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteNodesCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.DeleteNodesCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteNodesCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.DeleteNodesCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.DeleteNodesCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteReferencesCount(deleteReferencesCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteReferencesCount(deleteReferencesCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.DeleteReferencesCount = deleteReferencesCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteReferencesCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.DeleteReferencesCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteReferencesCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.DeleteReferencesCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.DeleteReferencesCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithBrowseCount(browseCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithBrowseCount(browseCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.BrowseCount = browseCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithBrowseCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.BrowseCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithBrowseCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.BrowseCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.BrowseCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithBrowseNextCount(browseNextCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithBrowseNextCount(browseNextCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.BrowseNextCount = browseNextCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithBrowseNextCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.BrowseNextCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithBrowseNextCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.BrowseNextCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.BrowseNextCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithTranslateBrowsePathsToNodeIdsCount(translateBrowsePathsToNodeIdsCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithTranslateBrowsePathsToNodeIdsCount(translateBrowsePathsToNodeIdsCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.TranslateBrowsePathsToNodeIdsCount = translateBrowsePathsToNodeIdsCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithTranslateBrowsePathsToNodeIdsCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.TranslateBrowsePathsToNodeIdsCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithTranslateBrowsePathsToNodeIdsCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.TranslateBrowsePathsToNodeIdsCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.TranslateBrowsePathsToNodeIdsCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithQueryFirstCount(queryFirstCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithQueryFirstCount(queryFirstCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.QueryFirstCount = queryFirstCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithQueryFirstCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.QueryFirstCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithQueryFirstCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.QueryFirstCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.QueryFirstCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithQueryNextCount(queryNextCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithQueryNextCount(queryNextCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.QueryNextCount = queryNextCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithQueryNextCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.QueryNextCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithQueryNextCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.QueryNextCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.QueryNextCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithRegisterNodesCount(registerNodesCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithRegisterNodesCount(registerNodesCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.RegisterNodesCount = registerNodesCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithRegisterNodesCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.RegisterNodesCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithRegisterNodesCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.RegisterNodesCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.RegisterNodesCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithUnregisterNodesCount(unregisterNodesCount ExtensionObjectDefinition) SessionDiagnosticsDataTypeBuilder {
+func (b *_SessionDiagnosticsDataTypeBuilder) WithUnregisterNodesCount(unregisterNodesCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
 	b.UnregisterNodesCount = unregisterNodesCount
 	return b
 }
 
-func (b *_SessionDiagnosticsDataTypeBuilder) WithUnregisterNodesCountBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SessionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(b.UnregisterNodesCount.CreateExtensionObjectDefinitionBuilder())
+func (b *_SessionDiagnosticsDataTypeBuilder) WithUnregisterNodesCountBuilder(builderSupplier func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.UnregisterNodesCount.CreateServiceCounterDataTypeBuilder())
 	var err error
 	b.UnregisterNodesCount, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -1452,8 +1441,8 @@ func (b *_SessionDiagnosticsDataType) CreateSessionDiagnosticsDataTypeBuilder() 
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SessionDiagnosticsDataType) GetIdentifier() string {
-	return "867"
+func (m *_SessionDiagnosticsDataType) GetExtensionId() int32 {
+	return int32(867)
 }
 
 ///////////////////////
@@ -1478,7 +1467,7 @@ func (m *_SessionDiagnosticsDataType) GetSessionName() PascalString {
 	return m.SessionName
 }
 
-func (m *_SessionDiagnosticsDataType) GetClientDescription() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetClientDescription() ApplicationDescription {
 	return m.ClientDescription
 }
 
@@ -1488,10 +1477,6 @@ func (m *_SessionDiagnosticsDataType) GetServerUri() PascalString {
 
 func (m *_SessionDiagnosticsDataType) GetEndpointUrl() PascalString {
 	return m.EndpointUrl
-}
-
-func (m *_SessionDiagnosticsDataType) GetNoOfLocaleIds() int32 {
-	return m.NoOfLocaleIds
 }
 
 func (m *_SessionDiagnosticsDataType) GetLocaleIds() []PascalString {
@@ -1526,7 +1511,7 @@ func (m *_SessionDiagnosticsDataType) GetCurrentPublishRequestsInQueue() uint32 
 	return m.CurrentPublishRequestsInQueue
 }
 
-func (m *_SessionDiagnosticsDataType) GetTotalRequestCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetTotalRequestCount() ServiceCounterDataType {
 	return m.TotalRequestCount
 }
 
@@ -1534,115 +1519,115 @@ func (m *_SessionDiagnosticsDataType) GetUnauthorizedRequestCount() uint32 {
 	return m.UnauthorizedRequestCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetReadCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetReadCount() ServiceCounterDataType {
 	return m.ReadCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetHistoryReadCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetHistoryReadCount() ServiceCounterDataType {
 	return m.HistoryReadCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetWriteCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetWriteCount() ServiceCounterDataType {
 	return m.WriteCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetHistoryUpdateCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetHistoryUpdateCount() ServiceCounterDataType {
 	return m.HistoryUpdateCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetCallCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetCallCount() ServiceCounterDataType {
 	return m.CallCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetCreateMonitoredItemsCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetCreateMonitoredItemsCount() ServiceCounterDataType {
 	return m.CreateMonitoredItemsCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetModifyMonitoredItemsCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetModifyMonitoredItemsCount() ServiceCounterDataType {
 	return m.ModifyMonitoredItemsCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetSetMonitoringModeCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetSetMonitoringModeCount() ServiceCounterDataType {
 	return m.SetMonitoringModeCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetSetTriggeringCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetSetTriggeringCount() ServiceCounterDataType {
 	return m.SetTriggeringCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetDeleteMonitoredItemsCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetDeleteMonitoredItemsCount() ServiceCounterDataType {
 	return m.DeleteMonitoredItemsCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetCreateSubscriptionCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetCreateSubscriptionCount() ServiceCounterDataType {
 	return m.CreateSubscriptionCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetModifySubscriptionCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetModifySubscriptionCount() ServiceCounterDataType {
 	return m.ModifySubscriptionCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetSetPublishingModeCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetSetPublishingModeCount() ServiceCounterDataType {
 	return m.SetPublishingModeCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetPublishCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetPublishCount() ServiceCounterDataType {
 	return m.PublishCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetRepublishCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetRepublishCount() ServiceCounterDataType {
 	return m.RepublishCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetTransferSubscriptionsCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetTransferSubscriptionsCount() ServiceCounterDataType {
 	return m.TransferSubscriptionsCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetDeleteSubscriptionsCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetDeleteSubscriptionsCount() ServiceCounterDataType {
 	return m.DeleteSubscriptionsCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetAddNodesCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetAddNodesCount() ServiceCounterDataType {
 	return m.AddNodesCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetAddReferencesCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetAddReferencesCount() ServiceCounterDataType {
 	return m.AddReferencesCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetDeleteNodesCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetDeleteNodesCount() ServiceCounterDataType {
 	return m.DeleteNodesCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetDeleteReferencesCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetDeleteReferencesCount() ServiceCounterDataType {
 	return m.DeleteReferencesCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetBrowseCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetBrowseCount() ServiceCounterDataType {
 	return m.BrowseCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetBrowseNextCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetBrowseNextCount() ServiceCounterDataType {
 	return m.BrowseNextCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetTranslateBrowsePathsToNodeIdsCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetTranslateBrowsePathsToNodeIdsCount() ServiceCounterDataType {
 	return m.TranslateBrowsePathsToNodeIdsCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetQueryFirstCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetQueryFirstCount() ServiceCounterDataType {
 	return m.QueryFirstCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetQueryNextCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetQueryNextCount() ServiceCounterDataType {
 	return m.QueryNextCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetRegisterNodesCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetRegisterNodesCount() ServiceCounterDataType {
 	return m.RegisterNodesCount
 }
 
-func (m *_SessionDiagnosticsDataType) GetUnregisterNodesCount() ExtensionObjectDefinition {
+func (m *_SessionDiagnosticsDataType) GetUnregisterNodesCount() ServiceCounterDataType {
 	return m.UnregisterNodesCount
 }
 
@@ -1667,7 +1652,7 @@ func (m *_SessionDiagnosticsDataType) GetTypeName() string {
 }
 
 func (m *_SessionDiagnosticsDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (sessionId)
 	lengthInBits += m.SessionId.GetLengthInBits(ctx)
@@ -1684,7 +1669,7 @@ func (m *_SessionDiagnosticsDataType) GetLengthInBits(ctx context.Context) uint1
 	// Simple field (endpointUrl)
 	lengthInBits += m.EndpointUrl.GetLengthInBits(ctx)
 
-	// Simple field (noOfLocaleIds)
+	// Implicit Field (noOfLocaleIds)
 	lengthInBits += 32
 
 	// Array field
@@ -1815,7 +1800,7 @@ func (m *_SessionDiagnosticsDataType) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SessionDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__sessionDiagnosticsDataType SessionDiagnosticsDataType, err error) {
+func (m *_SessionDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__sessionDiagnosticsDataType SessionDiagnosticsDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -1838,7 +1823,7 @@ func (m *_SessionDiagnosticsDataType) parse(ctx context.Context, readBuffer util
 	}
 	m.SessionName = sessionName
 
-	clientDescription, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "clientDescription", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("310")), readBuffer))
+	clientDescription, err := ReadSimpleField[ApplicationDescription](ctx, "clientDescription", ReadComplex[ApplicationDescription](ExtensionObjectDefinitionParseWithBufferProducer[ApplicationDescription]((int32)(int32(310))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientDescription' field"))
 	}
@@ -1856,11 +1841,11 @@ func (m *_SessionDiagnosticsDataType) parse(ctx context.Context, readBuffer util
 	}
 	m.EndpointUrl = endpointUrl
 
-	noOfLocaleIds, err := ReadSimpleField(ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLocaleIds, err := ReadImplicitField[int32](ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLocaleIds' field"))
 	}
-	m.NoOfLocaleIds = noOfLocaleIds
+	_ = noOfLocaleIds
 
 	localeIds, err := ReadCountArrayField[PascalString](ctx, "localeIds", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfLocaleIds))
 	if err != nil {
@@ -1910,7 +1895,7 @@ func (m *_SessionDiagnosticsDataType) parse(ctx context.Context, readBuffer util
 	}
 	m.CurrentPublishRequestsInQueue = currentPublishRequestsInQueue
 
-	totalRequestCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "totalRequestCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	totalRequestCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "totalRequestCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalRequestCount' field"))
 	}
@@ -1922,169 +1907,169 @@ func (m *_SessionDiagnosticsDataType) parse(ctx context.Context, readBuffer util
 	}
 	m.UnauthorizedRequestCount = unauthorizedRequestCount
 
-	readCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "readCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	readCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "readCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readCount' field"))
 	}
 	m.ReadCount = readCount
 
-	historyReadCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "historyReadCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	historyReadCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "historyReadCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'historyReadCount' field"))
 	}
 	m.HistoryReadCount = historyReadCount
 
-	writeCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "writeCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	writeCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "writeCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeCount' field"))
 	}
 	m.WriteCount = writeCount
 
-	historyUpdateCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "historyUpdateCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	historyUpdateCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "historyUpdateCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'historyUpdateCount' field"))
 	}
 	m.HistoryUpdateCount = historyUpdateCount
 
-	callCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "callCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	callCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "callCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'callCount' field"))
 	}
 	m.CallCount = callCount
 
-	createMonitoredItemsCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "createMonitoredItemsCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	createMonitoredItemsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "createMonitoredItemsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'createMonitoredItemsCount' field"))
 	}
 	m.CreateMonitoredItemsCount = createMonitoredItemsCount
 
-	modifyMonitoredItemsCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "modifyMonitoredItemsCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	modifyMonitoredItemsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "modifyMonitoredItemsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modifyMonitoredItemsCount' field"))
 	}
 	m.ModifyMonitoredItemsCount = modifyMonitoredItemsCount
 
-	setMonitoringModeCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "setMonitoringModeCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	setMonitoringModeCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "setMonitoringModeCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setMonitoringModeCount' field"))
 	}
 	m.SetMonitoringModeCount = setMonitoringModeCount
 
-	setTriggeringCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "setTriggeringCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	setTriggeringCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "setTriggeringCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setTriggeringCount' field"))
 	}
 	m.SetTriggeringCount = setTriggeringCount
 
-	deleteMonitoredItemsCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "deleteMonitoredItemsCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	deleteMonitoredItemsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "deleteMonitoredItemsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteMonitoredItemsCount' field"))
 	}
 	m.DeleteMonitoredItemsCount = deleteMonitoredItemsCount
 
-	createSubscriptionCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "createSubscriptionCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	createSubscriptionCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "createSubscriptionCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'createSubscriptionCount' field"))
 	}
 	m.CreateSubscriptionCount = createSubscriptionCount
 
-	modifySubscriptionCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "modifySubscriptionCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	modifySubscriptionCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "modifySubscriptionCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modifySubscriptionCount' field"))
 	}
 	m.ModifySubscriptionCount = modifySubscriptionCount
 
-	setPublishingModeCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "setPublishingModeCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	setPublishingModeCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "setPublishingModeCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setPublishingModeCount' field"))
 	}
 	m.SetPublishingModeCount = setPublishingModeCount
 
-	publishCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "publishCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	publishCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "publishCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishCount' field"))
 	}
 	m.PublishCount = publishCount
 
-	republishCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "republishCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	republishCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "republishCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'republishCount' field"))
 	}
 	m.RepublishCount = republishCount
 
-	transferSubscriptionsCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "transferSubscriptionsCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	transferSubscriptionsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "transferSubscriptionsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transferSubscriptionsCount' field"))
 	}
 	m.TransferSubscriptionsCount = transferSubscriptionsCount
 
-	deleteSubscriptionsCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "deleteSubscriptionsCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	deleteSubscriptionsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "deleteSubscriptionsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteSubscriptionsCount' field"))
 	}
 	m.DeleteSubscriptionsCount = deleteSubscriptionsCount
 
-	addNodesCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "addNodesCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	addNodesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "addNodesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addNodesCount' field"))
 	}
 	m.AddNodesCount = addNodesCount
 
-	addReferencesCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "addReferencesCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	addReferencesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "addReferencesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addReferencesCount' field"))
 	}
 	m.AddReferencesCount = addReferencesCount
 
-	deleteNodesCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "deleteNodesCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	deleteNodesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "deleteNodesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteNodesCount' field"))
 	}
 	m.DeleteNodesCount = deleteNodesCount
 
-	deleteReferencesCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "deleteReferencesCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	deleteReferencesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "deleteReferencesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteReferencesCount' field"))
 	}
 	m.DeleteReferencesCount = deleteReferencesCount
 
-	browseCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "browseCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	browseCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "browseCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browseCount' field"))
 	}
 	m.BrowseCount = browseCount
 
-	browseNextCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "browseNextCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	browseNextCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "browseNextCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browseNextCount' field"))
 	}
 	m.BrowseNextCount = browseNextCount
 
-	translateBrowsePathsToNodeIdsCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "translateBrowsePathsToNodeIdsCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	translateBrowsePathsToNodeIdsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "translateBrowsePathsToNodeIdsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'translateBrowsePathsToNodeIdsCount' field"))
 	}
 	m.TranslateBrowsePathsToNodeIdsCount = translateBrowsePathsToNodeIdsCount
 
-	queryFirstCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "queryFirstCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	queryFirstCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "queryFirstCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queryFirstCount' field"))
 	}
 	m.QueryFirstCount = queryFirstCount
 
-	queryNextCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "queryNextCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	queryNextCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "queryNextCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queryNextCount' field"))
 	}
 	m.QueryNextCount = queryNextCount
 
-	registerNodesCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "registerNodesCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	registerNodesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "registerNodesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'registerNodesCount' field"))
 	}
 	m.RegisterNodesCount = registerNodesCount
 
-	unregisterNodesCount, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "unregisterNodesCount", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("873")), readBuffer))
+	unregisterNodesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "unregisterNodesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unregisterNodesCount' field"))
 	}
@@ -2123,7 +2108,7 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(err, "Error serializing 'sessionName' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "clientDescription", m.GetClientDescription(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ApplicationDescription](ctx, "clientDescription", m.GetClientDescription(), WriteComplex[ApplicationDescription](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'clientDescription' field")
 		}
 
@@ -2134,8 +2119,8 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfLocaleIds", m.GetNoOfLocaleIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfLocaleIds := int32(utils.InlineIf(bool((m.GetLocaleIds()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLocaleIds()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfLocaleIds", noOfLocaleIds, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLocaleIds' field")
 		}
 
@@ -2171,7 +2156,7 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(err, "Error serializing 'currentPublishRequestsInQueue' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "totalRequestCount", m.GetTotalRequestCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "totalRequestCount", m.GetTotalRequestCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'totalRequestCount' field")
 		}
 
@@ -2179,115 +2164,115 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(err, "Error serializing 'unauthorizedRequestCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "readCount", m.GetReadCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "readCount", m.GetReadCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'readCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "historyReadCount", m.GetHistoryReadCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "historyReadCount", m.GetHistoryReadCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'historyReadCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "writeCount", m.GetWriteCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "writeCount", m.GetWriteCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'writeCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "historyUpdateCount", m.GetHistoryUpdateCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "historyUpdateCount", m.GetHistoryUpdateCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'historyUpdateCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "callCount", m.GetCallCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "callCount", m.GetCallCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'callCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "createMonitoredItemsCount", m.GetCreateMonitoredItemsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "createMonitoredItemsCount", m.GetCreateMonitoredItemsCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'createMonitoredItemsCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "modifyMonitoredItemsCount", m.GetModifyMonitoredItemsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "modifyMonitoredItemsCount", m.GetModifyMonitoredItemsCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'modifyMonitoredItemsCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "setMonitoringModeCount", m.GetSetMonitoringModeCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "setMonitoringModeCount", m.GetSetMonitoringModeCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'setMonitoringModeCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "setTriggeringCount", m.GetSetTriggeringCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "setTriggeringCount", m.GetSetTriggeringCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'setTriggeringCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "deleteMonitoredItemsCount", m.GetDeleteMonitoredItemsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "deleteMonitoredItemsCount", m.GetDeleteMonitoredItemsCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'deleteMonitoredItemsCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "createSubscriptionCount", m.GetCreateSubscriptionCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "createSubscriptionCount", m.GetCreateSubscriptionCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'createSubscriptionCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "modifySubscriptionCount", m.GetModifySubscriptionCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "modifySubscriptionCount", m.GetModifySubscriptionCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'modifySubscriptionCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "setPublishingModeCount", m.GetSetPublishingModeCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "setPublishingModeCount", m.GetSetPublishingModeCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'setPublishingModeCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "publishCount", m.GetPublishCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "publishCount", m.GetPublishCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "republishCount", m.GetRepublishCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "republishCount", m.GetRepublishCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'republishCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "transferSubscriptionsCount", m.GetTransferSubscriptionsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "transferSubscriptionsCount", m.GetTransferSubscriptionsCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'transferSubscriptionsCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "deleteSubscriptionsCount", m.GetDeleteSubscriptionsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "deleteSubscriptionsCount", m.GetDeleteSubscriptionsCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'deleteSubscriptionsCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "addNodesCount", m.GetAddNodesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "addNodesCount", m.GetAddNodesCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'addNodesCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "addReferencesCount", m.GetAddReferencesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "addReferencesCount", m.GetAddReferencesCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'addReferencesCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "deleteNodesCount", m.GetDeleteNodesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "deleteNodesCount", m.GetDeleteNodesCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'deleteNodesCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "deleteReferencesCount", m.GetDeleteReferencesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "deleteReferencesCount", m.GetDeleteReferencesCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'deleteReferencesCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "browseCount", m.GetBrowseCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "browseCount", m.GetBrowseCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'browseCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "browseNextCount", m.GetBrowseNextCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "browseNextCount", m.GetBrowseNextCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'browseNextCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "translateBrowsePathsToNodeIdsCount", m.GetTranslateBrowsePathsToNodeIdsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "translateBrowsePathsToNodeIdsCount", m.GetTranslateBrowsePathsToNodeIdsCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'translateBrowsePathsToNodeIdsCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "queryFirstCount", m.GetQueryFirstCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "queryFirstCount", m.GetQueryFirstCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'queryFirstCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "queryNextCount", m.GetQueryNextCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "queryNextCount", m.GetQueryNextCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'queryNextCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "registerNodesCount", m.GetRegisterNodesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "registerNodesCount", m.GetRegisterNodesCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'registerNodesCount' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "unregisterNodesCount", m.GetUnregisterNodesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "unregisterNodesCount", m.GetUnregisterNodesCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'unregisterNodesCount' field")
 		}
 
@@ -2313,10 +2298,9 @@ func (m *_SessionDiagnosticsDataType) deepCopy() *_SessionDiagnosticsDataType {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SessionId.DeepCopy().(NodeId),
 		m.SessionName.DeepCopy().(PascalString),
-		m.ClientDescription.DeepCopy().(ExtensionObjectDefinition),
+		m.ClientDescription.DeepCopy().(ApplicationDescription),
 		m.ServerUri.DeepCopy().(PascalString),
 		m.EndpointUrl.DeepCopy().(PascalString),
-		m.NoOfLocaleIds,
 		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
 		m.ActualSessionTimeout,
 		m.MaxResponseMessageSize,
@@ -2325,36 +2309,36 @@ func (m *_SessionDiagnosticsDataType) deepCopy() *_SessionDiagnosticsDataType {
 		m.CurrentSubscriptionsCount,
 		m.CurrentMonitoredItemsCount,
 		m.CurrentPublishRequestsInQueue,
-		m.TotalRequestCount.DeepCopy().(ExtensionObjectDefinition),
+		m.TotalRequestCount.DeepCopy().(ServiceCounterDataType),
 		m.UnauthorizedRequestCount,
-		m.ReadCount.DeepCopy().(ExtensionObjectDefinition),
-		m.HistoryReadCount.DeepCopy().(ExtensionObjectDefinition),
-		m.WriteCount.DeepCopy().(ExtensionObjectDefinition),
-		m.HistoryUpdateCount.DeepCopy().(ExtensionObjectDefinition),
-		m.CallCount.DeepCopy().(ExtensionObjectDefinition),
-		m.CreateMonitoredItemsCount.DeepCopy().(ExtensionObjectDefinition),
-		m.ModifyMonitoredItemsCount.DeepCopy().(ExtensionObjectDefinition),
-		m.SetMonitoringModeCount.DeepCopy().(ExtensionObjectDefinition),
-		m.SetTriggeringCount.DeepCopy().(ExtensionObjectDefinition),
-		m.DeleteMonitoredItemsCount.DeepCopy().(ExtensionObjectDefinition),
-		m.CreateSubscriptionCount.DeepCopy().(ExtensionObjectDefinition),
-		m.ModifySubscriptionCount.DeepCopy().(ExtensionObjectDefinition),
-		m.SetPublishingModeCount.DeepCopy().(ExtensionObjectDefinition),
-		m.PublishCount.DeepCopy().(ExtensionObjectDefinition),
-		m.RepublishCount.DeepCopy().(ExtensionObjectDefinition),
-		m.TransferSubscriptionsCount.DeepCopy().(ExtensionObjectDefinition),
-		m.DeleteSubscriptionsCount.DeepCopy().(ExtensionObjectDefinition),
-		m.AddNodesCount.DeepCopy().(ExtensionObjectDefinition),
-		m.AddReferencesCount.DeepCopy().(ExtensionObjectDefinition),
-		m.DeleteNodesCount.DeepCopy().(ExtensionObjectDefinition),
-		m.DeleteReferencesCount.DeepCopy().(ExtensionObjectDefinition),
-		m.BrowseCount.DeepCopy().(ExtensionObjectDefinition),
-		m.BrowseNextCount.DeepCopy().(ExtensionObjectDefinition),
-		m.TranslateBrowsePathsToNodeIdsCount.DeepCopy().(ExtensionObjectDefinition),
-		m.QueryFirstCount.DeepCopy().(ExtensionObjectDefinition),
-		m.QueryNextCount.DeepCopy().(ExtensionObjectDefinition),
-		m.RegisterNodesCount.DeepCopy().(ExtensionObjectDefinition),
-		m.UnregisterNodesCount.DeepCopy().(ExtensionObjectDefinition),
+		m.ReadCount.DeepCopy().(ServiceCounterDataType),
+		m.HistoryReadCount.DeepCopy().(ServiceCounterDataType),
+		m.WriteCount.DeepCopy().(ServiceCounterDataType),
+		m.HistoryUpdateCount.DeepCopy().(ServiceCounterDataType),
+		m.CallCount.DeepCopy().(ServiceCounterDataType),
+		m.CreateMonitoredItemsCount.DeepCopy().(ServiceCounterDataType),
+		m.ModifyMonitoredItemsCount.DeepCopy().(ServiceCounterDataType),
+		m.SetMonitoringModeCount.DeepCopy().(ServiceCounterDataType),
+		m.SetTriggeringCount.DeepCopy().(ServiceCounterDataType),
+		m.DeleteMonitoredItemsCount.DeepCopy().(ServiceCounterDataType),
+		m.CreateSubscriptionCount.DeepCopy().(ServiceCounterDataType),
+		m.ModifySubscriptionCount.DeepCopy().(ServiceCounterDataType),
+		m.SetPublishingModeCount.DeepCopy().(ServiceCounterDataType),
+		m.PublishCount.DeepCopy().(ServiceCounterDataType),
+		m.RepublishCount.DeepCopy().(ServiceCounterDataType),
+		m.TransferSubscriptionsCount.DeepCopy().(ServiceCounterDataType),
+		m.DeleteSubscriptionsCount.DeepCopy().(ServiceCounterDataType),
+		m.AddNodesCount.DeepCopy().(ServiceCounterDataType),
+		m.AddReferencesCount.DeepCopy().(ServiceCounterDataType),
+		m.DeleteNodesCount.DeepCopy().(ServiceCounterDataType),
+		m.DeleteReferencesCount.DeepCopy().(ServiceCounterDataType),
+		m.BrowseCount.DeepCopy().(ServiceCounterDataType),
+		m.BrowseNextCount.DeepCopy().(ServiceCounterDataType),
+		m.TranslateBrowsePathsToNodeIdsCount.DeepCopy().(ServiceCounterDataType),
+		m.QueryFirstCount.DeepCopy().(ServiceCounterDataType),
+		m.QueryNextCount.DeepCopy().(ServiceCounterDataType),
+		m.RegisterNodesCount.DeepCopy().(ServiceCounterDataType),
+		m.UnregisterNodesCount.DeepCopy().(ServiceCounterDataType),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SessionDiagnosticsDataTypeCopy

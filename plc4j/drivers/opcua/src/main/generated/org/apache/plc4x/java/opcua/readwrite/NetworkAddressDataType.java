@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class NetworkAddressDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "15504";
+  public Integer getExtensionId() {
+    return (int) 15504;
   }
 
   // Properties.
@@ -85,7 +85,7 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("NetworkAddressDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

@@ -179,7 +179,7 @@ func (m *_TDataIndividualReq) GetTypeName() string {
 }
 
 func (m *_TDataIndividualReq) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIContract.(*_CEMI).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

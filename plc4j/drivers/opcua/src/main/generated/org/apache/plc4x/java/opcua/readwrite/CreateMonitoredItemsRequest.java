@@ -38,32 +38,29 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "751";
+  public Integer getExtensionId() {
+    return (int) 751;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final long subscriptionId;
   protected final TimestampsToReturn timestampsToReturn;
-  protected final int noOfItemsToCreate;
-  protected final List<ExtensionObjectDefinition> itemsToCreate;
+  protected final List<MonitoredItemCreateRequest> itemsToCreate;
 
   public CreateMonitoredItemsRequest(
-      ExtensionObjectDefinition requestHeader,
+      RequestHeader requestHeader,
       long subscriptionId,
       TimestampsToReturn timestampsToReturn,
-      int noOfItemsToCreate,
-      List<ExtensionObjectDefinition> itemsToCreate) {
+      List<MonitoredItemCreateRequest> itemsToCreate) {
     super();
     this.requestHeader = requestHeader;
     this.subscriptionId = subscriptionId;
     this.timestampsToReturn = timestampsToReturn;
-    this.noOfItemsToCreate = noOfItemsToCreate;
     this.itemsToCreate = itemsToCreate;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -75,11 +72,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     return timestampsToReturn;
   }
 
-  public int getNoOfItemsToCreate() {
-    return noOfItemsToCreate;
-  }
-
-  public List<ExtensionObjectDefinition> getItemsToCreate() {
+  public List<MonitoredItemCreateRequest> getItemsToCreate() {
     return itemsToCreate;
   }
 
@@ -106,8 +99,11 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
             TimestampsToReturn::name,
             writeUnsignedLong(writeBuffer, 32)));
 
-    // Simple Field (noOfItemsToCreate)
-    writeSimpleField("noOfItemsToCreate", noOfItemsToCreate, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfItemsToCreate) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfItemsToCreate =
+        (int) ((((getItemsToCreate()) == (null)) ? -(1) : COUNT(getItemsToCreate())));
+    writeImplicitField("noOfItemsToCreate", noOfItemsToCreate, writeSignedInt(writeBuffer, 32));
 
     // Array Field (itemsToCreate)
     writeComplexTypeArrayField("itemsToCreate", itemsToCreate, writeBuffer);
@@ -135,13 +131,13 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     // Simple field (timestampsToReturn)
     lengthInBits += 32;
 
-    // Simple field (noOfItemsToCreate)
+    // Implicit Field (noOfItemsToCreate)
     lengthInBits += 32;
 
     // Array field
     if (itemsToCreate != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : itemsToCreate) {
+      for (MonitoredItemCreateRequest element : itemsToCreate) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= itemsToCreate.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -151,16 +147,17 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CreateMonitoredItemsRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     long subscriptionId = readSimpleField("subscriptionId", readUnsignedLong(readBuffer, 32));
@@ -171,47 +168,46 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
             "TimestampsToReturn",
             readEnum(TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
 
-    int noOfItemsToCreate = readSimpleField("noOfItemsToCreate", readSignedInt(readBuffer, 32));
+    int noOfItemsToCreate = readImplicitField("noOfItemsToCreate", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> itemsToCreate =
+    List<MonitoredItemCreateRequest> itemsToCreate =
         readCountArrayField(
             "itemsToCreate",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("745")),
+                () ->
+                    (MonitoredItemCreateRequest)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (745)),
                 readBuffer),
             noOfItemsToCreate);
 
     readBuffer.closeContext("CreateMonitoredItemsRequest");
     // Create the instance
     return new CreateMonitoredItemsRequestBuilderImpl(
-        requestHeader, subscriptionId, timestampsToReturn, noOfItemsToCreate, itemsToCreate);
+        requestHeader, subscriptionId, timestampsToReturn, itemsToCreate);
   }
 
   public static class CreateMonitoredItemsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final long subscriptionId;
     private final TimestampsToReturn timestampsToReturn;
-    private final int noOfItemsToCreate;
-    private final List<ExtensionObjectDefinition> itemsToCreate;
+    private final List<MonitoredItemCreateRequest> itemsToCreate;
 
     public CreateMonitoredItemsRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
+        RequestHeader requestHeader,
         long subscriptionId,
         TimestampsToReturn timestampsToReturn,
-        int noOfItemsToCreate,
-        List<ExtensionObjectDefinition> itemsToCreate) {
+        List<MonitoredItemCreateRequest> itemsToCreate) {
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.timestampsToReturn = timestampsToReturn;
-      this.noOfItemsToCreate = noOfItemsToCreate;
       this.itemsToCreate = itemsToCreate;
     }
 
     public CreateMonitoredItemsRequest build() {
       CreateMonitoredItemsRequest createMonitoredItemsRequest =
           new CreateMonitoredItemsRequest(
-              requestHeader, subscriptionId, timestampsToReturn, noOfItemsToCreate, itemsToCreate);
+              requestHeader, subscriptionId, timestampsToReturn, itemsToCreate);
       return createMonitoredItemsRequest;
     }
   }
@@ -228,7 +224,6 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     return (getRequestHeader() == that.getRequestHeader())
         && (getSubscriptionId() == that.getSubscriptionId())
         && (getTimestampsToReturn() == that.getTimestampsToReturn())
-        && (getNoOfItemsToCreate() == that.getNoOfItemsToCreate())
         && (getItemsToCreate() == that.getItemsToCreate())
         && super.equals(that)
         && true;
@@ -241,7 +236,6 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
         getRequestHeader(),
         getSubscriptionId(),
         getTimestampsToReturn(),
-        getNoOfItemsToCreate(),
         getItemsToCreate());
   }
 

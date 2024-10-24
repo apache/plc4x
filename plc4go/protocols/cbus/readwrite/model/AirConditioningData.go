@@ -634,7 +634,7 @@ func (m *_AirConditioningData) GetTypeName() string {
 	return "AirConditioningData"
 }
 
-func (m *_AirConditioningData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_AirConditioningData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)

@@ -288,7 +288,7 @@ func (m *_ClockAndTimekeepingDataUpdateTime) GetTypeName() string {
 }
 
 func (m *_ClockAndTimekeepingDataUpdateTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData).GetLengthInBits(ctx))
 
 	// Simple field (hours)
 	lengthInBits += 8

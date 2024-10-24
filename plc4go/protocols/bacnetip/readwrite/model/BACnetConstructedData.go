@@ -14144,7 +14144,7 @@ func (m *_BACnetConstructedData) GetTypeName() string {
 	return "BACnetConstructedData"
 }
 
-func (m *_BACnetConstructedData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetConstructedData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)

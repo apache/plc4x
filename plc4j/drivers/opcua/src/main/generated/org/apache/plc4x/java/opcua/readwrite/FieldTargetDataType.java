@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class FieldTargetDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "14746";
+  public Integer getExtensionId() {
+    return (int) 14746;
   }
 
   // Properties.
@@ -171,7 +171,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("FieldTargetDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

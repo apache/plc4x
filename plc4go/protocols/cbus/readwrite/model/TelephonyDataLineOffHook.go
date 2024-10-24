@@ -217,7 +217,7 @@ func (m *_TelephonyDataLineOffHook) GetTypeName() string {
 }
 
 func (m *_TelephonyDataLineOffHook) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).GetLengthInBits(ctx))
 
 	// Simple field (reason)
 	lengthInBits += 8

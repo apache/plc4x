@@ -38,32 +38,29 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SetMonitoringModeRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "769";
+  public Integer getExtensionId() {
+    return (int) 769;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final long subscriptionId;
   protected final MonitoringMode monitoringMode;
-  protected final int noOfMonitoredItemIds;
   protected final List<Long> monitoredItemIds;
 
   public SetMonitoringModeRequest(
-      ExtensionObjectDefinition requestHeader,
+      RequestHeader requestHeader,
       long subscriptionId,
       MonitoringMode monitoringMode,
-      int noOfMonitoredItemIds,
       List<Long> monitoredItemIds) {
     super();
     this.requestHeader = requestHeader;
     this.subscriptionId = subscriptionId;
     this.monitoringMode = monitoringMode;
-    this.noOfMonitoredItemIds = noOfMonitoredItemIds;
     this.monitoredItemIds = monitoredItemIds;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -73,10 +70,6 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
 
   public MonitoringMode getMonitoringMode() {
     return monitoringMode;
-  }
-
-  public int getNoOfMonitoredItemIds() {
-    return noOfMonitoredItemIds;
   }
 
   public List<Long> getMonitoredItemIds() {
@@ -104,8 +97,12 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
         writeEnum(
             MonitoringMode::getValue, MonitoringMode::name, writeUnsignedLong(writeBuffer, 32)));
 
-    // Simple Field (noOfMonitoredItemIds)
-    writeSimpleField("noOfMonitoredItemIds", noOfMonitoredItemIds, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfMonitoredItemIds) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfMonitoredItemIds =
+        (int) ((((getMonitoredItemIds()) == (null)) ? -(1) : COUNT(getMonitoredItemIds())));
+    writeImplicitField(
+        "noOfMonitoredItemIds", noOfMonitoredItemIds, writeSignedInt(writeBuffer, 32));
 
     // Array Field (monitoredItemIds)
     writeSimpleTypeArrayField(
@@ -134,7 +131,7 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
     // Simple field (monitoringMode)
     lengthInBits += 32;
 
-    // Simple field (noOfMonitoredItemIds)
+    // Implicit Field (noOfMonitoredItemIds)
     lengthInBits += 32;
 
     // Array field
@@ -146,16 +143,17 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SetMonitoringModeRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     long subscriptionId = readSimpleField("subscriptionId", readUnsignedLong(readBuffer, 32));
@@ -167,7 +165,7 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
             readEnum(MonitoringMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     int noOfMonitoredItemIds =
-        readSimpleField("noOfMonitoredItemIds", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfMonitoredItemIds", readSignedInt(readBuffer, 32));
 
     List<Long> monitoredItemIds =
         readCountArrayField(
@@ -176,38 +174,31 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
     readBuffer.closeContext("SetMonitoringModeRequest");
     // Create the instance
     return new SetMonitoringModeRequestBuilderImpl(
-        requestHeader, subscriptionId, monitoringMode, noOfMonitoredItemIds, monitoredItemIds);
+        requestHeader, subscriptionId, monitoringMode, monitoredItemIds);
   }
 
   public static class SetMonitoringModeRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final long subscriptionId;
     private final MonitoringMode monitoringMode;
-    private final int noOfMonitoredItemIds;
     private final List<Long> monitoredItemIds;
 
     public SetMonitoringModeRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
+        RequestHeader requestHeader,
         long subscriptionId,
         MonitoringMode monitoringMode,
-        int noOfMonitoredItemIds,
         List<Long> monitoredItemIds) {
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.monitoringMode = monitoringMode;
-      this.noOfMonitoredItemIds = noOfMonitoredItemIds;
       this.monitoredItemIds = monitoredItemIds;
     }
 
     public SetMonitoringModeRequest build() {
       SetMonitoringModeRequest setMonitoringModeRequest =
           new SetMonitoringModeRequest(
-              requestHeader,
-              subscriptionId,
-              monitoringMode,
-              noOfMonitoredItemIds,
-              monitoredItemIds);
+              requestHeader, subscriptionId, monitoringMode, monitoredItemIds);
       return setMonitoringModeRequest;
     }
   }
@@ -224,7 +215,6 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
     return (getRequestHeader() == that.getRequestHeader())
         && (getSubscriptionId() == that.getSubscriptionId())
         && (getMonitoringMode() == that.getMonitoringMode())
-        && (getNoOfMonitoredItemIds() == that.getNoOfMonitoredItemIds())
         && (getMonitoredItemIds() == that.getMonitoredItemIds())
         && super.equals(that)
         && true;
@@ -237,7 +227,6 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
         getRequestHeader(),
         getSubscriptionId(),
         getMonitoringMode(),
-        getNoOfMonitoredItemIds(),
         getMonitoredItemIds());
   }
 

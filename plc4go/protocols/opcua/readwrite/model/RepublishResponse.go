@@ -41,9 +41,9 @@ type RepublishResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// GetNotificationMessage returns NotificationMessage (property field)
-	GetNotificationMessage() ExtensionObjectDefinition
+	GetNotificationMessage() NotificationMessage
 	// IsRepublishResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRepublishResponse()
 	// CreateBuilder creates a RepublishResponseBuilder
@@ -53,20 +53,20 @@ type RepublishResponse interface {
 // _RepublishResponse is the data-structure of this message
 type _RepublishResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader      ExtensionObjectDefinition
-	NotificationMessage ExtensionObjectDefinition
+	ResponseHeader      ResponseHeader
+	NotificationMessage NotificationMessage
 }
 
 var _ RepublishResponse = (*_RepublishResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RepublishResponse)(nil)
 
 // NewRepublishResponse factory function for _RepublishResponse
-func NewRepublishResponse(responseHeader ExtensionObjectDefinition, notificationMessage ExtensionObjectDefinition) *_RepublishResponse {
+func NewRepublishResponse(responseHeader ResponseHeader, notificationMessage NotificationMessage) *_RepublishResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for RepublishResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for RepublishResponse must not be nil")
 	}
 	if notificationMessage == nil {
-		panic("notificationMessage of type ExtensionObjectDefinition for RepublishResponse must not be nil")
+		panic("notificationMessage of type NotificationMessage for RepublishResponse must not be nil")
 	}
 	_result := &_RepublishResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -86,15 +86,15 @@ func NewRepublishResponse(responseHeader ExtensionObjectDefinition, notification
 type RepublishResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, notificationMessage ExtensionObjectDefinition) RepublishResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, notificationMessage NotificationMessage) RepublishResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) RepublishResponseBuilder
+	WithResponseHeader(ResponseHeader) RepublishResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RepublishResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) RepublishResponseBuilder
 	// WithNotificationMessage adds NotificationMessage (property field)
-	WithNotificationMessage(ExtensionObjectDefinition) RepublishResponseBuilder
+	WithNotificationMessage(NotificationMessage) RepublishResponseBuilder
 	// WithNotificationMessageBuilder adds NotificationMessage (property field) which is build by the builder
-	WithNotificationMessageBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RepublishResponseBuilder
+	WithNotificationMessageBuilder(func(NotificationMessageBuilder) NotificationMessageBuilder) RepublishResponseBuilder
 	// Build builds the RepublishResponse or returns an error if something is wrong
 	Build() (RepublishResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,42 +120,42 @@ func (b *_RepublishResponseBuilder) setParent(contract ExtensionObjectDefinition
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RepublishResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, notificationMessage ExtensionObjectDefinition) RepublishResponseBuilder {
+func (b *_RepublishResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, notificationMessage NotificationMessage) RepublishResponseBuilder {
 	return b.WithResponseHeader(responseHeader).WithNotificationMessage(notificationMessage)
 }
 
-func (b *_RepublishResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RepublishResponseBuilder {
+func (b *_RepublishResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) RepublishResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_RepublishResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RepublishResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RepublishResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) RepublishResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_RepublishResponseBuilder) WithNotificationMessage(notificationMessage ExtensionObjectDefinition) RepublishResponseBuilder {
+func (b *_RepublishResponseBuilder) WithNotificationMessage(notificationMessage NotificationMessage) RepublishResponseBuilder {
 	b.NotificationMessage = notificationMessage
 	return b
 }
 
-func (b *_RepublishResponseBuilder) WithNotificationMessageBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RepublishResponseBuilder {
-	builder := builderSupplier(b.NotificationMessage.CreateExtensionObjectDefinitionBuilder())
+func (b *_RepublishResponseBuilder) WithNotificationMessageBuilder(builderSupplier func(NotificationMessageBuilder) NotificationMessageBuilder) RepublishResponseBuilder {
+	builder := builderSupplier(b.NotificationMessage.CreateNotificationMessageBuilder())
 	var err error
 	b.NotificationMessage, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NotificationMessageBuilder failed"))
 	}
 	return b
 }
@@ -222,8 +222,8 @@ func (b *_RepublishResponse) CreateRepublishResponseBuilder() RepublishResponseB
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RepublishResponse) GetIdentifier() string {
-	return "835"
+func (m *_RepublishResponse) GetExtensionId() int32 {
+	return int32(835)
 }
 
 ///////////////////////
@@ -240,11 +240,11 @@ func (m *_RepublishResponse) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RepublishResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_RepublishResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
-func (m *_RepublishResponse) GetNotificationMessage() ExtensionObjectDefinition {
+func (m *_RepublishResponse) GetNotificationMessage() NotificationMessage {
 	return m.NotificationMessage
 }
 
@@ -269,7 +269,7 @@ func (m *_RepublishResponse) GetTypeName() string {
 }
 
 func (m *_RepublishResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -284,7 +284,7 @@ func (m *_RepublishResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RepublishResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__republishResponse RepublishResponse, err error) {
+func (m *_RepublishResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__republishResponse RepublishResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -295,13 +295,13 @@ func (m *_RepublishResponse) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	notificationMessage, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "notificationMessage", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("805")), readBuffer))
+	notificationMessage, err := ReadSimpleField[NotificationMessage](ctx, "notificationMessage", ReadComplex[NotificationMessage](ExtensionObjectDefinitionParseWithBufferProducer[NotificationMessage]((int32)(int32(805))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationMessage' field"))
 	}
@@ -332,11 +332,11 @@ func (m *_RepublishResponse) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for RepublishResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "notificationMessage", m.GetNotificationMessage(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NotificationMessage](ctx, "notificationMessage", m.GetNotificationMessage(), WriteComplex[NotificationMessage](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'notificationMessage' field")
 		}
 
@@ -360,8 +360,8 @@ func (m *_RepublishResponse) deepCopy() *_RepublishResponse {
 	}
 	_RepublishResponseCopy := &_RepublishResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NotificationMessage.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		m.NotificationMessage.DeepCopy().(NotificationMessage),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RepublishResponseCopy

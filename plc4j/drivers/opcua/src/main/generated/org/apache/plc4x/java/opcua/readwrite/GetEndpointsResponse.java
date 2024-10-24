@@ -38,34 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class GetEndpointsResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "431";
+  public Integer getExtensionId() {
+    return (int) 431;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
-  protected final int noOfEndpoints;
-  protected final List<ExtensionObjectDefinition> endpoints;
+  protected final ResponseHeader responseHeader;
+  protected final List<EndpointDescription> endpoints;
 
-  public GetEndpointsResponse(
-      ExtensionObjectDefinition responseHeader,
-      int noOfEndpoints,
-      List<ExtensionObjectDefinition> endpoints) {
+  public GetEndpointsResponse(ResponseHeader responseHeader, List<EndpointDescription> endpoints) {
     super();
     this.responseHeader = responseHeader;
-    this.noOfEndpoints = noOfEndpoints;
     this.endpoints = endpoints;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
-  public int getNoOfEndpoints() {
-    return noOfEndpoints;
-  }
-
-  public List<ExtensionObjectDefinition> getEndpoints() {
+  public List<EndpointDescription> getEndpoints() {
     return endpoints;
   }
 
@@ -79,8 +70,10 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
     // Simple Field (responseHeader)
     writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfEndpoints)
-    writeSimpleField("noOfEndpoints", noOfEndpoints, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfEndpoints) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfEndpoints = (int) ((((getEndpoints()) == (null)) ? -(1) : COUNT(getEndpoints())));
+    writeImplicitField("noOfEndpoints", noOfEndpoints, writeSignedInt(writeBuffer, 32));
 
     // Array Field (endpoints)
     writeComplexTypeArrayField("endpoints", endpoints, writeBuffer);
@@ -102,13 +95,13 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
 
-    // Simple field (noOfEndpoints)
+    // Implicit Field (noOfEndpoints)
     lengthInBits += 32;
 
     // Array field
     if (endpoints != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : endpoints) {
+      for (EndpointDescription element : endpoints) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= endpoints.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -118,51 +111,50 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("GetEndpointsResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
-    int noOfEndpoints = readSimpleField("noOfEndpoints", readSignedInt(readBuffer, 32));
+    int noOfEndpoints = readImplicitField("noOfEndpoints", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> endpoints =
+    List<EndpointDescription> endpoints =
         readCountArrayField(
             "endpoints",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("314")),
+                () ->
+                    (EndpointDescription)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (314)),
                 readBuffer),
             noOfEndpoints);
 
     readBuffer.closeContext("GetEndpointsResponse");
     // Create the instance
-    return new GetEndpointsResponseBuilderImpl(responseHeader, noOfEndpoints, endpoints);
+    return new GetEndpointsResponseBuilderImpl(responseHeader, endpoints);
   }
 
   public static class GetEndpointsResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
-    private final int noOfEndpoints;
-    private final List<ExtensionObjectDefinition> endpoints;
+    private final ResponseHeader responseHeader;
+    private final List<EndpointDescription> endpoints;
 
     public GetEndpointsResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
-        int noOfEndpoints,
-        List<ExtensionObjectDefinition> endpoints) {
+        ResponseHeader responseHeader, List<EndpointDescription> endpoints) {
       this.responseHeader = responseHeader;
-      this.noOfEndpoints = noOfEndpoints;
       this.endpoints = endpoints;
     }
 
     public GetEndpointsResponse build() {
       GetEndpointsResponse getEndpointsResponse =
-          new GetEndpointsResponse(responseHeader, noOfEndpoints, endpoints);
+          new GetEndpointsResponse(responseHeader, endpoints);
       return getEndpointsResponse;
     }
   }
@@ -177,7 +169,6 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
     }
     GetEndpointsResponse that = (GetEndpointsResponse) o;
     return (getResponseHeader() == that.getResponseHeader())
-        && (getNoOfEndpoints() == that.getNoOfEndpoints())
         && (getEndpoints() == that.getEndpoints())
         && super.equals(that)
         && true;
@@ -185,7 +176,7 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getResponseHeader(), getNoOfEndpoints(), getEndpoints());
+    return Objects.hash(super.hashCode(), getResponseHeader(), getEndpoints());
   }
 
   @Override

@@ -226,7 +226,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass).GetLengthInBits(ctx))
 
 	// Simple field (characterValue)
 	lengthInBits += m.CharacterValue.GetLengthInBits(ctx)

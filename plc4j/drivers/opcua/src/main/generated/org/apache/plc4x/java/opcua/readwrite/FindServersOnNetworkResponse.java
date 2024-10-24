@@ -38,29 +38,24 @@ import org.apache.plc4x.java.spi.generation.*;
 public class FindServersOnNetworkResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "12193";
+  public Integer getExtensionId() {
+    return (int) 12193;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
+  protected final ResponseHeader responseHeader;
   protected final long lastCounterResetTime;
-  protected final int noOfServers;
-  protected final List<ExtensionObjectDefinition> servers;
+  protected final List<ServerOnNetwork> servers;
 
   public FindServersOnNetworkResponse(
-      ExtensionObjectDefinition responseHeader,
-      long lastCounterResetTime,
-      int noOfServers,
-      List<ExtensionObjectDefinition> servers) {
+      ResponseHeader responseHeader, long lastCounterResetTime, List<ServerOnNetwork> servers) {
     super();
     this.responseHeader = responseHeader;
     this.lastCounterResetTime = lastCounterResetTime;
-    this.noOfServers = noOfServers;
     this.servers = servers;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
@@ -68,11 +63,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
     return lastCounterResetTime;
   }
 
-  public int getNoOfServers() {
-    return noOfServers;
-  }
-
-  public List<ExtensionObjectDefinition> getServers() {
+  public List<ServerOnNetwork> getServers() {
     return servers;
   }
 
@@ -90,8 +81,10 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
     writeSimpleField(
         "lastCounterResetTime", lastCounterResetTime, writeSignedLong(writeBuffer, 64));
 
-    // Simple Field (noOfServers)
-    writeSimpleField("noOfServers", noOfServers, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfServers) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfServers = (int) ((((getServers()) == (null)) ? -(1) : COUNT(getServers())));
+    writeImplicitField("noOfServers", noOfServers, writeSignedInt(writeBuffer, 32));
 
     // Array Field (servers)
     writeComplexTypeArrayField("servers", servers, writeBuffer);
@@ -116,13 +109,13 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
     // Simple field (lastCounterResetTime)
     lengthInBits += 64;
 
-    // Simple field (noOfServers)
+    // Implicit Field (noOfServers)
     lengthInBits += 32;
 
     // Array field
     if (servers != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : servers) {
+      for (ServerOnNetwork element : servers) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= servers.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -132,59 +125,56 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("FindServersOnNetworkResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     long lastCounterResetTime =
         readSimpleField("lastCounterResetTime", readSignedLong(readBuffer, 64));
 
-    int noOfServers = readSimpleField("noOfServers", readSignedInt(readBuffer, 32));
+    int noOfServers = readImplicitField("noOfServers", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> servers =
+    List<ServerOnNetwork> servers =
         readCountArrayField(
             "servers",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("12191")),
+                () ->
+                    (ServerOnNetwork)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (12191)),
                 readBuffer),
             noOfServers);
 
     readBuffer.closeContext("FindServersOnNetworkResponse");
     // Create the instance
     return new FindServersOnNetworkResponseBuilderImpl(
-        responseHeader, lastCounterResetTime, noOfServers, servers);
+        responseHeader, lastCounterResetTime, servers);
   }
 
   public static class FindServersOnNetworkResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
+    private final ResponseHeader responseHeader;
     private final long lastCounterResetTime;
-    private final int noOfServers;
-    private final List<ExtensionObjectDefinition> servers;
+    private final List<ServerOnNetwork> servers;
 
     public FindServersOnNetworkResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
-        long lastCounterResetTime,
-        int noOfServers,
-        List<ExtensionObjectDefinition> servers) {
+        ResponseHeader responseHeader, long lastCounterResetTime, List<ServerOnNetwork> servers) {
       this.responseHeader = responseHeader;
       this.lastCounterResetTime = lastCounterResetTime;
-      this.noOfServers = noOfServers;
       this.servers = servers;
     }
 
     public FindServersOnNetworkResponse build() {
       FindServersOnNetworkResponse findServersOnNetworkResponse =
-          new FindServersOnNetworkResponse(
-              responseHeader, lastCounterResetTime, noOfServers, servers);
+          new FindServersOnNetworkResponse(responseHeader, lastCounterResetTime, servers);
       return findServersOnNetworkResponse;
     }
   }
@@ -200,7 +190,6 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
     FindServersOnNetworkResponse that = (FindServersOnNetworkResponse) o;
     return (getResponseHeader() == that.getResponseHeader())
         && (getLastCounterResetTime() == that.getLastCounterResetTime())
-        && (getNoOfServers() == that.getNoOfServers())
         && (getServers() == that.getServers())
         && super.equals(that)
         && true;
@@ -209,11 +198,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getResponseHeader(),
-        getLastCounterResetTime(),
-        getNoOfServers(),
-        getServers());
+        super.hashCode(), getResponseHeader(), getLastCounterResetTime(), getServers());
   }
 
   @Override

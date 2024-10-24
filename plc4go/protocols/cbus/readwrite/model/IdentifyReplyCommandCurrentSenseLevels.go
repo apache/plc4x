@@ -206,7 +206,7 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetTypeName() string {
 }
 
 func (m *_IdentifyReplyCommandCurrentSenseLevels) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.CurrentSenseLevels) > 0 {

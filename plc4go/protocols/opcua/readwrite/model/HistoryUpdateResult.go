@@ -42,12 +42,8 @@ type HistoryUpdateResult interface {
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
-	// GetNoOfOperationResults returns NoOfOperationResults (property field)
-	GetNoOfOperationResults() int32
 	// GetOperationResults returns OperationResults (property field)
 	GetOperationResults() []StatusCode
-	// GetNoOfDiagnosticInfos returns NoOfDiagnosticInfos (property field)
-	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsHistoryUpdateResult is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,27 +55,23 @@ type HistoryUpdateResult interface {
 // _HistoryUpdateResult is the data-structure of this message
 type _HistoryUpdateResult struct {
 	ExtensionObjectDefinitionContract
-	StatusCode           StatusCode
-	NoOfOperationResults int32
-	OperationResults     []StatusCode
-	NoOfDiagnosticInfos  int32
-	DiagnosticInfos      []DiagnosticInfo
+	StatusCode       StatusCode
+	OperationResults []StatusCode
+	DiagnosticInfos  []DiagnosticInfo
 }
 
 var _ HistoryUpdateResult = (*_HistoryUpdateResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryUpdateResult)(nil)
 
 // NewHistoryUpdateResult factory function for _HistoryUpdateResult
-func NewHistoryUpdateResult(statusCode StatusCode, noOfOperationResults int32, operationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryUpdateResult {
+func NewHistoryUpdateResult(statusCode StatusCode, operationResults []StatusCode, diagnosticInfos []DiagnosticInfo) *_HistoryUpdateResult {
 	if statusCode == nil {
 		panic("statusCode of type StatusCode for HistoryUpdateResult must not be nil")
 	}
 	_result := &_HistoryUpdateResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,
-		NoOfOperationResults:              noOfOperationResults,
 		OperationResults:                  operationResults,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
 		DiagnosticInfos:                   diagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -95,17 +87,13 @@ func NewHistoryUpdateResult(statusCode StatusCode, noOfOperationResults int32, o
 type HistoryUpdateResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(statusCode StatusCode, noOfOperationResults int32, operationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) HistoryUpdateResultBuilder
+	WithMandatoryFields(statusCode StatusCode, operationResults []StatusCode, diagnosticInfos []DiagnosticInfo) HistoryUpdateResultBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithStatusCode(StatusCode) HistoryUpdateResultBuilder
 	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
 	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) HistoryUpdateResultBuilder
-	// WithNoOfOperationResults adds NoOfOperationResults (property field)
-	WithNoOfOperationResults(int32) HistoryUpdateResultBuilder
 	// WithOperationResults adds OperationResults (property field)
 	WithOperationResults(...StatusCode) HistoryUpdateResultBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) HistoryUpdateResultBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) HistoryUpdateResultBuilder
 	// Build builds the HistoryUpdateResult or returns an error if something is wrong
@@ -133,8 +121,8 @@ func (b *_HistoryUpdateResultBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_HistoryUpdateResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfOperationResults int32, operationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) HistoryUpdateResultBuilder {
-	return b.WithStatusCode(statusCode).WithNoOfOperationResults(noOfOperationResults).WithOperationResults(operationResults...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_HistoryUpdateResultBuilder) WithMandatoryFields(statusCode StatusCode, operationResults []StatusCode, diagnosticInfos []DiagnosticInfo) HistoryUpdateResultBuilder {
+	return b.WithStatusCode(statusCode).WithOperationResults(operationResults...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
 func (b *_HistoryUpdateResultBuilder) WithStatusCode(statusCode StatusCode) HistoryUpdateResultBuilder {
@@ -155,18 +143,8 @@ func (b *_HistoryUpdateResultBuilder) WithStatusCodeBuilder(builderSupplier func
 	return b
 }
 
-func (b *_HistoryUpdateResultBuilder) WithNoOfOperationResults(noOfOperationResults int32) HistoryUpdateResultBuilder {
-	b.NoOfOperationResults = noOfOperationResults
-	return b
-}
-
 func (b *_HistoryUpdateResultBuilder) WithOperationResults(operationResults ...StatusCode) HistoryUpdateResultBuilder {
 	b.OperationResults = operationResults
-	return b
-}
-
-func (b *_HistoryUpdateResultBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) HistoryUpdateResultBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -231,8 +209,8 @@ func (b *_HistoryUpdateResult) CreateHistoryUpdateResultBuilder() HistoryUpdateR
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_HistoryUpdateResult) GetIdentifier() string {
-	return "697"
+func (m *_HistoryUpdateResult) GetExtensionId() int32 {
+	return int32(697)
 }
 
 ///////////////////////
@@ -253,16 +231,8 @@ func (m *_HistoryUpdateResult) GetStatusCode() StatusCode {
 	return m.StatusCode
 }
 
-func (m *_HistoryUpdateResult) GetNoOfOperationResults() int32 {
-	return m.NoOfOperationResults
-}
-
 func (m *_HistoryUpdateResult) GetOperationResults() []StatusCode {
 	return m.OperationResults
-}
-
-func (m *_HistoryUpdateResult) GetNoOfDiagnosticInfos() int32 {
-	return m.NoOfDiagnosticInfos
 }
 
 func (m *_HistoryUpdateResult) GetDiagnosticInfos() []DiagnosticInfo {
@@ -290,12 +260,12 @@ func (m *_HistoryUpdateResult) GetTypeName() string {
 }
 
 func (m *_HistoryUpdateResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
 
-	// Simple field (noOfOperationResults)
+	// Implicit Field (noOfOperationResults)
 	lengthInBits += 32
 
 	// Array field
@@ -308,7 +278,7 @@ func (m *_HistoryUpdateResult) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfDiagnosticInfos)
+	// Implicit Field (noOfDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -328,7 +298,7 @@ func (m *_HistoryUpdateResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_HistoryUpdateResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyUpdateResult HistoryUpdateResult, err error) {
+func (m *_HistoryUpdateResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__historyUpdateResult HistoryUpdateResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -345,11 +315,11 @@ func (m *_HistoryUpdateResult) parse(ctx context.Context, readBuffer utils.ReadB
 	}
 	m.StatusCode = statusCode
 
-	noOfOperationResults, err := ReadSimpleField(ctx, "noOfOperationResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfOperationResults, err := ReadImplicitField[int32](ctx, "noOfOperationResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfOperationResults' field"))
 	}
-	m.NoOfOperationResults = noOfOperationResults
+	_ = noOfOperationResults
 
 	operationResults, err := ReadCountArrayField[StatusCode](ctx, "operationResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfOperationResults))
 	if err != nil {
@@ -357,11 +327,11 @@ func (m *_HistoryUpdateResult) parse(ctx context.Context, readBuffer utils.ReadB
 	}
 	m.OperationResults = operationResults
 
-	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	_ = noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {
@@ -397,16 +367,16 @@ func (m *_HistoryUpdateResult) SerializeWithWriteBuffer(ctx context.Context, wri
 		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfOperationResults", m.GetNoOfOperationResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfOperationResults := int32(utils.InlineIf(bool((m.GetOperationResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetOperationResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfOperationResults", noOfOperationResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfOperationResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "operationResults", m.GetOperationResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'operationResults' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiagnosticInfos := int32(utils.InlineIf(bool((m.GetDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiagnosticInfos", noOfDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
@@ -435,9 +405,7 @@ func (m *_HistoryUpdateResult) deepCopy() *_HistoryUpdateResult {
 	_HistoryUpdateResultCopy := &_HistoryUpdateResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
-		m.NoOfOperationResults,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.OperationResults),
-		m.NoOfDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

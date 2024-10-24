@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RequestHeader extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "391";
+  public Integer getExtensionId() {
+    return (int) 391;
   }
 
   // Properties.
@@ -164,7 +164,7 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RequestHeader");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

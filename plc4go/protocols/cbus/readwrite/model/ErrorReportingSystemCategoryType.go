@@ -317,7 +317,7 @@ func (m *_ErrorReportingSystemCategoryType) GetTypeName() string {
 	return "ErrorReportingSystemCategoryType"
 }
 
-func (m *_ErrorReportingSystemCategoryType) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ErrorReportingSystemCategoryType) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

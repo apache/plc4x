@@ -398,7 +398,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestReadRangeRange"
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRange) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)

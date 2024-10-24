@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataEnergyMeter) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (energyMeter)
 	lengthInBits += m.EnergyMeter.GetLengthInBits(ctx)

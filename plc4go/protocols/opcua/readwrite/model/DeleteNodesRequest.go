@@ -41,11 +41,9 @@ type DeleteNodesRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
-	// GetNoOfNodesToDelete returns NoOfNodesToDelete (property field)
-	GetNoOfNodesToDelete() int32
+	GetRequestHeader() RequestHeader
 	// GetNodesToDelete returns NodesToDelete (property field)
-	GetNodesToDelete() []ExtensionObjectDefinition
+	GetNodesToDelete() []DeleteNodesItem
 	// IsDeleteNodesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeleteNodesRequest()
 	// CreateBuilder creates a DeleteNodesRequestBuilder
@@ -55,23 +53,21 @@ type DeleteNodesRequest interface {
 // _DeleteNodesRequest is the data-structure of this message
 type _DeleteNodesRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader     ExtensionObjectDefinition
-	NoOfNodesToDelete int32
-	NodesToDelete     []ExtensionObjectDefinition
+	RequestHeader RequestHeader
+	NodesToDelete []DeleteNodesItem
 }
 
 var _ DeleteNodesRequest = (*_DeleteNodesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteNodesRequest)(nil)
 
 // NewDeleteNodesRequest factory function for _DeleteNodesRequest
-func NewDeleteNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) *_DeleteNodesRequest {
+func NewDeleteNodesRequest(requestHeader RequestHeader, nodesToDelete []DeleteNodesItem) *_DeleteNodesRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for DeleteNodesRequest must not be nil")
+		panic("requestHeader of type RequestHeader for DeleteNodesRequest must not be nil")
 	}
 	_result := &_DeleteNodesRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
-		NoOfNodesToDelete:                 noOfNodesToDelete,
 		NodesToDelete:                     nodesToDelete,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -87,15 +83,13 @@ func NewDeleteNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToD
 type DeleteNodesRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) DeleteNodesRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, nodesToDelete []DeleteNodesItem) DeleteNodesRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) DeleteNodesRequestBuilder
+	WithRequestHeader(RequestHeader) DeleteNodesRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteNodesRequestBuilder
-	// WithNoOfNodesToDelete adds NoOfNodesToDelete (property field)
-	WithNoOfNodesToDelete(int32) DeleteNodesRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) DeleteNodesRequestBuilder
 	// WithNodesToDelete adds NodesToDelete (property field)
-	WithNodesToDelete(...ExtensionObjectDefinition) DeleteNodesRequestBuilder
+	WithNodesToDelete(...DeleteNodesItem) DeleteNodesRequestBuilder
 	// Build builds the DeleteNodesRequest or returns an error if something is wrong
 	Build() (DeleteNodesRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,34 +115,29 @@ func (b *_DeleteNodesRequestBuilder) setParent(contract ExtensionObjectDefinitio
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_DeleteNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) DeleteNodesRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfNodesToDelete(noOfNodesToDelete).WithNodesToDelete(nodesToDelete...)
+func (b *_DeleteNodesRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, nodesToDelete []DeleteNodesItem) DeleteNodesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNodesToDelete(nodesToDelete...)
 }
 
-func (b *_DeleteNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteNodesRequestBuilder {
+func (b *_DeleteNodesRequestBuilder) WithRequestHeader(requestHeader RequestHeader) DeleteNodesRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_DeleteNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteNodesRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_DeleteNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) DeleteNodesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_DeleteNodesRequestBuilder) WithNoOfNodesToDelete(noOfNodesToDelete int32) DeleteNodesRequestBuilder {
-	b.NoOfNodesToDelete = noOfNodesToDelete
-	return b
-}
-
-func (b *_DeleteNodesRequestBuilder) WithNodesToDelete(nodesToDelete ...ExtensionObjectDefinition) DeleteNodesRequestBuilder {
+func (b *_DeleteNodesRequestBuilder) WithNodesToDelete(nodesToDelete ...DeleteNodesItem) DeleteNodesRequestBuilder {
 	b.NodesToDelete = nodesToDelete
 	return b
 }
@@ -209,8 +198,8 @@ func (b *_DeleteNodesRequest) CreateDeleteNodesRequestBuilder() DeleteNodesReque
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DeleteNodesRequest) GetIdentifier() string {
-	return "500"
+func (m *_DeleteNodesRequest) GetExtensionId() int32 {
+	return int32(500)
 }
 
 ///////////////////////
@@ -227,15 +216,11 @@ func (m *_DeleteNodesRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_DeleteNodesRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_DeleteNodesRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
-func (m *_DeleteNodesRequest) GetNoOfNodesToDelete() int32 {
-	return m.NoOfNodesToDelete
-}
-
-func (m *_DeleteNodesRequest) GetNodesToDelete() []ExtensionObjectDefinition {
+func (m *_DeleteNodesRequest) GetNodesToDelete() []DeleteNodesItem {
 	return m.NodesToDelete
 }
 
@@ -260,12 +245,12 @@ func (m *_DeleteNodesRequest) GetTypeName() string {
 }
 
 func (m *_DeleteNodesRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfNodesToDelete)
+	// Implicit Field (noOfNodesToDelete)
 	lengthInBits += 32
 
 	// Array field
@@ -285,7 +270,7 @@ func (m *_DeleteNodesRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DeleteNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteNodesRequest DeleteNodesRequest, err error) {
+func (m *_DeleteNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__deleteNodesRequest DeleteNodesRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -296,19 +281,19 @@ func (m *_DeleteNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfNodesToDelete, err := ReadSimpleField(ctx, "noOfNodesToDelete", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNodesToDelete, err := ReadImplicitField[int32](ctx, "noOfNodesToDelete", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToDelete' field"))
 	}
-	m.NoOfNodesToDelete = noOfNodesToDelete
+	_ = noOfNodesToDelete
 
-	nodesToDelete, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToDelete", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("384")), readBuffer), uint64(noOfNodesToDelete))
+	nodesToDelete, err := ReadCountArrayField[DeleteNodesItem](ctx, "nodesToDelete", ReadComplex[DeleteNodesItem](ExtensionObjectDefinitionParseWithBufferProducer[DeleteNodesItem]((int32)(int32(384))), readBuffer), uint64(noOfNodesToDelete))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToDelete' field"))
 	}
@@ -339,11 +324,11 @@ func (m *_DeleteNodesRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for DeleteNodesRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfNodesToDelete", m.GetNoOfNodesToDelete(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfNodesToDelete := int32(utils.InlineIf(bool((m.GetNodesToDelete()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNodesToDelete()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfNodesToDelete", noOfNodesToDelete, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNodesToDelete' field")
 		}
 
@@ -371,9 +356,8 @@ func (m *_DeleteNodesRequest) deepCopy() *_DeleteNodesRequest {
 	}
 	_DeleteNodesRequestCopy := &_DeleteNodesRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfNodesToDelete,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToDelete),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopySlice[DeleteNodesItem, DeleteNodesItem](m.NodesToDelete),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DeleteNodesRequestCopy

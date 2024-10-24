@@ -38,25 +38,19 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ContentFilter extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "588";
+  public Integer getExtensionId() {
+    return (int) 588;
   }
 
   // Properties.
-  protected final int noOfElements;
-  protected final List<ExtensionObjectDefinition> elements;
+  protected final List<ContentFilterElement> elements;
 
-  public ContentFilter(int noOfElements, List<ExtensionObjectDefinition> elements) {
+  public ContentFilter(List<ContentFilterElement> elements) {
     super();
-    this.noOfElements = noOfElements;
     this.elements = elements;
   }
 
-  public int getNoOfElements() {
-    return noOfElements;
-  }
-
-  public List<ExtensionObjectDefinition> getElements() {
+  public List<ContentFilterElement> getElements() {
     return elements;
   }
 
@@ -67,8 +61,10 @@ public class ContentFilter extends ExtensionObjectDefinition implements Message 
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("ContentFilter");
 
-    // Simple Field (noOfElements)
-    writeSimpleField("noOfElements", noOfElements, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfElements) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfElements = (int) ((((getElements()) == (null)) ? -(1) : COUNT(getElements())));
+    writeImplicitField("noOfElements", noOfElements, writeSignedInt(writeBuffer, 32));
 
     // Array Field (elements)
     writeComplexTypeArrayField("elements", elements, writeBuffer);
@@ -87,13 +83,13 @@ public class ContentFilter extends ExtensionObjectDefinition implements Message 
     ContentFilter _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (noOfElements)
+    // Implicit Field (noOfElements)
     lengthInBits += 32;
 
     // Array field
     if (elements != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : elements) {
+      for (ContentFilterElement element : elements) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= elements.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -103,38 +99,38 @@ public class ContentFilter extends ExtensionObjectDefinition implements Message 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ContentFilter");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int noOfElements = readSimpleField("noOfElements", readSignedInt(readBuffer, 32));
+    int noOfElements = readImplicitField("noOfElements", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> elements =
+    List<ContentFilterElement> elements =
         readCountArrayField(
             "elements",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("585")),
+                () ->
+                    (ContentFilterElement)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (585)),
                 readBuffer),
             noOfElements);
 
     readBuffer.closeContext("ContentFilter");
     // Create the instance
-    return new ContentFilterBuilderImpl(noOfElements, elements);
+    return new ContentFilterBuilderImpl(elements);
   }
 
   public static class ContentFilterBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final int noOfElements;
-    private final List<ExtensionObjectDefinition> elements;
+    private final List<ContentFilterElement> elements;
 
-    public ContentFilterBuilderImpl(int noOfElements, List<ExtensionObjectDefinition> elements) {
-      this.noOfElements = noOfElements;
+    public ContentFilterBuilderImpl(List<ContentFilterElement> elements) {
       this.elements = elements;
     }
 
     public ContentFilter build() {
-      ContentFilter contentFilter = new ContentFilter(noOfElements, elements);
+      ContentFilter contentFilter = new ContentFilter(elements);
       return contentFilter;
     }
   }
@@ -148,15 +144,12 @@ public class ContentFilter extends ExtensionObjectDefinition implements Message 
       return false;
     }
     ContentFilter that = (ContentFilter) o;
-    return (getNoOfElements() == that.getNoOfElements())
-        && (getElements() == that.getElements())
-        && super.equals(that)
-        && true;
+    return (getElements() == that.getElements()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getNoOfElements(), getElements());
+    return Objects.hash(super.hashCode(), getElements());
   }
 
   @Override

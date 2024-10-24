@@ -421,7 +421,7 @@ func (m *_BACnetNotificationParametersUnsignedOutOfRange) GetTypeName() string {
 }
 
 func (m *_BACnetNotificationParametersUnsignedOutOfRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).GetLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)

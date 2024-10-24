@@ -202,7 +202,7 @@ func (m *_MediaTransportControlDataSetCategory) GetTypeName() string {
 }
 
 func (m *_MediaTransportControlDataSetCategory) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).GetLengthInBits(ctx))
 
 	// Simple field (categoryNumber)
 	lengthInBits += 8

@@ -226,7 +226,7 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) GetTypeName() string {
 }
 
 func (m *_BACnetSpecialEventPeriodCalendarEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod).GetLengthInBits(ctx))
 
 	// Simple field (calendarEntry)
 	lengthInBits += m.CalendarEntry.GetLengthInBits(ctx)

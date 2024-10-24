@@ -180,7 +180,7 @@ func (m *_RoutingIndication) GetTypeName() string {
 }
 
 func (m *_RoutingIndication) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

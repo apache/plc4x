@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ProgramDiagnosticDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "896";
+  public Integer getExtensionId() {
+    return (int) 896;
   }
 
   // Properties.
@@ -49,12 +49,10 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
   protected final long lastTransitionTime;
   protected final PascalString lastMethodCall;
   protected final NodeId lastMethodSessionId;
-  protected final int noOfLastMethodInputArguments;
-  protected final List<ExtensionObjectDefinition> lastMethodInputArguments;
-  protected final int noOfLastMethodOutputArguments;
-  protected final List<ExtensionObjectDefinition> lastMethodOutputArguments;
+  protected final List<Argument> lastMethodInputArguments;
+  protected final List<Argument> lastMethodOutputArguments;
   protected final long lastMethodCallTime;
-  protected final ExtensionObjectDefinition lastMethodReturnStatus;
+  protected final StatusResult lastMethodReturnStatus;
 
   public ProgramDiagnosticDataType(
       NodeId createSessionId,
@@ -63,12 +61,10 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
       long lastTransitionTime,
       PascalString lastMethodCall,
       NodeId lastMethodSessionId,
-      int noOfLastMethodInputArguments,
-      List<ExtensionObjectDefinition> lastMethodInputArguments,
-      int noOfLastMethodOutputArguments,
-      List<ExtensionObjectDefinition> lastMethodOutputArguments,
+      List<Argument> lastMethodInputArguments,
+      List<Argument> lastMethodOutputArguments,
       long lastMethodCallTime,
-      ExtensionObjectDefinition lastMethodReturnStatus) {
+      StatusResult lastMethodReturnStatus) {
     super();
     this.createSessionId = createSessionId;
     this.createClientName = createClientName;
@@ -76,9 +72,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     this.lastTransitionTime = lastTransitionTime;
     this.lastMethodCall = lastMethodCall;
     this.lastMethodSessionId = lastMethodSessionId;
-    this.noOfLastMethodInputArguments = noOfLastMethodInputArguments;
     this.lastMethodInputArguments = lastMethodInputArguments;
-    this.noOfLastMethodOutputArguments = noOfLastMethodOutputArguments;
     this.lastMethodOutputArguments = lastMethodOutputArguments;
     this.lastMethodCallTime = lastMethodCallTime;
     this.lastMethodReturnStatus = lastMethodReturnStatus;
@@ -108,19 +102,11 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     return lastMethodSessionId;
   }
 
-  public int getNoOfLastMethodInputArguments() {
-    return noOfLastMethodInputArguments;
-  }
-
-  public List<ExtensionObjectDefinition> getLastMethodInputArguments() {
+  public List<Argument> getLastMethodInputArguments() {
     return lastMethodInputArguments;
   }
 
-  public int getNoOfLastMethodOutputArguments() {
-    return noOfLastMethodOutputArguments;
-  }
-
-  public List<ExtensionObjectDefinition> getLastMethodOutputArguments() {
+  public List<Argument> getLastMethodOutputArguments() {
     return lastMethodOutputArguments;
   }
 
@@ -128,7 +114,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     return lastMethodCallTime;
   }
 
-  public ExtensionObjectDefinition getLastMethodReturnStatus() {
+  public StatusResult getLastMethodReturnStatus() {
     return lastMethodReturnStatus;
   }
 
@@ -158,8 +144,14 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     // Simple Field (lastMethodSessionId)
     writeSimpleField("lastMethodSessionId", lastMethodSessionId, writeComplex(writeBuffer));
 
-    // Simple Field (noOfLastMethodInputArguments)
-    writeSimpleField(
+    // Implicit Field (noOfLastMethodInputArguments) (Used for parsing, but its value is not stored
+    // as it's implicitly given by the objects content)
+    int noOfLastMethodInputArguments =
+        (int)
+            ((((getLastMethodInputArguments()) == (null))
+                ? -(1)
+                : COUNT(getLastMethodInputArguments())));
+    writeImplicitField(
         "noOfLastMethodInputArguments",
         noOfLastMethodInputArguments,
         writeSignedInt(writeBuffer, 32));
@@ -167,8 +159,14 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     // Array Field (lastMethodInputArguments)
     writeComplexTypeArrayField("lastMethodInputArguments", lastMethodInputArguments, writeBuffer);
 
-    // Simple Field (noOfLastMethodOutputArguments)
-    writeSimpleField(
+    // Implicit Field (noOfLastMethodOutputArguments) (Used for parsing, but its value is not stored
+    // as it's implicitly given by the objects content)
+    int noOfLastMethodOutputArguments =
+        (int)
+            ((((getLastMethodOutputArguments()) == (null))
+                ? -(1)
+                : COUNT(getLastMethodOutputArguments())));
+    writeImplicitField(
         "noOfLastMethodOutputArguments",
         noOfLastMethodOutputArguments,
         writeSignedInt(writeBuffer, 32));
@@ -214,25 +212,25 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     // Simple field (lastMethodSessionId)
     lengthInBits += lastMethodSessionId.getLengthInBits();
 
-    // Simple field (noOfLastMethodInputArguments)
+    // Implicit Field (noOfLastMethodInputArguments)
     lengthInBits += 32;
 
     // Array field
     if (lastMethodInputArguments != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : lastMethodInputArguments) {
+      for (Argument element : lastMethodInputArguments) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodInputArguments.size());
         lengthInBits += element.getLengthInBits();
       }
     }
 
-    // Simple field (noOfLastMethodOutputArguments)
+    // Implicit Field (noOfLastMethodOutputArguments)
     lengthInBits += 32;
 
     // Array field
     if (lastMethodOutputArguments != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : lastMethodOutputArguments) {
+      for (Argument element : lastMethodOutputArguments) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodOutputArguments.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -248,7 +246,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ProgramDiagnosticDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -276,34 +274,34 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
             "lastMethodSessionId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     int noOfLastMethodInputArguments =
-        readSimpleField("noOfLastMethodInputArguments", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfLastMethodInputArguments", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> lastMethodInputArguments =
+    List<Argument> lastMethodInputArguments =
         readCountArrayField(
             "lastMethodInputArguments",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("298")),
+                () -> (Argument) ExtensionObjectDefinition.staticParse(readBuffer, (int) (298)),
                 readBuffer),
             noOfLastMethodInputArguments);
 
     int noOfLastMethodOutputArguments =
-        readSimpleField("noOfLastMethodOutputArguments", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfLastMethodOutputArguments", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> lastMethodOutputArguments =
+    List<Argument> lastMethodOutputArguments =
         readCountArrayField(
             "lastMethodOutputArguments",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("298")),
+                () -> (Argument) ExtensionObjectDefinition.staticParse(readBuffer, (int) (298)),
                 readBuffer),
             noOfLastMethodOutputArguments);
 
     long lastMethodCallTime = readSimpleField("lastMethodCallTime", readSignedLong(readBuffer, 64));
 
-    ExtensionObjectDefinition lastMethodReturnStatus =
+    StatusResult lastMethodReturnStatus =
         readSimpleField(
             "lastMethodReturnStatus",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("301")),
+                () -> (StatusResult) ExtensionObjectDefinition.staticParse(readBuffer, (int) (301)),
                 readBuffer));
 
     readBuffer.closeContext("ProgramDiagnosticDataType");
@@ -315,9 +313,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
         lastTransitionTime,
         lastMethodCall,
         lastMethodSessionId,
-        noOfLastMethodInputArguments,
         lastMethodInputArguments,
-        noOfLastMethodOutputArguments,
         lastMethodOutputArguments,
         lastMethodCallTime,
         lastMethodReturnStatus);
@@ -331,12 +327,10 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     private final long lastTransitionTime;
     private final PascalString lastMethodCall;
     private final NodeId lastMethodSessionId;
-    private final int noOfLastMethodInputArguments;
-    private final List<ExtensionObjectDefinition> lastMethodInputArguments;
-    private final int noOfLastMethodOutputArguments;
-    private final List<ExtensionObjectDefinition> lastMethodOutputArguments;
+    private final List<Argument> lastMethodInputArguments;
+    private final List<Argument> lastMethodOutputArguments;
     private final long lastMethodCallTime;
-    private final ExtensionObjectDefinition lastMethodReturnStatus;
+    private final StatusResult lastMethodReturnStatus;
 
     public ProgramDiagnosticDataTypeBuilderImpl(
         NodeId createSessionId,
@@ -345,21 +339,17 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
         long lastTransitionTime,
         PascalString lastMethodCall,
         NodeId lastMethodSessionId,
-        int noOfLastMethodInputArguments,
-        List<ExtensionObjectDefinition> lastMethodInputArguments,
-        int noOfLastMethodOutputArguments,
-        List<ExtensionObjectDefinition> lastMethodOutputArguments,
+        List<Argument> lastMethodInputArguments,
+        List<Argument> lastMethodOutputArguments,
         long lastMethodCallTime,
-        ExtensionObjectDefinition lastMethodReturnStatus) {
+        StatusResult lastMethodReturnStatus) {
       this.createSessionId = createSessionId;
       this.createClientName = createClientName;
       this.invocationCreationTime = invocationCreationTime;
       this.lastTransitionTime = lastTransitionTime;
       this.lastMethodCall = lastMethodCall;
       this.lastMethodSessionId = lastMethodSessionId;
-      this.noOfLastMethodInputArguments = noOfLastMethodInputArguments;
       this.lastMethodInputArguments = lastMethodInputArguments;
-      this.noOfLastMethodOutputArguments = noOfLastMethodOutputArguments;
       this.lastMethodOutputArguments = lastMethodOutputArguments;
       this.lastMethodCallTime = lastMethodCallTime;
       this.lastMethodReturnStatus = lastMethodReturnStatus;
@@ -374,9 +364,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
               lastTransitionTime,
               lastMethodCall,
               lastMethodSessionId,
-              noOfLastMethodInputArguments,
               lastMethodInputArguments,
-              noOfLastMethodOutputArguments,
               lastMethodOutputArguments,
               lastMethodCallTime,
               lastMethodReturnStatus);
@@ -399,9 +387,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
         && (getLastTransitionTime() == that.getLastTransitionTime())
         && (getLastMethodCall() == that.getLastMethodCall())
         && (getLastMethodSessionId() == that.getLastMethodSessionId())
-        && (getNoOfLastMethodInputArguments() == that.getNoOfLastMethodInputArguments())
         && (getLastMethodInputArguments() == that.getLastMethodInputArguments())
-        && (getNoOfLastMethodOutputArguments() == that.getNoOfLastMethodOutputArguments())
         && (getLastMethodOutputArguments() == that.getLastMethodOutputArguments())
         && (getLastMethodCallTime() == that.getLastMethodCallTime())
         && (getLastMethodReturnStatus() == that.getLastMethodReturnStatus())
@@ -419,9 +405,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
         getLastTransitionTime(),
         getLastMethodCall(),
         getLastMethodSessionId(),
-        getNoOfLastMethodInputArguments(),
         getLastMethodInputArguments(),
-        getNoOfLastMethodOutputArguments(),
         getLastMethodOutputArguments(),
         getLastMethodCallTime(),
         getLastMethodReturnStatus());

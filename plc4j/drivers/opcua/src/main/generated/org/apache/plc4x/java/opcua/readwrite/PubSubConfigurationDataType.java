@@ -38,44 +38,30 @@ import org.apache.plc4x.java.spi.generation.*;
 public class PubSubConfigurationDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "15532";
+  public Integer getExtensionId() {
+    return (int) 15532;
   }
 
   // Properties.
-  protected final int noOfPublishedDataSets;
-  protected final List<ExtensionObjectDefinition> publishedDataSets;
-  protected final int noOfConnections;
-  protected final List<ExtensionObjectDefinition> connections;
+  protected final List<PublishedDataSetDataType> publishedDataSets;
+  protected final List<PubSubConnectionDataType> connections;
   protected final boolean enabled;
 
   public PubSubConfigurationDataType(
-      int noOfPublishedDataSets,
-      List<ExtensionObjectDefinition> publishedDataSets,
-      int noOfConnections,
-      List<ExtensionObjectDefinition> connections,
+      List<PublishedDataSetDataType> publishedDataSets,
+      List<PubSubConnectionDataType> connections,
       boolean enabled) {
     super();
-    this.noOfPublishedDataSets = noOfPublishedDataSets;
     this.publishedDataSets = publishedDataSets;
-    this.noOfConnections = noOfConnections;
     this.connections = connections;
     this.enabled = enabled;
   }
 
-  public int getNoOfPublishedDataSets() {
-    return noOfPublishedDataSets;
-  }
-
-  public List<ExtensionObjectDefinition> getPublishedDataSets() {
+  public List<PublishedDataSetDataType> getPublishedDataSets() {
     return publishedDataSets;
   }
 
-  public int getNoOfConnections() {
-    return noOfConnections;
-  }
-
-  public List<ExtensionObjectDefinition> getConnections() {
+  public List<PubSubConnectionDataType> getConnections() {
     return connections;
   }
 
@@ -90,15 +76,20 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("PubSubConfigurationDataType");
 
-    // Simple Field (noOfPublishedDataSets)
-    writeSimpleField(
+    // Implicit Field (noOfPublishedDataSets) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfPublishedDataSets =
+        (int) ((((getPublishedDataSets()) == (null)) ? -(1) : COUNT(getPublishedDataSets())));
+    writeImplicitField(
         "noOfPublishedDataSets", noOfPublishedDataSets, writeSignedInt(writeBuffer, 32));
 
     // Array Field (publishedDataSets)
     writeComplexTypeArrayField("publishedDataSets", publishedDataSets, writeBuffer);
 
-    // Simple Field (noOfConnections)
-    writeSimpleField("noOfConnections", noOfConnections, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfConnections) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfConnections = (int) ((((getConnections()) == (null)) ? -(1) : COUNT(getConnections())));
+    writeImplicitField("noOfConnections", noOfConnections, writeSignedInt(writeBuffer, 32));
 
     // Array Field (connections)
     writeComplexTypeArrayField("connections", connections, writeBuffer);
@@ -123,25 +114,25 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     PubSubConfigurationDataType _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (noOfPublishedDataSets)
+    // Implicit Field (noOfPublishedDataSets)
     lengthInBits += 32;
 
     // Array field
     if (publishedDataSets != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : publishedDataSets) {
+      for (PublishedDataSetDataType element : publishedDataSets) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= publishedDataSets.size());
         lengthInBits += element.getLengthInBits();
       }
     }
 
-    // Simple field (noOfConnections)
+    // Implicit Field (noOfConnections)
     lengthInBits += 32;
 
     // Array field
     if (connections != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : connections) {
+      for (PubSubConnectionDataType element : connections) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= connections.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -157,29 +148,33 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("PubSubConfigurationDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfPublishedDataSets =
-        readSimpleField("noOfPublishedDataSets", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfPublishedDataSets", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> publishedDataSets =
+    List<PublishedDataSetDataType> publishedDataSets =
         readCountArrayField(
             "publishedDataSets",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("15580")),
+                () ->
+                    (PublishedDataSetDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (15580)),
                 readBuffer),
             noOfPublishedDataSets);
 
-    int noOfConnections = readSimpleField("noOfConnections", readSignedInt(readBuffer, 32));
+    int noOfConnections = readImplicitField("noOfConnections", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> connections =
+    List<PubSubConnectionDataType> connections =
         readCountArrayField(
             "connections",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("15619")),
+                () ->
+                    (PubSubConnectionDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (15619)),
                 readBuffer),
             noOfConnections);
 
@@ -190,35 +185,27 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
 
     readBuffer.closeContext("PubSubConfigurationDataType");
     // Create the instance
-    return new PubSubConfigurationDataTypeBuilderImpl(
-        noOfPublishedDataSets, publishedDataSets, noOfConnections, connections, enabled);
+    return new PubSubConfigurationDataTypeBuilderImpl(publishedDataSets, connections, enabled);
   }
 
   public static class PubSubConfigurationDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final int noOfPublishedDataSets;
-    private final List<ExtensionObjectDefinition> publishedDataSets;
-    private final int noOfConnections;
-    private final List<ExtensionObjectDefinition> connections;
+    private final List<PublishedDataSetDataType> publishedDataSets;
+    private final List<PubSubConnectionDataType> connections;
     private final boolean enabled;
 
     public PubSubConfigurationDataTypeBuilderImpl(
-        int noOfPublishedDataSets,
-        List<ExtensionObjectDefinition> publishedDataSets,
-        int noOfConnections,
-        List<ExtensionObjectDefinition> connections,
+        List<PublishedDataSetDataType> publishedDataSets,
+        List<PubSubConnectionDataType> connections,
         boolean enabled) {
-      this.noOfPublishedDataSets = noOfPublishedDataSets;
       this.publishedDataSets = publishedDataSets;
-      this.noOfConnections = noOfConnections;
       this.connections = connections;
       this.enabled = enabled;
     }
 
     public PubSubConfigurationDataType build() {
       PubSubConfigurationDataType pubSubConfigurationDataType =
-          new PubSubConfigurationDataType(
-              noOfPublishedDataSets, publishedDataSets, noOfConnections, connections, enabled);
+          new PubSubConfigurationDataType(publishedDataSets, connections, enabled);
       return pubSubConfigurationDataType;
     }
   }
@@ -232,9 +219,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
       return false;
     }
     PubSubConfigurationDataType that = (PubSubConfigurationDataType) o;
-    return (getNoOfPublishedDataSets() == that.getNoOfPublishedDataSets())
-        && (getPublishedDataSets() == that.getPublishedDataSets())
-        && (getNoOfConnections() == that.getNoOfConnections())
+    return (getPublishedDataSets() == that.getPublishedDataSets())
         && (getConnections() == that.getConnections())
         && (getEnabled() == that.getEnabled())
         && super.equals(that)
@@ -243,13 +228,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getNoOfPublishedDataSets(),
-        getPublishedDataSets(),
-        getNoOfConnections(),
-        getConnections(),
-        getEnabled());
+    return Objects.hash(super.hashCode(), getPublishedDataSets(), getConnections(), getEnabled());
   }
 
   @Override

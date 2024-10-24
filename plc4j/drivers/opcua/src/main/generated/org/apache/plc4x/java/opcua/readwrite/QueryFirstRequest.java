@@ -38,54 +38,47 @@ import org.apache.plc4x.java.spi.generation.*;
 public class QueryFirstRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "615";
+  public Integer getExtensionId() {
+    return (int) 615;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final ExtensionObjectDefinition view;
-  protected final int noOfNodeTypes;
-  protected final List<ExtensionObjectDefinition> nodeTypes;
-  protected final ExtensionObjectDefinition filter;
+  protected final RequestHeader requestHeader;
+  protected final ViewDescription view;
+  protected final List<NodeTypeDescription> nodeTypes;
+  protected final ContentFilter filter;
   protected final long maxDataSetsToReturn;
   protected final long maxReferencesToReturn;
 
   public QueryFirstRequest(
-      ExtensionObjectDefinition requestHeader,
-      ExtensionObjectDefinition view,
-      int noOfNodeTypes,
-      List<ExtensionObjectDefinition> nodeTypes,
-      ExtensionObjectDefinition filter,
+      RequestHeader requestHeader,
+      ViewDescription view,
+      List<NodeTypeDescription> nodeTypes,
+      ContentFilter filter,
       long maxDataSetsToReturn,
       long maxReferencesToReturn) {
     super();
     this.requestHeader = requestHeader;
     this.view = view;
-    this.noOfNodeTypes = noOfNodeTypes;
     this.nodeTypes = nodeTypes;
     this.filter = filter;
     this.maxDataSetsToReturn = maxDataSetsToReturn;
     this.maxReferencesToReturn = maxReferencesToReturn;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public ExtensionObjectDefinition getView() {
+  public ViewDescription getView() {
     return view;
   }
 
-  public int getNoOfNodeTypes() {
-    return noOfNodeTypes;
-  }
-
-  public List<ExtensionObjectDefinition> getNodeTypes() {
+  public List<NodeTypeDescription> getNodeTypes() {
     return nodeTypes;
   }
 
-  public ExtensionObjectDefinition getFilter() {
+  public ContentFilter getFilter() {
     return filter;
   }
 
@@ -110,8 +103,10 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     // Simple Field (view)
     writeSimpleField("view", view, writeComplex(writeBuffer));
 
-    // Simple Field (noOfNodeTypes)
-    writeSimpleField("noOfNodeTypes", noOfNodeTypes, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfNodeTypes) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfNodeTypes = (int) ((((getNodeTypes()) == (null)) ? -(1) : COUNT(getNodeTypes())));
+    writeImplicitField("noOfNodeTypes", noOfNodeTypes, writeSignedInt(writeBuffer, 32));
 
     // Array Field (nodeTypes)
     writeComplexTypeArrayField("nodeTypes", nodeTypes, writeBuffer);
@@ -147,13 +142,13 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     // Simple field (view)
     lengthInBits += view.getLengthInBits();
 
-    // Simple field (noOfNodeTypes)
+    // Implicit Field (noOfNodeTypes)
     lengthInBits += 32;
 
     // Array field
     if (nodeTypes != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : nodeTypes) {
+      for (NodeTypeDescription element : nodeTypes) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodeTypes.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -172,40 +167,46 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("QueryFirstRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    ExtensionObjectDefinition view =
+    ViewDescription view =
         readSimpleField(
             "view",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("513")),
+                () ->
+                    (ViewDescription)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (513)),
                 readBuffer));
 
-    int noOfNodeTypes = readSimpleField("noOfNodeTypes", readSignedInt(readBuffer, 32));
+    int noOfNodeTypes = readImplicitField("noOfNodeTypes", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> nodeTypes =
+    List<NodeTypeDescription> nodeTypes =
         readCountArrayField(
             "nodeTypes",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("575")),
+                () ->
+                    (NodeTypeDescription)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (575)),
                 readBuffer),
             noOfNodeTypes);
 
-    ExtensionObjectDefinition filter =
+    ContentFilter filter =
         readSimpleField(
             "filter",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("588")),
+                () ->
+                    (ContentFilter) ExtensionObjectDefinition.staticParse(readBuffer, (int) (588)),
                 readBuffer));
 
     long maxDataSetsToReturn =
@@ -217,36 +218,27 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     readBuffer.closeContext("QueryFirstRequest");
     // Create the instance
     return new QueryFirstRequestBuilderImpl(
-        requestHeader,
-        view,
-        noOfNodeTypes,
-        nodeTypes,
-        filter,
-        maxDataSetsToReturn,
-        maxReferencesToReturn);
+        requestHeader, view, nodeTypes, filter, maxDataSetsToReturn, maxReferencesToReturn);
   }
 
   public static class QueryFirstRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final ExtensionObjectDefinition view;
-    private final int noOfNodeTypes;
-    private final List<ExtensionObjectDefinition> nodeTypes;
-    private final ExtensionObjectDefinition filter;
+    private final RequestHeader requestHeader;
+    private final ViewDescription view;
+    private final List<NodeTypeDescription> nodeTypes;
+    private final ContentFilter filter;
     private final long maxDataSetsToReturn;
     private final long maxReferencesToReturn;
 
     public QueryFirstRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        ExtensionObjectDefinition view,
-        int noOfNodeTypes,
-        List<ExtensionObjectDefinition> nodeTypes,
-        ExtensionObjectDefinition filter,
+        RequestHeader requestHeader,
+        ViewDescription view,
+        List<NodeTypeDescription> nodeTypes,
+        ContentFilter filter,
         long maxDataSetsToReturn,
         long maxReferencesToReturn) {
       this.requestHeader = requestHeader;
       this.view = view;
-      this.noOfNodeTypes = noOfNodeTypes;
       this.nodeTypes = nodeTypes;
       this.filter = filter;
       this.maxDataSetsToReturn = maxDataSetsToReturn;
@@ -256,13 +248,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     public QueryFirstRequest build() {
       QueryFirstRequest queryFirstRequest =
           new QueryFirstRequest(
-              requestHeader,
-              view,
-              noOfNodeTypes,
-              nodeTypes,
-              filter,
-              maxDataSetsToReturn,
-              maxReferencesToReturn);
+              requestHeader, view, nodeTypes, filter, maxDataSetsToReturn, maxReferencesToReturn);
       return queryFirstRequest;
     }
   }
@@ -278,7 +264,6 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     QueryFirstRequest that = (QueryFirstRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
         && (getView() == that.getView())
-        && (getNoOfNodeTypes() == that.getNoOfNodeTypes())
         && (getNodeTypes() == that.getNodeTypes())
         && (getFilter() == that.getFilter())
         && (getMaxDataSetsToReturn() == that.getMaxDataSetsToReturn())
@@ -293,7 +278,6 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
         super.hashCode(),
         getRequestHeader(),
         getView(),
-        getNoOfNodeTypes(),
         getNodeTypes(),
         getFilter(),
         getMaxDataSetsToReturn(),

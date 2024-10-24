@@ -41,7 +41,7 @@ type UnregisterNodesResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// IsUnregisterNodesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUnregisterNodesResponse()
 	// CreateBuilder creates a UnregisterNodesResponseBuilder
@@ -51,16 +51,16 @@ type UnregisterNodesResponse interface {
 // _UnregisterNodesResponse is the data-structure of this message
 type _UnregisterNodesResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader ExtensionObjectDefinition
+	ResponseHeader ResponseHeader
 }
 
 var _ UnregisterNodesResponse = (*_UnregisterNodesResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_UnregisterNodesResponse)(nil)
 
 // NewUnregisterNodesResponse factory function for _UnregisterNodesResponse
-func NewUnregisterNodesResponse(responseHeader ExtensionObjectDefinition) *_UnregisterNodesResponse {
+func NewUnregisterNodesResponse(responseHeader ResponseHeader) *_UnregisterNodesResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for UnregisterNodesResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for UnregisterNodesResponse must not be nil")
 	}
 	_result := &_UnregisterNodesResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -79,11 +79,11 @@ func NewUnregisterNodesResponse(responseHeader ExtensionObjectDefinition) *_Unre
 type UnregisterNodesResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader) UnregisterNodesResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) UnregisterNodesResponseBuilder
+	WithResponseHeader(ResponseHeader) UnregisterNodesResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) UnregisterNodesResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) UnregisterNodesResponseBuilder
 	// Build builds the UnregisterNodesResponse or returns an error if something is wrong
 	Build() (UnregisterNodesResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,24 +109,24 @@ func (b *_UnregisterNodesResponseBuilder) setParent(contract ExtensionObjectDefi
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_UnregisterNodesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder {
+func (b *_UnregisterNodesResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader) UnregisterNodesResponseBuilder {
 	return b.WithResponseHeader(responseHeader)
 }
 
-func (b *_UnregisterNodesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder {
+func (b *_UnregisterNodesResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) UnregisterNodesResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_UnregisterNodesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) UnregisterNodesResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_UnregisterNodesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) UnregisterNodesResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -187,8 +187,8 @@ func (b *_UnregisterNodesResponse) CreateUnregisterNodesResponseBuilder() Unregi
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_UnregisterNodesResponse) GetIdentifier() string {
-	return "569"
+func (m *_UnregisterNodesResponse) GetExtensionId() int32 {
+	return int32(569)
 }
 
 ///////////////////////
@@ -205,7 +205,7 @@ func (m *_UnregisterNodesResponse) GetParent() ExtensionObjectDefinitionContract
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_UnregisterNodesResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_UnregisterNodesResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
@@ -230,7 +230,7 @@ func (m *_UnregisterNodesResponse) GetTypeName() string {
 }
 
 func (m *_UnregisterNodesResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -242,7 +242,7 @@ func (m *_UnregisterNodesResponse) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_UnregisterNodesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__unregisterNodesResponse UnregisterNodesResponse, err error) {
+func (m *_UnregisterNodesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__unregisterNodesResponse UnregisterNodesResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -253,7 +253,7 @@ func (m *_UnregisterNodesResponse) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -284,7 +284,7 @@ func (m *_UnregisterNodesResponse) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for UnregisterNodesResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
@@ -308,7 +308,7 @@ func (m *_UnregisterNodesResponse) deepCopy() *_UnregisterNodesResponse {
 	}
 	_UnregisterNodesResponseCopy := &_UnregisterNodesResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UnregisterNodesResponseCopy

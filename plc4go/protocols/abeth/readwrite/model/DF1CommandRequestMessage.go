@@ -230,7 +230,7 @@ func (m *_DF1CommandRequestMessage) GetTypeName() string {
 }
 
 func (m *_DF1CommandRequestMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1RequestMessageContract.(*_DF1RequestMessage).getLengthInBits(ctx))
+	lengthInBits := uint16(m.DF1RequestMessageContract.(*_DF1RequestMessage).GetLengthInBits(ctx))
 
 	// Simple field (command)
 	lengthInBits += m.Command.GetLengthInBits(ctx)

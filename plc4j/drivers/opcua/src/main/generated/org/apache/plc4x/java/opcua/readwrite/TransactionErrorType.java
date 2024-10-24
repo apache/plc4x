@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class TransactionErrorType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "32287";
+  public Integer getExtensionId() {
+    return (int) 32287;
   }
 
   // Properties.
@@ -109,7 +109,7 @@ public class TransactionErrorType extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("TransactionErrorType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

@@ -333,7 +333,7 @@ func (m *_LDataExtended) GetTypeName() string {
 }
 
 func (m *_LDataExtended) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LDataFrameContract.(*_LDataFrame).getLengthInBits(ctx))
+	lengthInBits := uint16(m.LDataFrameContract.(*_LDataFrame).GetLengthInBits(ctx))
 
 	// Simple field (groupAddress)
 	lengthInBits += 1

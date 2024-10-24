@@ -230,7 +230,7 @@ func (m *_SALDataMeasurement) GetTypeName() string {
 }
 
 func (m *_SALDataMeasurement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).GetLengthInBits(ctx))
 
 	// Simple field (measurementData)
 	lengthInBits += m.MeasurementData.GetLengthInBits(ctx)

@@ -217,7 +217,7 @@ func (m *_CycServiceItemDbReadType) GetTypeName() string {
 }
 
 func (m *_CycServiceItemDbReadType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CycServiceItemTypeContract.(*_CycServiceItemType).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CycServiceItemTypeContract.(*_CycServiceItemType).GetLengthInBits(ctx))
 
 	// Simple field (numberOfAreas)
 	lengthInBits += 8
