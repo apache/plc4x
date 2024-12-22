@@ -48,6 +48,6 @@ Anyone who provides `Apache PLC4X` related services can be added to this list (e
 
 == How can I get added to this list?
 
-Please create a Pull-Request on GitHub as described https://plc4x.apache.org/developers/contributing.html[here]. The resource requiring editing can be found https://github.com/apache/plc4x/blob/develop/src/site/asciidoc/users/commercial-support.adoc[here]
+Please create a Pull-Request on GitHub as described https://plc4x.apache.org/developers/contributing.html[here]. The resource requiring editing can be found https://github.com/apache/plc4x/blob/develop/website/asciidoc/modules/users/pages/commercial-support.adoc[here]
 
 We will then check if the entry fulfills the requirements and accept the changes as soon as all of these have been addressed.
