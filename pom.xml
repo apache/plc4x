@@ -139,7 +139,7 @@
     <jaxb.version>4.0.4</jaxb.version>
     <!-- Starting with Jetty 12 Java 17 is required -->
     <jetty-util.version>11.0.20</jetty-util.version>
-    <jna.version>5.15.0</jna.version>
+    <jna.version>5.16.0</jna.version>
     <jserialcom.version>2.11.0</jserialcom.version>
     <junit.jupiter.version>5.11.4</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
