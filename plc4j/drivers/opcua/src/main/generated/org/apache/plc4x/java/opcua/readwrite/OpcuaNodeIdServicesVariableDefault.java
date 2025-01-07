@@ -25,6 +25,7 @@ import java.util.Map;
 
 public enum OpcuaNodeIdServicesVariableDefault {
   DefaultInstanceBrowseName((int) 17605L),
+  DefaultHEConfiguration_SortByEventFields((int) 18645L),
   DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad((int) 32639L),
   DefaultHAConfiguration_AggregateConfiguration_PercentDataBad((int) 32640L),
   DefaultHAConfiguration_AggregateConfiguration_PercentDataGood((int) 32641L),

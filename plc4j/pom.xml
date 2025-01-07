@@ -45,6 +45,7 @@
     <module>transports</module>
     <module>utils</module>
     <module>osgi</module>
+    <module>test</module>
   </modules>
 
   <build>

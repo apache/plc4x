@@ -32,10 +32,11 @@ public enum JsonDataSetMessageContentMask {
   jsonDataSetMessageContentMaskStatus((long) 16L),
   jsonDataSetMessageContentMaskMessageType((long) 32L),
   jsonDataSetMessageContentMaskDataSetWriterName((long) 64L),
-  jsonDataSetMessageContentMaskReversibleFieldEncoding((long) 128L),
+  jsonDataSetMessageContentMaskFieldEncoding1((long) 128L),
   jsonDataSetMessageContentMaskPublisherId((long) 256L),
   jsonDataSetMessageContentMaskWriterGroupName((long) 512L),
-  jsonDataSetMessageContentMaskMinorVersion((long) 1024L);
+  jsonDataSetMessageContentMaskMinorVersion((long) 1024L),
+  jsonDataSetMessageContentMaskFieldEncoding2((long) 2048L);
   private static final Map<Long, JsonDataSetMessageContentMask> map;
 
   static {

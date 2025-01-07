@@ -413,6 +413,27 @@
             [simple bit cyclicDataSet]
             
         ]
+        ['18595' ActionTargetDataType
+            [simple uint 16 actionTargetId]
+            [simple PascalString name]
+            [simple LocalizedText description]
+        ]
+        ['18596' PublishedActionDataType
+            [simple DataSetMetaDataType('14525') requestDataSetMetaData]
+            [implicit int 32 noOfActionTargets 'actionTargets == null ? -1 : COUNT(actionTargets)']
+            [array ActionTargetDataType('18595') actionTargets count 'noOfActionTargets']
+        ]
+        ['18599' ActionMethodDataType
+            [simple NodeId objectId]
+            [simple NodeId methodId]
+        ]
+        ['18795' PublishedActionMethodDataType
+            [simple DataSetMetaDataType('14525') requestDataSetMetaData]
+            [implicit int 32 noOfActionTargets 'actionTargets == null ? -1 : COUNT(actionTargets)']
+            [array ActionTargetDataType('18595') actionTargets count 'noOfActionTargets']
+            [implicit int 32 noOfActionMethods 'actionMethods == null ? -1 : COUNT(actionMethods)']
+            [array ActionMethodDataType('18599') actionMethods count 'noOfActionMethods']
+        ]
         ['15599' DataSetWriterDataType
             [simple PascalString name]
             [reserved uint 7 '0x00']
@@ -719,6 +740,17 @@
             [array ExtensionObject('true') datagramQos count 'noOfDatagramQos']
             [simple PascalString topic]
         ]
+        ['18796' DtlsPubSubConnectionDataType
+            [simple PascalString clientCipherSuite]
+            [implicit int 32 noOfServerCipherSuites 'serverCipherSuites == null ? -1 : COUNT(serverCipherSuites)']
+            [array PascalString serverCipherSuites count 'noOfServerCipherSuites']
+            [reserved uint 7 '0x00']
+            [simple bit zeroRTT]
+            [simple NodeId certificateGroupId]
+            [reserved uint 7 '0x00']
+            [simple bit verifyClientCertificate]
+            
+        ]
         ['15009' BrokerConnectionTransportDataType
             [simple PascalString resourceUri]
             [simple PascalString authenticationProfileUri]
@@ -755,6 +787,133 @@
             [simple PascalString name]
             [simple Variant identifier]
         ]
+        ['19313' JsonNetworkMessage
+            [simple PascalString messageId]
+            [simple PascalString messageType]
+            [simple PascalString publisherId]
+            [simple PascalString writerGroupName]
+            [simple PascalString dataSetClassId]
+            [implicit int 32 noOfMessages 'messages == null ? -1 : COUNT(messages)']
+            [array ExtensionObject('true') messages count 'noOfMessages']
+        ]
+        ['19314' JsonDataSetMessage
+            [simple uint 16 dataSetWriterId]
+            [simple PascalString dataSetWriterName]
+            [simple PascalString publisherId]
+            [simple PascalString writerGroupName]
+            [simple uint 32 sequenceNumber]
+            [simple ConfigurationVersionDataType('14595') metaDataVersion]
+            [simple uint 32 minorVersion]
+            [simple int 64 timestamp]
+            [simple StatusCode status]
+            [simple PascalString messageType]
+            [simple ExtensionObject('true') payload]
+        ]
+        ['19315' JsonDataSetMetaDataMessage
+            [simple PascalString messageId]
+            [simple PascalString messageType]
+            [simple PascalString publisherId]
+            [simple uint 16 dataSetWriterId]
+            [simple PascalString writerGroupName]
+            [simple PascalString dataSetWriterName]
+            [simple int 64 timestamp]
+            [simple DataSetMetaDataType('14525') metaData]
+        ]
+        ['19316' JsonApplicationDescriptionMessage
+            [simple PascalString messageId]
+            [simple PascalString messageType]
+            [simple PascalString publisherId]
+            [simple int 64 timestamp]
+            [simple ApplicationDescription('310') description]
+            [implicit int 32 noOfServerCapabilities 'serverCapabilities == null ? -1 : COUNT(serverCapabilities)']
+            [array PascalString serverCapabilities count 'noOfServerCapabilities']
+        ]
+        ['19317' JsonServerEndpointsMessage
+            [simple PascalString messageId]
+            [simple PascalString messageType]
+            [simple PascalString publisherId]
+            [simple int 64 timestamp]
+            [simple ApplicationDescription('310') description]
+            [implicit int 32 noOfEndpoints 'endpoints == null ? -1 : COUNT(endpoints)']
+            [array EndpointDescription('314') endpoints count 'noOfEndpoints']
+        ]
+        ['19318' JsonStatusMessage
+            [simple PascalString messageId]
+            [simple PascalString messageType]
+            [simple PascalString publisherId]
+            [simple int 64 timestamp]
+            [reserved uint 7 '0x00']
+            [simple bit isCyclic]
+            [simple PubSubState status]
+            [simple int 64 nextReportTime]
+        ]
+        ['19319' JsonPubSubConnectionMessage
+            [simple PascalString messageId]
+            [simple PascalString messageType]
+            [simple PascalString publisherId]
+            [simple int 64 timestamp]
+            [simple PubSubConnectionDataType('15619') connection]
+        ]
+        ['19320' JsonActionMetaDataMessage
+            [simple PascalString messageId]
+            [simple PascalString messageType]
+            [simple PascalString publisherId]
+            [simple uint 16 dataSetWriterId]
+            [simple PascalString dataSetWriterName]
+            [simple int 64 timestamp]
+            [implicit int 32 noOfActionTargets 'actionTargets == null ? -1 : COUNT(actionTargets)']
+            [array ActionTargetDataType('18595') actionTargets count 'noOfActionTargets']
+            [simple DataSetMetaDataType('14525') request]
+            [simple DataSetMetaDataType('14525') response]
+            [implicit int 32 noOfActionMethods 'actionMethods == null ? -1 : COUNT(actionMethods)']
+            [array ActionMethodDataType('18599') actionMethods count 'noOfActionMethods']
+        ]
+        ['19321' JsonActionResponderMessage
+            [simple PascalString messageId]
+            [simple PascalString messageType]
+            [simple PascalString publisherId]
+            [simple int 64 timestamp]
+            [simple PubSubConnectionDataType('15619') connection]
+        ]
+        ['19322' JsonActionNetworkMessage
+            [simple PascalString messageId]
+            [simple PascalString messageType]
+            [simple PascalString publisherId]
+            [simple int 64 timestamp]
+            [simple PascalString responseAddress]
+            [simple PascalByteString correlationData]
+            [simple PascalString requestorId]
+            [simple float 64 timeoutHint]
+            [implicit int 32 noOfMessages 'messages == null ? -1 : COUNT(messages)']
+            [array ExtensionObject('true') messages count 'noOfMessages']
+        ]
+        ['19323' JsonActionRequestMessage
+            [simple uint 16 dataSetWriterId]
+            [simple uint 16 actionTargetId]
+            [simple PascalString dataSetWriterName]
+            [simple PascalString writerGroupName]
+            [simple ConfigurationVersionDataType('14595') metaDataVersion]
+            [simple uint 32 minorVersion]
+            [simple int 64 timestamp]
+            [simple PascalString messageType]
+            [simple uint 16 requestId]
+            [simple ActionState actionState]
+            [simple ExtensionObject('true') payload]
+        ]
+        ['19324' JsonActionResponseMessage
+            [simple uint 16 dataSetWriterId]
+            [simple uint 16 actionTargetId]
+            [simple PascalString dataSetWriterName]
+            [simple PascalString writerGroupName]
+            [simple ConfigurationVersionDataType('14595') metaDataVersion]
+            [simple uint 32 minorVersion]
+            [simple int 64 timestamp]
+            [simple StatusCode status]
+            [simple PascalString messageType]
+            [simple uint 16 requestId]
+            [simple ActionState actionState]
+            [simple ExtensionObject('true') payload]
+        ]
         ['23470' AliasNameDataType
             [simple QualifiedName aliasName]
             [implicit int 32 noOfReferencedNodes 'referencedNodes == null ? -1 : COUNT(referencedNodes)']
@@ -770,6 +929,25 @@
             [simple PascalString priorityLabel]
             [simple uint 8 priorityValue_PCP]
             [simple uint 32 priorityValue_DSCP]
+        ]
+        ['18955' LldpManagementAddressTxPortType
+            [simple uint 32 addressSubtype]
+            [simple PascalString manAddress]
+            [reserved uint 7 '0x00']
+            [simple bit txEnable]
+            [simple uint 32 addrLen]
+            [simple ManAddrIfSubtype ifSubtype]
+            [simple uint 32 ifId]
+        ]
+        ['18956' LldpManagementAddressType
+            [simple uint 32 addressSubtype]
+            [simple PascalString address]
+            [simple ManAddrIfSubtype ifSubtype]
+            [simple uint 32 ifId]
+        ]
+        ['18957' LldpTlvType
+            [simple uint 32 tlvType]
+            [simple PascalByteString tlvInfo]
         ]
         ['32661' ReferenceDescriptionDataType
             [simple NodeId sourceNode]
@@ -1594,6 +1772,18 @@
             [simple bit readModified]
             
         ]
+        ['18650' SortRuleElement
+            [simple SortOrderType sortOrder]
+            [simple SimpleAttributeOperand('603') eventField]
+        ]
+        ['18651' ReadEventDetailsSorted
+            [simple uint 32 numValuesPerNode]
+            [simple int 64 startTime]
+            [simple int 64 endTime]
+            [simple EventFilter('727') filter]
+            [implicit int 32 noOfSortClause 'sortClause == null ? -1 : COUNT(sortClause)']
+            [array SortRuleElement('18650') sortClause count 'noOfSortClause']
+        ]
         ['649' ReadRawModifiedDetails
             [reserved uint 7 '0x00']
             [simple bit isReadModified]
@@ -2210,7 +2400,7 @@
             [simple uint 32 disabledMonitoredItemCount]
             [simple uint 32 monitoringQueueOverflowCount]
             [simple uint 32 nextSequenceNumber]
-            [simple uint 32 eventQueueOverFlowCount]
+            [simple uint 32 eventQueueOverflowCount]
         ]
         ['879' ModelChangeStructureDataType
             [simple NodeId affected]
@@ -2618,6 +2808,7 @@
     ['6' identityCriteriaTypeAuthenticatedUser]
     ['7' identityCriteriaTypeApplication]
     ['8' identityCriteriaTypeX509Subject]
+    ['9' identityCriteriaTypeTrustedApplication]
     
 ]
             
@@ -2682,6 +2873,15 @@
 
     ['0' dataSetFieldFlagsNone]
     ['1' dataSetFieldFlagsPromotedField]
+    
+]
+            
+
+[enum uint 32 ActionState
+
+    ['0' actionStateIdle]
+    ['1' actionStateExecuting]
+    ['2' actionStateDone]
     
 ]
             
@@ -2772,10 +2972,11 @@
     ['16' jsonDataSetMessageContentMaskStatus]
     ['32' jsonDataSetMessageContentMaskMessageType]
     ['64' jsonDataSetMessageContentMaskDataSetWriterName]
-    ['128' jsonDataSetMessageContentMaskReversibleFieldEncoding]
+    ['128' jsonDataSetMessageContentMaskFieldEncoding1]
     ['256' jsonDataSetMessageContentMaskPublisherId]
     ['512' jsonDataSetMessageContentMaskWriterGroupName]
     ['1024' jsonDataSetMessageContentMaskMinorVersion]
+    ['2048' jsonDataSetMessageContentMaskFieldEncoding2]
     
 ]
             
@@ -2957,6 +3158,60 @@
     ['1' tsnListenerStatusReady]
     ['2' tsnListenerStatusPartialFailed]
     ['3' tsnListenerStatusFailed]
+    
+]
+            
+
+[enum uint 32 ChassisIdSubtype
+
+    ['1' chassisIdSubtypeChassisComponent]
+    ['2' chassisIdSubtypeInterfaceAlias]
+    ['3' chassisIdSubtypePortComponent]
+    ['4' chassisIdSubtypeMacAddress]
+    ['5' chassisIdSubtypeNetworkAddress]
+    ['6' chassisIdSubtypeInterfaceName]
+    ['7' chassisIdSubtypeLocal]
+    
+]
+            
+
+[enum uint 32 PortIdSubtype
+
+    ['1' portIdSubtypeInterfaceAlias]
+    ['2' portIdSubtypePortComponent]
+    ['3' portIdSubtypeMacAddress]
+    ['4' portIdSubtypeNetworkAddress]
+    ['5' portIdSubtypeInterfaceName]
+    ['6' portIdSubtypeAgentCircuitId]
+    ['7' portIdSubtypeLocal]
+    
+]
+            
+
+[enum uint 32 ManAddrIfSubtype
+
+    ['0' manAddrIfSubtypeNone]
+    ['1' manAddrIfSubtypeUnknown]
+    ['2' manAddrIfSubtypePortRef]
+    ['3' manAddrIfSubtypeSystemPortNumber]
+    
+]
+            
+
+[enum uint 32 LldpSystemCapabilitiesMap
+
+    ['0' lldpSystemCapabilitiesMapNone]
+    ['1' lldpSystemCapabilitiesMapOther]
+    ['2' lldpSystemCapabilitiesMapRepeater]
+    ['4' lldpSystemCapabilitiesMapBridge]
+    ['8' lldpSystemCapabilitiesMapWlanAccessPoint]
+    ['16' lldpSystemCapabilitiesMapRouter]
+    ['32' lldpSystemCapabilitiesMapTelephone]
+    ['64' lldpSystemCapabilitiesMapDocsisCableDevice]
+    ['128' lldpSystemCapabilitiesMapStationOnly]
+    ['256' lldpSystemCapabilitiesMapCvlanComponent]
+    ['512' lldpSystemCapabilitiesMapSvlanComponent]
+    ['1024' lldpSystemCapabilitiesMapTwoPortMacRelay]
     
 ]
             
@@ -3245,6 +3500,14 @@
     ['2' timestampsToReturnBoth]
     ['3' timestampsToReturnNeither]
     ['4' timestampsToReturnInvalid]
+    
+]
+            
+
+[enum uint 32 SortOrderType
+
+    ['0' sortOrderTypeAscending]
+    ['1' sortOrderTypeDescending]
     
 ]
             

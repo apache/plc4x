@@ -25,7 +25,6 @@ import java.util.Map;
 
 public enum OpcuaNodeIdServicesVariableUnit {
   UnitType_Symbol((int) 32443L),
-  UnitType_Description((int) 32444L),
   UnitType_UnitSystem((int) 32445L),
   UnitType_Discipline((int) 32446L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableUnit> map;

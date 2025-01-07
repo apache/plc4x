@@ -126,7 +126,8 @@ public enum OpcuaNodeIdServicesVariableSessions {
       (int) 12150L),
   SessionsDiagnosticsSummaryType_ClientName_Placeholder_SessionSecurityDiagnostics_ClientCertificate(
       (int) 12151L),
-  SessionsDiagnosticsSummaryType_ClientName_Placeholder_SubscriptionDiagnosticsArray((int) 12152L);
+  SessionsDiagnosticsSummaryType_ClientName_Placeholder_SubscriptionDiagnosticsArray((int) 12152L),
+  SessionsDiagnosticsSummaryType_ClientName_Placeholder_CurrentRoleIds((int) 19302L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableSessions> map;
 
   static {
