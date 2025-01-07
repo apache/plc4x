@@ -25,17 +25,14 @@ import java.util.Map;
 
 public enum OpcuaNodeIdServicesVariableQuantity {
   QuantityType_Symbol((int) 32476L),
-  QuantityType_Description((int) 32477L),
   QuantityType_Annotation((int) 32478L),
   QuantityType_ConversionService((int) 32479L),
   QuantityType_Dimension((int) 32480L),
   QuantityType_ServerUnits_ServerUnit_Placeholder_Symbol((int) 32483L),
-  QuantityType_ServerUnits_ServerUnit_Placeholder_Description((int) 32484L),
   QuantityType_ServerUnits_ServerUnit_Placeholder_UnitSystem((int) 32485L),
   QuantityType_ServerUnits_ServerUnit_Placeholder_Discipline((int) 32486L),
   QuantityType_ServerUnits_ServerUnit_Placeholder_ConversionLimit((int) 32496L),
   QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Symbol((int) 32498L),
-  QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Description((int) 32499L),
   QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_UnitSystem((int) 32500L),
   QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Discipline((int) 32501L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableQuantity> map;

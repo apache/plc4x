@@ -37,6 +37,7 @@ public enum OpcuaNodeIdServicesVariableHistorical {
   HistoricalEventFilter((int) 11215L),
   HistoricalDataConfigurationType_StartOfArchive((int) 11499L),
   HistoricalDataConfigurationType_StartOfOnlineArchive((int) 11500L),
+  HistoricalEventConfigurationType_SortByEventFields((int) 18644L),
   HistoricalDataConfigurationType_ServerTimestampSupported((int) 19092L),
   HistoricalDataConfigurationType_MaxTimeStoredValues((int) 32619L),
   HistoricalDataConfigurationType_MaxCountStoredValues((int) 32620L),

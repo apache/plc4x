@@ -814,9 +814,20 @@ public enum KnxManufacturer {
       (int) 697, (int) 755, (String) "Maxtreen building technology co.,ltd"),
   M_HYSINE((int) 698, (int) 756, (String) "Hysine"),
   M_SANTAN((int) 699, (int) 757, (String) "SANTAN"),
-  M_ABB___RESERVED((int) 700, (int) 43954, (String) "ABB - reserved"),
+  M_HUIXIANGJU_IOT_TECHNOLOGY_SHANGHAI_CO___LTD(
+      (int) 700, (int) 758, (String) "Huixiangju IoT Technology (Shanghai) Co., Ltd"),
+  M_SHANGHAI_BENKONG_ELECTRONIC_TECHNOLOGY_CO__LTD(
+      (int) 701, (int) 759, (String) "Shanghai Benkong Electronic Technology Co.,Ltd"),
+  M_POLAR_BEAR_DESIGN((int) 702, (int) 760, (String) "Polar Bear Design"),
+  M_ELESSAN_NV((int) 703, (int) 761, (String) "Elessan NV"),
+  M_MIR((int) 704, (int) 762, (String) "MIR"),
+  M_ZHEJIANG_MISILIN_TECHNOLOGY_CO___LTD(
+      (int) 705, (int) 763, (String) "Zhejiang Misilin Technology Co., Ltd"),
+  M_LEAX_CONTROLS_CO___LTD_((int) 706, (int) 764, (String) "LEAX CONTROLS CO., LTD."),
+  M_ALCAD((int) 707, (int) 765, (String) "alcad"),
+  M_ABB___RESERVED((int) 708, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 701, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 709, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

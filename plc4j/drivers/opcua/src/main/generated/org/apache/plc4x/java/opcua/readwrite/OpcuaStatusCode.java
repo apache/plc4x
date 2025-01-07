@@ -127,7 +127,7 @@ public enum OpcuaStatusCode {
   BadServerUriInvalid((long) 0x804F0000L),
   BadServerNameMissing((long) 0x80500000L),
   BadDiscoveryUrlMissing((long) 0x80510000L),
-  BadSempahoreFileMissing((long) 0x80520000L),
+  BadSemaphoreFileMissing((long) 0x80520000L),
   BadRequestTypeInvalid((long) 0x80530000L),
   BadSecurityModeRejected((long) 0x80540000L),
   BadSecurityPolicyRejected((long) 0x80550000L),

@@ -31,7 +31,8 @@ public enum IdentityCriteriaType {
   identityCriteriaTypeAnonymous((long) 5L),
   identityCriteriaTypeAuthenticatedUser((long) 6L),
   identityCriteriaTypeApplication((long) 7L),
-  identityCriteriaTypeX509Subject((long) 8L);
+  identityCriteriaTypeX509Subject((long) 8L),
+  identityCriteriaTypeTrustedApplication((long) 9L);
   private static final Map<Long, IdentityCriteriaType> map;
 
   static {

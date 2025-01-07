@@ -25,7 +25,6 @@ import java.util.Map;
 
 public enum OpcuaNodeIdServicesVariableQuantities {
   QuantitiesFolderType_Quantity_Placeholder_Symbol((int) 32504L),
-  QuantitiesFolderType_Quantity_Placeholder_Description((int) 32505L),
   QuantitiesFolderType_Quantity_Placeholder_Annotation((int) 32506L),
   QuantitiesFolderType_Quantity_Placeholder_ConversionService((int) 32507L),
   QuantitiesFolderType_Quantity_Placeholder_Dimension((int) 32508L);

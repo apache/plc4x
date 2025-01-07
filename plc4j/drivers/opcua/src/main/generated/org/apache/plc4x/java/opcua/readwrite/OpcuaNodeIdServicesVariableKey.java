@@ -47,7 +47,9 @@ public enum OpcuaNodeIdServicesVariableKey {
   KeyCredentialAuditEventType_ResourceUri((int) 18028L),
   KeyCredentialDeletedAuditEventType_ResourceUri((int) 18064L),
   KeyCredentialConfigurationType_ResourceUri((int) 18069L),
-  KeyCredentialConfigurationType_ProfileUri((int) 18165L);
+  KeyCredentialConfigurationType_ProfileUri((int) 18165L),
+  KeyCredentialConfigurationFolderType_ServiceName_Placeholder_CredentialId((int) 18656L),
+  KeyCredentialConfigurationType_CredentialId((int) 18657L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableKey> map;
 
   static {
