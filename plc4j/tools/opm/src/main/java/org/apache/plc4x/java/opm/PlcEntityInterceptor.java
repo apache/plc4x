@@ -520,6 +520,7 @@ public class PlcEntityInterceptor {
 
         // Fallback
         Object responseObject = response.getObject(sourceFieldName);
+        // Assuming getAll() returns a collection or related structure for validation
         if (clazz.isAssignableFrom(responseObject.getClass())) {
             return responseObject;
         }
