@@ -119,7 +119,7 @@
     <commons-configuration2.version>2.11.0</commons-configuration2.version>
     <commons-io.version>2.18.0</commons-io.version>
     <commons-lang3.version>3.17.0</commons-lang3.version>
-    <commons-logging.version>1.3.4</commons-logging.version>
+    <commons-logging.version>1.3.5</commons-logging.version>
     <commons-math3.version>3.6.1</commons-math3.version>
     <commons-net.version>3.11.1</commons-net.version>
     <commons-text.version>1.13.0</commons-text.version>
