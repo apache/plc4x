@@ -54,6 +54,9 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
     private static final Logger logger = LoggerFactory.getLogger(AbEthProtocolLogic.class);
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
 
+    private static final List<Short> connectionRequestSenderContext = Arrays.asList((short) 0x00, (short) 0x04, (short) 0x00,
+        (short) 0x05, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00);
+
     private static final List<Short> emptySenderContext = Arrays.asList((short) 0x00, (short) 0x00, (short) 0x00,
         (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00);
 
@@ -84,7 +87,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
     public void onConnect(ConversationContext<CIPEncapsulationPacket> context) {
         logger.debug("Sending Connection Request");
         CIPEncapsulationConnectionRequest connectionRequest =
-            new CIPEncapsulationConnectionRequest(0L, 0L, emptySenderContext, 0L);
+            new CIPEncapsulationConnectionRequest(0L, 0L, connectionRequestSenderContext, 0L);
         context.sendRequest(connectionRequest)
             .expectResponse(CIPEncapsulationPacket.class, REQUEST_TIMEOUT)
             .only(CIPEncapsulationConnectionResponse.class)
