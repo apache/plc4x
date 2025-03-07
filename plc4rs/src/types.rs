@@ -17,30 +17,13 @@
  * under the License.
  */
 
-pub mod config;
-mod tcp;
-mod udp;
+use std::time::Duration;
 
-use bytes::BytesMut;
-use std::fmt::Debug;
-use crate::types::Result;
+/// Common result type used throughout the library
+pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
-// Re-export implementations
-pub use tcp::TcpTransport;
-pub use udp::UdpTransport;
+/// Default timeout for operations
+pub const DEFAULT_TIMEOUT: Duration = Duration::from_secs(5);
 
-/// Transport trait defining the interface for all transport implementations
-#[async_trait::async_trait]
-pub trait Transport: Debug + Send + Sync {
-    /// Connect to the target
-    async fn connect(&mut self) -> Result<()>;
-    
-    /// Read data from the transport
-    async fn read(&mut self, buffer: &mut BytesMut) -> Result<usize>;
-    
-    /// Write data to the transport
-    async fn write(&mut self, data: &[u8]) -> Result<usize>;
-    
-    /// Close the transport connection
-    async fn close(&mut self) -> Result<()>;
-}
+/// Default retry count for operations
+pub const DEFAULT_RETRY_COUNT: u32 = 3;

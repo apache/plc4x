@@ -17,30 +17,11 @@
  * under the License.
  */
 
-pub mod config;
-mod tcp;
-mod udp;
+// Export modules
+pub mod protocols;
+pub mod s7;
+pub mod spi;
+pub mod types;
 
-use bytes::BytesMut;
-use std::fmt::Debug;
-use crate::types::Result;
-
-// Re-export implementations
-pub use tcp::TcpTransport;
-pub use udp::UdpTransport;
-
-/// Transport trait defining the interface for all transport implementations
-#[async_trait::async_trait]
-pub trait Transport: Debug + Send + Sync {
-    /// Connect to the target
-    async fn connect(&mut self) -> Result<()>;
-    
-    /// Read data from the transport
-    async fn read(&mut self, buffer: &mut BytesMut) -> Result<usize>;
-    
-    /// Write data to the transport
-    async fn write(&mut self, data: &[u8]) -> Result<usize>;
-    
-    /// Close the transport connection
-    async fn close(&mut self) -> Result<()>;
-}
+// Re-export commonly used types
+pub use crate::spi::Transport;

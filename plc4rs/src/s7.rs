@@ -17,30 +17,24 @@
  * under the License.
  */
 
-pub mod config;
-mod tcp;
-mod udp;
 
-use bytes::BytesMut;
-use std::fmt::Debug;
-use crate::types::Result;
-
-// Re-export implementations
-pub use tcp::TcpTransport;
-pub use udp::UdpTransport;
-
-/// Transport trait defining the interface for all transport implementations
-#[async_trait::async_trait]
-pub trait Transport: Debug + Send + Sync {
-    /// Connect to the target
-    async fn connect(&mut self) -> Result<()>;
-    
-    /// Read data from the transport
-    async fn read(&mut self, buffer: &mut BytesMut) -> Result<usize>;
-    
-    /// Write data to the transport
-    async fn write(&mut self, data: &[u8]) -> Result<usize>;
-    
-    /// Close the transport connection
-    async fn close(&mut self) -> Result<()>;
+/// Message types for S7 protocol
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum MessageType {
+    JobRequest = 0x01,
+    Ack = 0x02,
+    AckData = 0x03,
+    UserData = 0x07,
 }
+
+#[derive(Debug, Clone)]
+#[allow(dead_code)]
+pub struct S7Header {
+    protocol_id: u8,
+    message_type: MessageType,
+    reserved: u16,
+    pdu_reference: u16,
+    parameter_length: u16,
+    data_length: u16,
+}
+
