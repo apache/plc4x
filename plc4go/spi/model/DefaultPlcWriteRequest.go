@@ -34,7 +34,7 @@ import (
 
 var _ apiModel.PlcWriteRequestBuilder = &DefaultPlcWriteRequestBuilder{}
 
-//go:generate plc4xGenerator -type=DefaultPlcWriteRequestBuilder
+//go:generate go tool plc4xGenerator -type=DefaultPlcWriteRequestBuilder
 type DefaultPlcWriteRequestBuilder struct {
 	writer                  spi.PlcWriter       `ignore:"true"`
 	tagHandler              spi.PlcTagHandler   `ignore:"true"`
@@ -124,7 +124,7 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (apiModel.PlcWriteRequest, error
 
 var _ apiModel.PlcWriteRequest = &DefaultPlcWriteRequest{}
 
-//go:generate plc4xGenerator -type=DefaultPlcWriteRequest
+//go:generate go tool plc4xGenerator -type=DefaultPlcWriteRequest
 type DefaultPlcWriteRequest struct {
 	*DefaultPlcTagRequest
 	values                  map[string]apiValues.PlcValue

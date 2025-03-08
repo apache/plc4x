@@ -30,7 +30,6 @@ import (
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestNewDefaultBrowser(t *testing.T) {
@@ -80,7 +79,6 @@ func Test_defaultBrowser_Browse(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcBrowseRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case result := <-results:
 					assert.NotNil(t, result)
@@ -126,7 +124,6 @@ func Test_defaultBrowser_BrowseWithInterceptor(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcBrowseRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case result := <-results:
 					assert.NotNil(t, result)
@@ -161,7 +158,6 @@ func Test_defaultBrowser_BrowseWithInterceptor(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcBrowseRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case result := <-results:
 					assert.NotNil(t, result)

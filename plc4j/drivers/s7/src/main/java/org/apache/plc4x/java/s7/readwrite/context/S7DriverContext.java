@@ -35,6 +35,7 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
     private int maxAmqCaller;
     private int maxAmqCallee;
     private ControllerType controllerType;
+    private boolean enableBlockReadOptimizer;
 
 
     private int calledTsapId2;
@@ -84,6 +85,8 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
         this.ping = configuration.ping;
         this.pingTime = (configuration.pingTime == 0) ? 10 : configuration.pingTime;
         this.retryTime = configuration.retryTime;
+
+        this.enableBlockReadOptimizer = configuration.enableBlockReadOptimizer;
     }
 
     public boolean isPassiveMode() {
@@ -188,6 +191,14 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
 
     public void setRetryTime(int retryTime) {
         this.retryTime = retryTime;
+    }
+
+    public boolean isEnableBlockReadOptimizer() {
+        return enableBlockReadOptimizer;
+    }
+
+    public void setEnableBlockReadOptimizer(boolean enableBlockReadOptimizer) {
+        this.enableBlockReadOptimizer = enableBlockReadOptimizer;
     }
 
     /**

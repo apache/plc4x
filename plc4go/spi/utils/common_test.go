@@ -21,45 +21,9 @@ package utils
 
 import (
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
-
-func TestCleanupTimer(t *testing.T) {
-	type args struct {
-		timer *time.Timer
-	}
-	tests := []struct {
-		name string
-		args args
-	}{
-		{
-			name: "nil safety",
-		},
-		{
-			name: "running timer",
-			args: args{
-				timer: time.NewTimer(100000 * time.Hour),
-			},
-		},
-		{
-			name: "completed timer",
-			args: args{
-				timer: func() *time.Timer {
-					timer := time.NewTimer(0)
-					timer.Stop()
-					return timer
-				}(),
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			CleanupTimer(tt.args.timer)
-		})
-	}
-}
 
 func TestInlineIf(t *testing.T) {
 	type args struct {

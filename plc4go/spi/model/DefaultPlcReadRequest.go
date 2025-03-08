@@ -33,7 +33,7 @@ import (
 
 var _ apiModel.PlcReadRequestBuilder = &DefaultPlcReadRequestBuilder{}
 
-//go:generate plc4xGenerator -type=DefaultPlcReadRequestBuilder
+//go:generate go tool plc4xGenerator -type=DefaultPlcReadRequestBuilder
 type DefaultPlcReadRequestBuilder struct {
 	reader                 spi.PlcReader     `ignore:"true"`
 	tagHandler             spi.PlcTagHandler `ignore:"true"`
@@ -88,7 +88,7 @@ func (d *DefaultPlcReadRequestBuilder) Build() (apiModel.PlcReadRequest, error) 
 
 var _ apiModel.PlcReadRequest = &DefaultPlcReadRequest{}
 
-//go:generate plc4xGenerator -type=DefaultPlcReadRequest
+//go:generate go tool plc4xGenerator -type=DefaultPlcReadRequest
 type DefaultPlcReadRequest struct {
 	*DefaultPlcTagRequest
 	reader                 spi.PlcReader                       `ignore:"true"`

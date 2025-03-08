@@ -29,7 +29,7 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
-//go:generate plc4xGenerator -type=ApplicationIOController -prefix=app_
+//go:generate go tool plc4xGenerator -type=ApplicationIOController -prefix=app_
 type ApplicationIOController struct {
 	*IOController
 	*Application

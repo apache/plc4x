@@ -36,7 +36,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
-//go:generate plc4xGenerator -type=ApplicationLayerStateMachine -prefix=helpers_
+//go:generate go tool plc4xGenerator -type=ApplicationLayerStateMachine -prefix=helpers_
 type ApplicationLayerStateMachine struct {
 	ApplicationServiceElementContract
 	*ClientStateMachine `ignore:"true"` // TODO: add support

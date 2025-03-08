@@ -21,7 +21,7 @@ package service
 
 import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 
-//go:generate plc4xGenerator -type=ReadWritePropertyServices -prefix=service_object_
+//go:generate go tool plc4xGenerator -type=ReadWritePropertyServices -prefix=service_object_
 type ReadWritePropertyServices struct {
 }
 

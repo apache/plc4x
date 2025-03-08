@@ -26,7 +26,7 @@ import (
 
 // NOTE: needs to reside here otherwise there is a circular dependency
 
-//go:generate plc4xGenerator -type=DeviceInfo -prefix=app_
+//go:generate go tool plc4xGenerator -type=DeviceInfo -prefix=app_
 type DeviceInfo struct {
 	DeviceIdentifier readWriteModel.BACnetTagPayloadObjectIdentifier
 	Address          Address

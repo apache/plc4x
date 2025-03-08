@@ -39,7 +39,7 @@ type NodeNetworkReference interface {
 	ProcessPDU(pdu PDU) error
 }
 
-//go:generate plc4xGenerator -type=Node -prefix=vlan_
+//go:generate go tool plc4xGenerator -type=Node -prefix=vlan_
 type Node struct {
 	ServerContract
 

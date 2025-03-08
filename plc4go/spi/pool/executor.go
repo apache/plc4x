@@ -28,7 +28,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-//go:generate plc4xGenerator -type=executor
+//go:generate go tool plc4xGenerator -type=executor
 type executor struct {
 	running  bool
 	shutdown bool

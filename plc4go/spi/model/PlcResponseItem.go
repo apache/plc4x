@@ -24,7 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
-//go:generate plc4xGenerator -type=PlcResponseItem
+//go:generate go tool plc4xGenerator -type=PlcResponseItem
 type PlcResponseItem struct {
 	code  apiModel.PlcResponseCode `stringer:"true"`
 	value values.PlcValue

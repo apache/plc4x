@@ -47,9 +47,20 @@ public class S7StringVarLengthTag extends S7Tag {
     public static boolean matches(String address) {
         return  DATA_BLOCK_STRING_VAR_LENGTH_ADDRESS_PATTERN.matcher(address).matches() ||
                 DATA_BLOCK_STRING_VAR_LENGTH_SHORT_PATTERN.matcher(address).matches();
-    }    
-    
-    
+    }
+
+    @Override
+    public String toString() {
+        return "S7StringVarLengthTag{" +
+            "dataType=" + getDataType() +
+            ", memoryArea=" + getMemoryArea() +
+            ", blockNumber=" + getBlockNumber() +
+            ", byteOffset=" + getByteOffset() +
+            ", bitOffset=" + getBitOffset() +
+            ", numElements=" + getNumberOfElements() +
+            '}';
+    }
+
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());

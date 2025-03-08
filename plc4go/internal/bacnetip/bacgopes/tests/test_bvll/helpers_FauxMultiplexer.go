@@ -30,7 +30,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
-//go:generate plc4xGenerator -type=FauxMultiplexer -prefix=helpers_
+//go:generate go tool plc4xGenerator -type=FauxMultiplexer -prefix=helpers_
 type FauxMultiplexer struct {
 	ClientContract
 	ServerContract

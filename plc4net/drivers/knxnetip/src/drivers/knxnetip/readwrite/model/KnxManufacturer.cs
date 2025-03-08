@@ -739,8 +739,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_LAPP = 712,
         M_ZEROBIT_DYNAMIC = 713,
         M_HAVELLS = 714,
-        M_ABB___RESERVED = 715,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 716,
+        M_MULLER_INTUITIV = 715,
+        M_TASKIT_GMBH = 716,
+        M_COSTER_GROUP = 717,
+        M_NXP_SEMICONDUCTOR = 718,
+        M_COGCONS = 719,
+        M_ABB___RESERVED = 720,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 721,
     }
 
     public static class KnxManufacturerInfo
@@ -2805,14 +2810,29 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_HAVELLS: { /* '714' */
                     return 775;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '715' */
-                    return 43954;
+                case KnxManufacturer.M_MULLER_INTUITIV: { /* '715' */
+                    return 776;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '716' */
-                    return 43959;
+                case KnxManufacturer.M_TASKIT_GMBH: { /* '716' */
+                    return 777;
+                }
+                case KnxManufacturer.M_COSTER_GROUP: { /* '717' */
+                    return 778;
+                }
+                case KnxManufacturer.M_NXP_SEMICONDUCTOR: { /* '718' */
+                    return 779;
+                }
+                case KnxManufacturer.M_COGCONS: { /* '719' */
+                    return 780;
                 }
                 case KnxManufacturer.M_J_STEHLEPlusSOEHNE_GMBH: { /* '72' */
                     return 111;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '720' */
+                    return 43954;
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '721' */
+                    return 43959;
                 }
                 case KnxManufacturer.M_AGFEO: { /* '73' */
                     return 112;
@@ -4966,14 +4986,29 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_HAVELLS: { /* '714' */
                     return "havells";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '715' */
-                    return "ABB - reserved";
+                case KnxManufacturer.M_MULLER_INTUITIV: { /* '715' */
+                    return "Muller Intuitiv";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '716' */
-                    return "Busch-Jaeger Elektro - reserved";
+                case KnxManufacturer.M_TASKIT_GMBH: { /* '716' */
+                    return "taskit GmbH";
+                }
+                case KnxManufacturer.M_COSTER_GROUP: { /* '717' */
+                    return "Coster Group";
+                }
+                case KnxManufacturer.M_NXP_SEMICONDUCTOR: { /* '718' */
+                    return "NXP Semiconductor";
+                }
+                case KnxManufacturer.M_COGCONS: { /* '719' */
+                    return "CogCons";
                 }
                 case KnxManufacturer.M_J_STEHLEPlusSOEHNE_GMBH: { /* '72' */
                     return "J.Stehle+Söhne GmbH";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '720' */
+                    return "ABB - reserved";
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '721' */
+                    return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_AGFEO: { /* '73' */
                     return "AGFEO";

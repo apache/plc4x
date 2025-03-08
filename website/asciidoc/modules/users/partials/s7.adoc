@@ -29,7 +29,7 @@
 <dependency>
   <groupId>org.apache.plc4x</groupId>
   <artifactId>plc4j-driver-s7</artifactId>
-  <version>{current-last-released-version}</version>
+  <version>{page-component-version}</version>
 </dependency>
 ----
 |Default Transport 4+|`tcp`
@@ -71,9 +71,10 @@ Allowed values: +
 - S7-1500 +
 - LOGO
 |`read-timeout` |INT |0| |This is the maximum waiting time for reading on the TCP channel. As there is no traffic, it must be assumed that the connection with the interlocutor was lost and it must be restarted. When the channel is closed, the "fail over" is carried out in case of having the secondary channel, or it is expected that it will be restored automatically, which is done every 4 seconds.
-|`ping` |BOOLEAN |false| |Time for supervision of TCP channels. If the channel is not active, a safe stop of the EventLoop must be performed, to ensure that no additional tasks are created.
-|`ping-time` |INT |0| |If your application requires sampling times greater than the set "read-timeout" time, it is important that the PING option is activated, this will prevent the TCP channel from being closed unnecessarily.
-|`retry-time` |INT |0| |Time value in seconds at which the execution of the PING will be scheduled. Generally set by developer experience, but generally should be the same as (read-timeout / 2).
+|`ping` |BOOLEAN |false| |If your application requires sampling times greater than the set "read-timeout" time, it is important that the PING option is activated, this will prevent the TCP channel from being closed unnecessarily.
+|`ping-time` |INT |0| |Time value in seconds at which the execution of the PING will be scheduled. Generally set by developer experience, but generally should be the same as (read-timeout / 2).
+|`retry-time` |INT |0| |Time for supervision of TCP channels. If the channel is not active, a safe stop of the EventLoop must be performed, to ensure that no additional tasks are created.
+|`enable-block-read-optimizer` |BOOLEAN |false| |Enable the new experimental block-read optimizer, that groups tags in close memory proximity together and reads blocks of data instead of individual tags. This allows more data to be transferred in one request and is generally intended for cases in which a big number of tags are read.
 5+|Transport config options:
 5+|
 +++

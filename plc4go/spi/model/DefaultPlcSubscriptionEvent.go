@@ -33,7 +33,7 @@ import (
 
 var _ apiModel.PlcSubscriptionEvent = &DefaultPlcSubscriptionEvent{}
 
-//go:generate plc4xGenerator -type=DefaultPlcSubscriptionEvent
+//go:generate go tool plc4xGenerator -type=DefaultPlcSubscriptionEvent
 type DefaultPlcSubscriptionEvent struct {
 	DefaultPlcSubscriptionEventRequirements `ignore:"true"` // Avoid recursion
 	values                                  map[string]*DefaultPlcSubscriptionEventItem

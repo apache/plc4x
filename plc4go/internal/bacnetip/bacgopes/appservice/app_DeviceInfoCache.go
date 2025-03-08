@@ -52,7 +52,7 @@ func (k DeviceInfoCacheKey) String() string {
 	return fmt.Sprintf("key: %d/%v", k.Instance, k.PduSource)
 }
 
-//go:generate plc4xGenerator -type=DeviceInfoCache -prefix=app_
+//go:generate go tool plc4xGenerator -type=DeviceInfoCache -prefix=app_
 type DeviceInfoCache struct {
 	cache map[uint32]DeviceInfo
 

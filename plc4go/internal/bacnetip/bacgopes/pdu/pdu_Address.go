@@ -119,7 +119,7 @@ var net_ip_address_route_re = regexp.MustCompile(`^([0-9])+:` + _ip_address_port
 
 var CombinedPattern = regexp.MustCompile(`^(?:(?:([0-9]+)|([*])):)?(?:([*])|` + _field_address.String() + `|` + _ip_address_mask_port.String() + `)` + _at_route.String() + `$`)
 
-//go:generate plc4xGenerator -type=Address -prefix=pdu_
+//go:generate go tool plc4xGenerator -type=Address -prefix=pdu_
 type Address struct {
 	AddrType    AddressType
 	AddrNet     *uint16

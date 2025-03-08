@@ -30,7 +30,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/udp"
 )
 
-//go:generate plc4xGenerator -type=UDPMultiplexer -prefix=bvllservice_
+//go:generate go tool plc4xGenerator -type=UDPMultiplexer -prefix=bvllservice_
 type UDPMultiplexer struct {
 	address            *Address
 	addrTuple          *AddressTuple[string, uint16]

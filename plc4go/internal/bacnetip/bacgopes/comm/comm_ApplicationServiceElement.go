@@ -54,7 +54,7 @@ type ElementService interface {
 	SapConfirmation(args Args, kwArgs KWArgs) error
 }
 
-//go:generate plc4xGenerator -type=applicationServiceElement -prefix=comm_
+//go:generate go tool plc4xGenerator -type=applicationServiceElement -prefix=comm_
 type applicationServiceElement struct {
 	elementID      *int
 	elementService ElementService `asPtr:"true"`

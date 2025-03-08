@@ -27,7 +27,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 )
 
-//go:generate plc4xGenerator -type=ServerStateMachine -prefix=state_machine_
+//go:generate go tool plc4xGenerator -type=ServerStateMachine -prefix=state_machine_
 type ServerStateMachine struct {
 	ServerContract
 	StateMachineContract

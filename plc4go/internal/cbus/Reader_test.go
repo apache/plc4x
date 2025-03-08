@@ -42,7 +42,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestNewReader(t *testing.T) {
@@ -105,7 +104,6 @@ func TestReader_Read(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -163,7 +161,6 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -213,7 +210,6 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -239,7 +235,6 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -316,7 +311,6 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -379,7 +373,6 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -1148,7 +1141,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			m.sendMessageOverTheWire(tt.args.ctx, tt.args.transaction, tt.args.messageToSend, tt.args.addResponseCode(t), tt.args.tagName, tt.args.addPlcValue(t))
 			t.Log("Waiting now")
 			timer := time.NewTimer(10 * time.Second)
-			defer utils.CleanupTimer(timer)
 			select {
 			case <-ch:
 				t.Log("Done waiting")

@@ -82,7 +82,7 @@ func ClearTaskManager(localLog zerolog.Logger) {
 	_taskManager.ClearTasks()
 }
 
-//go:generate plc4xGenerator -type=taskItem -prefix=task_
+//go:generate go tool plc4xGenerator -type=taskItem -prefix=task_
 type taskItem struct {
 	taskTime *time.Time
 	id       int

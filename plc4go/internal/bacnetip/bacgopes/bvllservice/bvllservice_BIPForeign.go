@@ -34,7 +34,7 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
-//go:generate plc4xGenerator -type=BIPForeign -prefix=bvllservice_
+//go:generate go tool plc4xGenerator -type=BIPForeign -prefix=bvllservice_
 type BIPForeign struct {
 	*DebugContents `ignore:"true"`
 	*BIPSAP

@@ -37,7 +37,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Connection struct {
@@ -117,7 +116,6 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 func (c *Connection) passToDefaultIncomingMessageChannel() {
 	incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
 	timeout := time.NewTimer(20 * time.Millisecond)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case message := <-incomingMessageChannel:
 		// TODO: implement mapping to subscribers

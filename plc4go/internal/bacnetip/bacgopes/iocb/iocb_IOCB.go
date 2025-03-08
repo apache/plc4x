@@ -77,7 +77,7 @@ type IOCBContract interface {
 var _identNext = 1
 var _identLock sync.Mutex
 
-//go:generate plc4xGenerator -type=IOCB -prefix=iocb_
+//go:generate go tool plc4xGenerator -type=IOCB -prefix=iocb_
 type IOCB struct {
 	ioID           int
 	request        PDU       `stringer:"true"`

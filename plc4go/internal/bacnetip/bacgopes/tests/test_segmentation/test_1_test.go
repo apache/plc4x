@@ -154,7 +154,7 @@ func (a *ApplicationNetwork) _debug(format string, args Args) {
 	a.log.Debug().Msgf(format, args)
 }
 
-//go:generate plc4xGenerator -type=SnifferNode -suffix=_test
+//go:generate go tool plc4xGenerator -type=SnifferNode -suffix=_test
 type SnifferNode struct {
 	ClientContract
 
@@ -232,7 +232,7 @@ func (s *SnifferNode) Confirmation(args Args, kwArgs KWArgs) error {
 	return nil
 }
 
-//go:generate plc4xGenerator -type=ApplicationStateMachine -suffix=_test
+//go:generate go tool plc4xGenerator -type=ApplicationStateMachine -suffix=_test
 type ApplicationStateMachine struct {
 	*Application
 	StateMachineContract

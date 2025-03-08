@@ -834,9 +834,14 @@ public enum KnxManufacturer {
   M_LAPP((int) 712, (int) 773, (String) "LAPP"),
   M_ZEROBIT_DYNAMIC((int) 713, (int) 774, (String) "ZEROBIT DYNAMIC"),
   M_HAVELLS((int) 714, (int) 775, (String) "havells"),
-  M_ABB___RESERVED((int) 715, (int) 43954, (String) "ABB - reserved"),
+  M_MULLER_INTUITIV((int) 715, (int) 776, (String) "Muller Intuitiv"),
+  M_TASKIT_GMBH((int) 716, (int) 777, (String) "taskit GmbH"),
+  M_COSTER_GROUP((int) 717, (int) 778, (String) "Coster Group"),
+  M_NXP_SEMICONDUCTOR((int) 718, (int) 779, (String) "NXP Semiconductor"),
+  M_COGCONS((int) 719, (int) 780, (String) "CogCons"),
+  M_ABB___RESERVED((int) 720, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 716, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 721, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

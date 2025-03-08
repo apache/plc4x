@@ -54,10 +54,11 @@ body:
       label: Programming Languages
       description: Which languages are related to your report? (check all that apply)
       options:
-        - label: "plc4j"
-        - label: "plc4go"
         - label: "plc4c"
+        - label: "plc4go"
+        - label: "plc4j"
         - label: "plc4net"
+        - label: "plc4py"
   - type: checkboxes
     id: protocols
     attributes:
@@ -67,12 +68,13 @@ body:
         - label: "AB-Ethernet"
         - label: "ADS /AMS"
         - label: "BACnet/IP"
+        - label: "C-Bus"
         - label: "CANopen"
-        - label: "DeltaV"
-        - label: "DF1"
         - label: "EtherNet/IP"
         - label: "Firmata"
+        - label: "IEC-69870"
         - label: "KNXnet/IP"
         - label: "Modbus"
         - label: "OPC-UA"
+        - label: "Profinet"
         - label: "S7"

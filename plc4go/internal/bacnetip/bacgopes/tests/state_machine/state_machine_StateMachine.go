@@ -82,7 +82,7 @@ type StateMachineRequirements interface {
 	Send(args Args, kwArgs KWArgs) error
 }
 
-//go:generate plc4xGenerator -type=stateMachine -prefix=state_machine_
+//go:generate go tool plc4xGenerator -type=stateMachine -prefix=state_machine_
 type stateMachine struct {
 	requirements StateMachineRequirements `ignore:"true"`
 

@@ -40,7 +40,7 @@ type Collector interface {
 
 // TODO: implement
 //
-//go:generate plc4xGenerator -type=collector -prefix=capability_
+//go:generate go tool plc4xGenerator -type=collector -prefix=capability_
 type collector struct {
 	capabilities []Capability
 

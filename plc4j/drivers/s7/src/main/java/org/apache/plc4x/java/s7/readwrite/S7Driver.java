@@ -22,10 +22,10 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.s7.readwrite.discovery.ProfinetChannel;
 import org.apache.plc4x.java.s7.readwrite.discovery.S7PlcDiscoverer;
+import org.apache.plc4x.java.s7.readwrite.optimizer.S7BlockReadOptimizer;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
-import org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7HGeneratedDriverBase;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7HSingleProtocolStackConfigurer;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
@@ -97,7 +97,7 @@ public class S7Driver extends S7HGeneratedDriverBase {
 
     @Override
     protected BaseOptimizer getOptimizer() {
-        return new S7Optimizer();
+        return new S7BlockReadOptimizer();
     }
 
     @Override

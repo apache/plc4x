@@ -188,7 +188,7 @@ func (a *ApplicationNetwork) Close() error {
 	return nil
 }
 
-//go:generate plc4xGenerator -type=SnifferNode
+//go:generate go tool plc4xGenerator -type=SnifferNode
 type SnifferNode struct {
 	ClientContract
 
@@ -266,7 +266,7 @@ func (s *SnifferNode) Confirmation(args Args, kwArgs KWArgs) error {
 	return nil
 }
 
-//go:generate plc4xGenerator -type=SnifferStateMachine
+//go:generate go tool plc4xGenerator -type=SnifferStateMachine
 type SnifferStateMachine struct {
 	ClientContract
 	StateMachineContract
@@ -353,7 +353,7 @@ func (s *SnifferStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
 	return s.Receive(args, NoKWArgs())
 }
 
-//go:generate plc4xGenerator -type=ApplicationStateMachine
+//go:generate go tool plc4xGenerator -type=ApplicationStateMachine
 type ApplicationStateMachine struct {
 	*ApplicationIOController
 	StateMachineContract

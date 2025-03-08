@@ -26,7 +26,7 @@ import (
 
 var _ apiModel.PlcBrowseItem = &DefaultPlcBrowseItem{}
 
-//go:generate plc4xGenerator -type=DefaultPlcBrowseItem
+//go:generate go tool plc4xGenerator -type=DefaultPlcBrowseItem
 type DefaultPlcBrowseItem struct {
 	Tag          apiModel.PlcTag
 	Name         string

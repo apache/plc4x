@@ -97,7 +97,7 @@ type withPlcValueHandler struct {
 	plcValueHandler spi.PlcValueHandler
 }
 
-//go:generate plc4xGenerator -type=defaultConnection
+//go:generate go tool plc4xGenerator -type=defaultConnection
 type defaultConnection struct {
 	DefaultConnectionRequirements `ignore:"true"`
 	// defaultTtl the time to live after a close

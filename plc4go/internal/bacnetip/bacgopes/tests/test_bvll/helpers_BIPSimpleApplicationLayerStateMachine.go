@@ -35,7 +35,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
-//go:generate plc4xGenerator -type=BIPSimpleApplicationLayerStateMachine -prefix=helpers_
+//go:generate go tool plc4xGenerator -type=BIPSimpleApplicationLayerStateMachine -prefix=helpers_
 type BIPSimpleApplicationLayerStateMachine struct {
 	ApplicationServiceElementContract
 	*ClientStateMachine

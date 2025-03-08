@@ -33,7 +33,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
 )
 
-//go:generate plc4xGenerator -type=BIPSimpleApplication -prefix=app_
+//go:generate go tool plc4xGenerator -type=BIPSimpleApplication -prefix=app_
 type BIPSimpleApplication struct {
 	*ApplicationIOController
 	*WhoIsIAmServices

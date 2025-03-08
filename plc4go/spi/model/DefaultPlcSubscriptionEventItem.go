@@ -26,7 +26,7 @@ import (
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
-//go:generate plc4xGenerator -type=DefaultPlcSubscriptionEventItem
+//go:generate go tool plc4xGenerator -type=DefaultPlcSubscriptionEventItem
 type DefaultPlcSubscriptionEventItem struct {
 	code             apiModel.PlcResponseCode `stringer:"true"`
 	tag              apiModel.PlcTag

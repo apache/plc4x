@@ -30,7 +30,7 @@ import (
 
 var _ apiModel.PlcUnsubscriptionRequestBuilder = &DefaultPlcUnsubscriptionRequestBuilder{}
 
-//go:generate plc4xGenerator -type=DefaultPlcUnsubscriptionRequestBuilder
+//go:generate go tool plc4xGenerator -type=DefaultPlcUnsubscriptionRequestBuilder
 type DefaultPlcUnsubscriptionRequestBuilder struct {
 	subscriptionHandles []apiModel.PlcSubscriptionHandle
 }
@@ -50,7 +50,7 @@ func (d *DefaultPlcUnsubscriptionRequestBuilder) Build() (apiModel.PlcUnsubscrip
 
 var _ apiModel.PlcUnsubscriptionRequest = &DefaultPlcUnsubscriptionRequest{}
 
-//go:generate plc4xGenerator -type=DefaultPlcUnsubscriptionRequest
+//go:generate go tool plc4xGenerator -type=DefaultPlcUnsubscriptionRequest
 type DefaultPlcUnsubscriptionRequest struct {
 	subscriptionHandles []apiModel.PlcSubscriptionHandle
 }

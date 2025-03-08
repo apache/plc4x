@@ -40,7 +40,7 @@ type WhoIsIAmServicesRequirements interface {
 	RegisterHelperFn(name string, fn func(apdu APDU) error) error
 }
 
-//go:generate plc4xGenerator -type=WhoIsIAmServices -prefix=service_device_
+//go:generate go tool plc4xGenerator -type=WhoIsIAmServices -prefix=service_device_
 type WhoIsIAmServices struct {
 	_requirements WhoIsIAmServicesRequirements `ignore:"true"`
 	Capability

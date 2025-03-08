@@ -436,7 +436,7 @@ func (t *tag) PrintDebugContents(indent int, file io.Writer, _ids []uintptr) {
 	} else {
 		msg += "?"
 	}
-	_, _ = fmt.Fprintf(file, msg+"\n")
+	_, _ = fmt.Fprint(file, msg+"\n")
 
 	// tag number
 	msg = fmt.Sprintf("%stagNumber = %d ", strings.Repeat("    ", indent), t.tagNumber)
@@ -445,7 +445,7 @@ func (t *tag) PrintDebugContents(indent int, file io.Writer, _ids []uintptr) {
 	} else {
 		msg += "?"
 	}
-	_, _ = fmt.Fprintf(file, msg+"\n")
+	_, _ = fmt.Fprint(file, msg+"\n")
 
 	// length, value, type
 	_, _ = fmt.Fprintf(file, "%stagLVT = %d\n", strings.Repeat("    ", indent), t.tagLVT)

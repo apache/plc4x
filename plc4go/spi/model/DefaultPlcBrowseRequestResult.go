@@ -23,7 +23,7 @@ import apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 
 var _ apiModel.PlcBrowseRequestResult = &DefaultPlcBrowseRequestResult{}
 
-//go:generate plc4xGenerator -type=DefaultPlcBrowseRequestResult
+//go:generate go tool plc4xGenerator -type=DefaultPlcBrowseRequestResult
 type DefaultPlcBrowseRequestResult struct {
 	Request  apiModel.PlcBrowseRequest
 	Response apiModel.PlcBrowseResponse

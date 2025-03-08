@@ -107,10 +107,6 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                 new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
 
             MonitoringMode monitoringMode = MonitoringMode.monitoringModeReporting;
-            if (PlcSubscriptionType.CYCLIC == tagDefaultPlcSubscription.getPlcSubscriptionType()) {
-                monitoringMode = MonitoringMode.monitoringModeSampling;
-            }
-
             ExtensionObject eventFilter = OpcuaProtocolLogic.NULL_EXTENSION_OBJECT;
             if (tagDefaultPlcSubscription.getPlcSubscriptionType() == PlcSubscriptionType.EVENT) {
                 NodeId nodeId = new NodeId(new NodeIdFourByte((short) 0, OpcuaNodeIdServicesObjectType.BaseEventType.getValue()));
@@ -219,22 +215,25 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                         outstandingAcknowledgements.add(new SubscriptionAcknowledgement(this.subscriptionId, availableSequenceNumber));
                     }
 
-                    for (ExtensionObject notificationMessage : responseMessage.getNotificationMessage().getNotificationData()) {
-                        ExtensionObjectDefinition notification = notificationMessage.getBody();
-                        if (notification instanceof DataChangeNotification) {
-                            logger.trace("Found a Data Change Notification");
-                            DataChangeNotification data = (DataChangeNotification) notification;
-                            if (!data.getMonitoredItems().isEmpty()) {
-                                onMonitoredValue(data.getMonitoredItems());
+                    NotificationMessage message = responseMessage.getNotificationMessage();
+                    if (message.getNotificationData() != null) {
+                        for (ExtensionObject notificationMessage : message.getNotificationData()) {
+                            ExtensionObjectDefinition notification = notificationMessage.getBody();
+                            if (notification instanceof DataChangeNotification) {
+                                logger.trace("Found a Data Change Notification");
+                                DataChangeNotification data = (DataChangeNotification) notification;
+                                if (!data.getMonitoredItems().isEmpty()) {
+                                    onMonitoredValue(data.getMonitoredItems());
+                                }
+                            } else if (notification instanceof EventNotificationList) {
+                                logger.trace("Found a Event Notification");
+                                EventNotificationList data = (EventNotificationList) notification;
+                                if (!data.getEvents().isEmpty()) {
+                                    onEventNotification(data.getEvents());
+                                }
+                            } else {
+                                logger.warn("Unsupported Notification type {}", notification.getClass().getName());
                             }
-                        } else if (notification instanceof EventNotificationList) {
-                            logger.trace("Found a Event Notification");
-                            EventNotificationList data = (EventNotificationList) notification;
-                            if (!data.getEvents().isEmpty()) {
-                                onEventNotification(data.getEvents());
-                            }
-                        } else {
-                            logger.warn("Unsupported Notification type {}", notification.getClass().getName());
                         }
                     }
                 }).whenComplete((result, error) -> {

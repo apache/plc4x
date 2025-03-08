@@ -30,7 +30,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
-//go:generate plc4xGenerator -type=Subscriber
+//go:generate go tool plc4xGenerator -type=Subscriber
 type Subscriber struct {
 	connection *Connection
 	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer

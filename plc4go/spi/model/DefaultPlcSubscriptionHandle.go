@@ -26,7 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 )
 
-//go:generate plc4xGenerator -type=DefaultPlcSubscriptionHandle
+//go:generate go tool plc4xGenerator -type=DefaultPlcSubscriptionHandle
 type DefaultPlcSubscriptionHandle struct {
 	uuid             uuid.UUID                      `stringer:"true"`
 	handleToRegister apiModel.PlcSubscriptionHandle `ignore:"true"` // avoid recursion

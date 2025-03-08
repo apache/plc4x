@@ -44,7 +44,7 @@ type ClientStateMachineContract interface {
 //	state machine sends are sent down the stack and tPDU's coming up the
 //	stack are fed as received tPDU's.
 //
-//go:generate plc4xGenerator -type=ClientStateMachine -prefix=state_machine_
+//go:generate go tool plc4xGenerator -type=ClientStateMachine -prefix=state_machine_
 type ClientStateMachine struct {
 	ClientContract
 	StateMachineContract

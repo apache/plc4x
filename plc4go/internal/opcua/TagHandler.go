@@ -70,13 +70,13 @@ func (m TagHandler) handleTagAddress(match map[string]string) (apiModel.PlcTag, 
 	}
 	identifierType, ok := readWriteModel.OpcuaIdentifierTypeByValue(match["identifierType"])
 	if !ok {
-		return nil, errors.Errorf("No identifier found for " + match["identifierType"])
+		return nil, errors.Errorf("No identifier found for %s", match["identifierType"])
 	}
 	dataType := readWriteModel.OpcuaDataType_NULL
 	if dataTypeMatch := match["dataType"]; dataTypeMatch != "" {
 		dataType, ok = readWriteModel.OpcuaDataTypeByName(dataTypeMatch)
 		if !ok {
-			return nil, errors.Errorf("No identifier found for " + match["dataType"])
+			return nil, errors.Errorf("No identifier found for %s", match["dataType"])
 		}
 	}
 	return NewTag(namespace, identifier, identifierType, dataType), nil

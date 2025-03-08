@@ -38,7 +38,7 @@ type TrappedServerContract interface {
 
 // TrappedServer An instance of this class sits at the bottom of a stack.
 //
-//go:generate plc4xGenerator -type=TrappedServer -prefix=trapped_classes_
+//go:generate go tool plc4xGenerator -type=TrappedServer -prefix=trapped_classes_
 type TrappedServer struct {
 	TrappedServerContract `ignore:"true"`
 	ServerContract

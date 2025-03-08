@@ -36,6 +36,7 @@ import org.apache.plc4x.java.spi.utils.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -317,6 +318,18 @@ public class S7Tag implements PlcTag, Serializable {
             ", bitOffset=" + bitOffset +
             ", numElements=" + numElements +
             '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        S7Tag s7Tag = (S7Tag) o;
+        return blockNumber == s7Tag.blockNumber && byteOffset == s7Tag.byteOffset && bitOffset == s7Tag.bitOffset && numElements == s7Tag.numElements && dataType == s7Tag.dataType && memoryArea == s7Tag.memoryArea;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
     }
 
     @Override

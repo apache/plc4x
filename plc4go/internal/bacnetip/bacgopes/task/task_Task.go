@@ -36,7 +36,7 @@ type TaskRequirements interface {
 	SetIsScheduled(isScheduled bool)
 }
 
-//go:generate plc4xGenerator -type=Task -prefix=task_
+//go:generate go tool plc4xGenerator -type=Task -prefix=task_
 type Task struct {
 	*DebugContents   `ignore:"true"`
 	TaskRequirements `ignore:"true"`

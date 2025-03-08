@@ -33,7 +33,6 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
@@ -180,7 +179,6 @@ func TestWriter_Write(t *testing.T) {
 			timeBeforeWriteRequest := time.Now()
 			writeResponseChannel := w.Write(testutils.TestContext(t), writeRequest)
 			timeout := time.NewTimer(3 * time.Second)
-			defer utils.CleanupTimer(timeout)
 			select {
 			case writeResponse := <-writeResponseChannel:
 				timeAfterWriteRequest := time.Now()

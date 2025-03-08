@@ -34,7 +34,6 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestNewPlcDriverManager(t *testing.T) {
@@ -449,9 +448,6 @@ func Test_plcDriverManger_GetConnection(t *testing.T) {
 			},
 			wantVerifier: func(t *testing.T, results <-chan PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(3 * time.Second)
-				t.Cleanup(func() {
-					utils.CleanupTimer(timeout)
-				})
 				select {
 				case <-timeout.C:
 					t.Error("timeout")
@@ -467,9 +463,6 @@ func Test_plcDriverManger_GetConnection(t *testing.T) {
 			name: "get one without a driver",
 			wantVerifier: func(t *testing.T, results <-chan PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(3 * time.Second)
-				t.Cleanup(func() {
-					utils.CleanupTimer(timeout)
-				})
 				select {
 				case <-timeout.C:
 					t.Error("timeout")
@@ -504,9 +497,6 @@ func Test_plcDriverManger_GetConnection(t *testing.T) {
 			},
 			wantVerifier: func(t *testing.T, results <-chan PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(3 * time.Second)
-				t.Cleanup(func() {
-					utils.CleanupTimer(timeout)
-				})
 				select {
 				case <-timeout.C:
 					t.Error("timeout")

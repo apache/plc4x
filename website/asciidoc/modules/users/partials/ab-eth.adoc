@@ -29,7 +29,7 @@
 <dependency>
   <groupId>org.apache.plc4x</groupId>
   <artifactId>plc4j-driver-ab-eth</artifactId>
-  <version>{current-last-released-version}</version>
+  <version>{page-component-version}</version>
 </dependency>
 ----
 |Default Transport 4+|`raw`

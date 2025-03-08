@@ -37,10 +37,9 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate plc4xGenerator -type=AlphaGenerator
+//go:generate go tool plc4xGenerator -type=AlphaGenerator
 type AlphaGenerator struct {
 	currentAlpha byte `hasLocker:"lock"`
 	lock         sync.Mutex
@@ -58,7 +57,7 @@ func (t *AlphaGenerator) getAndIncrement() byte {
 	return result
 }
 
-//go:generate plc4xGenerator -type=Connection
+//go:generate go tool plc4xGenerator -type=Connection
 type Connection struct {
 	_default.DefaultConnection
 	alphaGenerator AlphaGenerator `stringer:"true"`
@@ -432,7 +431,6 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 
 	startTime := time.Now()
 	timeout := time.NewTimer(time.Millisecond * 500)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case <-receivedResetEchoChan:
 		c.log.Debug().Msg("We received the echo")
@@ -586,7 +584,6 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcCon
 
 	startTime := time.Now()
 	timeout := time.NewTimer(2 * time.Second)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case <-directCommandAckChan:
 		c.log.Debug().Msg("We received the ack")

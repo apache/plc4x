@@ -21,7 +21,7 @@ package task
 
 import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 
-//go:generate plc4xGenerator -type=OneShotFunctionTask -prefix=task_
+//go:generate go tool plc4xGenerator -type=OneShotFunctionTask -prefix=task_
 type OneShotFunctionTask struct {
 	*OneShotDeleteTask
 	fn     GenericFunction `ignore:"true"`

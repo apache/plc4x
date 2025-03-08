@@ -32,7 +32,6 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestDefaultPlcReadRequestBuilder_AddTag(t *testing.T) {
@@ -287,9 +286,6 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
 				timeout := time.NewTimer(100 * time.Millisecond)
-				t.Cleanup(func() {
-					utils.CleanupTimer(timeout)
-				})
 				select {
 				case result := <-results:
 					assert.NoError(t, result.GetErr())
@@ -323,9 +319,6 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
 				timeout := time.NewTimer(100 * time.Millisecond)
-				t.Cleanup(func() {
-					utils.CleanupTimer(timeout)
-				})
 				select {
 				case result := <-results:
 					assert.Error(t, result.GetErr())
@@ -366,9 +359,6 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
 				timeout := time.NewTimer(100 * time.Millisecond)
-				t.Cleanup(func() {
-					utils.CleanupTimer(timeout)
-				})
 				select {
 				case result := <-results:
 					assert.Error(t, result.GetErr())
@@ -421,9 +411,6 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
 				timeout := time.NewTimer(100 * time.Millisecond)
-				t.Cleanup(func() {
-					utils.CleanupTimer(timeout)
-				})
 				select {
 				case result := <-results:
 					assert.NoError(t, result.GetErr())

@@ -37,7 +37,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestDriver_DiscoverWithContext(t *testing.T) {
@@ -135,7 +134,6 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(20 * time.Millisecond)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Error("timeout")
@@ -168,7 +166,6 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(20 * time.Millisecond)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Error("timeout")
@@ -202,7 +199,6 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(20 * time.Millisecond)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Error("timeout")
@@ -233,7 +229,6 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(20 * time.Millisecond)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Error("timeout")
@@ -325,7 +320,6 @@ func TestDriver_reportError(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(20 * time.Millisecond)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Error("timeout")

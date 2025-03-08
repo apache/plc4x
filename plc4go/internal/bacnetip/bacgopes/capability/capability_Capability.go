@@ -33,7 +33,7 @@ type Capability interface {
 	getZIndex() int
 }
 
-//go:generate plc4xGenerator -type=capability -prefix=capability_
+//go:generate go tool plc4xGenerator -type=capability -prefix=capability_
 type capability struct {
 	_zindex int
 }

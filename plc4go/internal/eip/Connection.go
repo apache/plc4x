@@ -258,7 +258,6 @@ func (c *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcC
 	}
 
 	timeout := time.NewTimer(1 * time.Second)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case <-timeout.C:
 		return errors.New("timeout")
@@ -381,7 +380,6 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 		c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 	}
 	timeout := time.NewTimer(1 * time.Second)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case <-timeout.C:
 		return errors.New("timeout")
@@ -460,7 +458,6 @@ func (c *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 	}
 
 	timeout := time.NewTimer(1 * time.Second)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case <-timeout.C:
 		return errors.New("timeout")

@@ -31,7 +31,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
-//go:generate plc4xGenerator -type=IPRouterNode -prefix=vlan_
+//go:generate go tool plc4xGenerator -type=IPRouterNode -prefix=vlan_
 type IPRouterNode struct {
 	ClientContract
 

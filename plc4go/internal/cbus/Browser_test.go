@@ -43,7 +43,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
@@ -168,9 +167,6 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				fields.connection = connectionConnectResult.GetConnection()
 				t.Cleanup(func() {
 					timer := time.NewTimer(10 * time.Second)
-					t.Cleanup(func() {
-						utils.CleanupTimer(timer)
-					})
 					select {
 					case <-fields.connection.Close():
 					case <-timer.C:
@@ -327,9 +323,6 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 				fields.connection = connectionConnectResult.GetConnection()
 				t.Cleanup(func() {
 					timer := time.NewTimer(10 * time.Second)
-					t.Cleanup(func() {
-						utils.CleanupTimer(timer)
-					})
 					select {
 					case <-fields.connection.Close():
 					case <-timer.C:
@@ -601,9 +594,6 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				fields.connection = connectionConnectResult.GetConnection()
 				t.Cleanup(func() {
 					timer := time.NewTimer(6 * time.Second)
-					t.Cleanup(func() {
-						utils.CleanupTimer(timer)
-					})
 					select {
 					case <-fields.connection.Close():
 					case <-timer.C:

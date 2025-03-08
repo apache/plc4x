@@ -36,7 +36,7 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
-//go:generate plc4xGenerator -type=NetworkServiceAccessPoint -prefix=netservice_
+//go:generate go tool plc4xGenerator -type=NetworkServiceAccessPoint -prefix=netservice_
 type NetworkServiceAccessPoint struct {
 	ServiceAccessPointContract
 	ServerContract

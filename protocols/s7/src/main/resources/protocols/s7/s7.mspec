@@ -928,14 +928,24 @@
 ]
 
 [enum uint 8 MemoryArea(string 24 shortName)
+    // It seems counters and timers are simply numbered. So C1 refers to Counter #1 and C42 to the 42nd Counter
+    // However, can sub-items of the counter generally be addressed. "C1.CV" (Current Value), "C1.PV" (Present Value)
     ['0x1C' COUNTERS                 ['C']]
+    // See comment at COUNTERS
     ['0x1D' TIMERS                   ['T']]
+    // TODO: It seems direct peripherial access needs some additional work: https://support.industry.siemens.com/cs/document/18325417/where-and-when-do-you-need-peripheral-addressing-?dti=0&lc=en-CY
     ['0x80' DIRECT_PERIPHERAL_ACCESS ['D']]
+    // Inputs are simply numbered.
     ['0x81' INPUTS                   ['I']]
+    // Inputs are simply numbered.
     ['0x82' OUTPUTS                  ['Q']]
+    // Markers seem to be interpreted as one consecutive byte array block with optional bit-access: "M<byte>[.<bit>]"
     ['0x83' FLAGS_MARKERS            ['M']]
+    // DB addresses are followed by the block number directly after the "DB" prefix.
     ['0x84' DATA_BLOCKS              ['DB']]
+    // DBI addresses follow the same rules as DB blocks and the "Instance" part seems to be an implementation detail.
     ['0x85' INSTANCE_DATA_BLOCKS     ['DBI']]
+    // It seems that these refer to variables local to a bloks execution context and are therefor only accessible within this context.
     ['0x86' LOCAL_DATA               ['LD']]
 ]
 
