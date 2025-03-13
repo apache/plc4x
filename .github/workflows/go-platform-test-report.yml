@@ -37,7 +37,7 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: dorny/test-reporter@v1
+      - uses: dorny/test-reporter@v2
         with:
           artifact: "golang-test-report-${{ matrix.os }}"
           name: "Golang Tests (OS: ${{ matrix.os }})"
