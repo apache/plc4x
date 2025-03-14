@@ -85,6 +85,11 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
     }
 
     @Override
+    protected boolean canRead() {
+        return true;
+    }
+
+    @Override
     protected ProtocolStackConfigurer<CIPEncapsulationPacket> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(CIPEncapsulationPacket.class, CIPEncapsulationPacket::staticParse)
             .withProtocol(AbEthProtocolLogic.class)
