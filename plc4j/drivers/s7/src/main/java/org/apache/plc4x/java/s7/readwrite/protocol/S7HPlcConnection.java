@@ -24,6 +24,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import java.util.List;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.s7.readwrite.ControllerType;
@@ -147,12 +148,12 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                         sessionDisconnectCompleteFuture,
                         sessionDiscoveredCompleteFuture));
 
-                //channel.pipeline().addFirst(new LoggingHandler("DOOM"));
                 channel.pipeline().addFirst("Multiplexor", s7hmux);
+
             }
 
             ((S7HMux) s7hmux).setEmbededhannel(channel, configuration);
-            //channel.pipeline().addFirst((new LoggingHandler(LogLevel.INFO))); 
+//            channel.pipeline().addFirst((new LoggingHandler("CEOS"))); 
             /*
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {

@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
+import static org.apache.plc4x.java.spi.connection.GeneratedDriverBase.PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT;
 
 public class S7Driver extends S7HGeneratedDriverBase {
 
@@ -157,7 +158,7 @@ public class S7Driver extends S7HGeneratedDriverBase {
      */
     public static class CorruptPackageCleaner implements Consumer<ByteBuf> {
         @Override
-        public void accept(ByteBuf byteBuf) {
+        public void accept(ByteBuf byteBuf) {          
             while (byteBuf.getUnsignedByte(0) != TPKTPacket.PROTOCOLID) {
                 // Just consume the bytes till the next possible start position.
                 byteBuf.readByte();

@@ -45,95 +45,98 @@ import org.apache.plc4x.java.s7.readwrite.TimeBase;
 import org.apache.plc4x.java.s7.readwrite.tag.S7SubscriptionTag;
 import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
 import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionType;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 
-public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Serializable {
+//public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Serializable {
+public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
 
     private static final String CONST_DUPLICATE_TAG = "Duplicate tag definition";
     private static final String CONST_INVALID_TYPE = "Tag is not of type S7SubscriptionTag";
     private static final String CONST_TIME_CANNOT_BE_ZERO = "Subscription time cannot be zero.";
 
 
-    private final PlcSubscriber subscriber;
-
-    private final LinkedHashMap<String, PlcTagItem<PlcSubscriptionTag>> tags;
-
-    private final Consumer<PlcSubscriptionEvent> consumer;
-    private final Map<String, Consumer<PlcSubscriptionEvent>> tagConsumers;
+//    private final PlcSubscriber subscriber;
+//
+//    private final LinkedHashMap<String, PlcTagItem<PlcSubscriptionTag>> tags;
+//
+//    private final Consumer<PlcSubscriptionEvent> consumer;
+//    private final Map<String, Consumer<PlcSubscriptionEvent>> tagConsumers;
 
     public S7PlcSubscriptionRequest(PlcSubscriber subscriber,
                                     LinkedHashMap<String, PlcTagItem<PlcSubscriptionTag>> tags,
                                     Consumer<PlcSubscriptionEvent> consumer,
                                     Map<String, Consumer<PlcSubscriptionEvent>> tagConsumers) {
-        this.subscriber = subscriber;
-        this.tags = tags;
-        this.consumer = consumer;
-        this.tagConsumers = tagConsumers;
+        super(subscriber, tags, consumer, tagConsumers);
+//        this.subscriber = subscriber;
+//        this.tags = tags;
+//        this.consumer = consumer;
+//        this.tagConsumers = tagConsumers;
     }
 
-    @Override
-    public CompletableFuture<PlcSubscriptionResponse> execute() {
-        return subscriber.subscribe(this);
-    }
-
-    @Override
-    public int getNumberOfTags() {
-        return tags.size();
-    }
-
-    @Override
-    public LinkedHashSet<String> getTagNames() {
-        return new LinkedHashSet<>(tags.keySet());
-    }
-
-    @Override
-    public PlcSubscriptionTag getTag(String name) {
-        return tags.get(name).getTag();
-    }
-
-    @Override
-    public PlcResponseCode getTagResponseCode(String tagName) {
-        return tags.get(tagName).getResponseCode();
-    }
-
-    @Override
-    public Consumer<PlcSubscriptionEvent> getConsumer() {
-        return consumer;
-    }
-
-    @Override
-    public Consumer<PlcSubscriptionEvent> getTagConsumer(String tagName) {
-        return tagConsumers.get(tagName);
-    }
-
-    public Map<String, Consumer<PlcSubscriptionEvent>> getTagConsumers() {
-        return tagConsumers;
-    }
-
-    @Override
-    public List<PlcSubscriptionTag> getTags() {
-        return tags.values().stream().map(PlcTagItem::getTag).collect(Collectors.toCollection(LinkedList::new));
-    }
-
-    @Override
-    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext("PlcSubscriptionRequest");
-
-        writeBuffer.pushContext("tags");
-        for (Map.Entry<String, PlcTagItem<PlcSubscriptionTag>> tagEntry : tags.entrySet()) {
-            String tagName = tagEntry.getKey();
-            writeBuffer.pushContext(tagName);
-            PlcTagItem<PlcSubscriptionTag> tagItem = tagEntry.getValue();
-            if (!(tagItem instanceof Serializable)) {
-                throw new PlcRuntimeException("Error serializing. Tag doesn't implement XmlSerializable");
-            }
-            ((Serializable) tagItem).serialize(writeBuffer);
-            writeBuffer.popContext(tagName);
-        }
-        writeBuffer.popContext("tags");
-
-        writeBuffer.popContext("PlcSubscriptionRequest");
-    }
+//    @Override
+//    public CompletableFuture<PlcSubscriptionResponse> execute() {
+//        return subscriber.subscribe(this);
+//    }
+//
+//    @Override
+//    public int getNumberOfTags() {
+//        return tags.size();
+//    }
+//
+//    @Override
+//    public LinkedHashSet<String> getTagNames() {
+//        return new LinkedHashSet<>(tags.keySet());
+//    }
+//
+//    @Override
+//    public PlcSubscriptionTag getTag(String name) {
+//        return tags.get(name).getTag();
+//    }
+//
+//    @Override
+//    public PlcResponseCode getTagResponseCode(String tagName) {
+//        return tags.get(tagName).getResponseCode();
+//    }
+//
+//    @Override
+//    public Consumer<PlcSubscriptionEvent> getConsumer() {
+//        return consumer;
+//    }
+//
+//    @Override
+//    public Consumer<PlcSubscriptionEvent> getTagConsumer(String tagName) {
+//        return tagConsumers.get(tagName);
+//    }
+//
+//    public Map<String, Consumer<PlcSubscriptionEvent>> getTagConsumers() {
+//        return tagConsumers;
+//    }
+//
+//    @Override
+//    public List<PlcSubscriptionTag> getTags() {
+//        return tags.values().stream().map(PlcTagItem::getTag).collect(Collectors.toCollection(LinkedList::new));
+//    }
+//
+//    @Override
+//    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+//        writeBuffer.pushContext("PlcSubscriptionRequest");
+//
+//        writeBuffer.pushContext("tags");
+//        for (Map.Entry<String, PlcTagItem<PlcSubscriptionTag>> tagEntry : tags.entrySet()) {
+//            String tagName = tagEntry.getKey();
+//            writeBuffer.pushContext(tagName);
+//            PlcTagItem<PlcSubscriptionTag> tagItem = tagEntry.getValue();
+//            if (!(tagItem instanceof Serializable)) {
+//                throw new PlcRuntimeException("Error serializing. Tag doesn't implement XmlSerializable");
+//            }
+//            ((Serializable) tagItem).serialize(writeBuffer);
+//            writeBuffer.popContext(tagName);
+//        }
+//        writeBuffer.popContext("tags");
+//
+//        writeBuffer.popContext("PlcSubscriptionRequest");
+//    }
 
     public static class Builder implements PlcSubscriptionRequest.Builder {
 
@@ -412,8 +415,8 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
     @Override
     public String toString() {
         return "DefaultPlcSubscriptionRequest{" +
-            "subscriber=" + subscriber +
-            ", tags=" + tags +
+//            "subscriber=" + super.getSubscriber().subscriber +
+//            ", tags=" + tags +
             '}';
     }
 }
