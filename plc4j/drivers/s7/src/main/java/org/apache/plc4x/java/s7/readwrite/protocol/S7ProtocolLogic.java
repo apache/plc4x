@@ -130,10 +130,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     * transferred to the event stack and the value is updated in this HashMap.
     */
     private final Map<Short, S7CyclicEvent> cycChangeValueEvents = new HashMap<>();
-
-    
-    private ConversationContext<TPKTPacket> context;
-    
     private S7DriverContext s7DriverContext;
     private RequestTransactionManager tm;
 
@@ -167,7 +163,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
-        this.context = context;
         if (context.isPassive()) {
             logger.info("S7 Driver running in PASSIVE mode.");
             s7DriverContext.setPassiveMode(true);
