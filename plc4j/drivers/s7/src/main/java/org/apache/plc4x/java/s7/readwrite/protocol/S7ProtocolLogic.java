@@ -1830,14 +1830,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
                             if (parameteritem.getLastDataUnit() == 1) {
                                 final short sequenceNumber = parameteritem.getSequenceNumber();
-                                boolean[] flags = new boolean[2];
-                                flags[0] = false;
+                                boolean flag  = false;
                                 ContextHandler handler = null;
                                 
-                                S7MessageUserData[] msg = new S7MessageUserData[1]; 
-                                msg[0] = null;
+                                S7MessageUserData msg = null; 
                                 
-                                CompletableFuture<S7MessageUserData>[]  nextFuture = new CompletableFuture[1];
+                                CompletableFuture<S7MessageUserData>  nextFuture = null;
                                                                 
                                     int lastDataUnit = 1;
 //                                    CompletableFuture<S7MessageUserData> nextFuture;
@@ -1851,32 +1849,29 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                                     while (lastDataUnit == 1) {
                                         //TODO: Just wait for one answer!. Pending for other packages for rearm.
                                                                                    
-                                        if (flags[0] == false) {
-                                            flags[0] = true;
-
-                                            nextFuture[0] = reassembledMessage(sequenceNumber, plcValues);
-   
+                                        if (flag == false) {
+                                            flag = true;
+                                            nextFuture = reassembledMessage(sequenceNumber, plcValues);
                                             try {
-                                                msg[0]  = nextFuture[0].get();
-                                                flags[0] = false;                                                    
+                                                msg  = nextFuture.get();
+                                                flag = false;                                                    
                                             } catch (Exception ex){
                                                 logger.error(ex.getMessage());                                                        
                                             }
-
                                         };
  
-                                        if (msg[0] != null) {
-                                            nextParameter = (S7ParameterUserData) msg[0].getParameter();
+                                        if (msg != null) {
+                                            nextParameter = (S7ParameterUserData) msg.getParameter();
                                             var nextParameterItem = (S7ParameterUserDataItemCPUFunctions) nextParameter.getItems().get(0);
                                             lastDataUnit = nextParameterItem.getLastDataUnit();
-                                            nextPayload = (S7PayloadUserData) msg[0].getPayload();
+                                            nextPayload = (S7PayloadUserData) msg.getPayload();
                                             nextPayloadItem = (S7PayloadUserDataItemCpuFunctionReadSzlResponse) nextPayload.getItems().get(0);
                                             for (byte b : nextPayloadItem.getItems()) {
                                                 plcValues.add(new PlcSINT(b));
                                             }
                                             plcValue = new PlcList(plcValues);
-                                            msg[0] = null;
-                                            flags[0] = false;
+                                            msg = null;
+                                            flag = false;
                                         } else {
                                            return  new DefaultPlcReadResponse(plcReadRequest, null);
                                         }
