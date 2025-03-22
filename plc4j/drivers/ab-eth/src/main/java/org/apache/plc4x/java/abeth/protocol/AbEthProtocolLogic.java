@@ -57,7 +57,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
 
     private AbEthConfiguration configuration;
 
-    private final AtomicInteger transactionCounterGenerator = new AtomicInteger(10);
+    private final AtomicInteger transactionCounterGenerator = new AtomicInteger(1);
     private RequestTransactionManager tm;
     private long sessionHandle;
 
