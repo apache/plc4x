@@ -51,7 +51,7 @@ type ServerRequirements interface {
 
 // Server is an "abstract" struct which is used in another struct as delegate
 //
-//go:generate plc4xGenerator -type=server -prefix=comm_
+//go:generate go tool plc4xGenerator -type=server -prefix=comm_
 type server struct {
 	serverID   *int
 	serverPeer Client `asPtr:"true"`

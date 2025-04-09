@@ -182,21 +182,16 @@ func (_c *MockMessageCodec_Disconnect_Call) RunAndReturn(run func() error) *Mock
 }
 
 // Expect provides a mock function with given fields: ctx, acceptsMessage, handleMessage, handleError, ttl
-func (_m *MockMessageCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+func (_m *MockMessageCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) {
 	ret := _m.Called(ctx, acceptsMessage, handleMessage, handleError, ttl)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Expect")
 	}
 
-	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, spi.AcceptsMessage, spi.HandleMessage, spi.HandleError, time.Duration) error); ok {
-		r0 = rf(ctx, acceptsMessage, handleMessage, handleError, ttl)
-	} else {
-		r0 = ret.Error(0)
+		rf(ctx, acceptsMessage, handleMessage, handleError, ttl)
 	}
-
-	return r0
 }
 
 // MockMessageCodec_Expect_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Expect'

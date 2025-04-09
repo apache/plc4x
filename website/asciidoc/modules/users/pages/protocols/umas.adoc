@@ -19,7 +19,11 @@
 
 = UMAS (Schneider Electric PLCs)
 
+This protocol is used by Schneider Electric PLCs such as the M340, M580 and the Quantum PLCs with the Unity firmware.
 
+This driver supports reading/writing/browsing of PLC tags as well as %S/%SW addresses.
+
+The Data Dictionary needs to be enabled on the PLC.
 
 (Supported by Plc4Py Only)
 

@@ -29,7 +29,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
-//go:generate plc4xGenerator -type=NPDUCodec -prefix=
+//go:generate go tool plc4xGenerator -type=NPDUCodec -prefix=
 type NPDUCodec struct {
 	ClientContract
 	ServerContract

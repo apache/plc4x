@@ -33,7 +33,7 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 )
 
-//go:generate plc4xGenerator -type=Configuration
+//go:generate go tool plc4xGenerator -type=Configuration
 type Configuration struct {
 	Code              string
 	Host              string

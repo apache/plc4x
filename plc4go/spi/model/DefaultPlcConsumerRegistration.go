@@ -28,7 +28,7 @@ import (
 
 var _ apiModel.PlcConsumerRegistration = &DefaultPlcConsumerRegistration{}
 
-//go:generate plc4xGenerator -type=DefaultPlcConsumerRegistration
+//go:generate go tool plc4xGenerator -type=DefaultPlcConsumerRegistration
 type DefaultPlcConsumerRegistration struct {
 	consumerId    int
 	consumer      apiModel.PlcSubscriptionEventConsumer `ignore:"true"` // Function not renderable

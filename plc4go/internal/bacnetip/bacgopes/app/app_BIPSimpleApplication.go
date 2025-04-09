@@ -31,9 +31,10 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate plc4xGenerator -type=BIPSimpleApplication -prefix=app_
+//go:generate go tool plc4xGenerator -type=BIPSimpleApplication -prefix=app_
 type BIPSimpleApplication struct {
 	*ApplicationIOController
 	*WhoIsIAmServices
@@ -136,6 +137,7 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice LocalDeviceObj
 }
 
 func (b *BIPSimpleApplication) Close() error {
+	defer utils.StopWarn(b.log)()
 	b.log.Debug().Msg("close socket")
 
 	if b.ApplicationIOController != nil {

@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"runtime/debug"
+	"sync"
 	"time"
 
 	"github.com/pkg/errors"
@@ -62,6 +63,8 @@ type Connection struct {
 	useConnectionManager      bool
 	routingAddress            []readWriteModel.PathSegment
 	tracer                    tracer.Tracer
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
@@ -127,7 +130,9 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+	c.wg.Add(1)
 	go func() {
+		defer c.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -158,7 +163,9 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	// TODO: use proper context
 	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionCloseResult, 1)
+	c.wg.Add(1)
 	go func() {
+		defer c.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- _default.NewDefaultPlcConnectionCloseResult(c, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -246,7 +253,8 @@ func (c *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcC
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 				c.Close()
 			}
@@ -258,7 +266,6 @@ func (c *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcC
 	}
 
 	timeout := time.NewTimer(1 * time.Second)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case <-timeout.C:
 		return errors.New("timeout")
@@ -353,7 +360,8 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 					},
 					func(err error) error {
 						// If this is a timeout, do a check if the connection requires a reconnection
-						if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+						var timeoutError utils.TimeoutError
+						if errors.As(err, &timeoutError) {
 							c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 							c.Close()
 						}
@@ -369,7 +377,8 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 				c.Close()
 			}
@@ -381,7 +390,6 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 		c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 	}
 	timeout := time.NewTimer(1 * time.Second)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case <-timeout.C:
 		return errors.New("timeout")
@@ -460,7 +468,6 @@ func (c *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 	}
 
 	timeout := time.NewTimer(1 * time.Second)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case <-timeout.C:
 		return errors.New("timeout")

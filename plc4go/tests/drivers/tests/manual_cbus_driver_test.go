@@ -33,7 +33,6 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestManualCBusDriverMixed(t *testing.T) {
@@ -85,7 +84,6 @@ func TestManualCBusDriverMixed(t *testing.T) {
 		require.NoError(t, err)
 		subscriptionRequest.Execute()
 		timeout := time.NewTimer(30 * time.Second)
-		defer utils.CleanupTimer(timeout)
 		// We expect couple monitors
 		mmiCount := 0
 		salCount := 0

@@ -26,6 +26,7 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,9 +55,33 @@ public class S7StringFixedLengthTag extends S7Tag {
     public static boolean matches(String address) {
         return  DATA_BLOCK_STRING_FIXED_LENGTH_ADDRESS_PATTERN.matcher(address).matches() ||
             DATA_BLOCK_STRING_FIXED_LENGTH_SHORT_PATTERN.matcher(address).matches();
-    }    
-    
-    
+    }
+
+    @Override
+    public String toString() {
+        return "S7StringFixedLengthTag{" +
+            "dataType=" + getDataType() +
+            ", memoryArea=" + getMemoryArea() +
+            ", blockNumber=" + getBlockNumber() +
+            ", byteOffset=" + getByteOffset() +
+            ", bitOffset=" + getBitOffset() +
+            ", numElements=" + getNumberOfElements() +
+            ", stringLength=" + stringLength +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        S7StringFixedLengthTag s7StringFixedLengthTag = (S7StringFixedLengthTag) o;
+        return getBlockNumber() == s7StringFixedLengthTag.getBlockNumber() && getByteOffset() == s7StringFixedLengthTag.getByteOffset() && getBitOffset() == s7StringFixedLengthTag.getBitOffset() && getNumberOfElements() == s7StringFixedLengthTag.getNumberOfElements() && getDataType() == s7StringFixedLengthTag.getDataType() && getMemoryArea() == s7StringFixedLengthTag.getMemoryArea() && stringLength == s7StringFixedLengthTag.getStringLength();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDataType(), getMemoryArea(), getBlockNumber(), getByteOffset(), getBitOffset(), getNumberOfElements(), getStringLength());
+    }
+
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());

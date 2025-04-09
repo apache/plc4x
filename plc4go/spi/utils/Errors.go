@@ -40,6 +40,19 @@ type MultiError struct {
 	Errors []error
 }
 
+// ToErrorIfAny returns this if there was an error collected or nil if nothing there
+func (m *MultiError) ToErrorIfAny() error {
+	if m.Errors == nil && len(m.Errors) == 0 {
+		return nil
+	}
+	return m
+}
+
+// HasErrored returns true if a MainError or Errors have been collected
+func (m *MultiError) HasErrored() bool {
+	return m.MainError != nil || len(m.Errors) > 0
+}
+
 func (m *MultiError) Append(err error) {
 	m.Errors = append(m.Errors, err)
 }

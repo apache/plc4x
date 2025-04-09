@@ -110,6 +110,9 @@ const (
 	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_PerformInsertReplace  OpcuaNodeIdServicesVariableAudit = 19293
 	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_NewValues             OpcuaNodeIdServicesVariableAudit = 19294
 	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_OldValues             OpcuaNodeIdServicesVariableAudit = 19295
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_CurrentRoleIds                OpcuaNodeIdServicesVariableAudit = 19304
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_StatusCodeId                     OpcuaNodeIdServicesVariableAudit = 19305
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_OutputArguments                  OpcuaNodeIdServicesVariableAudit = 19306
 	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ServerUri                              OpcuaNodeIdServicesVariableAudit = 23908
 	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ObjectId             OpcuaNodeIdServicesVariableAudit = 23994
 	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_MethodId             OpcuaNodeIdServicesVariableAudit = 23995
@@ -196,6 +199,9 @@ func init() {
 		OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_PerformInsertReplace,
 		OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_NewValues,
 		OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_OldValues,
+		OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_CurrentRoleIds,
+		OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_StatusCodeId,
+		OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_OutputArguments,
 		OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ServerUri,
 		OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ObjectId,
 		OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_MethodId,
@@ -239,6 +245,12 @@ func OpcuaNodeIdServicesVariableAuditByValue(value int32) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_NewValues, true
 	case 19295:
 		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_OldValues, true
+	case 19304:
+		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_CurrentRoleIds, true
+	case 19305:
+		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_StatusCodeId, true
+	case 19306:
+		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_OutputArguments, true
 	case 2053:
 		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ActionTimeStamp, true
 	case 2054:
@@ -403,6 +415,12 @@ func OpcuaNodeIdServicesVariableAuditByName(value string) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_NewValues, true
 	case "AuditHistoryAnnotationUpdateEventType_OldValues":
 		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_OldValues, true
+	case "AuditActivateSessionEventType_CurrentRoleIds":
+		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_CurrentRoleIds, true
+	case "AuditUpdateMethodEventType_StatusCodeId":
+		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_StatusCodeId, true
+	case "AuditUpdateMethodEventType_OutputArguments":
+		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_OutputArguments, true
 	case "AuditEventType_ActionTimeStamp":
 		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ActionTimeStamp, true
 	case "AuditEventType_Status":
@@ -632,6 +650,12 @@ func (e OpcuaNodeIdServicesVariableAudit) PLC4XEnumName() string {
 		return "AuditHistoryAnnotationUpdateEventType_NewValues"
 	case OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_OldValues:
 		return "AuditHistoryAnnotationUpdateEventType_OldValues"
+	case OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_CurrentRoleIds:
+		return "AuditActivateSessionEventType_CurrentRoleIds"
+	case OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_StatusCodeId:
+		return "AuditUpdateMethodEventType_StatusCodeId"
+	case OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_OutputArguments:
+		return "AuditUpdateMethodEventType_OutputArguments"
 	case OpcuaNodeIdServicesVariableAudit_AuditEventType_ActionTimeStamp:
 		return "AuditEventType_ActionTimeStamp"
 	case OpcuaNodeIdServicesVariableAudit_AuditEventType_Status:

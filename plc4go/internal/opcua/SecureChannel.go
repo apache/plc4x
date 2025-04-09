@@ -80,7 +80,7 @@ var (
 	DEFAULT_CONNECTION_LIFETIME = uint32(36000000)
 )
 
-//go:generate plc4xGenerator -type=SecureChannel
+//go:generate go tool plc4xGenerator -type=SecureChannel
 type SecureChannel struct {
 	sessionName               string
 	clientNonce               []byte
@@ -117,6 +117,8 @@ type SecureChannel struct {
 	maxMessageSize            int
 	endpoints                 []string
 	senderSequenceNumber      atomic.Int32
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
@@ -609,12 +611,14 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 	s.encryptionHandler.setServerCertificate(certificate)
 	s.senderNonce = sessionResponse.GetServerNonce().GetStringValue()
 	endpoints := make([]string, 3)
-	if address, err := url.Parse(s.configuration.Host); err != nil {
+	if address, err := url.Parse(s.configuration.Host); err == nil {
 		if names, err := net.LookupAddr(address.Host); err != nil {
 			endpoints[0] = "opc.tcp://" + names[rand.Intn(len(names))] + ":" + s.configuration.Port + s.configuration.TransportEndpoint
 		}
 		endpoints[1] = "opc.tcp://" + address.Hostname() + ":" + s.configuration.Port + s.configuration.TransportEndpoint
 		//endpoints[2] = "opc.tcp://" + address.getCanonicalHostName() + ":" + s.configuration.getPort() + s.configuration.transportEndpoint// TODO: not sure how to get that in golang
+	} else {
+		s.log.Debug().Err(err).Msg("error parsing host")
 	}
 
 	s.selectEndpoint(sessionResponse)
@@ -1297,7 +1301,9 @@ func (s *SecureChannel) keepAlive() {
 		return
 	}
 	s.keepAliveWg.Add(1)
+	s.wg.Add(1)
 	go func() {
+		defer s.wg.Done()
 		defer s.keepAliveWg.Done()
 		s.keepAliveIndicator.Store(true)
 		defer s.keepAliveIndicator.Store(false)

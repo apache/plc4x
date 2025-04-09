@@ -41,14 +41,15 @@ type IIdentityCriteriaType interface {
 }
 
 const (
-	IdentityCriteriaType_identityCriteriaTypeUserName          IdentityCriteriaType = 1
-	IdentityCriteriaType_identityCriteriaTypeThumbprint        IdentityCriteriaType = 2
-	IdentityCriteriaType_identityCriteriaTypeRole              IdentityCriteriaType = 3
-	IdentityCriteriaType_identityCriteriaTypeGroupId           IdentityCriteriaType = 4
-	IdentityCriteriaType_identityCriteriaTypeAnonymous         IdentityCriteriaType = 5
-	IdentityCriteriaType_identityCriteriaTypeAuthenticatedUser IdentityCriteriaType = 6
-	IdentityCriteriaType_identityCriteriaTypeApplication       IdentityCriteriaType = 7
-	IdentityCriteriaType_identityCriteriaTypeX509Subject       IdentityCriteriaType = 8
+	IdentityCriteriaType_identityCriteriaTypeUserName           IdentityCriteriaType = 1
+	IdentityCriteriaType_identityCriteriaTypeThumbprint         IdentityCriteriaType = 2
+	IdentityCriteriaType_identityCriteriaTypeRole               IdentityCriteriaType = 3
+	IdentityCriteriaType_identityCriteriaTypeGroupId            IdentityCriteriaType = 4
+	IdentityCriteriaType_identityCriteriaTypeAnonymous          IdentityCriteriaType = 5
+	IdentityCriteriaType_identityCriteriaTypeAuthenticatedUser  IdentityCriteriaType = 6
+	IdentityCriteriaType_identityCriteriaTypeApplication        IdentityCriteriaType = 7
+	IdentityCriteriaType_identityCriteriaTypeX509Subject        IdentityCriteriaType = 8
+	IdentityCriteriaType_identityCriteriaTypeTrustedApplication IdentityCriteriaType = 9
 )
 
 var IdentityCriteriaTypeValues []IdentityCriteriaType
@@ -64,6 +65,7 @@ func init() {
 		IdentityCriteriaType_identityCriteriaTypeAuthenticatedUser,
 		IdentityCriteriaType_identityCriteriaTypeApplication,
 		IdentityCriteriaType_identityCriteriaTypeX509Subject,
+		IdentityCriteriaType_identityCriteriaTypeTrustedApplication,
 	}
 }
 
@@ -85,6 +87,8 @@ func IdentityCriteriaTypeByValue(value uint32) (enum IdentityCriteriaType, ok bo
 		return IdentityCriteriaType_identityCriteriaTypeApplication, true
 	case 8:
 		return IdentityCriteriaType_identityCriteriaTypeX509Subject, true
+	case 9:
+		return IdentityCriteriaType_identityCriteriaTypeTrustedApplication, true
 	}
 	return 0, false
 }
@@ -107,6 +111,8 @@ func IdentityCriteriaTypeByName(value string) (enum IdentityCriteriaType, ok boo
 		return IdentityCriteriaType_identityCriteriaTypeApplication, true
 	case "identityCriteriaTypeX509Subject":
 		return IdentityCriteriaType_identityCriteriaTypeX509Subject, true
+	case "identityCriteriaTypeTrustedApplication":
+		return IdentityCriteriaType_identityCriteriaTypeTrustedApplication, true
 	}
 	return 0, false
 }
@@ -194,6 +200,8 @@ func (e IdentityCriteriaType) PLC4XEnumName() string {
 		return "identityCriteriaTypeApplication"
 	case IdentityCriteriaType_identityCriteriaTypeX509Subject:
 		return "identityCriteriaTypeX509Subject"
+	case IdentityCriteriaType_identityCriteriaTypeTrustedApplication:
+		return "identityCriteriaTypeTrustedApplication"
 	}
 	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }

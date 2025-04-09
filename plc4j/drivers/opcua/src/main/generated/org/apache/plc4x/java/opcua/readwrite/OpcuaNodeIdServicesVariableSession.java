@@ -186,7 +186,8 @@ public enum OpcuaNodeIdServicesVariableSession {
   SessionSecurityDiagnosticsArrayType_SessionSecurityDiagnostics_TransportProtocol((int) 12866L),
   SessionSecurityDiagnosticsArrayType_SessionSecurityDiagnostics_SecurityMode((int) 12867L),
   SessionSecurityDiagnosticsArrayType_SessionSecurityDiagnostics_SecurityPolicyUri((int) 12868L),
-  SessionSecurityDiagnosticsArrayType_SessionSecurityDiagnostics_ClientCertificate((int) 12869L);
+  SessionSecurityDiagnosticsArrayType_SessionSecurityDiagnostics_ClientCertificate((int) 12869L),
+  SessionDiagnosticsObjectType_CurrentRoleIds((int) 19303L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableSession> map;
 
   static {

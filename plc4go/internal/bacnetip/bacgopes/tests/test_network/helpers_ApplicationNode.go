@@ -37,7 +37,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
-//go:generate plc4xGenerator -type=ApplicationNode -prefix=helpers_
+//go:generate go tool plc4xGenerator -type=ApplicationNode -prefix=helpers_
 type ApplicationNode struct {
 	*Application
 	*WhoIsIAmServices

@@ -26,7 +26,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 )
 
-//go:generate plc4xGenerator -type=TimeoutTask -prefix=state_machine_
+//go:generate go tool plc4xGenerator -type=TimeoutTask -prefix=state_machine_
 type TimeoutTask struct {
 	*OneShotTask
 

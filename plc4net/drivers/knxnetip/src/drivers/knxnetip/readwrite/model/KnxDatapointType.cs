@@ -157,10 +157,10 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         DPT_Value_4_Count = 130,
         DPT_FlowRate_m3h = 131,
         DPT_ActiveEnergy = 132,
-        DPT_ApparantEnergy = 133,
+        DPT_ApparentEnergy = 133,
         DPT_ReactiveEnergy = 134,
         DPT_ActiveEnergy_kWh = 135,
-        DPT_ApparantEnergy_kVAh = 136,
+        DPT_ApparentEnergy_kVAh = 136,
         DPT_ReactiveEnergy_kVARh = 137,
         DPT_ActiveEnergy_MWh = 138,
         DPT_LongDeltaTimeSec = 139,
@@ -340,7 +340,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         DPT_SceneInfo = 313,
         DPT_CombinedInfoOnOff = 314,
         DPT_ActiveEnergy_V64 = 315,
-        DPT_ApparantEnergy_V64 = 316,
+        DPT_ApparentEnergy_V64 = 316,
         DPT_ReactiveEnergy_V64 = 317,
         DPT_Channel_Activation_24 = 318,
         DPT_HVACModeNext = 319,
@@ -502,7 +502,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_ActiveEnergy: { /* '132' */
                     return 10;
                 }
-                case KnxDatapointType.DPT_ApparantEnergy: { /* '133' */
+                case KnxDatapointType.DPT_ApparentEnergy: { /* '133' */
                     return 11;
                 }
                 case KnxDatapointType.DPT_ReactiveEnergy: { /* '134' */
@@ -511,7 +511,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_ActiveEnergy_kWh: { /* '135' */
                     return 13;
                 }
-                case KnxDatapointType.DPT_ApparantEnergy_kVAh: { /* '136' */
+                case KnxDatapointType.DPT_ApparentEnergy_kVAh: { /* '136' */
                     return 14;
                 }
                 case KnxDatapointType.DPT_ReactiveEnergy_kVARh: { /* '137' */
@@ -1111,7 +1111,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_ActiveEnergy_V64: { /* '315' */
                     return 10;
                 }
-                case KnxDatapointType.DPT_ApparantEnergy_V64: { /* '316' */
+                case KnxDatapointType.DPT_ApparentEnergy_V64: { /* '316' */
                     return 11;
                 }
                 case KnxDatapointType.DPT_ReactiveEnergy_V64: { /* '317' */
@@ -1568,8 +1568,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_ActiveEnergy: { /* '132' */
                     return "active energy (Wh)";
                 }
-                case KnxDatapointType.DPT_ApparantEnergy: { /* '133' */
-                    return "apparant energy (VAh)";
+                case KnxDatapointType.DPT_ApparentEnergy: { /* '133' */
+                    return "apparent energy (VAh)";
                 }
                 case KnxDatapointType.DPT_ReactiveEnergy: { /* '134' */
                     return "reactive energy (VARh)";
@@ -1577,8 +1577,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_ActiveEnergy_kWh: { /* '135' */
                     return "active energy (kWh)";
                 }
-                case KnxDatapointType.DPT_ApparantEnergy_kVAh: { /* '136' */
-                    return "apparant energy (kVAh)";
+                case KnxDatapointType.DPT_ApparentEnergy_kVAh: { /* '136' */
+                    return "apparent energy (kVAh)";
                 }
                 case KnxDatapointType.DPT_ReactiveEnergy_kVARh: { /* '137' */
                     return "reactive energy (kVARh)";
@@ -2177,8 +2177,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_ActiveEnergy_V64: { /* '315' */
                     return "active energy (Wh)";
                 }
-                case KnxDatapointType.DPT_ApparantEnergy_V64: { /* '316' */
-                    return "apparant energy (VAh)";
+                case KnxDatapointType.DPT_ApparentEnergy_V64: { /* '316' */
+                    return "apparent energy (VAh)";
                 }
                 case KnxDatapointType.DPT_ReactiveEnergy_V64: { /* '317' */
                     return "reactive energy (VARh)";
@@ -2634,7 +2634,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_ActiveEnergy: { /* '132' */
                     return model.KnxDatapointMainType.DPT_4_BYTE_SIGNED_VALUE;
                 }
-                case KnxDatapointType.DPT_ApparantEnergy: { /* '133' */
+                case KnxDatapointType.DPT_ApparentEnergy: { /* '133' */
                     return model.KnxDatapointMainType.DPT_4_BYTE_SIGNED_VALUE;
                 }
                 case KnxDatapointType.DPT_ReactiveEnergy: { /* '134' */
@@ -2643,7 +2643,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_ActiveEnergy_kWh: { /* '135' */
                     return model.KnxDatapointMainType.DPT_4_BYTE_SIGNED_VALUE;
                 }
-                case KnxDatapointType.DPT_ApparantEnergy_kVAh: { /* '136' */
+                case KnxDatapointType.DPT_ApparentEnergy_kVAh: { /* '136' */
                     return model.KnxDatapointMainType.DPT_4_BYTE_SIGNED_VALUE;
                 }
                 case KnxDatapointType.DPT_ReactiveEnergy_kVARh: { /* '137' */
@@ -3243,7 +3243,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointType.DPT_ActiveEnergy_V64: { /* '315' */
                     return model.KnxDatapointMainType.DPT_ELECTRICAL_ENERGY;
                 }
-                case KnxDatapointType.DPT_ApparantEnergy_V64: { /* '316' */
+                case KnxDatapointType.DPT_ApparentEnergy_V64: { /* '316' */
                     return model.KnxDatapointMainType.DPT_ELECTRICAL_ENERGY;
                 }
                 case KnxDatapointType.DPT_ReactiveEnergy_V64: { /* '317' */

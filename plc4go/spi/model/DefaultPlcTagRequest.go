@@ -23,7 +23,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
-//go:generate plc4xGenerator -type=DefaultPlcTagRequest
+//go:generate go tool plc4xGenerator -type=DefaultPlcTagRequest
 type DefaultPlcTagRequest struct {
 	tags     map[string]apiModel.PlcTag
 	tagNames []string `ignore:"true"`

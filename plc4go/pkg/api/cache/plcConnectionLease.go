@@ -22,6 +22,7 @@ package cache
 import (
 	"context"
 	"fmt"
+	"sync"
 	"time"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
@@ -37,6 +38,8 @@ type plcConnectionLease struct {
 	leaseId uint32
 	// The actual connection being cached.
 	connection tracedPlcConnection
+
+	wg sync.WaitGroup // use to track spawned go routines
 }
 
 func newPlcConnectionLease(connectionContainer *connectionContainer, leaseId uint32, connection tracedPlcConnection) *plcConnectionLease {
@@ -95,7 +98,9 @@ func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
 
 	result := make(chan plc4go.PlcConnectionCloseResult, 1)
 
+	t.wg.Add(1)
 	go func() {
+		defer t.wg.Done()
 		// Check if the connection is still alive, if it is, put it back into the cache
 		pingResults := t.Ping()
 		pingTimeout := time.NewTimer(5 * time.Second)

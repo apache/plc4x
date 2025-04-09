@@ -22,6 +22,7 @@ package knxnetip
 import (
 	"context"
 	"runtime/debug"
+	"sync"
 	"time"
 
 	"github.com/pkg/errors"
@@ -36,10 +37,12 @@ import (
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
-//go:generate plc4xGenerator -type=Subscriber
+//go:generate go tool plc4xGenerator -type=Subscriber
 type Subscriber struct {
 	connection *Connection
 	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	passLogToModel bool
 	log            zerolog.Logger       `ignore:"true"`
@@ -61,7 +64,9 @@ func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subs
 func (s *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
 	// TODO: handle context
 	result := make(chan apiModel.PlcSubscriptionRequestResult, 1)
+	s.wg.Add(1)
 	go func() {
+		defer s.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))

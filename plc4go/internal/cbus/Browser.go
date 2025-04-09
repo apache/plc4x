@@ -338,7 +338,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 	}
 	readCtx, readCtxCancel := context.WithTimeout(ctx, 2*time.Second)
 	defer readCtxCancel()
-	readWg := sync.WaitGroup{}
+	readWg := new(sync.WaitGroup)
 	readWg.Add(1)
 	go func() {
 		defer readWg.Done()

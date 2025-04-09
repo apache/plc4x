@@ -225,7 +225,9 @@ public abstract class ManualTest {
                         final PlcWriteRequest writeRequest = writeBuilder.build();
 
                         // Execute the read request
+                        long startTime = System.currentTimeMillis();
                         final PlcWriteResponse writeResponse = writeRequest.execute().get();
+                        long endTime = System.currentTimeMillis();
 
                         // Check the result
                         Assertions.assertEquals(shuffledTestcases.size(), writeResponse.getTagNames().size());
@@ -234,7 +236,7 @@ public abstract class ManualTest {
                             Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(tagName),
                                 "Tag: " + tagName);
                         }
-                        System.out.println("        - Write OK");
+                        System.out.println("        - Write OK (" + (endTime - startTime) + " ms)");
                     }
                 }
                 System.out.println("Success");

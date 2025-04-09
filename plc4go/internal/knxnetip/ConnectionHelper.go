@@ -54,7 +54,9 @@ func (m *Connection) castIpToKnxAddress(ip net.IP) driverModel.IPAddress {
 }
 
 func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunnelingRequest driverModel.TunnelingRequest) {
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -140,7 +142,9 @@ func (m *Connection) handleTimeout() {
 	// If this is the first timeout in a sequence, start the timer.
 	/*	if m.connectionTimeoutTimer == nil {
 		m.connectionTimeoutTimer = time.NewTimer(m.connectionTtl)
+		m.wg.Add(1)
 		go func() {
+			defer m.wg.Done()
 			<-m.connectionTimeoutTimer.C
 			m.resetConnection()
 		}()

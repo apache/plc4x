@@ -405,6 +405,12 @@ const (
 	OpcuaNodeIdServicesVariableServer_Server_ServerCapabilities_RoleSet_RemoveRole_InputArguments                                                                               OpcuaNodeIdServicesVariableServer = 16305
 	OpcuaNodeIdServicesVariableServer_ServerType_LocalTime                                                                                                                      OpcuaNodeIdServicesVariableServer = 17612
 	OpcuaNodeIdServicesVariableServer_Server_LocalTime                                                                                                                          OpcuaNodeIdServicesVariableServer = 17634
+	OpcuaNodeIdServicesVariableServer_ServerConfigurationType_ApplicationNames                                                                                                  OpcuaNodeIdServicesVariableServer = 18660
+	OpcuaNodeIdServicesVariableServer_ServerConfigurationType_SupportsTransactions                                                                                              OpcuaNodeIdServicesVariableServer = 18661
+	OpcuaNodeIdServicesVariableServer_ServerConfiguration_ApplicationNames                                                                                                      OpcuaNodeIdServicesVariableServer = 18662
+	OpcuaNodeIdServicesVariableServer_ServerConfiguration_SupportsTransactions                                                                                                  OpcuaNodeIdServicesVariableServer = 18663
+	OpcuaNodeIdServicesVariableServer_ServerConfigurationType_InApplicationSetup                                                                                                OpcuaNodeIdServicesVariableServer = 19308
+	OpcuaNodeIdServicesVariableServer_ServerConfiguration_InApplicationSetup                                                                                                    OpcuaNodeIdServicesVariableServer = 19309
 	OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_UpdateFrequency                                               OpcuaNodeIdServicesVariableServer = 21679
 	OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_EventId                                              OpcuaNodeIdServicesVariableServer = 21681
 	OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_EventType                                            OpcuaNodeIdServicesVariableServer = 21682
@@ -2170,11 +2176,9 @@ const (
 	OpcuaNodeIdServicesVariableServer_ServerRedundancyType_RedundantServerArray                                                                                                 OpcuaNodeIdServicesVariableServer = 32410
 	OpcuaNodeIdServicesVariableServer_ServerUnitType_ConversionLimit                                                                                                            OpcuaNodeIdServicesVariableServer = 32461
 	OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Symbol                                                                                                        OpcuaNodeIdServicesVariableServer = 32463
-	OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Description                                                                                                   OpcuaNodeIdServicesVariableServer = 32464
 	OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_UnitSystem                                                                                                    OpcuaNodeIdServicesVariableServer = 32465
 	OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Discipline                                                                                                    OpcuaNodeIdServicesVariableServer = 32466
 	OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol                                                                        OpcuaNodeIdServicesVariableServer = 32588
-	OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description                                                                   OpcuaNodeIdServicesVariableServer = 32589
 	OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem                                                                    OpcuaNodeIdServicesVariableServer = 32590
 	OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Discipline                                                                    OpcuaNodeIdServicesVariableServer = 32591
 	OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_LinearConversion                                                              OpcuaNodeIdServicesVariableServer = 32592
@@ -2551,6 +2555,12 @@ func init() {
 		OpcuaNodeIdServicesVariableServer_Server_ServerCapabilities_RoleSet_RemoveRole_InputArguments,
 		OpcuaNodeIdServicesVariableServer_ServerType_LocalTime,
 		OpcuaNodeIdServicesVariableServer_Server_LocalTime,
+		OpcuaNodeIdServicesVariableServer_ServerConfigurationType_ApplicationNames,
+		OpcuaNodeIdServicesVariableServer_ServerConfigurationType_SupportsTransactions,
+		OpcuaNodeIdServicesVariableServer_ServerConfiguration_ApplicationNames,
+		OpcuaNodeIdServicesVariableServer_ServerConfiguration_SupportsTransactions,
+		OpcuaNodeIdServicesVariableServer_ServerConfigurationType_InApplicationSetup,
+		OpcuaNodeIdServicesVariableServer_ServerConfiguration_InApplicationSetup,
 		OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_UpdateFrequency,
 		OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_EventId,
 		OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_EventType,
@@ -4316,11 +4326,9 @@ func init() {
 		OpcuaNodeIdServicesVariableServer_ServerRedundancyType_RedundantServerArray,
 		OpcuaNodeIdServicesVariableServer_ServerUnitType_ConversionLimit,
 		OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Symbol,
-		OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Description,
 		OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_UnitSystem,
 		OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Discipline,
 		OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol,
-		OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description,
 		OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem,
 		OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Discipline,
 		OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_LinearConversion,
@@ -4785,6 +4793,18 @@ func OpcuaNodeIdServicesVariableServerByValue(value int32) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableServer_ServerType_LocalTime, true
 	case 17634:
 		return OpcuaNodeIdServicesVariableServer_Server_LocalTime, true
+	case 18660:
+		return OpcuaNodeIdServicesVariableServer_ServerConfigurationType_ApplicationNames, true
+	case 18661:
+		return OpcuaNodeIdServicesVariableServer_ServerConfigurationType_SupportsTransactions, true
+	case 18662:
+		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_ApplicationNames, true
+	case 18663:
+		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_SupportsTransactions, true
+	case 19308:
+		return OpcuaNodeIdServicesVariableServer_ServerConfigurationType_InApplicationSetup, true
+	case 19309:
+		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_InApplicationSetup, true
 	case 2005:
 		return OpcuaNodeIdServicesVariableServer_ServerType_ServerArray, true
 	case 2006:
@@ -8565,16 +8585,12 @@ func OpcuaNodeIdServicesVariableServerByValue(value int32) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableServer_ServerUnitType_ConversionLimit, true
 	case 32463:
 		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Symbol, true
-	case 32464:
-		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Description, true
 	case 32465:
 		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_UnitSystem, true
 	case 32466:
 		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Discipline, true
 	case 32588:
 		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol, true
-	case 32589:
-		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description, true
 	case 32590:
 		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem, true
 	case 32591:
@@ -9069,6 +9085,18 @@ func OpcuaNodeIdServicesVariableServerByName(value string) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableServer_ServerType_LocalTime, true
 	case "Server_LocalTime":
 		return OpcuaNodeIdServicesVariableServer_Server_LocalTime, true
+	case "ServerConfigurationType_ApplicationNames":
+		return OpcuaNodeIdServicesVariableServer_ServerConfigurationType_ApplicationNames, true
+	case "ServerConfigurationType_SupportsTransactions":
+		return OpcuaNodeIdServicesVariableServer_ServerConfigurationType_SupportsTransactions, true
+	case "ServerConfiguration_ApplicationNames":
+		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_ApplicationNames, true
+	case "ServerConfiguration_SupportsTransactions":
+		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_SupportsTransactions, true
+	case "ServerConfigurationType_InApplicationSetup":
+		return OpcuaNodeIdServicesVariableServer_ServerConfigurationType_InApplicationSetup, true
+	case "ServerConfiguration_InApplicationSetup":
+		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_InApplicationSetup, true
 	case "ServerType_ServerArray":
 		return OpcuaNodeIdServicesVariableServer_ServerType_ServerArray, true
 	case "ServerType_NamespaceArray":
@@ -12849,16 +12877,12 @@ func OpcuaNodeIdServicesVariableServerByName(value string) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableServer_ServerUnitType_ConversionLimit, true
 	case "ServerUnitType_CoherentUnit_Symbol":
 		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Symbol, true
-	case "ServerUnitType_CoherentUnit_Description":
-		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Description, true
 	case "ServerUnitType_CoherentUnit_UnitSystem":
 		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_UnitSystem, true
 	case "ServerUnitType_CoherentUnit_Discipline":
 		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Discipline, true
 	case "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol":
 		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol, true
-	case "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description":
-		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description, true
 	case "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem":
 		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem, true
 	case "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Discipline":
@@ -13418,6 +13442,18 @@ func (e OpcuaNodeIdServicesVariableServer) PLC4XEnumName() string {
 		return "ServerType_LocalTime"
 	case OpcuaNodeIdServicesVariableServer_Server_LocalTime:
 		return "Server_LocalTime"
+	case OpcuaNodeIdServicesVariableServer_ServerConfigurationType_ApplicationNames:
+		return "ServerConfigurationType_ApplicationNames"
+	case OpcuaNodeIdServicesVariableServer_ServerConfigurationType_SupportsTransactions:
+		return "ServerConfigurationType_SupportsTransactions"
+	case OpcuaNodeIdServicesVariableServer_ServerConfiguration_ApplicationNames:
+		return "ServerConfiguration_ApplicationNames"
+	case OpcuaNodeIdServicesVariableServer_ServerConfiguration_SupportsTransactions:
+		return "ServerConfiguration_SupportsTransactions"
+	case OpcuaNodeIdServicesVariableServer_ServerConfigurationType_InApplicationSetup:
+		return "ServerConfigurationType_InApplicationSetup"
+	case OpcuaNodeIdServicesVariableServer_ServerConfiguration_InApplicationSetup:
+		return "ServerConfiguration_InApplicationSetup"
 	case OpcuaNodeIdServicesVariableServer_ServerType_ServerArray:
 		return "ServerType_ServerArray"
 	case OpcuaNodeIdServicesVariableServer_ServerType_NamespaceArray:
@@ -17198,16 +17234,12 @@ func (e OpcuaNodeIdServicesVariableServer) PLC4XEnumName() string {
 		return "ServerUnitType_ConversionLimit"
 	case OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Symbol:
 		return "ServerUnitType_CoherentUnit_Symbol"
-	case OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Description:
-		return "ServerUnitType_CoherentUnit_Description"
 	case OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_UnitSystem:
 		return "ServerUnitType_CoherentUnit_UnitSystem"
 	case OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Discipline:
 		return "ServerUnitType_CoherentUnit_Discipline"
 	case OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol:
 		return "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol"
-	case OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description:
-		return "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description"
 	case OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem:
 		return "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem"
 	case OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Discipline:

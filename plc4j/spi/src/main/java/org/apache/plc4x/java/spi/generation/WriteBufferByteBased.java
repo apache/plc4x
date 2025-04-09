@@ -284,6 +284,38 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     }
                     break;
                 }
+                // It seems that normally var-length unsigned integers would be encoded little-endian.
+                // However, for S7CommPlus we have a big-endian variant. If we ever encounter a LE
+                // Protocol, we will need to update this into BE and LE variants.
+                // https://en.wikipedia.org/wiki/Variable-length_quantity
+                case "VARUDINT": {
+                    // Check that the provided value fits in the allowed bit length.
+                    if (value < 0) {
+                        throw new SerializationException("Provided value of " + value + " exceeds the min value of 0");
+                    }
+                    if (value > 0xFFFFFF7FL) {
+                        throw new SerializationException("Provided value of " + value + " exceeds the max value of " + 0xFFFFFF7FL);
+                    }
+                    // Determine the number of 7-bit groups (bytes) required.
+                    int numBytes = 0;
+                    long temp = value;
+                    do {
+                        numBytes++;
+                        temp >>>= 7;
+                    } while (temp != 0);
+
+                    // Write each 7-bit group starting from the most significant.
+                    for (int i = numBytes - 1; i >= 0; i--) {
+                        int shift = i * 7;
+                        int b = (int) ((value >> shift) & 0x7F);
+                        // Set the continuation bit for all but the last (least significant) group.
+                        if (i > 0) {
+                            b |= 0x80;
+                        }
+                        bo.writeByte(false, 8, (byte) b);
+                    }
+                    break;
+                }
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         value = Long.reverseBytes(value) >> 32;
@@ -301,27 +333,81 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
     @Override
     public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
         try {
-            // TODO: Support encodings for serializing big-integers too.
-            if (bitLength == 64) {
-                if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                    if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
-                        writeLong(logicalName, 32, value.longValue(), writerArgs);
-                        writeLong(logicalName, 32, value.shiftRight(32).longValue(), writerArgs);
-                    } else {
-                        writeLong(logicalName, bitLength, value.longValue(), writerArgs);
+            String encoding = extractEncoding(writerArgs).orElse("default");
+            switch (encoding) {
+                case "ASCII":
+                    // AsciiUint can only decode values that have a multiple of 8 length.
+                    if (bitLength % 8 != 0) {
+                        throw new SerializationException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long");
                     }
-                } else {
-                    if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
-                        writeLong(logicalName, 32, value.shiftRight(32).longValue(), writerArgs);
-                        writeLong(logicalName, 32, value.longValue(), writerArgs);
-                    } else {
-                        writeLong(logicalName, bitLength, value.longValue(), writerArgs);
+
+                    String stringValue = value.toString();
+                    if(stringValue.length() > (bitLength / 8)) {
+                        throw new SerializationException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long");
                     }
-                }
-            } else if (bitLength < 64) {
-                writeUnsignedLong(logicalName, bitLength, value.longValue(), writerArgs);
-            } else {
-                throw new SerializationException("Unsigned Big Integer can only contain max 64 bits");
+                    writeString(stringValue.length() * 8, stringValue);
+                    return;
+                case "BCD":
+                    if (bitLength % 4 != 0) {
+                        throw new SerializationException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    for (int i = numDigits - 2; i >= 0; i = i - 2) {
+                        int twoDigits = value.divide(BigInteger.valueOf(10).pow(i)).mod(BigInteger.valueOf(100)).intValue();
+                        byte bcdDigits = (byte) ((twoDigits / 10) << 4 | twoDigits % 10);
+                        writeByte(bcdDigits);
+                    }
+                    return;
+                case "VARUDINT":
+                    // Check that the provided value fits in the allowed bit length.
+                    if (value.compareTo(BigInteger.ZERO) < 0) {
+                        throw new SerializationException("Provided value of " + value + " exceeds the min value of 0");
+                    }
+                    /*if (value.compareTo(BigInteger.valueOf(0xFFFFFF7FL)) > 0) {
+                        throw new SerializationException("Provided value of " + value + " exceeds the max value of " + 0xFFFFFF7FL);
+                    }*/
+                    // Determine the number of 7-bit groups (bytes) required.
+                    int numBytes = 0;
+                    long temp = value.longValue();
+                    do {
+                        numBytes++;
+                        temp >>>= 7;
+                    } while (temp != 0);
+
+                    // Write each 7-bit group starting from the most significant.
+                    long longValue = value.longValue();
+                    for (int i = numBytes - 1; i >= 0; i--) {
+                        int shift = i * 7;
+                        int b = (int) ((longValue >> shift) & 0x7F);
+                        // Set the continuation bit for all but the last (least significant) group.
+                        if (i > 0) {
+                            b |= 0x80;
+                        }
+                        writeByte((byte) b);
+                    }
+                    return;
+                case "default":
+                    if (bitLength == 64) {
+                        if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                            if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
+                                writeLong(logicalName, 32, value.longValue(), writerArgs);
+                                writeLong(logicalName, 32, value.shiftRight(32).longValue(), writerArgs);
+                            } else {
+                                writeLong(logicalName, bitLength, value.longValue(), writerArgs);
+                            }
+                        } else {
+                            if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
+                                writeLong(logicalName, 32, value.shiftRight(32).longValue(), writerArgs);
+                                writeLong(logicalName, 32, value.longValue(), writerArgs);
+                            } else {
+                                writeLong(logicalName, bitLength, value.longValue(), writerArgs);
+                            }
+                        }
+                    } else if (bitLength < 64) {
+                        writeUnsignedLong(logicalName, bitLength, value.longValue(), writerArgs);
+                    } else {
+                        throw new SerializationException("Unsigned Big Integer can only contain max 64 bits");
+                    }
             }
         } catch (ArithmeticException e) {
             throw new SerializationException("Error writing unsigned big integer", e);
@@ -370,10 +456,45 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             throw new SerializationException("int can only contain max 32 bits");
         }
         try {
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                value = Integer.reverseBytes(value);
+            String encoding = extractEncoding(writerArgs).orElse("default");
+            switch (encoding) {
+                // https://en.wikipedia.org/wiki/Variable-length_quantity
+                // The first byte of a var-length signed integer contains only 6 bits (the last 6)
+                // the seventh bit more or less defines the sign (1 = negative, 0 = positive)
+                // If the number fits in 6 bits, the eighth bit is not set and we're done.
+                // If not the first 6 bits are output, the eighth bit
+                case "VARDINT": {
+                    // Find out how any bytes are needed to serialize the current value
+                    boolean positive = value >= 0;
+                    int numBytes = 1;
+                    long tmpValue = value;
+                    while (tmpValue >> 6 != (positive ? 0 : -1)) {
+                        numBytes++;
+                        tmpValue >>= 7;
+                    }
+
+                    // Serialise the bytes
+                    for (int i = numBytes - 1; i >= 0; i--) {
+                        tmpValue = value >> (7 * i) & 0x7F;
+                        if (i > 0) {
+                            tmpValue |= 0x80;
+                        } else {
+                            tmpValue &= 0x7F;
+                        }
+                        bo.writeShort(false, 8, (short) tmpValue);
+                    }
+                    break;
+                }
+                case "default":
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        value = Integer.reverseBytes(value);
+                    }
+                    bo.writeInt(false, bitLength, value);
+                    break;
+                default:
+                    throw new SerializationException("unsupported encoding '" + encoding + "'");
             }
-            bo.writeInt(false, bitLength, value);
+
         } catch (Exception e) {
             throw new SerializationException("Error writing signed int", e);
         }
@@ -388,10 +509,17 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             throw new SerializationException("long can only contain max 64 bits");
         }
         try {
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                value = Long.reverseBytes(value);
+            String encoding = extractEncoding(writerArgs).orElse("default");
+            switch (encoding) {
+                case "default":
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        value = Long.reverseBytes(value);
+                    }
+                    bo.writeLong(false, bitLength, value);
+                    break;
+                default:
+                    throw new SerializationException("unsupported encoding '" + encoding + "'");
             }
-            bo.writeLong(false, bitLength, value);
         } catch (Exception e) {
             throw new SerializationException("Error writing signed long", e);
         }

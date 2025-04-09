@@ -41,10 +41,9 @@ type IOpcuaNodeIdServicesVariableUnit interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableUnit_UnitType_Symbol      OpcuaNodeIdServicesVariableUnit = 32443
-	OpcuaNodeIdServicesVariableUnit_UnitType_Description OpcuaNodeIdServicesVariableUnit = 32444
-	OpcuaNodeIdServicesVariableUnit_UnitType_UnitSystem  OpcuaNodeIdServicesVariableUnit = 32445
-	OpcuaNodeIdServicesVariableUnit_UnitType_Discipline  OpcuaNodeIdServicesVariableUnit = 32446
+	OpcuaNodeIdServicesVariableUnit_UnitType_Symbol     OpcuaNodeIdServicesVariableUnit = 32443
+	OpcuaNodeIdServicesVariableUnit_UnitType_UnitSystem OpcuaNodeIdServicesVariableUnit = 32445
+	OpcuaNodeIdServicesVariableUnit_UnitType_Discipline OpcuaNodeIdServicesVariableUnit = 32446
 )
 
 var OpcuaNodeIdServicesVariableUnitValues []OpcuaNodeIdServicesVariableUnit
@@ -53,7 +52,6 @@ func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableUnitValues = []OpcuaNodeIdServicesVariableUnit{
 		OpcuaNodeIdServicesVariableUnit_UnitType_Symbol,
-		OpcuaNodeIdServicesVariableUnit_UnitType_Description,
 		OpcuaNodeIdServicesVariableUnit_UnitType_UnitSystem,
 		OpcuaNodeIdServicesVariableUnit_UnitType_Discipline,
 	}
@@ -63,8 +61,6 @@ func OpcuaNodeIdServicesVariableUnitByValue(value int32) (enum OpcuaNodeIdServic
 	switch value {
 	case 32443:
 		return OpcuaNodeIdServicesVariableUnit_UnitType_Symbol, true
-	case 32444:
-		return OpcuaNodeIdServicesVariableUnit_UnitType_Description, true
 	case 32445:
 		return OpcuaNodeIdServicesVariableUnit_UnitType_UnitSystem, true
 	case 32446:
@@ -77,8 +73,6 @@ func OpcuaNodeIdServicesVariableUnitByName(value string) (enum OpcuaNodeIdServic
 	switch value {
 	case "UnitType_Symbol":
 		return OpcuaNodeIdServicesVariableUnit_UnitType_Symbol, true
-	case "UnitType_Description":
-		return OpcuaNodeIdServicesVariableUnit_UnitType_Description, true
 	case "UnitType_UnitSystem":
 		return OpcuaNodeIdServicesVariableUnit_UnitType_UnitSystem, true
 	case "UnitType_Discipline":
@@ -156,8 +150,6 @@ func (e OpcuaNodeIdServicesVariableUnit) PLC4XEnumName() string {
 	switch e {
 	case OpcuaNodeIdServicesVariableUnit_UnitType_Symbol:
 		return "UnitType_Symbol"
-	case OpcuaNodeIdServicesVariableUnit_UnitType_Description:
-		return "UnitType_Description"
 	case OpcuaNodeIdServicesVariableUnit_UnitType_UnitSystem:
 		return "UnitType_UnitSystem"
 	case OpcuaNodeIdServicesVariableUnit_UnitType_Discipline:

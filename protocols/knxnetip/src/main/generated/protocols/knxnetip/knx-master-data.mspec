@@ -223,10 +223,10 @@
     ['130' DPT_Value_4_Count ['1', 'DPT_4_BYTE_SIGNED_VALUE', '"counter pulses (signed)"']]
     ['131' DPT_FlowRate_m3h ['2', 'DPT_4_BYTE_SIGNED_VALUE', '"flow rate (m³/h)"']]
     ['132' DPT_ActiveEnergy ['10', 'DPT_4_BYTE_SIGNED_VALUE', '"active energy (Wh)"']]
-    ['133' DPT_ApparantEnergy ['11', 'DPT_4_BYTE_SIGNED_VALUE', '"apparant energy (VAh)"']]
+    ['133' DPT_ApparentEnergy ['11', 'DPT_4_BYTE_SIGNED_VALUE', '"apparent energy (VAh)"']]
     ['134' DPT_ReactiveEnergy ['12', 'DPT_4_BYTE_SIGNED_VALUE', '"reactive energy (VARh)"']]
     ['135' DPT_ActiveEnergy_kWh ['13', 'DPT_4_BYTE_SIGNED_VALUE', '"active energy (kWh)"']]
-    ['136' DPT_ApparantEnergy_kVAh ['14', 'DPT_4_BYTE_SIGNED_VALUE', '"apparant energy (kVAh)"']]
+    ['136' DPT_ApparentEnergy_kVAh ['14', 'DPT_4_BYTE_SIGNED_VALUE', '"apparent energy (kVAh)"']]
     ['137' DPT_ReactiveEnergy_kVARh ['15', 'DPT_4_BYTE_SIGNED_VALUE', '"reactive energy (kVARh)"']]
     ['138' DPT_ActiveEnergy_MWh ['16', 'DPT_4_BYTE_SIGNED_VALUE', '"active energy (MWh)"']]
     ['139' DPT_LongDeltaTimeSec ['100', 'DPT_4_BYTE_SIGNED_VALUE', '"time lag (s)"']]
@@ -406,7 +406,7 @@
     ['313' DPT_SceneInfo ['1', 'DPT_8_BIT_SET_2', '"scene information"']]
     ['314' DPT_CombinedInfoOnOff ['1', 'DPT_32_BIT_SET', '"bit-combined info on/off"']]
     ['315' DPT_ActiveEnergy_V64 ['10', 'DPT_ELECTRICAL_ENERGY', '"active energy (Wh)"']]
-    ['316' DPT_ApparantEnergy_V64 ['11', 'DPT_ELECTRICAL_ENERGY', '"apparant energy (VAh)"']]
+    ['316' DPT_ApparentEnergy_V64 ['11', 'DPT_ELECTRICAL_ENERGY', '"apparent energy (VAh)"']]
     ['317' DPT_ReactiveEnergy_V64 ['12', 'DPT_ELECTRICAL_ENERGY', '"reactive energy (VARh)"']]
     ['318' DPT_Channel_Activation_24 ['1010', 'DPT_24_TIMES_CHANNEL_ACTIVATION', '"activation state 0..23"']]
     ['319' DPT_HVACModeNext ['100', 'DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM', '"time delay & HVAC mode"']]
@@ -1112,7 +1112,7 @@
     ['360' M_V2_SPA ['411', '"V2 SpA"']]
     ['361' M_JOHNSON_CONTROLS ['412', '"Johnson Controls"']]
     ['362' M_ARKUD ['413', '"Arkud"']]
-    ['363' M_IRIDIUM_LTD_ ['414', '"Iridium Ltd."']]
+    ['363' M_IRIDI_LTD_ ['414', '"iRidi Ltd."']]
     ['364' M_BSMART ['415', '"bsmart"']]
     ['365' M_BAB_TECHNOLOGIE_GMBH ['416', '"BAB TECHNOLOGIE GmbH"']]
     ['366' M_NICE_SPA ['417', '"NICE Spa"']]
@@ -1445,8 +1445,35 @@
     ['693' M_WONDERFUL_HI_TECH_CO___LTD_ ['751', '"Wonderful Hi-Tech Co., Ltd."']]
     ['694' M_REXLITE_AI_INTEGRATIONS_CO__LTD ['752', '"REXLiTE Ai Integrations CO.,LTD"']]
     ['695' M_ALLORADO ['753', '"Allorado"']]
-    ['696' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['697' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['696' M_FUZHOU_MILI_TECHNOLOGY_CO___LTD ['754', '"FUZHOU MILI TECHNOLOGY CO., LTD"']]
+    ['697' M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD ['755', '"Maxtreen building technology co.,ltd"']]
+    ['698' M_HYSINE ['756', '"Hysine"']]
+    ['699' M_SANTAN ['757', '"SANTAN"']]
+    ['700' M_HUIXIANGJU_IOT_TECHNOLOGY_SHANGHAI_CO___LTD ['758', '"Huixiangju IoT Technology (Shanghai) Co., Ltd"']]
+    ['701' M_SHANGHAI_BENKONG_ELECTRONIC_TECHNOLOGY_CO__LTD ['759', '"Shanghai Benkong Electronic Technology Co.,Ltd"']]
+    ['702' M_POLAR_BEAR_DESIGN ['760', '"Polar Bear Design"']]
+    ['703' M_ELESSAN_NV ['761', '"Elessan NV"']]
+    ['704' M_MIR ['762', '"MIR"']]
+    ['705' M_ZHEJIANG_MISILIN_TECHNOLOGY_CO___LTD ['763', '"Zhejiang Misilin Technology Co., Ltd"']]
+    ['706' M_LEAX_CONTROLS_CO___LTD_ ['764', '"LEAX CONTROLS CO., LTD."']]
+    ['707' M_ALCAD ['765', '"alcad"']]
+    ['708' M_GUANG_DONG_REMAC_SMART_TECHNOLOGY_CO___LTD ['766', '"GUANG DONG REMAC SMART TECHNOLOGY CO., LTD"']]
+    ['709' M_TAOS_ELECTRIC_CO___LTD ['769', '"Taos Electric Co., Ltd"']]
+    ['710' M_KONSTANTIN_BOBIC_SYSTEMINTEGRATION ['771', '"Konstantin Bobic Systemintegration"']]
+    ['711' M_ASAY_Q ['772', '"Asay Q"']]
+    ['712' M_LAPP ['773', '"LAPP"']]
+    ['713' M_ZEROBIT_DYNAMIC ['774', '"ZEROBIT DYNAMIC"']]
+    ['714' M_HAVELLS ['775', '"havells"']]
+    ['715' M_MULLER_INTUITIV ['776', '"Muller Intuitiv"']]
+    ['716' M_TASKIT_GMBH ['777', '"taskit GmbH"']]
+    ['717' M_COSTER_GROUP ['778', '"Coster Group"']]
+    ['718' M_NXP_SEMICONDUCTOR ['779', '"NXP Semiconductor"']]
+    ['719' M_COGCONS ['780', '"CogCons"']]
+    ['720' M_MICRO_TEK_SRL_F_M_C_TRADE_MARK ['781', '"Micro Tek Srl (F.M.C trade mark)"']]
+    ['721' M_ORENDA_ELECTRIC ['782', '"Orenda Electric"']]
+    ['722' M_ERSE_KABLO ['783', '"ERSE KABLO"']]
+    ['723' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['724' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
@@ -2381,7 +2408,7 @@
             
         ]
     
-        ['DPT_ApparantEnergy' DINT
+        ['DPT_ApparentEnergy' DINT
             [reserved uint 8 '0x00']
                     
             [simple   int 32 value]
@@ -2402,7 +2429,7 @@
             
         ]
     
-        ['DPT_ApparantEnergy_kVAh' DINT
+        ['DPT_ApparentEnergy_kVAh' DINT
             [reserved uint 8 '0x00']
                     
             [simple   int 32 value]
@@ -4076,7 +4103,7 @@
             
         ]
     
-        ['DPT_ApparantEnergy_V64' LINT
+        ['DPT_ApparentEnergy_V64' LINT
             [reserved uint 8 '0x00']
                     
             [simple   int 64 value]

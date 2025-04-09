@@ -21,6 +21,7 @@ package bacnetip
 
 import (
 	"context"
+	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -30,10 +31,12 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
-//go:generate plc4xGenerator -type=Subscriber
+//go:generate go tool plc4xGenerator -type=Subscriber
 type Subscriber struct {
 	connection *Connection
 	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log      zerolog.Logger       `ignore:"true"`
 	_options []options.WithOption // Used to pass them downstream
@@ -52,7 +55,9 @@ func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subs
 
 func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
 	result := make(chan apiModel.PlcSubscriptionRequestResult, 1)
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		internalPlcSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
 
 		// Add this subscriber to the connection.

@@ -44,6 +44,7 @@ import org.apache.plc4x.java.s7.readwrite.tag.S7SubscriptionTag;
 import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
+
 public class S7CyclicEvent extends S7EventBase implements S7Event {
 
     public enum Fields {
@@ -695,7 +696,8 @@ public class S7CyclicEvent extends S7EventBase implements S7Event {
             case BYTE:
                 // TODO: This looks suspicious
                 Byte[] bytes = new Byte[bb.capacity()];
-                for (Byte b:bytes) {
+
+                for (byte b:bb.array()) {
                     b = Byte.valueOf(bb.readByte());
                 }
                 plcValue = DefaultPlcValueHandler.of(s7Tags[0], bytes);

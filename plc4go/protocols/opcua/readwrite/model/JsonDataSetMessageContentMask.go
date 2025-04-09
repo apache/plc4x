@@ -41,18 +41,19 @@ type IJsonDataSetMessageContentMask interface {
 }
 
 const (
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskNone                    JsonDataSetMessageContentMask = 0
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterId         JsonDataSetMessageContentMask = 1
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMetaDataVersion         JsonDataSetMessageContentMask = 2
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskSequenceNumber          JsonDataSetMessageContentMask = 4
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskTimestamp               JsonDataSetMessageContentMask = 8
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskStatus                  JsonDataSetMessageContentMask = 16
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMessageType             JsonDataSetMessageContentMask = 32
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterName       JsonDataSetMessageContentMask = 64
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskReversibleFieldEncoding JsonDataSetMessageContentMask = 128
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskPublisherId             JsonDataSetMessageContentMask = 256
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskWriterGroupName         JsonDataSetMessageContentMask = 512
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMinorVersion            JsonDataSetMessageContentMask = 1024
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskNone              JsonDataSetMessageContentMask = 0
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterId   JsonDataSetMessageContentMask = 1
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMetaDataVersion   JsonDataSetMessageContentMask = 2
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskSequenceNumber    JsonDataSetMessageContentMask = 4
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskTimestamp         JsonDataSetMessageContentMask = 8
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskStatus            JsonDataSetMessageContentMask = 16
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMessageType       JsonDataSetMessageContentMask = 32
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterName JsonDataSetMessageContentMask = 64
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskFieldEncoding1    JsonDataSetMessageContentMask = 128
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskPublisherId       JsonDataSetMessageContentMask = 256
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskWriterGroupName   JsonDataSetMessageContentMask = 512
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMinorVersion      JsonDataSetMessageContentMask = 1024
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskFieldEncoding2    JsonDataSetMessageContentMask = 2048
 )
 
 var JsonDataSetMessageContentMaskValues []JsonDataSetMessageContentMask
@@ -68,10 +69,11 @@ func init() {
 		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskStatus,
 		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMessageType,
 		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterName,
-		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskReversibleFieldEncoding,
+		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskFieldEncoding1,
 		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskPublisherId,
 		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskWriterGroupName,
 		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMinorVersion,
+		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskFieldEncoding2,
 	}
 }
 
@@ -84,11 +86,13 @@ func JsonDataSetMessageContentMaskByValue(value uint32) (enum JsonDataSetMessage
 	case 1024:
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMinorVersion, true
 	case 128:
-		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskReversibleFieldEncoding, true
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskFieldEncoding1, true
 	case 16:
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskStatus, true
 	case 2:
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMetaDataVersion, true
+	case 2048:
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskFieldEncoding2, true
 	case 256:
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskPublisherId, true
 	case 32:
@@ -113,12 +117,14 @@ func JsonDataSetMessageContentMaskByName(value string) (enum JsonDataSetMessageC
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterId, true
 	case "jsonDataSetMessageContentMaskMinorVersion":
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMinorVersion, true
-	case "jsonDataSetMessageContentMaskReversibleFieldEncoding":
-		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskReversibleFieldEncoding, true
+	case "jsonDataSetMessageContentMaskFieldEncoding1":
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskFieldEncoding1, true
 	case "jsonDataSetMessageContentMaskStatus":
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskStatus, true
 	case "jsonDataSetMessageContentMaskMetaDataVersion":
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMetaDataVersion, true
+	case "jsonDataSetMessageContentMaskFieldEncoding2":
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskFieldEncoding2, true
 	case "jsonDataSetMessageContentMaskPublisherId":
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskPublisherId, true
 	case "jsonDataSetMessageContentMaskMessageType":
@@ -208,12 +214,14 @@ func (e JsonDataSetMessageContentMask) PLC4XEnumName() string {
 		return "jsonDataSetMessageContentMaskDataSetWriterId"
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMinorVersion:
 		return "jsonDataSetMessageContentMaskMinorVersion"
-	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskReversibleFieldEncoding:
-		return "jsonDataSetMessageContentMaskReversibleFieldEncoding"
+	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskFieldEncoding1:
+		return "jsonDataSetMessageContentMaskFieldEncoding1"
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskStatus:
 		return "jsonDataSetMessageContentMaskStatus"
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMetaDataVersion:
 		return "jsonDataSetMessageContentMaskMetaDataVersion"
+	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskFieldEncoding2:
+		return "jsonDataSetMessageContentMaskFieldEncoding2"
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskPublisherId:
 		return "jsonDataSetMessageContentMaskPublisherId"
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMessageType:

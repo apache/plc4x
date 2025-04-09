@@ -66,6 +66,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
@@ -74,6 +75,7 @@ import org.apache.plc4x.java.s7.events.S7ModeEvent;
 import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.events.S7UserEvent;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionRequest;
+import org.apache.plc4x.java.spi.ConversationContext.ContextHandler;
 
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
@@ -128,7 +130,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     * transferred to the event stack and the value is updated in this HashMap.
     */
     private final Map<Short, S7CyclicEvent> cycChangeValueEvents = new HashMap<>();
-
     private S7DriverContext s7DriverContext;
     private RequestTransactionManager tm;
 
@@ -322,14 +323,26 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      */
     private CompletableFuture<PlcReadResponse> toPlcReadResponse(PlcReadRequest readRequest, CompletableFuture<S7Message> responseFuture) {
         CompletableFuture<PlcReadResponse> clientFuture = new CompletableFuture<>();
-
+        //Pointers
+        S7Message[] responseMessage = new S7Message[1];
+        PlcReadRequest[] plcReadRequest = new PlcReadRequest[1];
+        
         responseFuture.whenComplete((s7Message, throwable) -> {
             if (throwable != null) {
                 clientFuture.completeExceptionally(new PlcProtocolException("Error reading", throwable));
             } else {
                 try {
-                    PlcReadResponse response = (PlcReadResponse) decodeReadResponse(s7Message, readRequest);
-                    clientFuture.complete(response);
+                    responseMessage[0] = s7Message;
+                    plcReadRequest[0] = readRequest;
+                    clientExecutorService.submit(() -> {
+                        try {  
+                            PlcReadResponse response = (PlcReadResponse) decodeReadResponse(responseMessage[0], plcReadRequest[0]);
+                            clientFuture.complete(response);
+                        } catch (Exception ex){
+                            
+                        }
+                    });
+
                 } catch (Exception ex) {
                     logger.info(ex.toString());
                 }
@@ -411,19 +424,20 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         futures.put("DATA_", new CompletableFuture<>());
 
-        S7PlcSubscriptionRequest request = (S7PlcSubscriptionRequest) subscriptionRequest;
-
+        final DefaultPlcSubscriptionRequest defaultRequest = (DefaultPlcSubscriptionRequest) subscriptionRequest;
+//        final S7PlcSubscriptionRequest request = (S7PlcSubscriptionRequest) defaultRequest;
+        
         int tpduId = getTpduId();
 
         //The main task that runs the subscriptions.
-        Thread t1 = new Thread(() -> {
-            final DefaultPlcSubscriptionTag sf = (DefaultPlcSubscriptionTag) request.getTags().get(0);
+        clientExecutorService.submit(() -> {
+            final DefaultPlcSubscriptionTag sf = (DefaultPlcSubscriptionTag) subscriptionRequest.getTags().get(0);
             final S7SubscriptionTag tag = (S7SubscriptionTag) sf.getTag();
 
             S7Message s7Message = null;
             switch (tag.getTagType()) {
                 case EVENT_SUBSCRIPTION:
-                    s7Message = encodeEventSubscriptionRequest(request, tpduId);
+                    s7Message = encodeEventSubscriptionRequest(defaultRequest, tpduId);
                     break;
                 case EVENT_UNSUBSCRIPTION:
                     //encodeEventUnSubscriptionRequest(request, parameterItems, payloadItems);
@@ -432,13 +446,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     //encodeAlarmAckRequest(request, parameterItems, payloadItems);
                     break;
                 case ALARM_QUERY:
-                    s7Message = encodeAlarmQueryRequest(request, tpduId);
+                    s7Message = encodeAlarmQueryRequest(defaultRequest, tpduId);
                     break;
                 case CYCLIC_SUBSCRIPTION:
-                    s7Message = encodeCycledS7ANYSubscriptionRequest(request, tpduId);
+                    s7Message = encodeCycledS7ANYSubscriptionRequest(defaultRequest, tpduId);
                     break;
                 case CYCLIC_DB_SUBSCRIPTION:
-                    s7Message = encodeCycledDBREADSubscriptionRequest(request, tpduId);
+                    s7Message = encodeCycledDBREADSubscriptionRequest(defaultRequest, tpduId);
                     break;
                 case CYCLIC_UNSUBSCRIPTION:
                     //encodeCycledUnSubscriptionRequest(request, parameterItems, payloadItems);
@@ -462,14 +476,15 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 .unwrap(COTPPacket::getPayload)
                 .check(p -> p.getTpduReference() == tpduId)
                 .handle(p -> {
+                    // Finish the request-transaction.
+                    transaction.endRequest();
+
                     try {
                         //future.complete(decodeEventSubscriptionRequest(tagName, p, subscriptionRequest));
                         futures.get("DATA_").complete(p);
                     } catch (Exception e) {
                         logger.warn("Error sending 'write' message: '{}'", e.getMessage(), e);
                     }
-                    // Finish the request-transaction.
-                    transaction.endRequest();
                 }));
 
             try {
@@ -494,8 +509,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 logger.warn(ex.getMessage());
             }
         });
-
-        t1.start();
 
         return response;
     }
@@ -543,19 +556,20 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             .unwrap(COTPPacket::getPayload)
             .check(p -> p.getTpduReference() == tpduId)
             .handle(p -> {
+                // Finish the request-transaction.
+                transaction.endRequest();
+
                 try {
                     future.complete(null);
                 } catch (Exception e) {
                     logger.warn("Error sending 'write' message: '{}'", e.getMessage(), e);
                 }
-                // Finish the request-transaction.
-                transaction.endRequest();
             }));
 
         return future;
     }
 
-    private S7Message encodeEventSubscriptionRequest(S7PlcSubscriptionRequest request, int tpduId) {
+    private S7Message encodeEventSubscriptionRequest(DefaultPlcSubscriptionRequest request, int tpduId) {
         List<S7ParameterUserDataItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
         List<S7PayloadUserDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());
 
@@ -960,7 +974,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             new S7PayloadUserData(payloadItems)));
     }
 
-    private S7Message encodeAlarmQueryRequest(S7PlcSubscriptionRequest request, int tpduId) {
+    private S7Message encodeAlarmQueryRequest(DefaultPlcSubscriptionRequest request, int tpduId) {
         List<S7ParameterUserDataItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
         List<S7PayloadUserDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());
 
@@ -992,7 +1006,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             new S7PayloadUserData(payloadItems));
     }
 
-    private S7Message encodeCycledS7ANYSubscriptionRequest(S7PlcSubscriptionRequest request, int tpduId) {
+    private S7Message encodeCycledS7ANYSubscriptionRequest(DefaultPlcSubscriptionRequest request, int tpduId) {
         List<S7ParameterUserDataItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
         List<S7PayloadUserDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());
 
@@ -1072,7 +1086,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
 
-    private S7Message encodeCycledDBREADSubscriptionRequest(S7PlcSubscriptionRequest request, int tpduId) {
+    private S7Message encodeCycledDBREADSubscriptionRequest(DefaultPlcSubscriptionRequest request, int tpduId) {
         List<S7ParameterUserDataItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
         List<S7PayloadUserDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());
 
@@ -1517,9 +1531,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             .unwrap(COTPPacket::getPayload)
             .check(p -> p.getTpduReference() == tpduId)
             .handle(p -> {
-                future.complete(p);
                 // Finish the request-transaction.
                 transaction.endRequest();
+
+                try {
+                    future.complete(p);
+                } catch (Exception e) {
+                    logger.warn("Error sending 'write' message: '{}'", e.getMessage(), e);
+                }
             }));
 
         return future;
@@ -1803,42 +1822,68 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
                     if (responseCode == PlcResponseCode.OK) {
                         try {
-                            List<PlcValue> plcValues;
+                            List<PlcValue> plcValues  = new LinkedList<>();
                             byte[] data = payloadItem.getItems();
 
-                            plcValues = new LinkedList<>();
+
                             for (byte b : data) {
                                 plcValues.add(new PlcSINT(b));
                             }
 
                             if (parameteritem.getLastDataUnit() == 1) {
-                                CompletableFuture<S7MessageUserData> nextFuture;
-                                S7ParameterUserData nextParameter;
-                                S7PayloadUserData nextPayload;
-                                S7PayloadUserDataItemCpuFunctionReadSzlResponse nextPayloadItem;
+                                final short sequenceNumber = parameteritem.getSequenceNumber();
+                                boolean flag  = false;
+                                ContextHandler handler = null;
+                                
+                                S7MessageUserData msg = null; 
+                                
+                                CompletableFuture<S7MessageUserData>  nextFuture = null;
+                                                                
+                                    int lastDataUnit = 1;
+//                                    CompletableFuture<S7MessageUserData> nextFuture;
+                                    S7ParameterUserData nextParameter;
+                                    S7PayloadUserData nextPayload;
+                                    S7PayloadUserDataItemCpuFunctionReadSzlResponse nextPayloadItem;
+                                    //TODO: Aqui el codigo se congela, se debe definir una estrategia
+                                    //      para que ejecuten las tareas de Netty
+                                    //      https://netty.io/wiki/thread-model.html
 
-                                while (parameteritem.getLastDataUnit() == 1) {
-                                    //TODO: Just wait for one answer!. Pending for other packages for rearm.
-                                    nextFuture = reassembledMessage(parameteritem.getSequenceNumber(), plcValues);
-
-                                    S7MessageUserData msg;
-
-                                    msg = nextFuture.get();
-                                    if (msg != null) {
-                                        nextParameter = (S7ParameterUserData) msg.getParameter();
-                                        parameteritem = (S7ParameterUserDataItemCPUFunctions) nextParameter.getItems().get(0);
-                                        nextPayload = (S7PayloadUserData) msg.getPayload();
-                                        nextPayloadItem = (S7PayloadUserDataItemCpuFunctionReadSzlResponse) nextPayload.getItems().get(0);
-                                        for (byte b : nextPayloadItem.getItems()) {
-                                            plcValues.add(new PlcSINT(b));
+                                    while (lastDataUnit == 1) {
+                                        //TODO: Just wait for one answer!. Pending for other packages for rearm.
+                                                                                   
+                                        if (flag == false) {
+                                            flag = true;
+                                            nextFuture = reassembledMessage(sequenceNumber, plcValues);
+                                            try {
+                                                msg  = nextFuture.get();
+                                                flag = false;                                                    
+                                            } catch (Exception ex){
+                                                logger.error(ex.getMessage());                                                        
+                                            }
+                                        };
+ 
+                                        if (msg != null) {
+                                            nextParameter = (S7ParameterUserData) msg.getParameter();
+                                            var nextParameterItem = (S7ParameterUserDataItemCPUFunctions) nextParameter.getItems().get(0);
+                                            lastDataUnit = nextParameterItem.getLastDataUnit();
+                                            nextPayload = (S7PayloadUserData) msg.getPayload();
+                                            nextPayloadItem = (S7PayloadUserDataItemCpuFunctionReadSzlResponse) nextPayload.getItems().get(0);
+                                            for (byte b : nextPayloadItem.getItems()) {
+                                                plcValues.add(new PlcSINT(b));
+                                            }
+                                            plcValue = new PlcList(plcValues);
+                                            msg = null;
+                                            flag = false;
+                                        } else {
+                                           return  new DefaultPlcReadResponse(plcReadRequest, null);
                                         }
-                                    }
 
-                                    plcValue = new PlcList(plcValues);
-                                }
+                                    }
+  
                             } else {
                                 plcValue = new PlcList(plcValues);
                             }
+                            
                         } catch (Exception e) {
                             throw new PlcProtocolException("Error decoding PlcValue", e);
                         }
@@ -2187,7 +2232,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             (s7DriverContext.getControllerType() == ControllerType.S7_400);
     }
 
-    private CompletableFuture<S7MessageUserData> reassembledMessage(short sequenceNumber, List<PlcValue> plcValues) {
+    public CompletableFuture<S7MessageUserData> reassembledMessage(short sequenceNumber, List<PlcValue> plcValues) {
 
         CompletableFuture<S7MessageUserData> future = new CompletableFuture<>();
 
@@ -2195,13 +2240,17 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         int tpduId = getTpduId();
 
         TPKTPacket request = createSzlReassembledRequest(tpduId, sequenceNumber);
-
+        // Start a new request-transaction (Is ended in the response-handler)
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+        
+        
         conversationContext.sendRequest(request)
             .onTimeout(e -> {
                 logger.warn("Timeout during Connection establishing, closing channel...");
+                future.complete(null);
                 //context.getChannel().close();
             })
-            .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(10000))
             .unwrap(TPKTPacket::getPayload)
             .only(COTPPacketData.class)
             .unwrap(COTPPacketData::getPayload)

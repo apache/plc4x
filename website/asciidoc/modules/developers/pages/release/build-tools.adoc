@@ -38,7 +38,7 @@ According to SemVer, we have: Major, Minor and Bugfix releases.
 
 For each new Major and Minor release we create a new branch at the beginning of a code-freeze phase.
 
-So if currently the project version in develop is `{{page-component-version}}`, we create a branch `release/{code-generation-short-version}`.
+So if currently the project version in develop is `{{current-last-released-version}}`, we create a branch `release/{code-generation-short-version}`.
 
 When creating the branch is exactly the moment in which the version in `develop` is incremented to the next minor version.
 
@@ -50,7 +50,7 @@ This is the version the `develop` branch will be changed to.
    mvn release:branch -DbranchName=releases/code-generation/{minor-version}
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
-So in case of preparing the release branch for `{{page-component-version}}` the command would be the following:
+So in case of preparing the release branch for `{{current-last-released-version}}` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
@@ -130,7 +130,7 @@ After that, the following command will to all preparation steps for the release:
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix, keep it as it is)
-2. The name of the tag the release commit will be tagged with in the SCM (Name it `releases/code-generation/{release-version}` (`releases/code-generation/{{page-component-version}}` in our case)
+2. The name of the tag the release commit will be tagged with in the SCM (Name it `releases/code-generation/{release-version}` (`releases/code-generation/{{current-last-released-version}}` in our case)
 3. The next development version (The version present in the pom after the release) (leave it as it is suggested by the plugin)
 
 Usually for 1 and 3 the defaults are just fine, make sure the tag name is correct as this usually is different.
@@ -142,7 +142,7 @@ What the plugin now does, is automatically to execute the following operations:
 1. Check we aren't referencing any `SNAPSHOT` dependencies.
 2. Update all pom versions to the release version.
 3. Run a build with all tests
-4. Commit the changes (commit message: `[maven-release-plugin] prepare release releases/code-generation/{{page-component-version}}`)
+4. Commit the changes (commit message: `[maven-release-plugin] prepare release releases/code-generation/{{current-last-released-version}}`)
 5. Push the commit
 6. Tag the commit
 7. Update all poms to the next development version.
@@ -156,7 +156,7 @@ is in the correct state. Please select the release branch and verify the commit 
 
 image::release-git-history.png[]
 
-It is important that the commit with the message "[maven-release-plugin] prepare release releases/code-generation/{{page-component-version}}" is tagged with the release tag (in this case releases/code-generation/{{page-component-version}})
+It is important that the commit with the message "[maven-release-plugin] prepare release releases/code-generation/{{current-last-released-version}}" is tagged with the release tag (in this case releases/code-generation/{{current-last-released-version}})
 
 If you check the commit itself, it should mainly consist of version updates like this:
 
@@ -230,20 +230,20 @@ The directory structure of this directory is as follows:
 [subs="verbatim,attributes"]
 ----
    ./KEYS
-   ./build-tools/code-generation/{{page-component-version}}
-   ./build-tools/code-generation/{{page-component-version}}/rc1
-   ./build-tools/code-generation/{{page-component-version}}/rc1/README
-   ./build-tools/code-generation/{{page-component-version}}/rc1/RELEASE_NOTES
-   ./build-tools/code-generation/{{page-component-version}}/rc1/apache-plc4x-code-generation-{{page-component-version}}-source-release.zip
-   ./build-tools/code-generation/{{page-component-version}}/rc1/apache-plc4x-code-generation-{{page-component-version}}-source-release.zip.asc
-   ./build-tools/code-generation/{{page-component-version}}/rc1/apache-plc4x-code-generation-{{page-component-version}}-source-release.zip.sha512
+   ./build-tools/code-generation/{{current-last-released-version}}
+   ./build-tools/code-generation/{{current-last-released-version}}/rc1
+   ./build-tools/code-generation/{{current-last-released-version}}/rc1/README
+   ./build-tools/code-generation/{{current-last-released-version}}/rc1/RELEASE_NOTES
+   ./build-tools/code-generation/{{current-last-released-version}}/rc1/apache-plc4x-code-generation-{{current-last-released-version}}-source-release.zip
+   ./build-tools/code-generation/{{current-last-released-version}}/rc1/apache-plc4x-code-generation-{{current-last-released-version}}-source-release.zip.asc
+   ./build-tools/code-generation/{{current-last-released-version}}/rc1/apache-plc4x-code-generation-{{current-last-released-version}}-source-release.zip.sha512
 ----
 
-I usually prepare exactly the same directory structure, starting with the {{page-component-version}} locally and then just import everything using the following command:
+I usually prepare exactly the same directory structure, starting with the {{current-last-released-version}} locally and then just import everything using the following command:
 
 [subs="verbatim,attributes"]
 ----
-svn import {{page-component-version}} https://dist.apache.org/repos/dist/dev/plc4x/build-tools/code-generation/{{page-component-version}} -m"Staging of rc1 of PLC4X Build-Tools (Code-Generation) {{page-component-version}}"
+svn import {{current-last-released-version}} https://dist.apache.org/repos/dist/dev/plc4x/build-tools/code-generation/{{current-last-released-version}} -m"Staging of rc1 of PLC4X Build-Tools (Code-Generation) {{current-last-released-version}}"
 ----
 
 The `KEYS` file contains the PGP public key which belongs to the private key used to sign the release artifacts.
@@ -269,10 +269,10 @@ The following would be the one used to do our first TLP release:
 [subs="verbatim,attributes"]
 ----
    E-Mail Topic:
-   [VOTE] Apache PLC4X Build-Tools Code-Generation {{page-component-version}} RC1
+   [VOTE] Apache PLC4X Build-Tools Code-Generation {{current-last-released-version}} RC1
 
    Message:
-   Apache PLC4X Build-Tools Code-Generation {{page-component-version}} has been staged under [2]
+   Apache PLC4X Build-Tools Code-Generation {{current-last-released-version}} has been staged under [2]
    and it’s time to vote on accepting it for release.
 
    All Maven artifacts are available under [1]. Voting will be open for 72hr.
@@ -281,7 +281,7 @@ The following would be the one used to do our first TLP release:
    are required to pass.
 
    Repository: https://gitbox.apache.org/repos/asf/plc4x-build-tools.git
-   Release tag: releases/code-generation/{{page-component-version}}
+   Release tag: releases/code-generation/{{current-last-released-version}}
    Hash for the release tag: {replacethiswiththerealgitcommittag}
 
    Per [3] "Before voting +1 PMC members are required to download
@@ -297,7 +297,7 @@ The following would be the one used to do our first TLP release:
 
 
    [1] https://repository.apache.org/content/repositories/orgapacheplc4x-{somefourdigitnumber}
-   [2] https://dist.apache.org/repos/dist/dev/plc4x/build-tools/code-generation/{{page-component-version}}/rc1/
+   [2] https://dist.apache.org/repos/dist/dev/plc4x/build-tools/code-generation/{{current-last-released-version}}/rc1/
    [3] https://www.apache.org/dev/release/validation.html#approving-a-release
    [4] https://plc4x.apache.org/developers/release/validation.html
 ----
@@ -308,7 +308,7 @@ As it is sometimes to do the vote counting, if voting and discussions are going 
 [subs="verbatim,attributes"]
 ----
    E-Mail Topic:
-   [DISCUSS] Apache PLC4X Build-Tools Code-Generation {{page-component-version}} RC1
+   [DISCUSS] Apache PLC4X Build-Tools Code-Generation {{current-last-released-version}} RC1
 
    Message:
    This is the discussion thread for the corresponding VOTE thread.
@@ -329,7 +329,7 @@ After the 72-our minimum wait period is over, and we have fulfilled the requirem
 [subs="verbatim,attributes"]
 ----
     E-Mail Topic:
-    [RESULT] [VOTE] Apache PLC4X Build-Tools Code-Generation {{page-component-version}} RC1
+    [RESULT] [VOTE] Apache PLC4X Build-Tools Code-Generation {{current-last-released-version}} RC1
 
     Message:
     So, the vote passes with 3 +1 votes by PMC members and one +1 vote by a non PMC member.
@@ -344,9 +344,9 @@ This is done by moving them inside the Apache SVN.
 
 [subs="verbatim,attributes"]
 ----
-   svn move -m "Release Apache PLC4X {{page-component-version}}" \
-       https://dist.apache.org/repos/dist/dev/plc4x/build-tools/code-generation/{{page-component-version}}/rc1 \
-       https://dist.apache.org/repos/dist/release/plc4x/build-tools/code-generation/{{page-component-version}}
+   svn move -m "Release Apache PLC4X {{current-last-released-version}}" \
+       https://dist.apache.org/repos/dist/dev/plc4x/build-tools/code-generation/{{current-last-released-version}}/rc1 \
+       https://dist.apache.org/repos/dist/release/plc4x/build-tools/code-generation/{{current-last-released-version}}
 ----
 
 This will make the release artifacts available and will trigger them being copied to mirror sites.
@@ -381,19 +381,19 @@ This has to be done with git
 [subs="verbatim,attributes"]
 ----
 git checkout release
-git merge releases/code-generation/{{page-component-version}}
+git merge releases/code-generation/{{current-last-released-version}}
 ----
 
 When there are conflicts it could help to use the `theirs` merge strategy, i.e.,
 
 [subs="verbatim,attributes"]
 ----
-git merge -X theirs releases/code-generation/{{page-component-version}}
+git merge -X theirs releases/code-generation/{{current-last-released-version}}
 ----
 
 Possibly a manual conflict resolution has to be done afterwards. After that, changes need to
 be pushed.
 
-In contrast to main releases of PLC4X we won't do any JIRA version updates, updating of the download page or notifying of the world email to announce@apache.org
+In contrast to main releases of PLC4X we won't do any GitHub Issues version updates, updating of the download page or notifying of the world email to announce@apache.org
 
 So now you're done. Congrats!

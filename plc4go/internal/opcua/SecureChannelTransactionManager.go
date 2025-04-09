@@ -27,7 +27,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-//go:generate plc4xGenerator -type=SecureChannelTransactionManager
+//go:generate go tool plc4xGenerator -type=SecureChannelTransactionManager
 type SecureChannelTransactionManager struct {
 	transactionIdentifierGenerator atomic.Int32
 	requestIdentifierGenerator     atomic.Int32

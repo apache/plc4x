@@ -217,6 +217,10 @@ func (c *plcConnectionCache) readFromPlc(t *testing.T, preConnectJob func(), con
 	connectionResultChan := c.GetConnection(connectionString)
 	select {
 	case connectResult := <-connectionResultChan:
+		if connectResult == nil {
+			t.Errorf("channel closed")
+			return nil
+		}
 		if connectResult.GetErr() != nil {
 			t.Errorf("PlcConnectionCache.GetConnection() error = %v", connectResult.GetErr())
 			return nil
@@ -226,7 +230,9 @@ func (c *plcConnectionCache) readFromPlc(t *testing.T, preConnectJob func(), con
 			closeResults := connection.Close()
 			// Wait for the connection to be correctly closed.
 			closeResult := <-closeResults
+			c.wg.Add(1)
 			go func() {
+				defer c.wg.Done()
 				ch <- (closeResult.(_default.DefaultPlcConnectionCloseResult)).GetTraces()
 			}()
 		}()
@@ -258,7 +264,9 @@ func (c *plcConnectionCache) readFromPlc(t *testing.T, preConnectJob func(), con
 
 func (c *plcConnectionCache) executeAndTestReadFromPlc(t *testing.T, preConnectJob func(), connectionString string, resourceString string, expectedTraceEntries []string, expectedNumTotalConnections int) <-chan struct{} {
 	ch := make(chan struct{})
+	c.wg.Add(1)
 	go func() {
+		defer c.wg.Done()
 		// Read once from the c.
 		traces := <-c.readFromPlc(t, preConnectJob, connectionString, resourceString)
 
@@ -291,12 +299,13 @@ func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  5 * time.Second,
-		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        5 * time.Second,
+		maxWaitTime:         25 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
 	cache.EnableTracer()
 
@@ -368,12 +377,13 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  5 * time.Second,
-		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        5 * time.Second,
+		maxWaitTime:         25 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
 	cache.EnableTracer()
 
@@ -463,12 +473,13 @@ func TestPlcConnectionCache_ConnectWithError(t *testing.T) {
 	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  5 * time.Second,
-		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        5 * time.Second,
+		maxWaitTime:         25 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
 	cache.EnableTracer()
 
@@ -503,12 +514,13 @@ func TestPlcConnectionCache_ReturningConnectionWithPingError(t *testing.T) {
 	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  5 * time.Second,
-		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        5 * time.Second,
+		maxWaitTime:         25 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
 	cache.EnableTracer()
 
@@ -564,12 +576,13 @@ func TestPlcConnectionCache_PingTimeout(t *testing.T) {
 	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  5 * time.Second,
-		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        5 * time.Second,
+		maxWaitTime:         25 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
 	cache.EnableTracer()
 
@@ -613,12 +626,13 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  5 * time.Second,
-		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        5 * time.Second,
+		maxWaitTime:         25 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
 	cache.EnableTracer()
 
@@ -701,12 +715,13 @@ func TestPlcConnectionCache_FistReadGivesUpBeforeItGetsTheConnectionSoSecondOneT
 	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  5 * time.Second,
-		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        5 * time.Second,
+		maxWaitTime:         25 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
 	cache.EnableTracer()
 
@@ -752,12 +767,13 @@ func TestPlcConnectionCache_SecondConnectionGivenUpWaiting(t *testing.T) {
 	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  5 * time.Second,
-		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        5 * time.Second,
+		maxWaitTime:         25 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
 	cache.EnableTracer()
 
@@ -832,12 +848,13 @@ func TestPlcConnectionCache_MaximumWaitTimeReached(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
 	cache.EnableTracer()
 

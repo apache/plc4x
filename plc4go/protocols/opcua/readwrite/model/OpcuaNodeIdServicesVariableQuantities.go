@@ -42,7 +42,6 @@ type IOpcuaNodeIdServicesVariableQuantities interface {
 
 const (
 	OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Symbol            OpcuaNodeIdServicesVariableQuantities = 32504
-	OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Description       OpcuaNodeIdServicesVariableQuantities = 32505
 	OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Annotation        OpcuaNodeIdServicesVariableQuantities = 32506
 	OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_ConversionService OpcuaNodeIdServicesVariableQuantities = 32507
 	OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Dimension         OpcuaNodeIdServicesVariableQuantities = 32508
@@ -54,7 +53,6 @@ func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableQuantitiesValues = []OpcuaNodeIdServicesVariableQuantities{
 		OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Symbol,
-		OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Description,
 		OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Annotation,
 		OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_ConversionService,
 		OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Dimension,
@@ -65,8 +63,6 @@ func OpcuaNodeIdServicesVariableQuantitiesByValue(value int32) (enum OpcuaNodeId
 	switch value {
 	case 32504:
 		return OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Symbol, true
-	case 32505:
-		return OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Description, true
 	case 32506:
 		return OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Annotation, true
 	case 32507:
@@ -81,8 +77,6 @@ func OpcuaNodeIdServicesVariableQuantitiesByName(value string) (enum OpcuaNodeId
 	switch value {
 	case "QuantitiesFolderType_Quantity_Placeholder_Symbol":
 		return OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Symbol, true
-	case "QuantitiesFolderType_Quantity_Placeholder_Description":
-		return OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Description, true
 	case "QuantitiesFolderType_Quantity_Placeholder_Annotation":
 		return OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Annotation, true
 	case "QuantitiesFolderType_Quantity_Placeholder_ConversionService":
@@ -162,8 +156,6 @@ func (e OpcuaNodeIdServicesVariableQuantities) PLC4XEnumName() string {
 	switch e {
 	case OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Symbol:
 		return "QuantitiesFolderType_Quantity_Placeholder_Symbol"
-	case OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Description:
-		return "QuantitiesFolderType_Quantity_Placeholder_Description"
 	case OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_Annotation:
 		return "QuantitiesFolderType_Quantity_Placeholder_Annotation"
 	case OpcuaNodeIdServicesVariableQuantities_QuantitiesFolderType_Quantity_Placeholder_ConversionService:

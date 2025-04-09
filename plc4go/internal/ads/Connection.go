@@ -26,6 +26,7 @@ import (
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -55,6 +56,8 @@ type Connection struct {
 	tracer             tracer.Tracer
 
 	subscriptions map[uint32]apiModel.PlcSubscriptionHandle
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	passLogToModel bool
 	log            zerolog.Logger
@@ -116,8 +119,9 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 
 	// Reset the driver context (Actually this should not be required, but just to be on the safe side)
 	m.driverContext.clear()
-
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -174,7 +178,9 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 	// Start the worker for handling incoming messages
 	// (Messages that are not responses to outgoing messages)
 	defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -231,6 +237,10 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 			}
 		}).
 		Build()
+	if err != nil {
+		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, err)
+		return
+	}
 	subscriptionResultChan := versionChangeRequest.Execute()
 	subscriptionRequestResult := <-subscriptionResultChan
 	if subscriptionRequestResult.GetErr() != nil {

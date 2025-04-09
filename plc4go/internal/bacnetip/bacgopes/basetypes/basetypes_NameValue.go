@@ -122,7 +122,7 @@ func (s *NameValue) Decode(arg Arg) error {
 	// look for the context encoded character string
 	tag := tagList.Peek()
 	if tag == nil || (tag.GetTagClass() != readWriteModel.TagClass_CONTEXT_SPECIFIC_TAGS) || (tag.GetTagNumber() != 0) {
-		return MissingRequiredParameter{RejectException{Exception: Exception{Message: fmt.Sprintf("%s is a missing required element of %p", s.name, s)}}}
+		return MissingRequiredParameter{RejectException: RejectException{Exception: Exception{Message: fmt.Sprintf("%s is a missing required element of %p", s.name, s)}}}
 	}
 
 	// pop it off and save the value

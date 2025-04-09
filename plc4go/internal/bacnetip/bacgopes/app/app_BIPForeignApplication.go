@@ -31,6 +31,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type BIPForeignApplication struct {
@@ -134,6 +135,7 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice LocalDeviceOb
 }
 
 func (b *BIPForeignApplication) Close() error {
+	defer utils.StopWarn(b.log)()
 	b.log.Debug().Msg("close socket")
 
 	if b.ApplicationIOController != nil {

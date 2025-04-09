@@ -30,7 +30,7 @@ import (
 
 var _ apiModel.PlcBrowseRequestBuilder = &DefaultPlcBrowseRequestBuilder{}
 
-//go:generate plc4xGenerator -type=DefaultPlcBrowseRequestBuilder
+//go:generate go tool plc4xGenerator -type=DefaultPlcBrowseRequestBuilder
 type DefaultPlcBrowseRequestBuilder struct {
 	tagHandler spi.PlcTagHandler `ignore:"true"`
 	browser    spi.PlcBrowser    `ignore:"true"`
@@ -67,7 +67,7 @@ func (d *DefaultPlcBrowseRequestBuilder) Build() (apiModel.PlcBrowseRequest, err
 
 var _ apiModel.PlcBrowseRequest = &DefaultPlcBrowseRequest{}
 
-//go:generate plc4xGenerator -type=DefaultPlcBrowseRequest
+//go:generate go tool plc4xGenerator -type=DefaultPlcBrowseRequest
 type DefaultPlcBrowseRequest struct {
 	browser    spi.PlcBrowser
 	queryNames []string

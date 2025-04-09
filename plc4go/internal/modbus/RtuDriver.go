@@ -24,6 +24,7 @@ import (
 	"net/url"
 	"runtime/debug"
 	"strconv"
+	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -37,6 +38,8 @@ import (
 
 type RtuDriver struct {
 	_default.DefaultDriver
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
@@ -52,7 +55,7 @@ func NewModbusRtuDriver(_options ...options.WithOption) *RtuDriver {
 	return driver
 }
 
-func (d RtuDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (d *RtuDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	d.log.Debug().
 		Stringer("transportUrl", &transportUrl).
 		Int("nTransports", len(transports)).
@@ -90,7 +93,9 @@ func (d RtuDriver) GetConnectionWithContext(ctx context.Context, transportUrl ur
 	// Create a new codec for taking care of encoding/decoding of messages
 	// TODO: the code below looks strange: where is defaultChanel being used?
 	defaultChanel := make(chan any)
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				d.log.Error().

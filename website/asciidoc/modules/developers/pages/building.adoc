@@ -156,8 +156,8 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'org.apache.plc4x', name: 'plc4j-api', version: '{page-component-version}'
-    implementation group: 'org.apache.plc4x', name: 'plc4j-driver-s7', version: '{page-component-version}'
-    implementation group: 'org.apache.plc4x', name: 'plc4j-connection-pool', version: '{page-component-version}'
+    implementation group: 'org.apache.plc4x', name: 'plc4j-api', version: '{current-last-released-version}'
+    implementation group: 'org.apache.plc4x', name: 'plc4j-driver-s7', version: '{current-last-released-version}'
+    implementation group: 'org.apache.plc4x', name: 'plc4j-connection-pool', version: '{current-last-released-version}'
 }
 ----

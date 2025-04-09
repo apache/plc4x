@@ -48,7 +48,7 @@ Note this API is available since Apache PLC4X 0.9.
 <dependency>
   <groupId>org.apache.plc4x</groupId>
   <artifactId>plc4j-transport-can</artifactId>
-  <version>{page-component-version}</version>
+  <version>{current-last-released-version}</version>
 </dependency>
 ----
 

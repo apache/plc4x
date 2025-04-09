@@ -54,6 +54,7 @@ const (
 	OpcuaNodeIdServicesVariableHistorical_HistoricalEventFilter                                                         OpcuaNodeIdServicesVariableHistorical = 11215
 	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfArchive                                OpcuaNodeIdServicesVariableHistorical = 11499
 	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfOnlineArchive                          OpcuaNodeIdServicesVariableHistorical = 11500
+	OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_SortByEventFields                            OpcuaNodeIdServicesVariableHistorical = 18644
 	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ServerTimestampSupported                      OpcuaNodeIdServicesVariableHistorical = 19092
 	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxTimeStoredValues                           OpcuaNodeIdServicesVariableHistorical = 32619
 	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxCountStoredValues                          OpcuaNodeIdServicesVariableHistorical = 32620
@@ -86,6 +87,7 @@ func init() {
 		OpcuaNodeIdServicesVariableHistorical_HistoricalEventFilter,
 		OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfArchive,
 		OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfOnlineArchive,
+		OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_SortByEventFields,
 		OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ServerTimestampSupported,
 		OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxTimeStoredValues,
 		OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxCountStoredValues,
@@ -117,6 +119,8 @@ func OpcuaNodeIdServicesVariableHistoricalByValue(value int32) (enum OpcuaNodeId
 		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfArchive, true
 	case 11500:
 		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfOnlineArchive, true
+	case 18644:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_SortByEventFields, true
 	case 19092:
 		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ServerTimestampSupported, true
 	case 2323:
@@ -173,6 +177,8 @@ func OpcuaNodeIdServicesVariableHistoricalByName(value string) (enum OpcuaNodeId
 		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfArchive, true
 	case "HistoricalDataConfigurationType_StartOfOnlineArchive":
 		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfOnlineArchive, true
+	case "HistoricalEventConfigurationType_SortByEventFields":
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_SortByEventFields, true
 	case "HistoricalDataConfigurationType_ServerTimestampSupported":
 		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ServerTimestampSupported, true
 	case "HistoricalDataConfigurationType_Stepped":
@@ -294,6 +300,8 @@ func (e OpcuaNodeIdServicesVariableHistorical) PLC4XEnumName() string {
 		return "HistoricalDataConfigurationType_StartOfArchive"
 	case OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfOnlineArchive:
 		return "HistoricalDataConfigurationType_StartOfOnlineArchive"
+	case OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_SortByEventFields:
+		return "HistoricalEventConfigurationType_SortByEventFields"
 	case OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ServerTimestampSupported:
 		return "HistoricalDataConfigurationType_ServerTimestampSupported"
 	case OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_Stepped:

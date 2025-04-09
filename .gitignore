@@ -201,6 +201,7 @@ DartConfiguration.tcl
 
 # Develocity
 .mvn/.gradle-enterprise/
+.mvn/.develocity/
 
 # UI
 /plc4j/tools/ui/frontend/project/node/

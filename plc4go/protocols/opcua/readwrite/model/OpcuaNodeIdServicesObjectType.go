@@ -194,6 +194,7 @@ const (
 	OpcuaNodeIdServicesObjectType_FileTransferStateMachineType                 OpcuaNodeIdServicesObjectType = 15803
 	OpcuaNodeIdServicesObjectType_PubSubKeyServiceType                         OpcuaNodeIdServicesObjectType = 15906
 	OpcuaNodeIdServicesObjectType_AlarmGroupType                               OpcuaNodeIdServicesObjectType = 16405
+	OpcuaNodeIdServicesObjectType_ApplicationConfigurationFolderType           OpcuaNodeIdServicesObjectType = 16662
 	OpcuaNodeIdServicesObjectType_DiscrepancyAlarmType                         OpcuaNodeIdServicesObjectType = 17080
 	OpcuaNodeIdServicesObjectType_SafetyConditionClassType                     OpcuaNodeIdServicesObjectType = 17218
 	OpcuaNodeIdServicesObjectType_HighlyManagedAlarmConditionClassType         OpcuaNodeIdServicesObjectType = 17219
@@ -223,6 +224,11 @@ const (
 	OpcuaNodeIdServicesObjectType_InstrumentDiagnosticAlarmType                OpcuaNodeIdServicesObjectType = 18347
 	OpcuaNodeIdServicesObjectType_SystemDiagnosticAlarmType                    OpcuaNodeIdServicesObjectType = 18496
 	OpcuaNodeIdServicesObjectType_StatisticalConditionClassType                OpcuaNodeIdServicesObjectType = 18665
+	OpcuaNodeIdServicesObjectType_LldpInformationType                          OpcuaNodeIdServicesObjectType = 18973
+	OpcuaNodeIdServicesObjectType_LldpRemoteStatisticsType                     OpcuaNodeIdServicesObjectType = 18996
+	OpcuaNodeIdServicesObjectType_LldpLocalSystemType                          OpcuaNodeIdServicesObjectType = 19002
+	OpcuaNodeIdServicesObjectType_LldpPortInformationType                      OpcuaNodeIdServicesObjectType = 19009
+	OpcuaNodeIdServicesObjectType_LldpRemoteSystemType                         OpcuaNodeIdServicesObjectType = 19033
 	OpcuaNodeIdServicesObjectType_AuditHistoryAnnotationUpdateEventType        OpcuaNodeIdServicesObjectType = 19095
 	OpcuaNodeIdServicesObjectType_TrustListOutOfDateAlarmType                  OpcuaNodeIdServicesObjectType = 19297
 	OpcuaNodeIdServicesObjectType_PubSubDiagnosticsType                        OpcuaNodeIdServicesObjectType = 19677
@@ -464,6 +470,7 @@ func init() {
 		OpcuaNodeIdServicesObjectType_FileTransferStateMachineType,
 		OpcuaNodeIdServicesObjectType_PubSubKeyServiceType,
 		OpcuaNodeIdServicesObjectType_AlarmGroupType,
+		OpcuaNodeIdServicesObjectType_ApplicationConfigurationFolderType,
 		OpcuaNodeIdServicesObjectType_DiscrepancyAlarmType,
 		OpcuaNodeIdServicesObjectType_SafetyConditionClassType,
 		OpcuaNodeIdServicesObjectType_HighlyManagedAlarmConditionClassType,
@@ -493,6 +500,11 @@ func init() {
 		OpcuaNodeIdServicesObjectType_InstrumentDiagnosticAlarmType,
 		OpcuaNodeIdServicesObjectType_SystemDiagnosticAlarmType,
 		OpcuaNodeIdServicesObjectType_StatisticalConditionClassType,
+		OpcuaNodeIdServicesObjectType_LldpInformationType,
+		OpcuaNodeIdServicesObjectType_LldpRemoteStatisticsType,
+		OpcuaNodeIdServicesObjectType_LldpLocalSystemType,
+		OpcuaNodeIdServicesObjectType_LldpPortInformationType,
+		OpcuaNodeIdServicesObjectType_LldpRemoteSystemType,
 		OpcuaNodeIdServicesObjectType_AuditHistoryAnnotationUpdateEventType,
 		OpcuaNodeIdServicesObjectType_TrustListOutOfDateAlarmType,
 		OpcuaNodeIdServicesObjectType_PubSubDiagnosticsType,
@@ -713,6 +725,8 @@ func OpcuaNodeIdServicesObjectTypeByValue(value int32) (enum OpcuaNodeIdServices
 		return OpcuaNodeIdServicesObjectType_PubSubKeyServiceType, true
 	case 16405:
 		return OpcuaNodeIdServicesObjectType_AlarmGroupType, true
+	case 16662:
+		return OpcuaNodeIdServicesObjectType_ApplicationConfigurationFolderType, true
 	case 17080:
 		return OpcuaNodeIdServicesObjectType_DiscrepancyAlarmType, true
 	case 17218:
@@ -771,6 +785,16 @@ func OpcuaNodeIdServicesObjectTypeByValue(value int32) (enum OpcuaNodeIdServices
 		return OpcuaNodeIdServicesObjectType_SystemDiagnosticAlarmType, true
 	case 18665:
 		return OpcuaNodeIdServicesObjectType_StatisticalConditionClassType, true
+	case 18973:
+		return OpcuaNodeIdServicesObjectType_LldpInformationType, true
+	case 18996:
+		return OpcuaNodeIdServicesObjectType_LldpRemoteStatisticsType, true
+	case 19002:
+		return OpcuaNodeIdServicesObjectType_LldpLocalSystemType, true
+	case 19009:
+		return OpcuaNodeIdServicesObjectType_LldpPortInformationType, true
+	case 19033:
+		return OpcuaNodeIdServicesObjectType_LldpRemoteSystemType, true
 	case 19095:
 		return OpcuaNodeIdServicesObjectType_AuditHistoryAnnotationUpdateEventType, true
 	case 19297:
@@ -1245,6 +1269,8 @@ func OpcuaNodeIdServicesObjectTypeByName(value string) (enum OpcuaNodeIdServices
 		return OpcuaNodeIdServicesObjectType_PubSubKeyServiceType, true
 	case "AlarmGroupType":
 		return OpcuaNodeIdServicesObjectType_AlarmGroupType, true
+	case "ApplicationConfigurationFolderType":
+		return OpcuaNodeIdServicesObjectType_ApplicationConfigurationFolderType, true
 	case "DiscrepancyAlarmType":
 		return OpcuaNodeIdServicesObjectType_DiscrepancyAlarmType, true
 	case "SafetyConditionClassType":
@@ -1303,6 +1329,16 @@ func OpcuaNodeIdServicesObjectTypeByName(value string) (enum OpcuaNodeIdServices
 		return OpcuaNodeIdServicesObjectType_SystemDiagnosticAlarmType, true
 	case "StatisticalConditionClassType":
 		return OpcuaNodeIdServicesObjectType_StatisticalConditionClassType, true
+	case "LldpInformationType":
+		return OpcuaNodeIdServicesObjectType_LldpInformationType, true
+	case "LldpRemoteStatisticsType":
+		return OpcuaNodeIdServicesObjectType_LldpRemoteStatisticsType, true
+	case "LldpLocalSystemType":
+		return OpcuaNodeIdServicesObjectType_LldpLocalSystemType, true
+	case "LldpPortInformationType":
+		return OpcuaNodeIdServicesObjectType_LldpPortInformationType, true
+	case "LldpRemoteSystemType":
+		return OpcuaNodeIdServicesObjectType_LldpRemoteSystemType, true
 	case "AuditHistoryAnnotationUpdateEventType":
 		return OpcuaNodeIdServicesObjectType_AuditHistoryAnnotationUpdateEventType, true
 	case "TrustListOutOfDateAlarmType":
@@ -1842,6 +1878,8 @@ func (e OpcuaNodeIdServicesObjectType) PLC4XEnumName() string {
 		return "PubSubKeyServiceType"
 	case OpcuaNodeIdServicesObjectType_AlarmGroupType:
 		return "AlarmGroupType"
+	case OpcuaNodeIdServicesObjectType_ApplicationConfigurationFolderType:
+		return "ApplicationConfigurationFolderType"
 	case OpcuaNodeIdServicesObjectType_DiscrepancyAlarmType:
 		return "DiscrepancyAlarmType"
 	case OpcuaNodeIdServicesObjectType_SafetyConditionClassType:
@@ -1900,6 +1938,16 @@ func (e OpcuaNodeIdServicesObjectType) PLC4XEnumName() string {
 		return "SystemDiagnosticAlarmType"
 	case OpcuaNodeIdServicesObjectType_StatisticalConditionClassType:
 		return "StatisticalConditionClassType"
+	case OpcuaNodeIdServicesObjectType_LldpInformationType:
+		return "LldpInformationType"
+	case OpcuaNodeIdServicesObjectType_LldpRemoteStatisticsType:
+		return "LldpRemoteStatisticsType"
+	case OpcuaNodeIdServicesObjectType_LldpLocalSystemType:
+		return "LldpLocalSystemType"
+	case OpcuaNodeIdServicesObjectType_LldpPortInformationType:
+		return "LldpPortInformationType"
+	case OpcuaNodeIdServicesObjectType_LldpRemoteSystemType:
+		return "LldpRemoteSystemType"
 	case OpcuaNodeIdServicesObjectType_AuditHistoryAnnotationUpdateEventType:
 		return "AuditHistoryAnnotationUpdateEventType"
 	case OpcuaNodeIdServicesObjectType_TrustListOutOfDateAlarmType:

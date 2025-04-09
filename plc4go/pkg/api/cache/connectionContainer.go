@@ -22,6 +22,7 @@ package cache
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -45,6 +46,8 @@ type connectionContainer struct {
 	queue []chan plc4go.PlcConnectionConnectResult
 	// Listeners for connection events.
 	listeners []connectionListener
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
@@ -90,8 +93,8 @@ func (c *connectionContainer) connect(ctx context.Context) {
 			Msg("Error connecting new cached connection.")
 		// Tell the connection cache that the connection is no longer available.
 		if c.listeners != nil {
-			event := connectionErrorEvent{
-				conn: *c,
+			event := &connectionErrorEvent{
+				conn: c,
 				err:  err,
 			}
 			for _, listener := range c.listeners {
@@ -159,7 +162,9 @@ func (c *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
 		// is definitely eagerly waiting for input.
 		c.log.Debug().Str("connectionString", c.connectionString).
 			Msg("Got lease instantly as connection was idle.")
+		c.wg.Add(1)
 		go func() {
+			defer c.wg.Done()
 			ch <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
 		}()
 	case StateInUse, StateInitialized:
@@ -208,7 +213,9 @@ func (c *connectionContainer) returnConnection(ctx context.Context, newState cac
 		// Send asynchronously as the receiver might have given up waiting,
 		// and we don'c want anything to block here. 1ms should be enough for
 		// the calling process to reach the blocking read.
+		c.wg.Add(1)
 		go func() {
+			defer c.wg.Done()
 			// In this case we don'c need to check for blocks
 			// as the getConnection function of the connection cache
 			// is definitely eagerly waiting for input.

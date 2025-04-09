@@ -33,7 +33,6 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
@@ -168,7 +167,6 @@ func TestReader_Read(t *testing.T) {
 			timeBeforeReadRequest := time.Now()
 			readResponseChannel := r.Read(testutils.TestContext(t), readRequest)
 			timeout := time.NewTimer(3 * time.Second)
-			defer utils.CleanupTimer(timeout)
 			select {
 			case readResponse := <-readResponseChannel:
 				timeAfterReadRequest := time.Now()

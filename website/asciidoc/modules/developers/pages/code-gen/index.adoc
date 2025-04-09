@@ -199,7 +199,7 @@ Here's an example of a driver pom for building a `S7` driver for `java`:
   <parent>
     <groupId>org.apache.plc4x.plugins</groupId>
     <artifactId>plc4x-code-generation</artifactId>
-    <version>{page-component-version}</version>
+    <version>{current-last-released-version}</version>
   </parent>
 
   <artifactId>test-java-s7-driver</artifactId>
@@ -231,13 +231,13 @@ Here's an example of a driver pom for building a `S7` driver for `java`:
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-driver-base-java</artifactId>
-      <version>{page-component-version}</version>
+      <version>{current-last-released-version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-language-java</artifactId>
-      <version>{page-component-version}</version>
+      <version>{current-last-released-version}</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -245,7 +245,7 @@ Here's an example of a driver pom for building a `S7` driver for `java`:
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-protocol-s7</artifactId>
-      <version>{page-component-version}</version>
+      <version>{current-last-released-version}</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -263,7 +263,7 @@ The dependency:
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-driver-base-java</artifactId>
-      <version>{page-component-version}</version>
+      <version>{current-last-released-version}</version>
     </dependency>
 ....
 
@@ -276,7 +276,7 @@ The definitions of both the `s7` protocol and `java` language are provided by th
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-language-java</artifactId>
-      <version>{page-component-version}</version>
+      <version>{current-last-released-version}</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -289,7 +289,7 @@ and:
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-protocol-s7</artifactId>
-      <version>{page-component-version}</version>
+      <version>{current-last-released-version}</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>

@@ -129,6 +129,18 @@ const (
 	OpcuaNodeIdServicesVariableWell_WellKnownRole_ConfigureAdmin_RemoveApplication_InputArguments          OpcuaNodeIdServicesVariableWell = 16275
 	OpcuaNodeIdServicesVariableWell_WellKnownRole_ConfigureAdmin_AddEndpoint_InputArguments                OpcuaNodeIdServicesVariableWell = 16277
 	OpcuaNodeIdServicesVariableWell_WellKnownRole_ConfigureAdmin_RemoveEndpoint_InputArguments             OpcuaNodeIdServicesVariableWell = 16279
+	OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Identities                            OpcuaNodeIdServicesVariableWell = 18626
+	OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_ApplicationsExclude                   OpcuaNodeIdServicesVariableWell = 18627
+	OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Applications                          OpcuaNodeIdServicesVariableWell = 18628
+	OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_EndpointsExclude                      OpcuaNodeIdServicesVariableWell = 18629
+	OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Endpoints                             OpcuaNodeIdServicesVariableWell = 18630
+	OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_CustomConfiguration                   OpcuaNodeIdServicesVariableWell = 18631
+	OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddIdentity_InputArguments            OpcuaNodeIdServicesVariableWell = 18633
+	OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveIdentity_InputArguments         OpcuaNodeIdServicesVariableWell = 18635
+	OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddApplication_InputArguments         OpcuaNodeIdServicesVariableWell = 18637
+	OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveApplication_InputArguments      OpcuaNodeIdServicesVariableWell = 18639
+	OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddEndpoint_InputArguments            OpcuaNodeIdServicesVariableWell = 18641
+	OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveEndpoint_InputArguments         OpcuaNodeIdServicesVariableWell = 18643
 	OpcuaNodeIdServicesVariableWell_WellKnownRole_Anonymous_CustomConfiguration                            OpcuaNodeIdServicesVariableWell = 24140
 	OpcuaNodeIdServicesVariableWell_WellKnownRole_AuthenticatedUser_CustomConfiguration                    OpcuaNodeIdServicesVariableWell = 24141
 	OpcuaNodeIdServicesVariableWell_WellKnownRole_Observer_CustomConfiguration                             OpcuaNodeIdServicesVariableWell = 24142
@@ -268,6 +280,18 @@ func init() {
 		OpcuaNodeIdServicesVariableWell_WellKnownRole_ConfigureAdmin_RemoveApplication_InputArguments,
 		OpcuaNodeIdServicesVariableWell_WellKnownRole_ConfigureAdmin_AddEndpoint_InputArguments,
 		OpcuaNodeIdServicesVariableWell_WellKnownRole_ConfigureAdmin_RemoveEndpoint_InputArguments,
+		OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Identities,
+		OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_ApplicationsExclude,
+		OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Applications,
+		OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_EndpointsExclude,
+		OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Endpoints,
+		OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_CustomConfiguration,
+		OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddIdentity_InputArguments,
+		OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveIdentity_InputArguments,
+		OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddApplication_InputArguments,
+		OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveApplication_InputArguments,
+		OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddEndpoint_InputArguments,
+		OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveEndpoint_InputArguments,
 		OpcuaNodeIdServicesVariableWell_WellKnownRole_Anonymous_CustomConfiguration,
 		OpcuaNodeIdServicesVariableWell_WellKnownRole_AuthenticatedUser_CustomConfiguration,
 		OpcuaNodeIdServicesVariableWell_WellKnownRole_Observer_CustomConfiguration,
@@ -493,6 +517,30 @@ func OpcuaNodeIdServicesVariableWellByValue(value int32) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableWell_WellKnownRole_ConfigureAdmin_AddEndpoint_InputArguments, true
 	case 16279:
 		return OpcuaNodeIdServicesVariableWell_WellKnownRole_ConfigureAdmin_RemoveEndpoint_InputArguments, true
+	case 18626:
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Identities, true
+	case 18627:
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_ApplicationsExclude, true
+	case 18628:
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Applications, true
+	case 18629:
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_EndpointsExclude, true
+	case 18630:
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Endpoints, true
+	case 18631:
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_CustomConfiguration, true
+	case 18633:
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddIdentity_InputArguments, true
+	case 18635:
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveIdentity_InputArguments, true
+	case 18637:
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddApplication_InputArguments, true
+	case 18639:
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveApplication_InputArguments, true
+	case 18641:
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddEndpoint_InputArguments, true
+	case 18643:
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveEndpoint_InputArguments, true
 	case 24140:
 		return OpcuaNodeIdServicesVariableWell_WellKnownRole_Anonymous_CustomConfiguration, true
 	case 24141:
@@ -763,6 +811,30 @@ func OpcuaNodeIdServicesVariableWellByName(value string) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableWell_WellKnownRole_ConfigureAdmin_AddEndpoint_InputArguments, true
 	case "WellKnownRole_ConfigureAdmin_RemoveEndpoint_InputArguments":
 		return OpcuaNodeIdServicesVariableWell_WellKnownRole_ConfigureAdmin_RemoveEndpoint_InputArguments, true
+	case "WellKnownRole_TrustedApplication_Identities":
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Identities, true
+	case "WellKnownRole_TrustedApplication_ApplicationsExclude":
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_ApplicationsExclude, true
+	case "WellKnownRole_TrustedApplication_Applications":
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Applications, true
+	case "WellKnownRole_TrustedApplication_EndpointsExclude":
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_EndpointsExclude, true
+	case "WellKnownRole_TrustedApplication_Endpoints":
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Endpoints, true
+	case "WellKnownRole_TrustedApplication_CustomConfiguration":
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_CustomConfiguration, true
+	case "WellKnownRole_TrustedApplication_AddIdentity_InputArguments":
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddIdentity_InputArguments, true
+	case "WellKnownRole_TrustedApplication_RemoveIdentity_InputArguments":
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveIdentity_InputArguments, true
+	case "WellKnownRole_TrustedApplication_AddApplication_InputArguments":
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddApplication_InputArguments, true
+	case "WellKnownRole_TrustedApplication_RemoveApplication_InputArguments":
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveApplication_InputArguments, true
+	case "WellKnownRole_TrustedApplication_AddEndpoint_InputArguments":
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddEndpoint_InputArguments, true
+	case "WellKnownRole_TrustedApplication_RemoveEndpoint_InputArguments":
+		return OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveEndpoint_InputArguments, true
 	case "WellKnownRole_Anonymous_CustomConfiguration":
 		return OpcuaNodeIdServicesVariableWell_WellKnownRole_Anonymous_CustomConfiguration, true
 	case "WellKnownRole_AuthenticatedUser_CustomConfiguration":
@@ -1098,6 +1170,30 @@ func (e OpcuaNodeIdServicesVariableWell) PLC4XEnumName() string {
 		return "WellKnownRole_ConfigureAdmin_AddEndpoint_InputArguments"
 	case OpcuaNodeIdServicesVariableWell_WellKnownRole_ConfigureAdmin_RemoveEndpoint_InputArguments:
 		return "WellKnownRole_ConfigureAdmin_RemoveEndpoint_InputArguments"
+	case OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Identities:
+		return "WellKnownRole_TrustedApplication_Identities"
+	case OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_ApplicationsExclude:
+		return "WellKnownRole_TrustedApplication_ApplicationsExclude"
+	case OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Applications:
+		return "WellKnownRole_TrustedApplication_Applications"
+	case OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_EndpointsExclude:
+		return "WellKnownRole_TrustedApplication_EndpointsExclude"
+	case OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_Endpoints:
+		return "WellKnownRole_TrustedApplication_Endpoints"
+	case OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_CustomConfiguration:
+		return "WellKnownRole_TrustedApplication_CustomConfiguration"
+	case OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddIdentity_InputArguments:
+		return "WellKnownRole_TrustedApplication_AddIdentity_InputArguments"
+	case OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveIdentity_InputArguments:
+		return "WellKnownRole_TrustedApplication_RemoveIdentity_InputArguments"
+	case OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddApplication_InputArguments:
+		return "WellKnownRole_TrustedApplication_AddApplication_InputArguments"
+	case OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveApplication_InputArguments:
+		return "WellKnownRole_TrustedApplication_RemoveApplication_InputArguments"
+	case OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_AddEndpoint_InputArguments:
+		return "WellKnownRole_TrustedApplication_AddEndpoint_InputArguments"
+	case OpcuaNodeIdServicesVariableWell_WellKnownRole_TrustedApplication_RemoveEndpoint_InputArguments:
+		return "WellKnownRole_TrustedApplication_RemoveEndpoint_InputArguments"
 	case OpcuaNodeIdServicesVariableWell_WellKnownRole_Anonymous_CustomConfiguration:
 		return "WellKnownRole_Anonymous_CustomConfiguration"
 	case OpcuaNodeIdServicesVariableWell_WellKnownRole_AuthenticatedUser_CustomConfiguration:

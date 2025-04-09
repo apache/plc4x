@@ -222,7 +222,6 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <skip>${skipTests}</skip>
               <executable>${python.venv.bin}pip3</executable>
               <arguments>
                 <argument>install</argument>

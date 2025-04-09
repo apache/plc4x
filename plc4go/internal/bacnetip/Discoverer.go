@@ -26,6 +26,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/IBM/netaddr"
@@ -35,20 +36,25 @@ import (
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Discoverer struct {
-	messageCodec spi.MessageCodec
+	wg sync.WaitGroup // use to track spawned go routines
 
 	passLogToModel bool
 	log            zerolog.Logger
 }
 
-func NewDiscoverer() *Discoverer {
-	return &Discoverer{}
+func NewDiscoverer(_options ...options.WithOption) *Discoverer {
+	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	return &Discoverer{
+		passLogToModel: passLoggerToModel,
+		log:            customLogger,
+	}
 }
 
 func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
@@ -168,7 +174,9 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 					return
 				}
 				blockingReadChan := make(chan bool)
+				d.wg.Add(1)
 				go func() {
+					defer d.wg.Done()
 					buf := make([]byte, 4096)
 					n, addr, err := communicationChannelInstance.unicastConnection.ReadFrom(buf)
 					if err != nil {
@@ -208,7 +216,9 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 					return
 				}
 				blockingReadChan := make(chan bool)
+				d.wg.Add(1)
 				go func() {
+					defer d.wg.Done()
 					buf := make([]byte, 4096)
 					n, addr, err := communicationChannelInstance.broadcastConnection.ReadFrom(buf)
 					if err != nil {
@@ -375,10 +385,18 @@ func (d *Discoverer) buildupCommunicationChannels(ctx context.Context, interface
 				networkInterface:    networkInterface,
 				unicastConnection:   unicastConnection,
 				broadcastConnection: broadcastConnection,
+				log:                 d.log,
 			})
 		}
 	}
 	return
+}
+
+func (d *Discoverer) Close() error {
+	defer utils.StopWarn(d.log)()
+	d.log.Trace().Msg("Waiting for goroutines to stop")
+	d.wg.Wait()
+	return nil
 }
 
 type receivedBvlcMessage struct {
@@ -390,9 +408,11 @@ type communicationChannel struct {
 	networkInterface    net.Interface
 	unicastConnection   net.PacketConn
 	broadcastConnection net.PacketConn
+	log                 zerolog.Logger
 }
 
 func (c communicationChannel) Close() error {
+	defer utils.StopWarn(c.log)()
 	_ = c.unicastConnection.Close()
 	_ = c.broadcastConnection.Close()
 	return nil

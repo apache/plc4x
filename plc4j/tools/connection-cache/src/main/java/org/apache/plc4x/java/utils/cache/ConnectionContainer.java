@@ -48,6 +48,7 @@ class ConnectionContainer {
 
     private PlcConnection connection;
     private LeasedPlcConnection leasedConnection;
+    private Timer idleTimer;
 
     public ConnectionContainer(PlcConnectionManager connectionManager, String connectionUrl,
                                Duration maxLeaseTime, Duration maxIdleTime,
@@ -110,6 +111,13 @@ class ConnectionContainer {
         else {
             queue.add(connectionFuture);
         }
+
+        // Stop the idle timer.
+        if(idleTimer != null) {
+            idleTimer.cancel();
+            idleTimer.purge();
+        }
+
         return connectionFuture;
     }
 
@@ -147,7 +155,7 @@ class ConnectionContainer {
             leasedConnection = null;
 
             // Start a timer to invalidate this connection if it's idle for too long.
-            Timer idleTimer = new Timer();
+            idleTimer = new Timer("CC-Idle-Timer-" + Thread.currentThread().getId());
             idleTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {

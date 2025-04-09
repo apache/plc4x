@@ -2041,7 +2041,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } if( datapointType == KnxDatapointType.DPT_ApparantEnergy ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_ApparentEnergy ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2083,7 +2083,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } if( datapointType == KnxDatapointType.DPT_ApparantEnergy_kVAh ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_ApparentEnergy_kVAh ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5321,7 +5321,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadLong("", 64);
 
                 return new PlcLINT(value);
-            } if( datapointType == KnxDatapointType.DPT_ApparantEnergy_V64 ) { // LINT
+            } if( datapointType == KnxDatapointType.DPT_ApparentEnergy_V64 ) { // LINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -7863,7 +7863,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } if( datapointType == KnxDatapointType.DPT_ApparantEnergy ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_ApparentEnergy ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7890,7 +7890,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } if( datapointType == KnxDatapointType.DPT_ApparantEnergy_kVAh ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_ApparentEnergy_kVAh ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10042,7 +10042,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (long) _value.GetLong();
                 writeBuffer.WriteLong("", 64, (long) (value));
             return writeBuffer;
-        } if( datapointType == KnxDatapointType.DPT_ApparantEnergy_V64 ) { // LINT
+        } if( datapointType == KnxDatapointType.DPT_ApparentEnergy_V64 ) { // LINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field

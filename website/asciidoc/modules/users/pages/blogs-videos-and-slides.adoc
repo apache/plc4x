@@ -49,3 +49,4 @@
 - https://de.slideshare.net/ChristoferDutz/digitizing-your-factory-the-open-source-way[Digitizing your factory the open source way]
 - https://de.slideshare.net/ChristoferDutz/from-an-idea-to-an-apache-tlp[From an idea to an Apache TLP]
 - https://de.slideshare.net/ChristoferDutz/building-scada-systems-with-apache-software[Building scada systems with apache software]
+- https://de.slideshare.net/slideshow/community-over-code-eu-2024-state-of-the-civet-pdf/273425882[State of the Civiet, June 2024]

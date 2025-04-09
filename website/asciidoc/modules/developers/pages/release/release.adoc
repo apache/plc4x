@@ -55,7 +55,7 @@ IMPORTANT: Please be sure to execute the release with a Java version 11 or the K
 * [ ] Release staging repo on `Nexus`
 * [ ] Add the version to the DOAP file on `develop`
 * [ ] Update Download site
-* [ ] Update Jira
+* [ ] Update GitHub Issues
 * [ ] Merge back release version to `release` branch
 * [ ] Send announce email
 
@@ -541,7 +541,7 @@ git merge -X theirs v{current-full-version}
 Possibly a manual conflict resolution has to be done afterwards. After that, changes need to
 be pushed.
 
-== Updating Jira
+== Updating GitHub Issues
 
 1. Set the released version to "released" and set the "release-date"
 2. Add the next version to the versions.

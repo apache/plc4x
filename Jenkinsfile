@@ -54,6 +54,7 @@ pipeline {
         // When we have test-fails e.g. we don't need to run the remaining steps
         skipStagesAfterUnstable()
         buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '3'))
+        skipDefaultCheckout()
     }
 
     stages {
@@ -137,7 +138,6 @@ pipeline {
             steps {
                 echo 'Checking Code Quality on SonarCloud'
                 withCredentials([string(credentialsId: 'chris-sonarcloud-token', variable: 'SONAR_TOKEN')]) {
-                    //sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-python,with-proxies sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN}'
                     sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-c,with-go,with-java,with-python sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.token=${SONAR_TOKEN}'
                 }
             }
@@ -173,65 +173,53 @@ pipeline {
             }
         }
 
-        stage('Build site') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                echo 'Building Site'
-                // Generate the driver documentation.
-                sh './mvnw -P${JENKINS_PROFILE},with-java,skip-prerequisite-check site -X -pl :plc4j-driver-all'
-                // Build the actual website.
-                sh './mvnw -P${JENKINS_PROFILE},skip-prerequisite-check site -X -pl . -pl website'
-            }
-        }
-
-        stage('Stage site') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                echo 'Staging Site'
-                // Build a directory containing the aggregated website.
-                //sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies site:stage'
-                sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check site:stage -pl .'
-                // Make sure the script is executable.
-                //sh 'chmod +x tools/clean-site.sh'
-                // Remove some redundant resources, which shouldn't be required.
-                //sh 'tools/clean-site.sh'
-                // Stash the generated site so we can publish it on the 'git-website' node.
-                stash includes: 'target/staging/**/*', name: 'plc4x-site'
-            }
-        }
-
-        stage('Deploy site') {
-            when {
-                branch 'develop'
-            }
+        stage("Website Build") {
             // Only the nodes labeled 'git-websites' have the credentials to commit to the.
             agent {
                 node {
                     label 'git-websites'
                 }
             }
-            steps {
-                echo 'Deploying Site'
-                // Clean up the site directory.
-                dir("target/staging") {
-                    deleteDir()
+            options { skipDefaultCheckout() }
+            stages {
+                stage('Cleanup') {
+                    steps {
+                        echo 'Cleaning up the workspace'
+                        deleteDir()
+                    }
                 }
-
-                // Unstash the previously stashed site.
-                unstash 'plc4x-site'
-                // Publish the site with the scm-publish plugin.
-                sh './mvnw -f jenkins.pom -X -P deploy-site scm-publish:publish-scm'
-
-                // Clean up the snapshots directory (freeing up more space after deploying).
-                dir("target/staging") {
-                    deleteDir()
+                stage('Checkout') {
+                    steps {
+                        echo 'Checking out branch ' + env.BRANCH_NAME
+                        checkout scm
+                    }
+                }
+                stage('Build site') {
+                    when {
+                        branch 'develop'
+                    }
+                    steps {
+                        echo 'Building Site'
+                        // Generate the driver documentation.
+                        sh './mvnw -P${JENKINS_PROFILE},with-java,skip-prerequisite-check site -X -pl :plc4j-driver-all'
+                        // Build the actual website.
+                        sh './mvnw -P${JENKINS_PROFILE},skip-prerequisite-check site -X -pl . -pl website'
+                    }
+                }
+                stage('Deploy site') {
+                    when {
+                        branch 'develop'
+                    }
+                    steps {
+                        echo 'Deploying Site'
+                        // Publish the site with the scm-publish plugin.
+                        sh './mvnw -f jenkins.pom -X -P deploy-site scm-publish:publish-scm'
+                    }
                 }
             }
         }
+
+
     }
 
     // Send out notifications on unsuccessful builds.

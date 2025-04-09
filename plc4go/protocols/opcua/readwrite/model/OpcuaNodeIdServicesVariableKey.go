@@ -62,6 +62,8 @@ const (
 	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ResourceUri                                                OpcuaNodeIdServicesVariableKey = 18064
 	OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ResourceUri                                                    OpcuaNodeIdServicesVariableKey = 18069
 	OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ProfileUri                                                     OpcuaNodeIdServicesVariableKey = 18165
+	OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_ServiceName_Placeholder_CredentialId                     OpcuaNodeIdServicesVariableKey = 18656
+	OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_CredentialId                                                   OpcuaNodeIdServicesVariableKey = 18657
 )
 
 var OpcuaNodeIdServicesVariableKeyValues []OpcuaNodeIdServicesVariableKey
@@ -90,6 +92,8 @@ func init() {
 		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ResourceUri,
 		OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ResourceUri,
 		OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ProfileUri,
+		OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_ServiceName_Placeholder_CredentialId,
+		OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_CredentialId,
 	}
 }
 
@@ -137,6 +141,10 @@ func OpcuaNodeIdServicesVariableKeyByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ResourceUri, true
 	case 18165:
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ProfileUri, true
+	case 18656:
+		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_ServiceName_Placeholder_CredentialId, true
+	case 18657:
+		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_CredentialId, true
 	}
 	return 0, false
 }
@@ -185,6 +193,10 @@ func OpcuaNodeIdServicesVariableKeyByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ResourceUri, true
 	case "KeyCredentialConfigurationType_ProfileUri":
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ProfileUri, true
+	case "KeyCredentialConfigurationFolderType_ServiceName_Placeholder_CredentialId":
+		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_ServiceName_Placeholder_CredentialId, true
+	case "KeyCredentialConfigurationType_CredentialId":
+		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_CredentialId, true
 	}
 	return 0, false
 }
@@ -298,6 +310,10 @@ func (e OpcuaNodeIdServicesVariableKey) PLC4XEnumName() string {
 		return "KeyCredentialConfigurationType_ResourceUri"
 	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ProfileUri:
 		return "KeyCredentialConfigurationType_ProfileUri"
+	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_ServiceName_Placeholder_CredentialId:
+		return "KeyCredentialConfigurationFolderType_ServiceName_Placeholder_CredentialId"
+	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_CredentialId:
+		return "KeyCredentialConfigurationType_CredentialId"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

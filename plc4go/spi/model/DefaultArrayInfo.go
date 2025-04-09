@@ -23,7 +23,7 @@ import apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 
 var _ apiModel.ArrayInfo = &DefaultArrayInfo{}
 
-//go:generate plc4xGenerator -type=DefaultArrayInfo
+//go:generate go tool plc4xGenerator -type=DefaultArrayInfo
 type DefaultArrayInfo struct {
 	LowerBound uint32
 	UpperBound uint32

@@ -22,6 +22,7 @@ package _default
 import (
 	"context"
 	"runtime/debug"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -97,7 +98,7 @@ type withPlcValueHandler struct {
 	plcValueHandler spi.PlcValueHandler
 }
 
-//go:generate plc4xGenerator -type=defaultConnection
+//go:generate go tool plc4xGenerator -type=defaultConnection
 type defaultConnection struct {
 	DefaultConnectionRequirements `ignore:"true"`
 	// defaultTtl the time to live after a close
@@ -106,6 +107,8 @@ type defaultConnection struct {
 	connected    atomic.Bool
 	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
@@ -149,7 +152,9 @@ func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 func (d *defaultConnection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	d.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -212,7 +217,9 @@ func (d *defaultConnection) IsConnected() bool {
 
 func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	ch := make(chan plc4go.PlcConnectionPingResult, 1)
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))

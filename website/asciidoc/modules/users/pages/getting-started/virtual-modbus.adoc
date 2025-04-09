@@ -157,7 +157,7 @@ When using Maven, all you need to do is add this dependency:
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>{page-component-version}</version>
+      <version>{current-last-released-version}</version>
     </dependency>
 ----
 
@@ -171,7 +171,7 @@ For example in order to communicate using the `Modbus` protocol, you would need 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>{page-component-version}</version>
+      <version>{current-last-released-version}</version>
       <scope>runtime</scope>
     </dependency>
 ----

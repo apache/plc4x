@@ -69,6 +69,8 @@ type Connection struct {
 	connectionId string
 	tracer       tracer.Tracer
 
+	wg sync.WaitGroup // use to track spawned go routines
+
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
 }
@@ -119,7 +121,9 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+	c.wg.Add(1)
 	go func() {
+		defer c.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -175,7 +179,8 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		return nil
 	}, func(err error) error {
 		// If this is a timeout, do a check if the connection requires a reconnection
-		if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
 			c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 			c.Close()
 		}
@@ -216,7 +221,8 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 			return nil
 		}, func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 				c.Close()
 			}
@@ -276,7 +282,8 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 				return nil
 			}, func(err error) error {
 				// If this is a timeout, do a check if the connection requires a reconnection
-				if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+				var timeoutError utils.TimeoutError
+				if errors.As(err, &timeoutError) {
 					c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 					c.Close()
 				}

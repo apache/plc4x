@@ -16,44 +16,47 @@
 //
 :imagesdir: ../../images/
 
-= Basic Building Blocs of a Driver / Protocol
+= Strategy for creating a new Driver
 
+Please inspect other existing modules on how to implement some of this.
 
+== Prepare a new protocol module
 
-The general pipeline for a Protocol looks like the following:
+1. Create a new `protocol` module for your protocol.
+2. Create the `pom.xml` file for the new module.
+3. Create a new `mspec` file in `src/main/release/` with just one or two dummy types.
+4. Create a new `Protocol` class in `src/main/java` which implements `org.apache.plc4x.plugins.codegenerator.protocol.Protocol`.
+  - The value returned by `getName()` will be used in the maven driver code generation.
+5. Create a new file called `src/main/resources/META-INF/services/org.apache.plc4x.plugins.codegenerator.protocol.Protocol` and list the new protocol class.
+6. Test you can build the new protocol module.
 
-[ditaa]
-....
-+-------------------------------------+
-|  Upstream (e.g. PLC4X API           :
-+-------------------------------------+
-                  |
-                  :
-                  v
-+-------------------------------------+
-|  PLC4X Optimizer                    :
-|  Possibly collapse requests         |
-+-------------------------------------+
-                  |
-                  :
-                  v
-+-------------------------------------+
-|  Protocol L1                        |
-|  Req. to (generated) Message Objects|
-+-------------------------------------+
-                  |
-                  |
-                  v
-+-------------------------------------+
-|  Protocol L2                        |
-|  Generated Objects to bytes         |
-+-------------------------------------+
-                  |
-                  |
-                  v
-+-------------------------------------+
-|  Downstream (e.g. Socket for I/O)   :
-+-------------------------------------+
-....
+== Prepare a new driver module
 
-A driver has the task to assemble the pipeline for the protocol(s).
+1. Create a new `driver` module under `plc4j/drivers`
+2. Create the `pom.xml` file for the new module.
+ - Be sure to add a maven dependency to your protocol module.
+ - Be sure you have the `update-generated-code` profile in there.
+ - Be sure to reference the protocol name used in your protocol module.
+3. Create the `Driver` class in `src/main/java` which implements `org.apache.plc4x.java.api.PlcDriver`.
+4. Create a file called `src/main/resources/META-INF/services/org.apache.plc4x.java.api.PlcDriver` and list the new driver class.
+5. Test you can build the new driver module and the code generation works.
+
+== Start implementing the protocol parser and serializer
+
+1. Create a capture of the communication you want to create a driver for.
+2. Open the capture in WireShark
+3. Start defining the types you see in your mspec file
+4. Create a file `ParserSerializerTestsuite.xml` in the protocol modules `src/test/resources` directory.
+5. Start adding empty test-cases for every packet in your recording, by copying the TCP/UDP/Whatever payload in Wireshark as `hex-stream` and pasting that in the `raw` element of a test-case.
+6. In the driver module, create a ParserSerializer test that extends `org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner` in `src/test/java` which references the `ParserSerializerTestsuite.xml` file of your protocol module.
+7. Iteratively implement all the `mspec` types needed to process your captures:
+ - Add/update the types in the `mspec` file
+ - Rebuild the protocol module
+ - Rebuild the driver module (with the `update-generate-code` profile enabled)
+ - Run the ParserSerializer test
+
+== Start implementing the driver logic
+
+As soon as you are able to process all captures of your observed communication, you can start implementing a driver protocol logic.
+
+TODO: Continue writing this.

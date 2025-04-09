@@ -42,6 +42,10 @@ classifiers = [
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
 ]
 keywords=["modbus", "plc4x"]
@@ -52,6 +56,7 @@ authors=[
 [project.urls]
 HomePage="https://plc4x.apache.org"
 Repository="https://github.com/apache/plc4x"
+Documentation = "https://plc4x.apache.org/users/getting-started/plc4py.html"
 
 [project.optional-dependencies]
 dev = [

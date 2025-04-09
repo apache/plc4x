@@ -19,10 +19,13 @@
 site:
   title: PLC4X
 content:
-  sources:   
+  sources:
   - url: ../..
     branches: HEAD
     edit_url: '{web_url}/edit/develop/{path}'
+    start_path: website/asciidoc
+  - url: https://github.com/apache/plc4x.git
+    branches: ['rel/0.12']
     start_path: website/asciidoc
 ui: 
   bundle:
@@ -39,3 +42,5 @@ asciidoc:
     allow-uri-read: 'true'
 output:
   dir: ./target/site
+runtime:
+  fetch: true

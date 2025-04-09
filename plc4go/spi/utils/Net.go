@@ -34,13 +34,16 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func GetIPAddresses(localLog zerolog.Logger, ctx context.Context, netInterface net.Interface, useArpBasedScan bool) (foundIps chan net.IP, err error) {
+func GetIPAddresses(localLog zerolog.Logger, ctx context.Context, netInterface net.Interface, useArpBasedScan bool) (foundIps chan net.IP, wg *sync.WaitGroup, err error) {
 	foundIps = make(chan net.IP, 65536)
 	addrs, err := netInterface.Addrs()
 	if err != nil {
-		return nil, errors.Wrap(err, "Error getting addresses")
+		return nil, nil, errors.Wrap(err, "Error getting addresses")
 	}
+	wg = new(sync.WaitGroup)
+	wg.Add(1)
 	go func() {
+		defer wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				localLog.Error().
@@ -49,13 +52,11 @@ func GetIPAddresses(localLog zerolog.Logger, ctx context.Context, netInterface n
 					Msg("panic-ed")
 			}
 		}()
-		wg := &sync.WaitGroup{}
+		addressWg := new(sync.WaitGroup)
 		for _, address := range addrs {
 			// Check if context has been cancelled before continuing
-			select {
-			case <-ctx.Done():
-				return
-			default:
+			if err := ctx.Err(); err != nil {
+				break
 			}
 
 			var ipnet *net.IPNet
@@ -65,32 +66,34 @@ func GetIPAddresses(localLog zerolog.Logger, ctx context.Context, netInterface n
 			case *net.IPNet:
 				ipnet = v
 			default:
+				localLog.Trace().Stringer("address", address).Msg("Ignoring unknown address")
 				continue
 			}
 
 			// Skip loop-back and IPv6
 			if ipnet.IP.IsLoopback() || ipnet.IP.To4() == nil {
+				localLog.Trace().Stringer("ipNet", ipnet).Msg("Skipping IP address")
 				continue
 			}
 
 			localLog.Debug().Stringer("IP", ipnet.IP).Stringer("Mask", ipnet.Mask).Msg("Expanding local subnet")
 			if useArpBasedScan {
-				if err := lockupIpsUsingArp(localLog, ctx, netInterface, ipnet, foundIps, wg); err != nil {
+				if err := lockupIpsUsingArp(localLog, ctx, netInterface, ipnet, foundIps, addressWg); err != nil {
 					localLog.Error().Err(err).Msg("failing to resolve using arp scan. Falling back to ip based scan")
-					useArpBasedScan = false
+					useArpBasedScan = false // fallback to non arg scan
 				}
 			}
 			if !useArpBasedScan {
-				if err := lookupIps(localLog, ctx, ipnet, foundIps, wg); err != nil {
+				if err := lookupIps(localLog, ctx, ipnet, foundIps, addressWg); err != nil {
 					localLog.Error().Err(err).Msg("error looking up ips")
 				}
 			}
 		}
-		wg.Wait()
+		addressWg.Wait()
 		localLog.Trace().Msg("Closing found ips channel")
 		close(foundIps)
 	}()
-	return foundIps, nil
+	return foundIps, wg, nil
 }
 
 // As PING operations might be blocked by a firewall, responding to ARP packets is mandatory for IP based
@@ -99,13 +102,16 @@ func GetIPAddresses(localLog zerolog.Logger, ctx context.Context, netInterface n
 func lockupIpsUsingArp(localLog zerolog.Logger, ctx context.Context, netInterface net.Interface, ipNet *net.IPNet, foundIps chan net.IP, wg *sync.WaitGroup) error {
 	// We add on signal for error handling
 	wg.Add(1)
-	go func() { wg.Done() }()
+	defer wg.Done()
 	localLog.Debug().
 		Str("netInterfaceName", netInterface.Name).
 		Stringer("ipNet", ipNet).
 		Msg("Scanning for alive IP addresses for interface netInterfaceName and net: ipNet")
 	// First find the pcap device name for the given interface.
-	allDevs, _ := pcap.FindAllDevs()
+	allDevs, err := pcap.FindAllDevs()
+	if err != nil {
+		return errors.Wrap(err, "error finding all interfaces")
+	}
 	var devName string
 	for _, dev := range allDevs {
 		for _, devAddress := range dev.Addresses {
@@ -127,11 +133,11 @@ func lockupIpsUsingArp(localLog zerolog.Logger, ctx context.Context, netInterfac
 	}
 
 	// Start up a goroutine to read in packet data.
-	stop := make(chan struct{}, 1)
-	// As we don't know how much the handler will find we use a value of 1 and set that to done after the 10 sec in the cleanup function directly after
-	wg.Add(1)
+	stop := make(chan struct{})
 	// Handler for processing incoming ARP responses.
+	wg.Add(1)
 	go func(handle *pcap.Handle, iface net.Interface, stop chan struct{}) {
+		defer wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				localLog.Error().
@@ -145,6 +151,8 @@ func lockupIpsUsingArp(localLog zerolog.Logger, ctx context.Context, netInterfac
 		for {
 			var packet gopacket.Packet
 			select {
+			case <-ctx.Done():
+				return
 			case <-stop:
 				return
 			case packet = <-in:
@@ -165,7 +173,6 @@ func lockupIpsUsingArp(localLog zerolog.Logger, ctx context.Context, netInterfac
 				localLog.Trace().IPAddr("ip", ip).Msg("Scheduling discovery for IP")
 				timeout := time.NewTimer(2 * time.Second)
 				go func(ip net.IP) {
-					defer CleanupTimer(timeout)
 					select {
 					case <-ctx.Done():
 					case foundIps <- DuplicateIP(ip):
@@ -177,8 +184,9 @@ func lockupIpsUsingArp(localLog zerolog.Logger, ctx context.Context, netInterfac
 	}(handle, netInterface, stop)
 	// Make sure we clean up after 10 seconds.
 	defer func() {
+		wg.Add(1)
 		go func() {
-			wg.Done()
+			defer wg.Done()
 			time.Sleep(10 * time.Second)
 			handle.Close()
 			close(stop)
@@ -211,10 +219,8 @@ func lockupIpsUsingArp(localLog zerolog.Logger, ctx context.Context, netInterfac
 		// Send one ARP packet for every possible address.
 		for ip := IncrementIP(addr.IP.Mask(ipNet.Mask)); addr.Contains(ip) && addr.Contains(IncrementIP(DuplicateIP(ip))); ip = IncrementIP(ip) {
 			// Check if context has been cancelled before continuing
-			select {
-			case <-ctx.Done():
-				return nil
-			default:
+			if err := ctx.Err(); err != nil {
+				return err
 			}
 			arp.DstProtAddress = ip
 			if err := gopacket.SerializeLayers(buf, opts, &eth, &arp); err != nil {
@@ -236,28 +242,25 @@ func lockupIpsUsingArp(localLog zerolog.Logger, ctx context.Context, netInterfac
 
 // Simply takes the IP address and the netmask and schedules one discovery task for every possible IP
 func lookupIps(localLog zerolog.Logger, ctx context.Context, ipnet *net.IPNet, foundIps chan net.IP, wg *sync.WaitGroup) error {
-	localLog.Debug().
-		Stringer("ipnet", ipnet).
-		Msg("Scanning all IP addresses for network")
+	localLog.Debug().Stringer("ipnet", ipnet).Msg("Scanning all IP addresses for network")
 	// expand CIDR-block into one target for each IP
 	// Remark: The last IP address a network contains is a special broadcast address. We don't want to check that one.
 	for ip := IncrementIP(ipnet.IP.Mask(ipnet.Mask)); ipnet.Contains(ip) && ipnet.Contains(IncrementIP(DuplicateIP(ip))); ip = IncrementIP(ip) {
 		// Check if context has been cancelled before continuing
-		select {
-		case <-ctx.Done():
-			return nil
-		default:
+		if err := ctx.Err(); err != nil {
+			return err
 		}
 
-		wg.Add(1)
 		timeout := time.NewTimer(2 * time.Second)
+		wg.Add(1)
 		go func(ip net.IP) {
-			defer func() { wg.Done() }()
-			defer CleanupTimer(timeout)
+			defer wg.Done()
 			select {
 			case <-ctx.Done():
+				localLog.Trace().Msg("context done")
 			case foundIps <- ip:
 			case <-timeout.C:
+				localLog.Trace().Msg("timed out waiting for IP address")
 			}
 		}(DuplicateIP(ip))
 		localLog.Trace().Stringer("IP", ip).Msg("Expanded CIDR")

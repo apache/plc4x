@@ -732,6 +732,24 @@ const (
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_EnumDefinition                                            OpcuaNodeIdServicesVariableOpc = 18187
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_EnumDefinition_DataTypeVersion                            OpcuaNodeIdServicesVariableOpc = 18188
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_EnumDefinition_DictionaryFragment                         OpcuaNodeIdServicesVariableOpc = 18189
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType                                      OpcuaNodeIdServicesVariableOpc = 18601
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType_DataTypeVersion                      OpcuaNodeIdServicesVariableOpc = 18602
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType_DictionaryFragment                   OpcuaNodeIdServicesVariableOpc = 18603
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType                                   OpcuaNodeIdServicesVariableOpc = 18604
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType_DataTypeVersion                   OpcuaNodeIdServicesVariableOpc = 18605
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType_DictionaryFragment                OpcuaNodeIdServicesVariableOpc = 18606
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType                                      OpcuaNodeIdServicesVariableOpc = 18607
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType_DataTypeVersion                      OpcuaNodeIdServicesVariableOpc = 18608
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType_DictionaryFragment                   OpcuaNodeIdServicesVariableOpc = 18609
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType                                         OpcuaNodeIdServicesVariableOpc = 18613
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType_DataTypeVersion                         OpcuaNodeIdServicesVariableOpc = 18614
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType_DictionaryFragment                      OpcuaNodeIdServicesVariableOpc = 18615
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType                                      OpcuaNodeIdServicesVariableOpc = 18616
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType_DataTypeVersion                      OpcuaNodeIdServicesVariableOpc = 18617
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType_DictionaryFragment                   OpcuaNodeIdServicesVariableOpc = 18618
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType                                         OpcuaNodeIdServicesVariableOpc = 18619
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType_DataTypeVersion                         OpcuaNodeIdServicesVariableOpc = 18620
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType_DictionaryFragment                      OpcuaNodeIdServicesVariableOpc = 18621
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_RationalNumber                                            OpcuaNodeIdServicesVariableOpc = 18824
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_RationalNumber_DataTypeVersion                            OpcuaNodeIdServicesVariableOpc = 18825
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_RationalNumber_DictionaryFragment                         OpcuaNodeIdServicesVariableOpc = 18826
@@ -770,6 +788,18 @@ const (
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDVector_DictionaryFragment                              OpcuaNodeIdServicesVariableOpc = 18868
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates                                         OpcuaNodeIdServicesVariableOpc = 18869
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates_DataTypeVersion                         OpcuaNodeIdServicesVariableOpc = 18870
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType                             OpcuaNodeIdServicesVariableOpc = 18931
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType_DataTypeVersion             OpcuaNodeIdServicesVariableOpc = 18932
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType_DictionaryFragment          OpcuaNodeIdServicesVariableOpc = 18933
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType                              OpcuaNodeIdServicesVariableOpc = 18934
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DataTypeVersion              OpcuaNodeIdServicesVariableOpc = 18935
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DictionaryFragment           OpcuaNodeIdServicesVariableOpc = 18936
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType                                OpcuaNodeIdServicesVariableOpc = 18939
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType_DataTypeVersion                OpcuaNodeIdServicesVariableOpc = 18940
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType_DictionaryFragment             OpcuaNodeIdServicesVariableOpc = 18941
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType                                 OpcuaNodeIdServicesVariableOpc = 18942
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DataTypeVersion                 OpcuaNodeIdServicesVariableOpc = 18943
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DictionaryFragment              OpcuaNodeIdServicesVariableOpc = 18944
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates_DictionaryFragment                      OpcuaNodeIdServicesVariableOpc = 19048
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDCartesianCoordinates                                   OpcuaNodeIdServicesVariableOpc = 19049
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDCartesianCoordinates_DataTypeVersion                   OpcuaNodeIdServicesVariableOpc = 19050
@@ -786,6 +816,24 @@ const (
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDFrame                                                  OpcuaNodeIdServicesVariableOpc = 19061
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDFrame_DataTypeVersion                                  OpcuaNodeIdServicesVariableOpc = 19062
 	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDFrame_DictionaryFragment                               OpcuaNodeIdServicesVariableOpc = 19063
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType                           OpcuaNodeIdServicesVariableOpc = 19085
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType_DataTypeVersion           OpcuaNodeIdServicesVariableOpc = 19086
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType_DictionaryFragment        OpcuaNodeIdServicesVariableOpc = 19087
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType                                 OpcuaNodeIdServicesVariableOpc = 19088
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType_DataTypeVersion                 OpcuaNodeIdServicesVariableOpc = 19089
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType_DictionaryFragment              OpcuaNodeIdServicesVariableOpc = 19096
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType                                               OpcuaNodeIdServicesVariableOpc = 19097
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType_DataTypeVersion                               OpcuaNodeIdServicesVariableOpc = 19098
+	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType_DictionaryFragment                            OpcuaNodeIdServicesVariableOpc = 19099
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType                              OpcuaNodeIdServicesVariableOpc = 19103
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType_DataTypeVersion              OpcuaNodeIdServicesVariableOpc = 19104
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType_DictionaryFragment           OpcuaNodeIdServicesVariableOpc = 19105
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType                                    OpcuaNodeIdServicesVariableOpc = 19106
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType_DataTypeVersion                    OpcuaNodeIdServicesVariableOpc = 19289
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType_DictionaryFragment                 OpcuaNodeIdServicesVariableOpc = 19290
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType                                                  OpcuaNodeIdServicesVariableOpc = 19291
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType_DataTypeVersion                                  OpcuaNodeIdServicesVariableOpc = 19292
+	OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType_DictionaryFragment                               OpcuaNodeIdServicesVariableOpc = 19298
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_FieldTargetDataType                                       OpcuaNodeIdServicesVariableOpc = 21002
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_WriterGroupDataType                                       OpcuaNodeIdServicesVariableOpc = 21156
 	OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_WriterGroupDataType_DataTypeVersion                       OpcuaNodeIdServicesVariableOpc = 21157
@@ -1713,6 +1761,24 @@ func init() {
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_EnumDefinition,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_EnumDefinition_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_EnumDefinition_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType_DictionaryFragment,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_RationalNumber,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_RationalNumber_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_RationalNumber_DictionaryFragment,
@@ -1751,6 +1817,18 @@ func init() {
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDVector_DictionaryFragment,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DictionaryFragment,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates_DictionaryFragment,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDCartesianCoordinates,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDCartesianCoordinates_DataTypeVersion,
@@ -1767,6 +1845,24 @@ func init() {
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDFrame,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDFrame_DataTypeVersion,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDFrame_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType_DictionaryFragment,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType_DataTypeVersion,
+		OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType_DictionaryFragment,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_FieldTargetDataType,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_WriterGroupDataType,
 		OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_WriterGroupDataType_DataTypeVersion,
@@ -2819,6 +2915,42 @@ func OpcuaNodeIdServicesVariableOpcByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_EnumDefinition_DataTypeVersion, true
 	case 18189:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_EnumDefinition_DictionaryFragment, true
+	case 18601:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType, true
+	case 18602:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType_DataTypeVersion, true
+	case 18603:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType_DictionaryFragment, true
+	case 18604:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType, true
+	case 18605:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType_DataTypeVersion, true
+	case 18606:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType_DictionaryFragment, true
+	case 18607:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType, true
+	case 18608:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType_DataTypeVersion, true
+	case 18609:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType_DictionaryFragment, true
+	case 18613:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType, true
+	case 18614:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType_DataTypeVersion, true
+	case 18615:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType_DictionaryFragment, true
+	case 18616:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType, true
+	case 18617:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType_DataTypeVersion, true
+	case 18618:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType_DictionaryFragment, true
+	case 18619:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType, true
+	case 18620:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType_DataTypeVersion, true
+	case 18621:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType_DictionaryFragment, true
 	case 18824:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_RationalNumber, true
 	case 18825:
@@ -2895,6 +3027,30 @@ func OpcuaNodeIdServicesVariableOpcByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates, true
 	case 18870:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates_DataTypeVersion, true
+	case 18931:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType, true
+	case 18932:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType_DataTypeVersion, true
+	case 18933:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType_DictionaryFragment, true
+	case 18934:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType, true
+	case 18935:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DataTypeVersion, true
+	case 18936:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DictionaryFragment, true
+	case 18939:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType, true
+	case 18940:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType_DataTypeVersion, true
+	case 18941:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType_DictionaryFragment, true
+	case 18942:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType, true
+	case 18943:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DataTypeVersion, true
+	case 18944:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DictionaryFragment, true
 	case 19048:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates_DictionaryFragment, true
 	case 19049:
@@ -2927,6 +3083,42 @@ func OpcuaNodeIdServicesVariableOpcByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDFrame_DataTypeVersion, true
 	case 19063:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDFrame_DictionaryFragment, true
+	case 19085:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType, true
+	case 19086:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType_DataTypeVersion, true
+	case 19087:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType_DictionaryFragment, true
+	case 19088:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType, true
+	case 19089:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType_DataTypeVersion, true
+	case 19096:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType_DictionaryFragment, true
+	case 19097:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType, true
+	case 19098:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType_DataTypeVersion, true
+	case 19099:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType_DictionaryFragment, true
+	case 19103:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType, true
+	case 19104:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType_DataTypeVersion, true
+	case 19105:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType_DictionaryFragment, true
+	case 19106:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType, true
+	case 19289:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType_DataTypeVersion, true
+	case 19290:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType_DictionaryFragment, true
+	case 19291:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType, true
+	case 19292:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType_DataTypeVersion, true
+	case 19298:
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType_DictionaryFragment, true
 	case 21002:
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_FieldTargetDataType, true
 	case 21156:
@@ -4773,6 +4965,42 @@ func OpcuaNodeIdServicesVariableOpcByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_EnumDefinition_DataTypeVersion, true
 	case "OpcUa_BinarySchema_EnumDefinition_DictionaryFragment":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_EnumDefinition_DictionaryFragment, true
+	case "OpcUa_BinarySchema_ActionTargetDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType, true
+	case "OpcUa_BinarySchema_ActionTargetDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_ActionTargetDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType_DictionaryFragment, true
+	case "OpcUa_BinarySchema_PublishedActionDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType, true
+	case "OpcUa_BinarySchema_PublishedActionDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_PublishedActionDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType_DictionaryFragment, true
+	case "OpcUa_BinarySchema_ActionMethodDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType, true
+	case "OpcUa_BinarySchema_ActionMethodDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_ActionMethodDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_ActionTargetDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType, true
+	case "OpcUa_XmlSchema_ActionTargetDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_ActionTargetDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_PublishedActionDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType, true
+	case "OpcUa_XmlSchema_PublishedActionDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_PublishedActionDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_ActionMethodDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType, true
+	case "OpcUa_XmlSchema_ActionMethodDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_ActionMethodDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType_DictionaryFragment, true
 	case "OpcUa_BinarySchema_RationalNumber":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_RationalNumber, true
 	case "OpcUa_BinarySchema_RationalNumber_DataTypeVersion":
@@ -4849,6 +5077,30 @@ func OpcuaNodeIdServicesVariableOpcByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates, true
 	case "OpcUa_XmlSchema_CartesianCoordinates_DataTypeVersion":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates_DataTypeVersion, true
+	case "OpcUa_BinarySchema_PublishedActionMethodDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType, true
+	case "OpcUa_BinarySchema_PublishedActionMethodDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_PublishedActionMethodDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType_DictionaryFragment, true
+	case "OpcUa_BinarySchema_DtlsPubSubConnectionDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType, true
+	case "OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_PublishedActionMethodDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType, true
+	case "OpcUa_XmlSchema_PublishedActionMethodDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_PublishedActionMethodDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_DtlsPubSubConnectionDataType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType, true
+	case "OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DictionaryFragment, true
 	case "OpcUa_XmlSchema_CartesianCoordinates_DictionaryFragment":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates_DictionaryFragment, true
 	case "OpcUa_XmlSchema_ThreeDCartesianCoordinates":
@@ -4881,6 +5133,42 @@ func OpcuaNodeIdServicesVariableOpcByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDFrame_DataTypeVersion, true
 	case "OpcUa_XmlSchema_ThreeDFrame_DictionaryFragment":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDFrame_DictionaryFragment, true
+	case "OpcUa_BinarySchema_LldpManagementAddressTxPortType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType, true
+	case "OpcUa_BinarySchema_LldpManagementAddressTxPortType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_LldpManagementAddressTxPortType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType_DictionaryFragment, true
+	case "OpcUa_BinarySchema_LldpManagementAddressType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType, true
+	case "OpcUa_BinarySchema_LldpManagementAddressType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_LldpManagementAddressType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType_DictionaryFragment, true
+	case "OpcUa_BinarySchema_LldpTlvType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType, true
+	case "OpcUa_BinarySchema_LldpTlvType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType_DataTypeVersion, true
+	case "OpcUa_BinarySchema_LldpTlvType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_LldpManagementAddressTxPortType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType, true
+	case "OpcUa_XmlSchema_LldpManagementAddressTxPortType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_LldpManagementAddressTxPortType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_LldpManagementAddressType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType, true
+	case "OpcUa_XmlSchema_LldpManagementAddressType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_LldpManagementAddressType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType_DictionaryFragment, true
+	case "OpcUa_XmlSchema_LldpTlvType":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType, true
+	case "OpcUa_XmlSchema_LldpTlvType_DataTypeVersion":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType_DataTypeVersion, true
+	case "OpcUa_XmlSchema_LldpTlvType_DictionaryFragment":
+		return OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType_DictionaryFragment, true
 	case "OpcUa_BinarySchema_FieldTargetDataType":
 		return OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_FieldTargetDataType, true
 	case "OpcUa_BinarySchema_WriterGroupDataType":
@@ -6792,6 +7080,42 @@ func (e OpcuaNodeIdServicesVariableOpc) PLC4XEnumName() string {
 		return "OpcUa_BinarySchema_EnumDefinition_DataTypeVersion"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_EnumDefinition_DictionaryFragment:
 		return "OpcUa_BinarySchema_EnumDefinition_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType:
+		return "OpcUa_BinarySchema_ActionTargetDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType_DataTypeVersion:
+		return "OpcUa_BinarySchema_ActionTargetDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionTargetDataType_DictionaryFragment:
+		return "OpcUa_BinarySchema_ActionTargetDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType:
+		return "OpcUa_BinarySchema_PublishedActionDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType_DataTypeVersion:
+		return "OpcUa_BinarySchema_PublishedActionDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionDataType_DictionaryFragment:
+		return "OpcUa_BinarySchema_PublishedActionDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType:
+		return "OpcUa_BinarySchema_ActionMethodDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType_DataTypeVersion:
+		return "OpcUa_BinarySchema_ActionMethodDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_ActionMethodDataType_DictionaryFragment:
+		return "OpcUa_BinarySchema_ActionMethodDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType:
+		return "OpcUa_XmlSchema_ActionTargetDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType_DataTypeVersion:
+		return "OpcUa_XmlSchema_ActionTargetDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionTargetDataType_DictionaryFragment:
+		return "OpcUa_XmlSchema_ActionTargetDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType:
+		return "OpcUa_XmlSchema_PublishedActionDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType_DataTypeVersion:
+		return "OpcUa_XmlSchema_PublishedActionDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionDataType_DictionaryFragment:
+		return "OpcUa_XmlSchema_PublishedActionDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType:
+		return "OpcUa_XmlSchema_ActionMethodDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType_DataTypeVersion:
+		return "OpcUa_XmlSchema_ActionMethodDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ActionMethodDataType_DictionaryFragment:
+		return "OpcUa_XmlSchema_ActionMethodDataType_DictionaryFragment"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_RationalNumber:
 		return "OpcUa_BinarySchema_RationalNumber"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_RationalNumber_DataTypeVersion:
@@ -6868,6 +7192,30 @@ func (e OpcuaNodeIdServicesVariableOpc) PLC4XEnumName() string {
 		return "OpcUa_XmlSchema_CartesianCoordinates"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates_DataTypeVersion:
 		return "OpcUa_XmlSchema_CartesianCoordinates_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType:
+		return "OpcUa_BinarySchema_PublishedActionMethodDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType_DataTypeVersion:
+		return "OpcUa_BinarySchema_PublishedActionMethodDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_PublishedActionMethodDataType_DictionaryFragment:
+		return "OpcUa_BinarySchema_PublishedActionMethodDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType:
+		return "OpcUa_BinarySchema_DtlsPubSubConnectionDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DataTypeVersion:
+		return "OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DictionaryFragment:
+		return "OpcUa_BinarySchema_DtlsPubSubConnectionDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType:
+		return "OpcUa_XmlSchema_PublishedActionMethodDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType_DataTypeVersion:
+		return "OpcUa_XmlSchema_PublishedActionMethodDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_PublishedActionMethodDataType_DictionaryFragment:
+		return "OpcUa_XmlSchema_PublishedActionMethodDataType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType:
+		return "OpcUa_XmlSchema_DtlsPubSubConnectionDataType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DataTypeVersion:
+		return "OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DictionaryFragment:
+		return "OpcUa_XmlSchema_DtlsPubSubConnectionDataType_DictionaryFragment"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_CartesianCoordinates_DictionaryFragment:
 		return "OpcUa_XmlSchema_CartesianCoordinates_DictionaryFragment"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDCartesianCoordinates:
@@ -6900,6 +7248,42 @@ func (e OpcuaNodeIdServicesVariableOpc) PLC4XEnumName() string {
 		return "OpcUa_XmlSchema_ThreeDFrame_DataTypeVersion"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_ThreeDFrame_DictionaryFragment:
 		return "OpcUa_XmlSchema_ThreeDFrame_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType:
+		return "OpcUa_BinarySchema_LldpManagementAddressTxPortType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType_DataTypeVersion:
+		return "OpcUa_BinarySchema_LldpManagementAddressTxPortType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressTxPortType_DictionaryFragment:
+		return "OpcUa_BinarySchema_LldpManagementAddressTxPortType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType:
+		return "OpcUa_BinarySchema_LldpManagementAddressType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType_DataTypeVersion:
+		return "OpcUa_BinarySchema_LldpManagementAddressType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpManagementAddressType_DictionaryFragment:
+		return "OpcUa_BinarySchema_LldpManagementAddressType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType:
+		return "OpcUa_BinarySchema_LldpTlvType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType_DataTypeVersion:
+		return "OpcUa_BinarySchema_LldpTlvType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_LldpTlvType_DictionaryFragment:
+		return "OpcUa_BinarySchema_LldpTlvType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType:
+		return "OpcUa_XmlSchema_LldpManagementAddressTxPortType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType_DataTypeVersion:
+		return "OpcUa_XmlSchema_LldpManagementAddressTxPortType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressTxPortType_DictionaryFragment:
+		return "OpcUa_XmlSchema_LldpManagementAddressTxPortType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType:
+		return "OpcUa_XmlSchema_LldpManagementAddressType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType_DataTypeVersion:
+		return "OpcUa_XmlSchema_LldpManagementAddressType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpManagementAddressType_DictionaryFragment:
+		return "OpcUa_XmlSchema_LldpManagementAddressType_DictionaryFragment"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType:
+		return "OpcUa_XmlSchema_LldpTlvType"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType_DataTypeVersion:
+		return "OpcUa_XmlSchema_LldpTlvType_DataTypeVersion"
+	case OpcuaNodeIdServicesVariableOpc_OpcUa_XmlSchema_LldpTlvType_DictionaryFragment:
+		return "OpcUa_XmlSchema_LldpTlvType_DictionaryFragment"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_FieldTargetDataType:
 		return "OpcUa_BinarySchema_FieldTargetDataType"
 	case OpcuaNodeIdServicesVariableOpc_OpcUa_BinarySchema_WriterGroupDataType:

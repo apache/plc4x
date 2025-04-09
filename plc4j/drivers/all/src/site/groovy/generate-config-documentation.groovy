@@ -56,7 +56,7 @@ def plcDriverManager = new DefaultPlcDriverManager(moduleClassloader)
 
 // Process all driver information.
 for (final def protocolCode in plcDriverManager.getProtocolCodes()) {
-    def outputFile = new File(project.getBasedir(), "../../../website/generated/" + protocolCode + ".adoc")
+    def outputFile = new File(project.getBasedir(), "../../../website/asciidoc/modules/users/partials/" + protocolCode + ".adoc")
     // In order to re-generate this file, make sure it doesn't exist.
     if(outputFile.exists()) {
         outputFile.delete()

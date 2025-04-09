@@ -106,7 +106,7 @@ type WithDiscoveryOption interface {
 // Internal section
 //
 
-//go:generate plc4xGenerator -type=plcDriverManger
+//go:generate go tool plc4xGenerator -type=plcDriverManger
 type plcDriverManger struct {
 	drivers    map[string]PlcDriver
 	transports map[string]transports.Transport
@@ -299,6 +299,7 @@ func (m *plcDriverManger) DiscoverWithContext(ctx context.Context, callback func
 }
 
 func (m *plcDriverManger) Close() error {
+	defer utils.StopWarn(m.log)()
 	m.log.Info().Msg("Shutting down driver manager")
 	var aggregatedErrors []error
 	for s, driver := range m.drivers {

@@ -22,6 +22,7 @@ package s7
 import (
 	"context"
 	"runtime/debug"
+	"sync"
 	"time"
 
 	"github.com/pkg/errors"
@@ -41,12 +42,14 @@ type Writer struct {
 	messageCodec  spi.MessageCodec
 	tm            transactions.RequestTransactionManager
 
+	wg sync.WaitGroup // use to track spawned go routines
+
 	log zerolog.Logger
 }
 
-func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) Writer {
+func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Writer {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	return Writer{
+	return &Writer{
 		tpduGenerator: tpduGenerator,
 		messageCodec:  messageCodec,
 		tm:            tm,
@@ -54,10 +57,12 @@ func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm t
 	}
 }
 
-func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
+func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	// TODO: handle context
 	result := make(chan apiModel.PlcWriteRequestResult, 1)
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -160,7 +165,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 	return result
 }
 
-func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
+func (m *Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
 	var errorClass uint8
 	var errorCode uint8
 	switch messageResponseData := response.(type) {

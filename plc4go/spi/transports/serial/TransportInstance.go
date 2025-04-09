@@ -33,6 +33,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type TransportInstance struct {
@@ -94,6 +95,7 @@ func (m *TransportInstance) Connect() error {
 }
 
 func (m *TransportInstance) Close() error {
+	defer utils.StopWarn(m.log)()
 	m.stateChangeMutex.Lock()
 	defer m.stateChangeMutex.Unlock()
 

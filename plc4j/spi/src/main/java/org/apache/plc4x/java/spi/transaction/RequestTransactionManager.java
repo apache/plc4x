@@ -224,8 +224,8 @@ public class RequestTransactionManager {
                 logger.trace("Start execution of transaction {}", transactionId);
                 delegate.run();
                 logger.trace("Completed execution of transaction {}", transactionId);
-            }  catch (Exception ex) {
-                logger.info(ex.getMessage());
+            }  catch (Exception e) {
+                logger.info("Got an error executing transaction", e);
             }
         }
     }

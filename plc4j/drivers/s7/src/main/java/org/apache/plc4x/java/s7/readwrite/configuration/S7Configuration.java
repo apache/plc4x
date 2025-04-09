@@ -113,17 +113,17 @@ public class S7Configuration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter("ping")
     @BooleanDefaultValue(false)
-    @Description("Time for supervision of TCP channels. If the channel is not active, a safe stop of the EventLoop must be performed, to ensure that no additional tasks are created.")
+    @Description("If your application requires sampling times greater than the set \"read-timeout\" time, it is important that the PING option is activated, this will prevent the TCP channel from being closed unnecessarily.")
     public boolean ping = false;
 
     @ConfigurationParameter("ping-time")
     @IntDefaultValue(0)
-    @Description("If your application requires sampling times greater than the set \"read-timeout\" time, it is important that the PING option is activated, this will prevent the TCP channel from being closed unnecessarily.")
+    @Description("Time value in seconds at which the execution of the PING will be scheduled. Generally set by developer experience, but generally should be the same as (read-timeout / 2).")
     public int pingTime = 0;
 
     @ConfigurationParameter("retry-time")
     @IntDefaultValue(0)
-    @Description("Time value in seconds at which the execution of the PING will be scheduled. Generally set by developer experience, but generally should be the same as (read-timeout / 2).")
+    @Description("Time for supervision of TCP channels. If the channel is not active, a safe stop of the EventLoop must be performed, to ensure that no additional tasks are created.")
     public int retryTime = 0;
 
     public int getLocalRack() {
@@ -277,7 +277,7 @@ public class S7Configuration implements PlcConnectionConfiguration {
     public void setRetryTime(int retryTime) {
         this.retryTime = retryTime;
     }
-    
+
     @Override
     public String toString() {
         return "Configuration{" +

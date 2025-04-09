@@ -23,6 +23,7 @@ import (
 	"context"
 	"runtime/debug"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/pkg/errors"
@@ -38,6 +39,8 @@ type Writer struct {
 	device  *Device
 	options map[string][]string
 	tracer  tracer.Tracer
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
@@ -55,7 +58,9 @@ func NewWriter(device *Device, writerOptions map[string][]string, tracer tracer.
 
 func (w *Writer) Write(_ context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	ch := make(chan apiModel.PlcWriteRequestResult, 1)
+	w.wg.Add(1)
 	go func() {
+		defer w.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))

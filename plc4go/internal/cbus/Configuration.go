@@ -29,7 +29,7 @@ import (
 	"golang.org/x/text/language"
 )
 
-//go:generate plc4xGenerator -type=Configuration
+//go:generate go tool plc4xGenerator -type=Configuration
 type Configuration struct {
 	Srchk    bool
 	Exstat   bool

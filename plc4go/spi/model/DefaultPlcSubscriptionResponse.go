@@ -28,7 +28,7 @@ import (
 
 var _ apiModel.PlcSubscriptionResponse = &DefaultPlcSubscriptionResponse{}
 
-//go:generate plc4xGenerator -type=DefaultPlcSubscriptionResponse
+//go:generate go tool plc4xGenerator -type=DefaultPlcSubscriptionResponse
 type DefaultPlcSubscriptionResponse struct {
 	request apiModel.PlcSubscriptionRequest
 	values  map[string]*DefaultPlcSubscriptionResponseItem

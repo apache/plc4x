@@ -364,14 +364,24 @@
 ]
 
 //TODO: Apply for S7-300
-[type AlarmMessageQueryType(uint 16 dataLength)
+// This seems to be a duplicate definition, however this definition was never used, so I commented it out
+/*[type AlarmMessageQueryType(uint 16 dataLength)
     [simple uint 8                      functionId]
     [simple uint 8                      numberOfObjects]
     [simple DataTransportErrorCode      returnCode]
     [simple DataTransportSize           transportSize]
     [const  uint 16                     dataLength     0xFFFF]
     [array  AlarmMessageObjectQueryType messageObjects count   'STATIC_CALL("countAMOQT", readBuffer, dataLength)' ]
+]*/
+[type AlarmMessageQueryType
+    [simple uint 8                      functionId]
+    [simple uint 8                      numberOfObjects]
+    [simple DataTransportErrorCode      returnCode]
+    [simple DataTransportSize           transportSize]
+    [const  uint 16                     dataLength     0xFFFF]
+    [array  AlarmMessageObjectQueryType messageObjects count    'numberOfObjects' ]
 ]
+
 
 //TODO: Apply for S7-400
 [type Alarm8MessageQueryType
@@ -395,15 +405,6 @@
     [simple   AssociatedValueType valueComing]
     [simple   DateAndTime         timeGoing]
     [simple   AssociatedValueType valueGoing]
-]
-
-[type AlarmMessageQueryType
-    [simple uint 8                      functionId]
-    [simple uint 8                      numberOfObjects]
-    [simple DataTransportErrorCode      returnCode]
-    [simple DataTransportSize           transportSize]
-    [const  uint 16                     dataLength     0xFFFF]
-    [array  AlarmMessageObjectQueryType messageObjects count    'numberOfObjects' ]
 ]
 
 [type AlarmMessageObjectAckType
@@ -860,16 +861,6 @@
     ['0x40' CLASS_4]
 ]
 
-[enum uint 8 DataTransportSize(bit sizeInBits)
-    ['0x00' NULL            ['false']]
-    ['0x03' BIT             ['true' ]]
-    ['0x04' BYTE_WORD_DWORD ['true' ]]
-    ['0x05' INTEGER         ['true' ]]
-    ['0x06' DINTEGER        ['false']]
-    ['0x07' REAL            ['false']]
-    ['0x09' OCTET_STRING    ['false']]
-]
-
 [enum uint 8 DeviceGroup
     ['0x01' PG_OR_PC]
     ['0x02' OS      ]
@@ -928,14 +919,24 @@
 ]
 
 [enum uint 8 MemoryArea(string 24 shortName)
+    // It seems counters and timers are simply numbered. So C1 refers to Counter #1 and C42 to the 42nd Counter
+    // However, can sub-items of the counter generally be addressed. "C1.CV" (Current Value), "C1.PV" (Present Value)
     ['0x1C' COUNTERS                 ['C']]
+    // See comment at COUNTERS
     ['0x1D' TIMERS                   ['T']]
+    // TODO: It seems direct peripherial access needs some additional work: https://support.industry.siemens.com/cs/document/18325417/where-and-when-do-you-need-peripheral-addressing-?dti=0&lc=en-CY
     ['0x80' DIRECT_PERIPHERAL_ACCESS ['D']]
+    // Inputs are simply numbered.
     ['0x81' INPUTS                   ['I']]
+    // Inputs are simply numbered.
     ['0x82' OUTPUTS                  ['Q']]
+    // Markers seem to be interpreted as one consecutive byte array block with optional bit-access: "M<byte>[.<bit>]"
     ['0x83' FLAGS_MARKERS            ['M']]
+    // DB addresses are followed by the block number directly after the "DB" prefix.
     ['0x84' DATA_BLOCKS              ['DB']]
+    // DBI addresses follow the same rules as DB blocks and the "Instance" part seems to be an implementation detail.
     ['0x85' INSTANCE_DATA_BLOCKS     ['DBI']]
+    // It seems that these refer to variables local to a bloks execution context and are therefor only accessible within this context.
     ['0x86' LOCAL_DATA               ['LD']]
 ]
 

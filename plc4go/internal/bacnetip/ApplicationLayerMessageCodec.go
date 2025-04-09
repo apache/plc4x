@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"net"
 	"net/url"
+	"sync"
 	"time"
 
 	"github.com/pkg/errors"
@@ -42,7 +43,7 @@ import (
 
 // ApplicationLayerMessageCodec is a wrapper for MessageCodec which takes care of segmentation, retries etc.
 //
-//go:generate plc4xGenerator -type=ApplicationLayerMessageCodec
+//go:generate go tool plc4xGenerator -type=ApplicationLayerMessageCodec
 type ApplicationLayerMessageCodec struct {
 	bipSimpleApplication *app.BIPSimpleApplication
 	messageCode          *MessageCodec
@@ -50,6 +51,8 @@ type ApplicationLayerMessageCodec struct {
 
 	localAddress  *net.UDPAddr `stringer:"true"`
 	remoteAddress *net.UDPAddr `stringer:"true"`
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
@@ -125,8 +128,12 @@ func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
+		m.wg.Add(1)
 		go func() {
+			defer m.wg.Done()
 			if err := m.bipSimpleApplication.RequestIO(iocb); err != nil {
 				m.log.Debug().Err(err).Msg("errored")
 			}
@@ -145,7 +152,7 @@ func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
 	return nil
 }
 
-func (m *ApplicationLayerMessageCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+func (m *ApplicationLayerMessageCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) {
 	// TODO: implement me
 	panic("not yet implemented")
 }
@@ -159,10 +166,14 @@ func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message 
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
+		m.wg.Add(1)
 		go func() {
+			defer m.wg.Done()
 			if err := m.bipSimpleApplication.RequestIO(iocb); err != nil {
-
+				m.log.Error().Err(err).Msg("errored")
 			}
 		}()
 		iocb.Wait()

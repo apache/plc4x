@@ -42,13 +42,17 @@ func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
@@ -113,13 +117,17 @@ func TestLeasedPlcConnection_GetTracer(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
@@ -158,13 +166,17 @@ func TestLeasedPlcConnection_GetConnectionId(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
@@ -203,13 +215,17 @@ func TestLeasedPlcConnection_Connect(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
@@ -246,13 +262,17 @@ func TestLeasedPlcConnection_BlockingClose(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
@@ -290,13 +310,17 @@ func TestLeasedPlcConnection_Close(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
@@ -334,13 +358,17 @@ func TestLeasedPlcConnection_IsConnected(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
@@ -370,13 +398,17 @@ func TestLeasedPlcConnection_Ping(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
@@ -415,13 +447,17 @@ func TestLeasedPlcConnection_GetMetadata(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
@@ -464,13 +500,17 @@ func TestLeasedPlcConnection_ReadRequestBuilder(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
@@ -510,13 +550,17 @@ func TestLeasedPlcConnection_WriteRequestBuilder(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
@@ -556,13 +600,17 @@ func TestLeasedPlcConnection_SubscriptionRequestBuilder(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
@@ -602,13 +650,17 @@ func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
@@ -656,13 +708,17 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  1 * time.Second,
-		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
+		driverManager:       driverManager,
+		maxLeaseTime:        1 * time.Second,
+		maxWaitTime:         5 * time.Second,
+		responseGrabTimeout: 10 * time.Millisecond,
+		cacheLock:           lock.NewCASMutex(),
+		connections:         make(map[string]*connectionContainer),
+		tracer:              nil,
 	}
+	t.Cleanup(func() {
+		<-cache.Close()
+	})
 	cache.EnableTracer()
 
 	// The first and second connection should work fine

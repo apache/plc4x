@@ -177,10 +177,10 @@ const (
 	KnxDatapointType_DPT_Value_4_Count                            KnxDatapointType = 130
 	KnxDatapointType_DPT_FlowRate_m3h                             KnxDatapointType = 131
 	KnxDatapointType_DPT_ActiveEnergy                             KnxDatapointType = 132
-	KnxDatapointType_DPT_ApparantEnergy                           KnxDatapointType = 133
+	KnxDatapointType_DPT_ApparentEnergy                           KnxDatapointType = 133
 	KnxDatapointType_DPT_ReactiveEnergy                           KnxDatapointType = 134
 	KnxDatapointType_DPT_ActiveEnergy_kWh                         KnxDatapointType = 135
-	KnxDatapointType_DPT_ApparantEnergy_kVAh                      KnxDatapointType = 136
+	KnxDatapointType_DPT_ApparentEnergy_kVAh                      KnxDatapointType = 136
 	KnxDatapointType_DPT_ReactiveEnergy_kVARh                     KnxDatapointType = 137
 	KnxDatapointType_DPT_ActiveEnergy_MWh                         KnxDatapointType = 138
 	KnxDatapointType_DPT_LongDeltaTimeSec                         KnxDatapointType = 139
@@ -360,7 +360,7 @@ const (
 	KnxDatapointType_DPT_SceneInfo                                KnxDatapointType = 313
 	KnxDatapointType_DPT_CombinedInfoOnOff                        KnxDatapointType = 314
 	KnxDatapointType_DPT_ActiveEnergy_V64                         KnxDatapointType = 315
-	KnxDatapointType_DPT_ApparantEnergy_V64                       KnxDatapointType = 316
+	KnxDatapointType_DPT_ApparentEnergy_V64                       KnxDatapointType = 316
 	KnxDatapointType_DPT_ReactiveEnergy_V64                       KnxDatapointType = 317
 	KnxDatapointType_DPT_Channel_Activation_24                    KnxDatapointType = 318
 	KnxDatapointType_DPT_HVACModeNext                             KnxDatapointType = 319
@@ -536,10 +536,10 @@ func init() {
 		KnxDatapointType_DPT_Value_4_Count,
 		KnxDatapointType_DPT_FlowRate_m3h,
 		KnxDatapointType_DPT_ActiveEnergy,
-		KnxDatapointType_DPT_ApparantEnergy,
+		KnxDatapointType_DPT_ApparentEnergy,
 		KnxDatapointType_DPT_ReactiveEnergy,
 		KnxDatapointType_DPT_ActiveEnergy_kWh,
-		KnxDatapointType_DPT_ApparantEnergy_kVAh,
+		KnxDatapointType_DPT_ApparentEnergy_kVAh,
 		KnxDatapointType_DPT_ReactiveEnergy_kVARh,
 		KnxDatapointType_DPT_ActiveEnergy_MWh,
 		KnxDatapointType_DPT_LongDeltaTimeSec,
@@ -719,7 +719,7 @@ func init() {
 		KnxDatapointType_DPT_SceneInfo,
 		KnxDatapointType_DPT_CombinedInfoOnOff,
 		KnxDatapointType_DPT_ActiveEnergy_V64,
-		KnxDatapointType_DPT_ApparantEnergy_V64,
+		KnxDatapointType_DPT_ApparentEnergy_V64,
 		KnxDatapointType_DPT_ReactiveEnergy_V64,
 		KnxDatapointType_DPT_Channel_Activation_24,
 		KnxDatapointType_DPT_HVACModeNext,
@@ -2344,7 +2344,7 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 133:
 		{ /* '133' */
-			return "apparant energy (VAh)"
+			return "apparent energy (VAh)"
 		}
 	case 134:
 		{ /* '134' */
@@ -2356,7 +2356,7 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 136:
 		{ /* '136' */
-			return "apparant energy (kVAh)"
+			return "apparent energy (kVAh)"
 		}
 	case 137:
 		{ /* '137' */
@@ -3156,7 +3156,7 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 316:
 		{ /* '316' */
-			return "apparant energy (VAh)"
+			return "apparent energy (VAh)"
 		}
 	case 317:
 		{ /* '317' */
@@ -5116,13 +5116,13 @@ func KnxDatapointTypeByValue(value uint32) (enum KnxDatapointType, ok bool) {
 	case 132:
 		return KnxDatapointType_DPT_ActiveEnergy, true
 	case 133:
-		return KnxDatapointType_DPT_ApparantEnergy, true
+		return KnxDatapointType_DPT_ApparentEnergy, true
 	case 134:
 		return KnxDatapointType_DPT_ReactiveEnergy, true
 	case 135:
 		return KnxDatapointType_DPT_ActiveEnergy_kWh, true
 	case 136:
-		return KnxDatapointType_DPT_ApparantEnergy_kVAh, true
+		return KnxDatapointType_DPT_ApparentEnergy_kVAh, true
 	case 137:
 		return KnxDatapointType_DPT_ReactiveEnergy_kVARh, true
 	case 138:
@@ -5522,7 +5522,7 @@ func KnxDatapointTypeByValue(value uint32) (enum KnxDatapointType, ok bool) {
 	case 315:
 		return KnxDatapointType_DPT_ActiveEnergy_V64, true
 	case 316:
-		return KnxDatapointType_DPT_ApparantEnergy_V64, true
+		return KnxDatapointType_DPT_ApparentEnergy_V64, true
 	case 317:
 		return KnxDatapointType_DPT_ReactiveEnergy_V64, true
 	case 318:
@@ -5825,14 +5825,14 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_FlowRate_m3h, true
 	case "DPT_ActiveEnergy":
 		return KnxDatapointType_DPT_ActiveEnergy, true
-	case "DPT_ApparantEnergy":
-		return KnxDatapointType_DPT_ApparantEnergy, true
+	case "DPT_ApparentEnergy":
+		return KnxDatapointType_DPT_ApparentEnergy, true
 	case "DPT_ReactiveEnergy":
 		return KnxDatapointType_DPT_ReactiveEnergy, true
 	case "DPT_ActiveEnergy_kWh":
 		return KnxDatapointType_DPT_ActiveEnergy_kWh, true
-	case "DPT_ApparantEnergy_kVAh":
-		return KnxDatapointType_DPT_ApparantEnergy_kVAh, true
+	case "DPT_ApparentEnergy_kVAh":
+		return KnxDatapointType_DPT_ApparentEnergy_kVAh, true
 	case "DPT_ReactiveEnergy_kVARh":
 		return KnxDatapointType_DPT_ReactiveEnergy_kVARh, true
 	case "DPT_ActiveEnergy_MWh":
@@ -6231,8 +6231,8 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_CombinedInfoOnOff, true
 	case "DPT_ActiveEnergy_V64":
 		return KnxDatapointType_DPT_ActiveEnergy_V64, true
-	case "DPT_ApparantEnergy_V64":
-		return KnxDatapointType_DPT_ApparantEnergy_V64, true
+	case "DPT_ApparentEnergy_V64":
+		return KnxDatapointType_DPT_ApparentEnergy_V64, true
 	case "DPT_ReactiveEnergy_V64":
 		return KnxDatapointType_DPT_ReactiveEnergy_V64, true
 	case "DPT_Channel_Activation_24":
@@ -6610,14 +6610,14 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_FlowRate_m3h"
 	case KnxDatapointType_DPT_ActiveEnergy:
 		return "DPT_ActiveEnergy"
-	case KnxDatapointType_DPT_ApparantEnergy:
-		return "DPT_ApparantEnergy"
+	case KnxDatapointType_DPT_ApparentEnergy:
+		return "DPT_ApparentEnergy"
 	case KnxDatapointType_DPT_ReactiveEnergy:
 		return "DPT_ReactiveEnergy"
 	case KnxDatapointType_DPT_ActiveEnergy_kWh:
 		return "DPT_ActiveEnergy_kWh"
-	case KnxDatapointType_DPT_ApparantEnergy_kVAh:
-		return "DPT_ApparantEnergy_kVAh"
+	case KnxDatapointType_DPT_ApparentEnergy_kVAh:
+		return "DPT_ApparentEnergy_kVAh"
 	case KnxDatapointType_DPT_ReactiveEnergy_kVARh:
 		return "DPT_ReactiveEnergy_kVARh"
 	case KnxDatapointType_DPT_ActiveEnergy_MWh:
@@ -7016,8 +7016,8 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_CombinedInfoOnOff"
 	case KnxDatapointType_DPT_ActiveEnergy_V64:
 		return "DPT_ActiveEnergy_V64"
-	case KnxDatapointType_DPT_ApparantEnergy_V64:
-		return "DPT_ApparantEnergy_V64"
+	case KnxDatapointType_DPT_ApparentEnergy_V64:
+		return "DPT_ApparentEnergy_V64"
 	case KnxDatapointType_DPT_ReactiveEnergy_V64:
 		return "DPT_ReactiveEnergy_V64"
 	case KnxDatapointType_DPT_Channel_Activation_24:

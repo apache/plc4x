@@ -25,7 +25,7 @@ on:
       - completed
 
 env:
-  GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+  DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
 
 jobs:
   report:
@@ -38,7 +38,7 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: dorny/test-reporter@v1
+      - uses: dorny/test-reporter@v2
         with:
           artifact: "java-test-report-${{ matrix.os }}-java-${{ matrix.java }}"
           name: "Java Tests (OS: ${{ matrix.os }}, Java: ${{ matrix.java }})"

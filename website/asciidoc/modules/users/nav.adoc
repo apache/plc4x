@@ -54,6 +54,7 @@
 *** xref:protocols/plc4x.adoc[]
 *** xref:protocols/profinet.adoc[]
 *** xref:protocols/s7.adoc[]
+*** xref:protocols/s7-light.adoc[]
 *** xref:protocols/simulated.adoc[]
 *** xref:protocols/umas.adoc[]
 

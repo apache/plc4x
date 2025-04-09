@@ -329,18 +329,18 @@ func TestBooleanApplicationToObject(t *testing.T) {
 	objEndec(t, quick.Enumerated(128), "9180")
 
 	// date
-	objEndec(t, quick.Date(DateTuple{1, 2, 3, 4}), "A401020304")
-	objEndec(t, quick.Date(DateTuple{255, 2, 3, 4}), "A4FF020304")
-	objEndec(t, quick.Date(DateTuple{1, 255, 3, 4}), "A401FF0304")
-	objEndec(t, quick.Date(DateTuple{1, 2, 255, 4}), "A40102FF04")
-	objEndec(t, quick.Date(DateTuple{1, 2, 3, 255}), "A4010203FF")
+	objEndec(t, quick.Date(DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4}), "A401020304")
+	objEndec(t, quick.Date(DateTuple{Year: 255, Month: 2, Day: 3, DayOfWeek: 4}), "A4FF020304")
+	objEndec(t, quick.Date(DateTuple{Year: 1, Month: 255, Day: 3, DayOfWeek: 4}), "A401FF0304")
+	objEndec(t, quick.Date(DateTuple{Year: 1, Month: 2, Day: 255, DayOfWeek: 4}), "A40102FF04")
+	objEndec(t, quick.Date(DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 255}), "A4010203FF")
 
 	// time
-	objEndec(t, quick.Time(TimeTuple{1, 2, 3, 4}), "B401020304")
-	objEndec(t, quick.Time(TimeTuple{255, 2, 3, 4}), "B4FF020304")
-	objEndec(t, quick.Time(TimeTuple{1, 255, 3, 4}), "B401FF0304")
-	objEndec(t, quick.Time(TimeTuple{1, 2, 255, 4}), "B40102FF04")
-	objEndec(t, quick.Time(TimeTuple{1, 2, 3, 255}), "B4010203FF")
+	objEndec(t, quick.Time(TimeTuple{Hour: 1, Minute: 2, Second: 3, Hundredth: 4}), "B401020304")
+	objEndec(t, quick.Time(TimeTuple{Hour: 255, Minute: 2, Second: 3, Hundredth: 4}), "B4FF020304")
+	objEndec(t, quick.Time(TimeTuple{Hour: 1, Minute: 255, Second: 3, Hundredth: 4}), "B401FF0304")
+	objEndec(t, quick.Time(TimeTuple{Hour: 1, Minute: 2, Second: 255, Hundredth: 4}), "B40102FF04")
+	objEndec(t, quick.Time(TimeTuple{Hour: 1, Minute: 2, Second: 3, Hundredth: 255}), "B4010203FF")
 
 	// object identifier
 	objEndec(t, quick.ObjectIdentifier(0, 0), "C400000000")

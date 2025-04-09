@@ -379,10 +379,10 @@ public enum KnxDatapointType {
       (int) 10,
       (String) "active energy (Wh)",
       KnxDatapointMainType.DPT_4_BYTE_SIGNED_VALUE),
-  DPT_ApparantEnergy(
+  DPT_ApparentEnergy(
       (long) 133L,
       (int) 11,
-      (String) "apparant energy (VAh)",
+      (String) "apparent energy (VAh)",
       KnxDatapointMainType.DPT_4_BYTE_SIGNED_VALUE),
   DPT_ReactiveEnergy(
       (long) 134L,
@@ -394,10 +394,10 @@ public enum KnxDatapointType {
       (int) 13,
       (String) "active energy (kWh)",
       KnxDatapointMainType.DPT_4_BYTE_SIGNED_VALUE),
-  DPT_ApparantEnergy_kVAh(
+  DPT_ApparentEnergy_kVAh(
       (long) 136L,
       (int) 14,
-      (String) "apparant energy (kVAh)",
+      (String) "apparent energy (kVAh)",
       KnxDatapointMainType.DPT_4_BYTE_SIGNED_VALUE),
   DPT_ReactiveEnergy_kVARh(
       (long) 137L,
@@ -1001,10 +1001,10 @@ public enum KnxDatapointType {
       (int) 10,
       (String) "active energy (Wh)",
       KnxDatapointMainType.DPT_ELECTRICAL_ENERGY),
-  DPT_ApparantEnergy_V64(
+  DPT_ApparentEnergy_V64(
       (long) 316L,
       (int) 11,
-      (String) "apparant energy (VAh)",
+      (String) "apparent energy (VAh)",
       KnxDatapointMainType.DPT_ELECTRICAL_ENERGY),
   DPT_ReactiveEnergy_V64(
       (long) 317L,

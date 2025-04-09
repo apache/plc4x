@@ -144,7 +144,7 @@ const (
 	OpcuaStatusCode_BadServerUriInvalid                                             OpcuaStatusCode = 0x804F0000
 	OpcuaStatusCode_BadServerNameMissing                                            OpcuaStatusCode = 0x80500000
 	OpcuaStatusCode_BadDiscoveryUrlMissing                                          OpcuaStatusCode = 0x80510000
-	OpcuaStatusCode_BadSempahoreFileMissing                                         OpcuaStatusCode = 0x80520000
+	OpcuaStatusCode_BadSemaphoreFileMissing                                         OpcuaStatusCode = 0x80520000
 	OpcuaStatusCode_BadRequestTypeInvalid                                           OpcuaStatusCode = 0x80530000
 	OpcuaStatusCode_BadSecurityModeRejected                                         OpcuaStatusCode = 0x80540000
 	OpcuaStatusCode_BadSecurityPolicyRejected                                       OpcuaStatusCode = 0x80550000
@@ -422,7 +422,7 @@ func init() {
 		OpcuaStatusCode_BadServerUriInvalid,
 		OpcuaStatusCode_BadServerNameMissing,
 		OpcuaStatusCode_BadDiscoveryUrlMissing,
-		OpcuaStatusCode_BadSempahoreFileMissing,
+		OpcuaStatusCode_BadSemaphoreFileMissing,
 		OpcuaStatusCode_BadRequestTypeInvalid,
 		OpcuaStatusCode_BadSecurityModeRejected,
 		OpcuaStatusCode_BadSecurityPolicyRejected,
@@ -850,7 +850,7 @@ func OpcuaStatusCodeByValue(value uint32) (enum OpcuaStatusCode, ok bool) {
 	case 0x80510000:
 		return OpcuaStatusCode_BadDiscoveryUrlMissing, true
 	case 0x80520000:
-		return OpcuaStatusCode_BadSempahoreFileMissing, true
+		return OpcuaStatusCode_BadSemaphoreFileMissing, true
 	case 0x80530000:
 		return OpcuaStatusCode_BadRequestTypeInvalid, true
 	case 0x80540000:
@@ -1397,8 +1397,8 @@ func OpcuaStatusCodeByName(value string) (enum OpcuaStatusCode, ok bool) {
 		return OpcuaStatusCode_BadServerNameMissing, true
 	case "BadDiscoveryUrlMissing":
 		return OpcuaStatusCode_BadDiscoveryUrlMissing, true
-	case "BadSempahoreFileMissing":
-		return OpcuaStatusCode_BadSempahoreFileMissing, true
+	case "BadSemaphoreFileMissing":
+		return OpcuaStatusCode_BadSemaphoreFileMissing, true
 	case "BadRequestTypeInvalid":
 		return OpcuaStatusCode_BadRequestTypeInvalid, true
 	case "BadSecurityModeRejected":
@@ -2010,8 +2010,8 @@ func (e OpcuaStatusCode) PLC4XEnumName() string {
 		return "BadServerNameMissing"
 	case OpcuaStatusCode_BadDiscoveryUrlMissing:
 		return "BadDiscoveryUrlMissing"
-	case OpcuaStatusCode_BadSempahoreFileMissing:
-		return "BadSempahoreFileMissing"
+	case OpcuaStatusCode_BadSemaphoreFileMissing:
+		return "BadSemaphoreFileMissing"
 	case OpcuaStatusCode_BadRequestTypeInvalid:
 		return "BadRequestTypeInvalid"
 	case OpcuaStatusCode_BadSecurityModeRejected:

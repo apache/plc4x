@@ -56,7 +56,7 @@ type IOControllerRequirements interface {
 	AbortIO(iocb IOCBContract, err error) error
 }
 
-//go:generate plc4xGenerator -type=IOController -prefix=iocb_
+//go:generate go tool plc4xGenerator -type=IOController -prefix=iocb_
 type IOController struct {
 	name         string
 	requirements IOControllerRequirements `ignore:"true"`

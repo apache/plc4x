@@ -23,6 +23,7 @@ import (
 	"context"
 	"runtime/debug"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/pkg/errors"
@@ -46,6 +47,8 @@ type Connection struct {
 	connected    bool
 	connectionId string
 	tracer       tracer.Tracer
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
@@ -88,7 +91,9 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 
 func (c *Connection) ConnectWithContext(_ context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+	c.wg.Add(1)
 	go func() {
+		defer c.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -144,7 +149,9 @@ func (c *Connection) BlockingClose() {
 
 func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	ch := make(chan plc4go.PlcConnectionCloseResult, 1)
+	c.wg.Add(1)
 	go func() {
+		defer c.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -190,7 +197,9 @@ func (c *Connection) IsConnected() bool {
 
 func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	ch := make(chan plc4go.PlcConnectionPingResult, 1)
+	c.wg.Add(1)
 	go func() {
+		defer c.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))

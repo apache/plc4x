@@ -82,7 +82,7 @@ To use the Connection Cache you have to add a dependency to the `plc4j-connectio
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-cache</artifactId>
-      <version>{page-component-version}</version>
+      <version>{current-last-released-version}</version>
     </dependency>
 ----
 =====================================================================

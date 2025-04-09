@@ -25,6 +25,7 @@ import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -85,8 +86,9 @@ public class ConnectedEntityTest {
     @Test
     void cache_manyRequests_onlyOneToPlc() throws OPMException {
         // Mock
-        when(mockDevice.write(any(), any()))
-            .thenReturn(PlcResponseCode.OK);
+        // cdutz: I commented out the write operation, as it didn't seem to make any sense.
+        //when(mockDevice.write(any(), any()))
+        //    .thenReturn(PlcResponseCode.OK);
 
         // Trigger a fetch
         CachingEntity entity = entityManager.connect(CachingEntity.class, "mock:cached");

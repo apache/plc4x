@@ -160,6 +160,14 @@ type ExtensionObjectDefinitionBuilder interface {
 	AsPublishedEventsDataType() PublishedEventsDataTypeBuilder
 	// AsPublishedDataSetCustomSourceDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPublishedDataSetCustomSourceDataType() PublishedDataSetCustomSourceDataTypeBuilder
+	// AsActionTargetDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsActionTargetDataType() ActionTargetDataTypeBuilder
+	// AsPublishedActionDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPublishedActionDataType() PublishedActionDataTypeBuilder
+	// AsActionMethodDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsActionMethodDataType() ActionMethodDataTypeBuilder
+	// AsPublishedActionMethodDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPublishedActionMethodDataType() PublishedActionMethodDataTypeBuilder
 	// AsDataSetWriterDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsDataSetWriterDataType() DataSetWriterDataTypeBuilder
 	// AsDataSetWriterTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -246,6 +254,8 @@ type ExtensionObjectDefinitionBuilder interface {
 	AsDatagramWriterGroupTransport2DataType() DatagramWriterGroupTransport2DataTypeBuilder
 	// AsDatagramDataSetReaderTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsDatagramDataSetReaderTransportDataType() DatagramDataSetReaderTransportDataTypeBuilder
+	// AsDtlsPubSubConnectionDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDtlsPubSubConnectionDataType() DtlsPubSubConnectionDataTypeBuilder
 	// AsBrokerConnectionTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsBrokerConnectionTransportDataType() BrokerConnectionTransportDataTypeBuilder
 	// AsBrokerWriterGroupTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -258,12 +268,42 @@ type ExtensionObjectDefinitionBuilder interface {
 	AsPubSubConfigurationRefDataType() PubSubConfigurationRefDataTypeBuilder
 	// AsPubSubConfigurationValueDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPubSubConfigurationValueDataType() PubSubConfigurationValueDataTypeBuilder
+	// AsJsonNetworkMessage converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonNetworkMessage() JsonNetworkMessageBuilder
+	// AsJsonDataSetMessage converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonDataSetMessage() JsonDataSetMessageBuilder
+	// AsJsonDataSetMetaDataMessage converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonDataSetMetaDataMessage() JsonDataSetMetaDataMessageBuilder
+	// AsJsonApplicationDescriptionMessage converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonApplicationDescriptionMessage() JsonApplicationDescriptionMessageBuilder
+	// AsJsonServerEndpointsMessage converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonServerEndpointsMessage() JsonServerEndpointsMessageBuilder
+	// AsJsonStatusMessage converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonStatusMessage() JsonStatusMessageBuilder
+	// AsJsonPubSubConnectionMessage converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonPubSubConnectionMessage() JsonPubSubConnectionMessageBuilder
+	// AsJsonActionMetaDataMessage converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonActionMetaDataMessage() JsonActionMetaDataMessageBuilder
+	// AsJsonActionResponderMessage converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonActionResponderMessage() JsonActionResponderMessageBuilder
+	// AsJsonActionNetworkMessage converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonActionNetworkMessage() JsonActionNetworkMessageBuilder
+	// AsJsonActionRequestMessage converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonActionRequestMessage() JsonActionRequestMessageBuilder
+	// AsJsonActionResponseMessage converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonActionResponseMessage() JsonActionResponseMessageBuilder
 	// AsAliasNameDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsAliasNameDataType() AliasNameDataTypeBuilder
 	// AsUserManagementDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsUserManagementDataType() UserManagementDataTypeBuilder
 	// AsPriorityMappingEntryType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPriorityMappingEntryType() PriorityMappingEntryTypeBuilder
+	// AsLldpManagementAddressTxPortType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsLldpManagementAddressTxPortType() LldpManagementAddressTxPortTypeBuilder
+	// AsLldpManagementAddressType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsLldpManagementAddressType() LldpManagementAddressTypeBuilder
+	// AsLldpTlvType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsLldpTlvType() LldpTlvTypeBuilder
 	// AsReferenceDescriptionDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsReferenceDescriptionDataType() ReferenceDescriptionDataTypeBuilder
 	// AsReferenceListEntryDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -512,6 +552,10 @@ type ExtensionObjectDefinitionBuilder interface {
 	AsReadEventDetails() ReadEventDetailsBuilder
 	// AsReadEventDetails2 converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsReadEventDetails2() ReadEventDetails2Builder
+	// AsSortRuleElement converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsSortRuleElement() SortRuleElementBuilder
+	// AsReadEventDetailsSorted converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReadEventDetailsSorted() ReadEventDetailsSortedBuilder
 	// AsReadRawModifiedDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsReadRawModifiedDetails() ReadRawModifiedDetailsBuilder
 	// AsReadProcessedDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -1128,6 +1172,46 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPublishedDataSetCustomSourceDataTy
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsActionTargetDataType() ActionTargetDataTypeBuilder {
+	if cb, ok := b.childBuilder.(ActionTargetDataTypeBuilder); ok {
+		return cb
+	}
+	cb := NewActionTargetDataTypeBuilder().(*_ActionTargetDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsPublishedActionDataType() PublishedActionDataTypeBuilder {
+	if cb, ok := b.childBuilder.(PublishedActionDataTypeBuilder); ok {
+		return cb
+	}
+	cb := NewPublishedActionDataTypeBuilder().(*_PublishedActionDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsActionMethodDataType() ActionMethodDataTypeBuilder {
+	if cb, ok := b.childBuilder.(ActionMethodDataTypeBuilder); ok {
+		return cb
+	}
+	cb := NewActionMethodDataTypeBuilder().(*_ActionMethodDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsPublishedActionMethodDataType() PublishedActionMethodDataTypeBuilder {
+	if cb, ok := b.childBuilder.(PublishedActionMethodDataTypeBuilder); ok {
+		return cb
+	}
+	cb := NewPublishedActionMethodDataTypeBuilder().(*_PublishedActionMethodDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsDataSetWriterDataType() DataSetWriterDataTypeBuilder {
 	if cb, ok := b.childBuilder.(DataSetWriterDataTypeBuilder); ok {
 		return cb
@@ -1558,6 +1642,16 @@ func (b *_ExtensionObjectDefinitionBuilder) AsDatagramDataSetReaderTransportData
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsDtlsPubSubConnectionDataType() DtlsPubSubConnectionDataTypeBuilder {
+	if cb, ok := b.childBuilder.(DtlsPubSubConnectionDataTypeBuilder); ok {
+		return cb
+	}
+	cb := NewDtlsPubSubConnectionDataTypeBuilder().(*_DtlsPubSubConnectionDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsBrokerConnectionTransportDataType() BrokerConnectionTransportDataTypeBuilder {
 	if cb, ok := b.childBuilder.(BrokerConnectionTransportDataTypeBuilder); ok {
 		return cb
@@ -1618,6 +1712,126 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPubSubConfigurationValueDataType()
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonNetworkMessage() JsonNetworkMessageBuilder {
+	if cb, ok := b.childBuilder.(JsonNetworkMessageBuilder); ok {
+		return cb
+	}
+	cb := NewJsonNetworkMessageBuilder().(*_JsonNetworkMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonDataSetMessage() JsonDataSetMessageBuilder {
+	if cb, ok := b.childBuilder.(JsonDataSetMessageBuilder); ok {
+		return cb
+	}
+	cb := NewJsonDataSetMessageBuilder().(*_JsonDataSetMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonDataSetMetaDataMessage() JsonDataSetMetaDataMessageBuilder {
+	if cb, ok := b.childBuilder.(JsonDataSetMetaDataMessageBuilder); ok {
+		return cb
+	}
+	cb := NewJsonDataSetMetaDataMessageBuilder().(*_JsonDataSetMetaDataMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonApplicationDescriptionMessage() JsonApplicationDescriptionMessageBuilder {
+	if cb, ok := b.childBuilder.(JsonApplicationDescriptionMessageBuilder); ok {
+		return cb
+	}
+	cb := NewJsonApplicationDescriptionMessageBuilder().(*_JsonApplicationDescriptionMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonServerEndpointsMessage() JsonServerEndpointsMessageBuilder {
+	if cb, ok := b.childBuilder.(JsonServerEndpointsMessageBuilder); ok {
+		return cb
+	}
+	cb := NewJsonServerEndpointsMessageBuilder().(*_JsonServerEndpointsMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonStatusMessage() JsonStatusMessageBuilder {
+	if cb, ok := b.childBuilder.(JsonStatusMessageBuilder); ok {
+		return cb
+	}
+	cb := NewJsonStatusMessageBuilder().(*_JsonStatusMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonPubSubConnectionMessage() JsonPubSubConnectionMessageBuilder {
+	if cb, ok := b.childBuilder.(JsonPubSubConnectionMessageBuilder); ok {
+		return cb
+	}
+	cb := NewJsonPubSubConnectionMessageBuilder().(*_JsonPubSubConnectionMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonActionMetaDataMessage() JsonActionMetaDataMessageBuilder {
+	if cb, ok := b.childBuilder.(JsonActionMetaDataMessageBuilder); ok {
+		return cb
+	}
+	cb := NewJsonActionMetaDataMessageBuilder().(*_JsonActionMetaDataMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonActionResponderMessage() JsonActionResponderMessageBuilder {
+	if cb, ok := b.childBuilder.(JsonActionResponderMessageBuilder); ok {
+		return cb
+	}
+	cb := NewJsonActionResponderMessageBuilder().(*_JsonActionResponderMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonActionNetworkMessage() JsonActionNetworkMessageBuilder {
+	if cb, ok := b.childBuilder.(JsonActionNetworkMessageBuilder); ok {
+		return cb
+	}
+	cb := NewJsonActionNetworkMessageBuilder().(*_JsonActionNetworkMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonActionRequestMessage() JsonActionRequestMessageBuilder {
+	if cb, ok := b.childBuilder.(JsonActionRequestMessageBuilder); ok {
+		return cb
+	}
+	cb := NewJsonActionRequestMessageBuilder().(*_JsonActionRequestMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonActionResponseMessage() JsonActionResponseMessageBuilder {
+	if cb, ok := b.childBuilder.(JsonActionResponseMessageBuilder); ok {
+		return cb
+	}
+	cb := NewJsonActionResponseMessageBuilder().(*_JsonActionResponseMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsAliasNameDataType() AliasNameDataTypeBuilder {
 	if cb, ok := b.childBuilder.(AliasNameDataTypeBuilder); ok {
 		return cb
@@ -1643,6 +1857,36 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPriorityMappingEntryType() Priorit
 		return cb
 	}
 	cb := NewPriorityMappingEntryTypeBuilder().(*_PriorityMappingEntryTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsLldpManagementAddressTxPortType() LldpManagementAddressTxPortTypeBuilder {
+	if cb, ok := b.childBuilder.(LldpManagementAddressTxPortTypeBuilder); ok {
+		return cb
+	}
+	cb := NewLldpManagementAddressTxPortTypeBuilder().(*_LldpManagementAddressTxPortTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsLldpManagementAddressType() LldpManagementAddressTypeBuilder {
+	if cb, ok := b.childBuilder.(LldpManagementAddressTypeBuilder); ok {
+		return cb
+	}
+	cb := NewLldpManagementAddressTypeBuilder().(*_LldpManagementAddressTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsLldpTlvType() LldpTlvTypeBuilder {
+	if cb, ok := b.childBuilder.(LldpTlvTypeBuilder); ok {
+		return cb
+	}
+	cb := NewLldpTlvTypeBuilder().(*_LldpTlvTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -2883,6 +3127,26 @@ func (b *_ExtensionObjectDefinitionBuilder) AsReadEventDetails2() ReadEventDetai
 		return cb
 	}
 	cb := NewReadEventDetails2Builder().(*_ReadEventDetails2Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsSortRuleElement() SortRuleElementBuilder {
+	if cb, ok := b.childBuilder.(SortRuleElementBuilder); ok {
+		return cb
+	}
+	cb := NewSortRuleElementBuilder().(*_SortRuleElementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReadEventDetailsSorted() ReadEventDetailsSortedBuilder {
+	if cb, ok := b.childBuilder.(ReadEventDetailsSortedBuilder); ok {
+		return cb
+	}
+	cb := NewReadEventDetailsSortedBuilder().(*_ReadEventDetailsSortedBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -4129,6 +4393,22 @@ func (m *_ExtensionObjectDefinition) parse(ctx context.Context, readBuffer utils
 		if _child, err = new(_PublishedDataSetCustomSourceDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PublishedDataSetCustomSourceDataType for type-switch of ExtensionObjectDefinition")
 		}
+	case extensionId == int32(18595): // ActionTargetDataType
+		if _child, err = new(_ActionTargetDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ActionTargetDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(18596): // PublishedActionDataType
+		if _child, err = new(_PublishedActionDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PublishedActionDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(18599): // ActionMethodDataType
+		if _child, err = new(_ActionMethodDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ActionMethodDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(18795): // PublishedActionMethodDataType
+		if _child, err = new(_PublishedActionMethodDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PublishedActionMethodDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case extensionId == int32(15599): // DataSetWriterDataType
 		if _child, err = new(_DataSetWriterDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DataSetWriterDataType for type-switch of ExtensionObjectDefinition")
@@ -4301,6 +4581,10 @@ func (m *_ExtensionObjectDefinition) parse(ctx context.Context, readBuffer utils
 		if _child, err = new(_DatagramDataSetReaderTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DatagramDataSetReaderTransportDataType for type-switch of ExtensionObjectDefinition")
 		}
+	case extensionId == int32(18796): // DtlsPubSubConnectionDataType
+		if _child, err = new(_DtlsPubSubConnectionDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type DtlsPubSubConnectionDataType for type-switch of ExtensionObjectDefinition")
+		}
 	case extensionId == int32(15009): // BrokerConnectionTransportDataType
 		if _child, err = new(_BrokerConnectionTransportDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BrokerConnectionTransportDataType for type-switch of ExtensionObjectDefinition")
@@ -4325,6 +4609,54 @@ func (m *_ExtensionObjectDefinition) parse(ctx context.Context, readBuffer utils
 		if _child, err = new(_PubSubConfigurationValueDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PubSubConfigurationValueDataType for type-switch of ExtensionObjectDefinition")
 		}
+	case extensionId == int32(19313): // JsonNetworkMessage
+		if _child, err = new(_JsonNetworkMessage).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonNetworkMessage for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(19314): // JsonDataSetMessage
+		if _child, err = new(_JsonDataSetMessage).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonDataSetMessage for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(19315): // JsonDataSetMetaDataMessage
+		if _child, err = new(_JsonDataSetMetaDataMessage).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonDataSetMetaDataMessage for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(19316): // JsonApplicationDescriptionMessage
+		if _child, err = new(_JsonApplicationDescriptionMessage).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonApplicationDescriptionMessage for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(19317): // JsonServerEndpointsMessage
+		if _child, err = new(_JsonServerEndpointsMessage).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonServerEndpointsMessage for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(19318): // JsonStatusMessage
+		if _child, err = new(_JsonStatusMessage).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonStatusMessage for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(19319): // JsonPubSubConnectionMessage
+		if _child, err = new(_JsonPubSubConnectionMessage).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonPubSubConnectionMessage for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(19320): // JsonActionMetaDataMessage
+		if _child, err = new(_JsonActionMetaDataMessage).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonActionMetaDataMessage for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(19321): // JsonActionResponderMessage
+		if _child, err = new(_JsonActionResponderMessage).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonActionResponderMessage for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(19322): // JsonActionNetworkMessage
+		if _child, err = new(_JsonActionNetworkMessage).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonActionNetworkMessage for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(19323): // JsonActionRequestMessage
+		if _child, err = new(_JsonActionRequestMessage).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonActionRequestMessage for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(19324): // JsonActionResponseMessage
+		if _child, err = new(_JsonActionResponseMessage).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type JsonActionResponseMessage for type-switch of ExtensionObjectDefinition")
+		}
 	case extensionId == int32(23470): // AliasNameDataType
 		if _child, err = new(_AliasNameDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AliasNameDataType for type-switch of ExtensionObjectDefinition")
@@ -4336,6 +4668,18 @@ func (m *_ExtensionObjectDefinition) parse(ctx context.Context, readBuffer utils
 	case extensionId == int32(25222): // PriorityMappingEntryType
 		if _child, err = new(_PriorityMappingEntryType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PriorityMappingEntryType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(18955): // LldpManagementAddressTxPortType
+		if _child, err = new(_LldpManagementAddressTxPortType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type LldpManagementAddressTxPortType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(18956): // LldpManagementAddressType
+		if _child, err = new(_LldpManagementAddressType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type LldpManagementAddressType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(18957): // LldpTlvType
+		if _child, err = new(_LldpTlvType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type LldpTlvType for type-switch of ExtensionObjectDefinition")
 		}
 	case extensionId == int32(32661): // ReferenceDescriptionDataType
 		if _child, err = new(_ReferenceDescriptionDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
@@ -4832,6 +5176,14 @@ func (m *_ExtensionObjectDefinition) parse(ctx context.Context, readBuffer utils
 	case extensionId == int32(32801): // ReadEventDetails2
 		if _child, err = new(_ReadEventDetails2).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReadEventDetails2 for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(18650): // SortRuleElement
+		if _child, err = new(_SortRuleElement).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type SortRuleElement for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(18651): // ReadEventDetailsSorted
+		if _child, err = new(_ReadEventDetailsSorted).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ReadEventDetailsSorted for type-switch of ExtensionObjectDefinition")
 		}
 	case extensionId == int32(649): // ReadRawModifiedDetails
 		if _child, err = new(_ReadRawModifiedDetails).parse(ctx, readBuffer, m, extensionId); err != nil {

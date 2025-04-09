@@ -41,1435 +41,1526 @@ type IOpcuaNodeIdServicesObject interface {
 }
 
 const (
-	OpcuaNodeIdServicesObject_ModellingRule_Mandatory                                                                                                        OpcuaNodeIdServicesObject = 78
-	OpcuaNodeIdServicesObject_ModellingRule_Optional                                                                                                         OpcuaNodeIdServicesObject = 80
-	OpcuaNodeIdServicesObject_ModellingRule_ExposesItsArray                                                                                                  OpcuaNodeIdServicesObject = 83
-	OpcuaNodeIdServicesObject_RootFolder                                                                                                                     OpcuaNodeIdServicesObject = 84
-	OpcuaNodeIdServicesObject_ObjectsFolder                                                                                                                  OpcuaNodeIdServicesObject = 85
-	OpcuaNodeIdServicesObject_TypesFolder                                                                                                                    OpcuaNodeIdServicesObject = 86
-	OpcuaNodeIdServicesObject_ViewsFolder                                                                                                                    OpcuaNodeIdServicesObject = 87
-	OpcuaNodeIdServicesObject_ObjectTypesFolder                                                                                                              OpcuaNodeIdServicesObject = 88
-	OpcuaNodeIdServicesObject_VariableTypesFolder                                                                                                            OpcuaNodeIdServicesObject = 89
-	OpcuaNodeIdServicesObject_DataTypesFolder                                                                                                                OpcuaNodeIdServicesObject = 90
-	OpcuaNodeIdServicesObject_ReferenceTypesFolder                                                                                                           OpcuaNodeIdServicesObject = 91
-	OpcuaNodeIdServicesObject_XmlSchema_TypeSystem                                                                                                           OpcuaNodeIdServicesObject = 92
-	OpcuaNodeIdServicesObject_OPCBinarySchema_TypeSystem                                                                                                     OpcuaNodeIdServicesObject = 93
-	OpcuaNodeIdServicesObject_DataTypeDefinition_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 121
-	OpcuaNodeIdServicesObject_StructureDefinition_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 122
-	OpcuaNodeIdServicesObject_EnumDefinition_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 123
-	OpcuaNodeIdServicesObject_DataSetMetaDataType_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 124
-	OpcuaNodeIdServicesObject_DataTypeDescription_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 125
-	OpcuaNodeIdServicesObject_StructureDescription_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 126
-	OpcuaNodeIdServicesObject_EnumDescription_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 127
-	OpcuaNodeIdServicesObject_RolePermissionType_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 128
-	OpcuaNodeIdServicesObject_Node_Encoding_DefaultXml                                                                                                       OpcuaNodeIdServicesObject = 259
-	OpcuaNodeIdServicesObject_Node_Encoding_DefaultBinary                                                                                                    OpcuaNodeIdServicesObject = 260
-	OpcuaNodeIdServicesObject_ObjectNode_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 262
-	OpcuaNodeIdServicesObject_ObjectNode_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 263
-	OpcuaNodeIdServicesObject_ObjectTypeNode_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 265
-	OpcuaNodeIdServicesObject_ObjectTypeNode_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 266
-	OpcuaNodeIdServicesObject_VariableNode_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 268
-	OpcuaNodeIdServicesObject_VariableNode_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 269
-	OpcuaNodeIdServicesObject_VariableTypeNode_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 271
-	OpcuaNodeIdServicesObject_VariableTypeNode_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 272
-	OpcuaNodeIdServicesObject_ReferenceTypeNode_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 274
-	OpcuaNodeIdServicesObject_ReferenceTypeNode_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 275
-	OpcuaNodeIdServicesObject_MethodNode_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 277
-	OpcuaNodeIdServicesObject_MethodNode_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 278
-	OpcuaNodeIdServicesObject_ViewNode_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 280
-	OpcuaNodeIdServicesObject_ViewNode_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 281
-	OpcuaNodeIdServicesObject_DataTypeNode_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 283
-	OpcuaNodeIdServicesObject_DataTypeNode_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 284
-	OpcuaNodeIdServicesObject_ReferenceNode_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 286
-	OpcuaNodeIdServicesObject_ReferenceNode_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 287
-	OpcuaNodeIdServicesObject_Argument_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 297
-	OpcuaNodeIdServicesObject_Argument_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 298
-	OpcuaNodeIdServicesObject_StatusResult_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 300
-	OpcuaNodeIdServicesObject_StatusResult_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 301
-	OpcuaNodeIdServicesObject_UserTokenPolicy_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 305
-	OpcuaNodeIdServicesObject_UserTokenPolicy_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 306
-	OpcuaNodeIdServicesObject_ApplicationDescription_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 309
-	OpcuaNodeIdServicesObject_ApplicationDescription_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 310
-	OpcuaNodeIdServicesObject_EndpointDescription_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 313
-	OpcuaNodeIdServicesObject_EndpointDescription_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 314
-	OpcuaNodeIdServicesObject_UserIdentityToken_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 317
-	OpcuaNodeIdServicesObject_UserIdentityToken_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 318
-	OpcuaNodeIdServicesObject_AnonymousIdentityToken_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 320
-	OpcuaNodeIdServicesObject_AnonymousIdentityToken_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 321
-	OpcuaNodeIdServicesObject_UserNameIdentityToken_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 323
-	OpcuaNodeIdServicesObject_UserNameIdentityToken_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 324
-	OpcuaNodeIdServicesObject_X509IdentityToken_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 326
-	OpcuaNodeIdServicesObject_X509IdentityToken_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 327
-	OpcuaNodeIdServicesObject_EndpointConfiguration_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 332
-	OpcuaNodeIdServicesObject_EndpointConfiguration_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 333
-	OpcuaNodeIdServicesObject_BuildInfo_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 339
-	OpcuaNodeIdServicesObject_BuildInfo_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 340
-	OpcuaNodeIdServicesObject_SignedSoftwareCertificate_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 345
-	OpcuaNodeIdServicesObject_SignedSoftwareCertificate_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 346
-	OpcuaNodeIdServicesObject_NodeAttributes_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 350
-	OpcuaNodeIdServicesObject_NodeAttributes_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 351
-	OpcuaNodeIdServicesObject_ObjectAttributes_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 353
-	OpcuaNodeIdServicesObject_ObjectAttributes_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 354
-	OpcuaNodeIdServicesObject_VariableAttributes_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 356
-	OpcuaNodeIdServicesObject_VariableAttributes_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 357
-	OpcuaNodeIdServicesObject_MethodAttributes_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 359
-	OpcuaNodeIdServicesObject_MethodAttributes_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 360
-	OpcuaNodeIdServicesObject_ObjectTypeAttributes_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 362
-	OpcuaNodeIdServicesObject_ObjectTypeAttributes_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 363
-	OpcuaNodeIdServicesObject_VariableTypeAttributes_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 365
-	OpcuaNodeIdServicesObject_VariableTypeAttributes_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 366
-	OpcuaNodeIdServicesObject_ReferenceTypeAttributes_Encoding_DefaultXml                                                                                    OpcuaNodeIdServicesObject = 368
-	OpcuaNodeIdServicesObject_ReferenceTypeAttributes_Encoding_DefaultBinary                                                                                 OpcuaNodeIdServicesObject = 369
-	OpcuaNodeIdServicesObject_DataTypeAttributes_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 371
-	OpcuaNodeIdServicesObject_DataTypeAttributes_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 372
-	OpcuaNodeIdServicesObject_ViewAttributes_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 374
-	OpcuaNodeIdServicesObject_ViewAttributes_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 375
-	OpcuaNodeIdServicesObject_AddNodesItem_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 377
-	OpcuaNodeIdServicesObject_AddNodesItem_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 378
-	OpcuaNodeIdServicesObject_AddReferencesItem_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 380
-	OpcuaNodeIdServicesObject_AddReferencesItem_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 381
-	OpcuaNodeIdServicesObject_DeleteNodesItem_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 383
-	OpcuaNodeIdServicesObject_DeleteNodesItem_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 384
-	OpcuaNodeIdServicesObject_DeleteReferencesItem_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 386
-	OpcuaNodeIdServicesObject_DeleteReferencesItem_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 387
-	OpcuaNodeIdServicesObject_RequestHeader_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 390
-	OpcuaNodeIdServicesObject_RequestHeader_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 391
-	OpcuaNodeIdServicesObject_ResponseHeader_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 393
-	OpcuaNodeIdServicesObject_ResponseHeader_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 394
-	OpcuaNodeIdServicesObject_ServiceFault_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 396
-	OpcuaNodeIdServicesObject_ServiceFault_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 397
-	OpcuaNodeIdServicesObject_FindServersRequest_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 421
-	OpcuaNodeIdServicesObject_FindServersRequest_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 422
-	OpcuaNodeIdServicesObject_FindServersResponse_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 424
-	OpcuaNodeIdServicesObject_FindServersResponse_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 425
-	OpcuaNodeIdServicesObject_GetEndpointsRequest_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 427
-	OpcuaNodeIdServicesObject_GetEndpointsRequest_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 428
-	OpcuaNodeIdServicesObject_GetEndpointsResponse_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 430
-	OpcuaNodeIdServicesObject_GetEndpointsResponse_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 431
-	OpcuaNodeIdServicesObject_RegisteredServer_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 433
-	OpcuaNodeIdServicesObject_RegisteredServer_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 434
-	OpcuaNodeIdServicesObject_RegisterServerRequest_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 436
-	OpcuaNodeIdServicesObject_RegisterServerRequest_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 437
-	OpcuaNodeIdServicesObject_RegisterServerResponse_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 439
-	OpcuaNodeIdServicesObject_RegisterServerResponse_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 440
-	OpcuaNodeIdServicesObject_ChannelSecurityToken_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 442
-	OpcuaNodeIdServicesObject_ChannelSecurityToken_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 443
-	OpcuaNodeIdServicesObject_OpenSecureChannelRequest_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 445
-	OpcuaNodeIdServicesObject_OpenSecureChannelRequest_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 446
-	OpcuaNodeIdServicesObject_OpenSecureChannelResponse_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 448
-	OpcuaNodeIdServicesObject_OpenSecureChannelResponse_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 449
-	OpcuaNodeIdServicesObject_CloseSecureChannelRequest_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 451
-	OpcuaNodeIdServicesObject_CloseSecureChannelRequest_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 452
-	OpcuaNodeIdServicesObject_CloseSecureChannelResponse_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 454
-	OpcuaNodeIdServicesObject_CloseSecureChannelResponse_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 455
-	OpcuaNodeIdServicesObject_SignatureData_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 457
-	OpcuaNodeIdServicesObject_SignatureData_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 458
-	OpcuaNodeIdServicesObject_CreateSessionRequest_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 460
-	OpcuaNodeIdServicesObject_CreateSessionRequest_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 461
-	OpcuaNodeIdServicesObject_CreateSessionResponse_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 463
-	OpcuaNodeIdServicesObject_CreateSessionResponse_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 464
-	OpcuaNodeIdServicesObject_ActivateSessionRequest_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 466
-	OpcuaNodeIdServicesObject_ActivateSessionRequest_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 467
-	OpcuaNodeIdServicesObject_ActivateSessionResponse_Encoding_DefaultXml                                                                                    OpcuaNodeIdServicesObject = 469
-	OpcuaNodeIdServicesObject_ActivateSessionResponse_Encoding_DefaultBinary                                                                                 OpcuaNodeIdServicesObject = 470
-	OpcuaNodeIdServicesObject_CloseSessionRequest_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 472
-	OpcuaNodeIdServicesObject_CloseSessionRequest_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 473
-	OpcuaNodeIdServicesObject_CloseSessionResponse_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 475
-	OpcuaNodeIdServicesObject_CloseSessionResponse_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 476
-	OpcuaNodeIdServicesObject_CancelRequest_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 478
-	OpcuaNodeIdServicesObject_CancelRequest_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 479
-	OpcuaNodeIdServicesObject_CancelResponse_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 481
-	OpcuaNodeIdServicesObject_CancelResponse_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 482
-	OpcuaNodeIdServicesObject_AddNodesResult_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 484
-	OpcuaNodeIdServicesObject_AddNodesResult_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 485
-	OpcuaNodeIdServicesObject_AddNodesRequest_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 487
-	OpcuaNodeIdServicesObject_AddNodesRequest_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 488
-	OpcuaNodeIdServicesObject_AddNodesResponse_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 490
-	OpcuaNodeIdServicesObject_AddNodesResponse_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 491
-	OpcuaNodeIdServicesObject_AddReferencesRequest_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 493
-	OpcuaNodeIdServicesObject_AddReferencesRequest_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 494
-	OpcuaNodeIdServicesObject_AddReferencesResponse_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 496
-	OpcuaNodeIdServicesObject_AddReferencesResponse_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 497
-	OpcuaNodeIdServicesObject_DeleteNodesRequest_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 499
-	OpcuaNodeIdServicesObject_DeleteNodesRequest_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 500
-	OpcuaNodeIdServicesObject_DeleteNodesResponse_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 502
-	OpcuaNodeIdServicesObject_DeleteNodesResponse_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 503
-	OpcuaNodeIdServicesObject_DeleteReferencesRequest_Encoding_DefaultXml                                                                                    OpcuaNodeIdServicesObject = 505
-	OpcuaNodeIdServicesObject_DeleteReferencesRequest_Encoding_DefaultBinary                                                                                 OpcuaNodeIdServicesObject = 506
-	OpcuaNodeIdServicesObject_DeleteReferencesResponse_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 508
-	OpcuaNodeIdServicesObject_DeleteReferencesResponse_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 509
-	OpcuaNodeIdServicesObject_ViewDescription_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 512
-	OpcuaNodeIdServicesObject_ViewDescription_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 513
-	OpcuaNodeIdServicesObject_BrowseDescription_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 515
-	OpcuaNodeIdServicesObject_BrowseDescription_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 516
-	OpcuaNodeIdServicesObject_ReferenceDescription_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 519
-	OpcuaNodeIdServicesObject_ReferenceDescription_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 520
-	OpcuaNodeIdServicesObject_BrowseResult_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 523
-	OpcuaNodeIdServicesObject_BrowseResult_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 524
-	OpcuaNodeIdServicesObject_BrowseRequest_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 526
-	OpcuaNodeIdServicesObject_BrowseRequest_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 527
-	OpcuaNodeIdServicesObject_BrowseResponse_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 529
-	OpcuaNodeIdServicesObject_BrowseResponse_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 530
-	OpcuaNodeIdServicesObject_BrowseNextRequest_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 532
-	OpcuaNodeIdServicesObject_BrowseNextRequest_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 533
-	OpcuaNodeIdServicesObject_BrowseNextResponse_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 535
-	OpcuaNodeIdServicesObject_BrowseNextResponse_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 536
-	OpcuaNodeIdServicesObject_RelativePathElement_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 538
-	OpcuaNodeIdServicesObject_RelativePathElement_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 539
-	OpcuaNodeIdServicesObject_RelativePath_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 541
-	OpcuaNodeIdServicesObject_RelativePath_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 542
-	OpcuaNodeIdServicesObject_BrowsePath_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 544
-	OpcuaNodeIdServicesObject_BrowsePath_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 545
-	OpcuaNodeIdServicesObject_BrowsePathTarget_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 547
-	OpcuaNodeIdServicesObject_BrowsePathTarget_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 548
-	OpcuaNodeIdServicesObject_BrowsePathResult_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 550
-	OpcuaNodeIdServicesObject_BrowsePathResult_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 551
-	OpcuaNodeIdServicesObject_TranslateBrowsePathsToNodeIdsRequest_Encoding_DefaultXml                                                                       OpcuaNodeIdServicesObject = 553
-	OpcuaNodeIdServicesObject_TranslateBrowsePathsToNodeIdsRequest_Encoding_DefaultBinary                                                                    OpcuaNodeIdServicesObject = 554
-	OpcuaNodeIdServicesObject_TranslateBrowsePathsToNodeIdsResponse_Encoding_DefaultXml                                                                      OpcuaNodeIdServicesObject = 556
-	OpcuaNodeIdServicesObject_TranslateBrowsePathsToNodeIdsResponse_Encoding_DefaultBinary                                                                   OpcuaNodeIdServicesObject = 557
-	OpcuaNodeIdServicesObject_RegisterNodesRequest_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 559
-	OpcuaNodeIdServicesObject_RegisterNodesRequest_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 560
-	OpcuaNodeIdServicesObject_RegisterNodesResponse_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 562
-	OpcuaNodeIdServicesObject_RegisterNodesResponse_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 563
-	OpcuaNodeIdServicesObject_UnregisterNodesRequest_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 565
-	OpcuaNodeIdServicesObject_UnregisterNodesRequest_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 566
-	OpcuaNodeIdServicesObject_UnregisterNodesResponse_Encoding_DefaultXml                                                                                    OpcuaNodeIdServicesObject = 568
-	OpcuaNodeIdServicesObject_UnregisterNodesResponse_Encoding_DefaultBinary                                                                                 OpcuaNodeIdServicesObject = 569
-	OpcuaNodeIdServicesObject_QueryDataDescription_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 571
-	OpcuaNodeIdServicesObject_QueryDataDescription_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 572
-	OpcuaNodeIdServicesObject_NodeTypeDescription_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 574
-	OpcuaNodeIdServicesObject_NodeTypeDescription_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 575
-	OpcuaNodeIdServicesObject_QueryDataSet_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 578
-	OpcuaNodeIdServicesObject_QueryDataSet_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 579
-	OpcuaNodeIdServicesObject_NodeReference_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 581
-	OpcuaNodeIdServicesObject_NodeReference_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 582
-	OpcuaNodeIdServicesObject_ContentFilterElement_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 584
-	OpcuaNodeIdServicesObject_ContentFilterElement_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 585
-	OpcuaNodeIdServicesObject_ContentFilter_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 587
-	OpcuaNodeIdServicesObject_ContentFilter_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 588
-	OpcuaNodeIdServicesObject_FilterOperand_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 590
-	OpcuaNodeIdServicesObject_FilterOperand_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 591
-	OpcuaNodeIdServicesObject_ElementOperand_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 593
-	OpcuaNodeIdServicesObject_ElementOperand_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 594
-	OpcuaNodeIdServicesObject_LiteralOperand_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 596
-	OpcuaNodeIdServicesObject_LiteralOperand_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 597
-	OpcuaNodeIdServicesObject_AttributeOperand_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 599
-	OpcuaNodeIdServicesObject_AttributeOperand_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 600
-	OpcuaNodeIdServicesObject_SimpleAttributeOperand_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 602
-	OpcuaNodeIdServicesObject_SimpleAttributeOperand_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 603
-	OpcuaNodeIdServicesObject_ContentFilterElementResult_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 605
-	OpcuaNodeIdServicesObject_ContentFilterElementResult_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 606
-	OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 608
-	OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 609
-	OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 611
-	OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 612
-	OpcuaNodeIdServicesObject_QueryFirstRequest_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 614
-	OpcuaNodeIdServicesObject_QueryFirstRequest_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 615
-	OpcuaNodeIdServicesObject_QueryFirstResponse_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 617
-	OpcuaNodeIdServicesObject_QueryFirstResponse_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 618
-	OpcuaNodeIdServicesObject_QueryNextRequest_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 620
-	OpcuaNodeIdServicesObject_QueryNextRequest_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 621
-	OpcuaNodeIdServicesObject_QueryNextResponse_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 623
-	OpcuaNodeIdServicesObject_QueryNextResponse_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 624
-	OpcuaNodeIdServicesObject_ReadValueId_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 627
-	OpcuaNodeIdServicesObject_ReadValueId_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 628
-	OpcuaNodeIdServicesObject_ReadRequest_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 630
-	OpcuaNodeIdServicesObject_ReadRequest_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 631
-	OpcuaNodeIdServicesObject_ReadResponse_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 633
-	OpcuaNodeIdServicesObject_ReadResponse_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 634
-	OpcuaNodeIdServicesObject_HistoryReadValueId_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 636
-	OpcuaNodeIdServicesObject_HistoryReadValueId_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 637
-	OpcuaNodeIdServicesObject_HistoryReadResult_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 639
-	OpcuaNodeIdServicesObject_HistoryReadResult_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 640
-	OpcuaNodeIdServicesObject_HistoryReadDetails_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 642
-	OpcuaNodeIdServicesObject_HistoryReadDetails_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 643
-	OpcuaNodeIdServicesObject_ReadEventDetails_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 645
-	OpcuaNodeIdServicesObject_ReadEventDetails_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 646
-	OpcuaNodeIdServicesObject_ReadRawModifiedDetails_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 648
-	OpcuaNodeIdServicesObject_ReadRawModifiedDetails_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 649
-	OpcuaNodeIdServicesObject_ReadProcessedDetails_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 651
-	OpcuaNodeIdServicesObject_ReadProcessedDetails_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 652
-	OpcuaNodeIdServicesObject_ReadAtTimeDetails_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 654
-	OpcuaNodeIdServicesObject_ReadAtTimeDetails_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 655
-	OpcuaNodeIdServicesObject_HistoryData_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 657
-	OpcuaNodeIdServicesObject_HistoryData_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 658
-	OpcuaNodeIdServicesObject_HistoryEvent_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 660
-	OpcuaNodeIdServicesObject_HistoryEvent_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 661
-	OpcuaNodeIdServicesObject_HistoryReadRequest_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 663
-	OpcuaNodeIdServicesObject_HistoryReadRequest_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 664
-	OpcuaNodeIdServicesObject_HistoryReadResponse_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 666
-	OpcuaNodeIdServicesObject_HistoryReadResponse_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 667
-	OpcuaNodeIdServicesObject_WriteValue_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 669
-	OpcuaNodeIdServicesObject_WriteValue_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 670
-	OpcuaNodeIdServicesObject_WriteRequest_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 672
-	OpcuaNodeIdServicesObject_WriteRequest_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 673
-	OpcuaNodeIdServicesObject_WriteResponse_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 675
-	OpcuaNodeIdServicesObject_WriteResponse_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 676
-	OpcuaNodeIdServicesObject_HistoryUpdateDetails_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 678
-	OpcuaNodeIdServicesObject_HistoryUpdateDetails_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 679
-	OpcuaNodeIdServicesObject_UpdateDataDetails_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 681
-	OpcuaNodeIdServicesObject_UpdateDataDetails_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 682
-	OpcuaNodeIdServicesObject_UpdateEventDetails_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 684
-	OpcuaNodeIdServicesObject_UpdateEventDetails_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 685
-	OpcuaNodeIdServicesObject_DeleteRawModifiedDetails_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 687
-	OpcuaNodeIdServicesObject_DeleteRawModifiedDetails_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 688
-	OpcuaNodeIdServicesObject_DeleteAtTimeDetails_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 690
-	OpcuaNodeIdServicesObject_DeleteAtTimeDetails_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 691
-	OpcuaNodeIdServicesObject_DeleteEventDetails_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 693
-	OpcuaNodeIdServicesObject_DeleteEventDetails_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 694
-	OpcuaNodeIdServicesObject_HistoryUpdateResult_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 696
-	OpcuaNodeIdServicesObject_HistoryUpdateResult_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 697
-	OpcuaNodeIdServicesObject_HistoryUpdateRequest_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 699
-	OpcuaNodeIdServicesObject_HistoryUpdateRequest_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 700
-	OpcuaNodeIdServicesObject_HistoryUpdateResponse_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 702
-	OpcuaNodeIdServicesObject_HistoryUpdateResponse_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 703
-	OpcuaNodeIdServicesObject_CallMethodRequest_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 705
-	OpcuaNodeIdServicesObject_CallMethodRequest_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 706
-	OpcuaNodeIdServicesObject_CallMethodResult_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 708
-	OpcuaNodeIdServicesObject_CallMethodResult_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 709
-	OpcuaNodeIdServicesObject_CallRequest_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 711
-	OpcuaNodeIdServicesObject_CallRequest_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 712
-	OpcuaNodeIdServicesObject_CallResponse_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 714
-	OpcuaNodeIdServicesObject_CallResponse_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 715
-	OpcuaNodeIdServicesObject_MonitoringFilter_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 720
-	OpcuaNodeIdServicesObject_MonitoringFilter_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 721
-	OpcuaNodeIdServicesObject_DataChangeFilter_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 723
-	OpcuaNodeIdServicesObject_DataChangeFilter_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 724
-	OpcuaNodeIdServicesObject_EventFilter_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 726
-	OpcuaNodeIdServicesObject_EventFilter_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 727
-	OpcuaNodeIdServicesObject_AggregateFilter_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 729
-	OpcuaNodeIdServicesObject_AggregateFilter_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 730
-	OpcuaNodeIdServicesObject_MonitoringFilterResult_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 732
-	OpcuaNodeIdServicesObject_MonitoringFilterResult_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 733
-	OpcuaNodeIdServicesObject_EventFilterResult_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 735
-	OpcuaNodeIdServicesObject_EventFilterResult_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 736
-	OpcuaNodeIdServicesObject_AggregateFilterResult_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 738
-	OpcuaNodeIdServicesObject_AggregateFilterResult_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 739
-	OpcuaNodeIdServicesObject_MonitoringParameters_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 741
-	OpcuaNodeIdServicesObject_MonitoringParameters_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 742
-	OpcuaNodeIdServicesObject_MonitoredItemCreateRequest_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 744
-	OpcuaNodeIdServicesObject_MonitoredItemCreateRequest_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 745
-	OpcuaNodeIdServicesObject_MonitoredItemCreateResult_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 747
-	OpcuaNodeIdServicesObject_MonitoredItemCreateResult_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 748
-	OpcuaNodeIdServicesObject_CreateMonitoredItemsRequest_Encoding_DefaultXml                                                                                OpcuaNodeIdServicesObject = 750
-	OpcuaNodeIdServicesObject_CreateMonitoredItemsRequest_Encoding_DefaultBinary                                                                             OpcuaNodeIdServicesObject = 751
-	OpcuaNodeIdServicesObject_CreateMonitoredItemsResponse_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 753
-	OpcuaNodeIdServicesObject_CreateMonitoredItemsResponse_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 754
-	OpcuaNodeIdServicesObject_MonitoredItemModifyRequest_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 756
-	OpcuaNodeIdServicesObject_MonitoredItemModifyRequest_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 757
-	OpcuaNodeIdServicesObject_MonitoredItemModifyResult_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 759
-	OpcuaNodeIdServicesObject_MonitoredItemModifyResult_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 760
-	OpcuaNodeIdServicesObject_ModifyMonitoredItemsRequest_Encoding_DefaultXml                                                                                OpcuaNodeIdServicesObject = 762
-	OpcuaNodeIdServicesObject_ModifyMonitoredItemsRequest_Encoding_DefaultBinary                                                                             OpcuaNodeIdServicesObject = 763
-	OpcuaNodeIdServicesObject_ModifyMonitoredItemsResponse_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 765
-	OpcuaNodeIdServicesObject_ModifyMonitoredItemsResponse_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 766
-	OpcuaNodeIdServicesObject_SetMonitoringModeRequest_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 768
-	OpcuaNodeIdServicesObject_SetMonitoringModeRequest_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 769
-	OpcuaNodeIdServicesObject_SetMonitoringModeResponse_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 771
-	OpcuaNodeIdServicesObject_SetMonitoringModeResponse_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 772
-	OpcuaNodeIdServicesObject_SetTriggeringRequest_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 774
-	OpcuaNodeIdServicesObject_SetTriggeringRequest_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 775
-	OpcuaNodeIdServicesObject_SetTriggeringResponse_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 777
-	OpcuaNodeIdServicesObject_SetTriggeringResponse_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 778
-	OpcuaNodeIdServicesObject_DeleteMonitoredItemsRequest_Encoding_DefaultXml                                                                                OpcuaNodeIdServicesObject = 780
-	OpcuaNodeIdServicesObject_DeleteMonitoredItemsRequest_Encoding_DefaultBinary                                                                             OpcuaNodeIdServicesObject = 781
-	OpcuaNodeIdServicesObject_DeleteMonitoredItemsResponse_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 783
-	OpcuaNodeIdServicesObject_DeleteMonitoredItemsResponse_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 784
-	OpcuaNodeIdServicesObject_CreateSubscriptionRequest_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 786
-	OpcuaNodeIdServicesObject_CreateSubscriptionRequest_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 787
-	OpcuaNodeIdServicesObject_CreateSubscriptionResponse_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 789
-	OpcuaNodeIdServicesObject_CreateSubscriptionResponse_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 790
-	OpcuaNodeIdServicesObject_ModifySubscriptionRequest_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 792
-	OpcuaNodeIdServicesObject_ModifySubscriptionRequest_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 793
-	OpcuaNodeIdServicesObject_ModifySubscriptionResponse_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 795
-	OpcuaNodeIdServicesObject_ModifySubscriptionResponse_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 796
-	OpcuaNodeIdServicesObject_SetPublishingModeRequest_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 798
-	OpcuaNodeIdServicesObject_SetPublishingModeRequest_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 799
-	OpcuaNodeIdServicesObject_SetPublishingModeResponse_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 801
-	OpcuaNodeIdServicesObject_SetPublishingModeResponse_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 802
-	OpcuaNodeIdServicesObject_NotificationMessage_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 804
-	OpcuaNodeIdServicesObject_NotificationMessage_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 805
-	OpcuaNodeIdServicesObject_MonitoredItemNotification_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 807
-	OpcuaNodeIdServicesObject_MonitoredItemNotification_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 808
-	OpcuaNodeIdServicesObject_DataChangeNotification_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 810
-	OpcuaNodeIdServicesObject_DataChangeNotification_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 811
-	OpcuaNodeIdServicesObject_StatusChangeNotification_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 819
-	OpcuaNodeIdServicesObject_StatusChangeNotification_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 820
-	OpcuaNodeIdServicesObject_SubscriptionAcknowledgement_Encoding_DefaultXml                                                                                OpcuaNodeIdServicesObject = 822
-	OpcuaNodeIdServicesObject_SubscriptionAcknowledgement_Encoding_DefaultBinary                                                                             OpcuaNodeIdServicesObject = 823
-	OpcuaNodeIdServicesObject_PublishRequest_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 825
-	OpcuaNodeIdServicesObject_PublishRequest_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 826
-	OpcuaNodeIdServicesObject_PublishResponse_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 828
-	OpcuaNodeIdServicesObject_PublishResponse_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 829
-	OpcuaNodeIdServicesObject_RepublishRequest_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 831
-	OpcuaNodeIdServicesObject_RepublishRequest_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 832
-	OpcuaNodeIdServicesObject_RepublishResponse_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 834
-	OpcuaNodeIdServicesObject_RepublishResponse_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 835
-	OpcuaNodeIdServicesObject_TransferResult_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 837
-	OpcuaNodeIdServicesObject_TransferResult_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 838
-	OpcuaNodeIdServicesObject_TransferSubscriptionsRequest_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 840
-	OpcuaNodeIdServicesObject_TransferSubscriptionsRequest_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 841
-	OpcuaNodeIdServicesObject_TransferSubscriptionsResponse_Encoding_DefaultXml                                                                              OpcuaNodeIdServicesObject = 843
-	OpcuaNodeIdServicesObject_TransferSubscriptionsResponse_Encoding_DefaultBinary                                                                           OpcuaNodeIdServicesObject = 844
-	OpcuaNodeIdServicesObject_DeleteSubscriptionsRequest_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 846
-	OpcuaNodeIdServicesObject_DeleteSubscriptionsRequest_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 847
-	OpcuaNodeIdServicesObject_DeleteSubscriptionsResponse_Encoding_DefaultXml                                                                                OpcuaNodeIdServicesObject = 849
-	OpcuaNodeIdServicesObject_DeleteSubscriptionsResponse_Encoding_DefaultBinary                                                                             OpcuaNodeIdServicesObject = 850
-	OpcuaNodeIdServicesObject_RedundantServerDataType_Encoding_DefaultXml                                                                                    OpcuaNodeIdServicesObject = 854
-	OpcuaNodeIdServicesObject_RedundantServerDataType_Encoding_DefaultBinary                                                                                 OpcuaNodeIdServicesObject = 855
-	OpcuaNodeIdServicesObject_SamplingIntervalDiagnosticsDataType_Encoding_DefaultXml                                                                        OpcuaNodeIdServicesObject = 857
-	OpcuaNodeIdServicesObject_SamplingIntervalDiagnosticsDataType_Encoding_DefaultBinary                                                                     OpcuaNodeIdServicesObject = 858
-	OpcuaNodeIdServicesObject_ServerDiagnosticsSummaryDataType_Encoding_DefaultXml                                                                           OpcuaNodeIdServicesObject = 860
-	OpcuaNodeIdServicesObject_ServerDiagnosticsSummaryDataType_Encoding_DefaultBinary                                                                        OpcuaNodeIdServicesObject = 861
-	OpcuaNodeIdServicesObject_ServerStatusDataType_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 863
-	OpcuaNodeIdServicesObject_ServerStatusDataType_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 864
-	OpcuaNodeIdServicesObject_SessionDiagnosticsDataType_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 866
-	OpcuaNodeIdServicesObject_SessionDiagnosticsDataType_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 867
-	OpcuaNodeIdServicesObject_SessionSecurityDiagnosticsDataType_Encoding_DefaultXml                                                                         OpcuaNodeIdServicesObject = 869
-	OpcuaNodeIdServicesObject_SessionSecurityDiagnosticsDataType_Encoding_DefaultBinary                                                                      OpcuaNodeIdServicesObject = 870
-	OpcuaNodeIdServicesObject_ServiceCounterDataType_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 872
-	OpcuaNodeIdServicesObject_ServiceCounterDataType_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 873
-	OpcuaNodeIdServicesObject_SubscriptionDiagnosticsDataType_Encoding_DefaultXml                                                                            OpcuaNodeIdServicesObject = 875
-	OpcuaNodeIdServicesObject_SubscriptionDiagnosticsDataType_Encoding_DefaultBinary                                                                         OpcuaNodeIdServicesObject = 876
-	OpcuaNodeIdServicesObject_ModelChangeStructureDataType_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 878
-	OpcuaNodeIdServicesObject_ModelChangeStructureDataType_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 879
-	OpcuaNodeIdServicesObject_Range_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 885
-	OpcuaNodeIdServicesObject_Range_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 886
-	OpcuaNodeIdServicesObject_EUInformation_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 888
-	OpcuaNodeIdServicesObject_EUInformation_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 889
-	OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 892
-	OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 893
-	OpcuaNodeIdServicesObject_ProgramDiagnosticDataType_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 895
-	OpcuaNodeIdServicesObject_ProgramDiagnosticDataType_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 896
-	OpcuaNodeIdServicesObject_SemanticChangeStructureDataType_Encoding_DefaultXml                                                                            OpcuaNodeIdServicesObject = 898
-	OpcuaNodeIdServicesObject_SemanticChangeStructureDataType_Encoding_DefaultBinary                                                                         OpcuaNodeIdServicesObject = 899
-	OpcuaNodeIdServicesObject_EventNotificationList_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 915
-	OpcuaNodeIdServicesObject_EventNotificationList_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 916
-	OpcuaNodeIdServicesObject_EventFieldList_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 918
-	OpcuaNodeIdServicesObject_EventFieldList_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 919
-	OpcuaNodeIdServicesObject_HistoryEventFieldList_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 921
-	OpcuaNodeIdServicesObject_HistoryEventFieldList_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 922
-	OpcuaNodeIdServicesObject_IssuedIdentityToken_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 939
-	OpcuaNodeIdServicesObject_IssuedIdentityToken_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 940
-	OpcuaNodeIdServicesObject_NotificationData_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 946
-	OpcuaNodeIdServicesObject_NotificationData_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 947
-	OpcuaNodeIdServicesObject_AggregateConfiguration_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 949
-	OpcuaNodeIdServicesObject_AggregateConfiguration_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 950
-	OpcuaNodeIdServicesObject_ServerType_ServerCapabilities                                                                                                  OpcuaNodeIdServicesObject = 2009
-	OpcuaNodeIdServicesObject_ServerType_ServerDiagnostics                                                                                                   OpcuaNodeIdServicesObject = 2010
-	OpcuaNodeIdServicesObject_ServerType_VendorServerInfo                                                                                                    OpcuaNodeIdServicesObject = 2011
-	OpcuaNodeIdServicesObject_ServerType_ServerRedundancy                                                                                                    OpcuaNodeIdServicesObject = 2012
-	OpcuaNodeIdServicesObject_ServerCapabilitiesType_ModellingRules                                                                                          OpcuaNodeIdServicesObject = 2019
-	OpcuaNodeIdServicesObject_Server                                                                                                                         OpcuaNodeIdServicesObject = 2253
-	OpcuaNodeIdServicesObject_Server_ServerCapabilities                                                                                                      OpcuaNodeIdServicesObject = 2268
-	OpcuaNodeIdServicesObject_Server_ServerDiagnostics                                                                                                       OpcuaNodeIdServicesObject = 2274
-	OpcuaNodeIdServicesObject_Server_VendorServerInfo                                                                                                        OpcuaNodeIdServicesObject = 2295
-	OpcuaNodeIdServicesObject_Server_ServerRedundancy                                                                                                        OpcuaNodeIdServicesObject = 2296
-	OpcuaNodeIdServicesObject_AggregateFunction_Interpolative                                                                                                OpcuaNodeIdServicesObject = 2341
-	OpcuaNodeIdServicesObject_AggregateFunction_Average                                                                                                      OpcuaNodeIdServicesObject = 2342
-	OpcuaNodeIdServicesObject_AggregateFunction_TimeAverage                                                                                                  OpcuaNodeIdServicesObject = 2343
-	OpcuaNodeIdServicesObject_AggregateFunction_Total                                                                                                        OpcuaNodeIdServicesObject = 2344
-	OpcuaNodeIdServicesObject_AggregateFunction_Minimum                                                                                                      OpcuaNodeIdServicesObject = 2346
-	OpcuaNodeIdServicesObject_AggregateFunction_Maximum                                                                                                      OpcuaNodeIdServicesObject = 2347
-	OpcuaNodeIdServicesObject_AggregateFunction_MinimumActualTime                                                                                            OpcuaNodeIdServicesObject = 2348
-	OpcuaNodeIdServicesObject_AggregateFunction_MaximumActualTime                                                                                            OpcuaNodeIdServicesObject = 2349
-	OpcuaNodeIdServicesObject_AggregateFunction_Range                                                                                                        OpcuaNodeIdServicesObject = 2350
-	OpcuaNodeIdServicesObject_AggregateFunction_AnnotationCount                                                                                              OpcuaNodeIdServicesObject = 2351
-	OpcuaNodeIdServicesObject_AggregateFunction_Count                                                                                                        OpcuaNodeIdServicesObject = 2352
-	OpcuaNodeIdServicesObject_AggregateFunction_NumberOfTransitions                                                                                          OpcuaNodeIdServicesObject = 2355
-	OpcuaNodeIdServicesObject_AggregateFunction_Start                                                                                                        OpcuaNodeIdServicesObject = 2357
-	OpcuaNodeIdServicesObject_AggregateFunction_End                                                                                                          OpcuaNodeIdServicesObject = 2358
-	OpcuaNodeIdServicesObject_AggregateFunction_Delta                                                                                                        OpcuaNodeIdServicesObject = 2359
-	OpcuaNodeIdServicesObject_AggregateFunction_DurationGood                                                                                                 OpcuaNodeIdServicesObject = 2360
-	OpcuaNodeIdServicesObject_AggregateFunction_DurationBad                                                                                                  OpcuaNodeIdServicesObject = 2361
-	OpcuaNodeIdServicesObject_AggregateFunction_PercentGood                                                                                                  OpcuaNodeIdServicesObject = 2362
-	OpcuaNodeIdServicesObject_AggregateFunction_PercentBad                                                                                                   OpcuaNodeIdServicesObject = 2363
-	OpcuaNodeIdServicesObject_AggregateFunction_WorstQuality                                                                                                 OpcuaNodeIdServicesObject = 2364
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_Ready                                                                                                  OpcuaNodeIdServicesObject = 2400
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_Running                                                                                                OpcuaNodeIdServicesObject = 2402
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_Suspended                                                                                              OpcuaNodeIdServicesObject = 2404
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_Halted                                                                                                 OpcuaNodeIdServicesObject = 2406
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_HaltedToReady                                                                                          OpcuaNodeIdServicesObject = 2408
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_ReadyToRunning                                                                                         OpcuaNodeIdServicesObject = 2410
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_RunningToHalted                                                                                        OpcuaNodeIdServicesObject = 2412
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_RunningToReady                                                                                         OpcuaNodeIdServicesObject = 2414
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_RunningToSuspended                                                                                     OpcuaNodeIdServicesObject = 2416
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_SuspendedToRunning                                                                                     OpcuaNodeIdServicesObject = 2418
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_SuspendedToHalted                                                                                      OpcuaNodeIdServicesObject = 2420
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_SuspendedToReady                                                                                       OpcuaNodeIdServicesObject = 2422
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_ReadyToHalted                                                                                          OpcuaNodeIdServicesObject = 2424
-	OpcuaNodeIdServicesObject_ServerDiagnosticsType_SessionsDiagnosticsSummary                                                                               OpcuaNodeIdServicesObject = 2744
-	OpcuaNodeIdServicesObject_ServerCapabilitiesType_AggregateFunctions                                                                                      OpcuaNodeIdServicesObject = 2754
-	OpcuaNodeIdServicesObject_ShelvedStateMachineType_Unshelved                                                                                              OpcuaNodeIdServicesObject = 2930
-	OpcuaNodeIdServicesObject_ShelvedStateMachineType_TimedShelved                                                                                           OpcuaNodeIdServicesObject = 2932
-	OpcuaNodeIdServicesObject_ShelvedStateMachineType_OneShotShelved                                                                                         OpcuaNodeIdServicesObject = 2933
-	OpcuaNodeIdServicesObject_ShelvedStateMachineType_UnshelvedToTimedShelved                                                                                OpcuaNodeIdServicesObject = 2935
-	OpcuaNodeIdServicesObject_ShelvedStateMachineType_UnshelvedToOneShotShelved                                                                              OpcuaNodeIdServicesObject = 2936
-	OpcuaNodeIdServicesObject_ShelvedStateMachineType_TimedShelvedToUnshelved                                                                                OpcuaNodeIdServicesObject = 2940
-	OpcuaNodeIdServicesObject_ShelvedStateMachineType_TimedShelvedToOneShotShelved                                                                           OpcuaNodeIdServicesObject = 2942
-	OpcuaNodeIdServicesObject_ShelvedStateMachineType_OneShotShelvedToUnshelved                                                                              OpcuaNodeIdServicesObject = 2943
-	OpcuaNodeIdServicesObject_ShelvedStateMachineType_OneShotShelvedToTimedShelved                                                                           OpcuaNodeIdServicesObject = 2945
-	OpcuaNodeIdServicesObject_Server_ServerCapabilities_ModellingRules                                                                                       OpcuaNodeIdServicesObject = 2996
-	OpcuaNodeIdServicesObject_Server_ServerCapabilities_AggregateFunctions                                                                                   OpcuaNodeIdServicesObject = 2997
-	OpcuaNodeIdServicesObject_EventTypesFolder                                                                                                               OpcuaNodeIdServicesObject = 3048
-	OpcuaNodeIdServicesObject_HistoricalDataConfigurationType_AggregateConfiguration                                                                         OpcuaNodeIdServicesObject = 3059
-	OpcuaNodeIdServicesObject_DefaultBinary                                                                                                                  OpcuaNodeIdServicesObject = 3062
-	OpcuaNodeIdServicesObject_DefaultXml                                                                                                                     OpcuaNodeIdServicesObject = 3063
-	OpcuaNodeIdServicesObject_ServerType_ServerCapabilities_ModellingRules                                                                                   OpcuaNodeIdServicesObject = 3093
-	OpcuaNodeIdServicesObject_ServerType_ServerCapabilities_AggregateFunctions                                                                               OpcuaNodeIdServicesObject = 3094
-	OpcuaNodeIdServicesObject_ServerType_ServerDiagnostics_SessionsDiagnosticsSummary                                                                        OpcuaNodeIdServicesObject = 3111
-	OpcuaNodeIdServicesObject_Server_ServerDiagnostics_SessionsDiagnosticsSummary                                                                            OpcuaNodeIdServicesObject = 3706
-	OpcuaNodeIdServicesObject_ProgramStateMachineType_FinalResultData                                                                                        OpcuaNodeIdServicesObject = 3850
-	OpcuaNodeIdServicesObject_EnumValueType_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 7616
-	OpcuaNodeIdServicesObject_EnumValueType_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 8251
-	OpcuaNodeIdServicesObject_TimeZoneDataType_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 8913
-	OpcuaNodeIdServicesObject_TimeZoneDataType_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 8917
-	OpcuaNodeIdServicesObject_AlarmConditionType_ShelvingState                                                                                               OpcuaNodeIdServicesObject = 9178
-	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_HighHigh                                                                                        OpcuaNodeIdServicesObject = 9329
-	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_High                                                                                            OpcuaNodeIdServicesObject = 9331
-	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_Low                                                                                             OpcuaNodeIdServicesObject = 9333
-	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_LowLow                                                                                          OpcuaNodeIdServicesObject = 9335
-	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_LowLowToLow                                                                                     OpcuaNodeIdServicesObject = 9337
-	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_LowToLowLow                                                                                     OpcuaNodeIdServicesObject = 9338
-	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_HighHighToHigh                                                                                  OpcuaNodeIdServicesObject = 9339
-	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_HighToHighHigh                                                                                  OpcuaNodeIdServicesObject = 9340
-	OpcuaNodeIdServicesObject_ExclusiveLimitAlarmType_LimitState                                                                                             OpcuaNodeIdServicesObject = 9455
-	OpcuaNodeIdServicesObject_HistoryServerCapabilitiesType_AggregateFunctions                                                                               OpcuaNodeIdServicesObject = 11172
-	OpcuaNodeIdServicesObject_HistoryServerCapabilities                                                                                                      OpcuaNodeIdServicesObject = 11192
-	OpcuaNodeIdServicesObject_HistoryServerCapabilities_AggregateFunctions                                                                                   OpcuaNodeIdServicesObject = 11201
-	OpcuaNodeIdServicesObject_HAConfiguration                                                                                                                OpcuaNodeIdServicesObject = 11202
-	OpcuaNodeIdServicesObject_HAConfiguration_AggregateConfiguration                                                                                         OpcuaNodeIdServicesObject = 11203
-	OpcuaNodeIdServicesObject_ModificationInfo_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 11218
-	OpcuaNodeIdServicesObject_HistoryModifiedData_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 11219
-	OpcuaNodeIdServicesObject_ModificationInfo_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 11226
-	OpcuaNodeIdServicesObject_HistoryModifiedData_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 11227
-	OpcuaNodeIdServicesObject_AggregateFunction_TimeAverage2                                                                                                 OpcuaNodeIdServicesObject = 11285
-	OpcuaNodeIdServicesObject_AggregateFunction_Minimum2                                                                                                     OpcuaNodeIdServicesObject = 11286
-	OpcuaNodeIdServicesObject_AggregateFunction_Maximum2                                                                                                     OpcuaNodeIdServicesObject = 11287
-	OpcuaNodeIdServicesObject_AggregateFunction_Range2                                                                                                       OpcuaNodeIdServicesObject = 11288
-	OpcuaNodeIdServicesObject_AggregateFunction_WorstQuality2                                                                                                OpcuaNodeIdServicesObject = 11292
-	OpcuaNodeIdServicesObject_UpdateStructureDataDetails_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 11296
-	OpcuaNodeIdServicesObject_UpdateStructureDataDetails_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 11300
-	OpcuaNodeIdServicesObject_AggregateFunction_Total2                                                                                                       OpcuaNodeIdServicesObject = 11304
-	OpcuaNodeIdServicesObject_AggregateFunction_MinimumActualTime2                                                                                           OpcuaNodeIdServicesObject = 11305
-	OpcuaNodeIdServicesObject_AggregateFunction_MaximumActualTime2                                                                                           OpcuaNodeIdServicesObject = 11306
-	OpcuaNodeIdServicesObject_AggregateFunction_DurationInStateZero                                                                                          OpcuaNodeIdServicesObject = 11307
-	OpcuaNodeIdServicesObject_AggregateFunction_DurationInStateNonZero                                                                                       OpcuaNodeIdServicesObject = 11308
-	OpcuaNodeIdServicesObject_AggregateFunction_StandardDeviationSample                                                                                      OpcuaNodeIdServicesObject = 11426
-	OpcuaNodeIdServicesObject_AggregateFunction_StandardDeviationPopulation                                                                                  OpcuaNodeIdServicesObject = 11427
-	OpcuaNodeIdServicesObject_AggregateFunction_VarianceSample                                                                                               OpcuaNodeIdServicesObject = 11428
-	OpcuaNodeIdServicesObject_AggregateFunction_VariancePopulation                                                                                           OpcuaNodeIdServicesObject = 11429
-	OpcuaNodeIdServicesObject_AggregateFunction_StartBound                                                                                                   OpcuaNodeIdServicesObject = 11505
-	OpcuaNodeIdServicesObject_AggregateFunction_EndBound                                                                                                     OpcuaNodeIdServicesObject = 11506
-	OpcuaNodeIdServicesObject_AggregateFunction_DeltaBounds                                                                                                  OpcuaNodeIdServicesObject = 11507
-	OpcuaNodeIdServicesObject_ModellingRule_OptionalPlaceholder                                                                                              OpcuaNodeIdServicesObject = 11508
-	OpcuaNodeIdServicesObject_ModellingRule_MandatoryPlaceholder                                                                                             OpcuaNodeIdServicesObject = 11510
-	OpcuaNodeIdServicesObject_ServerType_ServerCapabilities_OperationLimits                                                                                  OpcuaNodeIdServicesObject = 11516
-	OpcuaNodeIdServicesObject_ServerType_Namespaces                                                                                                          OpcuaNodeIdServicesObject = 11527
-	OpcuaNodeIdServicesObject_ServerCapabilitiesType_OperationLimits                                                                                         OpcuaNodeIdServicesObject = 11551
-	OpcuaNodeIdServicesObject_NamespaceMetadataType_NamespaceFile                                                                                            OpcuaNodeIdServicesObject = 11624
-	OpcuaNodeIdServicesObject_NamespacesType_NamespaceIdentifier_Placeholder                                                                                 OpcuaNodeIdServicesObject = 11646
-	OpcuaNodeIdServicesObject_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile                                                                   OpcuaNodeIdServicesObject = 11654
-	OpcuaNodeIdServicesObject_Server_ServerCapabilities_OperationLimits                                                                                      OpcuaNodeIdServicesObject = 11704
-	OpcuaNodeIdServicesObject_Server_Namespaces                                                                                                              OpcuaNodeIdServicesObject = 11715
-	OpcuaNodeIdServicesObject_HistoricalDataConfigurationType_AggregateFunctions                                                                             OpcuaNodeIdServicesObject = 11876
-	OpcuaNodeIdServicesObject_HAConfiguration_AggregateFunctions                                                                                             OpcuaNodeIdServicesObject = 11877
-	OpcuaNodeIdServicesObject_InstanceNode_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 11887
-	OpcuaNodeIdServicesObject_TypeNode_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 11888
-	OpcuaNodeIdServicesObject_InstanceNode_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 11889
-	OpcuaNodeIdServicesObject_TypeNode_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 11890
-	OpcuaNodeIdServicesObject_EndpointUrlListDataType_Encoding_DefaultXml                                                                                    OpcuaNodeIdServicesObject = 11949
-	OpcuaNodeIdServicesObject_NetworkGroupDataType_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 11950
-	OpcuaNodeIdServicesObject_EndpointUrlListDataType_Encoding_DefaultBinary                                                                                 OpcuaNodeIdServicesObject = 11957
-	OpcuaNodeIdServicesObject_NetworkGroupDataType_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 11958
-	OpcuaNodeIdServicesObject_AxisInformation_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 12081
-	OpcuaNodeIdServicesObject_XVType_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 12082
-	OpcuaNodeIdServicesObject_AxisInformation_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 12089
-	OpcuaNodeIdServicesObject_XVType_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 12090
-	OpcuaNodeIdServicesObject_SessionsDiagnosticsSummaryType_ClientName_Placeholder                                                                          OpcuaNodeIdServicesObject = 12097
-	OpcuaNodeIdServicesObject_ComplexNumberType_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 12173
-	OpcuaNodeIdServicesObject_DoubleComplexNumberType_Encoding_DefaultXml                                                                                    OpcuaNodeIdServicesObject = 12174
-	OpcuaNodeIdServicesObject_ComplexNumberType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 12181
-	OpcuaNodeIdServicesObject_DoubleComplexNumberType_Encoding_DefaultBinary                                                                                 OpcuaNodeIdServicesObject = 12182
-	OpcuaNodeIdServicesObject_ServerOnNetwork_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 12195
-	OpcuaNodeIdServicesObject_FindServersOnNetworkRequest_Encoding_DefaultXml                                                                                OpcuaNodeIdServicesObject = 12196
-	OpcuaNodeIdServicesObject_FindServersOnNetworkResponse_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 12197
-	OpcuaNodeIdServicesObject_RegisterServer2Request_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 12199
-	OpcuaNodeIdServicesObject_RegisterServer2Response_Encoding_DefaultXml                                                                                    OpcuaNodeIdServicesObject = 12200
-	OpcuaNodeIdServicesObject_ServerOnNetwork_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 12207
-	OpcuaNodeIdServicesObject_FindServersOnNetworkRequest_Encoding_DefaultBinary                                                                             OpcuaNodeIdServicesObject = 12208
-	OpcuaNodeIdServicesObject_FindServersOnNetworkResponse_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 12209
-	OpcuaNodeIdServicesObject_RegisterServer2Request_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 12211
-	OpcuaNodeIdServicesObject_RegisterServer2Response_Encoding_DefaultBinary                                                                                 OpcuaNodeIdServicesObject = 12212
-	OpcuaNodeIdServicesObject_ServerConfiguration                                                                                                            OpcuaNodeIdServicesObject = 12637
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList                                                        OpcuaNodeIdServicesObject = 12642
-	OpcuaNodeIdServicesObject_TrustListDataType_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 12676
-	OpcuaNodeIdServicesObject_TrustListDataType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 12680
-	OpcuaNodeIdServicesObject_OptionSet_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 12757
-	OpcuaNodeIdServicesObject_Union_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 12758
-	OpcuaNodeIdServicesObject_OptionSet_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 12765
-	OpcuaNodeIdServicesObject_Union_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 12766
-	OpcuaNodeIdServicesObject_DiscoveryConfiguration_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 12892
-	OpcuaNodeIdServicesObject_MdnsDiscoveryConfiguration_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 12893
-	OpcuaNodeIdServicesObject_DiscoveryConfiguration_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 12900
-	OpcuaNodeIdServicesObject_MdnsDiscoveryConfiguration_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 12901
-	OpcuaNodeIdServicesObject_FileDirectoryType_FileDirectoryName_Placeholder                                                                                OpcuaNodeIdServicesObject = 13354
-	OpcuaNodeIdServicesObject_FileDirectoryType_FileName_Placeholder                                                                                         OpcuaNodeIdServicesObject = 13366
-	OpcuaNodeIdServicesObject_CertificateGroupType_TrustList                                                                                                 OpcuaNodeIdServicesObject = 13599
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup                                                                             OpcuaNodeIdServicesObject = 13814
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_TrustList                                                                   OpcuaNodeIdServicesObject = 13815
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup                                                                                   OpcuaNodeIdServicesObject = 13848
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_TrustList                                                                         OpcuaNodeIdServicesObject = 13849
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup                                                                               OpcuaNodeIdServicesObject = 13882
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList                                                                     OpcuaNodeIdServicesObject = 13883
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder                                                                         OpcuaNodeIdServicesObject = 13916
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList                                                               OpcuaNodeIdServicesObject = 13917
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups                                                                                      OpcuaNodeIdServicesObject = 13950
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup                                                              OpcuaNodeIdServicesObject = 13951
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList                                                    OpcuaNodeIdServicesObject = 13952
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup                                                                    OpcuaNodeIdServicesObject = 13985
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList                                                          OpcuaNodeIdServicesObject = 13986
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup                                                                OpcuaNodeIdServicesObject = 14019
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList                                                      OpcuaNodeIdServicesObject = 14020
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups                                                                                          OpcuaNodeIdServicesObject = 14053
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup                                                                        OpcuaNodeIdServicesObject = 14088
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList                                                              OpcuaNodeIdServicesObject = 14089
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup                                                                    OpcuaNodeIdServicesObject = 14122
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList                                                          OpcuaNodeIdServicesObject = 14123
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup                                                                  OpcuaNodeIdServicesObject = 14156
-	OpcuaNodeIdServicesObject_PubSubConnectionType_Address                                                                                                   OpcuaNodeIdServicesObject = 14221
-	OpcuaNodeIdServicesObject_PublishedVariableDataType_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 14319
-	OpcuaNodeIdServicesObject_PublishedVariableDataType_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 14323
-	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder                                                                                OpcuaNodeIdServicesObject = 14417
-	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Status                                                                         OpcuaNodeIdServicesObject = 14419
-	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Address                                                                        OpcuaNodeIdServicesObject = 14423
-	OpcuaNodeIdServicesObject_PublishSubscribeType_PublishedDataSets                                                                                         OpcuaNodeIdServicesObject = 14434
-	OpcuaNodeIdServicesObject_PublishSubscribe                                                                                                               OpcuaNodeIdServicesObject = 14443
-	OpcuaNodeIdServicesObject_DataSetFolderType_DataSetFolderName_Placeholder                                                                                OpcuaNodeIdServicesObject = 14478
-	OpcuaNodeIdServicesObject_DataSetFolderType_PublishedDataSetName_Placeholder                                                                             OpcuaNodeIdServicesObject = 14487
-	OpcuaNodeIdServicesObject_PubSubConnectionType_Status                                                                                                    OpcuaNodeIdServicesObject = 14600
-	OpcuaNodeIdServicesObject_DataSetMetaDataType_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 14794
-	OpcuaNodeIdServicesObject_FieldMetaData_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 14795
-	OpcuaNodeIdServicesObject_DataTypeDescription_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 14796
-	OpcuaNodeIdServicesObject_DataTypeDefinition_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 14797
-	OpcuaNodeIdServicesObject_StructureDefinition_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 14798
-	OpcuaNodeIdServicesObject_EnumDefinition_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 14799
-	OpcuaNodeIdServicesObject_StructureField_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 14800
-	OpcuaNodeIdServicesObject_EnumField_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 14801
-	OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 14802
-	OpcuaNodeIdServicesObject_ConfigurationVersionDataType_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 14803
-	OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 14804
-	OpcuaNodeIdServicesObject_FieldMetaData_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 14839
-	OpcuaNodeIdServicesObject_StructureField_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 14844
-	OpcuaNodeIdServicesObject_EnumField_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 14845
-	OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 14846
-	OpcuaNodeIdServicesObject_ConfigurationVersionDataType_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 14847
-	OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 14848
-	OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15041
-	OpcuaNodeIdServicesObject_IdentityMappingRuleType_Encoding_DefaultJson                                                                                   OpcuaNodeIdServicesObject = 15042
-	OpcuaNodeIdServicesObject_TrustListDataType_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15044
-	OpcuaNodeIdServicesObject_DecimalDataType_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15045
-	OpcuaNodeIdServicesObject_ConfigurationVersionDataType_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 15049
-	OpcuaNodeIdServicesObject_DataSetMetaDataType_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15050
-	OpcuaNodeIdServicesObject_FieldMetaData_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15051
-	OpcuaNodeIdServicesObject_DataTypeDescription_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15057
-	OpcuaNodeIdServicesObject_StructureDescription_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15058
-	OpcuaNodeIdServicesObject_EnumDescription_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15059
-	OpcuaNodeIdServicesObject_PublishedVariableDataType_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 15060
-	OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15061
-	OpcuaNodeIdServicesObject_RolePermissionType_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15062
-	OpcuaNodeIdServicesObject_DataTypeDefinition_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15063
-	OpcuaNodeIdServicesObject_StructureField_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15065
-	OpcuaNodeIdServicesObject_StructureDefinition_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15066
-	OpcuaNodeIdServicesObject_EnumDefinition_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15067
-	OpcuaNodeIdServicesObject_Node_Encoding_DefaultJson                                                                                                      OpcuaNodeIdServicesObject = 15068
-	OpcuaNodeIdServicesObject_InstanceNode_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15069
-	OpcuaNodeIdServicesObject_TypeNode_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15070
-	OpcuaNodeIdServicesObject_ObjectNode_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15071
-	OpcuaNodeIdServicesObject_DatagramConnectionTransportType_DiscoveryAddress                                                                               OpcuaNodeIdServicesObject = 15072
-	OpcuaNodeIdServicesObject_ObjectTypeNode_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15073
-	OpcuaNodeIdServicesObject_VariableNode_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15074
-	OpcuaNodeIdServicesObject_VariableTypeNode_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15075
-	OpcuaNodeIdServicesObject_ReferenceTypeNode_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15076
-	OpcuaNodeIdServicesObject_MethodNode_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15077
-	OpcuaNodeIdServicesObject_ViewNode_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15078
-	OpcuaNodeIdServicesObject_DataTypeNode_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15079
-	OpcuaNodeIdServicesObject_ReferenceNode_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15080
-	OpcuaNodeIdServicesObject_Argument_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15081
-	OpcuaNodeIdServicesObject_EnumValueType_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15082
-	OpcuaNodeIdServicesObject_EnumField_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15083
-	OpcuaNodeIdServicesObject_OptionSet_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15084
-	OpcuaNodeIdServicesObject_Union_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15085
-	OpcuaNodeIdServicesObject_TimeZoneDataType_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15086
-	OpcuaNodeIdServicesObject_ApplicationDescription_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15087
-	OpcuaNodeIdServicesObject_RequestHeader_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15088
-	OpcuaNodeIdServicesObject_ResponseHeader_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15089
-	OpcuaNodeIdServicesObject_ServiceFault_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15090
-	OpcuaNodeIdServicesObject_SessionlessInvokeRequestType_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 15091
-	OpcuaNodeIdServicesObject_SessionlessInvokeResponseType_Encoding_DefaultJson                                                                             OpcuaNodeIdServicesObject = 15092
-	OpcuaNodeIdServicesObject_FindServersRequest_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15093
-	OpcuaNodeIdServicesObject_FindServersResponse_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15094
-	OpcuaNodeIdServicesObject_ServerOnNetwork_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15095
-	OpcuaNodeIdServicesObject_FindServersOnNetworkRequest_Encoding_DefaultJson                                                                               OpcuaNodeIdServicesObject = 15096
-	OpcuaNodeIdServicesObject_FindServersOnNetworkResponse_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 15097
-	OpcuaNodeIdServicesObject_UserTokenPolicy_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15098
-	OpcuaNodeIdServicesObject_EndpointDescription_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15099
-	OpcuaNodeIdServicesObject_GetEndpointsRequest_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15100
-	OpcuaNodeIdServicesObject_GetEndpointsResponse_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15101
-	OpcuaNodeIdServicesObject_RegisteredServer_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15102
-	OpcuaNodeIdServicesObject_RegisterServerRequest_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15103
-	OpcuaNodeIdServicesObject_RegisterServerResponse_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15104
-	OpcuaNodeIdServicesObject_DiscoveryConfiguration_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15105
-	OpcuaNodeIdServicesObject_MdnsDiscoveryConfiguration_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 15106
-	OpcuaNodeIdServicesObject_RegisterServer2Request_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15107
-	OpcuaNodeIdServicesObject_RegisterServer2Response_Encoding_DefaultJson                                                                                   OpcuaNodeIdServicesObject = 15130
-	OpcuaNodeIdServicesObject_ChannelSecurityToken_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15131
-	OpcuaNodeIdServicesObject_OpenSecureChannelRequest_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 15132
-	OpcuaNodeIdServicesObject_OpenSecureChannelResponse_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 15133
-	OpcuaNodeIdServicesObject_CloseSecureChannelRequest_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 15134
-	OpcuaNodeIdServicesObject_CloseSecureChannelResponse_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 15135
-	OpcuaNodeIdServicesObject_SignedSoftwareCertificate_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 15136
-	OpcuaNodeIdServicesObject_SignatureData_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15137
-	OpcuaNodeIdServicesObject_CreateSessionRequest_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15138
-	OpcuaNodeIdServicesObject_CreateSessionResponse_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15139
-	OpcuaNodeIdServicesObject_UserIdentityToken_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15140
-	OpcuaNodeIdServicesObject_AnonymousIdentityToken_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15141
-	OpcuaNodeIdServicesObject_UserNameIdentityToken_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15142
-	OpcuaNodeIdServicesObject_X509IdentityToken_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15143
-	OpcuaNodeIdServicesObject_IssuedIdentityToken_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15144
-	OpcuaNodeIdServicesObject_ActivateSessionRequest_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15145
-	OpcuaNodeIdServicesObject_ActivateSessionResponse_Encoding_DefaultJson                                                                                   OpcuaNodeIdServicesObject = 15146
-	OpcuaNodeIdServicesObject_CloseSessionRequest_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15147
-	OpcuaNodeIdServicesObject_CloseSessionResponse_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15148
-	OpcuaNodeIdServicesObject_CancelRequest_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15149
-	OpcuaNodeIdServicesObject_CancelResponse_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15150
-	OpcuaNodeIdServicesObject_NodeAttributes_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15151
-	OpcuaNodeIdServicesObject_ObjectAttributes_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15152
-	OpcuaNodeIdServicesObject_VariableAttributes_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15153
-	OpcuaNodeIdServicesObject_MethodAttributes_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15157
-	OpcuaNodeIdServicesObject_ObjectTypeAttributes_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15158
-	OpcuaNodeIdServicesObject_VariableTypeAttributes_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15159
-	OpcuaNodeIdServicesObject_ReferenceTypeAttributes_Encoding_DefaultJson                                                                                   OpcuaNodeIdServicesObject = 15160
-	OpcuaNodeIdServicesObject_DataTypeAttributes_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15161
-	OpcuaNodeIdServicesObject_ViewAttributes_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15162
-	OpcuaNodeIdServicesObject_GenericAttributeValue_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15163
-	OpcuaNodeIdServicesObject_GenericAttributes_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15164
-	OpcuaNodeIdServicesObject_AddNodesItem_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15165
-	OpcuaNodeIdServicesObject_AddNodesResult_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15166
-	OpcuaNodeIdServicesObject_AddNodesRequest_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15167
-	OpcuaNodeIdServicesObject_AddNodesResponse_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15168
-	OpcuaNodeIdServicesObject_AddReferencesItem_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15169
-	OpcuaNodeIdServicesObject_AddReferencesRequest_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15170
-	OpcuaNodeIdServicesObject_AddReferencesResponse_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15171
-	OpcuaNodeIdServicesObject_DeleteNodesItem_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15172
-	OpcuaNodeIdServicesObject_DeleteNodesRequest_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15173
-	OpcuaNodeIdServicesObject_DeleteNodesResponse_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15174
-	OpcuaNodeIdServicesObject_DeleteReferencesItem_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15175
-	OpcuaNodeIdServicesObject_DeleteReferencesRequest_Encoding_DefaultJson                                                                                   OpcuaNodeIdServicesObject = 15176
-	OpcuaNodeIdServicesObject_DeleteReferencesResponse_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 15177
-	OpcuaNodeIdServicesObject_ViewDescription_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15179
-	OpcuaNodeIdServicesObject_BrowseDescription_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15180
-	OpcuaNodeIdServicesObject_ReferenceDescription_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15182
-	OpcuaNodeIdServicesObject_BrowseResult_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15183
-	OpcuaNodeIdServicesObject_BrowseRequest_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15184
-	OpcuaNodeIdServicesObject_BrowseResponse_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15185
-	OpcuaNodeIdServicesObject_BrowseNextRequest_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15186
-	OpcuaNodeIdServicesObject_BrowseNextResponse_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15187
-	OpcuaNodeIdServicesObject_RelativePathElement_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15188
-	OpcuaNodeIdServicesObject_RelativePath_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15189
-	OpcuaNodeIdServicesObject_BrowsePath_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15190
-	OpcuaNodeIdServicesObject_BrowsePathTarget_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15191
-	OpcuaNodeIdServicesObject_BrowsePathResult_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15192
-	OpcuaNodeIdServicesObject_TranslateBrowsePathsToNodeIdsRequest_Encoding_DefaultJson                                                                      OpcuaNodeIdServicesObject = 15193
-	OpcuaNodeIdServicesObject_TranslateBrowsePathsToNodeIdsResponse_Encoding_DefaultJson                                                                     OpcuaNodeIdServicesObject = 15194
-	OpcuaNodeIdServicesObject_RegisterNodesRequest_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15195
-	OpcuaNodeIdServicesObject_RegisterNodesResponse_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15196
-	OpcuaNodeIdServicesObject_UnregisterNodesRequest_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15197
-	OpcuaNodeIdServicesObject_UnregisterNodesResponse_Encoding_DefaultJson                                                                                   OpcuaNodeIdServicesObject = 15198
-	OpcuaNodeIdServicesObject_EndpointConfiguration_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15199
-	OpcuaNodeIdServicesObject_QueryDataDescription_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15200
-	OpcuaNodeIdServicesObject_NodeTypeDescription_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15201
-	OpcuaNodeIdServicesObject_QueryDataSet_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15202
-	OpcuaNodeIdServicesObject_NodeReference_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15203
-	OpcuaNodeIdServicesObject_ContentFilterElement_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15204
-	OpcuaNodeIdServicesObject_ContentFilter_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15205
-	OpcuaNodeIdServicesObject_FilterOperand_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15206
-	OpcuaNodeIdServicesObject_ElementOperand_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15207
-	OpcuaNodeIdServicesObject_LiteralOperand_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15208
-	OpcuaNodeIdServicesObject_AttributeOperand_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15209
-	OpcuaNodeIdServicesObject_SimpleAttributeOperand_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15210
-	OpcuaNodeIdServicesObject_ContentFilterElementResult_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 15211
-	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder                                                                             OpcuaNodeIdServicesObject = 15222
-	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Status                                                                      OpcuaNodeIdServicesObject = 15223
-	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_TransportSettings                                                           OpcuaNodeIdServicesObject = 15227
-	OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15228
-	OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15236
-	OpcuaNodeIdServicesObject_QueryFirstRequest_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15244
-	OpcuaNodeIdServicesObject_QueryFirstResponse_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15252
-	OpcuaNodeIdServicesObject_QueryNextRequest_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15254
-	OpcuaNodeIdServicesObject_QueryNextResponse_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15255
-	OpcuaNodeIdServicesObject_ReadValueId_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15256
-	OpcuaNodeIdServicesObject_ReadRequest_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15257
-	OpcuaNodeIdServicesObject_ReadResponse_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15258
-	OpcuaNodeIdServicesObject_HistoryReadValueId_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15259
-	OpcuaNodeIdServicesObject_HistoryReadResult_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15260
-	OpcuaNodeIdServicesObject_HistoryReadDetails_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15261
-	OpcuaNodeIdServicesObject_ReadEventDetails_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15262
-	OpcuaNodeIdServicesObject_ReadRawModifiedDetails_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15263
-	OpcuaNodeIdServicesObject_ReadProcessedDetails_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15264
-	OpcuaNodeIdServicesObject_PubSubGroupType_Status                                                                                                         OpcuaNodeIdServicesObject = 15265
-	OpcuaNodeIdServicesObject_ReadAtTimeDetails_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15269
-	OpcuaNodeIdServicesObject_HistoryData_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15270
-	OpcuaNodeIdServicesObject_ModificationInfo_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15271
-	OpcuaNodeIdServicesObject_HistoryModifiedData_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15272
-	OpcuaNodeIdServicesObject_HistoryEvent_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15273
-	OpcuaNodeIdServicesObject_HistoryReadRequest_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15274
-	OpcuaNodeIdServicesObject_HistoryReadResponse_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15275
-	OpcuaNodeIdServicesObject_WriteValue_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15276
-	OpcuaNodeIdServicesObject_WriteRequest_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15277
-	OpcuaNodeIdServicesObject_WriteResponse_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15278
-	OpcuaNodeIdServicesObject_HistoryUpdateDetails_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15279
-	OpcuaNodeIdServicesObject_UpdateDataDetails_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15280
-	OpcuaNodeIdServicesObject_UpdateStructureDataDetails_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 15281
-	OpcuaNodeIdServicesObject_UpdateEventDetails_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15282
-	OpcuaNodeIdServicesObject_DeleteRawModifiedDetails_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 15283
-	OpcuaNodeIdServicesObject_DeleteAtTimeDetails_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15284
-	OpcuaNodeIdServicesObject_DeleteEventDetails_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15285
-	OpcuaNodeIdServicesObject_HistoryUpdateResult_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15286
-	OpcuaNodeIdServicesObject_HistoryUpdateRequest_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15287
-	OpcuaNodeIdServicesObject_HistoryUpdateResponse_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15288
-	OpcuaNodeIdServicesObject_CallMethodRequest_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15289
-	OpcuaNodeIdServicesObject_CallMethodResult_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15290
-	OpcuaNodeIdServicesObject_CallRequest_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15291
-	OpcuaNodeIdServicesObject_CallResponse_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15292
-	OpcuaNodeIdServicesObject_MonitoringFilter_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15293
-	OpcuaNodeIdServicesObject_DataChangeFilter_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15294
-	OpcuaNodeIdServicesObject_EventFilter_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15295
-	OpcuaNodeIdServicesObject_DataSetWriterType_Status                                                                                                       OpcuaNodeIdServicesObject = 15299
-	OpcuaNodeIdServicesObject_DataSetWriterType_TransportSettings                                                                                            OpcuaNodeIdServicesObject = 15303
-	OpcuaNodeIdServicesObject_AggregateConfiguration_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15304
-	OpcuaNodeIdServicesObject_DataSetReaderType_Status                                                                                                       OpcuaNodeIdServicesObject = 15307
-	OpcuaNodeIdServicesObject_DataSetReaderType_TransportSettings                                                                                            OpcuaNodeIdServicesObject = 15311
-	OpcuaNodeIdServicesObject_AggregateFilter_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15312
-	OpcuaNodeIdServicesObject_MonitoringFilterResult_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15313
-	OpcuaNodeIdServicesObject_EventFilterResult_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15314
-	OpcuaNodeIdServicesObject_AggregateFilterResult_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15315
-	OpcuaNodeIdServicesObject_DataSetReaderType_SubscribedDataSet                                                                                            OpcuaNodeIdServicesObject = 15316
-	OpcuaNodeIdServicesObject_MonitoringParameters_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15320
-	OpcuaNodeIdServicesObject_MonitoredItemCreateRequest_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 15321
-	OpcuaNodeIdServicesObject_MonitoredItemCreateResult_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 15322
-	OpcuaNodeIdServicesObject_CreateMonitoredItemsRequest_Encoding_DefaultJson                                                                               OpcuaNodeIdServicesObject = 15323
-	OpcuaNodeIdServicesObject_CreateMonitoredItemsResponse_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 15324
-	OpcuaNodeIdServicesObject_MonitoredItemModifyRequest_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 15325
-	OpcuaNodeIdServicesObject_MonitoredItemModifyResult_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 15326
-	OpcuaNodeIdServicesObject_ModifyMonitoredItemsRequest_Encoding_DefaultJson                                                                               OpcuaNodeIdServicesObject = 15327
-	OpcuaNodeIdServicesObject_ModifyMonitoredItemsResponse_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 15328
-	OpcuaNodeIdServicesObject_SetMonitoringModeRequest_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 15329
-	OpcuaNodeIdServicesObject_SetMonitoringModeResponse_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 15331
-	OpcuaNodeIdServicesObject_SetTriggeringRequest_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15332
-	OpcuaNodeIdServicesObject_SetTriggeringResponse_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15333
-	OpcuaNodeIdServicesObject_DeleteMonitoredItemsRequest_Encoding_DefaultJson                                                                               OpcuaNodeIdServicesObject = 15335
-	OpcuaNodeIdServicesObject_DeleteMonitoredItemsResponse_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 15336
-	OpcuaNodeIdServicesObject_CreateSubscriptionRequest_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 15337
-	OpcuaNodeIdServicesObject_CreateSubscriptionResponse_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 15338
-	OpcuaNodeIdServicesObject_ModifySubscriptionRequest_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 15339
-	OpcuaNodeIdServicesObject_ModifySubscriptionResponse_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 15340
-	OpcuaNodeIdServicesObject_SetPublishingModeRequest_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 15341
-	OpcuaNodeIdServicesObject_SetPublishingModeResponse_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 15342
-	OpcuaNodeIdServicesObject_NotificationMessage_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 15343
-	OpcuaNodeIdServicesObject_NotificationData_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15344
-	OpcuaNodeIdServicesObject_DataChangeNotification_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15345
-	OpcuaNodeIdServicesObject_MonitoredItemNotification_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 15346
-	OpcuaNodeIdServicesObject_EventNotificationList_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15347
-	OpcuaNodeIdServicesObject_EventFieldList_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15348
-	OpcuaNodeIdServicesObject_HistoryEventFieldList_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15349
-	OpcuaNodeIdServicesObject_StatusChangeNotification_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 15350
-	OpcuaNodeIdServicesObject_SubscriptionAcknowledgement_Encoding_DefaultJson                                                                               OpcuaNodeIdServicesObject = 15351
-	OpcuaNodeIdServicesObject_PublishRequest_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15352
-	OpcuaNodeIdServicesObject_PublishResponse_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15353
-	OpcuaNodeIdServicesObject_RepublishRequest_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15354
-	OpcuaNodeIdServicesObject_RepublishResponse_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15355
-	OpcuaNodeIdServicesObject_TransferResult_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15356
-	OpcuaNodeIdServicesObject_TransferSubscriptionsRequest_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 15357
-	OpcuaNodeIdServicesObject_TransferSubscriptionsResponse_Encoding_DefaultJson                                                                             OpcuaNodeIdServicesObject = 15358
-	OpcuaNodeIdServicesObject_DeleteSubscriptionsRequest_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 15359
-	OpcuaNodeIdServicesObject_DeleteSubscriptionsResponse_Encoding_DefaultJson                                                                               OpcuaNodeIdServicesObject = 15360
-	OpcuaNodeIdServicesObject_BuildInfo_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15361
-	OpcuaNodeIdServicesObject_RedundantServerDataType_Encoding_DefaultJson                                                                                   OpcuaNodeIdServicesObject = 15362
-	OpcuaNodeIdServicesObject_EndpointUrlListDataType_Encoding_DefaultJson                                                                                   OpcuaNodeIdServicesObject = 15363
-	OpcuaNodeIdServicesObject_NetworkGroupDataType_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15364
-	OpcuaNodeIdServicesObject_SamplingIntervalDiagnosticsDataType_Encoding_DefaultJson                                                                       OpcuaNodeIdServicesObject = 15365
-	OpcuaNodeIdServicesObject_ServerDiagnosticsSummaryDataType_Encoding_DefaultJson                                                                          OpcuaNodeIdServicesObject = 15366
-	OpcuaNodeIdServicesObject_ServerStatusDataType_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15367
-	OpcuaNodeIdServicesObject_SessionDiagnosticsDataType_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 15368
-	OpcuaNodeIdServicesObject_SessionSecurityDiagnosticsDataType_Encoding_DefaultJson                                                                        OpcuaNodeIdServicesObject = 15369
-	OpcuaNodeIdServicesObject_ServiceCounterDataType_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15370
-	OpcuaNodeIdServicesObject_StatusResult_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15371
-	OpcuaNodeIdServicesObject_SubscriptionDiagnosticsDataType_Encoding_DefaultJson                                                                           OpcuaNodeIdServicesObject = 15372
-	OpcuaNodeIdServicesObject_ModelChangeStructureDataType_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 15373
-	OpcuaNodeIdServicesObject_SemanticChangeStructureDataType_Encoding_DefaultJson                                                                           OpcuaNodeIdServicesObject = 15374
-	OpcuaNodeIdServicesObject_Range_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15375
-	OpcuaNodeIdServicesObject_EUInformation_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15376
-	OpcuaNodeIdServicesObject_ComplexNumberType_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15377
-	OpcuaNodeIdServicesObject_DoubleComplexNumberType_Encoding_DefaultJson                                                                                   OpcuaNodeIdServicesObject = 15378
-	OpcuaNodeIdServicesObject_AxisInformation_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15379
-	OpcuaNodeIdServicesObject_XVType_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15380
-	OpcuaNodeIdServicesObject_ProgramDiagnosticDataType_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 15381
-	OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15382
-	OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 15421
-	OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 15422
-	OpcuaNodeIdServicesObject_PublishSubscribe_SecurityGroups                                                                                                OpcuaNodeIdServicesObject = 15443
-	OpcuaNodeIdServicesObject_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder                                                                    OpcuaNodeIdServicesObject = 15453
-	OpcuaNodeIdServicesObject_SecurityGroupFolderType_SecurityGroupName_Placeholder                                                                          OpcuaNodeIdServicesObject = 15459
-	OpcuaNodeIdServicesObject_DataSetFolderType_PublishedDataSetName_Placeholder_ExtensionFields                                                             OpcuaNodeIdServicesObject = 15473
-	OpcuaNodeIdServicesObject_BrokerConnectionTransportDataType_Encoding_DefaultBinary                                                                       OpcuaNodeIdServicesObject = 15479
-	OpcuaNodeIdServicesObject_PublishedDataSetType_ExtensionFields                                                                                           OpcuaNodeIdServicesObject = 15481
-	OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 15529
-	OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 15531
-	OpcuaNodeIdServicesObject_BrokerConnectionTransportDataType_Encoding_DefaultXml                                                                          OpcuaNodeIdServicesObject = 15579
-	OpcuaNodeIdServicesObject_StructureDescription_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 15589
-	OpcuaNodeIdServicesObject_EnumDescription_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 15590
-	OpcuaNodeIdServicesObject_Server_ServerCapabilities_RoleSet                                                                                              OpcuaNodeIdServicesObject = 15606
-	OpcuaNodeIdServicesObject_RoleSetType_RoleName_Placeholder                                                                                               OpcuaNodeIdServicesObject = 15608
-	OpcuaNodeIdServicesObject_WellKnownRole_Anonymous                                                                                                        OpcuaNodeIdServicesObject = 15644
-	OpcuaNodeIdServicesObject_WellKnownRole_AuthenticatedUser                                                                                                OpcuaNodeIdServicesObject = 15656
-	OpcuaNodeIdServicesObject_WellKnownRole_Observer                                                                                                         OpcuaNodeIdServicesObject = 15668
-	OpcuaNodeIdServicesObject_EndpointType_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 15671
-	OpcuaNodeIdServicesObject_DataTypeSchemaHeader_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 15676
-	OpcuaNodeIdServicesObject_PublishedDataSetDataType_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 15677
-	OpcuaNodeIdServicesObject_PublishedDataSetSourceDataType_Encoding_DefaultBinary                                                                          OpcuaNodeIdServicesObject = 15678
-	OpcuaNodeIdServicesObject_PublishedDataItemsDataType_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 15679
-	OpcuaNodeIdServicesObject_WellKnownRole_Operator                                                                                                         OpcuaNodeIdServicesObject = 15680
-	OpcuaNodeIdServicesObject_PublishedEventsDataType_Encoding_DefaultBinary                                                                                 OpcuaNodeIdServicesObject = 15681
-	OpcuaNodeIdServicesObject_DataSetWriterDataType_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 15682
-	OpcuaNodeIdServicesObject_DataSetWriterTransportDataType_Encoding_DefaultBinary                                                                          OpcuaNodeIdServicesObject = 15683
-	OpcuaNodeIdServicesObject_DataSetWriterMessageDataType_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 15688
-	OpcuaNodeIdServicesObject_PubSubGroupDataType_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 15689
-	OpcuaNodeIdServicesObject_WriterGroupTransportDataType_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 15691
-	OpcuaNodeIdServicesObject_WellKnownRole_Supervisor                                                                                                       OpcuaNodeIdServicesObject = 15692
-	OpcuaNodeIdServicesObject_WriterGroupMessageDataType_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 15693
-	OpcuaNodeIdServicesObject_PubSubConnectionDataType_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 15694
-	OpcuaNodeIdServicesObject_ConnectionTransportDataType_Encoding_DefaultBinary                                                                             OpcuaNodeIdServicesObject = 15695
-	OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15700
-	OpcuaNodeIdServicesObject_ReaderGroupTransportDataType_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 15701
-	OpcuaNodeIdServicesObject_ReaderGroupMessageDataType_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 15702
-	OpcuaNodeIdServicesObject_DataSetReaderDataType_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 15703
-	OpcuaNodeIdServicesObject_WellKnownRole_SecurityAdmin                                                                                                    OpcuaNodeIdServicesObject = 15704
-	OpcuaNodeIdServicesObject_DataSetReaderTransportDataType_Encoding_DefaultBinary                                                                          OpcuaNodeIdServicesObject = 15705
-	OpcuaNodeIdServicesObject_DataSetReaderMessageDataType_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 15706
-	OpcuaNodeIdServicesObject_SubscribedDataSetDataType_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 15707
-	OpcuaNodeIdServicesObject_TargetVariablesDataType_Encoding_DefaultBinary                                                                                 OpcuaNodeIdServicesObject = 15712
-	OpcuaNodeIdServicesObject_SubscribedDataSetMirrorDataType_Encoding_DefaultBinary                                                                         OpcuaNodeIdServicesObject = 15713
-	OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15714
-	OpcuaNodeIdServicesObject_UadpWriterGroupMessageDataType_Encoding_DefaultBinary                                                                          OpcuaNodeIdServicesObject = 15715
-	OpcuaNodeIdServicesObject_WellKnownRole_ConfigureAdmin                                                                                                   OpcuaNodeIdServicesObject = 15716
-	OpcuaNodeIdServicesObject_UadpDataSetWriterMessageDataType_Encoding_DefaultBinary                                                                        OpcuaNodeIdServicesObject = 15717
-	OpcuaNodeIdServicesObject_UadpDataSetReaderMessageDataType_Encoding_DefaultBinary                                                                        OpcuaNodeIdServicesObject = 15718
-	OpcuaNodeIdServicesObject_JsonWriterGroupMessageDataType_Encoding_DefaultBinary                                                                          OpcuaNodeIdServicesObject = 15719
-	OpcuaNodeIdServicesObject_JsonDataSetWriterMessageDataType_Encoding_DefaultBinary                                                                        OpcuaNodeIdServicesObject = 15724
-	OpcuaNodeIdServicesObject_JsonDataSetReaderMessageDataType_Encoding_DefaultBinary                                                                        OpcuaNodeIdServicesObject = 15725
-	OpcuaNodeIdServicesObject_BrokerConnectionTransportDataType_Encoding_DefaultJson                                                                         OpcuaNodeIdServicesObject = 15726
-	OpcuaNodeIdServicesObject_BrokerWriterGroupTransportDataType_Encoding_DefaultBinary                                                                      OpcuaNodeIdServicesObject = 15727
-	OpcuaNodeIdServicesObject_IdentityMappingRuleType_Encoding_DefaultXml                                                                                    OpcuaNodeIdServicesObject = 15728
-	OpcuaNodeIdServicesObject_BrokerDataSetWriterTransportDataType_Encoding_DefaultBinary                                                                    OpcuaNodeIdServicesObject = 15729
-	OpcuaNodeIdServicesObject_BrokerDataSetReaderTransportDataType_Encoding_DefaultBinary                                                                    OpcuaNodeIdServicesObject = 15733
-	OpcuaNodeIdServicesObject_IdentityMappingRuleType_Encoding_DefaultBinary                                                                                 OpcuaNodeIdServicesObject = 15736
-	OpcuaNodeIdServicesObject_TemporaryFileTransferType_TransferState_Placeholder                                                                            OpcuaNodeIdServicesObject = 15754
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_Idle                                                                                              OpcuaNodeIdServicesObject = 15815
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ReadPrepare                                                                                       OpcuaNodeIdServicesObject = 15817
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ReadTransfer                                                                                      OpcuaNodeIdServicesObject = 15819
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ApplyWrite                                                                                        OpcuaNodeIdServicesObject = 15821
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_Error                                                                                             OpcuaNodeIdServicesObject = 15823
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_IdleToReadPrepare                                                                                 OpcuaNodeIdServicesObject = 15825
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ReadPrepareToReadTransfer                                                                         OpcuaNodeIdServicesObject = 15827
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ReadTransferToIdle                                                                                OpcuaNodeIdServicesObject = 15829
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_IdleToApplyWrite                                                                                  OpcuaNodeIdServicesObject = 15831
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ApplyWriteToIdle                                                                                  OpcuaNodeIdServicesObject = 15833
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ReadPrepareToError                                                                                OpcuaNodeIdServicesObject = 15835
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ReadTransferToError                                                                               OpcuaNodeIdServicesObject = 15837
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ApplyWriteToError                                                                                 OpcuaNodeIdServicesObject = 15839
-	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ErrorToIdle                                                                                       OpcuaNodeIdServicesObject = 15841
-	OpcuaNodeIdServicesObject_PublishSubscribeType_Status                                                                                                    OpcuaNodeIdServicesObject = 15844
-	OpcuaNodeIdServicesObject_SessionlessInvokeRequestType_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 15902
-	OpcuaNodeIdServicesObject_SessionlessInvokeRequestType_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 15903
-	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_TransportSettings                                                              OpcuaNodeIdServicesObject = 15905
-	OpcuaNodeIdServicesObject_PubSubKeyServiceType_SecurityGroups                                                                                            OpcuaNodeIdServicesObject = 15913
-	OpcuaNodeIdServicesObject_EndpointType_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 15949
-	OpcuaNodeIdServicesObject_DataTypeSchemaHeader_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 15950
-	OpcuaNodeIdServicesObject_PublishedDataSetDataType_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 15951
-	OpcuaNodeIdServicesObject_PublishedDataSetSourceDataType_Encoding_DefaultXml                                                                             OpcuaNodeIdServicesObject = 15952
-	OpcuaNodeIdServicesObject_PublishedDataItemsDataType_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 15953
-	OpcuaNodeIdServicesObject_PublishedEventsDataType_Encoding_DefaultXml                                                                                    OpcuaNodeIdServicesObject = 15954
-	OpcuaNodeIdServicesObject_DataSetWriterDataType_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 15955
-	OpcuaNodeIdServicesObject_DataSetWriterTransportDataType_Encoding_DefaultXml                                                                             OpcuaNodeIdServicesObject = 15956
-	OpcuaNodeIdServicesObject_OPCUANamespaceMetadata                                                                                                         OpcuaNodeIdServicesObject = 15957
-	OpcuaNodeIdServicesObject_OPCUANamespaceMetadata_NamespaceFile                                                                                           OpcuaNodeIdServicesObject = 15965
-	OpcuaNodeIdServicesObject_DataSetWriterMessageDataType_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 15987
-	OpcuaNodeIdServicesObject_PubSubGroupDataType_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 15988
-	OpcuaNodeIdServicesObject_WriterGroupTransportDataType_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 15990
-	OpcuaNodeIdServicesObject_WriterGroupMessageDataType_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 15991
-	OpcuaNodeIdServicesObject_PubSubConnectionDataType_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 15992
-	OpcuaNodeIdServicesObject_ConnectionTransportDataType_Encoding_DefaultXml                                                                                OpcuaNodeIdServicesObject = 15993
-	OpcuaNodeIdServicesObject_ReaderGroupTransportDataType_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 15995
-	OpcuaNodeIdServicesObject_ReaderGroupMessageDataType_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 15996
-	OpcuaNodeIdServicesObject_DataSetReaderDataType_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 16007
-	OpcuaNodeIdServicesObject_DataSetReaderTransportDataType_Encoding_DefaultXml                                                                             OpcuaNodeIdServicesObject = 16008
-	OpcuaNodeIdServicesObject_DataSetReaderMessageDataType_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 16009
-	OpcuaNodeIdServicesObject_SubscribedDataSetDataType_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 16010
-	OpcuaNodeIdServicesObject_TargetVariablesDataType_Encoding_DefaultXml                                                                                    OpcuaNodeIdServicesObject = 16011
-	OpcuaNodeIdServicesObject_SubscribedDataSetMirrorDataType_Encoding_DefaultXml                                                                            OpcuaNodeIdServicesObject = 16012
-	OpcuaNodeIdServicesObject_UadpWriterGroupMessageDataType_Encoding_DefaultXml                                                                             OpcuaNodeIdServicesObject = 16014
-	OpcuaNodeIdServicesObject_UadpDataSetWriterMessageDataType_Encoding_DefaultXml                                                                           OpcuaNodeIdServicesObject = 16015
-	OpcuaNodeIdServicesObject_UadpDataSetReaderMessageDataType_Encoding_DefaultXml                                                                           OpcuaNodeIdServicesObject = 16016
-	OpcuaNodeIdServicesObject_JsonWriterGroupMessageDataType_Encoding_DefaultXml                                                                             OpcuaNodeIdServicesObject = 16017
-	OpcuaNodeIdServicesObject_JsonDataSetWriterMessageDataType_Encoding_DefaultXml                                                                           OpcuaNodeIdServicesObject = 16018
-	OpcuaNodeIdServicesObject_JsonDataSetReaderMessageDataType_Encoding_DefaultXml                                                                           OpcuaNodeIdServicesObject = 16019
-	OpcuaNodeIdServicesObject_BrokerWriterGroupTransportDataType_Encoding_DefaultXml                                                                         OpcuaNodeIdServicesObject = 16021
-	OpcuaNodeIdServicesObject_BrokerDataSetWriterTransportDataType_Encoding_DefaultXml                                                                       OpcuaNodeIdServicesObject = 16022
-	OpcuaNodeIdServicesObject_BrokerDataSetReaderTransportDataType_Encoding_DefaultXml                                                                       OpcuaNodeIdServicesObject = 16023
-	OpcuaNodeIdServicesObject_WellKnownRole_Engineer                                                                                                         OpcuaNodeIdServicesObject = 16036
-	OpcuaNodeIdServicesObject_RolePermissionType_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 16126
-	OpcuaNodeIdServicesObject_EndpointType_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 16150
-	OpcuaNodeIdServicesObject_DataTypeSchemaHeader_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 16151
-	OpcuaNodeIdServicesObject_PublishedDataSetDataType_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 16152
-	OpcuaNodeIdServicesObject_PublishedDataSetSourceDataType_Encoding_DefaultJson                                                                            OpcuaNodeIdServicesObject = 16153
-	OpcuaNodeIdServicesObject_PublishedDataItemsDataType_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 16154
-	OpcuaNodeIdServicesObject_PublishedEventsDataType_Encoding_DefaultJson                                                                                   OpcuaNodeIdServicesObject = 16155
-	OpcuaNodeIdServicesObject_DataSetWriterDataType_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 16156
-	OpcuaNodeIdServicesObject_DataSetWriterTransportDataType_Encoding_DefaultJson                                                                            OpcuaNodeIdServicesObject = 16157
-	OpcuaNodeIdServicesObject_DataSetWriterMessageDataType_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 16158
-	OpcuaNodeIdServicesObject_PubSubGroupDataType_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 16159
-	OpcuaNodeIdServicesObject_WriterGroupTransportDataType_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 16161
-	OpcuaNodeIdServicesObject_WriterGroupMessageDataType_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 16280
-	OpcuaNodeIdServicesObject_PubSubConnectionDataType_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 16281
-	OpcuaNodeIdServicesObject_ConnectionTransportDataType_Encoding_DefaultJson                                                                               OpcuaNodeIdServicesObject = 16282
-	OpcuaNodeIdServicesObject_ReaderGroupTransportDataType_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 16284
-	OpcuaNodeIdServicesObject_ReaderGroupMessageDataType_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 16285
-	OpcuaNodeIdServicesObject_DataSetReaderDataType_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 16286
-	OpcuaNodeIdServicesObject_DataSetReaderTransportDataType_Encoding_DefaultJson                                                                            OpcuaNodeIdServicesObject = 16287
-	OpcuaNodeIdServicesObject_DataSetReaderMessageDataType_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 16288
-	OpcuaNodeIdServicesObject_ServerType_ServerCapabilities_RoleSet                                                                                          OpcuaNodeIdServicesObject = 16289
-	OpcuaNodeIdServicesObject_ServerCapabilitiesType_RoleSet                                                                                                 OpcuaNodeIdServicesObject = 16295
-	OpcuaNodeIdServicesObject_SubscribedDataSetDataType_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 16308
-	OpcuaNodeIdServicesObject_TargetVariablesDataType_Encoding_DefaultJson                                                                                   OpcuaNodeIdServicesObject = 16310
-	OpcuaNodeIdServicesObject_SubscribedDataSetMirrorDataType_Encoding_DefaultJson                                                                           OpcuaNodeIdServicesObject = 16311
-	OpcuaNodeIdServicesObject_FileSystem                                                                                                                     OpcuaNodeIdServicesObject = 16314
-	OpcuaNodeIdServicesObject_UadpWriterGroupMessageDataType_Encoding_DefaultJson                                                                            OpcuaNodeIdServicesObject = 16323
-	OpcuaNodeIdServicesObject_UadpDataSetWriterMessageDataType_Encoding_DefaultJson                                                                          OpcuaNodeIdServicesObject = 16391
-	OpcuaNodeIdServicesObject_UadpDataSetReaderMessageDataType_Encoding_DefaultJson                                                                          OpcuaNodeIdServicesObject = 16392
-	OpcuaNodeIdServicesObject_JsonWriterGroupMessageDataType_Encoding_DefaultJson                                                                            OpcuaNodeIdServicesObject = 16393
-	OpcuaNodeIdServicesObject_JsonDataSetWriterMessageDataType_Encoding_DefaultJson                                                                          OpcuaNodeIdServicesObject = 16394
-	OpcuaNodeIdServicesObject_AlarmConditionType_FirstInGroup                                                                                                OpcuaNodeIdServicesObject = 16398
-	OpcuaNodeIdServicesObject_AlarmConditionType_AlarmGroup_Placeholder                                                                                      OpcuaNodeIdServicesObject = 16399
-	OpcuaNodeIdServicesObject_JsonDataSetReaderMessageDataType_Encoding_DefaultJson                                                                          OpcuaNodeIdServicesObject = 16404
-	OpcuaNodeIdServicesObject_AlarmGroupType_AlarmConditionInstance_Placeholder                                                                              OpcuaNodeIdServicesObject = 16406
-	OpcuaNodeIdServicesObject_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState                                                                OpcuaNodeIdServicesObject = 16502
-	OpcuaNodeIdServicesObject_BrokerWriterGroupTransportDataType_Encoding_DefaultJson                                                                        OpcuaNodeIdServicesObject = 16524
-	OpcuaNodeIdServicesObject_BrokerDataSetWriterTransportDataType_Encoding_DefaultJson                                                                      OpcuaNodeIdServicesObject = 16525
-	OpcuaNodeIdServicesObject_BrokerDataSetReaderTransportDataType_Encoding_DefaultJson                                                                      OpcuaNodeIdServicesObject = 16526
-	OpcuaNodeIdServicesObject_AlarmGroupType_AlarmConditionInstance_Placeholder_FirstInGroup                                                                 OpcuaNodeIdServicesObject = 16530
-	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_MessageSettings                                                             OpcuaNodeIdServicesObject = 16758
-	OpcuaNodeIdServicesObject_PubSubConnectionType_TransportSettings                                                                                         OpcuaNodeIdServicesObject = 17203
-	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_TransportSettings                                                             OpcuaNodeIdServicesObject = 17290
-	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_MessageSettings                                                               OpcuaNodeIdServicesObject = 17291
-	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder_TransportSettings                                                             OpcuaNodeIdServicesObject = 17307
-	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder_MessageSettings                                                               OpcuaNodeIdServicesObject = 17308
-	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder                                                                               OpcuaNodeIdServicesObject = 17310
-	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Status                                                                        OpcuaNodeIdServicesObject = 17314
-	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder                                                                               OpcuaNodeIdServicesObject = 17325
-	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder_Status                                                                        OpcuaNodeIdServicesObject = 17329
-	OpcuaNodeIdServicesObject_PublishSubscribe_PublishedDataSets                                                                                             OpcuaNodeIdServicesObject = 17371
-	OpcuaNodeIdServicesObject_PublishSubscribe_Status                                                                                                        OpcuaNodeIdServicesObject = 17405
-	OpcuaNodeIdServicesObject_PublishSubscribe_Diagnostics                                                                                                   OpcuaNodeIdServicesObject = 17409
-	OpcuaNodeIdServicesObject_PublishSubscribe_Diagnostics_Counters                                                                                          OpcuaNodeIdServicesObject = 17423
-	OpcuaNodeIdServicesObject_PublishSubscribe_Diagnostics_LiveValues                                                                                        OpcuaNodeIdServicesObject = 17457
-	OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultBinary                                                                     OpcuaNodeIdServicesObject = 17468
-	OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultXml                                                                        OpcuaNodeIdServicesObject = 17472
-	OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultJson                                                                       OpcuaNodeIdServicesObject = 17476
-	OpcuaNodeIdServicesObject_KeyCredentialConfigurationFolderType_ServiceName_Placeholder                                                                   OpcuaNodeIdServicesObject = 17511
-	OpcuaNodeIdServicesObject_AdditionalParametersType_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 17537
-	OpcuaNodeIdServicesObject_AdditionalParametersType_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 17541
-	OpcuaNodeIdServicesObject_AdditionalParametersType_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 17547
-	OpcuaNodeIdServicesObject_EphemeralKeyType_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 17549
-	OpcuaNodeIdServicesObject_EphemeralKeyType_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 17553
-	OpcuaNodeIdServicesObject_EphemeralKeyType_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 17557
-	OpcuaNodeIdServicesObject_DictionaryEntryType_DictionaryEntryName_Placeholder                                                                            OpcuaNodeIdServicesObject = 17590
-	OpcuaNodeIdServicesObject_DictionaryFolderType_DictionaryFolderName_Placeholder                                                                          OpcuaNodeIdServicesObject = 17592
-	OpcuaNodeIdServicesObject_DictionaryFolderType_DictionaryEntryName_Placeholder                                                                           OpcuaNodeIdServicesObject = 17593
-	OpcuaNodeIdServicesObject_Dictionaries                                                                                                                   OpcuaNodeIdServicesObject = 17594
-	OpcuaNodeIdServicesObject_GenericAttributeValue_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 17608
-	OpcuaNodeIdServicesObject_GenericAttributes_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 17609
-	OpcuaNodeIdServicesObject_GenericAttributeValue_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 17610
-	OpcuaNodeIdServicesObject_GenericAttributes_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 17611
-	OpcuaNodeIdServicesObject_InterfaceTypes                                                                                                                 OpcuaNodeIdServicesObject = 17708
-	OpcuaNodeIdServicesObject_AuthorizationServices                                                                                                          OpcuaNodeIdServicesObject = 17732
-	OpcuaNodeIdServicesObject_WriterGroupType_TransportSettings                                                                                              OpcuaNodeIdServicesObject = 17741
-	OpcuaNodeIdServicesObject_WriterGroupType_MessageSettings                                                                                                OpcuaNodeIdServicesObject = 17742
-	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder                                                                                  OpcuaNodeIdServicesObject = 17743
-	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder_TransportSettings                                                                OpcuaNodeIdServicesObject = 17747
-	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder_MessageSettings                                                                  OpcuaNodeIdServicesObject = 17748
-	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder_Status                                                                           OpcuaNodeIdServicesObject = 17749
-	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder_Diagnostics                                                                      OpcuaNodeIdServicesObject = 17753
-	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder_Diagnostics_Counters                                                             OpcuaNodeIdServicesObject = 17767
-	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder_Diagnostics_LiveValues                                                           OpcuaNodeIdServicesObject = 17798
-	OpcuaNodeIdServicesObject_WriterGroupType_Diagnostics                                                                                                    OpcuaNodeIdServicesObject = 17812
-	OpcuaNodeIdServicesObject_WriterGroupType_Diagnostics_Counters                                                                                           OpcuaNodeIdServicesObject = 17826
-	OpcuaNodeIdServicesObject_WriterGroupType_Diagnostics_LiveValues                                                                                         OpcuaNodeIdServicesObject = 17858
-	OpcuaNodeIdServicesObject_DecimalDataType_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 17862
-	OpcuaNodeIdServicesObject_DecimalDataType_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 17863
-	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder                                                                                  OpcuaNodeIdServicesObject = 18076
-	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_TransportSettings                                                                OpcuaNodeIdServicesObject = 18086
-	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_MessageSettings                                                                  OpcuaNodeIdServicesObject = 18087
-	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_Status                                                                           OpcuaNodeIdServicesObject = 18088
-	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics                                                                      OpcuaNodeIdServicesObject = 18092
-	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_Counters                                                             OpcuaNodeIdServicesObject = 18106
-	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_LiveValues                                                           OpcuaNodeIdServicesObject = 18137
-	OpcuaNodeIdServicesObject_KeyCredentialConfiguration                                                                                                     OpcuaNodeIdServicesObject = 18155
-	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics                                                                    OpcuaNodeIdServicesObject = 18667
-	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_Counters                                                           OpcuaNodeIdServicesObject = 18681
-	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_LiveValues                                                         OpcuaNodeIdServicesObject = 18712
-	OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics                                                                                               OpcuaNodeIdServicesObject = 18715
-	OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics_Counters                                                                                      OpcuaNodeIdServicesObject = 18729
-	OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics_LiveValues                                                                                    OpcuaNodeIdServicesObject = 18760
-	OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 18815
-	OpcuaNodeIdServicesObject_Vector_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 18816
-	OpcuaNodeIdServicesObject_ThreeDVector_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 18817
-	OpcuaNodeIdServicesObject_CartesianCoordinates_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 18818
-	OpcuaNodeIdServicesObject_ThreeDCartesianCoordinates_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 18819
-	OpcuaNodeIdServicesObject_Orientation_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 18820
-	OpcuaNodeIdServicesObject_ThreeDOrientation_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 18821
-	OpcuaNodeIdServicesObject_Frame_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 18822
-	OpcuaNodeIdServicesObject_ThreeDFrame_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 18823
-	OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 18851
-	OpcuaNodeIdServicesObject_Vector_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 18852
-	OpcuaNodeIdServicesObject_ThreeDVector_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 18853
-	OpcuaNodeIdServicesObject_CartesianCoordinates_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 18854
-	OpcuaNodeIdServicesObject_ThreeDCartesianCoordinates_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 18855
-	OpcuaNodeIdServicesObject_Orientation_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 18856
-	OpcuaNodeIdServicesObject_ThreeDOrientation_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 18857
-	OpcuaNodeIdServicesObject_Frame_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 18858
-	OpcuaNodeIdServicesObject_ThreeDFrame_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 18859
-	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics                                                                 OpcuaNodeIdServicesObject = 18871
-	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters                                                        OpcuaNodeIdServicesObject = 18885
-	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues                                                      OpcuaNodeIdServicesObject = 18916
-	OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 19064
-	OpcuaNodeIdServicesObject_Vector_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 19065
-	OpcuaNodeIdServicesObject_ThreeDVector_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 19066
-	OpcuaNodeIdServicesObject_CartesianCoordinates_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 19067
-	OpcuaNodeIdServicesObject_ThreeDCartesianCoordinates_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 19068
-	OpcuaNodeIdServicesObject_Orientation_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 19069
-	OpcuaNodeIdServicesObject_ThreeDOrientation_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 19070
-	OpcuaNodeIdServicesObject_Frame_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 19071
-	OpcuaNodeIdServicesObject_ThreeDFrame_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 19072
-	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics                                                                   OpcuaNodeIdServicesObject = 19107
-	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics_Counters                                                          OpcuaNodeIdServicesObject = 19121
-	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics_LiveValues                                                        OpcuaNodeIdServicesObject = 19152
-	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder_Diagnostics                                                                   OpcuaNodeIdServicesObject = 19176
-	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder_Diagnostics_Counters                                                          OpcuaNodeIdServicesObject = 19190
-	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder_Diagnostics_LiveValues                                                        OpcuaNodeIdServicesObject = 19221
-	OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics                                                                                               OpcuaNodeIdServicesObject = 19241
-	OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics_Counters                                                                                      OpcuaNodeIdServicesObject = 19255
-	OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics_LiveValues                                                                                    OpcuaNodeIdServicesObject = 19286
-	OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired                                                                                        OpcuaNodeIdServicesObject = 19450
-	OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired_ShelvingState                                                                          OpcuaNodeIdServicesObject = 19537
-	OpcuaNodeIdServicesObject_DataSetWriterType_Diagnostics                                                                                                  OpcuaNodeIdServicesObject = 19550
-	OpcuaNodeIdServicesObject_DataSetWriterType_Diagnostics_Counters                                                                                         OpcuaNodeIdServicesObject = 19564
-	OpcuaNodeIdServicesObject_DataSetWriterType_Diagnostics_LiveValues                                                                                       OpcuaNodeIdServicesObject = 19595
-	OpcuaNodeIdServicesObject_DataSetReaderType_Diagnostics                                                                                                  OpcuaNodeIdServicesObject = 19609
-	OpcuaNodeIdServicesObject_DataSetReaderType_Diagnostics_Counters                                                                                         OpcuaNodeIdServicesObject = 19623
-	OpcuaNodeIdServicesObject_DataSetReaderType_Diagnostics_LiveValues                                                                                       OpcuaNodeIdServicesObject = 19654
-	OpcuaNodeIdServicesObject_PubSubDiagnosticsType_Counters                                                                                                 OpcuaNodeIdServicesObject = 19691
-	OpcuaNodeIdServicesObject_PubSubDiagnosticsType_LiveValues                                                                                               OpcuaNodeIdServicesObject = 19722
-	OpcuaNodeIdServicesObject_PubSubDiagnosticsRootType_LiveValues                                                                                           OpcuaNodeIdServicesObject = 19777
-	OpcuaNodeIdServicesObject_PubSubDiagnosticsConnectionType_LiveValues                                                                                     OpcuaNodeIdServicesObject = 19831
-	OpcuaNodeIdServicesObject_PubSubDiagnosticsWriterGroupType_Counters                                                                                      OpcuaNodeIdServicesObject = 19848
-	OpcuaNodeIdServicesObject_PubSubDiagnosticsWriterGroupType_LiveValues                                                                                    OpcuaNodeIdServicesObject = 19879
-	OpcuaNodeIdServicesObject_PubSubDiagnosticsReaderGroupType_Counters                                                                                      OpcuaNodeIdServicesObject = 19917
-	OpcuaNodeIdServicesObject_PubSubDiagnosticsReaderGroupType_LiveValues                                                                                    OpcuaNodeIdServicesObject = 19948
-	OpcuaNodeIdServicesObject_PubSubDiagnosticsDataSetWriterType_Counters                                                                                    OpcuaNodeIdServicesObject = 19982
-	OpcuaNodeIdServicesObject_PubSubDiagnosticsDataSetWriterType_LiveValues                                                                                  OpcuaNodeIdServicesObject = 20013
-	OpcuaNodeIdServicesObject_PubSubDiagnosticsDataSetReaderType_Counters                                                                                    OpcuaNodeIdServicesObject = 20041
-	OpcuaNodeIdServicesObject_PubSubDiagnosticsDataSetReaderType_LiveValues                                                                                  OpcuaNodeIdServicesObject = 20072
-	OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired_FirstInGroup                                                                           OpcuaNodeIdServicesObject = 20120
-	OpcuaNodeIdServicesObject_CertificateGroupType_TrustListOutOfDate                                                                                        OpcuaNodeIdServicesObject = 20143
-	OpcuaNodeIdServicesObject_CertificateGroupType_TrustListOutOfDate_ShelvingState                                                                          OpcuaNodeIdServicesObject = 20230
-	OpcuaNodeIdServicesObject_CertificateGroupType_TrustListOutOfDate_FirstInGroup                                                                           OpcuaNodeIdServicesObject = 20268
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired                                                          OpcuaNodeIdServicesObject = 20291
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState                                            OpcuaNodeIdServicesObject = 20378
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_FirstInGroup                                             OpcuaNodeIdServicesObject = 20418
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate                                                          OpcuaNodeIdServicesObject = 20441
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState                                            OpcuaNodeIdServicesObject = 20528
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup                                             OpcuaNodeIdServicesObject = 20566
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired                                                                OpcuaNodeIdServicesObject = 20589
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState                                                  OpcuaNodeIdServicesObject = 20676
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_FirstInGroup                                                   OpcuaNodeIdServicesObject = 20714
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate                                                                OpcuaNodeIdServicesObject = 20737
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState                                                  OpcuaNodeIdServicesObject = 20824
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup                                                   OpcuaNodeIdServicesObject = 20862
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired                                                            OpcuaNodeIdServicesObject = 20885
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState                                              OpcuaNodeIdServicesObject = 20972
-	OpcuaNodeIdServicesObject_SessionlessInvokeResponseType_Encoding_DefaultXml                                                                              OpcuaNodeIdServicesObject = 21000
-	OpcuaNodeIdServicesObject_SessionlessInvokeResponseType_Encoding_DefaultBinary                                                                           OpcuaNodeIdServicesObject = 21001
-	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_SubscribedDataSet                                                                OpcuaNodeIdServicesObject = 21006
-	OpcuaNodeIdServicesObject_ReaderGroupType_Diagnostics                                                                                                    OpcuaNodeIdServicesObject = 21015
-	OpcuaNodeIdServicesObject_ReaderGroupType_Diagnostics_Counters                                                                                           OpcuaNodeIdServicesObject = 21029
-	OpcuaNodeIdServicesObject_ReaderGroupType_Diagnostics_LiveValues                                                                                         OpcuaNodeIdServicesObject = 21060
-	OpcuaNodeIdServicesObject_ReaderGroupType_TransportSettings                                                                                              OpcuaNodeIdServicesObject = 21080
-	OpcuaNodeIdServicesObject_ReaderGroupType_MessageSettings                                                                                                OpcuaNodeIdServicesObject = 21081
-	OpcuaNodeIdServicesObject_DataSetWriterType_MessageSettings                                                                                              OpcuaNodeIdServicesObject = 21095
-	OpcuaNodeIdServicesObject_DataSetReaderType_MessageSettings                                                                                              OpcuaNodeIdServicesObject = 21103
-	OpcuaNodeIdServicesObject_WriterGroupDataType_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 21150
-	OpcuaNodeIdServicesObject_NetworkAddressDataType_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 21151
-	OpcuaNodeIdServicesObject_NetworkAddressUrlDataType_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 21152
-	OpcuaNodeIdServicesObject_ReaderGroupDataType_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 21153
-	OpcuaNodeIdServicesObject_PubSubConfigurationDataType_Encoding_DefaultBinary                                                                             OpcuaNodeIdServicesObject = 21154
-	OpcuaNodeIdServicesObject_DatagramWriterGroupTransportDataType_Encoding_DefaultBinary                                                                    OpcuaNodeIdServicesObject = 21155
-	OpcuaNodeIdServicesObject_WriterGroupDataType_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 21174
-	OpcuaNodeIdServicesObject_NetworkAddressDataType_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 21175
-	OpcuaNodeIdServicesObject_NetworkAddressUrlDataType_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 21176
-	OpcuaNodeIdServicesObject_ReaderGroupDataType_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 21177
-	OpcuaNodeIdServicesObject_PubSubConfigurationDataType_Encoding_DefaultXml                                                                                OpcuaNodeIdServicesObject = 21178
-	OpcuaNodeIdServicesObject_DatagramWriterGroupTransportDataType_Encoding_DefaultXml                                                                       OpcuaNodeIdServicesObject = 21179
-	OpcuaNodeIdServicesObject_WriterGroupDataType_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 21198
-	OpcuaNodeIdServicesObject_NetworkAddressDataType_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 21199
-	OpcuaNodeIdServicesObject_NetworkAddressUrlDataType_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 21200
-	OpcuaNodeIdServicesObject_ReaderGroupDataType_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 21201
-	OpcuaNodeIdServicesObject_PubSubConfigurationDataType_Encoding_DefaultJson                                                                               OpcuaNodeIdServicesObject = 21202
-	OpcuaNodeIdServicesObject_DatagramWriterGroupTransportDataType_Encoding_DefaultJson                                                                      OpcuaNodeIdServicesObject = 21203
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_FirstInGroup                                               OpcuaNodeIdServicesObject = 21213
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate                                                            OpcuaNodeIdServicesObject = 21236
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState                                              OpcuaNodeIdServicesObject = 21323
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup                                               OpcuaNodeIdServicesObject = 21361
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired                                                      OpcuaNodeIdServicesObject = 21384
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState                                        OpcuaNodeIdServicesObject = 21471
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_FirstInGroup                                         OpcuaNodeIdServicesObject = 21509
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate                                                      OpcuaNodeIdServicesObject = 21532
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState                                        OpcuaNodeIdServicesObject = 21619
-	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_FirstInGroup                                         OpcuaNodeIdServicesObject = 21657
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired                                           OpcuaNodeIdServicesObject = 21680
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState                             OpcuaNodeIdServicesObject = 21767
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_FirstInGroup                              OpcuaNodeIdServicesObject = 21805
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate                                           OpcuaNodeIdServicesObject = 21828
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState                             OpcuaNodeIdServicesObject = 21915
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup                              OpcuaNodeIdServicesObject = 21953
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired                                                 OpcuaNodeIdServicesObject = 21976
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState                                   OpcuaNodeIdServicesObject = 22063
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_FirstInGroup                                    OpcuaNodeIdServicesObject = 22101
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate                                                 OpcuaNodeIdServicesObject = 22124
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState                                   OpcuaNodeIdServicesObject = 22211
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup                                    OpcuaNodeIdServicesObject = 22249
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired                                             OpcuaNodeIdServicesObject = 22272
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState                               OpcuaNodeIdServicesObject = 22359
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_FirstInGroup                                OpcuaNodeIdServicesObject = 22397
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate                                             OpcuaNodeIdServicesObject = 22420
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState                               OpcuaNodeIdServicesObject = 22507
-	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup                                OpcuaNodeIdServicesObject = 22545
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired                                               OpcuaNodeIdServicesObject = 22568
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState                                 OpcuaNodeIdServicesObject = 22655
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_FirstInGroup                                  OpcuaNodeIdServicesObject = 22693
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate                                               OpcuaNodeIdServicesObject = 22716
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState                                 OpcuaNodeIdServicesObject = 22803
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup                                  OpcuaNodeIdServicesObject = 22841
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired                                                     OpcuaNodeIdServicesObject = 22864
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState                                       OpcuaNodeIdServicesObject = 22951
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_FirstInGroup                                        OpcuaNodeIdServicesObject = 22989
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate                                                     OpcuaNodeIdServicesObject = 23012
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState                                       OpcuaNodeIdServicesObject = 23099
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup                                        OpcuaNodeIdServicesObject = 23137
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired                                                 OpcuaNodeIdServicesObject = 23160
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState                                   OpcuaNodeIdServicesObject = 23247
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_FirstInGroup                                    OpcuaNodeIdServicesObject = 23285
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate                                                 OpcuaNodeIdServicesObject = 23308
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState                                   OpcuaNodeIdServicesObject = 23395
-	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup                                    OpcuaNodeIdServicesObject = 23433
-	OpcuaNodeIdServicesObject_AliasNameCategoryType_Alias_Placeholder                                                                                        OpcuaNodeIdServicesObject = 23457
-	OpcuaNodeIdServicesObject_AliasNameCategoryType_SubAliasNameCategories_Placeholder                                                                       OpcuaNodeIdServicesObject = 23458
-	OpcuaNodeIdServicesObject_Aliases                                                                                                                        OpcuaNodeIdServicesObject = 23470
-	OpcuaNodeIdServicesObject_TagVariables                                                                                                                   OpcuaNodeIdServicesObject = 23479
-	OpcuaNodeIdServicesObject_Topics                                                                                                                         OpcuaNodeIdServicesObject = 23488
-	OpcuaNodeIdServicesObject_AliasNameDataType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 23499
-	OpcuaNodeIdServicesObject_ReadAnnotationDataDetails_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 23500
-	OpcuaNodeIdServicesObject_AliasNameDataType_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 23505
-	OpcuaNodeIdServicesObject_ReadAnnotationDataDetails_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 23506
-	OpcuaNodeIdServicesObject_CurrencyUnitType_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 23507
-	OpcuaNodeIdServicesObject_AliasNameDataType_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 23511
-	OpcuaNodeIdServicesObject_ReadAnnotationDataDetails_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 23512
-	OpcuaNodeIdServicesObject_OrderedListType_OrderedObject_Placeholder                                                                                      OpcuaNodeIdServicesObject = 23519
-	OpcuaNodeIdServicesObject_CurrencyUnitType_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 23520
-	OpcuaNodeIdServicesObject_CurrencyUnitType_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 23528
-	OpcuaNodeIdServicesObject_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder                                                           OpcuaNodeIdServicesObject = 23557
-	OpcuaNodeIdServicesObject_PublishSubscribeType_SubscribedDataSets                                                                                        OpcuaNodeIdServicesObject = 23622
-	OpcuaNodeIdServicesObject_PublishSubscribeType_PubSubCapablities                                                                                         OpcuaNodeIdServicesObject = 23642
-	OpcuaNodeIdServicesObject_PublishSubscribeType_DataSetClasses                                                                                            OpcuaNodeIdServicesObject = 23649
-	OpcuaNodeIdServicesObject_PublishSubscribe_SubscribedDataSets                                                                                            OpcuaNodeIdServicesObject = 23658
-	OpcuaNodeIdServicesObject_PublishSubscribe_PubSubCapablities                                                                                             OpcuaNodeIdServicesObject = 23678
-	OpcuaNodeIdServicesObject_PublishSubscribe_DataSetClasses                                                                                                OpcuaNodeIdServicesObject = 23685
-	OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder                                                            OpcuaNodeIdServicesObject = 23796
-	OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder                                                        OpcuaNodeIdServicesObject = 23807
-	OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder_SubscribedDataSet                                      OpcuaNodeIdServicesObject = 23808
-	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetType_SubscribedDataSet                                                                              OpcuaNodeIdServicesObject = 23829
-	OpcuaNodeIdServicesObject_DatagramWriterGroupTransportType_Address                                                                                       OpcuaNodeIdServicesObject = 23842
-	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetRefDataType_Encoding_DefaultBinary                                                                  OpcuaNodeIdServicesObject = 23851
-	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetDataType_Encoding_DefaultBinary                                                                     OpcuaNodeIdServicesObject = 23852
-	OpcuaNodeIdServicesObject_SecurityGroupDataType_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 23853
-	OpcuaNodeIdServicesObject_PubSubConfiguration2DataType_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 23854
-	OpcuaNodeIdServicesObject_QosDataType_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 23855
-	OpcuaNodeIdServicesObject_TransmitQosDataType_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 23856
-	OpcuaNodeIdServicesObject_TransmitQosPriorityDataType_Encoding_DefaultBinary                                                                             OpcuaNodeIdServicesObject = 23857
-	OpcuaNodeIdServicesObject_ReceiveQosDataType_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 23860
-	OpcuaNodeIdServicesObject_ReceiveQosPriorityDataType_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 23861
-	OpcuaNodeIdServicesObject_DatagramConnectionTransport2DataType_Encoding_DefaultBinary                                                                    OpcuaNodeIdServicesObject = 23864
-	OpcuaNodeIdServicesObject_DatagramWriterGroupTransport2DataType_Encoding_DefaultBinary                                                                   OpcuaNodeIdServicesObject = 23865
-	OpcuaNodeIdServicesObject_DatagramDataSetReaderTransportDataType_Encoding_DefaultBinary                                                                  OpcuaNodeIdServicesObject = 23866
-	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetRefDataType_Encoding_DefaultXml                                                                     OpcuaNodeIdServicesObject = 23919
-	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetDataType_Encoding_DefaultXml                                                                        OpcuaNodeIdServicesObject = 23920
-	OpcuaNodeIdServicesObject_SecurityGroupDataType_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 23921
-	OpcuaNodeIdServicesObject_PubSubConfiguration2DataType_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 23922
-	OpcuaNodeIdServicesObject_QosDataType_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 23923
-	OpcuaNodeIdServicesObject_TransmitQosDataType_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 23924
-	OpcuaNodeIdServicesObject_TransmitQosPriorityDataType_Encoding_DefaultXml                                                                                OpcuaNodeIdServicesObject = 23925
-	OpcuaNodeIdServicesObject_ReceiveQosDataType_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 23928
-	OpcuaNodeIdServicesObject_ReceiveQosPriorityDataType_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 23929
-	OpcuaNodeIdServicesObject_DatagramConnectionTransport2DataType_Encoding_DefaultXml                                                                       OpcuaNodeIdServicesObject = 23932
-	OpcuaNodeIdServicesObject_DatagramWriterGroupTransport2DataType_Encoding_DefaultXml                                                                      OpcuaNodeIdServicesObject = 23933
-	OpcuaNodeIdServicesObject_DatagramDataSetReaderTransportDataType_Encoding_DefaultXml                                                                     OpcuaNodeIdServicesObject = 23934
-	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetRefDataType_Encoding_DefaultJson                                                                    OpcuaNodeIdServicesObject = 23987
-	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetDataType_Encoding_DefaultJson                                                                       OpcuaNodeIdServicesObject = 23988
-	OpcuaNodeIdServicesObject_SecurityGroupDataType_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 23989
-	OpcuaNodeIdServicesObject_PubSubConfiguration2DataType_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 23990
-	OpcuaNodeIdServicesObject_QosDataType_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 23991
-	OpcuaNodeIdServicesObject_TransmitQosDataType_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 23992
-	OpcuaNodeIdServicesObject_TransmitQosPriorityDataType_Encoding_DefaultJson                                                                               OpcuaNodeIdServicesObject = 23993
-	OpcuaNodeIdServicesObject_ReceiveQosDataType_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 23996
-	OpcuaNodeIdServicesObject_ReceiveQosPriorityDataType_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 23997
-	OpcuaNodeIdServicesObject_DatagramConnectionTransport2DataType_Encoding_DefaultJson                                                                      OpcuaNodeIdServicesObject = 24000
-	OpcuaNodeIdServicesObject_DatagramWriterGroupTransport2DataType_Encoding_DefaultJson                                                                     OpcuaNodeIdServicesObject = 24001
-	OpcuaNodeIdServicesObject_DatagramDataSetReaderTransportDataType_Encoding_DefaultJson                                                                    OpcuaNodeIdServicesObject = 24002
-	OpcuaNodeIdServicesObject_DatagramDataSetReaderTransportType_Address                                                                                     OpcuaNodeIdServicesObject = 24017
-	OpcuaNodeIdServicesObject_ProgramDiagnostic2DataType_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 24034
-	OpcuaNodeIdServicesObject_ProgramDiagnostic2DataType_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 24038
-	OpcuaNodeIdServicesObject_ProgramDiagnostic2DataType_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 24042
-	OpcuaNodeIdServicesObject_PortableQualifiedName_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 24108
-	OpcuaNodeIdServicesObject_PortableNodeId_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 24109
-	OpcuaNodeIdServicesObject_UnsignedRationalNumber_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 24110
-	OpcuaNodeIdServicesObject_PortableQualifiedName_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 24120
-	OpcuaNodeIdServicesObject_PortableNodeId_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 24121
-	OpcuaNodeIdServicesObject_UnsignedRationalNumber_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 24122
-	OpcuaNodeIdServicesObject_PortableQualifiedName_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 24132
-	OpcuaNodeIdServicesObject_PortableNodeId_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 24133
-	OpcuaNodeIdServicesObject_UnsignedRationalNumber_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 24134
-	OpcuaNodeIdServicesObject_Resources                                                                                                                      OpcuaNodeIdServicesObject = 24226
-	OpcuaNodeIdServicesObject_Communication                                                                                                                  OpcuaNodeIdServicesObject = 24227
-	OpcuaNodeIdServicesObject_MappingTables                                                                                                                  OpcuaNodeIdServicesObject = 24228
-	OpcuaNodeIdServicesObject_NetworkInterfaces                                                                                                              OpcuaNodeIdServicesObject = 24229
-	OpcuaNodeIdServicesObject_Streams                                                                                                                        OpcuaNodeIdServicesObject = 24230
-	OpcuaNodeIdServicesObject_TalkerStreams                                                                                                                  OpcuaNodeIdServicesObject = 24231
-	OpcuaNodeIdServicesObject_ListenerStreams                                                                                                                OpcuaNodeIdServicesObject = 24232
-	OpcuaNodeIdServicesObject_UserManagement                                                                                                                 OpcuaNodeIdServicesObject = 24290
-	OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 24292
-	OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 24296
-	OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 24300
-	OpcuaNodeIdServicesObject_IetfBaseNetworkInterfaceType_InterfaceName_Placeholder                                                                         OpcuaNodeIdServicesObject = 25226
-	OpcuaNodeIdServicesObject_PriorityMappingEntryType_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 25239
-	OpcuaNodeIdServicesObject_PriorityMappingEntryType_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 25243
-	OpcuaNodeIdServicesObject_PriorityMappingEntryType_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 25247
-	OpcuaNodeIdServicesObject_PubSubKeyServiceType_KeyPushTargets                                                                                            OpcuaNodeIdServicesObject = 25277
-	OpcuaNodeIdServicesObject_PubSubKeyPushTargetFolderType_PushTargetFolderName_Placeholder                                                                 OpcuaNodeIdServicesObject = 25347
-	OpcuaNodeIdServicesObject_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder                                                                       OpcuaNodeIdServicesObject = 25358
-	OpcuaNodeIdServicesObject_PublishSubscribeType_PubSubConfiguration                                                                                       OpcuaNodeIdServicesObject = 25403
-	OpcuaNodeIdServicesObject_PublishSubscribe_KeyPushTargets                                                                                                OpcuaNodeIdServicesObject = 25440
-	OpcuaNodeIdServicesObject_PublishSubscribe_PubSubConfiguration                                                                                           OpcuaNodeIdServicesObject = 25451
-	OpcuaNodeIdServicesObject_PublishedDataSetCustomSourceDataType_Encoding_DefaultBinary                                                                    OpcuaNodeIdServicesObject = 25529
-	OpcuaNodeIdServicesObject_PubSubKeyPushTargetDataType_Encoding_DefaultBinary                                                                             OpcuaNodeIdServicesObject = 25530
-	OpcuaNodeIdServicesObject_PubSubConfigurationRefDataType_Encoding_DefaultBinary                                                                          OpcuaNodeIdServicesObject = 25531
-	OpcuaNodeIdServicesObject_PubSubConfigurationValueDataType_Encoding_DefaultBinary                                                                        OpcuaNodeIdServicesObject = 25532
-	OpcuaNodeIdServicesObject_PublishedDataSetCustomSourceDataType_Encoding_DefaultXml                                                                       OpcuaNodeIdServicesObject = 25545
-	OpcuaNodeIdServicesObject_PubSubKeyPushTargetDataType_Encoding_DefaultXml                                                                                OpcuaNodeIdServicesObject = 25546
-	OpcuaNodeIdServicesObject_PubSubConfigurationRefDataType_Encoding_DefaultXml                                                                             OpcuaNodeIdServicesObject = 25547
-	OpcuaNodeIdServicesObject_PubSubConfigurationValueDataType_Encoding_DefaultXml                                                                           OpcuaNodeIdServicesObject = 25548
-	OpcuaNodeIdServicesObject_PublishedDataSetCustomSourceDataType_Encoding_DefaultJson                                                                      OpcuaNodeIdServicesObject = 25561
-	OpcuaNodeIdServicesObject_PubSubKeyPushTargetDataType_Encoding_DefaultJson                                                                               OpcuaNodeIdServicesObject = 25562
-	OpcuaNodeIdServicesObject_PubSubConfigurationRefDataType_Encoding_DefaultJson                                                                            OpcuaNodeIdServicesObject = 25563
-	OpcuaNodeIdServicesObject_PubSubConfigurationValueDataType_Encoding_DefaultJson                                                                          OpcuaNodeIdServicesObject = 25564
-	OpcuaNodeIdServicesObject_WellKnownRole_SecurityKeyServerAdmin                                                                                           OpcuaNodeIdServicesObject = 25565
-	OpcuaNodeIdServicesObject_WellKnownRole_SecurityKeyServerPush                                                                                            OpcuaNodeIdServicesObject = 25584
-	OpcuaNodeIdServicesObject_WellKnownRole_SecurityKeyServerAccess                                                                                          OpcuaNodeIdServicesObject = 25603
-	OpcuaNodeIdServicesObject_PubSubKeyPushTargetType_SecurityGroupName_Placeholder                                                                          OpcuaNodeIdServicesObject = 25626
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder                                                                            OpcuaNodeIdServicesObject = 26878
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups                                                          OpcuaNodeIdServicesObject = 26879
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup                                  OpcuaNodeIdServicesObject = 26880
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList                        OpcuaNodeIdServicesObject = 26881
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired               OpcuaNodeIdServicesObject = 26921
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState OpcuaNodeIdServicesObject = 27008
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_FirstInGroup  OpcuaNodeIdServicesObject = 27052
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate               OpcuaNodeIdServicesObject = 27087
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState OpcuaNodeIdServicesObject = 27174
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup  OpcuaNodeIdServicesObject = 27218
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup                                        OpcuaNodeIdServicesObject = 27252
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList                              OpcuaNodeIdServicesObject = 27253
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired                     OpcuaNodeIdServicesObject = 27293
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState       OpcuaNodeIdServicesObject = 27380
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_FirstInGroup        OpcuaNodeIdServicesObject = 27424
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate                     OpcuaNodeIdServicesObject = 27459
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState       OpcuaNodeIdServicesObject = 27546
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup        OpcuaNodeIdServicesObject = 27590
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup                                    OpcuaNodeIdServicesObject = 27624
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList                          OpcuaNodeIdServicesObject = 27625
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired                 OpcuaNodeIdServicesObject = 27665
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState   OpcuaNodeIdServicesObject = 27752
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_FirstInGroup    OpcuaNodeIdServicesObject = 27796
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate                 OpcuaNodeIdServicesObject = 27831
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState   OpcuaNodeIdServicesObject = 27918
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup    OpcuaNodeIdServicesObject = 27962
-	OpcuaNodeIdServicesObject_ProvisionableDevice                                                                                                            OpcuaNodeIdServicesObject = 29878
-	OpcuaNodeIdServicesObject_Locations                                                                                                                      OpcuaNodeIdServicesObject = 31915
-	OpcuaNodeIdServicesObject_ServerConfigurationType_TransactionDiagnostics                                                                                 OpcuaNodeIdServicesObject = 32299
-	OpcuaNodeIdServicesObject_ServerConfiguration_TransactionDiagnostics                                                                                     OpcuaNodeIdServicesObject = 32336
-	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_TransactionDiagnostics                                                     OpcuaNodeIdServicesObject = 32362
-	OpcuaNodeIdServicesObject_TransactionErrorType_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 32382
-	OpcuaNodeIdServicesObject_TransactionErrorType_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 32386
-	OpcuaNodeIdServicesObject_TransactionErrorType_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 32390
-	OpcuaNodeIdServicesObject_BitFieldDefinition_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 32422
-	OpcuaNodeIdServicesObject_BitFieldDefinition_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 32426
-	OpcuaNodeIdServicesObject_BitFieldDefinition_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 32430
-	OpcuaNodeIdServicesObject_ServerUnitType_AlternativeUnits                                                                                                OpcuaNodeIdServicesObject = 32452
-	OpcuaNodeIdServicesObject_ServerUnitType_CoherentUnit                                                                                                    OpcuaNodeIdServicesObject = 32462
-	OpcuaNodeIdServicesObject_QuantityType_ServerUnits                                                                                                       OpcuaNodeIdServicesObject = 32481
-	OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder                                                                                OpcuaNodeIdServicesObject = 32482
-	OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder_AlternativeUnits                                                               OpcuaNodeIdServicesObject = 32487
-	OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit                                                                   OpcuaNodeIdServicesObject = 32497
-	OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder                                                                                      OpcuaNodeIdServicesObject = 32503
-	OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder_ServerUnits                                                                          OpcuaNodeIdServicesObject = 32509
-	OpcuaNodeIdServicesObject_Quantities                                                                                                                     OpcuaNodeIdServicesObject = 32530
-	OpcuaNodeIdServicesObject_AnnotationDataType_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 32560
-	OpcuaNodeIdServicesObject_LinearConversionDataType_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 32561
-	OpcuaNodeIdServicesObject_QuantityDimension_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 32562
-	OpcuaNodeIdServicesObject_AnnotationDataType_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 32572
-	OpcuaNodeIdServicesObject_LinearConversionDataType_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 32573
-	OpcuaNodeIdServicesObject_QuantityDimension_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 32574
-	OpcuaNodeIdServicesObject_AnnotationDataType_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 32584
-	OpcuaNodeIdServicesObject_LinearConversionDataType_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 32585
-	OpcuaNodeIdServicesObject_QuantityDimension_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 32586
-	OpcuaNodeIdServicesObject_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder                                                                    OpcuaNodeIdServicesObject = 32587
-	OpcuaNodeIdServicesObject_HistoricalEventConfigurationType_EventTypes                                                                                    OpcuaNodeIdServicesObject = 32622
-	OpcuaNodeIdServicesObject_DefaultHAConfiguration                                                                                                         OpcuaNodeIdServicesObject = 32637
-	OpcuaNodeIdServicesObject_DefaultHAConfiguration_AggregateConfiguration                                                                                  OpcuaNodeIdServicesObject = 32638
-	OpcuaNodeIdServicesObject_DefaultHAConfiguration_AggregateFunctions                                                                                      OpcuaNodeIdServicesObject = 32643
-	OpcuaNodeIdServicesObject_ReferenceDescriptionDataType_Encoding_DefaultBinary                                                                            OpcuaNodeIdServicesObject = 32661
-	OpcuaNodeIdServicesObject_ReferenceListEntryDataType_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 32662
-	OpcuaNodeIdServicesObject_ReferenceDescriptionDataType_Encoding_DefaultXml                                                                               OpcuaNodeIdServicesObject = 32669
-	OpcuaNodeIdServicesObject_ReferenceListEntryDataType_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 32670
-	OpcuaNodeIdServicesObject_ReferenceDescriptionDataType_Encoding_DefaultJson                                                                              OpcuaNodeIdServicesObject = 32677
-	OpcuaNodeIdServicesObject_ReferenceListEntryDataType_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 32678
-	OpcuaNodeIdServicesObject_DefaultHEConfiguration                                                                                                         OpcuaNodeIdServicesObject = 32754
-	OpcuaNodeIdServicesObject_DefaultHEConfiguration_EventTypes                                                                                              OpcuaNodeIdServicesObject = 32755
-	OpcuaNodeIdServicesObject_ReadEventDetails2_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 32800
-	OpcuaNodeIdServicesObject_ReadEventDetails2_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 32801
-	OpcuaNodeIdServicesObject_ReadEventDetails2_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 32802
-	OpcuaNodeIdServicesObject_HistoryModifiedEvent_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 32825
-	OpcuaNodeIdServicesObject_HistoryModifiedEvent_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 32829
-	OpcuaNodeIdServicesObject_HistoryModifiedEvent_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 32833
+	OpcuaNodeIdServicesObject_ModellingRule_Mandatory                                                                                                                   OpcuaNodeIdServicesObject = 78
+	OpcuaNodeIdServicesObject_ModellingRule_Optional                                                                                                                    OpcuaNodeIdServicesObject = 80
+	OpcuaNodeIdServicesObject_ModellingRule_ExposesItsArray                                                                                                             OpcuaNodeIdServicesObject = 83
+	OpcuaNodeIdServicesObject_RootFolder                                                                                                                                OpcuaNodeIdServicesObject = 84
+	OpcuaNodeIdServicesObject_ObjectsFolder                                                                                                                             OpcuaNodeIdServicesObject = 85
+	OpcuaNodeIdServicesObject_TypesFolder                                                                                                                               OpcuaNodeIdServicesObject = 86
+	OpcuaNodeIdServicesObject_ViewsFolder                                                                                                                               OpcuaNodeIdServicesObject = 87
+	OpcuaNodeIdServicesObject_ObjectTypesFolder                                                                                                                         OpcuaNodeIdServicesObject = 88
+	OpcuaNodeIdServicesObject_VariableTypesFolder                                                                                                                       OpcuaNodeIdServicesObject = 89
+	OpcuaNodeIdServicesObject_DataTypesFolder                                                                                                                           OpcuaNodeIdServicesObject = 90
+	OpcuaNodeIdServicesObject_ReferenceTypesFolder                                                                                                                      OpcuaNodeIdServicesObject = 91
+	OpcuaNodeIdServicesObject_XmlSchema_TypeSystem                                                                                                                      OpcuaNodeIdServicesObject = 92
+	OpcuaNodeIdServicesObject_OPCBinarySchema_TypeSystem                                                                                                                OpcuaNodeIdServicesObject = 93
+	OpcuaNodeIdServicesObject_DataTypeDefinition_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 121
+	OpcuaNodeIdServicesObject_StructureDefinition_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 122
+	OpcuaNodeIdServicesObject_EnumDefinition_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 123
+	OpcuaNodeIdServicesObject_DataSetMetaDataType_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 124
+	OpcuaNodeIdServicesObject_DataTypeDescription_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 125
+	OpcuaNodeIdServicesObject_StructureDescription_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 126
+	OpcuaNodeIdServicesObject_EnumDescription_Encoding_DefaultBinary                                                                                                    OpcuaNodeIdServicesObject = 127
+	OpcuaNodeIdServicesObject_RolePermissionType_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 128
+	OpcuaNodeIdServicesObject_Node_Encoding_DefaultXml                                                                                                                  OpcuaNodeIdServicesObject = 259
+	OpcuaNodeIdServicesObject_Node_Encoding_DefaultBinary                                                                                                               OpcuaNodeIdServicesObject = 260
+	OpcuaNodeIdServicesObject_ObjectNode_Encoding_DefaultXml                                                                                                            OpcuaNodeIdServicesObject = 262
+	OpcuaNodeIdServicesObject_ObjectNode_Encoding_DefaultBinary                                                                                                         OpcuaNodeIdServicesObject = 263
+	OpcuaNodeIdServicesObject_ObjectTypeNode_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 265
+	OpcuaNodeIdServicesObject_ObjectTypeNode_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 266
+	OpcuaNodeIdServicesObject_VariableNode_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 268
+	OpcuaNodeIdServicesObject_VariableNode_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 269
+	OpcuaNodeIdServicesObject_VariableTypeNode_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 271
+	OpcuaNodeIdServicesObject_VariableTypeNode_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 272
+	OpcuaNodeIdServicesObject_ReferenceTypeNode_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 274
+	OpcuaNodeIdServicesObject_ReferenceTypeNode_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 275
+	OpcuaNodeIdServicesObject_MethodNode_Encoding_DefaultXml                                                                                                            OpcuaNodeIdServicesObject = 277
+	OpcuaNodeIdServicesObject_MethodNode_Encoding_DefaultBinary                                                                                                         OpcuaNodeIdServicesObject = 278
+	OpcuaNodeIdServicesObject_ViewNode_Encoding_DefaultXml                                                                                                              OpcuaNodeIdServicesObject = 280
+	OpcuaNodeIdServicesObject_ViewNode_Encoding_DefaultBinary                                                                                                           OpcuaNodeIdServicesObject = 281
+	OpcuaNodeIdServicesObject_DataTypeNode_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 283
+	OpcuaNodeIdServicesObject_DataTypeNode_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 284
+	OpcuaNodeIdServicesObject_ReferenceNode_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 286
+	OpcuaNodeIdServicesObject_ReferenceNode_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 287
+	OpcuaNodeIdServicesObject_Argument_Encoding_DefaultXml                                                                                                              OpcuaNodeIdServicesObject = 297
+	OpcuaNodeIdServicesObject_Argument_Encoding_DefaultBinary                                                                                                           OpcuaNodeIdServicesObject = 298
+	OpcuaNodeIdServicesObject_StatusResult_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 300
+	OpcuaNodeIdServicesObject_StatusResult_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 301
+	OpcuaNodeIdServicesObject_UserTokenPolicy_Encoding_DefaultXml                                                                                                       OpcuaNodeIdServicesObject = 305
+	OpcuaNodeIdServicesObject_UserTokenPolicy_Encoding_DefaultBinary                                                                                                    OpcuaNodeIdServicesObject = 306
+	OpcuaNodeIdServicesObject_ApplicationDescription_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 309
+	OpcuaNodeIdServicesObject_ApplicationDescription_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 310
+	OpcuaNodeIdServicesObject_EndpointDescription_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 313
+	OpcuaNodeIdServicesObject_EndpointDescription_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 314
+	OpcuaNodeIdServicesObject_UserIdentityToken_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 317
+	OpcuaNodeIdServicesObject_UserIdentityToken_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 318
+	OpcuaNodeIdServicesObject_AnonymousIdentityToken_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 320
+	OpcuaNodeIdServicesObject_AnonymousIdentityToken_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 321
+	OpcuaNodeIdServicesObject_UserNameIdentityToken_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 323
+	OpcuaNodeIdServicesObject_UserNameIdentityToken_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 324
+	OpcuaNodeIdServicesObject_X509IdentityToken_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 326
+	OpcuaNodeIdServicesObject_X509IdentityToken_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 327
+	OpcuaNodeIdServicesObject_EndpointConfiguration_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 332
+	OpcuaNodeIdServicesObject_EndpointConfiguration_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 333
+	OpcuaNodeIdServicesObject_BuildInfo_Encoding_DefaultXml                                                                                                             OpcuaNodeIdServicesObject = 339
+	OpcuaNodeIdServicesObject_BuildInfo_Encoding_DefaultBinary                                                                                                          OpcuaNodeIdServicesObject = 340
+	OpcuaNodeIdServicesObject_SignedSoftwareCertificate_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 345
+	OpcuaNodeIdServicesObject_SignedSoftwareCertificate_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 346
+	OpcuaNodeIdServicesObject_NodeAttributes_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 350
+	OpcuaNodeIdServicesObject_NodeAttributes_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 351
+	OpcuaNodeIdServicesObject_ObjectAttributes_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 353
+	OpcuaNodeIdServicesObject_ObjectAttributes_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 354
+	OpcuaNodeIdServicesObject_VariableAttributes_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 356
+	OpcuaNodeIdServicesObject_VariableAttributes_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 357
+	OpcuaNodeIdServicesObject_MethodAttributes_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 359
+	OpcuaNodeIdServicesObject_MethodAttributes_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 360
+	OpcuaNodeIdServicesObject_ObjectTypeAttributes_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 362
+	OpcuaNodeIdServicesObject_ObjectTypeAttributes_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 363
+	OpcuaNodeIdServicesObject_VariableTypeAttributes_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 365
+	OpcuaNodeIdServicesObject_VariableTypeAttributes_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 366
+	OpcuaNodeIdServicesObject_ReferenceTypeAttributes_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 368
+	OpcuaNodeIdServicesObject_ReferenceTypeAttributes_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 369
+	OpcuaNodeIdServicesObject_DataTypeAttributes_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 371
+	OpcuaNodeIdServicesObject_DataTypeAttributes_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 372
+	OpcuaNodeIdServicesObject_ViewAttributes_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 374
+	OpcuaNodeIdServicesObject_ViewAttributes_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 375
+	OpcuaNodeIdServicesObject_AddNodesItem_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 377
+	OpcuaNodeIdServicesObject_AddNodesItem_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 378
+	OpcuaNodeIdServicesObject_AddReferencesItem_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 380
+	OpcuaNodeIdServicesObject_AddReferencesItem_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 381
+	OpcuaNodeIdServicesObject_DeleteNodesItem_Encoding_DefaultXml                                                                                                       OpcuaNodeIdServicesObject = 383
+	OpcuaNodeIdServicesObject_DeleteNodesItem_Encoding_DefaultBinary                                                                                                    OpcuaNodeIdServicesObject = 384
+	OpcuaNodeIdServicesObject_DeleteReferencesItem_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 386
+	OpcuaNodeIdServicesObject_DeleteReferencesItem_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 387
+	OpcuaNodeIdServicesObject_RequestHeader_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 390
+	OpcuaNodeIdServicesObject_RequestHeader_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 391
+	OpcuaNodeIdServicesObject_ResponseHeader_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 393
+	OpcuaNodeIdServicesObject_ResponseHeader_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 394
+	OpcuaNodeIdServicesObject_ServiceFault_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 396
+	OpcuaNodeIdServicesObject_ServiceFault_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 397
+	OpcuaNodeIdServicesObject_FindServersRequest_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 421
+	OpcuaNodeIdServicesObject_FindServersRequest_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 422
+	OpcuaNodeIdServicesObject_FindServersResponse_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 424
+	OpcuaNodeIdServicesObject_FindServersResponse_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 425
+	OpcuaNodeIdServicesObject_GetEndpointsRequest_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 427
+	OpcuaNodeIdServicesObject_GetEndpointsRequest_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 428
+	OpcuaNodeIdServicesObject_GetEndpointsResponse_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 430
+	OpcuaNodeIdServicesObject_GetEndpointsResponse_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 431
+	OpcuaNodeIdServicesObject_RegisteredServer_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 433
+	OpcuaNodeIdServicesObject_RegisteredServer_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 434
+	OpcuaNodeIdServicesObject_RegisterServerRequest_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 436
+	OpcuaNodeIdServicesObject_RegisterServerRequest_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 437
+	OpcuaNodeIdServicesObject_RegisterServerResponse_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 439
+	OpcuaNodeIdServicesObject_RegisterServerResponse_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 440
+	OpcuaNodeIdServicesObject_ChannelSecurityToken_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 442
+	OpcuaNodeIdServicesObject_ChannelSecurityToken_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 443
+	OpcuaNodeIdServicesObject_OpenSecureChannelRequest_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 445
+	OpcuaNodeIdServicesObject_OpenSecureChannelRequest_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 446
+	OpcuaNodeIdServicesObject_OpenSecureChannelResponse_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 448
+	OpcuaNodeIdServicesObject_OpenSecureChannelResponse_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 449
+	OpcuaNodeIdServicesObject_CloseSecureChannelRequest_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 451
+	OpcuaNodeIdServicesObject_CloseSecureChannelRequest_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 452
+	OpcuaNodeIdServicesObject_CloseSecureChannelResponse_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 454
+	OpcuaNodeIdServicesObject_CloseSecureChannelResponse_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 455
+	OpcuaNodeIdServicesObject_SignatureData_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 457
+	OpcuaNodeIdServicesObject_SignatureData_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 458
+	OpcuaNodeIdServicesObject_CreateSessionRequest_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 460
+	OpcuaNodeIdServicesObject_CreateSessionRequest_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 461
+	OpcuaNodeIdServicesObject_CreateSessionResponse_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 463
+	OpcuaNodeIdServicesObject_CreateSessionResponse_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 464
+	OpcuaNodeIdServicesObject_ActivateSessionRequest_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 466
+	OpcuaNodeIdServicesObject_ActivateSessionRequest_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 467
+	OpcuaNodeIdServicesObject_ActivateSessionResponse_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 469
+	OpcuaNodeIdServicesObject_ActivateSessionResponse_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 470
+	OpcuaNodeIdServicesObject_CloseSessionRequest_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 472
+	OpcuaNodeIdServicesObject_CloseSessionRequest_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 473
+	OpcuaNodeIdServicesObject_CloseSessionResponse_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 475
+	OpcuaNodeIdServicesObject_CloseSessionResponse_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 476
+	OpcuaNodeIdServicesObject_CancelRequest_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 478
+	OpcuaNodeIdServicesObject_CancelRequest_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 479
+	OpcuaNodeIdServicesObject_CancelResponse_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 481
+	OpcuaNodeIdServicesObject_CancelResponse_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 482
+	OpcuaNodeIdServicesObject_AddNodesResult_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 484
+	OpcuaNodeIdServicesObject_AddNodesResult_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 485
+	OpcuaNodeIdServicesObject_AddNodesRequest_Encoding_DefaultXml                                                                                                       OpcuaNodeIdServicesObject = 487
+	OpcuaNodeIdServicesObject_AddNodesRequest_Encoding_DefaultBinary                                                                                                    OpcuaNodeIdServicesObject = 488
+	OpcuaNodeIdServicesObject_AddNodesResponse_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 490
+	OpcuaNodeIdServicesObject_AddNodesResponse_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 491
+	OpcuaNodeIdServicesObject_AddReferencesRequest_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 493
+	OpcuaNodeIdServicesObject_AddReferencesRequest_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 494
+	OpcuaNodeIdServicesObject_AddReferencesResponse_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 496
+	OpcuaNodeIdServicesObject_AddReferencesResponse_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 497
+	OpcuaNodeIdServicesObject_DeleteNodesRequest_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 499
+	OpcuaNodeIdServicesObject_DeleteNodesRequest_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 500
+	OpcuaNodeIdServicesObject_DeleteNodesResponse_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 502
+	OpcuaNodeIdServicesObject_DeleteNodesResponse_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 503
+	OpcuaNodeIdServicesObject_DeleteReferencesRequest_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 505
+	OpcuaNodeIdServicesObject_DeleteReferencesRequest_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 506
+	OpcuaNodeIdServicesObject_DeleteReferencesResponse_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 508
+	OpcuaNodeIdServicesObject_DeleteReferencesResponse_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 509
+	OpcuaNodeIdServicesObject_ViewDescription_Encoding_DefaultXml                                                                                                       OpcuaNodeIdServicesObject = 512
+	OpcuaNodeIdServicesObject_ViewDescription_Encoding_DefaultBinary                                                                                                    OpcuaNodeIdServicesObject = 513
+	OpcuaNodeIdServicesObject_BrowseDescription_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 515
+	OpcuaNodeIdServicesObject_BrowseDescription_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 516
+	OpcuaNodeIdServicesObject_ReferenceDescription_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 519
+	OpcuaNodeIdServicesObject_ReferenceDescription_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 520
+	OpcuaNodeIdServicesObject_BrowseResult_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 523
+	OpcuaNodeIdServicesObject_BrowseResult_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 524
+	OpcuaNodeIdServicesObject_BrowseRequest_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 526
+	OpcuaNodeIdServicesObject_BrowseRequest_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 527
+	OpcuaNodeIdServicesObject_BrowseResponse_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 529
+	OpcuaNodeIdServicesObject_BrowseResponse_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 530
+	OpcuaNodeIdServicesObject_BrowseNextRequest_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 532
+	OpcuaNodeIdServicesObject_BrowseNextRequest_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 533
+	OpcuaNodeIdServicesObject_BrowseNextResponse_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 535
+	OpcuaNodeIdServicesObject_BrowseNextResponse_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 536
+	OpcuaNodeIdServicesObject_RelativePathElement_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 538
+	OpcuaNodeIdServicesObject_RelativePathElement_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 539
+	OpcuaNodeIdServicesObject_RelativePath_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 541
+	OpcuaNodeIdServicesObject_RelativePath_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 542
+	OpcuaNodeIdServicesObject_BrowsePath_Encoding_DefaultXml                                                                                                            OpcuaNodeIdServicesObject = 544
+	OpcuaNodeIdServicesObject_BrowsePath_Encoding_DefaultBinary                                                                                                         OpcuaNodeIdServicesObject = 545
+	OpcuaNodeIdServicesObject_BrowsePathTarget_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 547
+	OpcuaNodeIdServicesObject_BrowsePathTarget_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 548
+	OpcuaNodeIdServicesObject_BrowsePathResult_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 550
+	OpcuaNodeIdServicesObject_BrowsePathResult_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 551
+	OpcuaNodeIdServicesObject_TranslateBrowsePathsToNodeIdsRequest_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 553
+	OpcuaNodeIdServicesObject_TranslateBrowsePathsToNodeIdsRequest_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 554
+	OpcuaNodeIdServicesObject_TranslateBrowsePathsToNodeIdsResponse_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 556
+	OpcuaNodeIdServicesObject_TranslateBrowsePathsToNodeIdsResponse_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 557
+	OpcuaNodeIdServicesObject_RegisterNodesRequest_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 559
+	OpcuaNodeIdServicesObject_RegisterNodesRequest_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 560
+	OpcuaNodeIdServicesObject_RegisterNodesResponse_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 562
+	OpcuaNodeIdServicesObject_RegisterNodesResponse_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 563
+	OpcuaNodeIdServicesObject_UnregisterNodesRequest_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 565
+	OpcuaNodeIdServicesObject_UnregisterNodesRequest_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 566
+	OpcuaNodeIdServicesObject_UnregisterNodesResponse_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 568
+	OpcuaNodeIdServicesObject_UnregisterNodesResponse_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 569
+	OpcuaNodeIdServicesObject_QueryDataDescription_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 571
+	OpcuaNodeIdServicesObject_QueryDataDescription_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 572
+	OpcuaNodeIdServicesObject_NodeTypeDescription_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 574
+	OpcuaNodeIdServicesObject_NodeTypeDescription_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 575
+	OpcuaNodeIdServicesObject_QueryDataSet_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 578
+	OpcuaNodeIdServicesObject_QueryDataSet_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 579
+	OpcuaNodeIdServicesObject_NodeReference_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 581
+	OpcuaNodeIdServicesObject_NodeReference_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 582
+	OpcuaNodeIdServicesObject_ContentFilterElement_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 584
+	OpcuaNodeIdServicesObject_ContentFilterElement_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 585
+	OpcuaNodeIdServicesObject_ContentFilter_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 587
+	OpcuaNodeIdServicesObject_ContentFilter_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 588
+	OpcuaNodeIdServicesObject_FilterOperand_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 590
+	OpcuaNodeIdServicesObject_FilterOperand_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 591
+	OpcuaNodeIdServicesObject_ElementOperand_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 593
+	OpcuaNodeIdServicesObject_ElementOperand_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 594
+	OpcuaNodeIdServicesObject_LiteralOperand_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 596
+	OpcuaNodeIdServicesObject_LiteralOperand_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 597
+	OpcuaNodeIdServicesObject_AttributeOperand_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 599
+	OpcuaNodeIdServicesObject_AttributeOperand_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 600
+	OpcuaNodeIdServicesObject_SimpleAttributeOperand_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 602
+	OpcuaNodeIdServicesObject_SimpleAttributeOperand_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 603
+	OpcuaNodeIdServicesObject_ContentFilterElementResult_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 605
+	OpcuaNodeIdServicesObject_ContentFilterElementResult_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 606
+	OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 608
+	OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 609
+	OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 611
+	OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 612
+	OpcuaNodeIdServicesObject_QueryFirstRequest_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 614
+	OpcuaNodeIdServicesObject_QueryFirstRequest_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 615
+	OpcuaNodeIdServicesObject_QueryFirstResponse_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 617
+	OpcuaNodeIdServicesObject_QueryFirstResponse_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 618
+	OpcuaNodeIdServicesObject_QueryNextRequest_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 620
+	OpcuaNodeIdServicesObject_QueryNextRequest_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 621
+	OpcuaNodeIdServicesObject_QueryNextResponse_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 623
+	OpcuaNodeIdServicesObject_QueryNextResponse_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 624
+	OpcuaNodeIdServicesObject_ReadValueId_Encoding_DefaultXml                                                                                                           OpcuaNodeIdServicesObject = 627
+	OpcuaNodeIdServicesObject_ReadValueId_Encoding_DefaultBinary                                                                                                        OpcuaNodeIdServicesObject = 628
+	OpcuaNodeIdServicesObject_ReadRequest_Encoding_DefaultXml                                                                                                           OpcuaNodeIdServicesObject = 630
+	OpcuaNodeIdServicesObject_ReadRequest_Encoding_DefaultBinary                                                                                                        OpcuaNodeIdServicesObject = 631
+	OpcuaNodeIdServicesObject_ReadResponse_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 633
+	OpcuaNodeIdServicesObject_ReadResponse_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 634
+	OpcuaNodeIdServicesObject_HistoryReadValueId_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 636
+	OpcuaNodeIdServicesObject_HistoryReadValueId_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 637
+	OpcuaNodeIdServicesObject_HistoryReadResult_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 639
+	OpcuaNodeIdServicesObject_HistoryReadResult_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 640
+	OpcuaNodeIdServicesObject_HistoryReadDetails_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 642
+	OpcuaNodeIdServicesObject_HistoryReadDetails_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 643
+	OpcuaNodeIdServicesObject_ReadEventDetails_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 645
+	OpcuaNodeIdServicesObject_ReadEventDetails_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 646
+	OpcuaNodeIdServicesObject_ReadRawModifiedDetails_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 648
+	OpcuaNodeIdServicesObject_ReadRawModifiedDetails_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 649
+	OpcuaNodeIdServicesObject_ReadProcessedDetails_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 651
+	OpcuaNodeIdServicesObject_ReadProcessedDetails_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 652
+	OpcuaNodeIdServicesObject_ReadAtTimeDetails_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 654
+	OpcuaNodeIdServicesObject_ReadAtTimeDetails_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 655
+	OpcuaNodeIdServicesObject_HistoryData_Encoding_DefaultXml                                                                                                           OpcuaNodeIdServicesObject = 657
+	OpcuaNodeIdServicesObject_HistoryData_Encoding_DefaultBinary                                                                                                        OpcuaNodeIdServicesObject = 658
+	OpcuaNodeIdServicesObject_HistoryEvent_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 660
+	OpcuaNodeIdServicesObject_HistoryEvent_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 661
+	OpcuaNodeIdServicesObject_HistoryReadRequest_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 663
+	OpcuaNodeIdServicesObject_HistoryReadRequest_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 664
+	OpcuaNodeIdServicesObject_HistoryReadResponse_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 666
+	OpcuaNodeIdServicesObject_HistoryReadResponse_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 667
+	OpcuaNodeIdServicesObject_WriteValue_Encoding_DefaultXml                                                                                                            OpcuaNodeIdServicesObject = 669
+	OpcuaNodeIdServicesObject_WriteValue_Encoding_DefaultBinary                                                                                                         OpcuaNodeIdServicesObject = 670
+	OpcuaNodeIdServicesObject_WriteRequest_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 672
+	OpcuaNodeIdServicesObject_WriteRequest_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 673
+	OpcuaNodeIdServicesObject_WriteResponse_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 675
+	OpcuaNodeIdServicesObject_WriteResponse_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 676
+	OpcuaNodeIdServicesObject_HistoryUpdateDetails_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 678
+	OpcuaNodeIdServicesObject_HistoryUpdateDetails_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 679
+	OpcuaNodeIdServicesObject_UpdateDataDetails_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 681
+	OpcuaNodeIdServicesObject_UpdateDataDetails_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 682
+	OpcuaNodeIdServicesObject_UpdateEventDetails_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 684
+	OpcuaNodeIdServicesObject_UpdateEventDetails_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 685
+	OpcuaNodeIdServicesObject_DeleteRawModifiedDetails_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 687
+	OpcuaNodeIdServicesObject_DeleteRawModifiedDetails_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 688
+	OpcuaNodeIdServicesObject_DeleteAtTimeDetails_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 690
+	OpcuaNodeIdServicesObject_DeleteAtTimeDetails_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 691
+	OpcuaNodeIdServicesObject_DeleteEventDetails_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 693
+	OpcuaNodeIdServicesObject_DeleteEventDetails_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 694
+	OpcuaNodeIdServicesObject_HistoryUpdateResult_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 696
+	OpcuaNodeIdServicesObject_HistoryUpdateResult_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 697
+	OpcuaNodeIdServicesObject_HistoryUpdateRequest_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 699
+	OpcuaNodeIdServicesObject_HistoryUpdateRequest_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 700
+	OpcuaNodeIdServicesObject_HistoryUpdateResponse_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 702
+	OpcuaNodeIdServicesObject_HistoryUpdateResponse_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 703
+	OpcuaNodeIdServicesObject_CallMethodRequest_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 705
+	OpcuaNodeIdServicesObject_CallMethodRequest_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 706
+	OpcuaNodeIdServicesObject_CallMethodResult_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 708
+	OpcuaNodeIdServicesObject_CallMethodResult_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 709
+	OpcuaNodeIdServicesObject_CallRequest_Encoding_DefaultXml                                                                                                           OpcuaNodeIdServicesObject = 711
+	OpcuaNodeIdServicesObject_CallRequest_Encoding_DefaultBinary                                                                                                        OpcuaNodeIdServicesObject = 712
+	OpcuaNodeIdServicesObject_CallResponse_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 714
+	OpcuaNodeIdServicesObject_CallResponse_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 715
+	OpcuaNodeIdServicesObject_MonitoringFilter_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 720
+	OpcuaNodeIdServicesObject_MonitoringFilter_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 721
+	OpcuaNodeIdServicesObject_DataChangeFilter_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 723
+	OpcuaNodeIdServicesObject_DataChangeFilter_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 724
+	OpcuaNodeIdServicesObject_EventFilter_Encoding_DefaultXml                                                                                                           OpcuaNodeIdServicesObject = 726
+	OpcuaNodeIdServicesObject_EventFilter_Encoding_DefaultBinary                                                                                                        OpcuaNodeIdServicesObject = 727
+	OpcuaNodeIdServicesObject_AggregateFilter_Encoding_DefaultXml                                                                                                       OpcuaNodeIdServicesObject = 729
+	OpcuaNodeIdServicesObject_AggregateFilter_Encoding_DefaultBinary                                                                                                    OpcuaNodeIdServicesObject = 730
+	OpcuaNodeIdServicesObject_MonitoringFilterResult_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 732
+	OpcuaNodeIdServicesObject_MonitoringFilterResult_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 733
+	OpcuaNodeIdServicesObject_EventFilterResult_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 735
+	OpcuaNodeIdServicesObject_EventFilterResult_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 736
+	OpcuaNodeIdServicesObject_AggregateFilterResult_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 738
+	OpcuaNodeIdServicesObject_AggregateFilterResult_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 739
+	OpcuaNodeIdServicesObject_MonitoringParameters_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 741
+	OpcuaNodeIdServicesObject_MonitoringParameters_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 742
+	OpcuaNodeIdServicesObject_MonitoredItemCreateRequest_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 744
+	OpcuaNodeIdServicesObject_MonitoredItemCreateRequest_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 745
+	OpcuaNodeIdServicesObject_MonitoredItemCreateResult_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 747
+	OpcuaNodeIdServicesObject_MonitoredItemCreateResult_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 748
+	OpcuaNodeIdServicesObject_CreateMonitoredItemsRequest_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 750
+	OpcuaNodeIdServicesObject_CreateMonitoredItemsRequest_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 751
+	OpcuaNodeIdServicesObject_CreateMonitoredItemsResponse_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 753
+	OpcuaNodeIdServicesObject_CreateMonitoredItemsResponse_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 754
+	OpcuaNodeIdServicesObject_MonitoredItemModifyRequest_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 756
+	OpcuaNodeIdServicesObject_MonitoredItemModifyRequest_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 757
+	OpcuaNodeIdServicesObject_MonitoredItemModifyResult_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 759
+	OpcuaNodeIdServicesObject_MonitoredItemModifyResult_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 760
+	OpcuaNodeIdServicesObject_ModifyMonitoredItemsRequest_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 762
+	OpcuaNodeIdServicesObject_ModifyMonitoredItemsRequest_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 763
+	OpcuaNodeIdServicesObject_ModifyMonitoredItemsResponse_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 765
+	OpcuaNodeIdServicesObject_ModifyMonitoredItemsResponse_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 766
+	OpcuaNodeIdServicesObject_SetMonitoringModeRequest_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 768
+	OpcuaNodeIdServicesObject_SetMonitoringModeRequest_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 769
+	OpcuaNodeIdServicesObject_SetMonitoringModeResponse_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 771
+	OpcuaNodeIdServicesObject_SetMonitoringModeResponse_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 772
+	OpcuaNodeIdServicesObject_SetTriggeringRequest_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 774
+	OpcuaNodeIdServicesObject_SetTriggeringRequest_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 775
+	OpcuaNodeIdServicesObject_SetTriggeringResponse_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 777
+	OpcuaNodeIdServicesObject_SetTriggeringResponse_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 778
+	OpcuaNodeIdServicesObject_DeleteMonitoredItemsRequest_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 780
+	OpcuaNodeIdServicesObject_DeleteMonitoredItemsRequest_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 781
+	OpcuaNodeIdServicesObject_DeleteMonitoredItemsResponse_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 783
+	OpcuaNodeIdServicesObject_DeleteMonitoredItemsResponse_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 784
+	OpcuaNodeIdServicesObject_CreateSubscriptionRequest_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 786
+	OpcuaNodeIdServicesObject_CreateSubscriptionRequest_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 787
+	OpcuaNodeIdServicesObject_CreateSubscriptionResponse_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 789
+	OpcuaNodeIdServicesObject_CreateSubscriptionResponse_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 790
+	OpcuaNodeIdServicesObject_ModifySubscriptionRequest_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 792
+	OpcuaNodeIdServicesObject_ModifySubscriptionRequest_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 793
+	OpcuaNodeIdServicesObject_ModifySubscriptionResponse_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 795
+	OpcuaNodeIdServicesObject_ModifySubscriptionResponse_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 796
+	OpcuaNodeIdServicesObject_SetPublishingModeRequest_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 798
+	OpcuaNodeIdServicesObject_SetPublishingModeRequest_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 799
+	OpcuaNodeIdServicesObject_SetPublishingModeResponse_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 801
+	OpcuaNodeIdServicesObject_SetPublishingModeResponse_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 802
+	OpcuaNodeIdServicesObject_NotificationMessage_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 804
+	OpcuaNodeIdServicesObject_NotificationMessage_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 805
+	OpcuaNodeIdServicesObject_MonitoredItemNotification_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 807
+	OpcuaNodeIdServicesObject_MonitoredItemNotification_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 808
+	OpcuaNodeIdServicesObject_DataChangeNotification_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 810
+	OpcuaNodeIdServicesObject_DataChangeNotification_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 811
+	OpcuaNodeIdServicesObject_StatusChangeNotification_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 819
+	OpcuaNodeIdServicesObject_StatusChangeNotification_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 820
+	OpcuaNodeIdServicesObject_SubscriptionAcknowledgement_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 822
+	OpcuaNodeIdServicesObject_SubscriptionAcknowledgement_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 823
+	OpcuaNodeIdServicesObject_PublishRequest_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 825
+	OpcuaNodeIdServicesObject_PublishRequest_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 826
+	OpcuaNodeIdServicesObject_PublishResponse_Encoding_DefaultXml                                                                                                       OpcuaNodeIdServicesObject = 828
+	OpcuaNodeIdServicesObject_PublishResponse_Encoding_DefaultBinary                                                                                                    OpcuaNodeIdServicesObject = 829
+	OpcuaNodeIdServicesObject_RepublishRequest_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 831
+	OpcuaNodeIdServicesObject_RepublishRequest_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 832
+	OpcuaNodeIdServicesObject_RepublishResponse_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 834
+	OpcuaNodeIdServicesObject_RepublishResponse_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 835
+	OpcuaNodeIdServicesObject_TransferResult_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 837
+	OpcuaNodeIdServicesObject_TransferResult_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 838
+	OpcuaNodeIdServicesObject_TransferSubscriptionsRequest_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 840
+	OpcuaNodeIdServicesObject_TransferSubscriptionsRequest_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 841
+	OpcuaNodeIdServicesObject_TransferSubscriptionsResponse_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 843
+	OpcuaNodeIdServicesObject_TransferSubscriptionsResponse_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 844
+	OpcuaNodeIdServicesObject_DeleteSubscriptionsRequest_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 846
+	OpcuaNodeIdServicesObject_DeleteSubscriptionsRequest_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 847
+	OpcuaNodeIdServicesObject_DeleteSubscriptionsResponse_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 849
+	OpcuaNodeIdServicesObject_DeleteSubscriptionsResponse_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 850
+	OpcuaNodeIdServicesObject_RedundantServerDataType_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 854
+	OpcuaNodeIdServicesObject_RedundantServerDataType_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 855
+	OpcuaNodeIdServicesObject_SamplingIntervalDiagnosticsDataType_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 857
+	OpcuaNodeIdServicesObject_SamplingIntervalDiagnosticsDataType_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 858
+	OpcuaNodeIdServicesObject_ServerDiagnosticsSummaryDataType_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 860
+	OpcuaNodeIdServicesObject_ServerDiagnosticsSummaryDataType_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 861
+	OpcuaNodeIdServicesObject_ServerStatusDataType_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 863
+	OpcuaNodeIdServicesObject_ServerStatusDataType_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 864
+	OpcuaNodeIdServicesObject_SessionDiagnosticsDataType_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 866
+	OpcuaNodeIdServicesObject_SessionDiagnosticsDataType_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 867
+	OpcuaNodeIdServicesObject_SessionSecurityDiagnosticsDataType_Encoding_DefaultXml                                                                                    OpcuaNodeIdServicesObject = 869
+	OpcuaNodeIdServicesObject_SessionSecurityDiagnosticsDataType_Encoding_DefaultBinary                                                                                 OpcuaNodeIdServicesObject = 870
+	OpcuaNodeIdServicesObject_ServiceCounterDataType_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 872
+	OpcuaNodeIdServicesObject_ServiceCounterDataType_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 873
+	OpcuaNodeIdServicesObject_SubscriptionDiagnosticsDataType_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 875
+	OpcuaNodeIdServicesObject_SubscriptionDiagnosticsDataType_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 876
+	OpcuaNodeIdServicesObject_ModelChangeStructureDataType_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 878
+	OpcuaNodeIdServicesObject_ModelChangeStructureDataType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 879
+	OpcuaNodeIdServicesObject_Range_Encoding_DefaultXml                                                                                                                 OpcuaNodeIdServicesObject = 885
+	OpcuaNodeIdServicesObject_Range_Encoding_DefaultBinary                                                                                                              OpcuaNodeIdServicesObject = 886
+	OpcuaNodeIdServicesObject_EUInformation_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 888
+	OpcuaNodeIdServicesObject_EUInformation_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 889
+	OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultXml                                                                                                            OpcuaNodeIdServicesObject = 892
+	OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultBinary                                                                                                         OpcuaNodeIdServicesObject = 893
+	OpcuaNodeIdServicesObject_ProgramDiagnosticDataType_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 895
+	OpcuaNodeIdServicesObject_ProgramDiagnosticDataType_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 896
+	OpcuaNodeIdServicesObject_SemanticChangeStructureDataType_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 898
+	OpcuaNodeIdServicesObject_SemanticChangeStructureDataType_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 899
+	OpcuaNodeIdServicesObject_EventNotificationList_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 915
+	OpcuaNodeIdServicesObject_EventNotificationList_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 916
+	OpcuaNodeIdServicesObject_EventFieldList_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 918
+	OpcuaNodeIdServicesObject_EventFieldList_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 919
+	OpcuaNodeIdServicesObject_HistoryEventFieldList_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 921
+	OpcuaNodeIdServicesObject_HistoryEventFieldList_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 922
+	OpcuaNodeIdServicesObject_IssuedIdentityToken_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 939
+	OpcuaNodeIdServicesObject_IssuedIdentityToken_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 940
+	OpcuaNodeIdServicesObject_NotificationData_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 946
+	OpcuaNodeIdServicesObject_NotificationData_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 947
+	OpcuaNodeIdServicesObject_AggregateConfiguration_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 949
+	OpcuaNodeIdServicesObject_AggregateConfiguration_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 950
+	OpcuaNodeIdServicesObject_ServerType_ServerCapabilities                                                                                                             OpcuaNodeIdServicesObject = 2009
+	OpcuaNodeIdServicesObject_ServerType_ServerDiagnostics                                                                                                              OpcuaNodeIdServicesObject = 2010
+	OpcuaNodeIdServicesObject_ServerType_VendorServerInfo                                                                                                               OpcuaNodeIdServicesObject = 2011
+	OpcuaNodeIdServicesObject_ServerType_ServerRedundancy                                                                                                               OpcuaNodeIdServicesObject = 2012
+	OpcuaNodeIdServicesObject_ServerCapabilitiesType_ModellingRules                                                                                                     OpcuaNodeIdServicesObject = 2019
+	OpcuaNodeIdServicesObject_Server                                                                                                                                    OpcuaNodeIdServicesObject = 2253
+	OpcuaNodeIdServicesObject_Server_ServerCapabilities                                                                                                                 OpcuaNodeIdServicesObject = 2268
+	OpcuaNodeIdServicesObject_Server_ServerDiagnostics                                                                                                                  OpcuaNodeIdServicesObject = 2274
+	OpcuaNodeIdServicesObject_Server_VendorServerInfo                                                                                                                   OpcuaNodeIdServicesObject = 2295
+	OpcuaNodeIdServicesObject_Server_ServerRedundancy                                                                                                                   OpcuaNodeIdServicesObject = 2296
+	OpcuaNodeIdServicesObject_AggregateFunction_Interpolative                                                                                                           OpcuaNodeIdServicesObject = 2341
+	OpcuaNodeIdServicesObject_AggregateFunction_Average                                                                                                                 OpcuaNodeIdServicesObject = 2342
+	OpcuaNodeIdServicesObject_AggregateFunction_TimeAverage                                                                                                             OpcuaNodeIdServicesObject = 2343
+	OpcuaNodeIdServicesObject_AggregateFunction_Total                                                                                                                   OpcuaNodeIdServicesObject = 2344
+	OpcuaNodeIdServicesObject_AggregateFunction_Minimum                                                                                                                 OpcuaNodeIdServicesObject = 2346
+	OpcuaNodeIdServicesObject_AggregateFunction_Maximum                                                                                                                 OpcuaNodeIdServicesObject = 2347
+	OpcuaNodeIdServicesObject_AggregateFunction_MinimumActualTime                                                                                                       OpcuaNodeIdServicesObject = 2348
+	OpcuaNodeIdServicesObject_AggregateFunction_MaximumActualTime                                                                                                       OpcuaNodeIdServicesObject = 2349
+	OpcuaNodeIdServicesObject_AggregateFunction_Range                                                                                                                   OpcuaNodeIdServicesObject = 2350
+	OpcuaNodeIdServicesObject_AggregateFunction_AnnotationCount                                                                                                         OpcuaNodeIdServicesObject = 2351
+	OpcuaNodeIdServicesObject_AggregateFunction_Count                                                                                                                   OpcuaNodeIdServicesObject = 2352
+	OpcuaNodeIdServicesObject_AggregateFunction_NumberOfTransitions                                                                                                     OpcuaNodeIdServicesObject = 2355
+	OpcuaNodeIdServicesObject_AggregateFunction_Start                                                                                                                   OpcuaNodeIdServicesObject = 2357
+	OpcuaNodeIdServicesObject_AggregateFunction_End                                                                                                                     OpcuaNodeIdServicesObject = 2358
+	OpcuaNodeIdServicesObject_AggregateFunction_Delta                                                                                                                   OpcuaNodeIdServicesObject = 2359
+	OpcuaNodeIdServicesObject_AggregateFunction_DurationGood                                                                                                            OpcuaNodeIdServicesObject = 2360
+	OpcuaNodeIdServicesObject_AggregateFunction_DurationBad                                                                                                             OpcuaNodeIdServicesObject = 2361
+	OpcuaNodeIdServicesObject_AggregateFunction_PercentGood                                                                                                             OpcuaNodeIdServicesObject = 2362
+	OpcuaNodeIdServicesObject_AggregateFunction_PercentBad                                                                                                              OpcuaNodeIdServicesObject = 2363
+	OpcuaNodeIdServicesObject_AggregateFunction_WorstQuality                                                                                                            OpcuaNodeIdServicesObject = 2364
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_Ready                                                                                                             OpcuaNodeIdServicesObject = 2400
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_Running                                                                                                           OpcuaNodeIdServicesObject = 2402
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_Suspended                                                                                                         OpcuaNodeIdServicesObject = 2404
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_Halted                                                                                                            OpcuaNodeIdServicesObject = 2406
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_HaltedToReady                                                                                                     OpcuaNodeIdServicesObject = 2408
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_ReadyToRunning                                                                                                    OpcuaNodeIdServicesObject = 2410
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_RunningToHalted                                                                                                   OpcuaNodeIdServicesObject = 2412
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_RunningToReady                                                                                                    OpcuaNodeIdServicesObject = 2414
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_RunningToSuspended                                                                                                OpcuaNodeIdServicesObject = 2416
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_SuspendedToRunning                                                                                                OpcuaNodeIdServicesObject = 2418
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_SuspendedToHalted                                                                                                 OpcuaNodeIdServicesObject = 2420
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_SuspendedToReady                                                                                                  OpcuaNodeIdServicesObject = 2422
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_ReadyToHalted                                                                                                     OpcuaNodeIdServicesObject = 2424
+	OpcuaNodeIdServicesObject_ServerDiagnosticsType_SessionsDiagnosticsSummary                                                                                          OpcuaNodeIdServicesObject = 2744
+	OpcuaNodeIdServicesObject_ServerCapabilitiesType_AggregateFunctions                                                                                                 OpcuaNodeIdServicesObject = 2754
+	OpcuaNodeIdServicesObject_ShelvedStateMachineType_Unshelved                                                                                                         OpcuaNodeIdServicesObject = 2930
+	OpcuaNodeIdServicesObject_ShelvedStateMachineType_TimedShelved                                                                                                      OpcuaNodeIdServicesObject = 2932
+	OpcuaNodeIdServicesObject_ShelvedStateMachineType_OneShotShelved                                                                                                    OpcuaNodeIdServicesObject = 2933
+	OpcuaNodeIdServicesObject_ShelvedStateMachineType_UnshelvedToTimedShelved                                                                                           OpcuaNodeIdServicesObject = 2935
+	OpcuaNodeIdServicesObject_ShelvedStateMachineType_UnshelvedToOneShotShelved                                                                                         OpcuaNodeIdServicesObject = 2936
+	OpcuaNodeIdServicesObject_ShelvedStateMachineType_TimedShelvedToUnshelved                                                                                           OpcuaNodeIdServicesObject = 2940
+	OpcuaNodeIdServicesObject_ShelvedStateMachineType_TimedShelvedToOneShotShelved                                                                                      OpcuaNodeIdServicesObject = 2942
+	OpcuaNodeIdServicesObject_ShelvedStateMachineType_OneShotShelvedToUnshelved                                                                                         OpcuaNodeIdServicesObject = 2943
+	OpcuaNodeIdServicesObject_ShelvedStateMachineType_OneShotShelvedToTimedShelved                                                                                      OpcuaNodeIdServicesObject = 2945
+	OpcuaNodeIdServicesObject_Server_ServerCapabilities_ModellingRules                                                                                                  OpcuaNodeIdServicesObject = 2996
+	OpcuaNodeIdServicesObject_Server_ServerCapabilities_AggregateFunctions                                                                                              OpcuaNodeIdServicesObject = 2997
+	OpcuaNodeIdServicesObject_EventTypesFolder                                                                                                                          OpcuaNodeIdServicesObject = 3048
+	OpcuaNodeIdServicesObject_HistoricalDataConfigurationType_AggregateConfiguration                                                                                    OpcuaNodeIdServicesObject = 3059
+	OpcuaNodeIdServicesObject_DefaultBinary                                                                                                                             OpcuaNodeIdServicesObject = 3062
+	OpcuaNodeIdServicesObject_DefaultXml                                                                                                                                OpcuaNodeIdServicesObject = 3063
+	OpcuaNodeIdServicesObject_ServerType_ServerCapabilities_ModellingRules                                                                                              OpcuaNodeIdServicesObject = 3093
+	OpcuaNodeIdServicesObject_ServerType_ServerCapabilities_AggregateFunctions                                                                                          OpcuaNodeIdServicesObject = 3094
+	OpcuaNodeIdServicesObject_ServerType_ServerDiagnostics_SessionsDiagnosticsSummary                                                                                   OpcuaNodeIdServicesObject = 3111
+	OpcuaNodeIdServicesObject_Server_ServerDiagnostics_SessionsDiagnosticsSummary                                                                                       OpcuaNodeIdServicesObject = 3706
+	OpcuaNodeIdServicesObject_ProgramStateMachineType_FinalResultData                                                                                                   OpcuaNodeIdServicesObject = 3850
+	OpcuaNodeIdServicesObject_EnumValueType_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 7616
+	OpcuaNodeIdServicesObject_EnumValueType_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 8251
+	OpcuaNodeIdServicesObject_TimeZoneDataType_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 8913
+	OpcuaNodeIdServicesObject_TimeZoneDataType_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 8917
+	OpcuaNodeIdServicesObject_AlarmConditionType_ShelvingState                                                                                                          OpcuaNodeIdServicesObject = 9178
+	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_HighHigh                                                                                                   OpcuaNodeIdServicesObject = 9329
+	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_High                                                                                                       OpcuaNodeIdServicesObject = 9331
+	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_Low                                                                                                        OpcuaNodeIdServicesObject = 9333
+	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_LowLow                                                                                                     OpcuaNodeIdServicesObject = 9335
+	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_LowLowToLow                                                                                                OpcuaNodeIdServicesObject = 9337
+	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_LowToLowLow                                                                                                OpcuaNodeIdServicesObject = 9338
+	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_HighHighToHigh                                                                                             OpcuaNodeIdServicesObject = 9339
+	OpcuaNodeIdServicesObject_ExclusiveLimitStateMachineType_HighToHighHigh                                                                                             OpcuaNodeIdServicesObject = 9340
+	OpcuaNodeIdServicesObject_ExclusiveLimitAlarmType_LimitState                                                                                                        OpcuaNodeIdServicesObject = 9455
+	OpcuaNodeIdServicesObject_HistoryServerCapabilitiesType_AggregateFunctions                                                                                          OpcuaNodeIdServicesObject = 11172
+	OpcuaNodeIdServicesObject_HistoryServerCapabilities                                                                                                                 OpcuaNodeIdServicesObject = 11192
+	OpcuaNodeIdServicesObject_HistoryServerCapabilities_AggregateFunctions                                                                                              OpcuaNodeIdServicesObject = 11201
+	OpcuaNodeIdServicesObject_HAConfiguration                                                                                                                           OpcuaNodeIdServicesObject = 11202
+	OpcuaNodeIdServicesObject_HAConfiguration_AggregateConfiguration                                                                                                    OpcuaNodeIdServicesObject = 11203
+	OpcuaNodeIdServicesObject_ModificationInfo_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 11218
+	OpcuaNodeIdServicesObject_HistoryModifiedData_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 11219
+	OpcuaNodeIdServicesObject_ModificationInfo_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 11226
+	OpcuaNodeIdServicesObject_HistoryModifiedData_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 11227
+	OpcuaNodeIdServicesObject_AggregateFunction_TimeAverage2                                                                                                            OpcuaNodeIdServicesObject = 11285
+	OpcuaNodeIdServicesObject_AggregateFunction_Minimum2                                                                                                                OpcuaNodeIdServicesObject = 11286
+	OpcuaNodeIdServicesObject_AggregateFunction_Maximum2                                                                                                                OpcuaNodeIdServicesObject = 11287
+	OpcuaNodeIdServicesObject_AggregateFunction_Range2                                                                                                                  OpcuaNodeIdServicesObject = 11288
+	OpcuaNodeIdServicesObject_AggregateFunction_WorstQuality2                                                                                                           OpcuaNodeIdServicesObject = 11292
+	OpcuaNodeIdServicesObject_UpdateStructureDataDetails_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 11296
+	OpcuaNodeIdServicesObject_UpdateStructureDataDetails_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 11300
+	OpcuaNodeIdServicesObject_AggregateFunction_Total2                                                                                                                  OpcuaNodeIdServicesObject = 11304
+	OpcuaNodeIdServicesObject_AggregateFunction_MinimumActualTime2                                                                                                      OpcuaNodeIdServicesObject = 11305
+	OpcuaNodeIdServicesObject_AggregateFunction_MaximumActualTime2                                                                                                      OpcuaNodeIdServicesObject = 11306
+	OpcuaNodeIdServicesObject_AggregateFunction_DurationInStateZero                                                                                                     OpcuaNodeIdServicesObject = 11307
+	OpcuaNodeIdServicesObject_AggregateFunction_DurationInStateNonZero                                                                                                  OpcuaNodeIdServicesObject = 11308
+	OpcuaNodeIdServicesObject_AggregateFunction_StandardDeviationSample                                                                                                 OpcuaNodeIdServicesObject = 11426
+	OpcuaNodeIdServicesObject_AggregateFunction_StandardDeviationPopulation                                                                                             OpcuaNodeIdServicesObject = 11427
+	OpcuaNodeIdServicesObject_AggregateFunction_VarianceSample                                                                                                          OpcuaNodeIdServicesObject = 11428
+	OpcuaNodeIdServicesObject_AggregateFunction_VariancePopulation                                                                                                      OpcuaNodeIdServicesObject = 11429
+	OpcuaNodeIdServicesObject_AggregateFunction_StartBound                                                                                                              OpcuaNodeIdServicesObject = 11505
+	OpcuaNodeIdServicesObject_AggregateFunction_EndBound                                                                                                                OpcuaNodeIdServicesObject = 11506
+	OpcuaNodeIdServicesObject_AggregateFunction_DeltaBounds                                                                                                             OpcuaNodeIdServicesObject = 11507
+	OpcuaNodeIdServicesObject_ModellingRule_OptionalPlaceholder                                                                                                         OpcuaNodeIdServicesObject = 11508
+	OpcuaNodeIdServicesObject_ModellingRule_MandatoryPlaceholder                                                                                                        OpcuaNodeIdServicesObject = 11510
+	OpcuaNodeIdServicesObject_ServerType_ServerCapabilities_OperationLimits                                                                                             OpcuaNodeIdServicesObject = 11516
+	OpcuaNodeIdServicesObject_ServerType_Namespaces                                                                                                                     OpcuaNodeIdServicesObject = 11527
+	OpcuaNodeIdServicesObject_ServerCapabilitiesType_OperationLimits                                                                                                    OpcuaNodeIdServicesObject = 11551
+	OpcuaNodeIdServicesObject_NamespaceMetadataType_NamespaceFile                                                                                                       OpcuaNodeIdServicesObject = 11624
+	OpcuaNodeIdServicesObject_NamespacesType_NamespaceIdentifier_Placeholder                                                                                            OpcuaNodeIdServicesObject = 11646
+	OpcuaNodeIdServicesObject_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile                                                                              OpcuaNodeIdServicesObject = 11654
+	OpcuaNodeIdServicesObject_Server_ServerCapabilities_OperationLimits                                                                                                 OpcuaNodeIdServicesObject = 11704
+	OpcuaNodeIdServicesObject_Server_Namespaces                                                                                                                         OpcuaNodeIdServicesObject = 11715
+	OpcuaNodeIdServicesObject_HistoricalDataConfigurationType_AggregateFunctions                                                                                        OpcuaNodeIdServicesObject = 11876
+	OpcuaNodeIdServicesObject_HAConfiguration_AggregateFunctions                                                                                                        OpcuaNodeIdServicesObject = 11877
+	OpcuaNodeIdServicesObject_InstanceNode_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 11887
+	OpcuaNodeIdServicesObject_TypeNode_Encoding_DefaultXml                                                                                                              OpcuaNodeIdServicesObject = 11888
+	OpcuaNodeIdServicesObject_InstanceNode_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 11889
+	OpcuaNodeIdServicesObject_TypeNode_Encoding_DefaultBinary                                                                                                           OpcuaNodeIdServicesObject = 11890
+	OpcuaNodeIdServicesObject_EndpointUrlListDataType_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 11949
+	OpcuaNodeIdServicesObject_NetworkGroupDataType_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 11950
+	OpcuaNodeIdServicesObject_EndpointUrlListDataType_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 11957
+	OpcuaNodeIdServicesObject_NetworkGroupDataType_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 11958
+	OpcuaNodeIdServicesObject_AxisInformation_Encoding_DefaultXml                                                                                                       OpcuaNodeIdServicesObject = 12081
+	OpcuaNodeIdServicesObject_XVType_Encoding_DefaultXml                                                                                                                OpcuaNodeIdServicesObject = 12082
+	OpcuaNodeIdServicesObject_AxisInformation_Encoding_DefaultBinary                                                                                                    OpcuaNodeIdServicesObject = 12089
+	OpcuaNodeIdServicesObject_XVType_Encoding_DefaultBinary                                                                                                             OpcuaNodeIdServicesObject = 12090
+	OpcuaNodeIdServicesObject_SessionsDiagnosticsSummaryType_ClientName_Placeholder                                                                                     OpcuaNodeIdServicesObject = 12097
+	OpcuaNodeIdServicesObject_ComplexNumberType_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 12173
+	OpcuaNodeIdServicesObject_DoubleComplexNumberType_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 12174
+	OpcuaNodeIdServicesObject_ComplexNumberType_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 12181
+	OpcuaNodeIdServicesObject_DoubleComplexNumberType_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 12182
+	OpcuaNodeIdServicesObject_ServerOnNetwork_Encoding_DefaultXml                                                                                                       OpcuaNodeIdServicesObject = 12195
+	OpcuaNodeIdServicesObject_FindServersOnNetworkRequest_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 12196
+	OpcuaNodeIdServicesObject_FindServersOnNetworkResponse_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 12197
+	OpcuaNodeIdServicesObject_RegisterServer2Request_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 12199
+	OpcuaNodeIdServicesObject_RegisterServer2Response_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 12200
+	OpcuaNodeIdServicesObject_ServerOnNetwork_Encoding_DefaultBinary                                                                                                    OpcuaNodeIdServicesObject = 12207
+	OpcuaNodeIdServicesObject_FindServersOnNetworkRequest_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 12208
+	OpcuaNodeIdServicesObject_FindServersOnNetworkResponse_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 12209
+	OpcuaNodeIdServicesObject_RegisterServer2Request_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 12211
+	OpcuaNodeIdServicesObject_RegisterServer2Response_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 12212
+	OpcuaNodeIdServicesObject_ServerConfiguration                                                                                                                       OpcuaNodeIdServicesObject = 12637
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList                                                                   OpcuaNodeIdServicesObject = 12642
+	OpcuaNodeIdServicesObject_TrustListDataType_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 12676
+	OpcuaNodeIdServicesObject_TrustListDataType_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 12680
+	OpcuaNodeIdServicesObject_OptionSet_Encoding_DefaultXml                                                                                                             OpcuaNodeIdServicesObject = 12757
+	OpcuaNodeIdServicesObject_Union_Encoding_DefaultXml                                                                                                                 OpcuaNodeIdServicesObject = 12758
+	OpcuaNodeIdServicesObject_OptionSet_Encoding_DefaultBinary                                                                                                          OpcuaNodeIdServicesObject = 12765
+	OpcuaNodeIdServicesObject_Union_Encoding_DefaultBinary                                                                                                              OpcuaNodeIdServicesObject = 12766
+	OpcuaNodeIdServicesObject_DiscoveryConfiguration_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 12892
+	OpcuaNodeIdServicesObject_MdnsDiscoveryConfiguration_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 12893
+	OpcuaNodeIdServicesObject_DiscoveryConfiguration_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 12900
+	OpcuaNodeIdServicesObject_MdnsDiscoveryConfiguration_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 12901
+	OpcuaNodeIdServicesObject_FileDirectoryType_FileDirectoryName_Placeholder                                                                                           OpcuaNodeIdServicesObject = 13354
+	OpcuaNodeIdServicesObject_FileDirectoryType_FileName_Placeholder                                                                                                    OpcuaNodeIdServicesObject = 13366
+	OpcuaNodeIdServicesObject_CertificateGroupType_TrustList                                                                                                            OpcuaNodeIdServicesObject = 13599
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup                                                                                        OpcuaNodeIdServicesObject = 13814
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_TrustList                                                                              OpcuaNodeIdServicesObject = 13815
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup                                                                                              OpcuaNodeIdServicesObject = 13848
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_TrustList                                                                                    OpcuaNodeIdServicesObject = 13849
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup                                                                                          OpcuaNodeIdServicesObject = 13882
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList                                                                                OpcuaNodeIdServicesObject = 13883
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder                                                                                    OpcuaNodeIdServicesObject = 13916
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList                                                                          OpcuaNodeIdServicesObject = 13917
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups                                                                                                 OpcuaNodeIdServicesObject = 13950
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup                                                                         OpcuaNodeIdServicesObject = 13951
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList                                                               OpcuaNodeIdServicesObject = 13952
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup                                                                               OpcuaNodeIdServicesObject = 13985
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList                                                                     OpcuaNodeIdServicesObject = 13986
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup                                                                           OpcuaNodeIdServicesObject = 14019
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList                                                                 OpcuaNodeIdServicesObject = 14020
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups                                                                                                     OpcuaNodeIdServicesObject = 14053
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup                                                                                   OpcuaNodeIdServicesObject = 14088
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList                                                                         OpcuaNodeIdServicesObject = 14089
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup                                                                               OpcuaNodeIdServicesObject = 14122
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList                                                                     OpcuaNodeIdServicesObject = 14123
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup                                                                             OpcuaNodeIdServicesObject = 14156
+	OpcuaNodeIdServicesObject_PubSubConnectionType_Address                                                                                                              OpcuaNodeIdServicesObject = 14221
+	OpcuaNodeIdServicesObject_PublishedVariableDataType_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 14319
+	OpcuaNodeIdServicesObject_PublishedVariableDataType_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 14323
+	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder                                                                                           OpcuaNodeIdServicesObject = 14417
+	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Status                                                                                    OpcuaNodeIdServicesObject = 14419
+	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Address                                                                                   OpcuaNodeIdServicesObject = 14423
+	OpcuaNodeIdServicesObject_PublishSubscribeType_PublishedDataSets                                                                                                    OpcuaNodeIdServicesObject = 14434
+	OpcuaNodeIdServicesObject_PublishSubscribe                                                                                                                          OpcuaNodeIdServicesObject = 14443
+	OpcuaNodeIdServicesObject_DataSetFolderType_DataSetFolderName_Placeholder                                                                                           OpcuaNodeIdServicesObject = 14478
+	OpcuaNodeIdServicesObject_DataSetFolderType_PublishedDataSetName_Placeholder                                                                                        OpcuaNodeIdServicesObject = 14487
+	OpcuaNodeIdServicesObject_PubSubConnectionType_Status                                                                                                               OpcuaNodeIdServicesObject = 14600
+	OpcuaNodeIdServicesObject_DataSetMetaDataType_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 14794
+	OpcuaNodeIdServicesObject_FieldMetaData_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 14795
+	OpcuaNodeIdServicesObject_DataTypeDescription_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 14796
+	OpcuaNodeIdServicesObject_DataTypeDefinition_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 14797
+	OpcuaNodeIdServicesObject_StructureDefinition_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 14798
+	OpcuaNodeIdServicesObject_EnumDefinition_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 14799
+	OpcuaNodeIdServicesObject_StructureField_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 14800
+	OpcuaNodeIdServicesObject_EnumField_Encoding_DefaultXml                                                                                                             OpcuaNodeIdServicesObject = 14801
+	OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 14802
+	OpcuaNodeIdServicesObject_ConfigurationVersionDataType_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 14803
+	OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 14804
+	OpcuaNodeIdServicesObject_FieldMetaData_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 14839
+	OpcuaNodeIdServicesObject_StructureField_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 14844
+	OpcuaNodeIdServicesObject_EnumField_Encoding_DefaultBinary                                                                                                          OpcuaNodeIdServicesObject = 14845
+	OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 14846
+	OpcuaNodeIdServicesObject_ConfigurationVersionDataType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 14847
+	OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 14848
+	OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 15024
+	OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 15025
+	OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultBinary                                                                                                      OpcuaNodeIdServicesObject = 15026
+	OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15041
+	OpcuaNodeIdServicesObject_IdentityMappingRuleType_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15042
+	OpcuaNodeIdServicesObject_TrustListDataType_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15044
+	OpcuaNodeIdServicesObject_DecimalDataType_Encoding_DefaultJson                                                                                                      OpcuaNodeIdServicesObject = 15045
+	OpcuaNodeIdServicesObject_ConfigurationVersionDataType_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15049
+	OpcuaNodeIdServicesObject_DataSetMetaDataType_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15050
+	OpcuaNodeIdServicesObject_FieldMetaData_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15051
+	OpcuaNodeIdServicesObject_DataTypeDescription_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15057
+	OpcuaNodeIdServicesObject_StructureDescription_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15058
+	OpcuaNodeIdServicesObject_EnumDescription_Encoding_DefaultJson                                                                                                      OpcuaNodeIdServicesObject = 15059
+	OpcuaNodeIdServicesObject_PublishedVariableDataType_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15060
+	OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15061
+	OpcuaNodeIdServicesObject_RolePermissionType_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15062
+	OpcuaNodeIdServicesObject_DataTypeDefinition_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15063
+	OpcuaNodeIdServicesObject_StructureField_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15065
+	OpcuaNodeIdServicesObject_StructureDefinition_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15066
+	OpcuaNodeIdServicesObject_EnumDefinition_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15067
+	OpcuaNodeIdServicesObject_Node_Encoding_DefaultJson                                                                                                                 OpcuaNodeIdServicesObject = 15068
+	OpcuaNodeIdServicesObject_InstanceNode_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15069
+	OpcuaNodeIdServicesObject_TypeNode_Encoding_DefaultJson                                                                                                             OpcuaNodeIdServicesObject = 15070
+	OpcuaNodeIdServicesObject_ObjectNode_Encoding_DefaultJson                                                                                                           OpcuaNodeIdServicesObject = 15071
+	OpcuaNodeIdServicesObject_DatagramConnectionTransportType_DiscoveryAddress                                                                                          OpcuaNodeIdServicesObject = 15072
+	OpcuaNodeIdServicesObject_ObjectTypeNode_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15073
+	OpcuaNodeIdServicesObject_VariableNode_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15074
+	OpcuaNodeIdServicesObject_VariableTypeNode_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15075
+	OpcuaNodeIdServicesObject_ReferenceTypeNode_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15076
+	OpcuaNodeIdServicesObject_MethodNode_Encoding_DefaultJson                                                                                                           OpcuaNodeIdServicesObject = 15077
+	OpcuaNodeIdServicesObject_ViewNode_Encoding_DefaultJson                                                                                                             OpcuaNodeIdServicesObject = 15078
+	OpcuaNodeIdServicesObject_DataTypeNode_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15079
+	OpcuaNodeIdServicesObject_ReferenceNode_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15080
+	OpcuaNodeIdServicesObject_Argument_Encoding_DefaultJson                                                                                                             OpcuaNodeIdServicesObject = 15081
+	OpcuaNodeIdServicesObject_EnumValueType_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15082
+	OpcuaNodeIdServicesObject_EnumField_Encoding_DefaultJson                                                                                                            OpcuaNodeIdServicesObject = 15083
+	OpcuaNodeIdServicesObject_OptionSet_Encoding_DefaultJson                                                                                                            OpcuaNodeIdServicesObject = 15084
+	OpcuaNodeIdServicesObject_Union_Encoding_DefaultJson                                                                                                                OpcuaNodeIdServicesObject = 15085
+	OpcuaNodeIdServicesObject_TimeZoneDataType_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15086
+	OpcuaNodeIdServicesObject_ApplicationDescription_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15087
+	OpcuaNodeIdServicesObject_RequestHeader_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15088
+	OpcuaNodeIdServicesObject_ResponseHeader_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15089
+	OpcuaNodeIdServicesObject_ServiceFault_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15090
+	OpcuaNodeIdServicesObject_SessionlessInvokeRequestType_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15091
+	OpcuaNodeIdServicesObject_SessionlessInvokeResponseType_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15092
+	OpcuaNodeIdServicesObject_FindServersRequest_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15093
+	OpcuaNodeIdServicesObject_FindServersResponse_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15094
+	OpcuaNodeIdServicesObject_ServerOnNetwork_Encoding_DefaultJson                                                                                                      OpcuaNodeIdServicesObject = 15095
+	OpcuaNodeIdServicesObject_FindServersOnNetworkRequest_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15096
+	OpcuaNodeIdServicesObject_FindServersOnNetworkResponse_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15097
+	OpcuaNodeIdServicesObject_UserTokenPolicy_Encoding_DefaultJson                                                                                                      OpcuaNodeIdServicesObject = 15098
+	OpcuaNodeIdServicesObject_EndpointDescription_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15099
+	OpcuaNodeIdServicesObject_GetEndpointsRequest_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15100
+	OpcuaNodeIdServicesObject_GetEndpointsResponse_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15101
+	OpcuaNodeIdServicesObject_RegisteredServer_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15102
+	OpcuaNodeIdServicesObject_RegisterServerRequest_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15103
+	OpcuaNodeIdServicesObject_RegisterServerResponse_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15104
+	OpcuaNodeIdServicesObject_DiscoveryConfiguration_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15105
+	OpcuaNodeIdServicesObject_MdnsDiscoveryConfiguration_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15106
+	OpcuaNodeIdServicesObject_RegisterServer2Request_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15107
+	OpcuaNodeIdServicesObject_RegisterServer2Response_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15130
+	OpcuaNodeIdServicesObject_ChannelSecurityToken_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15131
+	OpcuaNodeIdServicesObject_OpenSecureChannelRequest_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15132
+	OpcuaNodeIdServicesObject_OpenSecureChannelResponse_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15133
+	OpcuaNodeIdServicesObject_CloseSecureChannelRequest_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15134
+	OpcuaNodeIdServicesObject_CloseSecureChannelResponse_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15135
+	OpcuaNodeIdServicesObject_SignedSoftwareCertificate_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15136
+	OpcuaNodeIdServicesObject_SignatureData_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15137
+	OpcuaNodeIdServicesObject_CreateSessionRequest_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15138
+	OpcuaNodeIdServicesObject_CreateSessionResponse_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15139
+	OpcuaNodeIdServicesObject_UserIdentityToken_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15140
+	OpcuaNodeIdServicesObject_AnonymousIdentityToken_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15141
+	OpcuaNodeIdServicesObject_UserNameIdentityToken_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15142
+	OpcuaNodeIdServicesObject_X509IdentityToken_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15143
+	OpcuaNodeIdServicesObject_IssuedIdentityToken_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15144
+	OpcuaNodeIdServicesObject_ActivateSessionRequest_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15145
+	OpcuaNodeIdServicesObject_ActivateSessionResponse_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15146
+	OpcuaNodeIdServicesObject_CloseSessionRequest_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15147
+	OpcuaNodeIdServicesObject_CloseSessionResponse_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15148
+	OpcuaNodeIdServicesObject_CancelRequest_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15149
+	OpcuaNodeIdServicesObject_CancelResponse_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15150
+	OpcuaNodeIdServicesObject_NodeAttributes_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15151
+	OpcuaNodeIdServicesObject_ObjectAttributes_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15152
+	OpcuaNodeIdServicesObject_VariableAttributes_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15153
+	OpcuaNodeIdServicesObject_MethodAttributes_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15157
+	OpcuaNodeIdServicesObject_ObjectTypeAttributes_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15158
+	OpcuaNodeIdServicesObject_VariableTypeAttributes_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15159
+	OpcuaNodeIdServicesObject_ReferenceTypeAttributes_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15160
+	OpcuaNodeIdServicesObject_DataTypeAttributes_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15161
+	OpcuaNodeIdServicesObject_ViewAttributes_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15162
+	OpcuaNodeIdServicesObject_GenericAttributeValue_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15163
+	OpcuaNodeIdServicesObject_GenericAttributes_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15164
+	OpcuaNodeIdServicesObject_AddNodesItem_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15165
+	OpcuaNodeIdServicesObject_AddNodesResult_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15166
+	OpcuaNodeIdServicesObject_AddNodesRequest_Encoding_DefaultJson                                                                                                      OpcuaNodeIdServicesObject = 15167
+	OpcuaNodeIdServicesObject_AddNodesResponse_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15168
+	OpcuaNodeIdServicesObject_AddReferencesItem_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15169
+	OpcuaNodeIdServicesObject_AddReferencesRequest_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15170
+	OpcuaNodeIdServicesObject_AddReferencesResponse_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15171
+	OpcuaNodeIdServicesObject_DeleteNodesItem_Encoding_DefaultJson                                                                                                      OpcuaNodeIdServicesObject = 15172
+	OpcuaNodeIdServicesObject_DeleteNodesRequest_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15173
+	OpcuaNodeIdServicesObject_DeleteNodesResponse_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15174
+	OpcuaNodeIdServicesObject_DeleteReferencesItem_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15175
+	OpcuaNodeIdServicesObject_DeleteReferencesRequest_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15176
+	OpcuaNodeIdServicesObject_DeleteReferencesResponse_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15177
+	OpcuaNodeIdServicesObject_ViewDescription_Encoding_DefaultJson                                                                                                      OpcuaNodeIdServicesObject = 15179
+	OpcuaNodeIdServicesObject_BrowseDescription_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15180
+	OpcuaNodeIdServicesObject_ReferenceDescription_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15182
+	OpcuaNodeIdServicesObject_BrowseResult_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15183
+	OpcuaNodeIdServicesObject_BrowseRequest_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15184
+	OpcuaNodeIdServicesObject_BrowseResponse_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15185
+	OpcuaNodeIdServicesObject_BrowseNextRequest_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15186
+	OpcuaNodeIdServicesObject_BrowseNextResponse_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15187
+	OpcuaNodeIdServicesObject_RelativePathElement_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15188
+	OpcuaNodeIdServicesObject_RelativePath_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15189
+	OpcuaNodeIdServicesObject_BrowsePath_Encoding_DefaultJson                                                                                                           OpcuaNodeIdServicesObject = 15190
+	OpcuaNodeIdServicesObject_BrowsePathTarget_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15191
+	OpcuaNodeIdServicesObject_BrowsePathResult_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15192
+	OpcuaNodeIdServicesObject_TranslateBrowsePathsToNodeIdsRequest_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 15193
+	OpcuaNodeIdServicesObject_TranslateBrowsePathsToNodeIdsResponse_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 15194
+	OpcuaNodeIdServicesObject_RegisterNodesRequest_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15195
+	OpcuaNodeIdServicesObject_RegisterNodesResponse_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15196
+	OpcuaNodeIdServicesObject_UnregisterNodesRequest_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15197
+	OpcuaNodeIdServicesObject_UnregisterNodesResponse_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15198
+	OpcuaNodeIdServicesObject_EndpointConfiguration_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15199
+	OpcuaNodeIdServicesObject_QueryDataDescription_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15200
+	OpcuaNodeIdServicesObject_NodeTypeDescription_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15201
+	OpcuaNodeIdServicesObject_QueryDataSet_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15202
+	OpcuaNodeIdServicesObject_NodeReference_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15203
+	OpcuaNodeIdServicesObject_ContentFilterElement_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15204
+	OpcuaNodeIdServicesObject_ContentFilter_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15205
+	OpcuaNodeIdServicesObject_FilterOperand_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15206
+	OpcuaNodeIdServicesObject_ElementOperand_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15207
+	OpcuaNodeIdServicesObject_LiteralOperand_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15208
+	OpcuaNodeIdServicesObject_AttributeOperand_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15209
+	OpcuaNodeIdServicesObject_SimpleAttributeOperand_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15210
+	OpcuaNodeIdServicesObject_ContentFilterElementResult_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15211
+	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder                                                                                        OpcuaNodeIdServicesObject = 15222
+	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Status                                                                                 OpcuaNodeIdServicesObject = 15223
+	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_TransportSettings                                                                      OpcuaNodeIdServicesObject = 15227
+	OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15228
+	OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 15232
+	OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 15233
+	OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultXml                                                                                                         OpcuaNodeIdServicesObject = 15234
+	OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15236
+	OpcuaNodeIdServicesObject_QueryFirstRequest_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15244
+	OpcuaNodeIdServicesObject_QueryFirstResponse_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15252
+	OpcuaNodeIdServicesObject_QueryNextRequest_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15254
+	OpcuaNodeIdServicesObject_QueryNextResponse_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15255
+	OpcuaNodeIdServicesObject_ReadValueId_Encoding_DefaultJson                                                                                                          OpcuaNodeIdServicesObject = 15256
+	OpcuaNodeIdServicesObject_ReadRequest_Encoding_DefaultJson                                                                                                          OpcuaNodeIdServicesObject = 15257
+	OpcuaNodeIdServicesObject_ReadResponse_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15258
+	OpcuaNodeIdServicesObject_HistoryReadValueId_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15259
+	OpcuaNodeIdServicesObject_HistoryReadResult_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15260
+	OpcuaNodeIdServicesObject_HistoryReadDetails_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15261
+	OpcuaNodeIdServicesObject_ReadEventDetails_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15262
+	OpcuaNodeIdServicesObject_ReadRawModifiedDetails_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15263
+	OpcuaNodeIdServicesObject_ReadProcessedDetails_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15264
+	OpcuaNodeIdServicesObject_PubSubGroupType_Status                                                                                                                    OpcuaNodeIdServicesObject = 15265
+	OpcuaNodeIdServicesObject_ReadAtTimeDetails_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15269
+	OpcuaNodeIdServicesObject_HistoryData_Encoding_DefaultJson                                                                                                          OpcuaNodeIdServicesObject = 15270
+	OpcuaNodeIdServicesObject_ModificationInfo_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15271
+	OpcuaNodeIdServicesObject_HistoryModifiedData_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15272
+	OpcuaNodeIdServicesObject_HistoryEvent_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15273
+	OpcuaNodeIdServicesObject_HistoryReadRequest_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15274
+	OpcuaNodeIdServicesObject_HistoryReadResponse_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15275
+	OpcuaNodeIdServicesObject_WriteValue_Encoding_DefaultJson                                                                                                           OpcuaNodeIdServicesObject = 15276
+	OpcuaNodeIdServicesObject_WriteRequest_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15277
+	OpcuaNodeIdServicesObject_WriteResponse_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15278
+	OpcuaNodeIdServicesObject_HistoryUpdateDetails_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15279
+	OpcuaNodeIdServicesObject_UpdateDataDetails_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15280
+	OpcuaNodeIdServicesObject_UpdateStructureDataDetails_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15281
+	OpcuaNodeIdServicesObject_UpdateEventDetails_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15282
+	OpcuaNodeIdServicesObject_DeleteRawModifiedDetails_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15283
+	OpcuaNodeIdServicesObject_DeleteAtTimeDetails_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15284
+	OpcuaNodeIdServicesObject_DeleteEventDetails_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15285
+	OpcuaNodeIdServicesObject_HistoryUpdateResult_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15286
+	OpcuaNodeIdServicesObject_HistoryUpdateRequest_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15287
+	OpcuaNodeIdServicesObject_HistoryUpdateResponse_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15288
+	OpcuaNodeIdServicesObject_CallMethodRequest_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15289
+	OpcuaNodeIdServicesObject_CallMethodResult_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15290
+	OpcuaNodeIdServicesObject_CallRequest_Encoding_DefaultJson                                                                                                          OpcuaNodeIdServicesObject = 15291
+	OpcuaNodeIdServicesObject_CallResponse_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15292
+	OpcuaNodeIdServicesObject_MonitoringFilter_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15293
+	OpcuaNodeIdServicesObject_DataChangeFilter_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15294
+	OpcuaNodeIdServicesObject_EventFilter_Encoding_DefaultJson                                                                                                          OpcuaNodeIdServicesObject = 15295
+	OpcuaNodeIdServicesObject_DataSetWriterType_Status                                                                                                                  OpcuaNodeIdServicesObject = 15299
+	OpcuaNodeIdServicesObject_DataSetWriterType_TransportSettings                                                                                                       OpcuaNodeIdServicesObject = 15303
+	OpcuaNodeIdServicesObject_AggregateConfiguration_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15304
+	OpcuaNodeIdServicesObject_DataSetReaderType_Status                                                                                                                  OpcuaNodeIdServicesObject = 15307
+	OpcuaNodeIdServicesObject_DataSetReaderType_TransportSettings                                                                                                       OpcuaNodeIdServicesObject = 15311
+	OpcuaNodeIdServicesObject_AggregateFilter_Encoding_DefaultJson                                                                                                      OpcuaNodeIdServicesObject = 15312
+	OpcuaNodeIdServicesObject_MonitoringFilterResult_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15313
+	OpcuaNodeIdServicesObject_EventFilterResult_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15314
+	OpcuaNodeIdServicesObject_AggregateFilterResult_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15315
+	OpcuaNodeIdServicesObject_DataSetReaderType_SubscribedDataSet                                                                                                       OpcuaNodeIdServicesObject = 15316
+	OpcuaNodeIdServicesObject_MonitoringParameters_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15320
+	OpcuaNodeIdServicesObject_MonitoredItemCreateRequest_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15321
+	OpcuaNodeIdServicesObject_MonitoredItemCreateResult_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15322
+	OpcuaNodeIdServicesObject_CreateMonitoredItemsRequest_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15323
+	OpcuaNodeIdServicesObject_CreateMonitoredItemsResponse_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15324
+	OpcuaNodeIdServicesObject_MonitoredItemModifyRequest_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15325
+	OpcuaNodeIdServicesObject_MonitoredItemModifyResult_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15326
+	OpcuaNodeIdServicesObject_ModifyMonitoredItemsRequest_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15327
+	OpcuaNodeIdServicesObject_ModifyMonitoredItemsResponse_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15328
+	OpcuaNodeIdServicesObject_SetMonitoringModeRequest_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15329
+	OpcuaNodeIdServicesObject_SetMonitoringModeResponse_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15331
+	OpcuaNodeIdServicesObject_SetTriggeringRequest_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15332
+	OpcuaNodeIdServicesObject_SetTriggeringResponse_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15333
+	OpcuaNodeIdServicesObject_DeleteMonitoredItemsRequest_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15335
+	OpcuaNodeIdServicesObject_DeleteMonitoredItemsResponse_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15336
+	OpcuaNodeIdServicesObject_CreateSubscriptionRequest_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15337
+	OpcuaNodeIdServicesObject_CreateSubscriptionResponse_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15338
+	OpcuaNodeIdServicesObject_ModifySubscriptionRequest_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15339
+	OpcuaNodeIdServicesObject_ModifySubscriptionResponse_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15340
+	OpcuaNodeIdServicesObject_SetPublishingModeRequest_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15341
+	OpcuaNodeIdServicesObject_SetPublishingModeResponse_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15342
+	OpcuaNodeIdServicesObject_NotificationMessage_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15343
+	OpcuaNodeIdServicesObject_NotificationData_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15344
+	OpcuaNodeIdServicesObject_DataChangeNotification_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15345
+	OpcuaNodeIdServicesObject_MonitoredItemNotification_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15346
+	OpcuaNodeIdServicesObject_EventNotificationList_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15347
+	OpcuaNodeIdServicesObject_EventFieldList_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15348
+	OpcuaNodeIdServicesObject_HistoryEventFieldList_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15349
+	OpcuaNodeIdServicesObject_StatusChangeNotification_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 15350
+	OpcuaNodeIdServicesObject_SubscriptionAcknowledgement_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15351
+	OpcuaNodeIdServicesObject_PublishRequest_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15352
+	OpcuaNodeIdServicesObject_PublishResponse_Encoding_DefaultJson                                                                                                      OpcuaNodeIdServicesObject = 15353
+	OpcuaNodeIdServicesObject_RepublishRequest_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 15354
+	OpcuaNodeIdServicesObject_RepublishResponse_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15355
+	OpcuaNodeIdServicesObject_TransferResult_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 15356
+	OpcuaNodeIdServicesObject_TransferSubscriptionsRequest_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15357
+	OpcuaNodeIdServicesObject_TransferSubscriptionsResponse_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 15358
+	OpcuaNodeIdServicesObject_DeleteSubscriptionsRequest_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15359
+	OpcuaNodeIdServicesObject_DeleteSubscriptionsResponse_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 15360
+	OpcuaNodeIdServicesObject_BuildInfo_Encoding_DefaultJson                                                                                                            OpcuaNodeIdServicesObject = 15361
+	OpcuaNodeIdServicesObject_RedundantServerDataType_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15362
+	OpcuaNodeIdServicesObject_EndpointUrlListDataType_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15363
+	OpcuaNodeIdServicesObject_NetworkGroupDataType_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15364
+	OpcuaNodeIdServicesObject_SamplingIntervalDiagnosticsDataType_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 15365
+	OpcuaNodeIdServicesObject_ServerDiagnosticsSummaryDataType_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 15366
+	OpcuaNodeIdServicesObject_ServerStatusDataType_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15367
+	OpcuaNodeIdServicesObject_SessionDiagnosticsDataType_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 15368
+	OpcuaNodeIdServicesObject_SessionSecurityDiagnosticsDataType_Encoding_DefaultJson                                                                                   OpcuaNodeIdServicesObject = 15369
+	OpcuaNodeIdServicesObject_ServiceCounterDataType_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 15370
+	OpcuaNodeIdServicesObject_StatusResult_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 15371
+	OpcuaNodeIdServicesObject_SubscriptionDiagnosticsDataType_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15372
+	OpcuaNodeIdServicesObject_ModelChangeStructureDataType_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 15373
+	OpcuaNodeIdServicesObject_SemanticChangeStructureDataType_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 15374
+	OpcuaNodeIdServicesObject_Range_Encoding_DefaultJson                                                                                                                OpcuaNodeIdServicesObject = 15375
+	OpcuaNodeIdServicesObject_EUInformation_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15376
+	OpcuaNodeIdServicesObject_ComplexNumberType_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 15377
+	OpcuaNodeIdServicesObject_DoubleComplexNumberType_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 15378
+	OpcuaNodeIdServicesObject_AxisInformation_Encoding_DefaultJson                                                                                                      OpcuaNodeIdServicesObject = 15379
+	OpcuaNodeIdServicesObject_XVType_Encoding_DefaultJson                                                                                                               OpcuaNodeIdServicesObject = 15380
+	OpcuaNodeIdServicesObject_ProgramDiagnosticDataType_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 15381
+	OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultJson                                                                                                           OpcuaNodeIdServicesObject = 15382
+	OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 15396
+	OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 15397
+	OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultJson                                                                                                        OpcuaNodeIdServicesObject = 15398
+	OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 15401
+	OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 15402
+	OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 15403
+	OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 15404
+	OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15405
+	OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 15421
+	OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 15422
+	OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15431
+	OpcuaNodeIdServicesObject_PublishSubscribe_SecurityGroups                                                                                                           OpcuaNodeIdServicesObject = 15443
+	OpcuaNodeIdServicesObject_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder                                                                               OpcuaNodeIdServicesObject = 15453
+	OpcuaNodeIdServicesObject_SecurityGroupFolderType_SecurityGroupName_Placeholder                                                                                     OpcuaNodeIdServicesObject = 15459
+	OpcuaNodeIdServicesObject_DataSetFolderType_PublishedDataSetName_Placeholder_ExtensionFields                                                                        OpcuaNodeIdServicesObject = 15473
+	OpcuaNodeIdServicesObject_BrokerConnectionTransportDataType_Encoding_DefaultBinary                                                                                  OpcuaNodeIdServicesObject = 15479
+	OpcuaNodeIdServicesObject_PublishedDataSetType_ExtensionFields                                                                                                      OpcuaNodeIdServicesObject = 15481
+	OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 15529
+	OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 15531
+	OpcuaNodeIdServicesObject_BrokerConnectionTransportDataType_Encoding_DefaultXml                                                                                     OpcuaNodeIdServicesObject = 15579
+	OpcuaNodeIdServicesObject_StructureDescription_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 15589
+	OpcuaNodeIdServicesObject_EnumDescription_Encoding_DefaultXml                                                                                                       OpcuaNodeIdServicesObject = 15590
+	OpcuaNodeIdServicesObject_Server_ServerCapabilities_RoleSet                                                                                                         OpcuaNodeIdServicesObject = 15606
+	OpcuaNodeIdServicesObject_RoleSetType_RoleName_Placeholder                                                                                                          OpcuaNodeIdServicesObject = 15608
+	OpcuaNodeIdServicesObject_WellKnownRole_Anonymous                                                                                                                   OpcuaNodeIdServicesObject = 15644
+	OpcuaNodeIdServicesObject_WellKnownRole_AuthenticatedUser                                                                                                           OpcuaNodeIdServicesObject = 15656
+	OpcuaNodeIdServicesObject_WellKnownRole_Observer                                                                                                                    OpcuaNodeIdServicesObject = 15668
+	OpcuaNodeIdServicesObject_EndpointType_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 15671
+	OpcuaNodeIdServicesObject_DataTypeSchemaHeader_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 15676
+	OpcuaNodeIdServicesObject_PublishedDataSetDataType_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 15677
+	OpcuaNodeIdServicesObject_PublishedDataSetSourceDataType_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 15678
+	OpcuaNodeIdServicesObject_PublishedDataItemsDataType_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 15679
+	OpcuaNodeIdServicesObject_WellKnownRole_Operator                                                                                                                    OpcuaNodeIdServicesObject = 15680
+	OpcuaNodeIdServicesObject_PublishedEventsDataType_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 15681
+	OpcuaNodeIdServicesObject_DataSetWriterDataType_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 15682
+	OpcuaNodeIdServicesObject_DataSetWriterTransportDataType_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 15683
+	OpcuaNodeIdServicesObject_DataSetWriterMessageDataType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 15688
+	OpcuaNodeIdServicesObject_PubSubGroupDataType_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 15689
+	OpcuaNodeIdServicesObject_WriterGroupTransportDataType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 15691
+	OpcuaNodeIdServicesObject_WellKnownRole_Supervisor                                                                                                                  OpcuaNodeIdServicesObject = 15692
+	OpcuaNodeIdServicesObject_WriterGroupMessageDataType_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 15693
+	OpcuaNodeIdServicesObject_PubSubConnectionDataType_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 15694
+	OpcuaNodeIdServicesObject_ConnectionTransportDataType_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 15695
+	OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 15700
+	OpcuaNodeIdServicesObject_ReaderGroupTransportDataType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 15701
+	OpcuaNodeIdServicesObject_ReaderGroupMessageDataType_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 15702
+	OpcuaNodeIdServicesObject_DataSetReaderDataType_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 15703
+	OpcuaNodeIdServicesObject_WellKnownRole_SecurityAdmin                                                                                                               OpcuaNodeIdServicesObject = 15704
+	OpcuaNodeIdServicesObject_DataSetReaderTransportDataType_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 15705
+	OpcuaNodeIdServicesObject_DataSetReaderMessageDataType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 15706
+	OpcuaNodeIdServicesObject_SubscribedDataSetDataType_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 15707
+	OpcuaNodeIdServicesObject_TargetVariablesDataType_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 15712
+	OpcuaNodeIdServicesObject_SubscribedDataSetMirrorDataType_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 15713
+	OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 15714
+	OpcuaNodeIdServicesObject_UadpWriterGroupMessageDataType_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 15715
+	OpcuaNodeIdServicesObject_WellKnownRole_ConfigureAdmin                                                                                                              OpcuaNodeIdServicesObject = 15716
+	OpcuaNodeIdServicesObject_UadpDataSetWriterMessageDataType_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 15717
+	OpcuaNodeIdServicesObject_UadpDataSetReaderMessageDataType_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 15718
+	OpcuaNodeIdServicesObject_JsonWriterGroupMessageDataType_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 15719
+	OpcuaNodeIdServicesObject_JsonDataSetWriterMessageDataType_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 15724
+	OpcuaNodeIdServicesObject_JsonDataSetReaderMessageDataType_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 15725
+	OpcuaNodeIdServicesObject_BrokerConnectionTransportDataType_Encoding_DefaultJson                                                                                    OpcuaNodeIdServicesObject = 15726
+	OpcuaNodeIdServicesObject_BrokerWriterGroupTransportDataType_Encoding_DefaultBinary                                                                                 OpcuaNodeIdServicesObject = 15727
+	OpcuaNodeIdServicesObject_IdentityMappingRuleType_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 15728
+	OpcuaNodeIdServicesObject_BrokerDataSetWriterTransportDataType_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 15729
+	OpcuaNodeIdServicesObject_BrokerDataSetReaderTransportDataType_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 15733
+	OpcuaNodeIdServicesObject_IdentityMappingRuleType_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 15736
+	OpcuaNodeIdServicesObject_TemporaryFileTransferType_TransferState_Placeholder                                                                                       OpcuaNodeIdServicesObject = 15754
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_Idle                                                                                                         OpcuaNodeIdServicesObject = 15815
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ReadPrepare                                                                                                  OpcuaNodeIdServicesObject = 15817
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ReadTransfer                                                                                                 OpcuaNodeIdServicesObject = 15819
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ApplyWrite                                                                                                   OpcuaNodeIdServicesObject = 15821
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_Error                                                                                                        OpcuaNodeIdServicesObject = 15823
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_IdleToReadPrepare                                                                                            OpcuaNodeIdServicesObject = 15825
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ReadPrepareToReadTransfer                                                                                    OpcuaNodeIdServicesObject = 15827
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ReadTransferToIdle                                                                                           OpcuaNodeIdServicesObject = 15829
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_IdleToApplyWrite                                                                                             OpcuaNodeIdServicesObject = 15831
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ApplyWriteToIdle                                                                                             OpcuaNodeIdServicesObject = 15833
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ReadPrepareToError                                                                                           OpcuaNodeIdServicesObject = 15835
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ReadTransferToError                                                                                          OpcuaNodeIdServicesObject = 15837
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ApplyWriteToError                                                                                            OpcuaNodeIdServicesObject = 15839
+	OpcuaNodeIdServicesObject_FileTransferStateMachineType_ErrorToIdle                                                                                                  OpcuaNodeIdServicesObject = 15841
+	OpcuaNodeIdServicesObject_PublishSubscribeType_Status                                                                                                               OpcuaNodeIdServicesObject = 15844
+	OpcuaNodeIdServicesObject_SessionlessInvokeRequestType_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 15902
+	OpcuaNodeIdServicesObject_SessionlessInvokeRequestType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 15903
+	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_TransportSettings                                                                         OpcuaNodeIdServicesObject = 15905
+	OpcuaNodeIdServicesObject_PubSubKeyServiceType_SecurityGroups                                                                                                       OpcuaNodeIdServicesObject = 15913
+	OpcuaNodeIdServicesObject_EndpointType_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 15949
+	OpcuaNodeIdServicesObject_DataTypeSchemaHeader_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 15950
+	OpcuaNodeIdServicesObject_PublishedDataSetDataType_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 15951
+	OpcuaNodeIdServicesObject_PublishedDataSetSourceDataType_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 15952
+	OpcuaNodeIdServicesObject_PublishedDataItemsDataType_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 15953
+	OpcuaNodeIdServicesObject_PublishedEventsDataType_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 15954
+	OpcuaNodeIdServicesObject_DataSetWriterDataType_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 15955
+	OpcuaNodeIdServicesObject_DataSetWriterTransportDataType_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 15956
+	OpcuaNodeIdServicesObject_OPCUANamespaceMetadata                                                                                                                    OpcuaNodeIdServicesObject = 15957
+	OpcuaNodeIdServicesObject_OPCUANamespaceMetadata_NamespaceFile                                                                                                      OpcuaNodeIdServicesObject = 15965
+	OpcuaNodeIdServicesObject_DataSetWriterMessageDataType_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 15987
+	OpcuaNodeIdServicesObject_PubSubGroupDataType_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 15988
+	OpcuaNodeIdServicesObject_WriterGroupTransportDataType_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 15990
+	OpcuaNodeIdServicesObject_WriterGroupMessageDataType_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 15991
+	OpcuaNodeIdServicesObject_PubSubConnectionDataType_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 15992
+	OpcuaNodeIdServicesObject_ConnectionTransportDataType_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 15993
+	OpcuaNodeIdServicesObject_ReaderGroupTransportDataType_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 15995
+	OpcuaNodeIdServicesObject_ReaderGroupMessageDataType_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 15996
+	OpcuaNodeIdServicesObject_DataSetReaderDataType_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 16007
+	OpcuaNodeIdServicesObject_DataSetReaderTransportDataType_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 16008
+	OpcuaNodeIdServicesObject_DataSetReaderMessageDataType_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 16009
+	OpcuaNodeIdServicesObject_SubscribedDataSetDataType_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 16010
+	OpcuaNodeIdServicesObject_TargetVariablesDataType_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 16011
+	OpcuaNodeIdServicesObject_SubscribedDataSetMirrorDataType_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 16012
+	OpcuaNodeIdServicesObject_UadpWriterGroupMessageDataType_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 16014
+	OpcuaNodeIdServicesObject_UadpDataSetWriterMessageDataType_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 16015
+	OpcuaNodeIdServicesObject_UadpDataSetReaderMessageDataType_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 16016
+	OpcuaNodeIdServicesObject_JsonWriterGroupMessageDataType_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 16017
+	OpcuaNodeIdServicesObject_JsonDataSetWriterMessageDataType_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 16018
+	OpcuaNodeIdServicesObject_JsonDataSetReaderMessageDataType_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 16019
+	OpcuaNodeIdServicesObject_BrokerWriterGroupTransportDataType_Encoding_DefaultXml                                                                                    OpcuaNodeIdServicesObject = 16021
+	OpcuaNodeIdServicesObject_BrokerDataSetWriterTransportDataType_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 16022
+	OpcuaNodeIdServicesObject_BrokerDataSetReaderTransportDataType_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 16023
+	OpcuaNodeIdServicesObject_WellKnownRole_Engineer                                                                                                                    OpcuaNodeIdServicesObject = 16036
+	OpcuaNodeIdServicesObject_RolePermissionType_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 16126
+	OpcuaNodeIdServicesObject_EndpointType_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 16150
+	OpcuaNodeIdServicesObject_DataTypeSchemaHeader_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 16151
+	OpcuaNodeIdServicesObject_PublishedDataSetDataType_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 16152
+	OpcuaNodeIdServicesObject_PublishedDataSetSourceDataType_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 16153
+	OpcuaNodeIdServicesObject_PublishedDataItemsDataType_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 16154
+	OpcuaNodeIdServicesObject_PublishedEventsDataType_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 16155
+	OpcuaNodeIdServicesObject_DataSetWriterDataType_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 16156
+	OpcuaNodeIdServicesObject_DataSetWriterTransportDataType_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 16157
+	OpcuaNodeIdServicesObject_DataSetWriterMessageDataType_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 16158
+	OpcuaNodeIdServicesObject_PubSubGroupDataType_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 16159
+	OpcuaNodeIdServicesObject_WriterGroupTransportDataType_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 16161
+	OpcuaNodeIdServicesObject_WriterGroupMessageDataType_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 16280
+	OpcuaNodeIdServicesObject_PubSubConnectionDataType_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 16281
+	OpcuaNodeIdServicesObject_ConnectionTransportDataType_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 16282
+	OpcuaNodeIdServicesObject_ReaderGroupTransportDataType_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 16284
+	OpcuaNodeIdServicesObject_ReaderGroupMessageDataType_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 16285
+	OpcuaNodeIdServicesObject_DataSetReaderDataType_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 16286
+	OpcuaNodeIdServicesObject_DataSetReaderTransportDataType_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 16287
+	OpcuaNodeIdServicesObject_DataSetReaderMessageDataType_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 16288
+	OpcuaNodeIdServicesObject_ServerType_ServerCapabilities_RoleSet                                                                                                     OpcuaNodeIdServicesObject = 16289
+	OpcuaNodeIdServicesObject_ServerCapabilitiesType_RoleSet                                                                                                            OpcuaNodeIdServicesObject = 16295
+	OpcuaNodeIdServicesObject_SubscribedDataSetDataType_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 16308
+	OpcuaNodeIdServicesObject_TargetVariablesDataType_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 16310
+	OpcuaNodeIdServicesObject_SubscribedDataSetMirrorDataType_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 16311
+	OpcuaNodeIdServicesObject_FileSystem                                                                                                                                OpcuaNodeIdServicesObject = 16314
+	OpcuaNodeIdServicesObject_UadpWriterGroupMessageDataType_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 16323
+	OpcuaNodeIdServicesObject_UadpDataSetWriterMessageDataType_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 16391
+	OpcuaNodeIdServicesObject_UadpDataSetReaderMessageDataType_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 16392
+	OpcuaNodeIdServicesObject_JsonWriterGroupMessageDataType_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 16393
+	OpcuaNodeIdServicesObject_JsonDataSetWriterMessageDataType_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 16394
+	OpcuaNodeIdServicesObject_AlarmConditionType_FirstInGroup                                                                                                           OpcuaNodeIdServicesObject = 16398
+	OpcuaNodeIdServicesObject_AlarmConditionType_AlarmGroup_Placeholder                                                                                                 OpcuaNodeIdServicesObject = 16399
+	OpcuaNodeIdServicesObject_JsonDataSetReaderMessageDataType_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 16404
+	OpcuaNodeIdServicesObject_AlarmGroupType_AlarmConditionInstance_Placeholder                                                                                         OpcuaNodeIdServicesObject = 16406
+	OpcuaNodeIdServicesObject_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState                                                                           OpcuaNodeIdServicesObject = 16502
+	OpcuaNodeIdServicesObject_BrokerWriterGroupTransportDataType_Encoding_DefaultJson                                                                                   OpcuaNodeIdServicesObject = 16524
+	OpcuaNodeIdServicesObject_BrokerDataSetWriterTransportDataType_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 16525
+	OpcuaNodeIdServicesObject_BrokerDataSetReaderTransportDataType_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 16526
+	OpcuaNodeIdServicesObject_AlarmGroupType_AlarmConditionInstance_Placeholder_FirstInGroup                                                                            OpcuaNodeIdServicesObject = 16530
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder                                                                            OpcuaNodeIdServicesObject = 16663
+	OpcuaNodeIdServicesObject_ManagedApplications                                                                                                                       OpcuaNodeIdServicesObject = 16706
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups                                                          OpcuaNodeIdServicesObject = 16707
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup                                  OpcuaNodeIdServicesObject = 16708
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList                        OpcuaNodeIdServicesObject = 16709
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired               OpcuaNodeIdServicesObject = 16754
+	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_MessageSettings                                                                        OpcuaNodeIdServicesObject = 16758
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState OpcuaNodeIdServicesObject = 16847
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_FirstInGroup  OpcuaNodeIdServicesObject = 16898
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate               OpcuaNodeIdServicesObject = 16939
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState OpcuaNodeIdServicesObject = 17040
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup  OpcuaNodeIdServicesObject = 17091
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup                                        OpcuaNodeIdServicesObject = 17125
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList                              OpcuaNodeIdServicesObject = 17126
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired                     OpcuaNodeIdServicesObject = 17166
+	OpcuaNodeIdServicesObject_PubSubConnectionType_TransportSettings                                                                                                    OpcuaNodeIdServicesObject = 17203
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState       OpcuaNodeIdServicesObject = 17271
+	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_TransportSettings                                                                        OpcuaNodeIdServicesObject = 17290
+	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_MessageSettings                                                                          OpcuaNodeIdServicesObject = 17291
+	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder_TransportSettings                                                                        OpcuaNodeIdServicesObject = 17307
+	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder_MessageSettings                                                                          OpcuaNodeIdServicesObject = 17308
+	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder                                                                                          OpcuaNodeIdServicesObject = 17310
+	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Status                                                                                   OpcuaNodeIdServicesObject = 17314
+	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder                                                                                          OpcuaNodeIdServicesObject = 17325
+	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder_Status                                                                                   OpcuaNodeIdServicesObject = 17329
+	OpcuaNodeIdServicesObject_PublishSubscribe_PublishedDataSets                                                                                                        OpcuaNodeIdServicesObject = 17371
+	OpcuaNodeIdServicesObject_PublishSubscribe_Status                                                                                                                   OpcuaNodeIdServicesObject = 17405
+	OpcuaNodeIdServicesObject_PublishSubscribe_Diagnostics                                                                                                              OpcuaNodeIdServicesObject = 17409
+	OpcuaNodeIdServicesObject_PublishSubscribe_Diagnostics_Counters                                                                                                     OpcuaNodeIdServicesObject = 17423
+	OpcuaNodeIdServicesObject_PublishSubscribe_Diagnostics_LiveValues                                                                                                   OpcuaNodeIdServicesObject = 17457
+	OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 17468
+	OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 17472
+	OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 17476
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_FirstInGroup        OpcuaNodeIdServicesObject = 17499
+	OpcuaNodeIdServicesObject_KeyCredentialConfigurationFolderType_ServiceName_Placeholder                                                                              OpcuaNodeIdServicesObject = 17511
+	OpcuaNodeIdServicesObject_AdditionalParametersType_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 17537
+	OpcuaNodeIdServicesObject_AdditionalParametersType_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 17541
+	OpcuaNodeIdServicesObject_AdditionalParametersType_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 17547
+	OpcuaNodeIdServicesObject_EphemeralKeyType_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 17549
+	OpcuaNodeIdServicesObject_EphemeralKeyType_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 17553
+	OpcuaNodeIdServicesObject_EphemeralKeyType_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 17557
+	OpcuaNodeIdServicesObject_DictionaryEntryType_DictionaryEntryName_Placeholder                                                                                       OpcuaNodeIdServicesObject = 17590
+	OpcuaNodeIdServicesObject_DictionaryFolderType_DictionaryFolderName_Placeholder                                                                                     OpcuaNodeIdServicesObject = 17592
+	OpcuaNodeIdServicesObject_DictionaryFolderType_DictionaryEntryName_Placeholder                                                                                      OpcuaNodeIdServicesObject = 17593
+	OpcuaNodeIdServicesObject_Dictionaries                                                                                                                              OpcuaNodeIdServicesObject = 17594
+	OpcuaNodeIdServicesObject_GenericAttributeValue_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 17608
+	OpcuaNodeIdServicesObject_GenericAttributes_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 17609
+	OpcuaNodeIdServicesObject_GenericAttributeValue_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 17610
+	OpcuaNodeIdServicesObject_GenericAttributes_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 17611
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate                     OpcuaNodeIdServicesObject = 17629
+	OpcuaNodeIdServicesObject_InterfaceTypes                                                                                                                            OpcuaNodeIdServicesObject = 17708
+	OpcuaNodeIdServicesObject_AuthorizationServices                                                                                                                     OpcuaNodeIdServicesObject = 17732
+	OpcuaNodeIdServicesObject_WriterGroupType_TransportSettings                                                                                                         OpcuaNodeIdServicesObject = 17741
+	OpcuaNodeIdServicesObject_WriterGroupType_MessageSettings                                                                                                           OpcuaNodeIdServicesObject = 17742
+	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder                                                                                             OpcuaNodeIdServicesObject = 17743
+	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder_TransportSettings                                                                           OpcuaNodeIdServicesObject = 17747
+	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder_MessageSettings                                                                             OpcuaNodeIdServicesObject = 17748
+	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder_Status                                                                                      OpcuaNodeIdServicesObject = 17749
+	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder_Diagnostics                                                                                 OpcuaNodeIdServicesObject = 17753
+	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder_Diagnostics_Counters                                                                        OpcuaNodeIdServicesObject = 17767
+	OpcuaNodeIdServicesObject_WriterGroupType_DataSetWriterName_Placeholder_Diagnostics_LiveValues                                                                      OpcuaNodeIdServicesObject = 17798
+	OpcuaNodeIdServicesObject_WriterGroupType_Diagnostics                                                                                                               OpcuaNodeIdServicesObject = 17812
+	OpcuaNodeIdServicesObject_WriterGroupType_Diagnostics_Counters                                                                                                      OpcuaNodeIdServicesObject = 17826
+	OpcuaNodeIdServicesObject_WriterGroupType_Diagnostics_LiveValues                                                                                                    OpcuaNodeIdServicesObject = 17858
+	OpcuaNodeIdServicesObject_DecimalDataType_Encoding_DefaultXml                                                                                                       OpcuaNodeIdServicesObject = 17862
+	OpcuaNodeIdServicesObject_DecimalDataType_Encoding_DefaultBinary                                                                                                    OpcuaNodeIdServicesObject = 17863
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState       OpcuaNodeIdServicesObject = 17895
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup        OpcuaNodeIdServicesObject = 17951
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup                                    OpcuaNodeIdServicesObject = 18015
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList                          OpcuaNodeIdServicesObject = 18016
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired                 OpcuaNodeIdServicesObject = 18059
+	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder                                                                                             OpcuaNodeIdServicesObject = 18076
+	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_TransportSettings                                                                           OpcuaNodeIdServicesObject = 18086
+	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_MessageSettings                                                                             OpcuaNodeIdServicesObject = 18087
+	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_Status                                                                                      OpcuaNodeIdServicesObject = 18088
+	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics                                                                                 OpcuaNodeIdServicesObject = 18092
+	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_Counters                                                                        OpcuaNodeIdServicesObject = 18106
+	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_LiveValues                                                                      OpcuaNodeIdServicesObject = 18137
+	OpcuaNodeIdServicesObject_KeyCredentialConfiguration                                                                                                                OpcuaNodeIdServicesObject = 18155
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState   OpcuaNodeIdServicesObject = 18279
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_FirstInGroup    OpcuaNodeIdServicesObject = 18323
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate                 OpcuaNodeIdServicesObject = 18359
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState   OpcuaNodeIdServicesObject = 18446
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup    OpcuaNodeIdServicesObject = 18490
+	OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_TransactionDiagnostics                                                     OpcuaNodeIdServicesObject = 18547
+	OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 18598
+	OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultBinary                                                                                            OpcuaNodeIdServicesObject = 18599
+	OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 18600
+	OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 18610
+	OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultXml                                                                                               OpcuaNodeIdServicesObject = 18611
+	OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 18612
+	OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 18622
+	OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultJson                                                                                              OpcuaNodeIdServicesObject = 18623
+	OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 18624
+	OpcuaNodeIdServicesObject_WellKnownRole_TrustedApplication                                                                                                          OpcuaNodeIdServicesObject = 18625
+	OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultBinary                                                                                                    OpcuaNodeIdServicesObject = 18650
+	OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 18651
+	OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultXml                                                                                                       OpcuaNodeIdServicesObject = 18652
+	OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 18653
+	OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultJson                                                                                                      OpcuaNodeIdServicesObject = 18654
+	OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 18655
+	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics                                                                               OpcuaNodeIdServicesObject = 18667
+	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_Counters                                                                      OpcuaNodeIdServicesObject = 18681
+	OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_LiveValues                                                                    OpcuaNodeIdServicesObject = 18712
+	OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics                                                                                                          OpcuaNodeIdServicesObject = 18715
+	OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics_Counters                                                                                                 OpcuaNodeIdServicesObject = 18729
+	OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics_LiveValues                                                                                               OpcuaNodeIdServicesObject = 18760
+	OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 18795
+	OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 18815
+	OpcuaNodeIdServicesObject_Vector_Encoding_DefaultBinary                                                                                                             OpcuaNodeIdServicesObject = 18816
+	OpcuaNodeIdServicesObject_ThreeDVector_Encoding_DefaultBinary                                                                                                       OpcuaNodeIdServicesObject = 18817
+	OpcuaNodeIdServicesObject_CartesianCoordinates_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 18818
+	OpcuaNodeIdServicesObject_ThreeDCartesianCoordinates_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 18819
+	OpcuaNodeIdServicesObject_Orientation_Encoding_DefaultBinary                                                                                                        OpcuaNodeIdServicesObject = 18820
+	OpcuaNodeIdServicesObject_ThreeDOrientation_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 18821
+	OpcuaNodeIdServicesObject_Frame_Encoding_DefaultBinary                                                                                                              OpcuaNodeIdServicesObject = 18822
+	OpcuaNodeIdServicesObject_ThreeDFrame_Encoding_DefaultBinary                                                                                                        OpcuaNodeIdServicesObject = 18823
+	OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 18851
+	OpcuaNodeIdServicesObject_Vector_Encoding_DefaultXml                                                                                                                OpcuaNodeIdServicesObject = 18852
+	OpcuaNodeIdServicesObject_ThreeDVector_Encoding_DefaultXml                                                                                                          OpcuaNodeIdServicesObject = 18853
+	OpcuaNodeIdServicesObject_CartesianCoordinates_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 18854
+	OpcuaNodeIdServicesObject_ThreeDCartesianCoordinates_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 18855
+	OpcuaNodeIdServicesObject_Orientation_Encoding_DefaultXml                                                                                                           OpcuaNodeIdServicesObject = 18856
+	OpcuaNodeIdServicesObject_ThreeDOrientation_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 18857
+	OpcuaNodeIdServicesObject_Frame_Encoding_DefaultXml                                                                                                                 OpcuaNodeIdServicesObject = 18858
+	OpcuaNodeIdServicesObject_ThreeDFrame_Encoding_DefaultXml                                                                                                           OpcuaNodeIdServicesObject = 18859
+	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics                                                                            OpcuaNodeIdServicesObject = 18871
+	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters                                                                   OpcuaNodeIdServicesObject = 18885
+	OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues                                                                 OpcuaNodeIdServicesObject = 18916
+	OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 18930
+	OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 18937
+	OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 18938
+	OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultJson                                                                                        OpcuaNodeIdServicesObject = 18945
+	OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 18946
+	OpcuaNodeIdServicesObject_LLDP                                                                                                                                      OpcuaNodeIdServicesObject = 18958
+	OpcuaNodeIdServicesObject_LLDP_RemoteStatistics                                                                                                                     OpcuaNodeIdServicesObject = 18959
+	OpcuaNodeIdServicesObject_LLDP_LocalSystemData                                                                                                                      OpcuaNodeIdServicesObject = 18965
+	OpcuaNodeIdServicesObject_LLDP_Ports                                                                                                                                OpcuaNodeIdServicesObject = 18972
+	OpcuaNodeIdServicesObject_LldpInformationType_RemoteStatistics                                                                                                      OpcuaNodeIdServicesObject = 18974
+	OpcuaNodeIdServicesObject_LldpInformationType_LocalSystemData                                                                                                       OpcuaNodeIdServicesObject = 18980
+	OpcuaNodeIdServicesObject_LldpInformationType_Ports                                                                                                                 OpcuaNodeIdServicesObject = 18987
+	OpcuaNodeIdServicesObject_LldpInformationType_Ports_LldpPortInformation_Placeholder                                                                                 OpcuaNodeIdServicesObject = 18988
+	OpcuaNodeIdServicesObject_LldpInformationType_Ports_LldpPortInformation_Placeholder_RemoteSystemsData                                                               OpcuaNodeIdServicesObject = 18995
+	OpcuaNodeIdServicesObject_LldpPortInformationType_RemoteSystemsData                                                                                                 OpcuaNodeIdServicesObject = 19016
+	OpcuaNodeIdServicesObject_LldpPortInformationType_RemoteSystemsData_LldpRemoteSystem_Placeholder                                                                    OpcuaNodeIdServicesObject = 19017
+	OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 19064
+	OpcuaNodeIdServicesObject_Vector_Encoding_DefaultJson                                                                                                               OpcuaNodeIdServicesObject = 19065
+	OpcuaNodeIdServicesObject_ThreeDVector_Encoding_DefaultJson                                                                                                         OpcuaNodeIdServicesObject = 19066
+	OpcuaNodeIdServicesObject_CartesianCoordinates_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 19067
+	OpcuaNodeIdServicesObject_ThreeDCartesianCoordinates_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 19068
+	OpcuaNodeIdServicesObject_Orientation_Encoding_DefaultJson                                                                                                          OpcuaNodeIdServicesObject = 19069
+	OpcuaNodeIdServicesObject_ThreeDOrientation_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 19070
+	OpcuaNodeIdServicesObject_Frame_Encoding_DefaultJson                                                                                                                OpcuaNodeIdServicesObject = 19071
+	OpcuaNodeIdServicesObject_ThreeDFrame_Encoding_DefaultJson                                                                                                          OpcuaNodeIdServicesObject = 19072
+	OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultBinary                                                                                    OpcuaNodeIdServicesObject = 19079
+	OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 19080
+	OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultBinary                                                                                                        OpcuaNodeIdServicesObject = 19081
+	OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultXml                                                                                       OpcuaNodeIdServicesObject = 19100
+	OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 19101
+	OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultXml                                                                                                           OpcuaNodeIdServicesObject = 19102
+	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics                                                                              OpcuaNodeIdServicesObject = 19107
+	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics_Counters                                                                     OpcuaNodeIdServicesObject = 19121
+	OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics_LiveValues                                                                   OpcuaNodeIdServicesObject = 19152
+	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder_Diagnostics                                                                              OpcuaNodeIdServicesObject = 19176
+	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder_Diagnostics_Counters                                                                     OpcuaNodeIdServicesObject = 19190
+	OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder_Diagnostics_LiveValues                                                                   OpcuaNodeIdServicesObject = 19221
+	OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics                                                                                                          OpcuaNodeIdServicesObject = 19241
+	OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics_Counters                                                                                                 OpcuaNodeIdServicesObject = 19255
+	OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics_LiveValues                                                                                               OpcuaNodeIdServicesObject = 19286
+	OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultJson                                                                                      OpcuaNodeIdServicesObject = 19299
+	OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 19300
+	OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultJson                                                                                                          OpcuaNodeIdServicesObject = 19301
+	OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultBinary                                                                                                          OpcuaNodeIdServicesObject = 19435
+	OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 19436
+	OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultXml                                                                                                             OpcuaNodeIdServicesObject = 19437
+	OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 19438
+	OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultJson                                                                                                            OpcuaNodeIdServicesObject = 19439
+	OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 19440
+	OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired                                                                                                   OpcuaNodeIdServicesObject = 19450
+	OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired_ShelvingState                                                                                     OpcuaNodeIdServicesObject = 19537
+	OpcuaNodeIdServicesObject_DataSetWriterType_Diagnostics                                                                                                             OpcuaNodeIdServicesObject = 19550
+	OpcuaNodeIdServicesObject_DataSetWriterType_Diagnostics_Counters                                                                                                    OpcuaNodeIdServicesObject = 19564
+	OpcuaNodeIdServicesObject_DataSetWriterType_Diagnostics_LiveValues                                                                                                  OpcuaNodeIdServicesObject = 19595
+	OpcuaNodeIdServicesObject_DataSetReaderType_Diagnostics                                                                                                             OpcuaNodeIdServicesObject = 19609
+	OpcuaNodeIdServicesObject_DataSetReaderType_Diagnostics_Counters                                                                                                    OpcuaNodeIdServicesObject = 19623
+	OpcuaNodeIdServicesObject_DataSetReaderType_Diagnostics_LiveValues                                                                                                  OpcuaNodeIdServicesObject = 19654
+	OpcuaNodeIdServicesObject_PubSubDiagnosticsType_Counters                                                                                                            OpcuaNodeIdServicesObject = 19691
+	OpcuaNodeIdServicesObject_PubSubDiagnosticsType_LiveValues                                                                                                          OpcuaNodeIdServicesObject = 19722
+	OpcuaNodeIdServicesObject_PubSubDiagnosticsRootType_LiveValues                                                                                                      OpcuaNodeIdServicesObject = 19777
+	OpcuaNodeIdServicesObject_PubSubDiagnosticsConnectionType_LiveValues                                                                                                OpcuaNodeIdServicesObject = 19831
+	OpcuaNodeIdServicesObject_PubSubDiagnosticsWriterGroupType_Counters                                                                                                 OpcuaNodeIdServicesObject = 19848
+	OpcuaNodeIdServicesObject_PubSubDiagnosticsWriterGroupType_LiveValues                                                                                               OpcuaNodeIdServicesObject = 19879
+	OpcuaNodeIdServicesObject_PubSubDiagnosticsReaderGroupType_Counters                                                                                                 OpcuaNodeIdServicesObject = 19917
+	OpcuaNodeIdServicesObject_PubSubDiagnosticsReaderGroupType_LiveValues                                                                                               OpcuaNodeIdServicesObject = 19948
+	OpcuaNodeIdServicesObject_PubSubDiagnosticsDataSetWriterType_Counters                                                                                               OpcuaNodeIdServicesObject = 19982
+	OpcuaNodeIdServicesObject_PubSubDiagnosticsDataSetWriterType_LiveValues                                                                                             OpcuaNodeIdServicesObject = 20013
+	OpcuaNodeIdServicesObject_PubSubDiagnosticsDataSetReaderType_Counters                                                                                               OpcuaNodeIdServicesObject = 20041
+	OpcuaNodeIdServicesObject_PubSubDiagnosticsDataSetReaderType_LiveValues                                                                                             OpcuaNodeIdServicesObject = 20072
+	OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired_FirstInGroup                                                                                      OpcuaNodeIdServicesObject = 20120
+	OpcuaNodeIdServicesObject_CertificateGroupType_TrustListOutOfDate                                                                                                   OpcuaNodeIdServicesObject = 20143
+	OpcuaNodeIdServicesObject_CertificateGroupType_TrustListOutOfDate_ShelvingState                                                                                     OpcuaNodeIdServicesObject = 20230
+	OpcuaNodeIdServicesObject_CertificateGroupType_TrustListOutOfDate_FirstInGroup                                                                                      OpcuaNodeIdServicesObject = 20268
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired                                                                     OpcuaNodeIdServicesObject = 20291
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState                                                       OpcuaNodeIdServicesObject = 20378
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_FirstInGroup                                                        OpcuaNodeIdServicesObject = 20418
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate                                                                     OpcuaNodeIdServicesObject = 20441
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState                                                       OpcuaNodeIdServicesObject = 20528
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup                                                        OpcuaNodeIdServicesObject = 20566
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired                                                                           OpcuaNodeIdServicesObject = 20589
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState                                                             OpcuaNodeIdServicesObject = 20676
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_FirstInGroup                                                              OpcuaNodeIdServicesObject = 20714
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate                                                                           OpcuaNodeIdServicesObject = 20737
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState                                                             OpcuaNodeIdServicesObject = 20824
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup                                                              OpcuaNodeIdServicesObject = 20862
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired                                                                       OpcuaNodeIdServicesObject = 20885
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState                                                         OpcuaNodeIdServicesObject = 20972
+	OpcuaNodeIdServicesObject_SessionlessInvokeResponseType_Encoding_DefaultXml                                                                                         OpcuaNodeIdServicesObject = 21000
+	OpcuaNodeIdServicesObject_SessionlessInvokeResponseType_Encoding_DefaultBinary                                                                                      OpcuaNodeIdServicesObject = 21001
+	OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_SubscribedDataSet                                                                           OpcuaNodeIdServicesObject = 21006
+	OpcuaNodeIdServicesObject_ReaderGroupType_Diagnostics                                                                                                               OpcuaNodeIdServicesObject = 21015
+	OpcuaNodeIdServicesObject_ReaderGroupType_Diagnostics_Counters                                                                                                      OpcuaNodeIdServicesObject = 21029
+	OpcuaNodeIdServicesObject_ReaderGroupType_Diagnostics_LiveValues                                                                                                    OpcuaNodeIdServicesObject = 21060
+	OpcuaNodeIdServicesObject_ReaderGroupType_TransportSettings                                                                                                         OpcuaNodeIdServicesObject = 21080
+	OpcuaNodeIdServicesObject_ReaderGroupType_MessageSettings                                                                                                           OpcuaNodeIdServicesObject = 21081
+	OpcuaNodeIdServicesObject_DataSetWriterType_MessageSettings                                                                                                         OpcuaNodeIdServicesObject = 21095
+	OpcuaNodeIdServicesObject_DataSetReaderType_MessageSettings                                                                                                         OpcuaNodeIdServicesObject = 21103
+	OpcuaNodeIdServicesObject_WriterGroupDataType_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 21150
+	OpcuaNodeIdServicesObject_NetworkAddressDataType_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 21151
+	OpcuaNodeIdServicesObject_NetworkAddressUrlDataType_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 21152
+	OpcuaNodeIdServicesObject_ReaderGroupDataType_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 21153
+	OpcuaNodeIdServicesObject_PubSubConfigurationDataType_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 21154
+	OpcuaNodeIdServicesObject_DatagramWriterGroupTransportDataType_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 21155
+	OpcuaNodeIdServicesObject_WriterGroupDataType_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 21174
+	OpcuaNodeIdServicesObject_NetworkAddressDataType_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 21175
+	OpcuaNodeIdServicesObject_NetworkAddressUrlDataType_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 21176
+	OpcuaNodeIdServicesObject_ReaderGroupDataType_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 21177
+	OpcuaNodeIdServicesObject_PubSubConfigurationDataType_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 21178
+	OpcuaNodeIdServicesObject_DatagramWriterGroupTransportDataType_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 21179
+	OpcuaNodeIdServicesObject_WriterGroupDataType_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 21198
+	OpcuaNodeIdServicesObject_NetworkAddressDataType_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 21199
+	OpcuaNodeIdServicesObject_NetworkAddressUrlDataType_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 21200
+	OpcuaNodeIdServicesObject_ReaderGroupDataType_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 21201
+	OpcuaNodeIdServicesObject_PubSubConfigurationDataType_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 21202
+	OpcuaNodeIdServicesObject_DatagramWriterGroupTransportDataType_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 21203
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_FirstInGroup                                                          OpcuaNodeIdServicesObject = 21213
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate                                                                       OpcuaNodeIdServicesObject = 21236
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState                                                         OpcuaNodeIdServicesObject = 21323
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup                                                          OpcuaNodeIdServicesObject = 21361
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired                                                                 OpcuaNodeIdServicesObject = 21384
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState                                                   OpcuaNodeIdServicesObject = 21471
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_FirstInGroup                                                    OpcuaNodeIdServicesObject = 21509
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate                                                                 OpcuaNodeIdServicesObject = 21532
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState                                                   OpcuaNodeIdServicesObject = 21619
+	OpcuaNodeIdServicesObject_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_FirstInGroup                                                    OpcuaNodeIdServicesObject = 21657
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired                                                      OpcuaNodeIdServicesObject = 21680
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState                                        OpcuaNodeIdServicesObject = 21767
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_FirstInGroup                                         OpcuaNodeIdServicesObject = 21805
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate                                                      OpcuaNodeIdServicesObject = 21828
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState                                        OpcuaNodeIdServicesObject = 21915
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup                                         OpcuaNodeIdServicesObject = 21953
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired                                                            OpcuaNodeIdServicesObject = 21976
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState                                              OpcuaNodeIdServicesObject = 22063
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_FirstInGroup                                               OpcuaNodeIdServicesObject = 22101
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate                                                            OpcuaNodeIdServicesObject = 22124
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState                                              OpcuaNodeIdServicesObject = 22211
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup                                               OpcuaNodeIdServicesObject = 22249
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired                                                        OpcuaNodeIdServicesObject = 22272
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState                                          OpcuaNodeIdServicesObject = 22359
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_FirstInGroup                                           OpcuaNodeIdServicesObject = 22397
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate                                                        OpcuaNodeIdServicesObject = 22420
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState                                          OpcuaNodeIdServicesObject = 22507
+	OpcuaNodeIdServicesObject_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup                                           OpcuaNodeIdServicesObject = 22545
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired                                                          OpcuaNodeIdServicesObject = 22568
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState                                            OpcuaNodeIdServicesObject = 22655
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_FirstInGroup                                             OpcuaNodeIdServicesObject = 22693
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate                                                          OpcuaNodeIdServicesObject = 22716
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState                                            OpcuaNodeIdServicesObject = 22803
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup                                             OpcuaNodeIdServicesObject = 22841
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired                                                                OpcuaNodeIdServicesObject = 22864
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState                                                  OpcuaNodeIdServicesObject = 22951
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_FirstInGroup                                                   OpcuaNodeIdServicesObject = 22989
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate                                                                OpcuaNodeIdServicesObject = 23012
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState                                                  OpcuaNodeIdServicesObject = 23099
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup                                                   OpcuaNodeIdServicesObject = 23137
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired                                                            OpcuaNodeIdServicesObject = 23160
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState                                              OpcuaNodeIdServicesObject = 23247
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_FirstInGroup                                               OpcuaNodeIdServicesObject = 23285
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate                                                            OpcuaNodeIdServicesObject = 23308
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState                                              OpcuaNodeIdServicesObject = 23395
+	OpcuaNodeIdServicesObject_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup                                               OpcuaNodeIdServicesObject = 23433
+	OpcuaNodeIdServicesObject_AliasNameCategoryType_Alias_Placeholder                                                                                                   OpcuaNodeIdServicesObject = 23457
+	OpcuaNodeIdServicesObject_AliasNameCategoryType_SubAliasNameCategories_Placeholder                                                                                  OpcuaNodeIdServicesObject = 23458
+	OpcuaNodeIdServicesObject_Aliases                                                                                                                                   OpcuaNodeIdServicesObject = 23470
+	OpcuaNodeIdServicesObject_TagVariables                                                                                                                              OpcuaNodeIdServicesObject = 23479
+	OpcuaNodeIdServicesObject_Topics                                                                                                                                    OpcuaNodeIdServicesObject = 23488
+	OpcuaNodeIdServicesObject_AliasNameDataType_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 23499
+	OpcuaNodeIdServicesObject_ReadAnnotationDataDetails_Encoding_DefaultBinary                                                                                          OpcuaNodeIdServicesObject = 23500
+	OpcuaNodeIdServicesObject_AliasNameDataType_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 23505
+	OpcuaNodeIdServicesObject_ReadAnnotationDataDetails_Encoding_DefaultXml                                                                                             OpcuaNodeIdServicesObject = 23506
+	OpcuaNodeIdServicesObject_CurrencyUnitType_Encoding_DefaultBinary                                                                                                   OpcuaNodeIdServicesObject = 23507
+	OpcuaNodeIdServicesObject_AliasNameDataType_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 23511
+	OpcuaNodeIdServicesObject_ReadAnnotationDataDetails_Encoding_DefaultJson                                                                                            OpcuaNodeIdServicesObject = 23512
+	OpcuaNodeIdServicesObject_OrderedListType_OrderedObject_Placeholder                                                                                                 OpcuaNodeIdServicesObject = 23519
+	OpcuaNodeIdServicesObject_CurrencyUnitType_Encoding_DefaultXml                                                                                                      OpcuaNodeIdServicesObject = 23520
+	OpcuaNodeIdServicesObject_CurrencyUnitType_Encoding_DefaultJson                                                                                                     OpcuaNodeIdServicesObject = 23528
+	OpcuaNodeIdServicesObject_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder                                                                      OpcuaNodeIdServicesObject = 23557
+	OpcuaNodeIdServicesObject_PublishSubscribeType_SubscribedDataSets                                                                                                   OpcuaNodeIdServicesObject = 23622
+	OpcuaNodeIdServicesObject_PublishSubscribeType_PubSubCapablities                                                                                                    OpcuaNodeIdServicesObject = 23642
+	OpcuaNodeIdServicesObject_PublishSubscribeType_DataSetClasses                                                                                                       OpcuaNodeIdServicesObject = 23649
+	OpcuaNodeIdServicesObject_PublishSubscribe_SubscribedDataSets                                                                                                       OpcuaNodeIdServicesObject = 23658
+	OpcuaNodeIdServicesObject_PublishSubscribe_PubSubCapablities                                                                                                        OpcuaNodeIdServicesObject = 23678
+	OpcuaNodeIdServicesObject_PublishSubscribe_DataSetClasses                                                                                                           OpcuaNodeIdServicesObject = 23685
+	OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder                                                                       OpcuaNodeIdServicesObject = 23796
+	OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder                                                                   OpcuaNodeIdServicesObject = 23807
+	OpcuaNodeIdServicesObject_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder_SubscribedDataSet                                                 OpcuaNodeIdServicesObject = 23808
+	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetType_SubscribedDataSet                                                                                         OpcuaNodeIdServicesObject = 23829
+	OpcuaNodeIdServicesObject_DatagramWriterGroupTransportType_Address                                                                                                  OpcuaNodeIdServicesObject = 23842
+	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetRefDataType_Encoding_DefaultBinary                                                                             OpcuaNodeIdServicesObject = 23851
+	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetDataType_Encoding_DefaultBinary                                                                                OpcuaNodeIdServicesObject = 23852
+	OpcuaNodeIdServicesObject_SecurityGroupDataType_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 23853
+	OpcuaNodeIdServicesObject_PubSubConfiguration2DataType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 23854
+	OpcuaNodeIdServicesObject_QosDataType_Encoding_DefaultBinary                                                                                                        OpcuaNodeIdServicesObject = 23855
+	OpcuaNodeIdServicesObject_TransmitQosDataType_Encoding_DefaultBinary                                                                                                OpcuaNodeIdServicesObject = 23856
+	OpcuaNodeIdServicesObject_TransmitQosPriorityDataType_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 23857
+	OpcuaNodeIdServicesObject_ReceiveQosDataType_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 23860
+	OpcuaNodeIdServicesObject_ReceiveQosPriorityDataType_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 23861
+	OpcuaNodeIdServicesObject_DatagramConnectionTransport2DataType_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 23864
+	OpcuaNodeIdServicesObject_DatagramWriterGroupTransport2DataType_Encoding_DefaultBinary                                                                              OpcuaNodeIdServicesObject = 23865
+	OpcuaNodeIdServicesObject_DatagramDataSetReaderTransportDataType_Encoding_DefaultBinary                                                                             OpcuaNodeIdServicesObject = 23866
+	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetRefDataType_Encoding_DefaultXml                                                                                OpcuaNodeIdServicesObject = 23919
+	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetDataType_Encoding_DefaultXml                                                                                   OpcuaNodeIdServicesObject = 23920
+	OpcuaNodeIdServicesObject_SecurityGroupDataType_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 23921
+	OpcuaNodeIdServicesObject_PubSubConfiguration2DataType_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 23922
+	OpcuaNodeIdServicesObject_QosDataType_Encoding_DefaultXml                                                                                                           OpcuaNodeIdServicesObject = 23923
+	OpcuaNodeIdServicesObject_TransmitQosDataType_Encoding_DefaultXml                                                                                                   OpcuaNodeIdServicesObject = 23924
+	OpcuaNodeIdServicesObject_TransmitQosPriorityDataType_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 23925
+	OpcuaNodeIdServicesObject_ReceiveQosDataType_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 23928
+	OpcuaNodeIdServicesObject_ReceiveQosPriorityDataType_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 23929
+	OpcuaNodeIdServicesObject_DatagramConnectionTransport2DataType_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 23932
+	OpcuaNodeIdServicesObject_DatagramWriterGroupTransport2DataType_Encoding_DefaultXml                                                                                 OpcuaNodeIdServicesObject = 23933
+	OpcuaNodeIdServicesObject_DatagramDataSetReaderTransportDataType_Encoding_DefaultXml                                                                                OpcuaNodeIdServicesObject = 23934
+	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetRefDataType_Encoding_DefaultJson                                                                               OpcuaNodeIdServicesObject = 23987
+	OpcuaNodeIdServicesObject_StandaloneSubscribedDataSetDataType_Encoding_DefaultJson                                                                                  OpcuaNodeIdServicesObject = 23988
+	OpcuaNodeIdServicesObject_SecurityGroupDataType_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 23989
+	OpcuaNodeIdServicesObject_PubSubConfiguration2DataType_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 23990
+	OpcuaNodeIdServicesObject_QosDataType_Encoding_DefaultJson                                                                                                          OpcuaNodeIdServicesObject = 23991
+	OpcuaNodeIdServicesObject_TransmitQosDataType_Encoding_DefaultJson                                                                                                  OpcuaNodeIdServicesObject = 23992
+	OpcuaNodeIdServicesObject_TransmitQosPriorityDataType_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 23993
+	OpcuaNodeIdServicesObject_ReceiveQosDataType_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 23996
+	OpcuaNodeIdServicesObject_ReceiveQosPriorityDataType_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 23997
+	OpcuaNodeIdServicesObject_DatagramConnectionTransport2DataType_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 24000
+	OpcuaNodeIdServicesObject_DatagramWriterGroupTransport2DataType_Encoding_DefaultJson                                                                                OpcuaNodeIdServicesObject = 24001
+	OpcuaNodeIdServicesObject_DatagramDataSetReaderTransportDataType_Encoding_DefaultJson                                                                               OpcuaNodeIdServicesObject = 24002
+	OpcuaNodeIdServicesObject_DatagramDataSetReaderTransportType_Address                                                                                                OpcuaNodeIdServicesObject = 24017
+	OpcuaNodeIdServicesObject_ProgramDiagnostic2DataType_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 24034
+	OpcuaNodeIdServicesObject_ProgramDiagnostic2DataType_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 24038
+	OpcuaNodeIdServicesObject_ProgramDiagnostic2DataType_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 24042
+	OpcuaNodeIdServicesObject_PortableQualifiedName_Encoding_DefaultBinary                                                                                              OpcuaNodeIdServicesObject = 24108
+	OpcuaNodeIdServicesObject_PortableNodeId_Encoding_DefaultBinary                                                                                                     OpcuaNodeIdServicesObject = 24109
+	OpcuaNodeIdServicesObject_UnsignedRationalNumber_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 24110
+	OpcuaNodeIdServicesObject_PortableQualifiedName_Encoding_DefaultXml                                                                                                 OpcuaNodeIdServicesObject = 24120
+	OpcuaNodeIdServicesObject_PortableNodeId_Encoding_DefaultXml                                                                                                        OpcuaNodeIdServicesObject = 24121
+	OpcuaNodeIdServicesObject_UnsignedRationalNumber_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 24122
+	OpcuaNodeIdServicesObject_PortableQualifiedName_Encoding_DefaultJson                                                                                                OpcuaNodeIdServicesObject = 24132
+	OpcuaNodeIdServicesObject_PortableNodeId_Encoding_DefaultJson                                                                                                       OpcuaNodeIdServicesObject = 24133
+	OpcuaNodeIdServicesObject_UnsignedRationalNumber_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 24134
+	OpcuaNodeIdServicesObject_Resources                                                                                                                                 OpcuaNodeIdServicesObject = 24226
+	OpcuaNodeIdServicesObject_Communication                                                                                                                             OpcuaNodeIdServicesObject = 24227
+	OpcuaNodeIdServicesObject_MappingTables                                                                                                                             OpcuaNodeIdServicesObject = 24228
+	OpcuaNodeIdServicesObject_NetworkInterfaces                                                                                                                         OpcuaNodeIdServicesObject = 24229
+	OpcuaNodeIdServicesObject_Streams                                                                                                                                   OpcuaNodeIdServicesObject = 24230
+	OpcuaNodeIdServicesObject_TalkerStreams                                                                                                                             OpcuaNodeIdServicesObject = 24231
+	OpcuaNodeIdServicesObject_ListenerStreams                                                                                                                           OpcuaNodeIdServicesObject = 24232
+	OpcuaNodeIdServicesObject_UserManagement                                                                                                                            OpcuaNodeIdServicesObject = 24290
+	OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultBinary                                                                                             OpcuaNodeIdServicesObject = 24292
+	OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultXml                                                                                                OpcuaNodeIdServicesObject = 24296
+	OpcuaNodeIdServicesObject_UserManagementDataType_Encoding_DefaultJson                                                                                               OpcuaNodeIdServicesObject = 24300
+	OpcuaNodeIdServicesObject_IetfBaseNetworkInterfaceType_InterfaceName_Placeholder                                                                                    OpcuaNodeIdServicesObject = 25226
+	OpcuaNodeIdServicesObject_PriorityMappingEntryType_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 25239
+	OpcuaNodeIdServicesObject_PriorityMappingEntryType_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 25243
+	OpcuaNodeIdServicesObject_PriorityMappingEntryType_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 25247
+	OpcuaNodeIdServicesObject_PubSubKeyServiceType_KeyPushTargets                                                                                                       OpcuaNodeIdServicesObject = 25277
+	OpcuaNodeIdServicesObject_PubSubKeyPushTargetFolderType_PushTargetFolderName_Placeholder                                                                            OpcuaNodeIdServicesObject = 25347
+	OpcuaNodeIdServicesObject_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder                                                                                  OpcuaNodeIdServicesObject = 25358
+	OpcuaNodeIdServicesObject_PublishSubscribeType_PubSubConfiguration                                                                                                  OpcuaNodeIdServicesObject = 25403
+	OpcuaNodeIdServicesObject_PublishSubscribe_KeyPushTargets                                                                                                           OpcuaNodeIdServicesObject = 25440
+	OpcuaNodeIdServicesObject_PublishSubscribe_PubSubConfiguration                                                                                                      OpcuaNodeIdServicesObject = 25451
+	OpcuaNodeIdServicesObject_PublishedDataSetCustomSourceDataType_Encoding_DefaultBinary                                                                               OpcuaNodeIdServicesObject = 25529
+	OpcuaNodeIdServicesObject_PubSubKeyPushTargetDataType_Encoding_DefaultBinary                                                                                        OpcuaNodeIdServicesObject = 25530
+	OpcuaNodeIdServicesObject_PubSubConfigurationRefDataType_Encoding_DefaultBinary                                                                                     OpcuaNodeIdServicesObject = 25531
+	OpcuaNodeIdServicesObject_PubSubConfigurationValueDataType_Encoding_DefaultBinary                                                                                   OpcuaNodeIdServicesObject = 25532
+	OpcuaNodeIdServicesObject_PublishedDataSetCustomSourceDataType_Encoding_DefaultXml                                                                                  OpcuaNodeIdServicesObject = 25545
+	OpcuaNodeIdServicesObject_PubSubKeyPushTargetDataType_Encoding_DefaultXml                                                                                           OpcuaNodeIdServicesObject = 25546
+	OpcuaNodeIdServicesObject_PubSubConfigurationRefDataType_Encoding_DefaultXml                                                                                        OpcuaNodeIdServicesObject = 25547
+	OpcuaNodeIdServicesObject_PubSubConfigurationValueDataType_Encoding_DefaultXml                                                                                      OpcuaNodeIdServicesObject = 25548
+	OpcuaNodeIdServicesObject_PublishedDataSetCustomSourceDataType_Encoding_DefaultJson                                                                                 OpcuaNodeIdServicesObject = 25561
+	OpcuaNodeIdServicesObject_PubSubKeyPushTargetDataType_Encoding_DefaultJson                                                                                          OpcuaNodeIdServicesObject = 25562
+	OpcuaNodeIdServicesObject_PubSubConfigurationRefDataType_Encoding_DefaultJson                                                                                       OpcuaNodeIdServicesObject = 25563
+	OpcuaNodeIdServicesObject_PubSubConfigurationValueDataType_Encoding_DefaultJson                                                                                     OpcuaNodeIdServicesObject = 25564
+	OpcuaNodeIdServicesObject_WellKnownRole_SecurityKeyServerAdmin                                                                                                      OpcuaNodeIdServicesObject = 25565
+	OpcuaNodeIdServicesObject_WellKnownRole_SecurityKeyServerPush                                                                                                       OpcuaNodeIdServicesObject = 25584
+	OpcuaNodeIdServicesObject_WellKnownRole_SecurityKeyServerAccess                                                                                                     OpcuaNodeIdServicesObject = 25603
+	OpcuaNodeIdServicesObject_PubSubKeyPushTargetType_SecurityGroupName_Placeholder                                                                                     OpcuaNodeIdServicesObject = 25626
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder                                                                                       OpcuaNodeIdServicesObject = 26878
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups                                                                     OpcuaNodeIdServicesObject = 26879
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup                                             OpcuaNodeIdServicesObject = 26880
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList                                   OpcuaNodeIdServicesObject = 26881
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired                          OpcuaNodeIdServicesObject = 26921
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState            OpcuaNodeIdServicesObject = 27008
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_FirstInGroup             OpcuaNodeIdServicesObject = 27052
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate                          OpcuaNodeIdServicesObject = 27087
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState            OpcuaNodeIdServicesObject = 27174
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup             OpcuaNodeIdServicesObject = 27218
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup                                                   OpcuaNodeIdServicesObject = 27252
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList                                         OpcuaNodeIdServicesObject = 27253
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired                                OpcuaNodeIdServicesObject = 27293
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState                  OpcuaNodeIdServicesObject = 27380
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_FirstInGroup                   OpcuaNodeIdServicesObject = 27424
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate                                OpcuaNodeIdServicesObject = 27459
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState                  OpcuaNodeIdServicesObject = 27546
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup                   OpcuaNodeIdServicesObject = 27590
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup                                               OpcuaNodeIdServicesObject = 27624
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList                                     OpcuaNodeIdServicesObject = 27625
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired                            OpcuaNodeIdServicesObject = 27665
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState              OpcuaNodeIdServicesObject = 27752
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_FirstInGroup               OpcuaNodeIdServicesObject = 27796
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate                            OpcuaNodeIdServicesObject = 27831
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState              OpcuaNodeIdServicesObject = 27918
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup               OpcuaNodeIdServicesObject = 27962
+	OpcuaNodeIdServicesObject_ProvisionableDevice                                                                                                                       OpcuaNodeIdServicesObject = 29878
+	OpcuaNodeIdServicesObject_Locations                                                                                                                                 OpcuaNodeIdServicesObject = 31915
+	OpcuaNodeIdServicesObject_ServerConfigurationType_TransactionDiagnostics                                                                                            OpcuaNodeIdServicesObject = 32299
+	OpcuaNodeIdServicesObject_ServerConfiguration_TransactionDiagnostics                                                                                                OpcuaNodeIdServicesObject = 32336
+	OpcuaNodeIdServicesObject_ProvisionableDeviceType_ApplicationName_Placeholder_TransactionDiagnostics                                                                OpcuaNodeIdServicesObject = 32362
+	OpcuaNodeIdServicesObject_TransactionErrorType_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 32382
+	OpcuaNodeIdServicesObject_TransactionErrorType_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 32386
+	OpcuaNodeIdServicesObject_TransactionErrorType_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 32390
+	OpcuaNodeIdServicesObject_BitFieldDefinition_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 32422
+	OpcuaNodeIdServicesObject_BitFieldDefinition_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 32426
+	OpcuaNodeIdServicesObject_BitFieldDefinition_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 32430
+	OpcuaNodeIdServicesObject_ServerUnitType_AlternativeUnits                                                                                                           OpcuaNodeIdServicesObject = 32452
+	OpcuaNodeIdServicesObject_ServerUnitType_CoherentUnit                                                                                                               OpcuaNodeIdServicesObject = 32462
+	OpcuaNodeIdServicesObject_QuantityType_ServerUnits                                                                                                                  OpcuaNodeIdServicesObject = 32481
+	OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder                                                                                           OpcuaNodeIdServicesObject = 32482
+	OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder_AlternativeUnits                                                                          OpcuaNodeIdServicesObject = 32487
+	OpcuaNodeIdServicesObject_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit                                                                              OpcuaNodeIdServicesObject = 32497
+	OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder                                                                                                 OpcuaNodeIdServicesObject = 32503
+	OpcuaNodeIdServicesObject_QuantitiesFolderType_Quantity_Placeholder_ServerUnits                                                                                     OpcuaNodeIdServicesObject = 32509
+	OpcuaNodeIdServicesObject_Quantities                                                                                                                                OpcuaNodeIdServicesObject = 32530
+	OpcuaNodeIdServicesObject_AnnotationDataType_Encoding_DefaultBinary                                                                                                 OpcuaNodeIdServicesObject = 32560
+	OpcuaNodeIdServicesObject_LinearConversionDataType_Encoding_DefaultBinary                                                                                           OpcuaNodeIdServicesObject = 32561
+	OpcuaNodeIdServicesObject_QuantityDimension_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 32562
+	OpcuaNodeIdServicesObject_AnnotationDataType_Encoding_DefaultXml                                                                                                    OpcuaNodeIdServicesObject = 32572
+	OpcuaNodeIdServicesObject_LinearConversionDataType_Encoding_DefaultXml                                                                                              OpcuaNodeIdServicesObject = 32573
+	OpcuaNodeIdServicesObject_QuantityDimension_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 32574
+	OpcuaNodeIdServicesObject_AnnotationDataType_Encoding_DefaultJson                                                                                                   OpcuaNodeIdServicesObject = 32584
+	OpcuaNodeIdServicesObject_LinearConversionDataType_Encoding_DefaultJson                                                                                             OpcuaNodeIdServicesObject = 32585
+	OpcuaNodeIdServicesObject_QuantityDimension_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 32586
+	OpcuaNodeIdServicesObject_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder                                                                               OpcuaNodeIdServicesObject = 32587
+	OpcuaNodeIdServicesObject_HistoricalEventConfigurationType_EventTypes                                                                                               OpcuaNodeIdServicesObject = 32622
+	OpcuaNodeIdServicesObject_DefaultHAConfiguration                                                                                                                    OpcuaNodeIdServicesObject = 32637
+	OpcuaNodeIdServicesObject_DefaultHAConfiguration_AggregateConfiguration                                                                                             OpcuaNodeIdServicesObject = 32638
+	OpcuaNodeIdServicesObject_DefaultHAConfiguration_AggregateFunctions                                                                                                 OpcuaNodeIdServicesObject = 32643
+	OpcuaNodeIdServicesObject_ReferenceDescriptionDataType_Encoding_DefaultBinary                                                                                       OpcuaNodeIdServicesObject = 32661
+	OpcuaNodeIdServicesObject_ReferenceListEntryDataType_Encoding_DefaultBinary                                                                                         OpcuaNodeIdServicesObject = 32662
+	OpcuaNodeIdServicesObject_ReferenceDescriptionDataType_Encoding_DefaultXml                                                                                          OpcuaNodeIdServicesObject = 32669
+	OpcuaNodeIdServicesObject_ReferenceListEntryDataType_Encoding_DefaultXml                                                                                            OpcuaNodeIdServicesObject = 32670
+	OpcuaNodeIdServicesObject_ReferenceDescriptionDataType_Encoding_DefaultJson                                                                                         OpcuaNodeIdServicesObject = 32677
+	OpcuaNodeIdServicesObject_ReferenceListEntryDataType_Encoding_DefaultJson                                                                                           OpcuaNodeIdServicesObject = 32678
+	OpcuaNodeIdServicesObject_DefaultHEConfiguration                                                                                                                    OpcuaNodeIdServicesObject = 32754
+	OpcuaNodeIdServicesObject_DefaultHEConfiguration_EventTypes                                                                                                         OpcuaNodeIdServicesObject = 32755
+	OpcuaNodeIdServicesObject_ReadEventDetails2_Encoding_DefaultBinary                                                                                                  OpcuaNodeIdServicesObject = 32800
+	OpcuaNodeIdServicesObject_ReadEventDetails2_Encoding_DefaultXml                                                                                                     OpcuaNodeIdServicesObject = 32801
+	OpcuaNodeIdServicesObject_ReadEventDetails2_Encoding_DefaultJson                                                                                                    OpcuaNodeIdServicesObject = 32802
+	OpcuaNodeIdServicesObject_HistoryModifiedEvent_Encoding_DefaultBinary                                                                                               OpcuaNodeIdServicesObject = 32825
+	OpcuaNodeIdServicesObject_HistoryModifiedEvent_Encoding_DefaultXml                                                                                                  OpcuaNodeIdServicesObject = 32829
+	OpcuaNodeIdServicesObject_HistoryModifiedEvent_Encoding_DefaultJson                                                                                                 OpcuaNodeIdServicesObject = 32833
 )
 
 var OpcuaNodeIdServicesObjectValues []OpcuaNodeIdServicesObject
@@ -2102,6 +2193,9 @@ func init() {
 		OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_ConfigurationVersionDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_IdentityMappingRuleType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_TrustListDataType_Encoding_DefaultJson,
@@ -2240,6 +2334,9 @@ func init() {
 		OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Status,
 		OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_TransportSettings,
 		OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_QueryFirstRequest_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_QueryFirstResponse_Encoding_DefaultJson,
@@ -2353,8 +2450,17 @@ func init() {
 		OpcuaNodeIdServicesObject_XVType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_ProgramDiagnosticDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_PublishSubscribe_SecurityGroups,
 		OpcuaNodeIdServicesObject_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder,
 		OpcuaNodeIdServicesObject_SecurityGroupFolderType_SecurityGroupName_Placeholder,
@@ -2505,8 +2611,23 @@ func init() {
 		OpcuaNodeIdServicesObject_BrokerDataSetWriterTransportDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_BrokerDataSetReaderTransportDataType_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_AlarmGroupType_AlarmConditionInstance_Placeholder_FirstInGroup,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder,
+		OpcuaNodeIdServicesObject_ManagedApplications,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired,
 		OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_MessageSettings,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_FirstInGroup,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired,
 		OpcuaNodeIdServicesObject_PubSubConnectionType_TransportSettings,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState,
 		OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_TransportSettings,
 		OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_MessageSettings,
 		OpcuaNodeIdServicesObject_PubSubConnectionType_ReaderGroupName_Placeholder_TransportSettings,
@@ -2523,6 +2644,7 @@ func init() {
 		OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_FirstInGroup,
 		OpcuaNodeIdServicesObject_KeyCredentialConfigurationFolderType_ServiceName_Placeholder,
 		OpcuaNodeIdServicesObject_AdditionalParametersType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_AdditionalParametersType_Encoding_DefaultXml,
@@ -2538,6 +2660,7 @@ func init() {
 		OpcuaNodeIdServicesObject_GenericAttributes_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_GenericAttributeValue_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_GenericAttributes_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate,
 		OpcuaNodeIdServicesObject_InterfaceTypes,
 		OpcuaNodeIdServicesObject_AuthorizationServices,
 		OpcuaNodeIdServicesObject_WriterGroupType_TransportSettings,
@@ -2554,6 +2677,11 @@ func init() {
 		OpcuaNodeIdServicesObject_WriterGroupType_Diagnostics_LiveValues,
 		OpcuaNodeIdServicesObject_DecimalDataType_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_DecimalDataType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired,
 		OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder,
 		OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_TransportSettings,
 		OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_MessageSettings,
@@ -2562,12 +2690,35 @@ func init() {
 		OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_Counters,
 		OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_LiveValues,
 		OpcuaNodeIdServicesObject_KeyCredentialConfiguration,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_FirstInGroup,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup,
+		OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_TransactionDiagnostics,
+		OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_WellKnownRole_TrustedApplication,
+		OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics,
 		OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_Counters,
 		OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_LiveValues,
 		OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics,
 		OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics_Counters,
 		OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics_LiveValues,
+		OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_Vector_Encoding_DefaultBinary,
 		OpcuaNodeIdServicesObject_ThreeDVector_Encoding_DefaultBinary,
@@ -2589,6 +2740,22 @@ func init() {
 		OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics,
 		OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters,
 		OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues,
+		OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_LLDP,
+		OpcuaNodeIdServicesObject_LLDP_RemoteStatistics,
+		OpcuaNodeIdServicesObject_LLDP_LocalSystemData,
+		OpcuaNodeIdServicesObject_LLDP_Ports,
+		OpcuaNodeIdServicesObject_LldpInformationType_RemoteStatistics,
+		OpcuaNodeIdServicesObject_LldpInformationType_LocalSystemData,
+		OpcuaNodeIdServicesObject_LldpInformationType_Ports,
+		OpcuaNodeIdServicesObject_LldpInformationType_Ports_LldpPortInformation_Placeholder,
+		OpcuaNodeIdServicesObject_LldpInformationType_Ports_LldpPortInformation_Placeholder_RemoteSystemsData,
+		OpcuaNodeIdServicesObject_LldpPortInformationType_RemoteSystemsData,
+		OpcuaNodeIdServicesObject_LldpPortInformationType_RemoteSystemsData_LldpRemoteSystem_Placeholder,
 		OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_Vector_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_ThreeDVector_Encoding_DefaultJson,
@@ -2598,6 +2765,12 @@ func init() {
 		OpcuaNodeIdServicesObject_ThreeDOrientation_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_Frame_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_ThreeDFrame_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultXml,
 		OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics,
 		OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics_Counters,
 		OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics_LiveValues,
@@ -2607,6 +2780,15 @@ func init() {
 		OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics,
 		OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics_Counters,
 		OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics_LiveValues,
+		OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultBinary,
+		OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultXml,
+		OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultJson,
+		OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultJson,
 		OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired,
 		OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired_ShelvingState,
 		OpcuaNodeIdServicesObject_DataSetWriterType_Diagnostics,
@@ -3189,6 +3371,12 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ConfigurationVersionDataType_Encoding_DefaultBinary, true
 	case 14848:
 		return OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultBinary, true
+	case 15024:
+		return OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultBinary, true
+	case 15025:
+		return OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultBinary, true
+	case 15026:
+		return OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultBinary, true
 	case 15041:
 		return OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultJson, true
 	case 15042:
@@ -3465,6 +3653,12 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_TransportSettings, true
 	case 15228:
 		return OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultJson, true
+	case 15232:
+		return OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultXml, true
+	case 15233:
+		return OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultXml, true
+	case 15234:
+		return OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultXml, true
 	case 15236:
 		return OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultJson, true
 	case 15244:
@@ -3691,10 +3885,28 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ProgramDiagnosticDataType_Encoding_DefaultJson, true
 	case 15382:
 		return OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultJson, true
+	case 15396:
+		return OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultJson, true
+	case 15397:
+		return OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultJson, true
+	case 15398:
+		return OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultJson, true
+	case 15401:
+		return OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultBinary, true
+	case 15402:
+		return OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultBinary, true
+	case 15403:
+		return OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultXml, true
+	case 15404:
+		return OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultXml, true
+	case 15405:
+		return OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultJson, true
 	case 15421:
 		return OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultBinary, true
 	case 15422:
 		return OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultBinary, true
+	case 15431:
+		return OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultJson, true
 	case 15443:
 		return OpcuaNodeIdServicesObject_PublishSubscribe_SecurityGroups, true
 	case 15453:
@@ -3995,10 +4207,40 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_BrokerDataSetReaderTransportDataType_Encoding_DefaultJson, true
 	case 16530:
 		return OpcuaNodeIdServicesObject_AlarmGroupType_AlarmConditionInstance_Placeholder_FirstInGroup, true
+	case 16663:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder, true
+	case 16706:
+		return OpcuaNodeIdServicesObject_ManagedApplications, true
+	case 16707:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups, true
+	case 16708:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup, true
+	case 16709:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList, true
+	case 16754:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired, true
 	case 16758:
 		return OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_MessageSettings, true
+	case 16847:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState, true
+	case 16898:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_FirstInGroup, true
+	case 16939:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate, true
+	case 17040:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState, true
+	case 17091:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup, true
+	case 17125:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup, true
+	case 17126:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList, true
+	case 17166:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired, true
 	case 17203:
 		return OpcuaNodeIdServicesObject_PubSubConnectionType_TransportSettings, true
+	case 17271:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState, true
 	case 17290:
 		return OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_TransportSettings, true
 	case 17291:
@@ -4031,6 +4273,8 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultXml, true
 	case 17476:
 		return OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultJson, true
+	case 17499:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_FirstInGroup, true
 	case 17511:
 		return OpcuaNodeIdServicesObject_KeyCredentialConfigurationFolderType_ServiceName_Placeholder, true
 	case 17537:
@@ -4061,6 +4305,8 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_GenericAttributeValue_Encoding_DefaultBinary, true
 	case 17611:
 		return OpcuaNodeIdServicesObject_GenericAttributes_Encoding_DefaultBinary, true
+	case 17629:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate, true
 	case 17708:
 		return OpcuaNodeIdServicesObject_InterfaceTypes, true
 	case 17732:
@@ -4093,6 +4339,16 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_DecimalDataType_Encoding_DefaultXml, true
 	case 17863:
 		return OpcuaNodeIdServicesObject_DecimalDataType_Encoding_DefaultBinary, true
+	case 17895:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState, true
+	case 17951:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup, true
+	case 18015:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup, true
+	case 18016:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList, true
+	case 18059:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired, true
 	case 18076:
 		return OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder, true
 	case 18086:
@@ -4109,6 +4365,50 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_LiveValues, true
 	case 18155:
 		return OpcuaNodeIdServicesObject_KeyCredentialConfiguration, true
+	case 18279:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState, true
+	case 18323:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_FirstInGroup, true
+	case 18359:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate, true
+	case 18446:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState, true
+	case 18490:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup, true
+	case 18547:
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_TransactionDiagnostics, true
+	case 18598:
+		return OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultBinary, true
+	case 18599:
+		return OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultBinary, true
+	case 18600:
+		return OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultBinary, true
+	case 18610:
+		return OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultXml, true
+	case 18611:
+		return OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultXml, true
+	case 18612:
+		return OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultXml, true
+	case 18622:
+		return OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultJson, true
+	case 18623:
+		return OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultJson, true
+	case 18624:
+		return OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultJson, true
+	case 18625:
+		return OpcuaNodeIdServicesObject_WellKnownRole_TrustedApplication, true
+	case 18650:
+		return OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultBinary, true
+	case 18651:
+		return OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultBinary, true
+	case 18652:
+		return OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultXml, true
+	case 18653:
+		return OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultXml, true
+	case 18654:
+		return OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultJson, true
+	case 18655:
+		return OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultJson, true
 	case 18667:
 		return OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics, true
 	case 18681:
@@ -4121,6 +4421,8 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics_Counters, true
 	case 18760:
 		return OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics_LiveValues, true
+	case 18795:
+		return OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultBinary, true
 	case 18815:
 		return OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultBinary, true
 	case 18816:
@@ -4163,6 +4465,38 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters, true
 	case 18916:
 		return OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues, true
+	case 18930:
+		return OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultBinary, true
+	case 18937:
+		return OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultXml, true
+	case 18938:
+		return OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultXml, true
+	case 18945:
+		return OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultJson, true
+	case 18946:
+		return OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultJson, true
+	case 18958:
+		return OpcuaNodeIdServicesObject_LLDP, true
+	case 18959:
+		return OpcuaNodeIdServicesObject_LLDP_RemoteStatistics, true
+	case 18965:
+		return OpcuaNodeIdServicesObject_LLDP_LocalSystemData, true
+	case 18972:
+		return OpcuaNodeIdServicesObject_LLDP_Ports, true
+	case 18974:
+		return OpcuaNodeIdServicesObject_LldpInformationType_RemoteStatistics, true
+	case 18980:
+		return OpcuaNodeIdServicesObject_LldpInformationType_LocalSystemData, true
+	case 18987:
+		return OpcuaNodeIdServicesObject_LldpInformationType_Ports, true
+	case 18988:
+		return OpcuaNodeIdServicesObject_LldpInformationType_Ports_LldpPortInformation_Placeholder, true
+	case 18995:
+		return OpcuaNodeIdServicesObject_LldpInformationType_Ports_LldpPortInformation_Placeholder_RemoteSystemsData, true
+	case 19016:
+		return OpcuaNodeIdServicesObject_LldpPortInformationType_RemoteSystemsData, true
+	case 19017:
+		return OpcuaNodeIdServicesObject_LldpPortInformationType_RemoteSystemsData_LldpRemoteSystem_Placeholder, true
 	case 19064:
 		return OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultJson, true
 	case 19065:
@@ -4181,6 +4515,18 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_Frame_Encoding_DefaultJson, true
 	case 19072:
 		return OpcuaNodeIdServicesObject_ThreeDFrame_Encoding_DefaultJson, true
+	case 19079:
+		return OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultBinary, true
+	case 19080:
+		return OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultBinary, true
+	case 19081:
+		return OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultBinary, true
+	case 19100:
+		return OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultXml, true
+	case 19101:
+		return OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultXml, true
+	case 19102:
+		return OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultXml, true
 	case 19107:
 		return OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics, true
 	case 19121:
@@ -4199,6 +4545,24 @@ func OpcuaNodeIdServicesObjectByValue(value int32) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics_Counters, true
 	case 19286:
 		return OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics_LiveValues, true
+	case 19299:
+		return OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultJson, true
+	case 19300:
+		return OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultJson, true
+	case 19301:
+		return OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultJson, true
+	case 19435:
+		return OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultBinary, true
+	case 19436:
+		return OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultBinary, true
+	case 19437:
+		return OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultXml, true
+	case 19438:
+		return OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultXml, true
+	case 19439:
+		return OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultJson, true
+	case 19440:
+		return OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultJson, true
 	case 19450:
 		return OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired, true
 	case 19537:
@@ -6053,6 +6417,12 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ConfigurationVersionDataType_Encoding_DefaultBinary, true
 	case "FieldTargetDataType_Encoding_DefaultBinary":
 		return OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultBinary, true
+	case "TestScalarStructure_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultBinary, true
+	case "TestArrayStructure_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultBinary, true
+	case "TestStructure_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultBinary, true
 	case "KeyValuePair_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultJson, true
 	case "IdentityMappingRuleType_Encoding_DefaultJson":
@@ -6329,6 +6699,12 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_TransportSettings, true
 	case "ContentFilterResult_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultJson, true
+	case "TestScalarStructure_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultXml, true
+	case "TestArrayStructure_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultXml, true
+	case "TestStructure_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultXml, true
 	case "ParsingResult_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultJson, true
 	case "QueryFirstRequest_Encoding_DefaultJson":
@@ -6555,10 +6931,28 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ProgramDiagnosticDataType_Encoding_DefaultJson, true
 	case "Annotation_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultJson, true
+	case "TestScalarStructure_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultJson, true
+	case "TestArrayStructure_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultJson, true
+	case "TestStructure_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultJson, true
+	case "TestAbstractStructure_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultBinary, true
+	case "TestConcreteStructure_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultBinary, true
+	case "TestAbstractStructure_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultXml, true
+	case "TestConcreteStructure_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultXml, true
+	case "TestAbstractStructure_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultJson, true
 	case "SimpleTypeDescription_Encoding_DefaultBinary":
 		return OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultBinary, true
 	case "UABinaryFileDataType_Encoding_DefaultBinary":
 		return OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultBinary, true
+	case "TestConcreteStructure_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultJson, true
 	case "PublishSubscribe_SecurityGroups":
 		return OpcuaNodeIdServicesObject_PublishSubscribe_SecurityGroups, true
 	case "SecurityGroupFolderType_SecurityGroupFolderName_Placeholder":
@@ -6859,10 +7253,40 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_BrokerDataSetReaderTransportDataType_Encoding_DefaultJson, true
 	case "AlarmGroupType_AlarmConditionInstance_Placeholder_FirstInGroup":
 		return OpcuaNodeIdServicesObject_AlarmGroupType_AlarmConditionInstance_Placeholder_FirstInGroup, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder, true
+	case "ManagedApplications":
+		return OpcuaNodeIdServicesObject_ManagedApplications, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired, true
 	case "PublishedDataSetType_DataSetWriterName_Placeholder_MessageSettings":
 		return OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_MessageSettings, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_FirstInGroup":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_FirstInGroup, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired, true
 	case "PubSubConnectionType_TransportSettings":
 		return OpcuaNodeIdServicesObject_PubSubConnectionType_TransportSettings, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState, true
 	case "PubSubConnectionType_WriterGroupName_Placeholder_TransportSettings":
 		return OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_TransportSettings, true
 	case "PubSubConnectionType_WriterGroupName_Placeholder_MessageSettings":
@@ -6895,6 +7319,8 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultXml, true
 	case "DatagramConnectionTransportDataType_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultJson, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_FirstInGroup":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_FirstInGroup, true
 	case "KeyCredentialConfigurationFolderType_ServiceName_Placeholder":
 		return OpcuaNodeIdServicesObject_KeyCredentialConfigurationFolderType_ServiceName_Placeholder, true
 	case "AdditionalParametersType_Encoding_DefaultBinary":
@@ -6925,6 +7351,8 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_GenericAttributeValue_Encoding_DefaultBinary, true
 	case "GenericAttributes_Encoding_DefaultBinary":
 		return OpcuaNodeIdServicesObject_GenericAttributes_Encoding_DefaultBinary, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate, true
 	case "InterfaceTypes":
 		return OpcuaNodeIdServicesObject_InterfaceTypes, true
 	case "AuthorizationServices":
@@ -6957,6 +7385,16 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_DecimalDataType_Encoding_DefaultXml, true
 	case "DecimalDataType_Encoding_DefaultBinary":
 		return OpcuaNodeIdServicesObject_DecimalDataType_Encoding_DefaultBinary, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired, true
 	case "ReaderGroupType_DataSetReaderName_Placeholder":
 		return OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder, true
 	case "ReaderGroupType_DataSetReaderName_Placeholder_TransportSettings":
@@ -6973,6 +7411,50 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_LiveValues, true
 	case "KeyCredentialConfiguration":
 		return OpcuaNodeIdServicesObject_KeyCredentialConfiguration, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_FirstInGroup":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_FirstInGroup, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_TransactionDiagnostics":
+		return OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_TransactionDiagnostics, true
+	case "ActionTargetDataType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultBinary, true
+	case "PublishedActionDataType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultBinary, true
+	case "ActionMethodDataType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultBinary, true
+	case "ActionTargetDataType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultXml, true
+	case "PublishedActionDataType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultXml, true
+	case "ActionMethodDataType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultXml, true
+	case "ActionTargetDataType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultJson, true
+	case "PublishedActionDataType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultJson, true
+	case "ActionMethodDataType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultJson, true
+	case "WellKnownRole_TrustedApplication":
+		return OpcuaNodeIdServicesObject_WellKnownRole_TrustedApplication, true
+	case "SortRuleElement_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultBinary, true
+	case "ReadEventDetailsSorted_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultBinary, true
+	case "SortRuleElement_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultXml, true
+	case "ReadEventDetailsSorted_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultXml, true
+	case "SortRuleElement_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultJson, true
+	case "ReadEventDetailsSorted_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultJson, true
 	case "PublishSubscribeType_ConnectionName_Placeholder_Diagnostics":
 		return OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics, true
 	case "PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_Counters":
@@ -6985,6 +7467,8 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics_Counters, true
 	case "PublishSubscribeType_Diagnostics_LiveValues":
 		return OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics_LiveValues, true
+	case "PublishedActionMethodDataType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultBinary, true
 	case "RationalNumber_Encoding_DefaultBinary":
 		return OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultBinary, true
 	case "Vector_Encoding_DefaultBinary":
@@ -7027,6 +7511,38 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters, true
 	case "PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues":
 		return OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues, true
+	case "DtlsPubSubConnectionDataType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultBinary, true
+	case "PublishedActionMethodDataType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultXml, true
+	case "DtlsPubSubConnectionDataType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultXml, true
+	case "PublishedActionMethodDataType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultJson, true
+	case "DtlsPubSubConnectionDataType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultJson, true
+	case "LLDP":
+		return OpcuaNodeIdServicesObject_LLDP, true
+	case "LLDP_RemoteStatistics":
+		return OpcuaNodeIdServicesObject_LLDP_RemoteStatistics, true
+	case "LLDP_LocalSystemData":
+		return OpcuaNodeIdServicesObject_LLDP_LocalSystemData, true
+	case "LLDP_Ports":
+		return OpcuaNodeIdServicesObject_LLDP_Ports, true
+	case "LldpInformationType_RemoteStatistics":
+		return OpcuaNodeIdServicesObject_LldpInformationType_RemoteStatistics, true
+	case "LldpInformationType_LocalSystemData":
+		return OpcuaNodeIdServicesObject_LldpInformationType_LocalSystemData, true
+	case "LldpInformationType_Ports":
+		return OpcuaNodeIdServicesObject_LldpInformationType_Ports, true
+	case "LldpInformationType_Ports_LldpPortInformation_Placeholder":
+		return OpcuaNodeIdServicesObject_LldpInformationType_Ports_LldpPortInformation_Placeholder, true
+	case "LldpInformationType_Ports_LldpPortInformation_Placeholder_RemoteSystemsData":
+		return OpcuaNodeIdServicesObject_LldpInformationType_Ports_LldpPortInformation_Placeholder_RemoteSystemsData, true
+	case "LldpPortInformationType_RemoteSystemsData":
+		return OpcuaNodeIdServicesObject_LldpPortInformationType_RemoteSystemsData, true
+	case "LldpPortInformationType_RemoteSystemsData_LldpRemoteSystem_Placeholder":
+		return OpcuaNodeIdServicesObject_LldpPortInformationType_RemoteSystemsData_LldpRemoteSystem_Placeholder, true
 	case "RationalNumber_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultJson, true
 	case "Vector_Encoding_DefaultJson":
@@ -7045,6 +7561,18 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_Frame_Encoding_DefaultJson, true
 	case "ThreeDFrame_Encoding_DefaultJson":
 		return OpcuaNodeIdServicesObject_ThreeDFrame_Encoding_DefaultJson, true
+	case "LldpManagementAddressTxPortType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultBinary, true
+	case "LldpManagementAddressType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultBinary, true
+	case "LldpTlvType_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultBinary, true
+	case "LldpManagementAddressTxPortType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultXml, true
+	case "LldpManagementAddressType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultXml, true
+	case "LldpTlvType_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultXml, true
 	case "PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics":
 		return OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics, true
 	case "PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics_Counters":
@@ -7063,6 +7591,24 @@ func OpcuaNodeIdServicesObjectByName(value string) (enum OpcuaNodeIdServicesObje
 		return OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics_Counters, true
 	case "PubSubConnectionType_Diagnostics_LiveValues":
 		return OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics_LiveValues, true
+	case "LldpManagementAddressTxPortType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultJson, true
+	case "LldpManagementAddressType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultJson, true
+	case "LldpTlvType_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultJson, true
+	case "TestUnion_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultBinary, true
+	case "TestOptionalFields_Encoding_DefaultBinary":
+		return OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultBinary, true
+	case "TestUnion_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultXml, true
+	case "TestOptionalFields_Encoding_DefaultXml":
+		return OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultXml, true
+	case "TestUnion_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultJson, true
+	case "TestOptionalFields_Encoding_DefaultJson":
+		return OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultJson, true
 	case "CertificateGroupType_CertificateExpired":
 		return OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired, true
 	case "CertificateGroupType_CertificateExpired_ShelvingState":
@@ -8982,6 +9528,12 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "ConfigurationVersionDataType_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_FieldTargetDataType_Encoding_DefaultBinary:
 		return "FieldTargetDataType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultBinary:
+		return "TestScalarStructure_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultBinary:
+		return "TestArrayStructure_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultBinary:
+		return "TestStructure_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_KeyValuePair_Encoding_DefaultJson:
 		return "KeyValuePair_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_IdentityMappingRuleType_Encoding_DefaultJson:
@@ -9258,6 +9810,12 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "PublishedDataSetType_DataSetWriterName_Placeholder_TransportSettings"
 	case OpcuaNodeIdServicesObject_ContentFilterResult_Encoding_DefaultJson:
 		return "ContentFilterResult_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultXml:
+		return "TestScalarStructure_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultXml:
+		return "TestArrayStructure_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultXml:
+		return "TestStructure_Encoding_DefaultXml"
 	case OpcuaNodeIdServicesObject_ParsingResult_Encoding_DefaultJson:
 		return "ParsingResult_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_QueryFirstRequest_Encoding_DefaultJson:
@@ -9484,10 +10042,28 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "ProgramDiagnosticDataType_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_Annotation_Encoding_DefaultJson:
 		return "Annotation_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_TestScalarStructure_Encoding_DefaultJson:
+		return "TestScalarStructure_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_TestArrayStructure_Encoding_DefaultJson:
+		return "TestArrayStructure_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_TestStructure_Encoding_DefaultJson:
+		return "TestStructure_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultBinary:
+		return "TestAbstractStructure_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultBinary:
+		return "TestConcreteStructure_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultXml:
+		return "TestAbstractStructure_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultXml:
+		return "TestConcreteStructure_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_TestAbstractStructure_Encoding_DefaultJson:
+		return "TestAbstractStructure_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_SimpleTypeDescription_Encoding_DefaultBinary:
 		return "SimpleTypeDescription_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_UABinaryFileDataType_Encoding_DefaultBinary:
 		return "UABinaryFileDataType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_TestConcreteStructure_Encoding_DefaultJson:
+		return "TestConcreteStructure_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_PublishSubscribe_SecurityGroups:
 		return "PublishSubscribe_SecurityGroups"
 	case OpcuaNodeIdServicesObject_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder:
@@ -9788,10 +10364,40 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "BrokerDataSetReaderTransportDataType_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_AlarmGroupType_AlarmConditionInstance_Placeholder_FirstInGroup:
 		return "AlarmGroupType_AlarmConditionInstance_Placeholder_FirstInGroup"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder"
+	case OpcuaNodeIdServicesObject_ManagedApplications:
+		return "ManagedApplications"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired"
 	case OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_MessageSettings:
 		return "PublishedDataSetType_DataSetWriterName_Placeholder_MessageSettings"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_FirstInGroup:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_FirstInGroup"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_FirstInGroup"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired"
 	case OpcuaNodeIdServicesObject_PubSubConnectionType_TransportSettings:
 		return "PubSubConnectionType_TransportSettings"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState"
 	case OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_TransportSettings:
 		return "PubSubConnectionType_WriterGroupName_Placeholder_TransportSettings"
 	case OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_MessageSettings:
@@ -9824,6 +10430,8 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "DatagramConnectionTransportDataType_Encoding_DefaultXml"
 	case OpcuaNodeIdServicesObject_DatagramConnectionTransportDataType_Encoding_DefaultJson:
 		return "DatagramConnectionTransportDataType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_FirstInGroup:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_FirstInGroup"
 	case OpcuaNodeIdServicesObject_KeyCredentialConfigurationFolderType_ServiceName_Placeholder:
 		return "KeyCredentialConfigurationFolderType_ServiceName_Placeholder"
 	case OpcuaNodeIdServicesObject_AdditionalParametersType_Encoding_DefaultBinary:
@@ -9854,6 +10462,8 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "GenericAttributeValue_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_GenericAttributes_Encoding_DefaultBinary:
 		return "GenericAttributes_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate"
 	case OpcuaNodeIdServicesObject_InterfaceTypes:
 		return "InterfaceTypes"
 	case OpcuaNodeIdServicesObject_AuthorizationServices:
@@ -9886,6 +10496,16 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "DecimalDataType_Encoding_DefaultXml"
 	case OpcuaNodeIdServicesObject_DecimalDataType_Encoding_DefaultBinary:
 		return "DecimalDataType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_FirstInGroup"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired"
 	case OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder:
 		return "ReaderGroupType_DataSetReaderName_Placeholder"
 	case OpcuaNodeIdServicesObject_ReaderGroupType_DataSetReaderName_Placeholder_TransportSettings:
@@ -9902,6 +10522,50 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_LiveValues"
 	case OpcuaNodeIdServicesObject_KeyCredentialConfiguration:
 		return "KeyCredentialConfiguration"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_FirstInGroup:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_FirstInGroup"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_FirstInGroup"
+	case OpcuaNodeIdServicesObject_ApplicationConfigurationFolderType_ApplicationName_Placeholder_TransactionDiagnostics:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_TransactionDiagnostics"
+	case OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultBinary:
+		return "ActionTargetDataType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultBinary:
+		return "PublishedActionDataType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultBinary:
+		return "ActionMethodDataType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultXml:
+		return "ActionTargetDataType_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultXml:
+		return "PublishedActionDataType_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultXml:
+		return "ActionMethodDataType_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_ActionTargetDataType_Encoding_DefaultJson:
+		return "ActionTargetDataType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_PublishedActionDataType_Encoding_DefaultJson:
+		return "PublishedActionDataType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_ActionMethodDataType_Encoding_DefaultJson:
+		return "ActionMethodDataType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_WellKnownRole_TrustedApplication:
+		return "WellKnownRole_TrustedApplication"
+	case OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultBinary:
+		return "SortRuleElement_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultBinary:
+		return "ReadEventDetailsSorted_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultXml:
+		return "SortRuleElement_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultXml:
+		return "ReadEventDetailsSorted_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_SortRuleElement_Encoding_DefaultJson:
+		return "SortRuleElement_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_ReadEventDetailsSorted_Encoding_DefaultJson:
+		return "ReadEventDetailsSorted_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics:
 		return "PublishSubscribeType_ConnectionName_Placeholder_Diagnostics"
 	case OpcuaNodeIdServicesObject_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_Counters:
@@ -9914,6 +10578,8 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "PublishSubscribeType_Diagnostics_Counters"
 	case OpcuaNodeIdServicesObject_PublishSubscribeType_Diagnostics_LiveValues:
 		return "PublishSubscribeType_Diagnostics_LiveValues"
+	case OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultBinary:
+		return "PublishedActionMethodDataType_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultBinary:
 		return "RationalNumber_Encoding_DefaultBinary"
 	case OpcuaNodeIdServicesObject_Vector_Encoding_DefaultBinary:
@@ -9956,6 +10622,38 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters"
 	case OpcuaNodeIdServicesObject_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues:
 		return "PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues"
+	case OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultBinary:
+		return "DtlsPubSubConnectionDataType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultXml:
+		return "PublishedActionMethodDataType_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultXml:
+		return "DtlsPubSubConnectionDataType_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_PublishedActionMethodDataType_Encoding_DefaultJson:
+		return "PublishedActionMethodDataType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_DtlsPubSubConnectionDataType_Encoding_DefaultJson:
+		return "DtlsPubSubConnectionDataType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_LLDP:
+		return "LLDP"
+	case OpcuaNodeIdServicesObject_LLDP_RemoteStatistics:
+		return "LLDP_RemoteStatistics"
+	case OpcuaNodeIdServicesObject_LLDP_LocalSystemData:
+		return "LLDP_LocalSystemData"
+	case OpcuaNodeIdServicesObject_LLDP_Ports:
+		return "LLDP_Ports"
+	case OpcuaNodeIdServicesObject_LldpInformationType_RemoteStatistics:
+		return "LldpInformationType_RemoteStatistics"
+	case OpcuaNodeIdServicesObject_LldpInformationType_LocalSystemData:
+		return "LldpInformationType_LocalSystemData"
+	case OpcuaNodeIdServicesObject_LldpInformationType_Ports:
+		return "LldpInformationType_Ports"
+	case OpcuaNodeIdServicesObject_LldpInformationType_Ports_LldpPortInformation_Placeholder:
+		return "LldpInformationType_Ports_LldpPortInformation_Placeholder"
+	case OpcuaNodeIdServicesObject_LldpInformationType_Ports_LldpPortInformation_Placeholder_RemoteSystemsData:
+		return "LldpInformationType_Ports_LldpPortInformation_Placeholder_RemoteSystemsData"
+	case OpcuaNodeIdServicesObject_LldpPortInformationType_RemoteSystemsData:
+		return "LldpPortInformationType_RemoteSystemsData"
+	case OpcuaNodeIdServicesObject_LldpPortInformationType_RemoteSystemsData_LldpRemoteSystem_Placeholder:
+		return "LldpPortInformationType_RemoteSystemsData_LldpRemoteSystem_Placeholder"
 	case OpcuaNodeIdServicesObject_RationalNumber_Encoding_DefaultJson:
 		return "RationalNumber_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_Vector_Encoding_DefaultJson:
@@ -9974,6 +10672,18 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "Frame_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_ThreeDFrame_Encoding_DefaultJson:
 		return "ThreeDFrame_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultBinary:
+		return "LldpManagementAddressTxPortType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultBinary:
+		return "LldpManagementAddressType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultBinary:
+		return "LldpTlvType_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultXml:
+		return "LldpManagementAddressTxPortType_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultXml:
+		return "LldpManagementAddressType_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultXml:
+		return "LldpTlvType_Encoding_DefaultXml"
 	case OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics:
 		return "PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics"
 	case OpcuaNodeIdServicesObject_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics_Counters:
@@ -9992,6 +10702,24 @@ func (e OpcuaNodeIdServicesObject) PLC4XEnumName() string {
 		return "PubSubConnectionType_Diagnostics_Counters"
 	case OpcuaNodeIdServicesObject_PubSubConnectionType_Diagnostics_LiveValues:
 		return "PubSubConnectionType_Diagnostics_LiveValues"
+	case OpcuaNodeIdServicesObject_LldpManagementAddressTxPortType_Encoding_DefaultJson:
+		return "LldpManagementAddressTxPortType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_LldpManagementAddressType_Encoding_DefaultJson:
+		return "LldpManagementAddressType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_LldpTlvType_Encoding_DefaultJson:
+		return "LldpTlvType_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultBinary:
+		return "TestUnion_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultBinary:
+		return "TestOptionalFields_Encoding_DefaultBinary"
+	case OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultXml:
+		return "TestUnion_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultXml:
+		return "TestOptionalFields_Encoding_DefaultXml"
+	case OpcuaNodeIdServicesObject_TestUnion_Encoding_DefaultJson:
+		return "TestUnion_Encoding_DefaultJson"
+	case OpcuaNodeIdServicesObject_TestOptionalFields_Encoding_DefaultJson:
+		return "TestOptionalFields_Encoding_DefaultJson"
 	case OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired:
 		return "CertificateGroupType_CertificateExpired"
 	case OpcuaNodeIdServicesObject_CertificateGroupType_CertificateExpired_ShelvingState:

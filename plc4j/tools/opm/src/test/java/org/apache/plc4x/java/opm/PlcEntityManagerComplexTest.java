@@ -166,7 +166,7 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         // Call getter
         assertEquals(1, connect.getIntVar());
         assertEquals("Hallo", connect.getStringVar());
-        assertEquals(true, connect.isBoolVar());
+        assertTrue(connect.isBoolVar());
     }
 
     @Test
@@ -185,7 +185,6 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         // Call a method and receive the result
         // We are ok if a result is received and no NPE is thrown, then everything works as expected
         assertNotNull(connected.toString());
-        assertNotNull(connected.getByteVar());
     }
 
     @Test

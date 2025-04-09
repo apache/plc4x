@@ -39,7 +39,7 @@ The Scraper can be found in the Maven module:
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-scraper</artifactId>
-      <version>{page-component-version}</version>
+      <version>{current-last-released-version}</version>
     </dependency>
 ----
 

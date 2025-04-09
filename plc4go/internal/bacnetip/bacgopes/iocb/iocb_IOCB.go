@@ -77,7 +77,7 @@ type IOCBContract interface {
 var _identNext = 1
 var _identLock sync.Mutex
 
-//go:generate plc4xGenerator -type=IOCB -prefix=iocb_
+//go:generate go tool plc4xGenerator -type=IOCB -prefix=iocb_
 type IOCB struct {
 	ioID           int
 	request        PDU       `stringer:"true"`
@@ -91,7 +91,7 @@ type IOCB struct {
 	ioCallback     []func() `ignore:"true"`
 	ioQueue        []IOCBContract
 	ioTimeout      *time.Timer
-	ioTimoutCancel chan any
+	ioTimoutCancel chan struct{}
 	priority       int
 
 	wg sync.WaitGroup
@@ -250,7 +250,7 @@ func (i *IOCB) SetTimeout(delay time.Duration) {
 	} else {
 		now := GetTaskManagerTime()
 		i.ioTimeout = time.NewTimer(delay)
-		i.ioTimoutCancel = make(chan any)
+		i.ioTimoutCancel = make(chan struct{})
 		i.wg.Add(1)
 		go func() {
 			defer i.wg.Done()
@@ -300,6 +300,7 @@ func (i *IOCB) clearQueue() {
 }
 
 func (i *IOCB) Close() error { // TODO: ensure this is getting called
+	defer utils.StopWarn(i.log)()
 	i.log.Debug().Msg("IOCB closing")
 	defer func() {
 		i.log.Debug().Msg("waiting for running tasks to finnish")

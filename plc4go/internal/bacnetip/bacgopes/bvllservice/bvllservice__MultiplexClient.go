@@ -27,7 +27,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 )
 
-//go:generate plc4xGenerator -type=_MultiplexClient -prefix=appservice_
+//go:generate go tool plc4xGenerator -type=_MultiplexClient -prefix=appservice_
 type _MultiplexClient struct {
 	ClientContract
 	multiplexer *UDPMultiplexer

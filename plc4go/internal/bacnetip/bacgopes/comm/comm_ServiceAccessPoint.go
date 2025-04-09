@@ -56,7 +56,7 @@ type ServiceElement interface {
 	Confirmation(args Args, kwArgs KWArgs) error
 }
 
-//go:generate plc4xGenerator -type=serviceAccessPoint -prefix=comm_
+//go:generate go tool plc4xGenerator -type=serviceAccessPoint -prefix=comm_
 type serviceAccessPoint struct {
 	serviceID      *int
 	serviceElement ServiceElement `asPtr:"true"`

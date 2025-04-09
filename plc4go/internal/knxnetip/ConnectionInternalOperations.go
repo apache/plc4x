@@ -70,7 +70,8 @@ func (m *Connection) sendGatewaySearchRequest(ctx context.Context) (driverModel.
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -128,7 +129,8 @@ func (m *Connection) sendGatewayConnectionRequest(ctx context.Context) (driverMo
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -178,7 +180,8 @@ func (m *Connection) sendGatewayDisconnectionRequest(ctx context.Context) (drive
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -226,7 +229,8 @@ func (m *Connection) sendConnectionStateRequest(ctx context.Context) (driverMode
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -315,7 +319,8 @@ func (m *Connection) sendGroupAddressReadRequest(ctx context.Context, groupAddre
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -411,7 +416,8 @@ func (m *Connection) sendDeviceConnectionRequest(ctx context.Context, targetAddr
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -508,7 +514,8 @@ func (m *Connection) sendDeviceDisconnectionRequest(ctx context.Context, targetA
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -633,7 +640,8 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 			return nil
 		}, func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -737,7 +745,8 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(ctx context.Context, 
 		return nil
 	}, func(err error) error {
 		// If this is a timeout, do a check if the connection requires a reconnection
-		if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
 			m.handleTimeout()
 		}
 		errorResult <- errors.Wrap(err, "got error processing request")
@@ -853,7 +862,8 @@ func (m *Connection) sendDevicePropertyReadRequest(ctx context.Context, targetAd
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -968,7 +978,8 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(ctx context.Contex
 			return nil
 		}, func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrapf(err, "got error processing request")
@@ -1079,7 +1090,8 @@ func (m *Connection) sendDeviceMemoryReadRequest(ctx context.Context, targetAddr
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -1162,7 +1174,8 @@ func (m *Connection) sendDeviceAck(ctx context.Context, targetAddress driverMode
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				m.handleTimeout()
 			}
 			callback(errors.Wrap(err, "got error processing request"))

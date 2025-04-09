@@ -28,9 +28,10 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/udp"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate plc4xGenerator -type=UDPMultiplexer -prefix=bvllservice_
+//go:generate go tool plc4xGenerator -type=UDPMultiplexer -prefix=bvllservice_
 type UDPMultiplexer struct {
 	address            *Address
 	addrTuple          *AddressTuple[string, uint16]
@@ -61,8 +62,8 @@ func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool, o
 	if address == nil {
 		address, _ := NewAddress(NoArgs)
 		u.address = address
-		u.addrTuple = &AddressTuple[string, uint16]{"", 47808}
-		u.addrBroadcastTuple = &AddressTuple[string, uint16]{"255.255.255.255", 47808}
+		u.addrTuple = &AddressTuple[string, uint16]{Right: 47808}
+		u.addrBroadcastTuple = &AddressTuple[string, uint16]{Left: "255.255.255.255", Right: 47808}
 	} else {
 		// allow the address to be cast
 		if caddress, ok := address.(*Address); ok {
@@ -86,7 +87,7 @@ func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool, o
 			noBroadcast = true
 		} else if u.addrTuple == u.addrBroadcastTuple {
 			// old school broadcast address
-			u.addrBroadcastTuple = &AddressTuple[string, uint16]{"255.255.255.255", u.addrTuple.Right}
+			u.addrBroadcastTuple = &AddressTuple[string, uint16]{Left: "255.255.255.255", Right: u.addrTuple.Right}
 		} else {
 			specialBroadcast = true
 		}
@@ -140,6 +141,7 @@ func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool, o
 }
 
 func (m *UDPMultiplexer) Close() error {
+	defer utils.StopWarn(m.log)()
 	m.log.Debug().Msg("Close")
 	if _debug != nil {
 		_debug("close_socket")

@@ -30,30 +30,27 @@ This is exactly the reason why JPA was initialized many years ago to allow the i
 calling methods on POJOs (Plain old Java Object).
 This is exactly what the OPM Module is for, to enable PLC communication by simply interacting with a POJO.
 
-== Simple Example
+== Defining an OPM Entity
 
-The following short code snippet shows how to read one value from a PLC via OPM.
-First, a _PlcEntityManager_ is instantiated, then a *connected* entity is fetched for a given PLC connection address.
-Connected means that all method calls of the entity are intersected and replaced by PLC calls.
-This is then used to print one value to the console.
-In the second snippet one can see how the Entity class looks. The address where to read the variable _pressure_ from is given
-in the _@PlcField_ annotation.
-[source,java]
-----
-public static void main(String[] args) {
-    PlcEntityManager em = new PlcEntityManager();
-    MyEntity entity = em.connect(MyEntity.class, "s7://...");
-    System.out.println(entity.getPressure());
-}
-----
-The class _MyEntity_ is given by
+In order to be handled by the OPM system, you need to create classes, that are decorated with OPM annotations.
+
+There annotations are:
+
+- `@PlcEntity`: Declared on class-level, declares the class as valid OPM entity.
+- `@PlcTag`: Declared on a property-level, declares the field as a property which is automatically filled in by fetching data from a connected PLC.
+
+Example:
+
 [source,java]
 ----
 @PlcEntity
 public class MyEntity {
 
-    @PlcField("DB01:DW01:LONG")
+    @PlcTag("DB01:DW01:REAL")
     private double pressure;
+
+    @PlcTag(value = "DB01:DW05:BOOL", cacheDurationMillis = 100)
+    private boolean running;
 
     public void MyEntity() {
         // For OPM
@@ -62,12 +59,88 @@ public class MyEntity {
     public double getPressure() {
         return pressure;
     }
+
+    public boolean isRunning() {
+        return running;
+    }
+
 }
 ----
 
-== Annotations
+Important here, ist that the class has a no-args constructor (if there are no other constructors, the no-args constructor can be omitted. However, if there are constructors present, a no-args version is required)
+Also note, that there is technically no way to actually set the value of the above type, however the OPM interceptor will take care of this, but you can of course also provide setter methods.
 
-== More details
+So the `@PlcEntity` simply marks the class as OPM entity.
+
+The `@PlcTag` provides the PLC address string to where the value can be read from.
+In the above example there are two flavors being used.
+For the `preassure` field, no second parameter is provided, so the `value` prefix can be omitted.
+
+This will create a property that is fetched from the PLC with every call to the fields getter method.
+
+In the second property: `running`, we provide a second argument: `cacheDurationMillis`.
+This will fetch a value when accessing the getter for the first time, but if more calls to the getter are received within 100ms the last read value is returned without calling the PLC.
+The first call received after the cache-duration will then result in a call (which then will be cached for 100ms again).
+
+== Simple Example (Detached)
+
+If you simply have a set of fields defined in your entity, and you simply want to read all of them and then disconnect, you can use the entity managers `read` method.
+
+This creates a connection to the database, reads all the values and then disconnects the entity again.
+
+[source,java]
+----
+public static void main(String[] args) {
+    PlcEntityManager em = new PlcEntityManager();
+    MyEntity entity = em.read(MyEntity.class, "s7://...");
+    System.out.println(entity.getPressure());
+}
+----
+
+Calls to the getters of this detached entity will not result in any requests being sent to the PLC.
+
+NOTE: Please be aware, that in this case you are creating a `dead` entity.
+Calling `read` in a loop will have the OPM create new dynamic proxy classes for every call and these classes will pile up in your class-memory, which will cause OutOfMemory errors eventually.
+If you are planning on any repeated read operations, please use connected reads (Next example).
+
+== Simple Example (Connected)
+
+A `connected` entity is the most interesting use-case for an OPM entity.
+
+In this case the entity stays `alive`.
+
+As mentioned in the chapter about `Defining an OPM Entity`, when accessing the getter for a property, which is annotated with `@PlcTag` will result in a call to the PLC, unless the `cacheDurationMillis` permits a re-use of the last value.
+
+The same applies for any possibly present setters.
+If the setter for a property annotated with `@PlcTag` is called, this will result in a write request being sent to the PLC.
+Here the cache duration is not used.
+
+[source,java]
+----
+public static void main(String[] args) {
+    PlcEntityManager em = new PlcEntityManager();
+    MyEntity entity = em.connect(MyEntity.class, "s7://...");
+    System.out.println(entity.getPressure());
+}
+----
+
+== Hidden Secrets
+
+As reading every property of an entity in a separate request is usually quite sub-ideal, there is also a way to force the reading of all fields in one request (if the protocol supports that).
+
+This is done by defining a method that does not start with `get{field-name}` or `is{field-name}` (in case of booleans).
+When calling this method the OPM system will update all properties defined in the current entity (respecting the cache time however)
+
+So when adding this method to our example entity:
+
+[source,java]
+----
+public void updateAllTheTags() {
+// Dummy ...
+}
+----
+
+simply calling `connectedEntity.updateAllTheTags()` will force an update of all tags which have outdated values in the cache.
 
 == References
 

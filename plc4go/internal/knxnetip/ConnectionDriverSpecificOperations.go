@@ -65,7 +65,9 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 		}
 	}
 
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -128,7 +130,9 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 		}
 	}
 
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -227,7 +231,9 @@ func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverM
 		}
 	}
 
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -268,7 +274,9 @@ func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress drive
 		}
 	}
 
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -331,7 +339,9 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 		}
 	}
 
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -419,7 +429,9 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 		}
 	}
 
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -487,7 +499,9 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 		}
 	}
 
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().

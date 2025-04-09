@@ -36,7 +36,7 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
-//go:generate plc4xGenerator -type=NetworkServiceElement -prefix=netservice_
+//go:generate go tool plc4xGenerator -type=NetworkServiceElement -prefix=netservice_
 type NetworkServiceElement struct {
 	ApplicationServiceElementContract
 	*DefaultRFormatter `ignore:"true"`

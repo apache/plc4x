@@ -51,6 +51,10 @@ func (e TagType) Name() string {
 	}
 }
 
+func (e TagType) String() string {
+	return e.Name()
+}
+
 type TagHandler struct {
 	simulatedQuery *regexp.Regexp
 }

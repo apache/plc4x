@@ -72,7 +72,7 @@ type withCustomMessageHandler struct {
 	customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
 }
 
-//go:generate plc4xGenerator -type=defaultCodec
+//go:generate go tool plc4xGenerator -type=defaultCodec
 type defaultCodec struct {
 	DefaultCodecRequirements `ignore:"true"`
 
@@ -89,6 +89,8 @@ type defaultCodec struct {
 
 	receiveTimeout                 time.Duration
 	traceDefaultMessageCodecWorker bool
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
@@ -186,26 +188,21 @@ func (m *defaultCodec) IsRunning() bool {
 	return m.running.Load()
 }
 
-func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) {
 	m.expectationsChangeMutex.Lock()
 	defer m.expectationsChangeMutex.Unlock()
 	expectation := newDefaultExpectation(ctx, ttl, acceptsMessage, handleMessage, handleError)
 	m.expectations = append(m.expectations, expectation)
 	m.log.Debug().Stringer("expectation", expectation).Msg("Added expectation")
-	return nil
 }
 
 func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	if err := ctx.Err(); err != nil {
 		return errors.Wrap(err, "Not sending message as context is aborted")
 	}
+	m.Expect(ctx, acceptsMessage, handleMessage, handleError, ttl) // We register the expectation first to avoid getting a response between sending and adding the expect
 	m.log.Trace().Msg("Sending request")
-	// Send the actual message
-	err := m.Send(message)
-	if err != nil {
-		return errors.Wrap(err, "Error sending the request")
-	}
-	return m.Expect(ctx, acceptsMessage, handleMessage, handleError, ttl)
+	return m.Send(message)
 }
 
 func (m *defaultCodec) TimeoutExpectations(now time.Time) {
@@ -341,7 +338,9 @@ mainLoop:
 		var err error
 		{
 			syncer := make(chan struct{})
+			m.wg.Add(1)
 			go func() {
+				defer m.wg.Done()
 				defer close(syncer)
 				if !m.running.Load() {
 					err = errors.New("not running")
@@ -352,9 +351,8 @@ mainLoop:
 			timeoutTimer := time.NewTimer(m.receiveTimeout)
 			select {
 			case <-syncer:
-				utils.CleanupTimer(timeoutTimer)
+				// nothing
 			case <-timeoutTimer.C:
-				utils.CleanupTimer(timeoutTimer)
 				workerLog.Error().Dur("receiveTimeout", m.receiveTimeout).Msg("receive timeout")
 				continue mainLoop
 			}

@@ -255,7 +255,7 @@ func Test_executor_Submit(t *testing.T) {
 		{
 			name: "submit canceled",
 			fields: fields{
-				queue: make(chan workItem, 0),
+				queue: make(chan workItem),
 			},
 			args: args{
 				workItemId: 13,

@@ -98,6 +98,7 @@ const (
 	OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_SessionSecurityDiagnostics_SecurityPolicyUri          OpcuaNodeIdServicesVariableSessions = 12150
 	OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_SessionSecurityDiagnostics_ClientCertificate          OpcuaNodeIdServicesVariableSessions = 12151
 	OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_SubscriptionDiagnosticsArray                          OpcuaNodeIdServicesVariableSessions = 12152
+	OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_CurrentRoleIds                                        OpcuaNodeIdServicesVariableSessions = 19302
 )
 
 var OpcuaNodeIdServicesVariableSessionsValues []OpcuaNodeIdServicesVariableSessions
@@ -162,6 +163,7 @@ func init() {
 		OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_SessionSecurityDiagnostics_SecurityPolicyUri,
 		OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_SessionSecurityDiagnostics_ClientCertificate,
 		OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_SubscriptionDiagnosticsArray,
+		OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_CurrentRoleIds,
 	}
 }
 
@@ -277,6 +279,8 @@ func OpcuaNodeIdServicesVariableSessionsByValue(value int32) (enum OpcuaNodeIdSe
 		return OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_SessionSecurityDiagnostics_ClientCertificate, true
 	case 12152:
 		return OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_SubscriptionDiagnosticsArray, true
+	case 19302:
+		return OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_CurrentRoleIds, true
 	case 2027:
 		return OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_SessionDiagnosticsArray, true
 	case 2028:
@@ -397,6 +401,8 @@ func OpcuaNodeIdServicesVariableSessionsByName(value string) (enum OpcuaNodeIdSe
 		return OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_SessionSecurityDiagnostics_ClientCertificate, true
 	case "SessionsDiagnosticsSummaryType_ClientName_Placeholder_SubscriptionDiagnosticsArray":
 		return OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_SubscriptionDiagnosticsArray, true
+	case "SessionsDiagnosticsSummaryType_ClientName_Placeholder_CurrentRoleIds":
+		return OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_CurrentRoleIds, true
 	case "SessionsDiagnosticsSummaryType_SessionDiagnosticsArray":
 		return OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_SessionDiagnosticsArray, true
 	case "SessionsDiagnosticsSummaryType_SessionSecurityDiagnosticsArray":
@@ -582,6 +588,8 @@ func (e OpcuaNodeIdServicesVariableSessions) PLC4XEnumName() string {
 		return "SessionsDiagnosticsSummaryType_ClientName_Placeholder_SessionSecurityDiagnostics_ClientCertificate"
 	case OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_SubscriptionDiagnosticsArray:
 		return "SessionsDiagnosticsSummaryType_ClientName_Placeholder_SubscriptionDiagnosticsArray"
+	case OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_ClientName_Placeholder_CurrentRoleIds:
+		return "SessionsDiagnosticsSummaryType_ClientName_Placeholder_CurrentRoleIds"
 	case OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_SessionDiagnosticsArray:
 		return "SessionsDiagnosticsSummaryType_SessionDiagnosticsArray"
 	case OpcuaNodeIdServicesVariableSessions_SessionsDiagnosticsSummaryType_SessionSecurityDiagnosticsArray:

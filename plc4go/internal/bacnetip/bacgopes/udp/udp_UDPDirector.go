@@ -34,9 +34,10 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate plc4xGenerator -type=UDPDirector -prefix=udp_
+//go:generate go tool plc4xGenerator -type=UDPDirector -prefix=udp_
 type UDPDirector struct {
 	ServerContract
 	ServiceAccessPointContract
@@ -243,6 +244,7 @@ func (d *UDPDirector) handleWrite() {
 }
 
 func (d *UDPDirector) Close() error {
+	defer utils.StopWarn(d.log)()
 	d.log.Debug().Msg("UDPDirector closing")
 	defer func() {
 		d.log.Debug().Msg("waiting for running tasks to finnish")

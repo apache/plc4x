@@ -129,6 +129,26 @@ public abstract class BaseOptimizer {
         return send(unsubscriptionRequest, subRequests, subscriber::unsubscribe, response -> processUnsubscriptionResponses(unsubscriptionRequest, response, subscriber.getDriverContext()));
     }
 
+    /**
+     * If a large message is split up into multiple ones, then sending them out without a delay, might overwhelm
+     * the PLC, here an optimizer can introduce a delay between them to avoid that.
+     *
+     * @return number of milliseconds between two requests being sent out.
+     */
+    protected int getMillisDelay() {
+        return 0;
+    }
+
+    /**
+     * If a large message is split up into multiple ones, then sending them out without a delay, might overwhelm
+     * the PLC, here an optimizer can introduce a delay between them to avoid that.
+     *
+     * @return number of nanoseconds between two requests being sent out (0-9999999).
+     */
+    protected int getNanosDelay() {
+        return 0;
+    }
+
     private <REQ extends PlcRequest, RES extends PlcResponse> CompletableFuture<RES> send(
         REQ originalRequest,
         List<REQ> requests,
@@ -153,6 +173,14 @@ public abstract class BaseOptimizer {
         Map<REQ, CompletableFuture<RES>> subFutures = new HashMap<>();
         for (REQ subRequest : requests) {
             subFutures.put(subRequest, sender.apply(subRequest));
+            // Potentially add a delay between sending messages.
+            if((getMillisDelay() > 0) || (getNanosDelay() > 0)) {
+                try {
+                    Thread.sleep(getMillisDelay(), getNanosDelay());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
 
         // As soon as all sub-futures are done, merge the individual responses back to one big response.

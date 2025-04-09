@@ -196,6 +196,20 @@ public abstract class ExtensionObjectDefinition implements Message {
       builder =
           PublishedDataSetCustomSourceDataType.staticParseExtensionObjectDefinitionBuilder(
               readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18595)) {
+      builder =
+          ActionTargetDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18596)) {
+      builder =
+          PublishedActionDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18599)) {
+      builder =
+          ActionMethodDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18795)) {
+      builder =
+          PublishedActionMethodDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
     } else if (EvaluationHelper.equals(extensionId, (int) 15599)) {
       builder =
           DataSetWriterDataType.staticParseExtensionObjectDefinitionBuilder(
@@ -360,6 +374,10 @@ public abstract class ExtensionObjectDefinition implements Message {
       builder =
           DatagramDataSetReaderTransportDataType.staticParseExtensionObjectDefinitionBuilder(
               readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18796)) {
+      builder =
+          DtlsPubSubConnectionDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
     } else if (EvaluationHelper.equals(extensionId, (int) 15009)) {
       builder =
           BrokerConnectionTransportDataType.staticParseExtensionObjectDefinitionBuilder(
@@ -384,6 +402,51 @@ public abstract class ExtensionObjectDefinition implements Message {
       builder =
           PubSubConfigurationValueDataType.staticParseExtensionObjectDefinitionBuilder(
               readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 19313)) {
+      builder =
+          JsonNetworkMessage.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 19314)) {
+      builder =
+          JsonDataSetMessage.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 19315)) {
+      builder =
+          JsonDataSetMetaDataMessage.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 19316)) {
+      builder =
+          JsonApplicationDescriptionMessage.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 19317)) {
+      builder =
+          JsonServerEndpointsMessage.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 19318)) {
+      builder =
+          JsonStatusMessage.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 19319)) {
+      builder =
+          JsonPubSubConnectionMessage.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 19320)) {
+      builder =
+          JsonActionMetaDataMessage.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 19321)) {
+      builder =
+          JsonActionResponderMessage.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 19322)) {
+      builder =
+          JsonActionNetworkMessage.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 19323)) {
+      builder =
+          JsonActionRequestMessage.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 19324)) {
+      builder =
+          JsonActionResponseMessage.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
     } else if (EvaluationHelper.equals(extensionId, (int) 23470)) {
       builder =
           AliasNameDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
@@ -395,6 +458,16 @@ public abstract class ExtensionObjectDefinition implements Message {
       builder =
           PriorityMappingEntryType.staticParseExtensionObjectDefinitionBuilder(
               readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18955)) {
+      builder =
+          LldpManagementAddressTxPortType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18956)) {
+      builder =
+          LldpManagementAddressType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18957)) {
+      builder = LldpTlvType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
     } else if (EvaluationHelper.equals(extensionId, (int) 32661)) {
       builder =
           ReferenceDescriptionDataType.staticParseExtensionObjectDefinitionBuilder(
@@ -773,6 +846,13 @@ public abstract class ExtensionObjectDefinition implements Message {
     } else if (EvaluationHelper.equals(extensionId, (int) 32801)) {
       builder =
           ReadEventDetails2.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18650)) {
+      builder =
+          SortRuleElement.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18651)) {
+      builder =
+          ReadEventDetailsSorted.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
     } else if (EvaluationHelper.equals(extensionId, (int) 649)) {
       builder =
           ReadRawModifiedDetails.staticParseExtensionObjectDefinitionBuilder(

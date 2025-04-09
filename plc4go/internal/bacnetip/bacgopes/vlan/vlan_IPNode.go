@@ -31,7 +31,7 @@ import (
 //
 //	tuple and a broadcast tuple that would be used for socket communications.
 //
-//go:generate plc4xGenerator -type=IPNode -prefix=vlan_
+//go:generate go tool plc4xGenerator -type=IPNode -prefix=vlan_
 type IPNode struct {
 	*Node
 	addrTuple          *AddressTuple[string, uint16] `stringer:"true"`

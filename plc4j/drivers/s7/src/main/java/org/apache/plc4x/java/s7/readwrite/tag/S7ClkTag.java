@@ -18,17 +18,19 @@
  */
 package org.apache.plc4x.java.s7.readwrite.tag;
 
-import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.s7.readwrite.DateAndTime;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+/**
+ * It seems reading CLK and CLKF are convenience ways of reading the PLCs Clock Data
+ * - CLK seems to read the clock data via structured value (year, month, day, hour, ...)
+ * - CLKF seems to read a formatted or extended format.
+ */
 public class S7ClkTag implements PlcTag {
 
     private static final Pattern CLK_ADDRESS_PATTERN =

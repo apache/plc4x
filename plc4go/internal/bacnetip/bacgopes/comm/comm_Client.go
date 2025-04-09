@@ -48,7 +48,7 @@ type ClientRequirements interface {
 	Confirmation(args Args, kwArgs KWArgs) error
 }
 
-//go:generate plc4xGenerator -type=client -prefix=comm_
+//go:generate go tool plc4xGenerator -type=client -prefix=comm_
 type client struct {
 	clientID   *int
 	clientPeer Server `asPtr:"true"`

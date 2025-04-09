@@ -82,7 +82,7 @@ type StateMachineRequirements interface {
 	Send(args Args, kwArgs KWArgs) error
 }
 
-//go:generate plc4xGenerator -type=stateMachine -prefix=state_machine_
+//go:generate go tool plc4xGenerator -type=stateMachine -prefix=state_machine_
 type stateMachine struct {
 	requirements StateMachineRequirements `ignore:"true"`
 
@@ -580,6 +580,10 @@ func (s *stateMachine) gotoState(state State) error {
 		for s.running {
 			select {
 			case pdu := <-s.transitionQueue:
+				if pdu == nil {
+					s.log.Trace().Msg("nil value received, channel closed")
+					break queueRead
+				}
 				if _debug != nil {
 					_debug("    - pdu: %r", pdu)
 				}

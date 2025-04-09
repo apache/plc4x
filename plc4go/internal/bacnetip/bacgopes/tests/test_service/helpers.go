@@ -39,6 +39,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/time_machine"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // This struct turns off the deferred startup function call that broadcasts I-Am-Router-To-Network and Network-Number-Is
@@ -179,6 +180,7 @@ func (a *ApplicationNetwork) _debug(format string, args Args) {
 }
 
 func (a *ApplicationNetwork) Close() error {
+	defer utils.StopWarn(a.log)()
 	if err := a.td.Close(); err != nil {
 		a.log.Warn().Err(err).Msg("error closing td")
 	}
@@ -188,7 +190,7 @@ func (a *ApplicationNetwork) Close() error {
 	return nil
 }
 
-//go:generate plc4xGenerator -type=SnifferNode
+//go:generate go tool plc4xGenerator -type=SnifferNode
 type SnifferNode struct {
 	ClientContract
 
@@ -266,7 +268,7 @@ func (s *SnifferNode) Confirmation(args Args, kwArgs KWArgs) error {
 	return nil
 }
 
-//go:generate plc4xGenerator -type=SnifferStateMachine
+//go:generate go tool plc4xGenerator -type=SnifferStateMachine
 type SnifferStateMachine struct {
 	ClientContract
 	StateMachineContract
@@ -353,7 +355,7 @@ func (s *SnifferStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
 	return s.Receive(args, NoKWArgs())
 }
 
-//go:generate plc4xGenerator -type=ApplicationStateMachine
+//go:generate go tool plc4xGenerator -type=ApplicationStateMachine
 type ApplicationStateMachine struct {
 	*ApplicationIOController
 	StateMachineContract

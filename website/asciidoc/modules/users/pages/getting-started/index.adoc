@@ -28,3 +28,7 @@ For guides on how to write PLC4X applications with Go, please go to the link:plc
 == Java
 
 For guides on how to write PLC4X applications with Java, please go to the link:plc4j.html[Java Getting Started]
+
+== Python
+
+For guides on how to write PLC4X applications with Python, please go to the link:plc4py.html[Python Getting Started]

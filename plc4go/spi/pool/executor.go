@@ -26,9 +26,11 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate plc4xGenerator -type=executor
+//go:generate go tool plc4xGenerator -type=executor
 type executor struct {
 	running  bool
 	shutdown bool
@@ -115,6 +117,7 @@ func (e *executor) Start() {
 }
 
 func (e *executor) Stop() {
+	defer utils.StopWarn(e.log)()
 	e.log.Trace().Msg("stopping now")
 	e.stateChange.Lock()
 	defer e.stateChange.Unlock()

@@ -40,7 +40,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/tcp"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestNewDiscoverer(t *testing.T) {
@@ -166,6 +165,7 @@ func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
 		deviceScanningQueue            pool.Executor
 	}
 	type args struct {
+		ctx                  context.Context
 		tcpTransportInstance *tcp.TransportInstance
 		callback             func(t *testing.T, event apiModel.PlcDiscoveryItem)
 	}
@@ -183,9 +183,10 @@ func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
+				args.ctx = testutils.TestContext(t)
 				listen, err := net.Listen("tcp", "127.0.0.1:0")
 				require.NoError(t, err)
-				dispatchWg := sync.WaitGroup{}
+				dispatchWg := new(sync.WaitGroup)
 				dispatchWg.Add(1)
 				t.Cleanup(dispatchWg.Wait)
 				go func() {
@@ -234,7 +235,7 @@ func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
 				deviceScanningQueue:            tt.fields.deviceScanningQueue,
 				log:                            testutils.ProduceTestingLogger(t),
 			}
-			dispatcher := d.createDeviceScanDispatcher(tt.args.tcpTransportInstance, func(event apiModel.PlcDiscoveryItem) {
+			dispatcher := d.createDeviceScanDispatcher(tt.args.ctx, tt.args.tcpTransportInstance, func(event apiModel.PlcDiscoveryItem) {
 				tt.args.callback(t, event)
 			})
 			assert.NotNilf(t, dispatcher, "createDeviceScanDispatcher(%v, func())", tt.args.tcpTransportInstance)
@@ -269,8 +270,7 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 			name: "create a dispatcher",
 			args: args{
 				wg: func() *sync.WaitGroup {
-					var wg sync.WaitGroup
-					return &wg
+					return new(sync.WaitGroup)
 				}(),
 				ip:                 net.IPv4(127, 0, 0, 1),
 				transportInstances: make(chan transports.TransportInstance, 1),
@@ -279,7 +279,7 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
-					dispatchWg := sync.WaitGroup{}
+					dispatchWg := new(sync.WaitGroup)
 					dispatchWg.Add(1)
 					t.Cleanup(dispatchWg.Wait)
 					go func() {
@@ -332,7 +332,6 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 			assert.NotNilf(t, dispatcher, "createTransportInstanceDispatcher(%v, %v, %v, %v, %v)", tt.args.ctx, tt.args.wg, tt.args.ip, tt.args.tcpTransport, tt.args.transportInstances)
 			dispatcher()
 			timeout := time.NewTimer(2 * time.Second)
-			defer utils.CleanupTimer(timeout)
 			select {
 			case <-timeout.C:
 				t.Error("timeout")

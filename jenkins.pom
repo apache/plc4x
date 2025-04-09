@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
-        <version>33</version>
+        <version>34</version>
     </parent>
 
     <groupId>org.apache.plc4x</groupId>
@@ -94,7 +94,7 @@
                         <artifactId>maven-scm-publish-plugin</artifactId>
                         <configuration>
                             <!-- mono-module doesn't require site:stage -->
-                            <content>${project.build.directory}/staging</content>
+                            <content>${project.build.directory}/site</content>
                             <!-- branch where to deploy -->
                             <scmBranch>asf-site</scmBranch>
                         </configuration>

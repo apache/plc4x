@@ -214,7 +214,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, parser Parser, 
 	}
 	t.Log("Done running testcases")
 	// Execute the tests in the testsuite
-	t.Logf(testsuite.name)
+	t.Log(testsuite.name)
 }
 
 func ParseParserSerializerTestSuiteXml(t *testing.T, testPath string) *xmldom.Node {

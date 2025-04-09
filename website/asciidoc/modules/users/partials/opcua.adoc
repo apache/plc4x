@@ -69,6 +69,8 @@ Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.
 |`encoding.send-buffer-size` |INT |65535| |Maximum size of sent transport message chunk.
 |`encoding.max-message-size` |INT |2097152| |Maximum size of complete message.
 |`encoding.max-chunk-count` |INT |64| |Maximum number of chunks for both sent and received messages.
+|`endpoint-host` |STRING | | |Endpoint host used to establish secure channel.
+|`endpoint-port` |INT | | |Endpoint port used to establish secure channel
 5+|Transport config options:
 5+|
 +++

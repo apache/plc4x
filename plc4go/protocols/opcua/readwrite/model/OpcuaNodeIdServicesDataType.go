@@ -357,9 +357,15 @@ const (
 	OpcuaNodeIdServicesDataType_UABinaryFileDataType                   OpcuaNodeIdServicesDataType = 15006
 	OpcuaNodeIdServicesDataType_BrokerConnectionTransportDataType      OpcuaNodeIdServicesDataType = 15007
 	OpcuaNodeIdServicesDataType_BrokerTransportQualityOfService        OpcuaNodeIdServicesDataType = 15008
+	OpcuaNodeIdServicesDataType_TestScalarStructure                    OpcuaNodeIdServicesDataType = 15015
+	OpcuaNodeIdServicesDataType_TestArrayStructure                     OpcuaNodeIdServicesDataType = 15016
+	OpcuaNodeIdServicesDataType_TestStructure                          OpcuaNodeIdServicesDataType = 15017
 	OpcuaNodeIdServicesDataType_AccessLevelType                        OpcuaNodeIdServicesDataType = 15031
 	OpcuaNodeIdServicesDataType_EventNotifierType                      OpcuaNodeIdServicesDataType = 15033
+	OpcuaNodeIdServicesDataType_TestAbstractStructure                  OpcuaNodeIdServicesDataType = 15399
+	OpcuaNodeIdServicesDataType_TestConcreteStructure                  OpcuaNodeIdServicesDataType = 15400
 	OpcuaNodeIdServicesDataType_AccessLevelExType                      OpcuaNodeIdServicesDataType = 15406
+	OpcuaNodeIdServicesDataType_TestEnumeration                        OpcuaNodeIdServicesDataType = 15432
 	OpcuaNodeIdServicesDataType_WriterGroupDataType                    OpcuaNodeIdServicesDataType = 15480
 	OpcuaNodeIdServicesDataType_StructureDescription                   OpcuaNodeIdServicesDataType = 15487
 	OpcuaNodeIdServicesDataType_EnumDescription                        OpcuaNodeIdServicesDataType = 15488
@@ -419,6 +425,15 @@ const (
 	OpcuaNodeIdServicesDataType_GenericAttributeValue                  OpcuaNodeIdServicesDataType = 17606
 	OpcuaNodeIdServicesDataType_GenericAttributes                      OpcuaNodeIdServicesDataType = 17607
 	OpcuaNodeIdServicesDataType_DecimalDataType                        OpcuaNodeIdServicesDataType = 17861
+	OpcuaNodeIdServicesDataType_ActionTargetDataType                   OpcuaNodeIdServicesDataType = 18593
+	OpcuaNodeIdServicesDataType_PublishedActionDataType                OpcuaNodeIdServicesDataType = 18594
+	OpcuaNodeIdServicesDataType_ActionState                            OpcuaNodeIdServicesDataType = 18595
+	OpcuaNodeIdServicesDataType_ActionMethodDataType                   OpcuaNodeIdServicesDataType = 18597
+	OpcuaNodeIdServicesDataType_SortOrderType                          OpcuaNodeIdServicesDataType = 18646
+	OpcuaNodeIdServicesDataType_SortRuleElement                        OpcuaNodeIdServicesDataType = 18648
+	OpcuaNodeIdServicesDataType_ReadEventDetailsSorted                 OpcuaNodeIdServicesDataType = 18649
+	OpcuaNodeIdServicesDataType_PublishedActionMethodDataType          OpcuaNodeIdServicesDataType = 18793
+	OpcuaNodeIdServicesDataType_DtlsPubSubConnectionDataType           OpcuaNodeIdServicesDataType = 18794
 	OpcuaNodeIdServicesDataType_RationalNumber                         OpcuaNodeIdServicesDataType = 18806
 	OpcuaNodeIdServicesDataType_Vector                                 OpcuaNodeIdServicesDataType = 18807
 	OpcuaNodeIdServicesDataType_ThreeDVector                           OpcuaNodeIdServicesDataType = 18808
@@ -428,6 +443,28 @@ const (
 	OpcuaNodeIdServicesDataType_ThreeDOrientation                      OpcuaNodeIdServicesDataType = 18812
 	OpcuaNodeIdServicesDataType_Frame                                  OpcuaNodeIdServicesDataType = 18813
 	OpcuaNodeIdServicesDataType_ThreeDFrame                            OpcuaNodeIdServicesDataType = 18814
+	OpcuaNodeIdServicesDataType_ChassisIdSubtype                       OpcuaNodeIdServicesDataType = 18947
+	OpcuaNodeIdServicesDataType_PortIdSubtype                          OpcuaNodeIdServicesDataType = 18949
+	OpcuaNodeIdServicesDataType_ManAddrIfSubtype                       OpcuaNodeIdServicesDataType = 18951
+	OpcuaNodeIdServicesDataType_LldpManagementAddressTxPortType        OpcuaNodeIdServicesDataType = 18953
+	OpcuaNodeIdServicesDataType_LldpManagementAddressType              OpcuaNodeIdServicesDataType = 18954
+	OpcuaNodeIdServicesDataType_LldpTlvType                            OpcuaNodeIdServicesDataType = 18955
+	OpcuaNodeIdServicesDataType_LldpSystemCapabilitiesMap              OpcuaNodeIdServicesDataType = 18956
+	OpcuaNodeIdServicesDataType_JsonNetworkMessage                     OpcuaNodeIdServicesDataType = 19311
+	OpcuaNodeIdServicesDataType_JsonDataSetMessage                     OpcuaNodeIdServicesDataType = 19312
+	OpcuaNodeIdServicesDataType_JsonDataSetMetaDataMessage             OpcuaNodeIdServicesDataType = 19313
+	OpcuaNodeIdServicesDataType_JsonApplicationDescriptionMessage      OpcuaNodeIdServicesDataType = 19314
+	OpcuaNodeIdServicesDataType_JsonServerEndpointsMessage             OpcuaNodeIdServicesDataType = 19315
+	OpcuaNodeIdServicesDataType_JsonStatusMessage                      OpcuaNodeIdServicesDataType = 19316
+	OpcuaNodeIdServicesDataType_JsonPubSubConnectionMessage            OpcuaNodeIdServicesDataType = 19317
+	OpcuaNodeIdServicesDataType_JsonActionMetaDataMessage              OpcuaNodeIdServicesDataType = 19318
+	OpcuaNodeIdServicesDataType_JsonActionResponderMessage             OpcuaNodeIdServicesDataType = 19319
+	OpcuaNodeIdServicesDataType_JsonActionNetworkMessage               OpcuaNodeIdServicesDataType = 19320
+	OpcuaNodeIdServicesDataType_JsonActionRequestMessage               OpcuaNodeIdServicesDataType = 19321
+	OpcuaNodeIdServicesDataType_JsonActionResponseMessage              OpcuaNodeIdServicesDataType = 19322
+	OpcuaNodeIdServicesDataType_TestUnion                              OpcuaNodeIdServicesDataType = 19431
+	OpcuaNodeIdServicesDataType_TestOptionalFields                     OpcuaNodeIdServicesDataType = 19432
+	OpcuaNodeIdServicesDataType_TestOptionSet                          OpcuaNodeIdServicesDataType = 19433
 	OpcuaNodeIdServicesDataType_DiagnosticsLevel                       OpcuaNodeIdServicesDataType = 19723
 	OpcuaNodeIdServicesDataType_PubSubDiagnosticsCounterClassification OpcuaNodeIdServicesDataType = 19730
 	OpcuaNodeIdServicesDataType_DataSetOrderingType                    OpcuaNodeIdServicesDataType = 20408
@@ -810,9 +847,15 @@ func init() {
 		OpcuaNodeIdServicesDataType_UABinaryFileDataType,
 		OpcuaNodeIdServicesDataType_BrokerConnectionTransportDataType,
 		OpcuaNodeIdServicesDataType_BrokerTransportQualityOfService,
+		OpcuaNodeIdServicesDataType_TestScalarStructure,
+		OpcuaNodeIdServicesDataType_TestArrayStructure,
+		OpcuaNodeIdServicesDataType_TestStructure,
 		OpcuaNodeIdServicesDataType_AccessLevelType,
 		OpcuaNodeIdServicesDataType_EventNotifierType,
+		OpcuaNodeIdServicesDataType_TestAbstractStructure,
+		OpcuaNodeIdServicesDataType_TestConcreteStructure,
 		OpcuaNodeIdServicesDataType_AccessLevelExType,
+		OpcuaNodeIdServicesDataType_TestEnumeration,
 		OpcuaNodeIdServicesDataType_WriterGroupDataType,
 		OpcuaNodeIdServicesDataType_StructureDescription,
 		OpcuaNodeIdServicesDataType_EnumDescription,
@@ -872,6 +915,15 @@ func init() {
 		OpcuaNodeIdServicesDataType_GenericAttributeValue,
 		OpcuaNodeIdServicesDataType_GenericAttributes,
 		OpcuaNodeIdServicesDataType_DecimalDataType,
+		OpcuaNodeIdServicesDataType_ActionTargetDataType,
+		OpcuaNodeIdServicesDataType_PublishedActionDataType,
+		OpcuaNodeIdServicesDataType_ActionState,
+		OpcuaNodeIdServicesDataType_ActionMethodDataType,
+		OpcuaNodeIdServicesDataType_SortOrderType,
+		OpcuaNodeIdServicesDataType_SortRuleElement,
+		OpcuaNodeIdServicesDataType_ReadEventDetailsSorted,
+		OpcuaNodeIdServicesDataType_PublishedActionMethodDataType,
+		OpcuaNodeIdServicesDataType_DtlsPubSubConnectionDataType,
 		OpcuaNodeIdServicesDataType_RationalNumber,
 		OpcuaNodeIdServicesDataType_Vector,
 		OpcuaNodeIdServicesDataType_ThreeDVector,
@@ -881,6 +933,28 @@ func init() {
 		OpcuaNodeIdServicesDataType_ThreeDOrientation,
 		OpcuaNodeIdServicesDataType_Frame,
 		OpcuaNodeIdServicesDataType_ThreeDFrame,
+		OpcuaNodeIdServicesDataType_ChassisIdSubtype,
+		OpcuaNodeIdServicesDataType_PortIdSubtype,
+		OpcuaNodeIdServicesDataType_ManAddrIfSubtype,
+		OpcuaNodeIdServicesDataType_LldpManagementAddressTxPortType,
+		OpcuaNodeIdServicesDataType_LldpManagementAddressType,
+		OpcuaNodeIdServicesDataType_LldpTlvType,
+		OpcuaNodeIdServicesDataType_LldpSystemCapabilitiesMap,
+		OpcuaNodeIdServicesDataType_JsonNetworkMessage,
+		OpcuaNodeIdServicesDataType_JsonDataSetMessage,
+		OpcuaNodeIdServicesDataType_JsonDataSetMetaDataMessage,
+		OpcuaNodeIdServicesDataType_JsonApplicationDescriptionMessage,
+		OpcuaNodeIdServicesDataType_JsonServerEndpointsMessage,
+		OpcuaNodeIdServicesDataType_JsonStatusMessage,
+		OpcuaNodeIdServicesDataType_JsonPubSubConnectionMessage,
+		OpcuaNodeIdServicesDataType_JsonActionMetaDataMessage,
+		OpcuaNodeIdServicesDataType_JsonActionResponderMessage,
+		OpcuaNodeIdServicesDataType_JsonActionNetworkMessage,
+		OpcuaNodeIdServicesDataType_JsonActionRequestMessage,
+		OpcuaNodeIdServicesDataType_JsonActionResponseMessage,
+		OpcuaNodeIdServicesDataType_TestUnion,
+		OpcuaNodeIdServicesDataType_TestOptionalFields,
+		OpcuaNodeIdServicesDataType_TestOptionSet,
 		OpcuaNodeIdServicesDataType_DiagnosticsLevel,
 		OpcuaNodeIdServicesDataType_PubSubDiagnosticsCounterClassification,
 		OpcuaNodeIdServicesDataType_DataSetOrderingType,
@@ -1057,12 +1131,24 @@ func OpcuaNodeIdServicesDataTypeByValue(value int32) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_BrokerConnectionTransportDataType, true
 	case 15008:
 		return OpcuaNodeIdServicesDataType_BrokerTransportQualityOfService, true
+	case 15015:
+		return OpcuaNodeIdServicesDataType_TestScalarStructure, true
+	case 15016:
+		return OpcuaNodeIdServicesDataType_TestArrayStructure, true
+	case 15017:
+		return OpcuaNodeIdServicesDataType_TestStructure, true
 	case 15031:
 		return OpcuaNodeIdServicesDataType_AccessLevelType, true
 	case 15033:
 		return OpcuaNodeIdServicesDataType_EventNotifierType, true
+	case 15399:
+		return OpcuaNodeIdServicesDataType_TestAbstractStructure, true
+	case 15400:
+		return OpcuaNodeIdServicesDataType_TestConcreteStructure, true
 	case 15406:
 		return OpcuaNodeIdServicesDataType_AccessLevelExType, true
+	case 15432:
+		return OpcuaNodeIdServicesDataType_TestEnumeration, true
 	case 15480:
 		return OpcuaNodeIdServicesDataType_WriterGroupDataType, true
 	case 15487:
@@ -1187,6 +1273,24 @@ func OpcuaNodeIdServicesDataTypeByValue(value int32) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_DecimalDataType, true
 	case 18:
 		return OpcuaNodeIdServicesDataType_ExpandedNodeId, true
+	case 18593:
+		return OpcuaNodeIdServicesDataType_ActionTargetDataType, true
+	case 18594:
+		return OpcuaNodeIdServicesDataType_PublishedActionDataType, true
+	case 18595:
+		return OpcuaNodeIdServicesDataType_ActionState, true
+	case 18597:
+		return OpcuaNodeIdServicesDataType_ActionMethodDataType, true
+	case 18646:
+		return OpcuaNodeIdServicesDataType_SortOrderType, true
+	case 18648:
+		return OpcuaNodeIdServicesDataType_SortRuleElement, true
+	case 18649:
+		return OpcuaNodeIdServicesDataType_ReadEventDetailsSorted, true
+	case 18793:
+		return OpcuaNodeIdServicesDataType_PublishedActionMethodDataType, true
+	case 18794:
+		return OpcuaNodeIdServicesDataType_DtlsPubSubConnectionDataType, true
 	case 18806:
 		return OpcuaNodeIdServicesDataType_RationalNumber, true
 	case 18807:
@@ -1205,8 +1309,52 @@ func OpcuaNodeIdServicesDataTypeByValue(value int32) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_Frame, true
 	case 18814:
 		return OpcuaNodeIdServicesDataType_ThreeDFrame, true
+	case 18947:
+		return OpcuaNodeIdServicesDataType_ChassisIdSubtype, true
+	case 18949:
+		return OpcuaNodeIdServicesDataType_PortIdSubtype, true
+	case 18951:
+		return OpcuaNodeIdServicesDataType_ManAddrIfSubtype, true
+	case 18953:
+		return OpcuaNodeIdServicesDataType_LldpManagementAddressTxPortType, true
+	case 18954:
+		return OpcuaNodeIdServicesDataType_LldpManagementAddressType, true
+	case 18955:
+		return OpcuaNodeIdServicesDataType_LldpTlvType, true
+	case 18956:
+		return OpcuaNodeIdServicesDataType_LldpSystemCapabilitiesMap, true
 	case 19:
 		return OpcuaNodeIdServicesDataType_StatusCode, true
+	case 19311:
+		return OpcuaNodeIdServicesDataType_JsonNetworkMessage, true
+	case 19312:
+		return OpcuaNodeIdServicesDataType_JsonDataSetMessage, true
+	case 19313:
+		return OpcuaNodeIdServicesDataType_JsonDataSetMetaDataMessage, true
+	case 19314:
+		return OpcuaNodeIdServicesDataType_JsonApplicationDescriptionMessage, true
+	case 19315:
+		return OpcuaNodeIdServicesDataType_JsonServerEndpointsMessage, true
+	case 19316:
+		return OpcuaNodeIdServicesDataType_JsonStatusMessage, true
+	case 19317:
+		return OpcuaNodeIdServicesDataType_JsonPubSubConnectionMessage, true
+	case 19318:
+		return OpcuaNodeIdServicesDataType_JsonActionMetaDataMessage, true
+	case 19319:
+		return OpcuaNodeIdServicesDataType_JsonActionResponderMessage, true
+	case 19320:
+		return OpcuaNodeIdServicesDataType_JsonActionNetworkMessage, true
+	case 19321:
+		return OpcuaNodeIdServicesDataType_JsonActionRequestMessage, true
+	case 19322:
+		return OpcuaNodeIdServicesDataType_JsonActionResponseMessage, true
+	case 19431:
+		return OpcuaNodeIdServicesDataType_TestUnion, true
+	case 19432:
+		return OpcuaNodeIdServicesDataType_TestOptionalFields, true
+	case 19433:
+		return OpcuaNodeIdServicesDataType_TestOptionSet, true
 	case 19723:
 		return OpcuaNodeIdServicesDataType_DiagnosticsLevel, true
 	case 19730:
@@ -1955,12 +2103,24 @@ func OpcuaNodeIdServicesDataTypeByName(value string) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_BrokerConnectionTransportDataType, true
 	case "BrokerTransportQualityOfService":
 		return OpcuaNodeIdServicesDataType_BrokerTransportQualityOfService, true
+	case "TestScalarStructure":
+		return OpcuaNodeIdServicesDataType_TestScalarStructure, true
+	case "TestArrayStructure":
+		return OpcuaNodeIdServicesDataType_TestArrayStructure, true
+	case "TestStructure":
+		return OpcuaNodeIdServicesDataType_TestStructure, true
 	case "AccessLevelType":
 		return OpcuaNodeIdServicesDataType_AccessLevelType, true
 	case "EventNotifierType":
 		return OpcuaNodeIdServicesDataType_EventNotifierType, true
+	case "TestAbstractStructure":
+		return OpcuaNodeIdServicesDataType_TestAbstractStructure, true
+	case "TestConcreteStructure":
+		return OpcuaNodeIdServicesDataType_TestConcreteStructure, true
 	case "AccessLevelExType":
 		return OpcuaNodeIdServicesDataType_AccessLevelExType, true
+	case "TestEnumeration":
+		return OpcuaNodeIdServicesDataType_TestEnumeration, true
 	case "WriterGroupDataType":
 		return OpcuaNodeIdServicesDataType_WriterGroupDataType, true
 	case "StructureDescription":
@@ -2085,6 +2245,24 @@ func OpcuaNodeIdServicesDataTypeByName(value string) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_DecimalDataType, true
 	case "ExpandedNodeId":
 		return OpcuaNodeIdServicesDataType_ExpandedNodeId, true
+	case "ActionTargetDataType":
+		return OpcuaNodeIdServicesDataType_ActionTargetDataType, true
+	case "PublishedActionDataType":
+		return OpcuaNodeIdServicesDataType_PublishedActionDataType, true
+	case "ActionState":
+		return OpcuaNodeIdServicesDataType_ActionState, true
+	case "ActionMethodDataType":
+		return OpcuaNodeIdServicesDataType_ActionMethodDataType, true
+	case "SortOrderType":
+		return OpcuaNodeIdServicesDataType_SortOrderType, true
+	case "SortRuleElement":
+		return OpcuaNodeIdServicesDataType_SortRuleElement, true
+	case "ReadEventDetailsSorted":
+		return OpcuaNodeIdServicesDataType_ReadEventDetailsSorted, true
+	case "PublishedActionMethodDataType":
+		return OpcuaNodeIdServicesDataType_PublishedActionMethodDataType, true
+	case "DtlsPubSubConnectionDataType":
+		return OpcuaNodeIdServicesDataType_DtlsPubSubConnectionDataType, true
 	case "RationalNumber":
 		return OpcuaNodeIdServicesDataType_RationalNumber, true
 	case "Vector":
@@ -2103,8 +2281,52 @@ func OpcuaNodeIdServicesDataTypeByName(value string) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_Frame, true
 	case "ThreeDFrame":
 		return OpcuaNodeIdServicesDataType_ThreeDFrame, true
+	case "ChassisIdSubtype":
+		return OpcuaNodeIdServicesDataType_ChassisIdSubtype, true
+	case "PortIdSubtype":
+		return OpcuaNodeIdServicesDataType_PortIdSubtype, true
+	case "ManAddrIfSubtype":
+		return OpcuaNodeIdServicesDataType_ManAddrIfSubtype, true
+	case "LldpManagementAddressTxPortType":
+		return OpcuaNodeIdServicesDataType_LldpManagementAddressTxPortType, true
+	case "LldpManagementAddressType":
+		return OpcuaNodeIdServicesDataType_LldpManagementAddressType, true
+	case "LldpTlvType":
+		return OpcuaNodeIdServicesDataType_LldpTlvType, true
+	case "LldpSystemCapabilitiesMap":
+		return OpcuaNodeIdServicesDataType_LldpSystemCapabilitiesMap, true
 	case "StatusCode":
 		return OpcuaNodeIdServicesDataType_StatusCode, true
+	case "JsonNetworkMessage":
+		return OpcuaNodeIdServicesDataType_JsonNetworkMessage, true
+	case "JsonDataSetMessage":
+		return OpcuaNodeIdServicesDataType_JsonDataSetMessage, true
+	case "JsonDataSetMetaDataMessage":
+		return OpcuaNodeIdServicesDataType_JsonDataSetMetaDataMessage, true
+	case "JsonApplicationDescriptionMessage":
+		return OpcuaNodeIdServicesDataType_JsonApplicationDescriptionMessage, true
+	case "JsonServerEndpointsMessage":
+		return OpcuaNodeIdServicesDataType_JsonServerEndpointsMessage, true
+	case "JsonStatusMessage":
+		return OpcuaNodeIdServicesDataType_JsonStatusMessage, true
+	case "JsonPubSubConnectionMessage":
+		return OpcuaNodeIdServicesDataType_JsonPubSubConnectionMessage, true
+	case "JsonActionMetaDataMessage":
+		return OpcuaNodeIdServicesDataType_JsonActionMetaDataMessage, true
+	case "JsonActionResponderMessage":
+		return OpcuaNodeIdServicesDataType_JsonActionResponderMessage, true
+	case "JsonActionNetworkMessage":
+		return OpcuaNodeIdServicesDataType_JsonActionNetworkMessage, true
+	case "JsonActionRequestMessage":
+		return OpcuaNodeIdServicesDataType_JsonActionRequestMessage, true
+	case "JsonActionResponseMessage":
+		return OpcuaNodeIdServicesDataType_JsonActionResponseMessage, true
+	case "TestUnion":
+		return OpcuaNodeIdServicesDataType_TestUnion, true
+	case "TestOptionalFields":
+		return OpcuaNodeIdServicesDataType_TestOptionalFields, true
+	case "TestOptionSet":
+		return OpcuaNodeIdServicesDataType_TestOptionSet, true
 	case "DiagnosticsLevel":
 		return OpcuaNodeIdServicesDataType_DiagnosticsLevel, true
 	case "PubSubDiagnosticsCounterClassification":
@@ -2918,12 +3140,24 @@ func (e OpcuaNodeIdServicesDataType) PLC4XEnumName() string {
 		return "BrokerConnectionTransportDataType"
 	case OpcuaNodeIdServicesDataType_BrokerTransportQualityOfService:
 		return "BrokerTransportQualityOfService"
+	case OpcuaNodeIdServicesDataType_TestScalarStructure:
+		return "TestScalarStructure"
+	case OpcuaNodeIdServicesDataType_TestArrayStructure:
+		return "TestArrayStructure"
+	case OpcuaNodeIdServicesDataType_TestStructure:
+		return "TestStructure"
 	case OpcuaNodeIdServicesDataType_AccessLevelType:
 		return "AccessLevelType"
 	case OpcuaNodeIdServicesDataType_EventNotifierType:
 		return "EventNotifierType"
+	case OpcuaNodeIdServicesDataType_TestAbstractStructure:
+		return "TestAbstractStructure"
+	case OpcuaNodeIdServicesDataType_TestConcreteStructure:
+		return "TestConcreteStructure"
 	case OpcuaNodeIdServicesDataType_AccessLevelExType:
 		return "AccessLevelExType"
+	case OpcuaNodeIdServicesDataType_TestEnumeration:
+		return "TestEnumeration"
 	case OpcuaNodeIdServicesDataType_WriterGroupDataType:
 		return "WriterGroupDataType"
 	case OpcuaNodeIdServicesDataType_StructureDescription:
@@ -3048,6 +3282,24 @@ func (e OpcuaNodeIdServicesDataType) PLC4XEnumName() string {
 		return "DecimalDataType"
 	case OpcuaNodeIdServicesDataType_ExpandedNodeId:
 		return "ExpandedNodeId"
+	case OpcuaNodeIdServicesDataType_ActionTargetDataType:
+		return "ActionTargetDataType"
+	case OpcuaNodeIdServicesDataType_PublishedActionDataType:
+		return "PublishedActionDataType"
+	case OpcuaNodeIdServicesDataType_ActionState:
+		return "ActionState"
+	case OpcuaNodeIdServicesDataType_ActionMethodDataType:
+		return "ActionMethodDataType"
+	case OpcuaNodeIdServicesDataType_SortOrderType:
+		return "SortOrderType"
+	case OpcuaNodeIdServicesDataType_SortRuleElement:
+		return "SortRuleElement"
+	case OpcuaNodeIdServicesDataType_ReadEventDetailsSorted:
+		return "ReadEventDetailsSorted"
+	case OpcuaNodeIdServicesDataType_PublishedActionMethodDataType:
+		return "PublishedActionMethodDataType"
+	case OpcuaNodeIdServicesDataType_DtlsPubSubConnectionDataType:
+		return "DtlsPubSubConnectionDataType"
 	case OpcuaNodeIdServicesDataType_RationalNumber:
 		return "RationalNumber"
 	case OpcuaNodeIdServicesDataType_Vector:
@@ -3066,8 +3318,52 @@ func (e OpcuaNodeIdServicesDataType) PLC4XEnumName() string {
 		return "Frame"
 	case OpcuaNodeIdServicesDataType_ThreeDFrame:
 		return "ThreeDFrame"
+	case OpcuaNodeIdServicesDataType_ChassisIdSubtype:
+		return "ChassisIdSubtype"
+	case OpcuaNodeIdServicesDataType_PortIdSubtype:
+		return "PortIdSubtype"
+	case OpcuaNodeIdServicesDataType_ManAddrIfSubtype:
+		return "ManAddrIfSubtype"
+	case OpcuaNodeIdServicesDataType_LldpManagementAddressTxPortType:
+		return "LldpManagementAddressTxPortType"
+	case OpcuaNodeIdServicesDataType_LldpManagementAddressType:
+		return "LldpManagementAddressType"
+	case OpcuaNodeIdServicesDataType_LldpTlvType:
+		return "LldpTlvType"
+	case OpcuaNodeIdServicesDataType_LldpSystemCapabilitiesMap:
+		return "LldpSystemCapabilitiesMap"
 	case OpcuaNodeIdServicesDataType_StatusCode:
 		return "StatusCode"
+	case OpcuaNodeIdServicesDataType_JsonNetworkMessage:
+		return "JsonNetworkMessage"
+	case OpcuaNodeIdServicesDataType_JsonDataSetMessage:
+		return "JsonDataSetMessage"
+	case OpcuaNodeIdServicesDataType_JsonDataSetMetaDataMessage:
+		return "JsonDataSetMetaDataMessage"
+	case OpcuaNodeIdServicesDataType_JsonApplicationDescriptionMessage:
+		return "JsonApplicationDescriptionMessage"
+	case OpcuaNodeIdServicesDataType_JsonServerEndpointsMessage:
+		return "JsonServerEndpointsMessage"
+	case OpcuaNodeIdServicesDataType_JsonStatusMessage:
+		return "JsonStatusMessage"
+	case OpcuaNodeIdServicesDataType_JsonPubSubConnectionMessage:
+		return "JsonPubSubConnectionMessage"
+	case OpcuaNodeIdServicesDataType_JsonActionMetaDataMessage:
+		return "JsonActionMetaDataMessage"
+	case OpcuaNodeIdServicesDataType_JsonActionResponderMessage:
+		return "JsonActionResponderMessage"
+	case OpcuaNodeIdServicesDataType_JsonActionNetworkMessage:
+		return "JsonActionNetworkMessage"
+	case OpcuaNodeIdServicesDataType_JsonActionRequestMessage:
+		return "JsonActionRequestMessage"
+	case OpcuaNodeIdServicesDataType_JsonActionResponseMessage:
+		return "JsonActionResponseMessage"
+	case OpcuaNodeIdServicesDataType_TestUnion:
+		return "TestUnion"
+	case OpcuaNodeIdServicesDataType_TestOptionalFields:
+		return "TestOptionalFields"
+	case OpcuaNodeIdServicesDataType_TestOptionSet:
+		return "TestOptionSet"
 	case OpcuaNodeIdServicesDataType_DiagnosticsLevel:
 		return "DiagnosticsLevel"
 	case OpcuaNodeIdServicesDataType_PubSubDiagnosticsCounterClassification:

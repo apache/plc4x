@@ -35,7 +35,7 @@ import (
 //	    that send tPDU's.  They will be started first, and be ready for the
 //	    tPDU that might be sent.
 //
-//go:generate plc4xGenerator -type=StateMachineGroup -prefix=state_machine_
+//go:generate go tool plc4xGenerator -type=StateMachineGroup -prefix=state_machine_
 type StateMachineGroup struct {
 	stateMachines  []StateMachine
 	isSuccessState bool

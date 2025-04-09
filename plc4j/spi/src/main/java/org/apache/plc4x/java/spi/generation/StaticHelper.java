@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.generation;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
 
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 
@@ -125,5 +126,36 @@ public class StaticHelper {
     public static int PADCOUNT(Object obj, boolean hasNext) {
         return hasNext ? COUNT(obj) : 0;
     }    
+
+    public static int GET_VARDUINT_LENGTH_IN_BITS(long value) {
+        int curFieldLengthInBits = 0;
+        long temp = value;
+        do {
+            curFieldLengthInBits += 8;
+            temp >>>= 7;
+        } while (temp != 0);
+        return curFieldLengthInBits;
+    }
+
+    public static int GET_VARDINT_LENGTH_IN_BITS(long value) {
+        int curFieldLengthInBits = 8;
+        boolean positive = value >= 0;
+        long tmpValue = value;
+        while (tmpValue >> 6 != (positive ? 0 : -1)) {
+            curFieldLengthInBits += 8;
+            tmpValue >>= 7;
+        }
+        return curFieldLengthInBits;
+    }
+
+    public static int GET_VARDUINT_LENGTH_IN_BITS(BigInteger value) {
+        int curFieldLengthInBits = 0;
+        long temp = value.longValue();
+        do {
+            curFieldLengthInBits += 8;
+            temp >>>= 7;
+        } while (temp != 0);
+        return curFieldLengthInBits;
+    }
 
 }

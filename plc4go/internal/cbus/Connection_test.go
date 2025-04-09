@@ -42,7 +42,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestAlphaGenerator_getAndIncrement(t *testing.T) {
@@ -1635,9 +1634,6 @@ func TestConnection_setupConnection(t *testing.T) {
 			c.setupConnection(tt.args.ctx, tt.args.ch)
 			assert.NotNil(t, tt.args.ch, "We always need a result channel")
 			chanTimeout := time.NewTimer(10 * time.Second)
-			t.Cleanup(func() {
-				utils.CleanupTimer(chanTimeout)
-			})
 			select {
 			case <-chanTimeout.C:
 				t.Fatal("setup connection doesn't fill chan in time")
@@ -1648,9 +1644,6 @@ func TestConnection_setupConnection(t *testing.T) {
 			}
 			// To shut down properly we always do that
 			closeTimeout := time.NewTimer(10 * time.Second)
-			t.Cleanup(func() {
-				utils.CleanupTimer(closeTimeout)
-			})
 			select {
 			case <-closeTimeout.C:
 				t.Fatal("close didn't react in time")
@@ -1691,7 +1684,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				codec := NewMessageCodec(nil, _options...)
 				codec.monitoredMMIs = make(chan readWriteModel.CALReply, 1)
 				codec.monitoredSALs = make(chan readWriteModel.MonitoredSAL, 1)
-				dispatchWg := sync.WaitGroup{}
+				dispatchWg := new(sync.WaitGroup)
 				dispatchWg.Add(1)
 				t.Cleanup(dispatchWg.Wait)
 				go func() {
@@ -1725,7 +1718,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				fields.subscribers = []*Subscriber{NewSubscriber(nil, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))}
 				codec := NewMessageCodec(nil, _options...)
 				written := make(chan struct{})
-				dispatchWg := sync.WaitGroup{}
+				dispatchWg := new(sync.WaitGroup)
 				dispatchWg.Add(1)
 				t.Cleanup(dispatchWg.Wait)
 				go func() {
@@ -1820,9 +1813,6 @@ func TestNewConnection(t *testing.T) {
 			connection := NewConnection(tt.args.messageCodec, tt.args.configuration, tt.args.driverContext, tt.args.tagHandler, tt.args.tm, tt.args.options, tt.args._options...)
 			t.Cleanup(func() {
 				timer := time.NewTimer(1 * time.Second)
-				t.Cleanup(func() {
-					utils.CleanupTimer(timer)
-				})
 				select {
 				case <-connection.Close():
 				case <-timer.C:

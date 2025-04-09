@@ -42,6 +42,7 @@ type IOpcuaNodeIdServicesVariableDefault interface {
 
 const (
 	OpcuaNodeIdServicesVariableDefault_DefaultInstanceBrowseName                                            OpcuaNodeIdServicesVariableDefault = 17605
+	OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_SortByEventFields                             OpcuaNodeIdServicesVariableDefault = 18645
 	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad    OpcuaNodeIdServicesVariableDefault = 32639
 	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataBad         OpcuaNodeIdServicesVariableDefault = 32640
 	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataGood        OpcuaNodeIdServicesVariableDefault = 32641
@@ -67,6 +68,7 @@ func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableDefaultValues = []OpcuaNodeIdServicesVariableDefault{
 		OpcuaNodeIdServicesVariableDefault_DefaultInstanceBrowseName,
+		OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_SortByEventFields,
 		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad,
 		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataBad,
 		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataGood,
@@ -91,6 +93,8 @@ func OpcuaNodeIdServicesVariableDefaultByValue(value int32) (enum OpcuaNodeIdSer
 	switch value {
 	case 17605:
 		return OpcuaNodeIdServicesVariableDefault_DefaultInstanceBrowseName, true
+	case 18645:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_SortByEventFields, true
 	case 32639:
 		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad, true
 	case 32640:
@@ -133,6 +137,8 @@ func OpcuaNodeIdServicesVariableDefaultByName(value string) (enum OpcuaNodeIdSer
 	switch value {
 	case "DefaultInstanceBrowseName":
 		return OpcuaNodeIdServicesVariableDefault_DefaultInstanceBrowseName, true
+	case "DefaultHEConfiguration_SortByEventFields":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_SortByEventFields, true
 	case "DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad":
 		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad, true
 	case "DefaultHAConfiguration_AggregateConfiguration_PercentDataBad":
@@ -240,6 +246,8 @@ func (e OpcuaNodeIdServicesVariableDefault) PLC4XEnumName() string {
 	switch e {
 	case OpcuaNodeIdServicesVariableDefault_DefaultInstanceBrowseName:
 		return "DefaultInstanceBrowseName"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_SortByEventFields:
+		return "DefaultHEConfiguration_SortByEventFields"
 	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad:
 		return "DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad"
 	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataBad:

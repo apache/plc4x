@@ -18,9 +18,25 @@ New Features
   array requests into multiple ones and transparently merge
   them back together. It is now possible to read arrays of
   almost unlimited size.
-- Added auto-discovery to the EIP, KNXNet/IP and S7 Drivers.
 - Added an Optimizer to the Modbus driver, that improves read
   performance of multi-item read requests by more than 10 times.
+- Added an optimizer to the Modbus protocol, that allows reading
+  multiple fields in one request.
+- Added support for Modbus encodings of BIG_ENDIAN_WORD_SWAP
+  and LITTLE_ENDIAN_WORD_SWAP.
+- Modbus tags allow specifying the unit-id in order to address
+  multiple devices using one serial modbus connection.
+- Added a new optimizer to the S7 protocol, that ready chunks
+  of data instead of individual fields, which allows reading
+  a lot more fields in one request.
+- Added a new variant of the S7 driver, called s7-light, which
+  doesn't have support for subscriptions, but is less likely
+  to cause connection problems.
+- Added auto-discovery to the KNX Driver in PLC4J.
+- Added auto-discovery to EIP in PLC4J.
+- Added auto-discovery to S7 in PLC4J.
+- Improved some things in the SPI, that caused issues with
+  drivers under heavy load.
 
 Incompatible changes
 --------------------

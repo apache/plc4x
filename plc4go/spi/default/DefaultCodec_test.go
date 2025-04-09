@@ -513,18 +513,16 @@ func Test_defaultCodec_Expect(t *testing.T) {
 		ttl            time.Duration
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		setup   func(t *testing.T, fields *fields, args *args)
-		wantErr assert.ErrorAssertionFunc
+		name   string
+		fields fields
+		args   args
+		setup  func(t *testing.T, fields *fields, args *args)
 	}{
 		{
 			name: "expect it",
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
 			},
-			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
@@ -540,7 +538,7 @@ func Test_defaultCodec_Expect(t *testing.T) {
 				customMessageHandling:         tt.fields.customMessageHandling,
 				log:                           testutils.ProduceTestingLogger(t),
 			}
-			tt.wantErr(t, m.Expect(tt.args.ctx, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError, tt.args.ttl), fmt.Sprintf("Expect(%v, func(), func(), func(), %v)", tt.args.ctx, tt.args.ttl))
+			m.Expect(tt.args.ctx, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError, tt.args.ttl)
 		})
 	}
 }

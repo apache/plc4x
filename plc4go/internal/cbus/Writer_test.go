@@ -32,7 +32,6 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestNewWriter(t *testing.T) {
@@ -89,7 +88,6 @@ func TestWriter_Write(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Error("timeout")
@@ -113,7 +111,6 @@ func TestWriter_Write(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Fatal("timeout")
@@ -161,7 +158,6 @@ func TestWriter_Write(t *testing.T) {
 				},
 				wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 					timeout := time.NewTimer(2 * time.Second)
-					utils.CleanupTimer(timeout)
 					select {
 					case <-timeout.C:
 						t.Error("timeout")

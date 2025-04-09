@@ -359,6 +359,8 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value any) (apiValues.Plc
 			default:
 				return nil, errors.Errorf("No support for %s", tmpSalTag.application)
 			}
+		default:
+			// TODO: log at least
 		}
 	}
 	return m.DefaultValueHandler.NewPlcValue(tag, value)

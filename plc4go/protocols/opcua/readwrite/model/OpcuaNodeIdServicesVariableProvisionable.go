@@ -41,6 +41,9 @@ type IOpcuaNodeIdServicesVariableProvisionable interface {
 }
 
 const (
+	OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_ApplicationNames                                                                                                  OpcuaNodeIdServicesVariableProvisionable = 18664
+	OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_SupportsTransactions                                                                                              OpcuaNodeIdServicesVariableProvisionable = 18775
+	OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_InApplicationSetup                                                                                                OpcuaNodeIdServicesVariableProvisionable = 19310
 	OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_IsSingleton                                                                                                                                   OpcuaNodeIdServicesVariableProvisionable = 26872
 	OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_RequestTickets_OutputArguments                                                                                                                OpcuaNodeIdServicesVariableProvisionable = 26874
 	OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_SetRegistrarEndpoints_InputArguments                                                                                                          OpcuaNodeIdServicesVariableProvisionable = 26876
@@ -997,6 +1000,9 @@ var OpcuaNodeIdServicesVariableProvisionableValues []OpcuaNodeIdServicesVariable
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableProvisionableValues = []OpcuaNodeIdServicesVariableProvisionable{
+		OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_ApplicationNames,
+		OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_SupportsTransactions,
+		OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_InApplicationSetup,
 		OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_IsSingleton,
 		OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_RequestTickets_OutputArguments,
 		OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_SetRegistrarEndpoints_InputArguments,
@@ -1951,6 +1957,12 @@ func init() {
 
 func OpcuaNodeIdServicesVariableProvisionableByValue(value int32) (enum OpcuaNodeIdServicesVariableProvisionable, ok bool) {
 	switch value {
+	case 18664:
+		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_ApplicationNames, true
+	case 18775:
+		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_SupportsTransactions, true
+	case 19310:
+		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_InApplicationSetup, true
 	case 26872:
 		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_IsSingleton, true
 	case 26874:
@@ -3855,6 +3867,12 @@ func OpcuaNodeIdServicesVariableProvisionableByValue(value int32) (enum OpcuaNod
 
 func OpcuaNodeIdServicesVariableProvisionableByName(value string) (enum OpcuaNodeIdServicesVariableProvisionable, ok bool) {
 	switch value {
+	case "ProvisionableDeviceType_ApplicationName_Placeholder_ApplicationNames":
+		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_ApplicationNames, true
+	case "ProvisionableDeviceType_ApplicationName_Placeholder_SupportsTransactions":
+		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_SupportsTransactions, true
+	case "ProvisionableDeviceType_ApplicationName_Placeholder_InApplicationSetup":
+		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_InApplicationSetup, true
 	case "ProvisionableDeviceType_IsSingleton":
 		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_IsSingleton, true
 	case "ProvisionableDeviceType_RequestTickets_OutputArguments":
@@ -5824,6 +5842,12 @@ func (e OpcuaNodeIdServicesVariableProvisionable) GetValue() int32 {
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableProvisionable) PLC4XEnumName() string {
 	switch e {
+	case OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_ApplicationNames:
+		return "ProvisionableDeviceType_ApplicationName_Placeholder_ApplicationNames"
+	case OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_SupportsTransactions:
+		return "ProvisionableDeviceType_ApplicationName_Placeholder_SupportsTransactions"
+	case OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_InApplicationSetup:
+		return "ProvisionableDeviceType_ApplicationName_Placeholder_InApplicationSetup"
 	case OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_IsSingleton:
 		return "ProvisionableDeviceType_IsSingleton"
 	case OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_RequestTickets_OutputArguments:

@@ -120,9 +120,9 @@ func TestTimeEndec(t *testing.T) {
 		quick.Time(timeTag(""))
 	})
 
-	timeEndec(t, TimeTuple{0, 0, 0, 0}, "00000000")
-	timeEndec(t, TimeTuple{1, 0, 0, 0}, "01000000")
-	timeEndec(t, TimeTuple{0, 2, 0, 0}, "00020000")
-	timeEndec(t, TimeTuple{0, 0, 3, 0}, "00000300")
-	timeEndec(t, TimeTuple{0, 0, 0, 4}, "00000004")
+	timeEndec(t, TimeTuple{}, "00000000")
+	timeEndec(t, TimeTuple{Hour: 1}, "01000000")
+	timeEndec(t, TimeTuple{Minute: 2}, "00020000")
+	timeEndec(t, TimeTuple{Second: 3}, "00000300")
+	timeEndec(t, TimeTuple{Hundredth: 4}, "00000004")
 }

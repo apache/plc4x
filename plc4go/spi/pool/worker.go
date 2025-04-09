@@ -28,7 +28,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-//go:generate plc4xGenerator -type=worker
+//go:generate go tool plc4xGenerator -type=worker
 type worker struct {
 	id       int
 	executor interface {

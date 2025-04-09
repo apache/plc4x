@@ -55,6 +55,8 @@ func (d *Device) Get(tag simulatedTag) *apiValues.PlcValue {
 		return d.State[tag]
 	case TagRandom:
 		return d.getRandomValue(tag)
+	default:
+		d.log.Debug().Stringer("tagType", tag.TagType).Msg("unmapped tag type")
 	}
 	return nil
 }

@@ -72,7 +72,7 @@ public class ManualS71200DriverTest extends ManualTest {
     }
 
     public static void main(String[] args) throws Exception {
-        ManualS71200DriverTest test = new ManualS71200DriverTest("s7://192.168.23.30");
+        ManualS71200DriverTest test = new ManualS71200DriverTest("s7-light://192.168.23.30");
         test.addTestCase("%DB4:0.0:BOOL", new PlcBOOL(true));
         test.addTestCase("%DB4:1:BYTE", new PlcBYTE(42));
         test.addTestCase("%DB4:2:WORD", new PlcWORD(42424));

@@ -29,7 +29,7 @@ import (
 
 var _ apiModel.PlcBrowseResponse = &DefaultPlcBrowseResponse{}
 
-//go:generate plc4xGenerator -type=DefaultPlcDiscoveryItem
+//go:generate go tool plc4xGenerator -type=DefaultPlcDiscoveryItem
 type DefaultPlcDiscoveryItem struct {
 	ProtocolCode  string
 	TransportCode string

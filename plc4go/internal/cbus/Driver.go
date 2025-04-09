@@ -34,10 +34,14 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Driver struct {
 	_default.DefaultDriver
+
+	discoverer *Discoverer
+
 	tm                      transactions.RequestTransactionManager
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
@@ -49,6 +53,7 @@ type Driver struct {
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &Driver{
+		discoverer:              NewDiscoverer(_options...),
 		tm:                      transactions.NewRequestTransactionManager(1, _options...),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
@@ -59,8 +64,8 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	return driver
 }
 
-func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	m.log.Debug().
+func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+	d.log.Debug().
 		Stringer("transportUrl", &transportUrl).
 		Int("nTransports", len(transports)).
 		Int("nDriverOptions", len(driverOptions)).
@@ -68,11 +73,11 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	// Get the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		m.log.Error().
+		d.log.Error().
 			Stringer("transportUrl", &transportUrl).
 			Str("scheme", transportUrl.Scheme).
 			Msg("We couldn't find a transport for scheme")
-		return m.reportError(errors.Errorf("couldn't find transport for given transport url %v", transportUrl))
+		return d.reportError(errors.Errorf("couldn't find transport for given transport url %v", transportUrl))
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
 	driverOptions["defaultTcpPort"] = []string{strconv.FormatUint(uint64(readWriteModel.CBusConstants_CBUSTCPDEFAULTPORT), 10)}
@@ -80,70 +85,76 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	transportInstance, err := transport.CreateTransportInstance(
 		transportUrl,
 		driverOptions,
-		append(m._options, options.WithCustomLogger(m.log))...,
+		append(d._options, options.WithCustomLogger(d.log))...,
 	)
 	if err != nil {
-		m.log.Error().
+		d.log.Error().
 			Stringer("transportUrl", &transportUrl).
 			Strs("defaultTcpPort", driverOptions["defaultTcpPort"]).
 			Msg("We couldn't create a transport instance for port")
-		return m.reportError(errors.Wrapf(err, "couldn't initialize transport configuration for given transport url %s", transportUrl.String()))
+		return d.reportError(errors.Wrapf(err, "couldn't initialize transport configuration for given transport url %s", transportUrl.String()))
 	}
 
-	configuration, err := ParseFromOptions(m.log, driverOptions)
+	configuration, err := ParseFromOptions(d.log, driverOptions)
 	if err != nil {
-		m.log.Error().Err(err).Msg("Invalid options")
-		return m.reportError(errors.Wrap(err, "Invalid options"))
+		d.log.Error().Err(err).Msg("Invalid options")
+		return d.reportError(errors.Wrap(err, "Invalid options"))
 	}
 	codec := NewMessageCodec(
 		transportInstance,
-		append(m._options, options.WithCustomLogger(m.log))...,
+		append(d._options, options.WithCustomLogger(d.log))...,
 	)
-	m.log.Debug().Stringer("codec", codec).Msg("working with codec")
+	d.log.Debug().Stringer("codec", codec).Msg("working with codec")
 
 	driverContext := NewDriverContext(configuration)
-	driverContext.awaitSetupComplete = m.awaitSetupComplete
-	driverContext.awaitDisconnectComplete = m.awaitDisconnectComplete
+	driverContext.awaitSetupComplete = d.awaitSetupComplete
+	driverContext.awaitDisconnectComplete = d.awaitDisconnectComplete
 
 	// Create the new connection
 	connection := NewConnection(
 		codec, configuration,
 		driverContext,
-		m.GetPlcTagHandler(),
-		m.tm, driverOptions,
-		append(m._options, options.WithCustomLogger(m.log))...,
+		d.GetPlcTagHandler(),
+		d.tm, driverOptions,
+		append(d._options, options.WithCustomLogger(d.log))...,
 	)
-	m.log.Debug().Msg("created connection, connecting now")
+	d.log.Debug().Msg("created connection, connecting now")
 	return connection.ConnectWithContext(ctx)
 }
 
-func (m *Driver) reportError(err error) <-chan plc4go.PlcConnectionConnectResult {
+func (d *Driver) reportError(err error) <-chan plc4go.PlcConnectionConnectResult {
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	ch <- _default.NewDefaultPlcConnectionConnectResult(nil, err)
 	return ch
 }
 
-func (m *Driver) SetAwaitSetupComplete(awaitComplete bool) {
-	m.awaitSetupComplete = awaitComplete
+func (d *Driver) SetAwaitSetupComplete(awaitComplete bool) {
+	d.awaitSetupComplete = awaitComplete
 }
 
-func (m *Driver) SetAwaitDisconnectComplete(awaitComplete bool) {
-	m.awaitDisconnectComplete = awaitComplete
+func (d *Driver) SetAwaitDisconnectComplete(awaitComplete bool) {
+	d.awaitDisconnectComplete = awaitComplete
 }
 
-func (m *Driver) SupportsDiscovery() bool {
+func (d *Driver) SupportsDiscovery() bool {
 	return true
 }
 
-func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	return NewDiscoverer(
-		append(m._options, options.WithCustomLogger(m.log))...,
-	).Discover(ctx, callback, discoveryOptions...)
+func (d *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+	return d.discoverer.Discover(ctx, callback, discoveryOptions...)
 }
 
-func (m *Driver) Close() error {
-	if err := m.tm.Close(); err != nil {
-		return errors.Wrap(err, "error closing transaction manager")
+func (d *Driver) Close() error {
+	defer utils.StopWarn(d.log)()
+	d.log.Trace().Msg("Closing driver")
+	finalErr := new(utils.MultiError)
+	d.log.Trace().Msg("Closing discoverer")
+	if err := d.discoverer.Close(); err != nil {
+		finalErr.Append(errors.Wrap(err, "failed to close discoverer"))
 	}
-	return nil
+	d.log.Trace().Msg("Closing transaction manager")
+	if err := d.tm.Close(); err != nil {
+		finalErr.Append(errors.Wrap(err, "error closing transaction manager"))
+	}
+	return finalErr.ToErrorIfAny()
 }

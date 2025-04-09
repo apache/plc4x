@@ -52,6 +52,8 @@ type SubscriptionHandle struct {
 	subscriberWg sync.WaitGroup
 	complete     bool
 
+	wg sync.WaitGroup // use to track spawned go routines
+
 	log zerolog.Logger
 }
 
@@ -219,7 +221,9 @@ func (h *SubscriptionHandle) startSubscriber() {
 	h.log.Trace().Msg("Starting Subscription")
 
 	h.subscriberWg.Add(1)
+	h.wg.Add(1)
 	go func() {
+		defer h.wg.Done()
 		defer h.subscriberWg.Done()
 
 		var outstandingAcknowledgements []readWriteModel.SubscriptionAcknowledgement

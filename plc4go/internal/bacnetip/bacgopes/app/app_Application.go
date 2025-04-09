@@ -40,7 +40,7 @@ type ApplicationRequirements interface {
 	ApplicationServiceElementRequirements
 }
 
-//go:generate plc4xGenerator -type=Application -prefix=app_
+//go:generate go tool plc4xGenerator -type=Application -prefix=app_
 type Application struct {
 	ApplicationServiceElementContract
 	Collector

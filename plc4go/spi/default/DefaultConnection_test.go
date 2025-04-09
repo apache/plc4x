@@ -35,7 +35,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestDefaultConnectionMetadata_CanBrowse(t *testing.T) {
@@ -545,7 +544,6 @@ func Test_defaultConnection_Close(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionCloseResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Error("timeout")
@@ -649,7 +647,6 @@ func Test_defaultConnection_ConnectWithContext(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Error("timeout")
@@ -894,7 +891,6 @@ func Test_defaultConnection_Ping(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionPingResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Error("timeout")
@@ -918,7 +914,6 @@ func Test_defaultConnection_Ping(t *testing.T) {
 			connected: true,
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionPingResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Error("timeout")

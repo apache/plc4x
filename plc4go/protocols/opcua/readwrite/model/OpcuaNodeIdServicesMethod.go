@@ -41,1355 +41,1539 @@ type IOpcuaNodeIdServicesMethod interface {
 }
 
 const (
-	OpcuaNodeIdServicesMethod_ProgramStateMachineType_Start                                                                                                                 OpcuaNodeIdServicesMethod = 2426
-	OpcuaNodeIdServicesMethod_ProgramStateMachineType_Suspend                                                                                                               OpcuaNodeIdServicesMethod = 2427
-	OpcuaNodeIdServicesMethod_ProgramStateMachineType_Resume                                                                                                                OpcuaNodeIdServicesMethod = 2428
-	OpcuaNodeIdServicesMethod_ProgramStateMachineType_Halt                                                                                                                  OpcuaNodeIdServicesMethod = 2429
-	OpcuaNodeIdServicesMethod_ProgramStateMachineType_Reset                                                                                                                 OpcuaNodeIdServicesMethod = 2430
-	OpcuaNodeIdServicesMethod_ShelvedStateMachineType_Unshelve                                                                                                              OpcuaNodeIdServicesMethod = 2947
-	OpcuaNodeIdServicesMethod_ShelvedStateMachineType_OneShotShelve                                                                                                         OpcuaNodeIdServicesMethod = 2948
-	OpcuaNodeIdServicesMethod_ShelvedStateMachineType_TimedShelve                                                                                                           OpcuaNodeIdServicesMethod = 2949
-	OpcuaNodeIdServicesMethod_AddCommentMethodType                                                                                                                          OpcuaNodeIdServicesMethod = 3863
-	OpcuaNodeIdServicesMethod_ConditionType_ConditionRefresh                                                                                                                OpcuaNodeIdServicesMethod = 3875
-	OpcuaNodeIdServicesMethod_TimedShelveMethodType                                                                                                                         OpcuaNodeIdServicesMethod = 6102
-	OpcuaNodeIdServicesMethod_ConditionRefreshMethodType                                                                                                                    OpcuaNodeIdServicesMethod = 9007
-	OpcuaNodeIdServicesMethod_ConditionType_Enable                                                                                                                          OpcuaNodeIdServicesMethod = 9027
-	OpcuaNodeIdServicesMethod_ConditionType_Disable                                                                                                                         OpcuaNodeIdServicesMethod = 9028
-	OpcuaNodeIdServicesMethod_ConditionType_AddComment                                                                                                                      OpcuaNodeIdServicesMethod = 9029
-	OpcuaNodeIdServicesMethod_DialogResponseMethodType                                                                                                                      OpcuaNodeIdServicesMethod = 9031
-	OpcuaNodeIdServicesMethod_DialogConditionType_Respond                                                                                                                   OpcuaNodeIdServicesMethod = 9069
-	OpcuaNodeIdServicesMethod_AcknowledgeableConditionType_Acknowledge                                                                                                      OpcuaNodeIdServicesMethod = 9111
-	OpcuaNodeIdServicesMethod_AcknowledgeableConditionType_Confirm                                                                                                          OpcuaNodeIdServicesMethod = 9113
-	OpcuaNodeIdServicesMethod_AlarmConditionType_ShelvingState_Unshelve                                                                                                     OpcuaNodeIdServicesMethod = 9211
-	OpcuaNodeIdServicesMethod_AlarmConditionType_ShelvingState_OneShotShelve                                                                                                OpcuaNodeIdServicesMethod = 9212
-	OpcuaNodeIdServicesMethod_AlarmConditionType_ShelvingState_TimedShelve                                                                                                  OpcuaNodeIdServicesMethod = 9213
-	OpcuaNodeIdServicesMethod_ServerType_GetMonitoredItems                                                                                                                  OpcuaNodeIdServicesMethod = 11489
-	OpcuaNodeIdServicesMethod_Server_GetMonitoredItems                                                                                                                      OpcuaNodeIdServicesMethod = 11492
-	OpcuaNodeIdServicesMethod_GetMonitoredItemsMethodType                                                                                                                   OpcuaNodeIdServicesMethod = 11495
-	OpcuaNodeIdServicesMethod_FileType_Open                                                                                                                                 OpcuaNodeIdServicesMethod = 11580
-	OpcuaNodeIdServicesMethod_FileType_Close                                                                                                                                OpcuaNodeIdServicesMethod = 11583
-	OpcuaNodeIdServicesMethod_FileType_Read                                                                                                                                 OpcuaNodeIdServicesMethod = 11585
-	OpcuaNodeIdServicesMethod_FileType_Write                                                                                                                                OpcuaNodeIdServicesMethod = 11588
-	OpcuaNodeIdServicesMethod_FileType_GetPosition                                                                                                                          OpcuaNodeIdServicesMethod = 11590
-	OpcuaNodeIdServicesMethod_FileType_SetPosition                                                                                                                          OpcuaNodeIdServicesMethod = 11593
-	OpcuaNodeIdServicesMethod_AddressSpaceFileType_ExportNamespace                                                                                                          OpcuaNodeIdServicesMethod = 11615
-	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_Open                                                                                                      OpcuaNodeIdServicesMethod = 11629
-	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_Close                                                                                                     OpcuaNodeIdServicesMethod = 11632
-	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_Read                                                                                                      OpcuaNodeIdServicesMethod = 11634
-	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_Write                                                                                                     OpcuaNodeIdServicesMethod = 11637
-	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_GetPosition                                                                                               OpcuaNodeIdServicesMethod = 11639
-	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_SetPosition                                                                                               OpcuaNodeIdServicesMethod = 11642
-	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_ExportNamespace                                                                                           OpcuaNodeIdServicesMethod = 11644
-	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_Open                                                                             OpcuaNodeIdServicesMethod = 11659
-	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_Close                                                                            OpcuaNodeIdServicesMethod = 11662
-	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_Read                                                                             OpcuaNodeIdServicesMethod = 11664
-	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_Write                                                                            OpcuaNodeIdServicesMethod = 11667
-	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_GetPosition                                                                      OpcuaNodeIdServicesMethod = 11669
-	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_SetPosition                                                                      OpcuaNodeIdServicesMethod = 11672
-	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_ExportNamespace                                                                  OpcuaNodeIdServicesMethod = 11674
-	OpcuaNodeIdServicesMethod_OpenMethodType                                                                                                                                OpcuaNodeIdServicesMethod = 11738
-	OpcuaNodeIdServicesMethod_CloseMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 11741
-	OpcuaNodeIdServicesMethod_ReadMethodType                                                                                                                                OpcuaNodeIdServicesMethod = 11743
-	OpcuaNodeIdServicesMethod_WriteMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 11746
-	OpcuaNodeIdServicesMethod_GetPositionMethodType                                                                                                                         OpcuaNodeIdServicesMethod = 11748
-	OpcuaNodeIdServicesMethod_SetPositionMethodType                                                                                                                         OpcuaNodeIdServicesMethod = 11751
-	OpcuaNodeIdServicesMethod_OpenWithMasksMethodType                                                                                                                       OpcuaNodeIdServicesMethod = 12513
-	OpcuaNodeIdServicesMethod_CloseAndUpdateMethodType                                                                                                                      OpcuaNodeIdServicesMethod = 12516
-	OpcuaNodeIdServicesMethod_AddCertificateMethodType                                                                                                                      OpcuaNodeIdServicesMethod = 12518
-	OpcuaNodeIdServicesMethod_RemoveCertificateMethodType                                                                                                                   OpcuaNodeIdServicesMethod = 12520
-	OpcuaNodeIdServicesMethod_TrustListType_OpenWithMasks                                                                                                                   OpcuaNodeIdServicesMethod = 12543
-	OpcuaNodeIdServicesMethod_TrustListType_CloseAndUpdate                                                                                                                  OpcuaNodeIdServicesMethod = 12546
-	OpcuaNodeIdServicesMethod_TrustListType_AddCertificate                                                                                                                  OpcuaNodeIdServicesMethod = 12548
-	OpcuaNodeIdServicesMethod_TrustListType_RemoveCertificate                                                                                                               OpcuaNodeIdServicesMethod = 12550
-	OpcuaNodeIdServicesMethod_UpdateCertificateMethodType                                                                                                                   OpcuaNodeIdServicesMethod = 12578
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_UpdateCertificate                                                                                                     OpcuaNodeIdServicesMethod = 12616
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_Open                                                                  OpcuaNodeIdServicesMethod = 12647
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_Close                                                                 OpcuaNodeIdServicesMethod = 12650
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_Read                                                                  OpcuaNodeIdServicesMethod = 12652
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_Write                                                                 OpcuaNodeIdServicesMethod = 12655
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition                                                           OpcuaNodeIdServicesMethod = 12657
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition                                                           OpcuaNodeIdServicesMethod = 12660
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks                                                         OpcuaNodeIdServicesMethod = 12663
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate                                                        OpcuaNodeIdServicesMethod = 12666
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate                                                        OpcuaNodeIdServicesMethod = 12668
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate                                                     OpcuaNodeIdServicesMethod = 12670
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CreateSigningRequest                                                                                                  OpcuaNodeIdServicesMethod = 12731
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_ApplyChanges                                                                                                          OpcuaNodeIdServicesMethod = 12734
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CreateSigningRequest                                                                                                      OpcuaNodeIdServicesMethod = 12737
-	OpcuaNodeIdServicesMethod_ServerConfiguration_ApplyChanges                                                                                                              OpcuaNodeIdServicesMethod = 12740
-	OpcuaNodeIdServicesMethod_CreateSigningRequestMethodType                                                                                                                OpcuaNodeIdServicesMethod = 12741
-	OpcuaNodeIdServicesMethod_ServerType_SetSubscriptionDurable                                                                                                             OpcuaNodeIdServicesMethod = 12746
-	OpcuaNodeIdServicesMethod_Server_SetSubscriptionDurable                                                                                                                 OpcuaNodeIdServicesMethod = 12749
-	OpcuaNodeIdServicesMethod_SetSubscriptionDurableMethodType                                                                                                              OpcuaNodeIdServicesMethod = 12752
-	OpcuaNodeIdServicesMethod_GetRejectedListMethodType                                                                                                                     OpcuaNodeIdServicesMethod = 12773
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_GetRejectedList                                                                                                       OpcuaNodeIdServicesMethod = 12775
-	OpcuaNodeIdServicesMethod_ServerConfiguration_GetRejectedList                                                                                                           OpcuaNodeIdServicesMethod = 12777
-	OpcuaNodeIdServicesMethod_ServerType_ResendData                                                                                                                         OpcuaNodeIdServicesMethod = 12871
-	OpcuaNodeIdServicesMethod_Server_ResendData                                                                                                                             OpcuaNodeIdServicesMethod = 12873
-	OpcuaNodeIdServicesMethod_ResendDataMethodType                                                                                                                          OpcuaNodeIdServicesMethod = 12875
-	OpcuaNodeIdServicesMethod_ServerType_RequestServerStateChange                                                                                                           OpcuaNodeIdServicesMethod = 12883
-	OpcuaNodeIdServicesMethod_Server_RequestServerStateChange                                                                                                               OpcuaNodeIdServicesMethod = 12886
-	OpcuaNodeIdServicesMethod_RequestServerStateChangeMethodType                                                                                                            OpcuaNodeIdServicesMethod = 12888
-	OpcuaNodeIdServicesMethod_ConditionType_ConditionRefresh2                                                                                                               OpcuaNodeIdServicesMethod = 12912
-	OpcuaNodeIdServicesMethod_ConditionRefresh2MethodType                                                                                                                   OpcuaNodeIdServicesMethod = 12914
-	OpcuaNodeIdServicesMethod_CreateDirectoryMethodType                                                                                                                     OpcuaNodeIdServicesMethod = 13342
-	OpcuaNodeIdServicesMethod_CreateFileMethodType                                                                                                                          OpcuaNodeIdServicesMethod = 13345
-	OpcuaNodeIdServicesMethod_DeleteFileMethodType                                                                                                                          OpcuaNodeIdServicesMethod = 13348
-	OpcuaNodeIdServicesMethod_MoveOrCopyMethodType                                                                                                                          OpcuaNodeIdServicesMethod = 13350
-	OpcuaNodeIdServicesMethod_FileDirectoryType_FileDirectoryName_Placeholder_CreateDirectory                                                                               OpcuaNodeIdServicesMethod = 13355
-	OpcuaNodeIdServicesMethod_FileDirectoryType_FileDirectoryName_Placeholder_CreateFile                                                                                    OpcuaNodeIdServicesMethod = 13358
-	OpcuaNodeIdServicesMethod_FileDirectoryType_FileDirectoryName_Placeholder_MoveOrCopy                                                                                    OpcuaNodeIdServicesMethod = 13363
-	OpcuaNodeIdServicesMethod_FileDirectoryType_FileName_Placeholder_Open                                                                                                   OpcuaNodeIdServicesMethod = 13372
-	OpcuaNodeIdServicesMethod_FileDirectoryType_FileName_Placeholder_Close                                                                                                  OpcuaNodeIdServicesMethod = 13375
-	OpcuaNodeIdServicesMethod_FileDirectoryType_FileName_Placeholder_Read                                                                                                   OpcuaNodeIdServicesMethod = 13377
-	OpcuaNodeIdServicesMethod_FileDirectoryType_FileName_Placeholder_Write                                                                                                  OpcuaNodeIdServicesMethod = 13380
-	OpcuaNodeIdServicesMethod_FileDirectoryType_FileName_Placeholder_GetPosition                                                                                            OpcuaNodeIdServicesMethod = 13382
-	OpcuaNodeIdServicesMethod_FileDirectoryType_FileName_Placeholder_SetPosition                                                                                            OpcuaNodeIdServicesMethod = 13385
-	OpcuaNodeIdServicesMethod_FileDirectoryType_CreateDirectory                                                                                                             OpcuaNodeIdServicesMethod = 13387
-	OpcuaNodeIdServicesMethod_FileDirectoryType_CreateFile                                                                                                                  OpcuaNodeIdServicesMethod = 13390
-	OpcuaNodeIdServicesMethod_FileDirectoryType_DeleteFileSystemObject                                                                                                      OpcuaNodeIdServicesMethod = 13393
-	OpcuaNodeIdServicesMethod_FileDirectoryType_MoveOrCopy                                                                                                                  OpcuaNodeIdServicesMethod = 13395
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_Open                                                                                                           OpcuaNodeIdServicesMethod = 13605
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_Close                                                                                                          OpcuaNodeIdServicesMethod = 13608
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_Read                                                                                                           OpcuaNodeIdServicesMethod = 13610
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_Write                                                                                                          OpcuaNodeIdServicesMethod = 13613
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_GetPosition                                                                                                    OpcuaNodeIdServicesMethod = 13615
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_SetPosition                                                                                                    OpcuaNodeIdServicesMethod = 13618
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_OpenWithMasks                                                                                                  OpcuaNodeIdServicesMethod = 13621
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_CloseAndUpdate                                                                                                 OpcuaNodeIdServicesMethod = 13624
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_AddCertificate                                                                                                 OpcuaNodeIdServicesMethod = 13627
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_RemoveCertificate                                                                                              OpcuaNodeIdServicesMethod = 13629
-	OpcuaNodeIdServicesMethod_ServerConfiguration_UpdateCertificate                                                                                                         OpcuaNodeIdServicesMethod = 13737
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_Open                                                                             OpcuaNodeIdServicesMethod = 13821
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_Close                                                                            OpcuaNodeIdServicesMethod = 13824
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_Read                                                                             OpcuaNodeIdServicesMethod = 13826
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_Write                                                                            OpcuaNodeIdServicesMethod = 13829
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_GetPosition                                                                      OpcuaNodeIdServicesMethod = 13831
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_SetPosition                                                                      OpcuaNodeIdServicesMethod = 13834
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_OpenWithMasks                                                                    OpcuaNodeIdServicesMethod = 13837
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_CloseAndUpdate                                                                   OpcuaNodeIdServicesMethod = 13840
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_AddCertificate                                                                   OpcuaNodeIdServicesMethod = 13843
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_RemoveCertificate                                                                OpcuaNodeIdServicesMethod = 13845
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_Open                                                                                   OpcuaNodeIdServicesMethod = 13855
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_Close                                                                                  OpcuaNodeIdServicesMethod = 13858
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_Read                                                                                   OpcuaNodeIdServicesMethod = 13860
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_Write                                                                                  OpcuaNodeIdServicesMethod = 13863
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_GetPosition                                                                            OpcuaNodeIdServicesMethod = 13865
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_SetPosition                                                                            OpcuaNodeIdServicesMethod = 13868
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_OpenWithMasks                                                                          OpcuaNodeIdServicesMethod = 13871
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_CloseAndUpdate                                                                         OpcuaNodeIdServicesMethod = 13874
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_AddCertificate                                                                         OpcuaNodeIdServicesMethod = 13877
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_RemoveCertificate                                                                      OpcuaNodeIdServicesMethod = 13879
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_Open                                                                               OpcuaNodeIdServicesMethod = 13889
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_Close                                                                              OpcuaNodeIdServicesMethod = 13892
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_Read                                                                               OpcuaNodeIdServicesMethod = 13894
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_Write                                                                              OpcuaNodeIdServicesMethod = 13897
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_GetPosition                                                                        OpcuaNodeIdServicesMethod = 13899
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_SetPosition                                                                        OpcuaNodeIdServicesMethod = 13902
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_OpenWithMasks                                                                      OpcuaNodeIdServicesMethod = 13905
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_CloseAndUpdate                                                                     OpcuaNodeIdServicesMethod = 13908
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_AddCertificate                                                                     OpcuaNodeIdServicesMethod = 13911
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_RemoveCertificate                                                                  OpcuaNodeIdServicesMethod = 13913
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_Open                                                                         OpcuaNodeIdServicesMethod = 13923
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_Close                                                                        OpcuaNodeIdServicesMethod = 13926
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_Read                                                                         OpcuaNodeIdServicesMethod = 13928
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_Write                                                                        OpcuaNodeIdServicesMethod = 13931
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_GetPosition                                                                  OpcuaNodeIdServicesMethod = 13933
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_SetPosition                                                                  OpcuaNodeIdServicesMethod = 13936
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_OpenWithMasks                                                                OpcuaNodeIdServicesMethod = 13939
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_CloseAndUpdate                                                               OpcuaNodeIdServicesMethod = 13942
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_AddCertificate                                                               OpcuaNodeIdServicesMethod = 13945
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_RemoveCertificate                                                            OpcuaNodeIdServicesMethod = 13947
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_Open                                                              OpcuaNodeIdServicesMethod = 13958
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_Close                                                             OpcuaNodeIdServicesMethod = 13961
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_Read                                                              OpcuaNodeIdServicesMethod = 13963
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_Write                                                             OpcuaNodeIdServicesMethod = 13966
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition                                                       OpcuaNodeIdServicesMethod = 13968
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition                                                       OpcuaNodeIdServicesMethod = 13971
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks                                                     OpcuaNodeIdServicesMethod = 13974
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate                                                    OpcuaNodeIdServicesMethod = 13977
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate                                                    OpcuaNodeIdServicesMethod = 13980
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate                                                 OpcuaNodeIdServicesMethod = 13982
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_Open                                                                    OpcuaNodeIdServicesMethod = 13992
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_Close                                                                   OpcuaNodeIdServicesMethod = 13995
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_Read                                                                    OpcuaNodeIdServicesMethod = 13997
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_Write                                                                   OpcuaNodeIdServicesMethod = 14000
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition                                                             OpcuaNodeIdServicesMethod = 14002
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition                                                             OpcuaNodeIdServicesMethod = 14005
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks                                                           OpcuaNodeIdServicesMethod = 14008
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate                                                          OpcuaNodeIdServicesMethod = 14011
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate                                                          OpcuaNodeIdServicesMethod = 14014
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate                                                       OpcuaNodeIdServicesMethod = 14016
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_Open                                                                OpcuaNodeIdServicesMethod = 14026
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_Close                                                               OpcuaNodeIdServicesMethod = 14029
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_Read                                                                OpcuaNodeIdServicesMethod = 14031
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_Write                                                               OpcuaNodeIdServicesMethod = 14034
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition                                                         OpcuaNodeIdServicesMethod = 14036
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition                                                         OpcuaNodeIdServicesMethod = 14039
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks                                                       OpcuaNodeIdServicesMethod = 14042
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate                                                      OpcuaNodeIdServicesMethod = 14045
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate                                                      OpcuaNodeIdServicesMethod = 14048
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate                                                   OpcuaNodeIdServicesMethod = 14050
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_Open                                                                        OpcuaNodeIdServicesMethod = 14095
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_Close                                                                       OpcuaNodeIdServicesMethod = 14098
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_Read                                                                        OpcuaNodeIdServicesMethod = 14100
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_Write                                                                       OpcuaNodeIdServicesMethod = 14103
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition                                                                 OpcuaNodeIdServicesMethod = 14105
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition                                                                 OpcuaNodeIdServicesMethod = 14108
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks                                                               OpcuaNodeIdServicesMethod = 14111
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate                                                              OpcuaNodeIdServicesMethod = 14114
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate                                                              OpcuaNodeIdServicesMethod = 14117
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate                                                           OpcuaNodeIdServicesMethod = 14119
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_Open                                                                    OpcuaNodeIdServicesMethod = 14129
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_Close                                                                   OpcuaNodeIdServicesMethod = 14132
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_Read                                                                    OpcuaNodeIdServicesMethod = 14134
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_Write                                                                   OpcuaNodeIdServicesMethod = 14137
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition                                                             OpcuaNodeIdServicesMethod = 14139
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition                                                             OpcuaNodeIdServicesMethod = 14142
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks                                                           OpcuaNodeIdServicesMethod = 14145
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate                                                          OpcuaNodeIdServicesMethod = 14148
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate                                                          OpcuaNodeIdServicesMethod = 14151
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate                                                       OpcuaNodeIdServicesMethod = 14153
-	OpcuaNodeIdServicesMethod_RemoveConnectionMethodType                                                                                                                    OpcuaNodeIdServicesMethod = 14183
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_RemoveGroup                                                                                                              OpcuaNodeIdServicesMethod = 14225
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_Status_Enable                                                                                 OpcuaNodeIdServicesMethod = 14421
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_Status_Disable                                                                                OpcuaNodeIdServicesMethod = 14422
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_RemoveGroup                                                                                   OpcuaNodeIdServicesMethod = 14424
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_RemoveConnection                                                                                                         OpcuaNodeIdServicesMethod = 14432
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_AddPublishedDataItems                                                                                  OpcuaNodeIdServicesMethod = 14435
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_AddPublishedEvents                                                                                     OpcuaNodeIdServicesMethod = 14438
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_RemovePublishedDataSet                                                                                 OpcuaNodeIdServicesMethod = 14441
-	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItems                                                                         OpcuaNodeIdServicesMethod = 14479
-	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEvents                                                                            OpcuaNodeIdServicesMethod = 14482
-	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_RemovePublishedDataSet                                                                        OpcuaNodeIdServicesMethod = 14485
-	OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedDataItems                                                                                                       OpcuaNodeIdServicesMethod = 14493
-	OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedEvents                                                                                                          OpcuaNodeIdServicesMethod = 14496
-	OpcuaNodeIdServicesMethod_DataSetFolderType_RemovePublishedDataSet                                                                                                      OpcuaNodeIdServicesMethod = 14499
-	OpcuaNodeIdServicesMethod_AddPublishedDataItemsMethodType                                                                                                               OpcuaNodeIdServicesMethod = 14501
-	OpcuaNodeIdServicesMethod_AddPublishedEventsMethodType                                                                                                                  OpcuaNodeIdServicesMethod = 14504
-	OpcuaNodeIdServicesMethod_RemovePublishedDataSetMethodType                                                                                                              OpcuaNodeIdServicesMethod = 14507
-	OpcuaNodeIdServicesMethod_PublishedDataItemsType_AddVariables                                                                                                           OpcuaNodeIdServicesMethod = 14555
-	OpcuaNodeIdServicesMethod_PublishedDataItemsType_RemoveVariables                                                                                                        OpcuaNodeIdServicesMethod = 14558
-	OpcuaNodeIdServicesMethod_PublishedDataItemsAddVariablesMethodType                                                                                                      OpcuaNodeIdServicesMethod = 14564
-	OpcuaNodeIdServicesMethod_PublishedDataItemsRemoveVariablesMethodType                                                                                                   OpcuaNodeIdServicesMethod = 14567
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_Status_Enable                                                                                                            OpcuaNodeIdServicesMethod = 14602
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_Status_Disable                                                                                                           OpcuaNodeIdServicesMethod = 14603
-	OpcuaNodeIdServicesMethod_PubSubConnectionTypeRemoveGroupMethodType                                                                                                     OpcuaNodeIdServicesMethod = 14604
-	OpcuaNodeIdServicesMethod_PubSubGroupTypeRemoveWriterMethodType                                                                                                         OpcuaNodeIdServicesMethod = 14623
-	OpcuaNodeIdServicesMethod_PubSubGroupTypeRemoveReaderMethodType                                                                                                         OpcuaNodeIdServicesMethod = 14625
-	OpcuaNodeIdServicesMethod_PubSubStatusType_Enable                                                                                                                       OpcuaNodeIdServicesMethod = 14645
-	OpcuaNodeIdServicesMethod_PubSubStatusType_Disable                                                                                                                      OpcuaNodeIdServicesMethod = 14646
-	OpcuaNodeIdServicesMethod_PublishedEventsType_ModifyFieldSelection                                                                                                      OpcuaNodeIdServicesMethod = 15052
-	OpcuaNodeIdServicesMethod_PublishedEventsTypeModifyFieldSelectionMethodType                                                                                             OpcuaNodeIdServicesMethod = 15054
-	OpcuaNodeIdServicesMethod_TargetVariablesType_AddTargetVariables                                                                                                        OpcuaNodeIdServicesMethod = 15115
-	OpcuaNodeIdServicesMethod_TargetVariablesType_RemoveTargetVariables                                                                                                     OpcuaNodeIdServicesMethod = 15118
-	OpcuaNodeIdServicesMethod_TargetVariablesTypeAddTargetVariablesMethodType                                                                                               OpcuaNodeIdServicesMethod = 15121
-	OpcuaNodeIdServicesMethod_TargetVariablesTypeRemoveTargetVariablesMethodType                                                                                            OpcuaNodeIdServicesMethod = 15124
-	OpcuaNodeIdServicesMethod_PublishSubscribe_GetSecurityKeys                                                                                                              OpcuaNodeIdServicesMethod = 15215
-	OpcuaNodeIdServicesMethod_GetSecurityKeysMethodType                                                                                                                     OpcuaNodeIdServicesMethod = 15218
-	OpcuaNodeIdServicesMethod_PublishedDataSetType_DataSetWriterName_Placeholder_Status_Enable                                                                              OpcuaNodeIdServicesMethod = 15225
-	OpcuaNodeIdServicesMethod_PublishedDataSetType_DataSetWriterName_Placeholder_Status_Disable                                                                             OpcuaNodeIdServicesMethod = 15226
-	OpcuaNodeIdServicesMethod_CreateCredentialMethodType                                                                                                                    OpcuaNodeIdServicesMethod = 15248
-	OpcuaNodeIdServicesMethod_PubSubGroupType_Status_Enable                                                                                                                 OpcuaNodeIdServicesMethod = 15267
-	OpcuaNodeIdServicesMethod_PubSubGroupType_Status_Disable                                                                                                                OpcuaNodeIdServicesMethod = 15268
-	OpcuaNodeIdServicesMethod_DataSetWriterType_Status_Enable                                                                                                               OpcuaNodeIdServicesMethod = 15301
-	OpcuaNodeIdServicesMethod_DataSetWriterType_Status_Disable                                                                                                              OpcuaNodeIdServicesMethod = 15302
-	OpcuaNodeIdServicesMethod_DataSetReaderType_Status_Enable                                                                                                               OpcuaNodeIdServicesMethod = 15309
-	OpcuaNodeIdServicesMethod_DataSetReaderType_Status_Disable                                                                                                              OpcuaNodeIdServicesMethod = 15310
-	OpcuaNodeIdServicesMethod_PublishSubscribe_GetSecurityGroup                                                                                                             OpcuaNodeIdServicesMethod = 15440
-	OpcuaNodeIdServicesMethod_PublishSubscribe_SecurityGroups_AddSecurityGroup                                                                                              OpcuaNodeIdServicesMethod = 15444
-	OpcuaNodeIdServicesMethod_PublishSubscribe_SecurityGroups_RemoveSecurityGroup                                                                                           OpcuaNodeIdServicesMethod = 15447
-	OpcuaNodeIdServicesMethod_GetSecurityGroupMethodType                                                                                                                    OpcuaNodeIdServicesMethod = 15449
-	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder_AddSecurityGroup                                                                  OpcuaNodeIdServicesMethod = 15454
-	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder_RemoveSecurityGroup                                                               OpcuaNodeIdServicesMethod = 15457
-	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_AddSecurityGroup                                                                                                      OpcuaNodeIdServicesMethod = 15461
-	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_RemoveSecurityGroup                                                                                                   OpcuaNodeIdServicesMethod = 15464
-	OpcuaNodeIdServicesMethod_AddSecurityGroupMethodType                                                                                                                    OpcuaNodeIdServicesMethod = 15466
-	OpcuaNodeIdServicesMethod_RemoveSecurityGroupMethodType                                                                                                                 OpcuaNodeIdServicesMethod = 15469
-	OpcuaNodeIdServicesMethod_DataSetFolderType_PublishedDataSetName_Placeholder_ExtensionFields_AddExtensionField                                                          OpcuaNodeIdServicesMethod = 15474
-	OpcuaNodeIdServicesMethod_DataSetFolderType_PublishedDataSetName_Placeholder_ExtensionFields_RemoveExtensionField                                                       OpcuaNodeIdServicesMethod = 15477
-	OpcuaNodeIdServicesMethod_PublishedDataSetType_ExtensionFields_AddExtensionField                                                                                        OpcuaNodeIdServicesMethod = 15482
-	OpcuaNodeIdServicesMethod_PublishedDataSetType_ExtensionFields_RemoveExtensionField                                                                                     OpcuaNodeIdServicesMethod = 15485
-	OpcuaNodeIdServicesMethod_ExtensionFieldsType_AddExtensionField                                                                                                         OpcuaNodeIdServicesMethod = 15491
-	OpcuaNodeIdServicesMethod_ExtensionFieldsType_RemoveExtensionField                                                                                                      OpcuaNodeIdServicesMethod = 15494
-	OpcuaNodeIdServicesMethod_AddExtensionFieldMethodType                                                                                                                   OpcuaNodeIdServicesMethod = 15496
-	OpcuaNodeIdServicesMethod_RemoveExtensionFieldMethodType                                                                                                                OpcuaNodeIdServicesMethod = 15499
-	OpcuaNodeIdServicesMethod_RoleSetType_RoleName_Placeholder_AddIdentity                                                                                                  OpcuaNodeIdServicesMethod = 15612
-	OpcuaNodeIdServicesMethod_RoleSetType_RoleName_Placeholder_RemoveIdentity                                                                                               OpcuaNodeIdServicesMethod = 15614
-	OpcuaNodeIdServicesMethod_RoleType_AddIdentity                                                                                                                          OpcuaNodeIdServicesMethod = 15624
-	OpcuaNodeIdServicesMethod_RoleType_RemoveIdentity                                                                                                                       OpcuaNodeIdServicesMethod = 15626
-	OpcuaNodeIdServicesMethod_AddIdentityMethodType                                                                                                                         OpcuaNodeIdServicesMethod = 15636
-	OpcuaNodeIdServicesMethod_RemoveIdentityMethodType                                                                                                                      OpcuaNodeIdServicesMethod = 15638
-	OpcuaNodeIdServicesMethod_WellKnownRole_Anonymous_AddIdentity                                                                                                           OpcuaNodeIdServicesMethod = 15648
-	OpcuaNodeIdServicesMethod_WellKnownRole_Anonymous_RemoveIdentity                                                                                                        OpcuaNodeIdServicesMethod = 15650
-	OpcuaNodeIdServicesMethod_WellKnownRole_AuthenticatedUser_AddIdentity                                                                                                   OpcuaNodeIdServicesMethod = 15660
-	OpcuaNodeIdServicesMethod_WellKnownRole_AuthenticatedUser_RemoveIdentity                                                                                                OpcuaNodeIdServicesMethod = 15662
-	OpcuaNodeIdServicesMethod_WellKnownRole_Observer_AddIdentity                                                                                                            OpcuaNodeIdServicesMethod = 15672
-	OpcuaNodeIdServicesMethod_WellKnownRole_Observer_RemoveIdentity                                                                                                         OpcuaNodeIdServicesMethod = 15674
-	OpcuaNodeIdServicesMethod_WellKnownRole_Operator_AddIdentity                                                                                                            OpcuaNodeIdServicesMethod = 15684
-	OpcuaNodeIdServicesMethod_WellKnownRole_Operator_RemoveIdentity                                                                                                         OpcuaNodeIdServicesMethod = 15686
-	OpcuaNodeIdServicesMethod_WellKnownRole_Supervisor_AddIdentity                                                                                                          OpcuaNodeIdServicesMethod = 15696
-	OpcuaNodeIdServicesMethod_WellKnownRole_Supervisor_RemoveIdentity                                                                                                       OpcuaNodeIdServicesMethod = 15698
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityAdmin_AddIdentity                                                                                                       OpcuaNodeIdServicesMethod = 15708
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityAdmin_RemoveIdentity                                                                                                    OpcuaNodeIdServicesMethod = 15710
-	OpcuaNodeIdServicesMethod_WellKnownRole_ConfigureAdmin_AddIdentity                                                                                                      OpcuaNodeIdServicesMethod = 15720
-	OpcuaNodeIdServicesMethod_WellKnownRole_ConfigureAdmin_RemoveIdentity                                                                                                   OpcuaNodeIdServicesMethod = 15722
-	OpcuaNodeIdServicesMethod_TemporaryFileTransferType_GenerateFileForRead                                                                                                 OpcuaNodeIdServicesMethod = 15746
-	OpcuaNodeIdServicesMethod_TemporaryFileTransferType_GenerateFileForWrite                                                                                                OpcuaNodeIdServicesMethod = 15749
-	OpcuaNodeIdServicesMethod_TemporaryFileTransferType_CloseAndCommit                                                                                                      OpcuaNodeIdServicesMethod = 15751
-	OpcuaNodeIdServicesMethod_TemporaryFileTransferType_TransferState_Placeholder_Reset                                                                                     OpcuaNodeIdServicesMethod = 15794
-	OpcuaNodeIdServicesMethod_GenerateFileForReadMethodType                                                                                                                 OpcuaNodeIdServicesMethod = 15795
-	OpcuaNodeIdServicesMethod_GenerateFileForWriteMethodType                                                                                                                OpcuaNodeIdServicesMethod = 15798
-	OpcuaNodeIdServicesMethod_CloseAndCommitMethodType                                                                                                                      OpcuaNodeIdServicesMethod = 15800
-	OpcuaNodeIdServicesMethod_FileTransferStateMachineType_Reset                                                                                                            OpcuaNodeIdServicesMethod = 15843
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_Status_Enable                                                                                                            OpcuaNodeIdServicesMethod = 15846
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_Status_Disable                                                                                                           OpcuaNodeIdServicesMethod = 15847
-	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_GetSecurityKeys                                                                                                          OpcuaNodeIdServicesMethod = 15907
-	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_GetSecurityGroup                                                                                                         OpcuaNodeIdServicesMethod = 15910
-	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_SecurityGroups_AddSecurityGroup                                                                                          OpcuaNodeIdServicesMethod = 15914
-	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_SecurityGroups_RemoveSecurityGroup                                                                                       OpcuaNodeIdServicesMethod = 15917
-	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_Open                                                                                                     OpcuaNodeIdServicesMethod = 15971
-	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_Close                                                                                                    OpcuaNodeIdServicesMethod = 15974
-	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_Read                                                                                                     OpcuaNodeIdServicesMethod = 15976
-	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_Write                                                                                                    OpcuaNodeIdServicesMethod = 15979
-	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_GetPosition                                                                                              OpcuaNodeIdServicesMethod = 15981
-	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_SetPosition                                                                                              OpcuaNodeIdServicesMethod = 15984
-	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_ExportNamespace                                                                                          OpcuaNodeIdServicesMethod = 15986
-	OpcuaNodeIdServicesMethod_RoleSetType_AddRole                                                                                                                           OpcuaNodeIdServicesMethod = 15997
-	OpcuaNodeIdServicesMethod_RoleSetType_RemoveRole                                                                                                                        OpcuaNodeIdServicesMethod = 16000
-	OpcuaNodeIdServicesMethod_AddRoleMethodType                                                                                                                             OpcuaNodeIdServicesMethod = 16002
-	OpcuaNodeIdServicesMethod_RemoveRoleMethodType                                                                                                                          OpcuaNodeIdServicesMethod = 16005
-	OpcuaNodeIdServicesMethod_WellKnownRole_Engineer_AddIdentity                                                                                                            OpcuaNodeIdServicesMethod = 16041
-	OpcuaNodeIdServicesMethod_WellKnownRole_Engineer_RemoveIdentity                                                                                                         OpcuaNodeIdServicesMethod = 16043
-	OpcuaNodeIdServicesMethod_RoleSetType_RoleName_Placeholder_AddApplication                                                                                               OpcuaNodeIdServicesMethod = 16165
-	OpcuaNodeIdServicesMethod_RoleSetType_RoleName_Placeholder_RemoveApplication                                                                                            OpcuaNodeIdServicesMethod = 16167
-	OpcuaNodeIdServicesMethod_RoleSetType_RoleName_Placeholder_AddEndpoint                                                                                                  OpcuaNodeIdServicesMethod = 16169
-	OpcuaNodeIdServicesMethod_RoleSetType_RoleName_Placeholder_RemoveEndpoint                                                                                               OpcuaNodeIdServicesMethod = 16171
-	OpcuaNodeIdServicesMethod_RoleType_AddApplication                                                                                                                       OpcuaNodeIdServicesMethod = 16176
-	OpcuaNodeIdServicesMethod_RoleType_RemoveApplication                                                                                                                    OpcuaNodeIdServicesMethod = 16178
-	OpcuaNodeIdServicesMethod_RoleType_AddEndpoint                                                                                                                          OpcuaNodeIdServicesMethod = 16180
-	OpcuaNodeIdServicesMethod_RoleType_RemoveEndpoint                                                                                                                       OpcuaNodeIdServicesMethod = 16182
-	OpcuaNodeIdServicesMethod_AddApplicationMethodType                                                                                                                      OpcuaNodeIdServicesMethod = 16184
-	OpcuaNodeIdServicesMethod_RemoveApplicationMethodType                                                                                                                   OpcuaNodeIdServicesMethod = 16186
-	OpcuaNodeIdServicesMethod_AddEndpointMethodType                                                                                                                         OpcuaNodeIdServicesMethod = 16188
-	OpcuaNodeIdServicesMethod_RemoveEndpointMethodType                                                                                                                      OpcuaNodeIdServicesMethod = 16190
-	OpcuaNodeIdServicesMethod_WellKnownRole_Anonymous_AddApplication                                                                                                        OpcuaNodeIdServicesMethod = 16195
-	OpcuaNodeIdServicesMethod_WellKnownRole_Anonymous_RemoveApplication                                                                                                     OpcuaNodeIdServicesMethod = 16197
-	OpcuaNodeIdServicesMethod_WellKnownRole_Anonymous_AddEndpoint                                                                                                           OpcuaNodeIdServicesMethod = 16199
-	OpcuaNodeIdServicesMethod_WellKnownRole_Anonymous_RemoveEndpoint                                                                                                        OpcuaNodeIdServicesMethod = 16201
-	OpcuaNodeIdServicesMethod_WellKnownRole_AuthenticatedUser_AddApplication                                                                                                OpcuaNodeIdServicesMethod = 16206
-	OpcuaNodeIdServicesMethod_WellKnownRole_AuthenticatedUser_RemoveApplication                                                                                             OpcuaNodeIdServicesMethod = 16208
-	OpcuaNodeIdServicesMethod_WellKnownRole_AuthenticatedUser_AddEndpoint                                                                                                   OpcuaNodeIdServicesMethod = 16210
-	OpcuaNodeIdServicesMethod_WellKnownRole_AuthenticatedUser_RemoveEndpoint                                                                                                OpcuaNodeIdServicesMethod = 16212
-	OpcuaNodeIdServicesMethod_WellKnownRole_Observer_AddApplication                                                                                                         OpcuaNodeIdServicesMethod = 16217
-	OpcuaNodeIdServicesMethod_WellKnownRole_Observer_RemoveApplication                                                                                                      OpcuaNodeIdServicesMethod = 16219
-	OpcuaNodeIdServicesMethod_WellKnownRole_Observer_AddEndpoint                                                                                                            OpcuaNodeIdServicesMethod = 16221
-	OpcuaNodeIdServicesMethod_WellKnownRole_Observer_RemoveEndpoint                                                                                                         OpcuaNodeIdServicesMethod = 16223
-	OpcuaNodeIdServicesMethod_WellKnownRole_Operator_AddApplication                                                                                                         OpcuaNodeIdServicesMethod = 16228
-	OpcuaNodeIdServicesMethod_WellKnownRole_Operator_RemoveApplication                                                                                                      OpcuaNodeIdServicesMethod = 16230
-	OpcuaNodeIdServicesMethod_WellKnownRole_Operator_AddEndpoint                                                                                                            OpcuaNodeIdServicesMethod = 16232
-	OpcuaNodeIdServicesMethod_WellKnownRole_Operator_RemoveEndpoint                                                                                                         OpcuaNodeIdServicesMethod = 16234
-	OpcuaNodeIdServicesMethod_WellKnownRole_Engineer_AddApplication                                                                                                         OpcuaNodeIdServicesMethod = 16239
-	OpcuaNodeIdServicesMethod_WellKnownRole_Engineer_RemoveApplication                                                                                                      OpcuaNodeIdServicesMethod = 16241
-	OpcuaNodeIdServicesMethod_WellKnownRole_Engineer_AddEndpoint                                                                                                            OpcuaNodeIdServicesMethod = 16243
-	OpcuaNodeIdServicesMethod_WellKnownRole_Engineer_RemoveEndpoint                                                                                                         OpcuaNodeIdServicesMethod = 16245
-	OpcuaNodeIdServicesMethod_WellKnownRole_Supervisor_AddApplication                                                                                                       OpcuaNodeIdServicesMethod = 16250
-	OpcuaNodeIdServicesMethod_WellKnownRole_Supervisor_RemoveApplication                                                                                                    OpcuaNodeIdServicesMethod = 16252
-	OpcuaNodeIdServicesMethod_WellKnownRole_Supervisor_AddEndpoint                                                                                                          OpcuaNodeIdServicesMethod = 16254
-	OpcuaNodeIdServicesMethod_WellKnownRole_Supervisor_RemoveEndpoint                                                                                                       OpcuaNodeIdServicesMethod = 16256
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityAdmin_AddApplication                                                                                                    OpcuaNodeIdServicesMethod = 16261
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityAdmin_RemoveApplication                                                                                                 OpcuaNodeIdServicesMethod = 16263
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityAdmin_AddEndpoint                                                                                                       OpcuaNodeIdServicesMethod = 16265
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityAdmin_RemoveEndpoint                                                                                                    OpcuaNodeIdServicesMethod = 16267
-	OpcuaNodeIdServicesMethod_WellKnownRole_ConfigureAdmin_AddApplication                                                                                                   OpcuaNodeIdServicesMethod = 16272
-	OpcuaNodeIdServicesMethod_WellKnownRole_ConfigureAdmin_RemoveApplication                                                                                                OpcuaNodeIdServicesMethod = 16274
-	OpcuaNodeIdServicesMethod_WellKnownRole_ConfigureAdmin_AddEndpoint                                                                                                      OpcuaNodeIdServicesMethod = 16276
-	OpcuaNodeIdServicesMethod_WellKnownRole_ConfigureAdmin_RemoveEndpoint                                                                                                   OpcuaNodeIdServicesMethod = 16278
-	OpcuaNodeIdServicesMethod_ServerType_ServerCapabilities_RoleSet_AddRole                                                                                                 OpcuaNodeIdServicesMethod = 16290
-	OpcuaNodeIdServicesMethod_ServerType_ServerCapabilities_RoleSet_RemoveRole                                                                                              OpcuaNodeIdServicesMethod = 16293
-	OpcuaNodeIdServicesMethod_ServerCapabilitiesType_RoleSet_AddRole                                                                                                        OpcuaNodeIdServicesMethod = 16296
-	OpcuaNodeIdServicesMethod_ServerCapabilitiesType_RoleSet_RemoveRole                                                                                                     OpcuaNodeIdServicesMethod = 16299
-	OpcuaNodeIdServicesMethod_Server_ServerCapabilities_RoleSet_AddRole                                                                                                     OpcuaNodeIdServicesMethod = 16301
-	OpcuaNodeIdServicesMethod_Server_ServerCapabilities_RoleSet_RemoveRole                                                                                                  OpcuaNodeIdServicesMethod = 16304
-	OpcuaNodeIdServicesMethod_FileSystem_CreateDirectory                                                                                                                    OpcuaNodeIdServicesMethod = 16348
-	OpcuaNodeIdServicesMethod_FileSystem_CreateFile                                                                                                                         OpcuaNodeIdServicesMethod = 16351
-	OpcuaNodeIdServicesMethod_FileSystem_DeleteFileSystemObject                                                                                                             OpcuaNodeIdServicesMethod = 16354
-	OpcuaNodeIdServicesMethod_FileSystem_MoveOrCopy                                                                                                                         OpcuaNodeIdServicesMethod = 16356
-	OpcuaNodeIdServicesMethod_AlarmConditionType_Silence                                                                                                                    OpcuaNodeIdServicesMethod = 16402
-	OpcuaNodeIdServicesMethod_AlarmConditionType_Suppress                                                                                                                   OpcuaNodeIdServicesMethod = 16403
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Disable                                                                                     OpcuaNodeIdServicesMethod = 16439
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Enable                                                                                      OpcuaNodeIdServicesMethod = 16440
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_AddComment                                                                                  OpcuaNodeIdServicesMethod = 16441
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Acknowledge                                                                                 OpcuaNodeIdServicesMethod = 16461
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Confirm                                                                                     OpcuaNodeIdServicesMethod = 16463
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState_Unshelve                                                                      OpcuaNodeIdServicesMethod = 16515
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState_OneShotShelve                                                                 OpcuaNodeIdServicesMethod = 16516
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState_TimedShelve                                                                   OpcuaNodeIdServicesMethod = 16517
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Silence                                                                                     OpcuaNodeIdServicesMethod = 16533
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Suppress                                                                                    OpcuaNodeIdServicesMethod = 16534
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup                                                                                OpcuaNodeIdServicesMethod = 16535
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_AddReaderGroup                                                                                OpcuaNodeIdServicesMethod = 16560
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_AddConnection                                                                                                            OpcuaNodeIdServicesMethod = 16598
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_AddPublishedDataItemsTemplate                                                                          OpcuaNodeIdServicesMethod = 16601
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_AddPublishedEventsTemplate                                                                             OpcuaNodeIdServicesMethod = 16639
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_AddDataSetFolder                                                                                       OpcuaNodeIdServicesMethod = 16651
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_RemoveDataSetFolder                                                                                    OpcuaNodeIdServicesMethod = 16680
-	OpcuaNodeIdServicesMethod_AddConnectionMethodType                                                                                                                       OpcuaNodeIdServicesMethod = 16691
-	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate                                                                 OpcuaNodeIdServicesMethod = 16842
-	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate                                                                    OpcuaNodeIdServicesMethod = 16881
-	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder                                                                              OpcuaNodeIdServicesMethod = 16884
-	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_RemoveDataSetFolder                                                                           OpcuaNodeIdServicesMethod = 16923
-	OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedDataItemsTemplate                                                                                               OpcuaNodeIdServicesMethod = 16935
-	OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedEventsTemplate                                                                                                  OpcuaNodeIdServicesMethod = 16960
-	OpcuaNodeIdServicesMethod_DataSetFolderType_AddDataSetFolder                                                                                                            OpcuaNodeIdServicesMethod = 16994
-	OpcuaNodeIdServicesMethod_DataSetFolderType_RemoveDataSetFolder                                                                                                         OpcuaNodeIdServicesMethod = 16997
-	OpcuaNodeIdServicesMethod_AddPublishedDataItemsTemplateMethodType                                                                                                       OpcuaNodeIdServicesMethod = 17030
-	OpcuaNodeIdServicesMethod_AddPublishedEventsTemplateMethodType                                                                                                          OpcuaNodeIdServicesMethod = 17033
-	OpcuaNodeIdServicesMethod_AddDataSetFolderMethodType                                                                                                                    OpcuaNodeIdServicesMethod = 17067
-	OpcuaNodeIdServicesMethod_RemoveDataSetFolderMethodType                                                                                                                 OpcuaNodeIdServicesMethod = 17079
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_AddDataSetWriter                                                                             OpcuaNodeIdServicesMethod = 17293
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_SetSecurityKeys                                                                                                          OpcuaNodeIdServicesMethod = 17296
-	OpcuaNodeIdServicesMethod_SetSecurityKeysMethodType                                                                                                                     OpcuaNodeIdServicesMethod = 17298
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_Status_Enable                                                                                OpcuaNodeIdServicesMethod = 17316
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_Status_Disable                                                                               OpcuaNodeIdServicesMethod = 17317
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_RemoveDataSetWriter                                                                          OpcuaNodeIdServicesMethod = 17323
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_Status_Enable                                                                                OpcuaNodeIdServicesMethod = 17331
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_Status_Disable                                                                               OpcuaNodeIdServicesMethod = 17332
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_RemoveDataSetReader                                                                          OpcuaNodeIdServicesMethod = 17333
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_AddDataSetReader                                                                             OpcuaNodeIdServicesMethod = 17355
-	OpcuaNodeIdServicesMethod_PublishSubscribe_SetSecurityKeys                                                                                                              OpcuaNodeIdServicesMethod = 17364
-	OpcuaNodeIdServicesMethod_PublishSubscribe_AddConnection                                                                                                                OpcuaNodeIdServicesMethod = 17366
-	OpcuaNodeIdServicesMethod_PublishSubscribe_RemoveConnection                                                                                                             OpcuaNodeIdServicesMethod = 17369
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_AddPublishedDataItems                                                                                      OpcuaNodeIdServicesMethod = 17372
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_AddPublishedEvents                                                                                         OpcuaNodeIdServicesMethod = 17375
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_AddPublishedDataItemsTemplate                                                                              OpcuaNodeIdServicesMethod = 17378
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_AddPublishedEventsTemplate                                                                                 OpcuaNodeIdServicesMethod = 17381
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_RemovePublishedDataSet                                                                                     OpcuaNodeIdServicesMethod = 17384
-	OpcuaNodeIdServicesMethod_DataSetReaderType_CreateTargetVariables                                                                                                       OpcuaNodeIdServicesMethod = 17386
-	OpcuaNodeIdServicesMethod_DataSetReaderType_CreateDataSetMirror                                                                                                         OpcuaNodeIdServicesMethod = 17389
-	OpcuaNodeIdServicesMethod_DataSetReaderTypeCreateTargetVariablesMethodType                                                                                              OpcuaNodeIdServicesMethod = 17392
-	OpcuaNodeIdServicesMethod_DataSetReaderTypeCreateDataSetMirrorMethodType                                                                                                OpcuaNodeIdServicesMethod = 17395
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_AddDataSetFolder                                                                                           OpcuaNodeIdServicesMethod = 17398
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_RemoveDataSetFolder                                                                                        OpcuaNodeIdServicesMethod = 17403
-	OpcuaNodeIdServicesMethod_PublishSubscribe_Status_Enable                                                                                                                OpcuaNodeIdServicesMethod = 17407
-	OpcuaNodeIdServicesMethod_PublishSubscribe_Status_Disable                                                                                                               OpcuaNodeIdServicesMethod = 17408
-	OpcuaNodeIdServicesMethod_PublishSubscribe_Diagnostics_Reset                                                                                                            OpcuaNodeIdServicesMethod = 17421
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_AddWriterGroup                                                                                                           OpcuaNodeIdServicesMethod = 17427
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_AddReaderGroup                                                                                                           OpcuaNodeIdServicesMethod = 17465
-	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationFolderType_ServiceName_Placeholder_GetEncryptingKey                                                                 OpcuaNodeIdServicesMethod = 17516
-	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationFolderType_ServiceName_Placeholder_UpdateCredential                                                                 OpcuaNodeIdServicesMethod = 17519
-	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationFolderType_ServiceName_Placeholder_DeleteCredential                                                                 OpcuaNodeIdServicesMethod = 17521
-	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationFolderType_CreateCredential                                                                                         OpcuaNodeIdServicesMethod = 17522
-	OpcuaNodeIdServicesMethod_KeyCredentialConfiguration_CreateCredential                                                                                                   OpcuaNodeIdServicesMethod = 17528
-	OpcuaNodeIdServicesMethod_GetEncryptingKeyMethodType                                                                                                                    OpcuaNodeIdServicesMethod = 17531
-	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_GetEncryptingKey                                                                                               OpcuaNodeIdServicesMethod = 17534
-	OpcuaNodeIdServicesMethod_PubSubConnectionTypeAddWriterGroupMethodType                                                                                                  OpcuaNodeIdServicesMethod = 17561
-	OpcuaNodeIdServicesMethod_PubSubConnectionAddReaderGroupGroupMethodType                                                                                                 OpcuaNodeIdServicesMethod = 17630
-	OpcuaNodeIdServicesMethod_FileDirectoryType_FileDirectoryName_Placeholder_DeleteFileSystemObject                                                                        OpcuaNodeIdServicesMethod = 17718
-	OpcuaNodeIdServicesMethod_WriterGroupType_DataSetWriterName_Placeholder_Status_Enable                                                                                   OpcuaNodeIdServicesMethod = 17751
-	OpcuaNodeIdServicesMethod_WriterGroupType_DataSetWriterName_Placeholder_Status_Disable                                                                                  OpcuaNodeIdServicesMethod = 17752
-	OpcuaNodeIdServicesMethod_WriterGroupType_DataSetWriterName_Placeholder_Diagnostics_Reset                                                                               OpcuaNodeIdServicesMethod = 17765
-	OpcuaNodeIdServicesMethod_WriterGroupType_Diagnostics_Reset                                                                                                             OpcuaNodeIdServicesMethod = 17824
-	OpcuaNodeIdServicesMethod_AlarmConditionType_Unsuppress                                                                                                                 OpcuaNodeIdServicesMethod = 17868
-	OpcuaNodeIdServicesMethod_AlarmConditionType_RemoveFromService                                                                                                          OpcuaNodeIdServicesMethod = 17869
-	OpcuaNodeIdServicesMethod_AlarmConditionType_PlaceInService                                                                                                             OpcuaNodeIdServicesMethod = 17870
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Unsuppress                                                                                  OpcuaNodeIdServicesMethod = 17875
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_RemoveFromService                                                                           OpcuaNodeIdServicesMethod = 17876
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_PlaceInService                                                                              OpcuaNodeIdServicesMethod = 17877
-	OpcuaNodeIdServicesMethod_WriterGroupType_AddDataSetWriter                                                                                                              OpcuaNodeIdServicesMethod = 17969
-	OpcuaNodeIdServicesMethod_WriterGroupType_RemoveDataSetWriter                                                                                                           OpcuaNodeIdServicesMethod = 17992
-	OpcuaNodeIdServicesMethod_PubSubGroupTypeAddWriterMethodType                                                                                                            OpcuaNodeIdServicesMethod = 17994
-	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_UpdateCredential                                                                                               OpcuaNodeIdServicesMethod = 18006
-	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_DeleteCredential                                                                                               OpcuaNodeIdServicesMethod = 18008
-	OpcuaNodeIdServicesMethod_KeyCredentialUpdateMethodType                                                                                                                 OpcuaNodeIdServicesMethod = 18009
-	OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_Status_Enable                                                                                   OpcuaNodeIdServicesMethod = 18090
-	OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_Status_Disable                                                                                  OpcuaNodeIdServicesMethod = 18091
-	OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_Reset                                                                               OpcuaNodeIdServicesMethod = 18104
-	OpcuaNodeIdServicesMethod_AlarmConditionType_Reset                                                                                                                      OpcuaNodeIdServicesMethod = 18199
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Reset                                                                                       OpcuaNodeIdServicesMethod = 18212
-	OpcuaNodeIdServicesMethod_AlarmMetricsType_Reset                                                                                                                        OpcuaNodeIdServicesMethod = 18666
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_Reset                                                                             OpcuaNodeIdServicesMethod = 18679
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_Diagnostics_Reset                                                                                                        OpcuaNodeIdServicesMethod = 18727
-	OpcuaNodeIdServicesMethod_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Reset                                                                          OpcuaNodeIdServicesMethod = 18883
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics_Reset                                                                            OpcuaNodeIdServicesMethod = 19119
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_Diagnostics_Reset                                                                            OpcuaNodeIdServicesMethod = 19188
-	OpcuaNodeIdServicesMethod_PubSubConnectionType_Diagnostics_Reset                                                                                                        OpcuaNodeIdServicesMethod = 19253
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Disable                                                                                               OpcuaNodeIdServicesMethod = 19483
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Enable                                                                                                OpcuaNodeIdServicesMethod = 19484
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_AddComment                                                                                            OpcuaNodeIdServicesMethod = 19485
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Acknowledge                                                                                           OpcuaNodeIdServicesMethod = 19505
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Confirm                                                                                               OpcuaNodeIdServicesMethod = 19507
-	OpcuaNodeIdServicesMethod_DataSetWriterType_Diagnostics_Reset                                                                                                           OpcuaNodeIdServicesMethod = 19562
-	OpcuaNodeIdServicesMethod_DataSetReaderType_Diagnostics_Reset                                                                                                           OpcuaNodeIdServicesMethod = 19621
-	OpcuaNodeIdServicesMethod_PubSubDiagnosticsType_Reset                                                                                                                   OpcuaNodeIdServicesMethod = 19689
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve                                                                             OpcuaNodeIdServicesMethod = 20097
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_Unshelve                                                                                OpcuaNodeIdServicesMethod = 20099
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_OneShotShelve                                                                           OpcuaNodeIdServicesMethod = 20100
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Silence                                                                                               OpcuaNodeIdServicesMethod = 20132
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Suppress                                                                                              OpcuaNodeIdServicesMethod = 20133
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Unsuppress                                                                                            OpcuaNodeIdServicesMethod = 20134
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_RemoveFromService                                                                                     OpcuaNodeIdServicesMethod = 20135
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_PlaceInService                                                                                        OpcuaNodeIdServicesMethod = 20136
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Reset                                                                                                 OpcuaNodeIdServicesMethod = 20137
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Disable                                                                                               OpcuaNodeIdServicesMethod = 20176
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Enable                                                                                                OpcuaNodeIdServicesMethod = 20177
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_AddComment                                                                                            OpcuaNodeIdServicesMethod = 20178
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Acknowledge                                                                                           OpcuaNodeIdServicesMethod = 20198
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Confirm                                                                                               OpcuaNodeIdServicesMethod = 20200
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_ShelvingState_TimedShelve                                                                             OpcuaNodeIdServicesMethod = 20245
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_ShelvingState_Unshelve                                                                                OpcuaNodeIdServicesMethod = 20247
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_ShelvingState_OneShotShelve                                                                           OpcuaNodeIdServicesMethod = 20248
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Silence                                                                                               OpcuaNodeIdServicesMethod = 20280
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Suppress                                                                                              OpcuaNodeIdServicesMethod = 20281
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Unsuppress                                                                                            OpcuaNodeIdServicesMethod = 20282
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_RemoveFromService                                                                                     OpcuaNodeIdServicesMethod = 20283
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_PlaceInService                                                                                        OpcuaNodeIdServicesMethod = 20284
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Reset                                                                                                 OpcuaNodeIdServicesMethod = 20285
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Disable                                                                 OpcuaNodeIdServicesMethod = 20324
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Enable                                                                  OpcuaNodeIdServicesMethod = 20325
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_AddComment                                                              OpcuaNodeIdServicesMethod = 20326
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Acknowledge                                                             OpcuaNodeIdServicesMethod = 20346
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Confirm                                                                 OpcuaNodeIdServicesMethod = 20348
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve                                               OpcuaNodeIdServicesMethod = 20393
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve                                                  OpcuaNodeIdServicesMethod = 20395
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve                                             OpcuaNodeIdServicesMethod = 20396
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Silence                                                                 OpcuaNodeIdServicesMethod = 20430
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Suppress                                                                OpcuaNodeIdServicesMethod = 20431
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Unsuppress                                                              OpcuaNodeIdServicesMethod = 20432
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_RemoveFromService                                                       OpcuaNodeIdServicesMethod = 20433
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_PlaceInService                                                          OpcuaNodeIdServicesMethod = 20434
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Reset                                                                   OpcuaNodeIdServicesMethod = 20435
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Disable                                                                 OpcuaNodeIdServicesMethod = 20474
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Enable                                                                  OpcuaNodeIdServicesMethod = 20475
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_AddComment                                                              OpcuaNodeIdServicesMethod = 20476
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge                                                             OpcuaNodeIdServicesMethod = 20496
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Confirm                                                                 OpcuaNodeIdServicesMethod = 20498
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                               OpcuaNodeIdServicesMethod = 20543
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve                                                  OpcuaNodeIdServicesMethod = 20545
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                             OpcuaNodeIdServicesMethod = 20546
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Silence                                                                 OpcuaNodeIdServicesMethod = 20578
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Suppress                                                                OpcuaNodeIdServicesMethod = 20579
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress                                                              OpcuaNodeIdServicesMethod = 20580
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService                                                       OpcuaNodeIdServicesMethod = 20581
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService                                                          OpcuaNodeIdServicesMethod = 20582
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Reset                                                                   OpcuaNodeIdServicesMethod = 20583
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Disable                                                                       OpcuaNodeIdServicesMethod = 20622
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Enable                                                                        OpcuaNodeIdServicesMethod = 20623
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_AddComment                                                                    OpcuaNodeIdServicesMethod = 20624
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Acknowledge                                                                   OpcuaNodeIdServicesMethod = 20644
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Confirm                                                                       OpcuaNodeIdServicesMethod = 20646
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve                                                     OpcuaNodeIdServicesMethod = 20691
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve                                                        OpcuaNodeIdServicesMethod = 20693
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve                                                   OpcuaNodeIdServicesMethod = 20694
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Silence                                                                       OpcuaNodeIdServicesMethod = 20726
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Suppress                                                                      OpcuaNodeIdServicesMethod = 20727
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Unsuppress                                                                    OpcuaNodeIdServicesMethod = 20728
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_RemoveFromService                                                             OpcuaNodeIdServicesMethod = 20729
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_PlaceInService                                                                OpcuaNodeIdServicesMethod = 20730
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Reset                                                                         OpcuaNodeIdServicesMethod = 20731
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Disable                                                                       OpcuaNodeIdServicesMethod = 20770
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Enable                                                                        OpcuaNodeIdServicesMethod = 20771
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_AddComment                                                                    OpcuaNodeIdServicesMethod = 20772
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge                                                                   OpcuaNodeIdServicesMethod = 20792
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Confirm                                                                       OpcuaNodeIdServicesMethod = 20794
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                                     OpcuaNodeIdServicesMethod = 20839
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve                                                        OpcuaNodeIdServicesMethod = 20841
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                                   OpcuaNodeIdServicesMethod = 20842
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Silence                                                                       OpcuaNodeIdServicesMethod = 20874
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Suppress                                                                      OpcuaNodeIdServicesMethod = 20875
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress                                                                    OpcuaNodeIdServicesMethod = 20876
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService                                                             OpcuaNodeIdServicesMethod = 20877
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService                                                                OpcuaNodeIdServicesMethod = 20878
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Reset                                                                         OpcuaNodeIdServicesMethod = 20879
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Disable                                                                   OpcuaNodeIdServicesMethod = 20918
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Enable                                                                    OpcuaNodeIdServicesMethod = 20919
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_AddComment                                                                OpcuaNodeIdServicesMethod = 20920
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Acknowledge                                                               OpcuaNodeIdServicesMethod = 20940
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Confirm                                                                   OpcuaNodeIdServicesMethod = 20942
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve                                                 OpcuaNodeIdServicesMethod = 20987
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve                                                    OpcuaNodeIdServicesMethod = 20989
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve                                               OpcuaNodeIdServicesMethod = 20990
-	OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_CreateTargetVariables                                                                           OpcuaNodeIdServicesMethod = 21009
-	OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_CreateDataSetMirror                                                                             OpcuaNodeIdServicesMethod = 21012
-	OpcuaNodeIdServicesMethod_ReaderGroupType_Diagnostics_Reset                                                                                                             OpcuaNodeIdServicesMethod = 21027
-	OpcuaNodeIdServicesMethod_ReaderGroupType_AddDataSetReader                                                                                                              OpcuaNodeIdServicesMethod = 21082
-	OpcuaNodeIdServicesMethod_ReaderGroupType_RemoveDataSetReader                                                                                                           OpcuaNodeIdServicesMethod = 21085
-	OpcuaNodeIdServicesMethod_PubSubGroupTypeAddReaderMethodType                                                                                                            OpcuaNodeIdServicesMethod = 21087
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Silence                                                                   OpcuaNodeIdServicesMethod = 21225
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Suppress                                                                  OpcuaNodeIdServicesMethod = 21226
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Unsuppress                                                                OpcuaNodeIdServicesMethod = 21227
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_RemoveFromService                                                         OpcuaNodeIdServicesMethod = 21228
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_PlaceInService                                                            OpcuaNodeIdServicesMethod = 21229
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Reset                                                                     OpcuaNodeIdServicesMethod = 21230
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Disable                                                                   OpcuaNodeIdServicesMethod = 21269
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Enable                                                                    OpcuaNodeIdServicesMethod = 21270
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_AddComment                                                                OpcuaNodeIdServicesMethod = 21271
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge                                                               OpcuaNodeIdServicesMethod = 21291
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Confirm                                                                   OpcuaNodeIdServicesMethod = 21293
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                                 OpcuaNodeIdServicesMethod = 21338
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve                                                    OpcuaNodeIdServicesMethod = 21340
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                               OpcuaNodeIdServicesMethod = 21341
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Silence                                                                   OpcuaNodeIdServicesMethod = 21373
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Suppress                                                                  OpcuaNodeIdServicesMethod = 21374
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress                                                                OpcuaNodeIdServicesMethod = 21375
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService                                                         OpcuaNodeIdServicesMethod = 21376
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService                                                            OpcuaNodeIdServicesMethod = 21377
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Reset                                                                     OpcuaNodeIdServicesMethod = 21378
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Disable                                                             OpcuaNodeIdServicesMethod = 21417
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Enable                                                              OpcuaNodeIdServicesMethod = 21418
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_AddComment                                                          OpcuaNodeIdServicesMethod = 21419
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Acknowledge                                                         OpcuaNodeIdServicesMethod = 21439
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Confirm                                                             OpcuaNodeIdServicesMethod = 21441
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState_TimedShelve                                           OpcuaNodeIdServicesMethod = 21486
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState_Unshelve                                              OpcuaNodeIdServicesMethod = 21488
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState_OneShotShelve                                         OpcuaNodeIdServicesMethod = 21489
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Silence                                                             OpcuaNodeIdServicesMethod = 21521
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Suppress                                                            OpcuaNodeIdServicesMethod = 21522
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Unsuppress                                                          OpcuaNodeIdServicesMethod = 21523
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_RemoveFromService                                                   OpcuaNodeIdServicesMethod = 21524
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_PlaceInService                                                      OpcuaNodeIdServicesMethod = 21525
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Reset                                                               OpcuaNodeIdServicesMethod = 21526
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Disable                                                             OpcuaNodeIdServicesMethod = 21565
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Enable                                                              OpcuaNodeIdServicesMethod = 21566
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_AddComment                                                          OpcuaNodeIdServicesMethod = 21567
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Acknowledge                                                         OpcuaNodeIdServicesMethod = 21587
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Confirm                                                             OpcuaNodeIdServicesMethod = 21589
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_TimedShelve                                           OpcuaNodeIdServicesMethod = 21634
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_Unshelve                                              OpcuaNodeIdServicesMethod = 21636
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_OneShotShelve                                         OpcuaNodeIdServicesMethod = 21637
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Silence                                                             OpcuaNodeIdServicesMethod = 21669
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Suppress                                                            OpcuaNodeIdServicesMethod = 21670
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Unsuppress                                                          OpcuaNodeIdServicesMethod = 21671
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_RemoveFromService                                                   OpcuaNodeIdServicesMethod = 21672
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_PlaceInService                                                      OpcuaNodeIdServicesMethod = 21673
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Reset                                                               OpcuaNodeIdServicesMethod = 21674
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable                                                  OpcuaNodeIdServicesMethod = 21713
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable                                                   OpcuaNodeIdServicesMethod = 21714
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment                                               OpcuaNodeIdServicesMethod = 21715
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge                                              OpcuaNodeIdServicesMethod = 21735
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm                                                  OpcuaNodeIdServicesMethod = 21737
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve                                OpcuaNodeIdServicesMethod = 21782
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve                                   OpcuaNodeIdServicesMethod = 21784
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve                              OpcuaNodeIdServicesMethod = 21785
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence                                                  OpcuaNodeIdServicesMethod = 21817
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress                                                 OpcuaNodeIdServicesMethod = 21818
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress                                               OpcuaNodeIdServicesMethod = 21819
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService                                        OpcuaNodeIdServicesMethod = 21820
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService                                           OpcuaNodeIdServicesMethod = 21821
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset                                                    OpcuaNodeIdServicesMethod = 21822
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable                                                  OpcuaNodeIdServicesMethod = 21861
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable                                                   OpcuaNodeIdServicesMethod = 21862
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment                                               OpcuaNodeIdServicesMethod = 21863
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge                                              OpcuaNodeIdServicesMethod = 21883
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm                                                  OpcuaNodeIdServicesMethod = 21885
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                OpcuaNodeIdServicesMethod = 21930
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve                                   OpcuaNodeIdServicesMethod = 21932
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                              OpcuaNodeIdServicesMethod = 21933
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence                                                  OpcuaNodeIdServicesMethod = 21965
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress                                                 OpcuaNodeIdServicesMethod = 21966
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress                                               OpcuaNodeIdServicesMethod = 21967
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService                                        OpcuaNodeIdServicesMethod = 21968
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService                                           OpcuaNodeIdServicesMethod = 21969
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset                                                    OpcuaNodeIdServicesMethod = 21970
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable                                                        OpcuaNodeIdServicesMethod = 22009
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable                                                         OpcuaNodeIdServicesMethod = 22010
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment                                                     OpcuaNodeIdServicesMethod = 22011
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge                                                    OpcuaNodeIdServicesMethod = 22031
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm                                                        OpcuaNodeIdServicesMethod = 22033
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve                                      OpcuaNodeIdServicesMethod = 22078
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve                                         OpcuaNodeIdServicesMethod = 22080
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve                                    OpcuaNodeIdServicesMethod = 22081
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence                                                        OpcuaNodeIdServicesMethod = 22113
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress                                                       OpcuaNodeIdServicesMethod = 22114
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress                                                     OpcuaNodeIdServicesMethod = 22115
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService                                              OpcuaNodeIdServicesMethod = 22116
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService                                                 OpcuaNodeIdServicesMethod = 22117
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset                                                          OpcuaNodeIdServicesMethod = 22118
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable                                                        OpcuaNodeIdServicesMethod = 22157
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable                                                         OpcuaNodeIdServicesMethod = 22158
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment                                                     OpcuaNodeIdServicesMethod = 22159
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge                                                    OpcuaNodeIdServicesMethod = 22179
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm                                                        OpcuaNodeIdServicesMethod = 22181
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                      OpcuaNodeIdServicesMethod = 22226
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve                                         OpcuaNodeIdServicesMethod = 22228
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                    OpcuaNodeIdServicesMethod = 22229
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence                                                        OpcuaNodeIdServicesMethod = 22261
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress                                                       OpcuaNodeIdServicesMethod = 22262
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress                                                     OpcuaNodeIdServicesMethod = 22263
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService                                              OpcuaNodeIdServicesMethod = 22264
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService                                                 OpcuaNodeIdServicesMethod = 22265
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset                                                          OpcuaNodeIdServicesMethod = 22266
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable                                                    OpcuaNodeIdServicesMethod = 22305
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable                                                     OpcuaNodeIdServicesMethod = 22306
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment                                                 OpcuaNodeIdServicesMethod = 22307
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge                                                OpcuaNodeIdServicesMethod = 22327
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm                                                    OpcuaNodeIdServicesMethod = 22329
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve                                  OpcuaNodeIdServicesMethod = 22374
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve                                     OpcuaNodeIdServicesMethod = 22376
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve                                OpcuaNodeIdServicesMethod = 22377
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence                                                    OpcuaNodeIdServicesMethod = 22409
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress                                                   OpcuaNodeIdServicesMethod = 22410
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress                                                 OpcuaNodeIdServicesMethod = 22411
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService                                          OpcuaNodeIdServicesMethod = 22412
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService                                             OpcuaNodeIdServicesMethod = 22413
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset                                                      OpcuaNodeIdServicesMethod = 22414
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable                                                    OpcuaNodeIdServicesMethod = 22453
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable                                                     OpcuaNodeIdServicesMethod = 22454
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment                                                 OpcuaNodeIdServicesMethod = 22455
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge                                                OpcuaNodeIdServicesMethod = 22475
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm                                                    OpcuaNodeIdServicesMethod = 22477
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                  OpcuaNodeIdServicesMethod = 22522
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve                                     OpcuaNodeIdServicesMethod = 22524
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                OpcuaNodeIdServicesMethod = 22525
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence                                                    OpcuaNodeIdServicesMethod = 22557
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress                                                   OpcuaNodeIdServicesMethod = 22558
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress                                                 OpcuaNodeIdServicesMethod = 22559
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService                                          OpcuaNodeIdServicesMethod = 22560
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService                                             OpcuaNodeIdServicesMethod = 22561
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset                                                      OpcuaNodeIdServicesMethod = 22562
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable                                                      OpcuaNodeIdServicesMethod = 22601
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable                                                       OpcuaNodeIdServicesMethod = 22602
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment                                                   OpcuaNodeIdServicesMethod = 22603
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge                                                  OpcuaNodeIdServicesMethod = 22623
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm                                                      OpcuaNodeIdServicesMethod = 22625
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve                                    OpcuaNodeIdServicesMethod = 22670
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve                                       OpcuaNodeIdServicesMethod = 22672
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve                                  OpcuaNodeIdServicesMethod = 22673
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence                                                      OpcuaNodeIdServicesMethod = 22705
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress                                                     OpcuaNodeIdServicesMethod = 22706
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress                                                   OpcuaNodeIdServicesMethod = 22707
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService                                            OpcuaNodeIdServicesMethod = 22708
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService                                               OpcuaNodeIdServicesMethod = 22709
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset                                                        OpcuaNodeIdServicesMethod = 22710
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable                                                      OpcuaNodeIdServicesMethod = 22749
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable                                                       OpcuaNodeIdServicesMethod = 22750
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment                                                   OpcuaNodeIdServicesMethod = 22751
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge                                                  OpcuaNodeIdServicesMethod = 22771
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm                                                      OpcuaNodeIdServicesMethod = 22773
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                    OpcuaNodeIdServicesMethod = 22818
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve                                       OpcuaNodeIdServicesMethod = 22820
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                  OpcuaNodeIdServicesMethod = 22821
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence                                                      OpcuaNodeIdServicesMethod = 22853
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress                                                     OpcuaNodeIdServicesMethod = 22854
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress                                                   OpcuaNodeIdServicesMethod = 22855
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService                                            OpcuaNodeIdServicesMethod = 22856
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService                                               OpcuaNodeIdServicesMethod = 22857
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset                                                        OpcuaNodeIdServicesMethod = 22858
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable                                                            OpcuaNodeIdServicesMethod = 22897
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable                                                             OpcuaNodeIdServicesMethod = 22898
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment                                                         OpcuaNodeIdServicesMethod = 22899
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge                                                        OpcuaNodeIdServicesMethod = 22919
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm                                                            OpcuaNodeIdServicesMethod = 22921
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve                                          OpcuaNodeIdServicesMethod = 22966
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve                                             OpcuaNodeIdServicesMethod = 22968
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve                                        OpcuaNodeIdServicesMethod = 22969
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence                                                            OpcuaNodeIdServicesMethod = 23001
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress                                                           OpcuaNodeIdServicesMethod = 23002
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress                                                         OpcuaNodeIdServicesMethod = 23003
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService                                                  OpcuaNodeIdServicesMethod = 23004
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService                                                     OpcuaNodeIdServicesMethod = 23005
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset                                                              OpcuaNodeIdServicesMethod = 23006
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable                                                            OpcuaNodeIdServicesMethod = 23045
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable                                                             OpcuaNodeIdServicesMethod = 23046
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment                                                         OpcuaNodeIdServicesMethod = 23047
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge                                                        OpcuaNodeIdServicesMethod = 23067
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm                                                            OpcuaNodeIdServicesMethod = 23069
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                          OpcuaNodeIdServicesMethod = 23114
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve                                             OpcuaNodeIdServicesMethod = 23116
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                        OpcuaNodeIdServicesMethod = 23117
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence                                                            OpcuaNodeIdServicesMethod = 23149
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress                                                           OpcuaNodeIdServicesMethod = 23150
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress                                                         OpcuaNodeIdServicesMethod = 23151
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService                                                  OpcuaNodeIdServicesMethod = 23152
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService                                                     OpcuaNodeIdServicesMethod = 23153
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset                                                              OpcuaNodeIdServicesMethod = 23154
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable                                                        OpcuaNodeIdServicesMethod = 23193
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable                                                         OpcuaNodeIdServicesMethod = 23194
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment                                                     OpcuaNodeIdServicesMethod = 23195
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge                                                    OpcuaNodeIdServicesMethod = 23215
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm                                                        OpcuaNodeIdServicesMethod = 23217
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve                                      OpcuaNodeIdServicesMethod = 23262
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve                                         OpcuaNodeIdServicesMethod = 23264
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve                                    OpcuaNodeIdServicesMethod = 23265
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence                                                        OpcuaNodeIdServicesMethod = 23297
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress                                                       OpcuaNodeIdServicesMethod = 23298
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress                                                     OpcuaNodeIdServicesMethod = 23299
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService                                              OpcuaNodeIdServicesMethod = 23300
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService                                                 OpcuaNodeIdServicesMethod = 23301
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset                                                          OpcuaNodeIdServicesMethod = 23302
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable                                                        OpcuaNodeIdServicesMethod = 23341
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable                                                         OpcuaNodeIdServicesMethod = 23342
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment                                                     OpcuaNodeIdServicesMethod = 23343
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge                                                    OpcuaNodeIdServicesMethod = 23363
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm                                                        OpcuaNodeIdServicesMethod = 23365
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                      OpcuaNodeIdServicesMethod = 23410
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve                                         OpcuaNodeIdServicesMethod = 23412
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                    OpcuaNodeIdServicesMethod = 23413
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence                                                        OpcuaNodeIdServicesMethod = 23445
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress                                                       OpcuaNodeIdServicesMethod = 23446
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress                                                     OpcuaNodeIdServicesMethod = 23447
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService                                              OpcuaNodeIdServicesMethod = 23448
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService                                                 OpcuaNodeIdServicesMethod = 23449
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset                                                          OpcuaNodeIdServicesMethod = 23450
-	OpcuaNodeIdServicesMethod_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias                                                                            OpcuaNodeIdServicesMethod = 23459
-	OpcuaNodeIdServicesMethod_AliasNameCategoryType_FindAlias                                                                                                               OpcuaNodeIdServicesMethod = 23462
-	OpcuaNodeIdServicesMethod_FindAliasMethodType                                                                                                                           OpcuaNodeIdServicesMethod = 23465
-	OpcuaNodeIdServicesMethod_Aliases_FindAlias                                                                                                                             OpcuaNodeIdServicesMethod = 23476
-	OpcuaNodeIdServicesMethod_TagVariables_FindAlias                                                                                                                        OpcuaNodeIdServicesMethod = 23485
-	OpcuaNodeIdServicesMethod_Topics_FindAlias                                                                                                                              OpcuaNodeIdServicesMethod = 23494
-	OpcuaNodeIdServicesMethod_CertificateGroupType_GetRejectedList                                                                                                          OpcuaNodeIdServicesMethod = 23526
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_GetRejectedList                                                                            OpcuaNodeIdServicesMethod = 23529
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_GetRejectedList                                                                                  OpcuaNodeIdServicesMethod = 23531
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_GetRejectedList                                                                              OpcuaNodeIdServicesMethod = 23533
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_GetRejectedList                                                                        OpcuaNodeIdServicesMethod = 23535
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_GetRejectedList                                                             OpcuaNodeIdServicesMethod = 23544
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_GetRejectedList                                                                   OpcuaNodeIdServicesMethod = 23546
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_GetRejectedList                                                               OpcuaNodeIdServicesMethod = 23548
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_GetRejectedList                                                                 OpcuaNodeIdServicesMethod = 23550
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_GetRejectedList                                                                       OpcuaNodeIdServicesMethod = 23552
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_GetRejectedList                                                                   OpcuaNodeIdServicesMethod = 23554
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_AddDataSetFolder                                                                                      OpcuaNodeIdServicesMethod = 23637
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_RemoveDataSetFolder                                                                                   OpcuaNodeIdServicesMethod = 23640
-	OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_AddDataSetFolder                                                                                          OpcuaNodeIdServicesMethod = 23673
-	OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_RemoveDataSetFolder                                                                                       OpcuaNodeIdServicesMethod = 23676
-	OpcuaNodeIdServicesMethod_GetConnectionMethodType                                                                                                                       OpcuaNodeIdServicesMethod = 23726
-	OpcuaNodeIdServicesMethod_ModifyConnectionMethodType                                                                                                                    OpcuaNodeIdServicesMethod = 23729
-	OpcuaNodeIdServicesMethod_GetWriterGroupMethodType                                                                                                                      OpcuaNodeIdServicesMethod = 23745
-	OpcuaNodeIdServicesMethod_ModifyWriterGroupMethodType                                                                                                                   OpcuaNodeIdServicesMethod = 23748
-	OpcuaNodeIdServicesMethod_GetReaderGroupMethodType                                                                                                                      OpcuaNodeIdServicesMethod = 23767
-	OpcuaNodeIdServicesMethod_ModifyReaderGroupMethodType                                                                                                                   OpcuaNodeIdServicesMethod = 23770
-	OpcuaNodeIdServicesMethod_GetDataSetWriterMethodType                                                                                                                    OpcuaNodeIdServicesMethod = 23779
-	OpcuaNodeIdServicesMethod_ModifyDataSetWriterMethodType                                                                                                                 OpcuaNodeIdServicesMethod = 23781
-	OpcuaNodeIdServicesMethod_GetDataSetReaderMethodType                                                                                                                    OpcuaNodeIdServicesMethod = 23790
-	OpcuaNodeIdServicesMethod_ModifyDataSetReaderMethodType                                                                                                                 OpcuaNodeIdServicesMethod = 23792
-	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddSubscribedDataSet                                                      OpcuaNodeIdServicesMethod = 23797
-	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_RemoveSubscribedDataSet                                                   OpcuaNodeIdServicesMethod = 23800
-	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddDataSetFolder                                                          OpcuaNodeIdServicesMethod = 23802
-	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_RemoveDataSetFolder                                                       OpcuaNodeIdServicesMethod = 23805
-	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_AddSubscribedDataSet                                                                                              OpcuaNodeIdServicesMethod = 23811
-	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_RemoveSubscribedDataSet                                                                                           OpcuaNodeIdServicesMethod = 23814
-	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_AddDataSetFolder                                                                                                  OpcuaNodeIdServicesMethod = 23816
-	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_RemoveDataSetFolder                                                                                               OpcuaNodeIdServicesMethod = 23819
-	OpcuaNodeIdServicesMethod_AddSubscribedDataSetMethodType                                                                                                                OpcuaNodeIdServicesMethod = 23821
-	OpcuaNodeIdServicesMethod_RemoveSubscribedDataSetMethodType                                                                                                             OpcuaNodeIdServicesMethod = 23824
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_AddSubscribedDataSet                                                                                  OpcuaNodeIdServicesMethod = 24004
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_RemoveSubscribedDataSet                                                                               OpcuaNodeIdServicesMethod = 24007
-	OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_AddSubscribedDataSet                                                                                      OpcuaNodeIdServicesMethod = 24010
-	OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_RemoveSubscribedDataSet                                                                                   OpcuaNodeIdServicesMethod = 24013
-	OpcuaNodeIdServicesMethod_UserManagementType_AddUser                                                                                                                    OpcuaNodeIdServicesMethod = 24269
-	OpcuaNodeIdServicesMethod_UserManagementType_ModifyUser                                                                                                                 OpcuaNodeIdServicesMethod = 24271
-	OpcuaNodeIdServicesMethod_UserManagementType_RemoveUser                                                                                                                 OpcuaNodeIdServicesMethod = 24273
-	OpcuaNodeIdServicesMethod_UserManagementType_ChangePassword                                                                                                             OpcuaNodeIdServicesMethod = 24275
-	OpcuaNodeIdServicesMethod_AddUserMethodType                                                                                                                             OpcuaNodeIdServicesMethod = 24282
-	OpcuaNodeIdServicesMethod_ModifyUserMethodType                                                                                                                          OpcuaNodeIdServicesMethod = 24284
-	OpcuaNodeIdServicesMethod_RemoveUserMethodType                                                                                                                          OpcuaNodeIdServicesMethod = 24286
-	OpcuaNodeIdServicesMethod_ChangePasswordMethodType                                                                                                                      OpcuaNodeIdServicesMethod = 24288
-	OpcuaNodeIdServicesMethod_UserManagement_AddUser                                                                                                                        OpcuaNodeIdServicesMethod = 24304
-	OpcuaNodeIdServicesMethod_UserManagement_ModifyUser                                                                                                                     OpcuaNodeIdServicesMethod = 24306
-	OpcuaNodeIdServicesMethod_UserManagement_RemoveUser                                                                                                                     OpcuaNodeIdServicesMethod = 24308
-	OpcuaNodeIdServicesMethod_UserManagement_ChangePassword                                                                                                                 OpcuaNodeIdServicesMethod = 24310
-	OpcuaNodeIdServicesMethod_DialogConditionType_Respond2                                                                                                                  OpcuaNodeIdServicesMethod = 24312
-	OpcuaNodeIdServicesMethod_DialogResponse2MethodType                                                                                                                     OpcuaNodeIdServicesMethod = 24314
-	OpcuaNodeIdServicesMethod_AlarmConditionType_Suppress2                                                                                                                  OpcuaNodeIdServicesMethod = 24316
-	OpcuaNodeIdServicesMethod_AlarmConditionType_Unsuppress2                                                                                                                OpcuaNodeIdServicesMethod = 24318
-	OpcuaNodeIdServicesMethod_AlarmConditionType_RemoveFromService2                                                                                                         OpcuaNodeIdServicesMethod = 24320
-	OpcuaNodeIdServicesMethod_AlarmConditionType_PlaceInService2                                                                                                            OpcuaNodeIdServicesMethod = 24322
-	OpcuaNodeIdServicesMethod_AlarmConditionType_Reset2                                                                                                                     OpcuaNodeIdServicesMethod = 24324
-	OpcuaNodeIdServicesMethod_WithCommentMethodType                                                                                                                         OpcuaNodeIdServicesMethod = 24326
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Suppress2                                                                                   OpcuaNodeIdServicesMethod = 24328
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Unsuppress2                                                                                 OpcuaNodeIdServicesMethod = 24330
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_RemoveFromService2                                                                          OpcuaNodeIdServicesMethod = 24332
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_PlaceInService2                                                                             OpcuaNodeIdServicesMethod = 24334
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Reset2                                                                                      OpcuaNodeIdServicesMethod = 24336
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Suppress2                                                                                             OpcuaNodeIdServicesMethod = 24518
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Unsuppress2                                                                                           OpcuaNodeIdServicesMethod = 24520
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_RemoveFromService2                                                                                    OpcuaNodeIdServicesMethod = 24522
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_PlaceInService2                                                                                       OpcuaNodeIdServicesMethod = 24524
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Reset2                                                                                                OpcuaNodeIdServicesMethod = 24526
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Suppress2                                                                                             OpcuaNodeIdServicesMethod = 24528
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Unsuppress2                                                                                           OpcuaNodeIdServicesMethod = 24530
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_RemoveFromService2                                                                                    OpcuaNodeIdServicesMethod = 24532
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_PlaceInService2                                                                                       OpcuaNodeIdServicesMethod = 24534
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Reset2                                                                                                OpcuaNodeIdServicesMethod = 24536
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Suppress2                                                               OpcuaNodeIdServicesMethod = 24538
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Unsuppress2                                                             OpcuaNodeIdServicesMethod = 24540
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_RemoveFromService2                                                      OpcuaNodeIdServicesMethod = 24542
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_PlaceInService2                                                         OpcuaNodeIdServicesMethod = 24544
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Reset2                                                                  OpcuaNodeIdServicesMethod = 24546
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Suppress2                                                               OpcuaNodeIdServicesMethod = 24548
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2                                                             OpcuaNodeIdServicesMethod = 24550
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2                                                      OpcuaNodeIdServicesMethod = 24552
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2                                                         OpcuaNodeIdServicesMethod = 24554
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Reset2                                                                  OpcuaNodeIdServicesMethod = 24556
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Suppress2                                                                     OpcuaNodeIdServicesMethod = 24558
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Unsuppress2                                                                   OpcuaNodeIdServicesMethod = 24560
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_RemoveFromService2                                                            OpcuaNodeIdServicesMethod = 24562
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_PlaceInService2                                                               OpcuaNodeIdServicesMethod = 24564
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Reset2                                                                        OpcuaNodeIdServicesMethod = 24566
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Suppress2                                                                     OpcuaNodeIdServicesMethod = 24568
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2                                                                   OpcuaNodeIdServicesMethod = 24570
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2                                                            OpcuaNodeIdServicesMethod = 24572
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2                                                               OpcuaNodeIdServicesMethod = 24574
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Reset2                                                                        OpcuaNodeIdServicesMethod = 24576
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Suppress2                                                                 OpcuaNodeIdServicesMethod = 24578
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Unsuppress2                                                               OpcuaNodeIdServicesMethod = 24580
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2                                                        OpcuaNodeIdServicesMethod = 24582
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_PlaceInService2                                                           OpcuaNodeIdServicesMethod = 24584
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Reset2                                                                    OpcuaNodeIdServicesMethod = 24586
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2                                                                 OpcuaNodeIdServicesMethod = 24588
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2                                                               OpcuaNodeIdServicesMethod = 24590
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2                                                        OpcuaNodeIdServicesMethod = 24592
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2                                                           OpcuaNodeIdServicesMethod = 24594
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Reset2                                                                    OpcuaNodeIdServicesMethod = 24596
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Suppress2                                                           OpcuaNodeIdServicesMethod = 24598
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Unsuppress2                                                         OpcuaNodeIdServicesMethod = 24600
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_RemoveFromService2                                                  OpcuaNodeIdServicesMethod = 24602
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_PlaceInService2                                                     OpcuaNodeIdServicesMethod = 24604
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Reset2                                                              OpcuaNodeIdServicesMethod = 24606
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Suppress2                                                           OpcuaNodeIdServicesMethod = 24608
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Unsuppress2                                                         OpcuaNodeIdServicesMethod = 24610
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_RemoveFromService2                                                  OpcuaNodeIdServicesMethod = 24612
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_PlaceInService2                                                     OpcuaNodeIdServicesMethod = 24614
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Reset2                                                              OpcuaNodeIdServicesMethod = 24616
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2                                                OpcuaNodeIdServicesMethod = 24618
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2                                              OpcuaNodeIdServicesMethod = 24620
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2                                       OpcuaNodeIdServicesMethod = 24622
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2                                          OpcuaNodeIdServicesMethod = 24624
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2                                                   OpcuaNodeIdServicesMethod = 24626
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2                                                OpcuaNodeIdServicesMethod = 24628
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2                                              OpcuaNodeIdServicesMethod = 24630
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2                                       OpcuaNodeIdServicesMethod = 24632
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2                                          OpcuaNodeIdServicesMethod = 24634
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2                                                   OpcuaNodeIdServicesMethod = 24636
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2                                                      OpcuaNodeIdServicesMethod = 24638
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2                                                    OpcuaNodeIdServicesMethod = 24640
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2                                             OpcuaNodeIdServicesMethod = 24642
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2                                                OpcuaNodeIdServicesMethod = 24644
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2                                                         OpcuaNodeIdServicesMethod = 24646
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2                                                      OpcuaNodeIdServicesMethod = 24648
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2                                                    OpcuaNodeIdServicesMethod = 24650
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2                                             OpcuaNodeIdServicesMethod = 24652
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2                                                OpcuaNodeIdServicesMethod = 24654
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2                                                         OpcuaNodeIdServicesMethod = 24656
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2                                                  OpcuaNodeIdServicesMethod = 24658
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2                                                OpcuaNodeIdServicesMethod = 24660
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2                                         OpcuaNodeIdServicesMethod = 24662
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2                                            OpcuaNodeIdServicesMethod = 24664
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2                                                     OpcuaNodeIdServicesMethod = 24666
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2                                                  OpcuaNodeIdServicesMethod = 24668
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2                                                OpcuaNodeIdServicesMethod = 24670
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2                                         OpcuaNodeIdServicesMethod = 24672
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2                                            OpcuaNodeIdServicesMethod = 24674
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2                                                     OpcuaNodeIdServicesMethod = 24676
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2                                                    OpcuaNodeIdServicesMethod = 24678
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2                                                  OpcuaNodeIdServicesMethod = 24680
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2                                           OpcuaNodeIdServicesMethod = 24682
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2                                              OpcuaNodeIdServicesMethod = 24684
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2                                                       OpcuaNodeIdServicesMethod = 24686
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2                                                    OpcuaNodeIdServicesMethod = 24688
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2                                                  OpcuaNodeIdServicesMethod = 24690
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2                                           OpcuaNodeIdServicesMethod = 24692
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2                                              OpcuaNodeIdServicesMethod = 24694
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2                                                       OpcuaNodeIdServicesMethod = 24696
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2                                                          OpcuaNodeIdServicesMethod = 24698
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2                                                        OpcuaNodeIdServicesMethod = 24700
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2                                                 OpcuaNodeIdServicesMethod = 24702
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2                                                    OpcuaNodeIdServicesMethod = 24704
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2                                                             OpcuaNodeIdServicesMethod = 24706
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2                                                          OpcuaNodeIdServicesMethod = 24708
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2                                                        OpcuaNodeIdServicesMethod = 24710
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2                                                 OpcuaNodeIdServicesMethod = 24712
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2                                                    OpcuaNodeIdServicesMethod = 24714
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2                                                             OpcuaNodeIdServicesMethod = 24716
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2                                                      OpcuaNodeIdServicesMethod = 24718
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2                                                    OpcuaNodeIdServicesMethod = 24720
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2                                             OpcuaNodeIdServicesMethod = 24722
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2                                                OpcuaNodeIdServicesMethod = 24724
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2                                                         OpcuaNodeIdServicesMethod = 24726
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2                                                      OpcuaNodeIdServicesMethod = 24728
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2                                                    OpcuaNodeIdServicesMethod = 24730
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2                                             OpcuaNodeIdServicesMethod = 24732
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2                                                OpcuaNodeIdServicesMethod = 24734
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2                                                         OpcuaNodeIdServicesMethod = 24736
-	OpcuaNodeIdServicesMethod_AlarmConditionType_ShelvingState_TimedShelve2                                                                                                 OpcuaNodeIdServicesMethod = 24738
-	OpcuaNodeIdServicesMethod_AlarmConditionType_ShelvingState_Unshelve2                                                                                                    OpcuaNodeIdServicesMethod = 24740
-	OpcuaNodeIdServicesMethod_AlarmConditionType_ShelvingState_OneShotShelve2                                                                                               OpcuaNodeIdServicesMethod = 24742
-	OpcuaNodeIdServicesMethod_AlarmConditionType_GetGroupMemberships                                                                                                        OpcuaNodeIdServicesMethod = 24744
-	OpcuaNodeIdServicesMethod_GetGroupMembershipsMethodType                                                                                                                 OpcuaNodeIdServicesMethod = 24746
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState_TimedShelve2                                                                  OpcuaNodeIdServicesMethod = 24748
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState_Unshelve2                                                                     OpcuaNodeIdServicesMethod = 24750
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState_OneShotShelve2                                                                OpcuaNodeIdServicesMethod = 24752
-	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_GetGroupMemberships                                                                         OpcuaNodeIdServicesMethod = 24754
-	OpcuaNodeIdServicesMethod_ShelvedStateMachineType_TimedShelve2                                                                                                          OpcuaNodeIdServicesMethod = 24756
-	OpcuaNodeIdServicesMethod_ShelvedStateMachineType_Unshelve2                                                                                                             OpcuaNodeIdServicesMethod = 24758
-	OpcuaNodeIdServicesMethod_ShelvedStateMachineType_OneShotShelve2                                                                                                        OpcuaNodeIdServicesMethod = 24760
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve2                                                                            OpcuaNodeIdServicesMethod = 24978
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_Unshelve2                                                                               OpcuaNodeIdServicesMethod = 24980
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_OneShotShelve2                                                                          OpcuaNodeIdServicesMethod = 24982
-	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_GetGroupMemberships                                                                                   OpcuaNodeIdServicesMethod = 24984
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_ShelvingState_TimedShelve2                                                                            OpcuaNodeIdServicesMethod = 24986
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_ShelvingState_Unshelve2                                                                               OpcuaNodeIdServicesMethod = 24988
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_ShelvingState_OneShotShelve2                                                                          OpcuaNodeIdServicesMethod = 24990
-	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_GetGroupMemberships                                                                                   OpcuaNodeIdServicesMethod = 24992
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2                                              OpcuaNodeIdServicesMethod = 24994
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2                                                 OpcuaNodeIdServicesMethod = 24996
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2                                            OpcuaNodeIdServicesMethod = 24998
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships                                                     OpcuaNodeIdServicesMethod = 25000
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                              OpcuaNodeIdServicesMethod = 25002
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                                 OpcuaNodeIdServicesMethod = 25004
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                            OpcuaNodeIdServicesMethod = 25006
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships                                                     OpcuaNodeIdServicesMethod = 25008
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2                                                    OpcuaNodeIdServicesMethod = 25010
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2                                                       OpcuaNodeIdServicesMethod = 25012
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2                                                  OpcuaNodeIdServicesMethod = 25014
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships                                                           OpcuaNodeIdServicesMethod = 25016
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                                    OpcuaNodeIdServicesMethod = 25018
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                                       OpcuaNodeIdServicesMethod = 25020
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                                  OpcuaNodeIdServicesMethod = 25022
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships                                                           OpcuaNodeIdServicesMethod = 25024
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2                                                OpcuaNodeIdServicesMethod = 25026
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2                                                   OpcuaNodeIdServicesMethod = 25028
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2                                              OpcuaNodeIdServicesMethod = 25030
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships                                                       OpcuaNodeIdServicesMethod = 25032
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                                OpcuaNodeIdServicesMethod = 25034
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                                   OpcuaNodeIdServicesMethod = 25036
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                              OpcuaNodeIdServicesMethod = 25038
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships                                                       OpcuaNodeIdServicesMethod = 25040
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState_TimedShelve2                                          OpcuaNodeIdServicesMethod = 25042
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState_Unshelve2                                             OpcuaNodeIdServicesMethod = 25044
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState_OneShotShelve2                                        OpcuaNodeIdServicesMethod = 25046
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_GetGroupMemberships                                                 OpcuaNodeIdServicesMethod = 25048
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_TimedShelve2                                          OpcuaNodeIdServicesMethod = 25050
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_Unshelve2                                             OpcuaNodeIdServicesMethod = 25052
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_OneShotShelve2                                        OpcuaNodeIdServicesMethod = 25054
-	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_GetGroupMemberships                                                 OpcuaNodeIdServicesMethod = 25056
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2                               OpcuaNodeIdServicesMethod = 25058
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2                                  OpcuaNodeIdServicesMethod = 25060
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2                             OpcuaNodeIdServicesMethod = 25062
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships                                      OpcuaNodeIdServicesMethod = 25064
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                               OpcuaNodeIdServicesMethod = 25066
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                  OpcuaNodeIdServicesMethod = 25068
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                             OpcuaNodeIdServicesMethod = 25070
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships                                      OpcuaNodeIdServicesMethod = 25072
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2                                     OpcuaNodeIdServicesMethod = 25074
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2                                        OpcuaNodeIdServicesMethod = 25076
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2                                   OpcuaNodeIdServicesMethod = 25078
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships                                            OpcuaNodeIdServicesMethod = 25080
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                     OpcuaNodeIdServicesMethod = 25082
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                        OpcuaNodeIdServicesMethod = 25084
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                   OpcuaNodeIdServicesMethod = 25086
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships                                            OpcuaNodeIdServicesMethod = 25088
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2                                 OpcuaNodeIdServicesMethod = 25090
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2                                    OpcuaNodeIdServicesMethod = 25092
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2                               OpcuaNodeIdServicesMethod = 25094
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships                                        OpcuaNodeIdServicesMethod = 25096
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                 OpcuaNodeIdServicesMethod = 25098
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                    OpcuaNodeIdServicesMethod = 25100
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                               OpcuaNodeIdServicesMethod = 25102
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships                                        OpcuaNodeIdServicesMethod = 25104
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2                                   OpcuaNodeIdServicesMethod = 25106
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2                                      OpcuaNodeIdServicesMethod = 25108
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2                                 OpcuaNodeIdServicesMethod = 25110
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships                                          OpcuaNodeIdServicesMethod = 25112
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                   OpcuaNodeIdServicesMethod = 25114
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                      OpcuaNodeIdServicesMethod = 25116
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                 OpcuaNodeIdServicesMethod = 25118
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships                                          OpcuaNodeIdServicesMethod = 25120
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2                                         OpcuaNodeIdServicesMethod = 25122
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2                                            OpcuaNodeIdServicesMethod = 25124
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2                                       OpcuaNodeIdServicesMethod = 25126
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships                                                OpcuaNodeIdServicesMethod = 25128
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                         OpcuaNodeIdServicesMethod = 25130
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                            OpcuaNodeIdServicesMethod = 25132
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                       OpcuaNodeIdServicesMethod = 25134
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships                                                OpcuaNodeIdServicesMethod = 25136
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2                                     OpcuaNodeIdServicesMethod = 25138
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2                                        OpcuaNodeIdServicesMethod = 25140
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2                                   OpcuaNodeIdServicesMethod = 25142
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships                                            OpcuaNodeIdServicesMethod = 25144
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                     OpcuaNodeIdServicesMethod = 25146
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                        OpcuaNodeIdServicesMethod = 25148
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                   OpcuaNodeIdServicesMethod = 25150
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships                                            OpcuaNodeIdServicesMethod = 25152
-	OpcuaNodeIdServicesMethod_TimedShelve2MethodType                                                                                                                        OpcuaNodeIdServicesMethod = 25157
-	OpcuaNodeIdServicesMethod_PriorityMappingTableType_AddPriorityMappingEntry                                                                                              OpcuaNodeIdServicesMethod = 25229
-	OpcuaNodeIdServicesMethod_PriorityMappingTableType_DeletePriorityMappingEntry                                                                                           OpcuaNodeIdServicesMethod = 25231
-	OpcuaNodeIdServicesMethod_AddPriorityMappingEntryMethodType                                                                                                             OpcuaNodeIdServicesMethod = 25233
-	OpcuaNodeIdServicesMethod_DeletePriorityMappingEntryMethodType                                                                                                          OpcuaNodeIdServicesMethod = 25235
-	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_SecurityGroups_AddSecurityGroupFolder                                                                                    OpcuaNodeIdServicesMethod = 25271
-	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_SecurityGroups_RemoveSecurityGroupFolder                                                                                 OpcuaNodeIdServicesMethod = 25274
-	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_KeyPushTargets_AddPushTarget                                                                                             OpcuaNodeIdServicesMethod = 25278
-	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_KeyPushTargets_RemovePushTarget                                                                                          OpcuaNodeIdServicesMethod = 25281
-	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_KeyPushTargets_AddPushTargetFolder                                                                                       OpcuaNodeIdServicesMethod = 25283
-	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_KeyPushTargets_RemovePushTargetFolder                                                                                    OpcuaNodeIdServicesMethod = 25286
-	OpcuaNodeIdServicesMethod_AddSecurityGroupFolderMethodType                                                                                                              OpcuaNodeIdServicesMethod = 25288
-	OpcuaNodeIdServicesMethod_RemoveSecurityGroupFolderMethodType                                                                                                           OpcuaNodeIdServicesMethod = 25291
-	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder_AddSecurityGroupFolder                                                            OpcuaNodeIdServicesMethod = 25293
-	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder_RemoveSecurityGroupFolder                                                         OpcuaNodeIdServicesMethod = 25296
-	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_AddSecurityGroupFolder                                                                                                OpcuaNodeIdServicesMethod = 25312
-	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_RemoveSecurityGroupFolder                                                                                             OpcuaNodeIdServicesMethod = 25315
-	OpcuaNodeIdServicesMethod_ConnectSecurityGroupsMethodType                                                                                                               OpcuaNodeIdServicesMethod = 25331
-	OpcuaNodeIdServicesMethod_DisconnectSecurityGroupsMethodType                                                                                                            OpcuaNodeIdServicesMethod = 25334
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetFolderName_Placeholder_AddPushTarget                                                                  OpcuaNodeIdServicesMethod = 25348
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetFolderName_Placeholder_RemovePushTarget                                                               OpcuaNodeIdServicesMethod = 25351
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetFolderName_Placeholder_AddPushTargetFolder                                                            OpcuaNodeIdServicesMethod = 25353
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetFolderName_Placeholder_RemovePushTargetFolder                                                         OpcuaNodeIdServicesMethod = 25356
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_AddPushTarget                                                                                                   OpcuaNodeIdServicesMethod = 25366
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_RemovePushTarget                                                                                                OpcuaNodeIdServicesMethod = 25369
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_AddPushTargetFolder                                                                                             OpcuaNodeIdServicesMethod = 25371
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_RemovePushTargetFolder                                                                                          OpcuaNodeIdServicesMethod = 25374
-	OpcuaNodeIdServicesMethod_AddPushTargetMethodType                                                                                                                       OpcuaNodeIdServicesMethod = 25376
-	OpcuaNodeIdServicesMethod_RemovePushTargetMethodType                                                                                                                    OpcuaNodeIdServicesMethod = 25379
-	OpcuaNodeIdServicesMethod_AddPushTargetFolderMethodType                                                                                                                 OpcuaNodeIdServicesMethod = 25381
-	OpcuaNodeIdServicesMethod_RemovePushTargetFolderMethodType                                                                                                              OpcuaNodeIdServicesMethod = 25384
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_Open                                                                                                 OpcuaNodeIdServicesMethod = 25411
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_Close                                                                                                OpcuaNodeIdServicesMethod = 25414
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_Read                                                                                                 OpcuaNodeIdServicesMethod = 25416
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_Write                                                                                                OpcuaNodeIdServicesMethod = 25419
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_GetPosition                                                                                          OpcuaNodeIdServicesMethod = 25421
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_SetPosition                                                                                          OpcuaNodeIdServicesMethod = 25424
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_ReserveIds                                                                                           OpcuaNodeIdServicesMethod = 25426
-	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_CloseAndUpdate                                                                                       OpcuaNodeIdServicesMethod = 25429
-	OpcuaNodeIdServicesMethod_PublishSubscribe_SecurityGroups_AddSecurityGroupFolder                                                                                        OpcuaNodeIdServicesMethod = 25434
-	OpcuaNodeIdServicesMethod_PublishSubscribe_SecurityGroups_RemoveSecurityGroupFolder                                                                                     OpcuaNodeIdServicesMethod = 25437
-	OpcuaNodeIdServicesMethod_PublishSubscribe_KeyPushTargets_AddPushTarget                                                                                                 OpcuaNodeIdServicesMethod = 25441
-	OpcuaNodeIdServicesMethod_PublishSubscribe_KeyPushTargets_RemovePushTarget                                                                                              OpcuaNodeIdServicesMethod = 25444
-	OpcuaNodeIdServicesMethod_PublishSubscribe_KeyPushTargets_AddPushTargetFolder                                                                                           OpcuaNodeIdServicesMethod = 25446
-	OpcuaNodeIdServicesMethod_PublishSubscribe_KeyPushTargets_RemovePushTargetFolder                                                                                        OpcuaNodeIdServicesMethod = 25449
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_Open                                                                                                     OpcuaNodeIdServicesMethod = 25459
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_Close                                                                                                    OpcuaNodeIdServicesMethod = 25462
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_Read                                                                                                     OpcuaNodeIdServicesMethod = 25464
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_Write                                                                                                    OpcuaNodeIdServicesMethod = 25467
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_GetPosition                                                                                              OpcuaNodeIdServicesMethod = 25469
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_SetPosition                                                                                              OpcuaNodeIdServicesMethod = 25472
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_ReserveIds                                                                                               OpcuaNodeIdServicesMethod = 25474
-	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_CloseAndUpdate                                                                                           OpcuaNodeIdServicesMethod = 25477
-	OpcuaNodeIdServicesMethod_PubSubConfigurationType_ReserveIds                                                                                                            OpcuaNodeIdServicesMethod = 25505
-	OpcuaNodeIdServicesMethod_PubSubConfigurationType_CloseAndUpdate                                                                                                        OpcuaNodeIdServicesMethod = 25508
-	OpcuaNodeIdServicesMethod_PubSubConfigurationTypeReserveIdsMethodType                                                                                                   OpcuaNodeIdServicesMethod = 25511
-	OpcuaNodeIdServicesMethod_PubSubConfigurationTypeCloseAndUpdateMethodType                                                                                               OpcuaNodeIdServicesMethod = 25514
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAdmin_AddIdentity                                                                                              OpcuaNodeIdServicesMethod = 25572
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAdmin_RemoveIdentity                                                                                           OpcuaNodeIdServicesMethod = 25574
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAdmin_AddApplication                                                                                           OpcuaNodeIdServicesMethod = 25576
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAdmin_RemoveApplication                                                                                        OpcuaNodeIdServicesMethod = 25578
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAdmin_AddEndpoint                                                                                              OpcuaNodeIdServicesMethod = 25580
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAdmin_RemoveEndpoint                                                                                           OpcuaNodeIdServicesMethod = 25582
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerPush_AddIdentity                                                                                               OpcuaNodeIdServicesMethod = 25591
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerPush_RemoveIdentity                                                                                            OpcuaNodeIdServicesMethod = 25593
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerPush_AddApplication                                                                                            OpcuaNodeIdServicesMethod = 25595
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerPush_RemoveApplication                                                                                         OpcuaNodeIdServicesMethod = 25597
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerPush_AddEndpoint                                                                                               OpcuaNodeIdServicesMethod = 25599
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerPush_RemoveEndpoint                                                                                            OpcuaNodeIdServicesMethod = 25601
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAccess_AddIdentity                                                                                             OpcuaNodeIdServicesMethod = 25610
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAccess_RemoveIdentity                                                                                          OpcuaNodeIdServicesMethod = 25612
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAccess_AddApplication                                                                                          OpcuaNodeIdServicesMethod = 25614
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAccess_RemoveApplication                                                                                       OpcuaNodeIdServicesMethod = 25616
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAccess_AddEndpoint                                                                                             OpcuaNodeIdServicesMethod = 25618
-	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAccess_RemoveEndpoint                                                                                          OpcuaNodeIdServicesMethod = 25620
-	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_SecurityGroupName_Placeholder_InvalidateKeys                                                                          OpcuaNodeIdServicesMethod = 25622
-	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_SecurityGroupName_Placeholder_ForceKeyRotation                                                                        OpcuaNodeIdServicesMethod = 25623
-	OpcuaNodeIdServicesMethod_SecurityGroupType_InvalidateKeys                                                                                                              OpcuaNodeIdServicesMethod = 25624
-	OpcuaNodeIdServicesMethod_SecurityGroupType_ForceKeyRotation                                                                                                            OpcuaNodeIdServicesMethod = 25625
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetType_SecurityGroupName_Placeholder_InvalidateKeys                                                                          OpcuaNodeIdServicesMethod = 25632
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetType_SecurityGroupName_Placeholder_ForceKeyRotation                                                                        OpcuaNodeIdServicesMethod = 25633
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetType_ConnectSecurityGroups                                                                                                 OpcuaNodeIdServicesMethod = 25641
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetType_DisconnectSecurityGroups                                                                                              OpcuaNodeIdServicesMethod = 25644
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetType_TriggerKeyUpdate                                                                                                      OpcuaNodeIdServicesMethod = 25647
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_ConnectSecurityGroups                                                                OpcuaNodeIdServicesMethod = 25655
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups                                                             OpcuaNodeIdServicesMethod = 25658
-	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_TriggerKeyUpdate                                                                     OpcuaNodeIdServicesMethod = 25661
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_CancelChanges                                                                                                         OpcuaNodeIdServicesMethod = 25698
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_ResetToServerDefaults                                                                                                 OpcuaNodeIdServicesMethod = 25699
-	OpcuaNodeIdServicesMethod_ServerConfiguration_CancelChanges                                                                                                             OpcuaNodeIdServicesMethod = 25708
-	OpcuaNodeIdServicesMethod_ServerConfiguration_ResetToServerDefaults                                                                                                     OpcuaNodeIdServicesMethod = 25709
-	OpcuaNodeIdServicesMethod_RequestTicketsMethodType                                                                                                                      OpcuaNodeIdServicesMethod = 25727
-	OpcuaNodeIdServicesMethod_SetRegistrarEndpointsMethodType                                                                                                               OpcuaNodeIdServicesMethod = 25729
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_RequestTickets                                                                                                        OpcuaNodeIdServicesMethod = 26873
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_SetRegistrarEndpoints                                                                                                 OpcuaNodeIdServicesMethod = 26875
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Open                                  OpcuaNodeIdServicesMethod = 26889
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Close                                 OpcuaNodeIdServicesMethod = 26892
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Read                                  OpcuaNodeIdServicesMethod = 26894
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Write                                 OpcuaNodeIdServicesMethod = 26897
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition                           OpcuaNodeIdServicesMethod = 26899
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition                           OpcuaNodeIdServicesMethod = 26902
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks                         OpcuaNodeIdServicesMethod = 26907
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate                        OpcuaNodeIdServicesMethod = 26910
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate                        OpcuaNodeIdServicesMethod = 26913
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate                     OpcuaNodeIdServicesMethod = 26915
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_GetRejectedList                                 OpcuaNodeIdServicesMethod = 26919
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable                      OpcuaNodeIdServicesMethod = 26954
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable                       OpcuaNodeIdServicesMethod = 26955
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment                   OpcuaNodeIdServicesMethod = 26956
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge                  OpcuaNodeIdServicesMethod = 26976
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm                      OpcuaNodeIdServicesMethod = 26978
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve    OpcuaNodeIdServicesMethod = 27023
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2   OpcuaNodeIdServicesMethod = 27025
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve       OpcuaNodeIdServicesMethod = 27027
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2      OpcuaNodeIdServicesMethod = 27028
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve  OpcuaNodeIdServicesMethod = 27030
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2 OpcuaNodeIdServicesMethod = 27031
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence                      OpcuaNodeIdServicesMethod = 27064
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress                     OpcuaNodeIdServicesMethod = 27065
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2                    OpcuaNodeIdServicesMethod = 27066
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress                   OpcuaNodeIdServicesMethod = 27068
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2                  OpcuaNodeIdServicesMethod = 27069
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService            OpcuaNodeIdServicesMethod = 27071
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2           OpcuaNodeIdServicesMethod = 27072
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService               OpcuaNodeIdServicesMethod = 27074
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2              OpcuaNodeIdServicesMethod = 27075
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset                        OpcuaNodeIdServicesMethod = 27077
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2                       OpcuaNodeIdServicesMethod = 27078
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships          OpcuaNodeIdServicesMethod = 27080
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable                      OpcuaNodeIdServicesMethod = 27120
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable                       OpcuaNodeIdServicesMethod = 27121
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment                   OpcuaNodeIdServicesMethod = 27122
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge                  OpcuaNodeIdServicesMethod = 27142
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm                      OpcuaNodeIdServicesMethod = 27144
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve    OpcuaNodeIdServicesMethod = 27189
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2   OpcuaNodeIdServicesMethod = 27191
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve       OpcuaNodeIdServicesMethod = 27193
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2      OpcuaNodeIdServicesMethod = 27194
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve  OpcuaNodeIdServicesMethod = 27196
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2 OpcuaNodeIdServicesMethod = 27197
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence                      OpcuaNodeIdServicesMethod = 27230
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress                     OpcuaNodeIdServicesMethod = 27231
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2                    OpcuaNodeIdServicesMethod = 27232
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress                   OpcuaNodeIdServicesMethod = 27234
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2                  OpcuaNodeIdServicesMethod = 27235
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService            OpcuaNodeIdServicesMethod = 27237
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2           OpcuaNodeIdServicesMethod = 27238
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService               OpcuaNodeIdServicesMethod = 27240
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2              OpcuaNodeIdServicesMethod = 27241
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset                        OpcuaNodeIdServicesMethod = 27243
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2                       OpcuaNodeIdServicesMethod = 27244
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships          OpcuaNodeIdServicesMethod = 27246
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Open                                        OpcuaNodeIdServicesMethod = 27261
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Close                                       OpcuaNodeIdServicesMethod = 27264
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Read                                        OpcuaNodeIdServicesMethod = 27266
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Write                                       OpcuaNodeIdServicesMethod = 27269
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition                                 OpcuaNodeIdServicesMethod = 27271
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition                                 OpcuaNodeIdServicesMethod = 27274
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks                               OpcuaNodeIdServicesMethod = 27279
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate                              OpcuaNodeIdServicesMethod = 27282
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate                              OpcuaNodeIdServicesMethod = 27285
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate                           OpcuaNodeIdServicesMethod = 27287
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_GetRejectedList                                       OpcuaNodeIdServicesMethod = 27291
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable                            OpcuaNodeIdServicesMethod = 27326
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable                             OpcuaNodeIdServicesMethod = 27327
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment                         OpcuaNodeIdServicesMethod = 27328
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge                        OpcuaNodeIdServicesMethod = 27348
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm                            OpcuaNodeIdServicesMethod = 27350
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve          OpcuaNodeIdServicesMethod = 27395
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2         OpcuaNodeIdServicesMethod = 27397
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve             OpcuaNodeIdServicesMethod = 27399
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2            OpcuaNodeIdServicesMethod = 27400
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve        OpcuaNodeIdServicesMethod = 27402
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2       OpcuaNodeIdServicesMethod = 27403
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence                            OpcuaNodeIdServicesMethod = 27436
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress                           OpcuaNodeIdServicesMethod = 27437
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2                          OpcuaNodeIdServicesMethod = 27438
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress                         OpcuaNodeIdServicesMethod = 27440
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2                        OpcuaNodeIdServicesMethod = 27441
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService                  OpcuaNodeIdServicesMethod = 27443
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2                 OpcuaNodeIdServicesMethod = 27444
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService                     OpcuaNodeIdServicesMethod = 27446
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2                    OpcuaNodeIdServicesMethod = 27447
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset                              OpcuaNodeIdServicesMethod = 27449
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2                             OpcuaNodeIdServicesMethod = 27450
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships                OpcuaNodeIdServicesMethod = 27452
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable                            OpcuaNodeIdServicesMethod = 27492
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable                             OpcuaNodeIdServicesMethod = 27493
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment                         OpcuaNodeIdServicesMethod = 27494
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge                        OpcuaNodeIdServicesMethod = 27514
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm                            OpcuaNodeIdServicesMethod = 27516
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve          OpcuaNodeIdServicesMethod = 27561
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2         OpcuaNodeIdServicesMethod = 27563
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve             OpcuaNodeIdServicesMethod = 27565
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2            OpcuaNodeIdServicesMethod = 27566
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve        OpcuaNodeIdServicesMethod = 27568
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2       OpcuaNodeIdServicesMethod = 27569
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence                            OpcuaNodeIdServicesMethod = 27602
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress                           OpcuaNodeIdServicesMethod = 27603
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2                          OpcuaNodeIdServicesMethod = 27604
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress                         OpcuaNodeIdServicesMethod = 27606
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2                        OpcuaNodeIdServicesMethod = 27607
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService                  OpcuaNodeIdServicesMethod = 27609
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2                 OpcuaNodeIdServicesMethod = 27610
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService                     OpcuaNodeIdServicesMethod = 27612
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2                    OpcuaNodeIdServicesMethod = 27613
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset                              OpcuaNodeIdServicesMethod = 27615
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2                             OpcuaNodeIdServicesMethod = 27616
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships                OpcuaNodeIdServicesMethod = 27618
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Open                                    OpcuaNodeIdServicesMethod = 27633
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Close                                   OpcuaNodeIdServicesMethod = 27636
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Read                                    OpcuaNodeIdServicesMethod = 27638
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Write                                   OpcuaNodeIdServicesMethod = 27641
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition                             OpcuaNodeIdServicesMethod = 27643
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition                             OpcuaNodeIdServicesMethod = 27646
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks                           OpcuaNodeIdServicesMethod = 27651
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate                          OpcuaNodeIdServicesMethod = 27654
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate                          OpcuaNodeIdServicesMethod = 27657
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate                       OpcuaNodeIdServicesMethod = 27659
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_GetRejectedList                                   OpcuaNodeIdServicesMethod = 27663
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable                        OpcuaNodeIdServicesMethod = 27698
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable                         OpcuaNodeIdServicesMethod = 27699
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment                     OpcuaNodeIdServicesMethod = 27700
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge                    OpcuaNodeIdServicesMethod = 27720
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm                        OpcuaNodeIdServicesMethod = 27722
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve      OpcuaNodeIdServicesMethod = 27767
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2     OpcuaNodeIdServicesMethod = 27769
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve         OpcuaNodeIdServicesMethod = 27771
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2        OpcuaNodeIdServicesMethod = 27772
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve    OpcuaNodeIdServicesMethod = 27774
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2   OpcuaNodeIdServicesMethod = 27775
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence                        OpcuaNodeIdServicesMethod = 27808
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress                       OpcuaNodeIdServicesMethod = 27809
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2                      OpcuaNodeIdServicesMethod = 27810
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress                     OpcuaNodeIdServicesMethod = 27812
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2                    OpcuaNodeIdServicesMethod = 27813
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService              OpcuaNodeIdServicesMethod = 27815
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2             OpcuaNodeIdServicesMethod = 27816
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService                 OpcuaNodeIdServicesMethod = 27818
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2                OpcuaNodeIdServicesMethod = 27819
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset                          OpcuaNodeIdServicesMethod = 27821
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2                         OpcuaNodeIdServicesMethod = 27822
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships            OpcuaNodeIdServicesMethod = 27824
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable                        OpcuaNodeIdServicesMethod = 27864
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable                         OpcuaNodeIdServicesMethod = 27865
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment                     OpcuaNodeIdServicesMethod = 27866
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge                    OpcuaNodeIdServicesMethod = 27886
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm                        OpcuaNodeIdServicesMethod = 27888
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve      OpcuaNodeIdServicesMethod = 27933
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2     OpcuaNodeIdServicesMethod = 27935
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve         OpcuaNodeIdServicesMethod = 27937
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2        OpcuaNodeIdServicesMethod = 27938
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve    OpcuaNodeIdServicesMethod = 27940
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2   OpcuaNodeIdServicesMethod = 27941
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence                        OpcuaNodeIdServicesMethod = 27974
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress                       OpcuaNodeIdServicesMethod = 27975
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2                      OpcuaNodeIdServicesMethod = 27976
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress                     OpcuaNodeIdServicesMethod = 27978
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2                    OpcuaNodeIdServicesMethod = 27979
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService              OpcuaNodeIdServicesMethod = 27981
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2             OpcuaNodeIdServicesMethod = 27982
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService                 OpcuaNodeIdServicesMethod = 27984
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2                OpcuaNodeIdServicesMethod = 27985
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset                          OpcuaNodeIdServicesMethod = 27987
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2                         OpcuaNodeIdServicesMethod = 27988
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships            OpcuaNodeIdServicesMethod = 27990
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_UpdateCertificate                                                                         OpcuaNodeIdServicesMethod = 28005
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_ApplyChanges                                                                              OpcuaNodeIdServicesMethod = 28008
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CancelChanges                                                                             OpcuaNodeIdServicesMethod = 28009
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CreateSigningRequest                                                                      OpcuaNodeIdServicesMethod = 28010
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_GetRejectedList                                                                           OpcuaNodeIdServicesMethod = 28013
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_ResetToServerDefaults                                                                     OpcuaNodeIdServicesMethod = 28015
-	OpcuaNodeIdServicesMethod_ProvisionableDevice_RequestTickets                                                                                                            OpcuaNodeIdServicesMethod = 29880
-	OpcuaNodeIdServicesMethod_ProvisionableDevice_SetRegistrarEndpoints                                                                                                     OpcuaNodeIdServicesMethod = 29882
-	OpcuaNodeIdServicesMethod_GetCertificatesMethodType                                                                                                                     OpcuaNodeIdServicesMethod = 32282
-	OpcuaNodeIdServicesMethod_ServerConfigurationType_GetCertificates                                                                                                       OpcuaNodeIdServicesMethod = 32296
-	OpcuaNodeIdServicesMethod_ServerConfiguration_GetCertificates                                                                                                           OpcuaNodeIdServicesMethod = 32333
-	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_GetCertificates                                                                           OpcuaNodeIdServicesMethod = 32359
-	OpcuaNodeIdServicesMethod_NonTransparentBackupRedundancyType_Failover                                                                                                   OpcuaNodeIdServicesMethod = 32416
+	OpcuaNodeIdServicesMethod_ProgramStateMachineType_Start                                                                                                                            OpcuaNodeIdServicesMethod = 2426
+	OpcuaNodeIdServicesMethod_ProgramStateMachineType_Suspend                                                                                                                          OpcuaNodeIdServicesMethod = 2427
+	OpcuaNodeIdServicesMethod_ProgramStateMachineType_Resume                                                                                                                           OpcuaNodeIdServicesMethod = 2428
+	OpcuaNodeIdServicesMethod_ProgramStateMachineType_Halt                                                                                                                             OpcuaNodeIdServicesMethod = 2429
+	OpcuaNodeIdServicesMethod_ProgramStateMachineType_Reset                                                                                                                            OpcuaNodeIdServicesMethod = 2430
+	OpcuaNodeIdServicesMethod_ShelvedStateMachineType_Unshelve                                                                                                                         OpcuaNodeIdServicesMethod = 2947
+	OpcuaNodeIdServicesMethod_ShelvedStateMachineType_OneShotShelve                                                                                                                    OpcuaNodeIdServicesMethod = 2948
+	OpcuaNodeIdServicesMethod_ShelvedStateMachineType_TimedShelve                                                                                                                      OpcuaNodeIdServicesMethod = 2949
+	OpcuaNodeIdServicesMethod_AddCommentMethodType                                                                                                                                     OpcuaNodeIdServicesMethod = 3863
+	OpcuaNodeIdServicesMethod_ConditionType_ConditionRefresh                                                                                                                           OpcuaNodeIdServicesMethod = 3875
+	OpcuaNodeIdServicesMethod_TimedShelveMethodType                                                                                                                                    OpcuaNodeIdServicesMethod = 6102
+	OpcuaNodeIdServicesMethod_ConditionRefreshMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 9007
+	OpcuaNodeIdServicesMethod_ConditionType_Enable                                                                                                                                     OpcuaNodeIdServicesMethod = 9027
+	OpcuaNodeIdServicesMethod_ConditionType_Disable                                                                                                                                    OpcuaNodeIdServicesMethod = 9028
+	OpcuaNodeIdServicesMethod_ConditionType_AddComment                                                                                                                                 OpcuaNodeIdServicesMethod = 9029
+	OpcuaNodeIdServicesMethod_DialogResponseMethodType                                                                                                                                 OpcuaNodeIdServicesMethod = 9031
+	OpcuaNodeIdServicesMethod_DialogConditionType_Respond                                                                                                                              OpcuaNodeIdServicesMethod = 9069
+	OpcuaNodeIdServicesMethod_AcknowledgeableConditionType_Acknowledge                                                                                                                 OpcuaNodeIdServicesMethod = 9111
+	OpcuaNodeIdServicesMethod_AcknowledgeableConditionType_Confirm                                                                                                                     OpcuaNodeIdServicesMethod = 9113
+	OpcuaNodeIdServicesMethod_AlarmConditionType_ShelvingState_Unshelve                                                                                                                OpcuaNodeIdServicesMethod = 9211
+	OpcuaNodeIdServicesMethod_AlarmConditionType_ShelvingState_OneShotShelve                                                                                                           OpcuaNodeIdServicesMethod = 9212
+	OpcuaNodeIdServicesMethod_AlarmConditionType_ShelvingState_TimedShelve                                                                                                             OpcuaNodeIdServicesMethod = 9213
+	OpcuaNodeIdServicesMethod_ServerType_GetMonitoredItems                                                                                                                             OpcuaNodeIdServicesMethod = 11489
+	OpcuaNodeIdServicesMethod_Server_GetMonitoredItems                                                                                                                                 OpcuaNodeIdServicesMethod = 11492
+	OpcuaNodeIdServicesMethod_GetMonitoredItemsMethodType                                                                                                                              OpcuaNodeIdServicesMethod = 11495
+	OpcuaNodeIdServicesMethod_FileType_Open                                                                                                                                            OpcuaNodeIdServicesMethod = 11580
+	OpcuaNodeIdServicesMethod_FileType_Close                                                                                                                                           OpcuaNodeIdServicesMethod = 11583
+	OpcuaNodeIdServicesMethod_FileType_Read                                                                                                                                            OpcuaNodeIdServicesMethod = 11585
+	OpcuaNodeIdServicesMethod_FileType_Write                                                                                                                                           OpcuaNodeIdServicesMethod = 11588
+	OpcuaNodeIdServicesMethod_FileType_GetPosition                                                                                                                                     OpcuaNodeIdServicesMethod = 11590
+	OpcuaNodeIdServicesMethod_FileType_SetPosition                                                                                                                                     OpcuaNodeIdServicesMethod = 11593
+	OpcuaNodeIdServicesMethod_AddressSpaceFileType_ExportNamespace                                                                                                                     OpcuaNodeIdServicesMethod = 11615
+	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_Open                                                                                                                 OpcuaNodeIdServicesMethod = 11629
+	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_Close                                                                                                                OpcuaNodeIdServicesMethod = 11632
+	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_Read                                                                                                                 OpcuaNodeIdServicesMethod = 11634
+	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_Write                                                                                                                OpcuaNodeIdServicesMethod = 11637
+	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_GetPosition                                                                                                          OpcuaNodeIdServicesMethod = 11639
+	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_SetPosition                                                                                                          OpcuaNodeIdServicesMethod = 11642
+	OpcuaNodeIdServicesMethod_NamespaceMetadataType_NamespaceFile_ExportNamespace                                                                                                      OpcuaNodeIdServicesMethod = 11644
+	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_Open                                                                                        OpcuaNodeIdServicesMethod = 11659
+	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_Close                                                                                       OpcuaNodeIdServicesMethod = 11662
+	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_Read                                                                                        OpcuaNodeIdServicesMethod = 11664
+	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_Write                                                                                       OpcuaNodeIdServicesMethod = 11667
+	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_GetPosition                                                                                 OpcuaNodeIdServicesMethod = 11669
+	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_SetPosition                                                                                 OpcuaNodeIdServicesMethod = 11672
+	OpcuaNodeIdServicesMethod_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_ExportNamespace                                                                             OpcuaNodeIdServicesMethod = 11674
+	OpcuaNodeIdServicesMethod_OpenMethodType                                                                                                                                           OpcuaNodeIdServicesMethod = 11738
+	OpcuaNodeIdServicesMethod_CloseMethodType                                                                                                                                          OpcuaNodeIdServicesMethod = 11741
+	OpcuaNodeIdServicesMethod_ReadMethodType                                                                                                                                           OpcuaNodeIdServicesMethod = 11743
+	OpcuaNodeIdServicesMethod_WriteMethodType                                                                                                                                          OpcuaNodeIdServicesMethod = 11746
+	OpcuaNodeIdServicesMethod_GetPositionMethodType                                                                                                                                    OpcuaNodeIdServicesMethod = 11748
+	OpcuaNodeIdServicesMethod_SetPositionMethodType                                                                                                                                    OpcuaNodeIdServicesMethod = 11751
+	OpcuaNodeIdServicesMethod_OpenWithMasksMethodType                                                                                                                                  OpcuaNodeIdServicesMethod = 12513
+	OpcuaNodeIdServicesMethod_CloseAndUpdateMethodType                                                                                                                                 OpcuaNodeIdServicesMethod = 12516
+	OpcuaNodeIdServicesMethod_AddCertificateMethodType                                                                                                                                 OpcuaNodeIdServicesMethod = 12518
+	OpcuaNodeIdServicesMethod_RemoveCertificateMethodType                                                                                                                              OpcuaNodeIdServicesMethod = 12520
+	OpcuaNodeIdServicesMethod_TrustListType_OpenWithMasks                                                                                                                              OpcuaNodeIdServicesMethod = 12543
+	OpcuaNodeIdServicesMethod_TrustListType_CloseAndUpdate                                                                                                                             OpcuaNodeIdServicesMethod = 12546
+	OpcuaNodeIdServicesMethod_TrustListType_AddCertificate                                                                                                                             OpcuaNodeIdServicesMethod = 12548
+	OpcuaNodeIdServicesMethod_TrustListType_RemoveCertificate                                                                                                                          OpcuaNodeIdServicesMethod = 12550
+	OpcuaNodeIdServicesMethod_UpdateCertificateMethodType                                                                                                                              OpcuaNodeIdServicesMethod = 12578
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_UpdateCertificate                                                                                                                OpcuaNodeIdServicesMethod = 12616
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_Open                                                                             OpcuaNodeIdServicesMethod = 12647
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_Close                                                                            OpcuaNodeIdServicesMethod = 12650
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_Read                                                                             OpcuaNodeIdServicesMethod = 12652
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_Write                                                                            OpcuaNodeIdServicesMethod = 12655
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition                                                                      OpcuaNodeIdServicesMethod = 12657
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition                                                                      OpcuaNodeIdServicesMethod = 12660
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks                                                                    OpcuaNodeIdServicesMethod = 12663
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate                                                                   OpcuaNodeIdServicesMethod = 12666
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate                                                                   OpcuaNodeIdServicesMethod = 12668
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate                                                                OpcuaNodeIdServicesMethod = 12670
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CreateSigningRequest                                                                                                             OpcuaNodeIdServicesMethod = 12731
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_ApplyChanges                                                                                                                     OpcuaNodeIdServicesMethod = 12734
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CreateSigningRequest                                                                                                                 OpcuaNodeIdServicesMethod = 12737
+	OpcuaNodeIdServicesMethod_ServerConfiguration_ApplyChanges                                                                                                                         OpcuaNodeIdServicesMethod = 12740
+	OpcuaNodeIdServicesMethod_CreateSigningRequestMethodType                                                                                                                           OpcuaNodeIdServicesMethod = 12741
+	OpcuaNodeIdServicesMethod_ServerType_SetSubscriptionDurable                                                                                                                        OpcuaNodeIdServicesMethod = 12746
+	OpcuaNodeIdServicesMethod_Server_SetSubscriptionDurable                                                                                                                            OpcuaNodeIdServicesMethod = 12749
+	OpcuaNodeIdServicesMethod_SetSubscriptionDurableMethodType                                                                                                                         OpcuaNodeIdServicesMethod = 12752
+	OpcuaNodeIdServicesMethod_GetRejectedListMethodType                                                                                                                                OpcuaNodeIdServicesMethod = 12773
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_GetRejectedList                                                                                                                  OpcuaNodeIdServicesMethod = 12775
+	OpcuaNodeIdServicesMethod_ServerConfiguration_GetRejectedList                                                                                                                      OpcuaNodeIdServicesMethod = 12777
+	OpcuaNodeIdServicesMethod_ServerType_ResendData                                                                                                                                    OpcuaNodeIdServicesMethod = 12871
+	OpcuaNodeIdServicesMethod_Server_ResendData                                                                                                                                        OpcuaNodeIdServicesMethod = 12873
+	OpcuaNodeIdServicesMethod_ResendDataMethodType                                                                                                                                     OpcuaNodeIdServicesMethod = 12875
+	OpcuaNodeIdServicesMethod_ServerType_RequestServerStateChange                                                                                                                      OpcuaNodeIdServicesMethod = 12883
+	OpcuaNodeIdServicesMethod_Server_RequestServerStateChange                                                                                                                          OpcuaNodeIdServicesMethod = 12886
+	OpcuaNodeIdServicesMethod_RequestServerStateChangeMethodType                                                                                                                       OpcuaNodeIdServicesMethod = 12888
+	OpcuaNodeIdServicesMethod_ConditionType_ConditionRefresh2                                                                                                                          OpcuaNodeIdServicesMethod = 12912
+	OpcuaNodeIdServicesMethod_ConditionRefresh2MethodType                                                                                                                              OpcuaNodeIdServicesMethod = 12914
+	OpcuaNodeIdServicesMethod_CreateDirectoryMethodType                                                                                                                                OpcuaNodeIdServicesMethod = 13342
+	OpcuaNodeIdServicesMethod_CreateFileMethodType                                                                                                                                     OpcuaNodeIdServicesMethod = 13345
+	OpcuaNodeIdServicesMethod_DeleteFileMethodType                                                                                                                                     OpcuaNodeIdServicesMethod = 13348
+	OpcuaNodeIdServicesMethod_MoveOrCopyMethodType                                                                                                                                     OpcuaNodeIdServicesMethod = 13350
+	OpcuaNodeIdServicesMethod_FileDirectoryType_FileDirectoryName_Placeholder_CreateDirectory                                                                                          OpcuaNodeIdServicesMethod = 13355
+	OpcuaNodeIdServicesMethod_FileDirectoryType_FileDirectoryName_Placeholder_CreateFile                                                                                               OpcuaNodeIdServicesMethod = 13358
+	OpcuaNodeIdServicesMethod_FileDirectoryType_FileDirectoryName_Placeholder_MoveOrCopy                                                                                               OpcuaNodeIdServicesMethod = 13363
+	OpcuaNodeIdServicesMethod_FileDirectoryType_FileName_Placeholder_Open                                                                                                              OpcuaNodeIdServicesMethod = 13372
+	OpcuaNodeIdServicesMethod_FileDirectoryType_FileName_Placeholder_Close                                                                                                             OpcuaNodeIdServicesMethod = 13375
+	OpcuaNodeIdServicesMethod_FileDirectoryType_FileName_Placeholder_Read                                                                                                              OpcuaNodeIdServicesMethod = 13377
+	OpcuaNodeIdServicesMethod_FileDirectoryType_FileName_Placeholder_Write                                                                                                             OpcuaNodeIdServicesMethod = 13380
+	OpcuaNodeIdServicesMethod_FileDirectoryType_FileName_Placeholder_GetPosition                                                                                                       OpcuaNodeIdServicesMethod = 13382
+	OpcuaNodeIdServicesMethod_FileDirectoryType_FileName_Placeholder_SetPosition                                                                                                       OpcuaNodeIdServicesMethod = 13385
+	OpcuaNodeIdServicesMethod_FileDirectoryType_CreateDirectory                                                                                                                        OpcuaNodeIdServicesMethod = 13387
+	OpcuaNodeIdServicesMethod_FileDirectoryType_CreateFile                                                                                                                             OpcuaNodeIdServicesMethod = 13390
+	OpcuaNodeIdServicesMethod_FileDirectoryType_DeleteFileSystemObject                                                                                                                 OpcuaNodeIdServicesMethod = 13393
+	OpcuaNodeIdServicesMethod_FileDirectoryType_MoveOrCopy                                                                                                                             OpcuaNodeIdServicesMethod = 13395
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_Open                                                                                                                      OpcuaNodeIdServicesMethod = 13605
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_Close                                                                                                                     OpcuaNodeIdServicesMethod = 13608
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_Read                                                                                                                      OpcuaNodeIdServicesMethod = 13610
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_Write                                                                                                                     OpcuaNodeIdServicesMethod = 13613
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_GetPosition                                                                                                               OpcuaNodeIdServicesMethod = 13615
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_SetPosition                                                                                                               OpcuaNodeIdServicesMethod = 13618
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_OpenWithMasks                                                                                                             OpcuaNodeIdServicesMethod = 13621
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_CloseAndUpdate                                                                                                            OpcuaNodeIdServicesMethod = 13624
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_AddCertificate                                                                                                            OpcuaNodeIdServicesMethod = 13627
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustList_RemoveCertificate                                                                                                         OpcuaNodeIdServicesMethod = 13629
+	OpcuaNodeIdServicesMethod_ServerConfiguration_UpdateCertificate                                                                                                                    OpcuaNodeIdServicesMethod = 13737
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_Open                                                                                        OpcuaNodeIdServicesMethod = 13821
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_Close                                                                                       OpcuaNodeIdServicesMethod = 13824
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_Read                                                                                        OpcuaNodeIdServicesMethod = 13826
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_Write                                                                                       OpcuaNodeIdServicesMethod = 13829
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_GetPosition                                                                                 OpcuaNodeIdServicesMethod = 13831
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_SetPosition                                                                                 OpcuaNodeIdServicesMethod = 13834
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_OpenWithMasks                                                                               OpcuaNodeIdServicesMethod = 13837
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_CloseAndUpdate                                                                              OpcuaNodeIdServicesMethod = 13840
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_AddCertificate                                                                              OpcuaNodeIdServicesMethod = 13843
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_RemoveCertificate                                                                           OpcuaNodeIdServicesMethod = 13845
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_Open                                                                                              OpcuaNodeIdServicesMethod = 13855
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_Close                                                                                             OpcuaNodeIdServicesMethod = 13858
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_Read                                                                                              OpcuaNodeIdServicesMethod = 13860
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_Write                                                                                             OpcuaNodeIdServicesMethod = 13863
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_GetPosition                                                                                       OpcuaNodeIdServicesMethod = 13865
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_SetPosition                                                                                       OpcuaNodeIdServicesMethod = 13868
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_OpenWithMasks                                                                                     OpcuaNodeIdServicesMethod = 13871
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_CloseAndUpdate                                                                                    OpcuaNodeIdServicesMethod = 13874
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_AddCertificate                                                                                    OpcuaNodeIdServicesMethod = 13877
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_RemoveCertificate                                                                                 OpcuaNodeIdServicesMethod = 13879
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_Open                                                                                          OpcuaNodeIdServicesMethod = 13889
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_Close                                                                                         OpcuaNodeIdServicesMethod = 13892
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_Read                                                                                          OpcuaNodeIdServicesMethod = 13894
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_Write                                                                                         OpcuaNodeIdServicesMethod = 13897
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_GetPosition                                                                                   OpcuaNodeIdServicesMethod = 13899
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_SetPosition                                                                                   OpcuaNodeIdServicesMethod = 13902
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_OpenWithMasks                                                                                 OpcuaNodeIdServicesMethod = 13905
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_CloseAndUpdate                                                                                OpcuaNodeIdServicesMethod = 13908
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_AddCertificate                                                                                OpcuaNodeIdServicesMethod = 13911
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_RemoveCertificate                                                                             OpcuaNodeIdServicesMethod = 13913
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_Open                                                                                    OpcuaNodeIdServicesMethod = 13923
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_Close                                                                                   OpcuaNodeIdServicesMethod = 13926
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_Read                                                                                    OpcuaNodeIdServicesMethod = 13928
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_Write                                                                                   OpcuaNodeIdServicesMethod = 13931
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_GetPosition                                                                             OpcuaNodeIdServicesMethod = 13933
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_SetPosition                                                                             OpcuaNodeIdServicesMethod = 13936
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_OpenWithMasks                                                                           OpcuaNodeIdServicesMethod = 13939
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_CloseAndUpdate                                                                          OpcuaNodeIdServicesMethod = 13942
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_AddCertificate                                                                          OpcuaNodeIdServicesMethod = 13945
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_RemoveCertificate                                                                       OpcuaNodeIdServicesMethod = 13947
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_Open                                                                         OpcuaNodeIdServicesMethod = 13958
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_Close                                                                        OpcuaNodeIdServicesMethod = 13961
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_Read                                                                         OpcuaNodeIdServicesMethod = 13963
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_Write                                                                        OpcuaNodeIdServicesMethod = 13966
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition                                                                  OpcuaNodeIdServicesMethod = 13968
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition                                                                  OpcuaNodeIdServicesMethod = 13971
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks                                                                OpcuaNodeIdServicesMethod = 13974
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate                                                               OpcuaNodeIdServicesMethod = 13977
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate                                                               OpcuaNodeIdServicesMethod = 13980
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate                                                            OpcuaNodeIdServicesMethod = 13982
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_Open                                                                               OpcuaNodeIdServicesMethod = 13992
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_Close                                                                              OpcuaNodeIdServicesMethod = 13995
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_Read                                                                               OpcuaNodeIdServicesMethod = 13997
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_Write                                                                              OpcuaNodeIdServicesMethod = 14000
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition                                                                        OpcuaNodeIdServicesMethod = 14002
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition                                                                        OpcuaNodeIdServicesMethod = 14005
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks                                                                      OpcuaNodeIdServicesMethod = 14008
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate                                                                     OpcuaNodeIdServicesMethod = 14011
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate                                                                     OpcuaNodeIdServicesMethod = 14014
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate                                                                  OpcuaNodeIdServicesMethod = 14016
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_Open                                                                           OpcuaNodeIdServicesMethod = 14026
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_Close                                                                          OpcuaNodeIdServicesMethod = 14029
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_Read                                                                           OpcuaNodeIdServicesMethod = 14031
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_Write                                                                          OpcuaNodeIdServicesMethod = 14034
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition                                                                    OpcuaNodeIdServicesMethod = 14036
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition                                                                    OpcuaNodeIdServicesMethod = 14039
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks                                                                  OpcuaNodeIdServicesMethod = 14042
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate                                                                 OpcuaNodeIdServicesMethod = 14045
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate                                                                 OpcuaNodeIdServicesMethod = 14048
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate                                                              OpcuaNodeIdServicesMethod = 14050
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_Open                                                                                   OpcuaNodeIdServicesMethod = 14095
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_Close                                                                                  OpcuaNodeIdServicesMethod = 14098
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_Read                                                                                   OpcuaNodeIdServicesMethod = 14100
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_Write                                                                                  OpcuaNodeIdServicesMethod = 14103
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition                                                                            OpcuaNodeIdServicesMethod = 14105
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition                                                                            OpcuaNodeIdServicesMethod = 14108
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks                                                                          OpcuaNodeIdServicesMethod = 14111
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate                                                                         OpcuaNodeIdServicesMethod = 14114
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate                                                                         OpcuaNodeIdServicesMethod = 14117
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate                                                                      OpcuaNodeIdServicesMethod = 14119
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_Open                                                                               OpcuaNodeIdServicesMethod = 14129
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_Close                                                                              OpcuaNodeIdServicesMethod = 14132
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_Read                                                                               OpcuaNodeIdServicesMethod = 14134
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_Write                                                                              OpcuaNodeIdServicesMethod = 14137
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition                                                                        OpcuaNodeIdServicesMethod = 14139
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition                                                                        OpcuaNodeIdServicesMethod = 14142
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks                                                                      OpcuaNodeIdServicesMethod = 14145
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate                                                                     OpcuaNodeIdServicesMethod = 14148
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate                                                                     OpcuaNodeIdServicesMethod = 14151
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate                                                                  OpcuaNodeIdServicesMethod = 14153
+	OpcuaNodeIdServicesMethod_RemoveConnectionMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 14183
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_RemoveGroup                                                                                                                         OpcuaNodeIdServicesMethod = 14225
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_Status_Enable                                                                                            OpcuaNodeIdServicesMethod = 14421
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_Status_Disable                                                                                           OpcuaNodeIdServicesMethod = 14422
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_RemoveGroup                                                                                              OpcuaNodeIdServicesMethod = 14424
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_RemoveConnection                                                                                                                    OpcuaNodeIdServicesMethod = 14432
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_AddPublishedDataItems                                                                                             OpcuaNodeIdServicesMethod = 14435
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_AddPublishedEvents                                                                                                OpcuaNodeIdServicesMethod = 14438
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_RemovePublishedDataSet                                                                                            OpcuaNodeIdServicesMethod = 14441
+	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItems                                                                                    OpcuaNodeIdServicesMethod = 14479
+	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEvents                                                                                       OpcuaNodeIdServicesMethod = 14482
+	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_RemovePublishedDataSet                                                                                   OpcuaNodeIdServicesMethod = 14485
+	OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedDataItems                                                                                                                  OpcuaNodeIdServicesMethod = 14493
+	OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedEvents                                                                                                                     OpcuaNodeIdServicesMethod = 14496
+	OpcuaNodeIdServicesMethod_DataSetFolderType_RemovePublishedDataSet                                                                                                                 OpcuaNodeIdServicesMethod = 14499
+	OpcuaNodeIdServicesMethod_AddPublishedDataItemsMethodType                                                                                                                          OpcuaNodeIdServicesMethod = 14501
+	OpcuaNodeIdServicesMethod_AddPublishedEventsMethodType                                                                                                                             OpcuaNodeIdServicesMethod = 14504
+	OpcuaNodeIdServicesMethod_RemovePublishedDataSetMethodType                                                                                                                         OpcuaNodeIdServicesMethod = 14507
+	OpcuaNodeIdServicesMethod_PublishedDataItemsType_AddVariables                                                                                                                      OpcuaNodeIdServicesMethod = 14555
+	OpcuaNodeIdServicesMethod_PublishedDataItemsType_RemoveVariables                                                                                                                   OpcuaNodeIdServicesMethod = 14558
+	OpcuaNodeIdServicesMethod_PublishedDataItemsAddVariablesMethodType                                                                                                                 OpcuaNodeIdServicesMethod = 14564
+	OpcuaNodeIdServicesMethod_PublishedDataItemsRemoveVariablesMethodType                                                                                                              OpcuaNodeIdServicesMethod = 14567
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_Status_Enable                                                                                                                       OpcuaNodeIdServicesMethod = 14602
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_Status_Disable                                                                                                                      OpcuaNodeIdServicesMethod = 14603
+	OpcuaNodeIdServicesMethod_PubSubConnectionTypeRemoveGroupMethodType                                                                                                                OpcuaNodeIdServicesMethod = 14604
+	OpcuaNodeIdServicesMethod_PubSubGroupTypeRemoveWriterMethodType                                                                                                                    OpcuaNodeIdServicesMethod = 14623
+	OpcuaNodeIdServicesMethod_PubSubGroupTypeRemoveReaderMethodType                                                                                                                    OpcuaNodeIdServicesMethod = 14625
+	OpcuaNodeIdServicesMethod_PubSubStatusType_Enable                                                                                                                                  OpcuaNodeIdServicesMethod = 14645
+	OpcuaNodeIdServicesMethod_PubSubStatusType_Disable                                                                                                                                 OpcuaNodeIdServicesMethod = 14646
+	OpcuaNodeIdServicesMethod_PublishedEventsType_ModifyFieldSelection                                                                                                                 OpcuaNodeIdServicesMethod = 15052
+	OpcuaNodeIdServicesMethod_PublishedEventsTypeModifyFieldSelectionMethodType                                                                                                        OpcuaNodeIdServicesMethod = 15054
+	OpcuaNodeIdServicesMethod_TargetVariablesType_AddTargetVariables                                                                                                                   OpcuaNodeIdServicesMethod = 15115
+	OpcuaNodeIdServicesMethod_TargetVariablesType_RemoveTargetVariables                                                                                                                OpcuaNodeIdServicesMethod = 15118
+	OpcuaNodeIdServicesMethod_TargetVariablesTypeAddTargetVariablesMethodType                                                                                                          OpcuaNodeIdServicesMethod = 15121
+	OpcuaNodeIdServicesMethod_TargetVariablesTypeRemoveTargetVariablesMethodType                                                                                                       OpcuaNodeIdServicesMethod = 15124
+	OpcuaNodeIdServicesMethod_PublishSubscribe_GetSecurityKeys                                                                                                                         OpcuaNodeIdServicesMethod = 15215
+	OpcuaNodeIdServicesMethod_GetSecurityKeysMethodType                                                                                                                                OpcuaNodeIdServicesMethod = 15218
+	OpcuaNodeIdServicesMethod_PublishedDataSetType_DataSetWriterName_Placeholder_Status_Enable                                                                                         OpcuaNodeIdServicesMethod = 15225
+	OpcuaNodeIdServicesMethod_PublishedDataSetType_DataSetWriterName_Placeholder_Status_Disable                                                                                        OpcuaNodeIdServicesMethod = 15226
+	OpcuaNodeIdServicesMethod_CreateCredentialMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 15248
+	OpcuaNodeIdServicesMethod_PubSubGroupType_Status_Enable                                                                                                                            OpcuaNodeIdServicesMethod = 15267
+	OpcuaNodeIdServicesMethod_PubSubGroupType_Status_Disable                                                                                                                           OpcuaNodeIdServicesMethod = 15268
+	OpcuaNodeIdServicesMethod_DataSetWriterType_Status_Enable                                                                                                                          OpcuaNodeIdServicesMethod = 15301
+	OpcuaNodeIdServicesMethod_DataSetWriterType_Status_Disable                                                                                                                         OpcuaNodeIdServicesMethod = 15302
+	OpcuaNodeIdServicesMethod_DataSetReaderType_Status_Enable                                                                                                                          OpcuaNodeIdServicesMethod = 15309
+	OpcuaNodeIdServicesMethod_DataSetReaderType_Status_Disable                                                                                                                         OpcuaNodeIdServicesMethod = 15310
+	OpcuaNodeIdServicesMethod_PublishSubscribe_GetSecurityGroup                                                                                                                        OpcuaNodeIdServicesMethod = 15440
+	OpcuaNodeIdServicesMethod_PublishSubscribe_SecurityGroups_AddSecurityGroup                                                                                                         OpcuaNodeIdServicesMethod = 15444
+	OpcuaNodeIdServicesMethod_PublishSubscribe_SecurityGroups_RemoveSecurityGroup                                                                                                      OpcuaNodeIdServicesMethod = 15447
+	OpcuaNodeIdServicesMethod_GetSecurityGroupMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 15449
+	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder_AddSecurityGroup                                                                             OpcuaNodeIdServicesMethod = 15454
+	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder_RemoveSecurityGroup                                                                          OpcuaNodeIdServicesMethod = 15457
+	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_AddSecurityGroup                                                                                                                 OpcuaNodeIdServicesMethod = 15461
+	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_RemoveSecurityGroup                                                                                                              OpcuaNodeIdServicesMethod = 15464
+	OpcuaNodeIdServicesMethod_AddSecurityGroupMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 15466
+	OpcuaNodeIdServicesMethod_RemoveSecurityGroupMethodType                                                                                                                            OpcuaNodeIdServicesMethod = 15469
+	OpcuaNodeIdServicesMethod_DataSetFolderType_PublishedDataSetName_Placeholder_ExtensionFields_AddExtensionField                                                                     OpcuaNodeIdServicesMethod = 15474
+	OpcuaNodeIdServicesMethod_DataSetFolderType_PublishedDataSetName_Placeholder_ExtensionFields_RemoveExtensionField                                                                  OpcuaNodeIdServicesMethod = 15477
+	OpcuaNodeIdServicesMethod_PublishedDataSetType_ExtensionFields_AddExtensionField                                                                                                   OpcuaNodeIdServicesMethod = 15482
+	OpcuaNodeIdServicesMethod_PublishedDataSetType_ExtensionFields_RemoveExtensionField                                                                                                OpcuaNodeIdServicesMethod = 15485
+	OpcuaNodeIdServicesMethod_ExtensionFieldsType_AddExtensionField                                                                                                                    OpcuaNodeIdServicesMethod = 15491
+	OpcuaNodeIdServicesMethod_ExtensionFieldsType_RemoveExtensionField                                                                                                                 OpcuaNodeIdServicesMethod = 15494
+	OpcuaNodeIdServicesMethod_AddExtensionFieldMethodType                                                                                                                              OpcuaNodeIdServicesMethod = 15496
+	OpcuaNodeIdServicesMethod_RemoveExtensionFieldMethodType                                                                                                                           OpcuaNodeIdServicesMethod = 15499
+	OpcuaNodeIdServicesMethod_RoleSetType_RoleName_Placeholder_AddIdentity                                                                                                             OpcuaNodeIdServicesMethod = 15612
+	OpcuaNodeIdServicesMethod_RoleSetType_RoleName_Placeholder_RemoveIdentity                                                                                                          OpcuaNodeIdServicesMethod = 15614
+	OpcuaNodeIdServicesMethod_RoleType_AddIdentity                                                                                                                                     OpcuaNodeIdServicesMethod = 15624
+	OpcuaNodeIdServicesMethod_RoleType_RemoveIdentity                                                                                                                                  OpcuaNodeIdServicesMethod = 15626
+	OpcuaNodeIdServicesMethod_AddIdentityMethodType                                                                                                                                    OpcuaNodeIdServicesMethod = 15636
+	OpcuaNodeIdServicesMethod_RemoveIdentityMethodType                                                                                                                                 OpcuaNodeIdServicesMethod = 15638
+	OpcuaNodeIdServicesMethod_WellKnownRole_Anonymous_AddIdentity                                                                                                                      OpcuaNodeIdServicesMethod = 15648
+	OpcuaNodeIdServicesMethod_WellKnownRole_Anonymous_RemoveIdentity                                                                                                                   OpcuaNodeIdServicesMethod = 15650
+	OpcuaNodeIdServicesMethod_WellKnownRole_AuthenticatedUser_AddIdentity                                                                                                              OpcuaNodeIdServicesMethod = 15660
+	OpcuaNodeIdServicesMethod_WellKnownRole_AuthenticatedUser_RemoveIdentity                                                                                                           OpcuaNodeIdServicesMethod = 15662
+	OpcuaNodeIdServicesMethod_WellKnownRole_Observer_AddIdentity                                                                                                                       OpcuaNodeIdServicesMethod = 15672
+	OpcuaNodeIdServicesMethod_WellKnownRole_Observer_RemoveIdentity                                                                                                                    OpcuaNodeIdServicesMethod = 15674
+	OpcuaNodeIdServicesMethod_WellKnownRole_Operator_AddIdentity                                                                                                                       OpcuaNodeIdServicesMethod = 15684
+	OpcuaNodeIdServicesMethod_WellKnownRole_Operator_RemoveIdentity                                                                                                                    OpcuaNodeIdServicesMethod = 15686
+	OpcuaNodeIdServicesMethod_WellKnownRole_Supervisor_AddIdentity                                                                                                                     OpcuaNodeIdServicesMethod = 15696
+	OpcuaNodeIdServicesMethod_WellKnownRole_Supervisor_RemoveIdentity                                                                                                                  OpcuaNodeIdServicesMethod = 15698
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityAdmin_AddIdentity                                                                                                                  OpcuaNodeIdServicesMethod = 15708
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityAdmin_RemoveIdentity                                                                                                               OpcuaNodeIdServicesMethod = 15710
+	OpcuaNodeIdServicesMethod_WellKnownRole_ConfigureAdmin_AddIdentity                                                                                                                 OpcuaNodeIdServicesMethod = 15720
+	OpcuaNodeIdServicesMethod_WellKnownRole_ConfigureAdmin_RemoveIdentity                                                                                                              OpcuaNodeIdServicesMethod = 15722
+	OpcuaNodeIdServicesMethod_TemporaryFileTransferType_GenerateFileForRead                                                                                                            OpcuaNodeIdServicesMethod = 15746
+	OpcuaNodeIdServicesMethod_TemporaryFileTransferType_GenerateFileForWrite                                                                                                           OpcuaNodeIdServicesMethod = 15749
+	OpcuaNodeIdServicesMethod_TemporaryFileTransferType_CloseAndCommit                                                                                                                 OpcuaNodeIdServicesMethod = 15751
+	OpcuaNodeIdServicesMethod_TemporaryFileTransferType_TransferState_Placeholder_Reset                                                                                                OpcuaNodeIdServicesMethod = 15794
+	OpcuaNodeIdServicesMethod_GenerateFileForReadMethodType                                                                                                                            OpcuaNodeIdServicesMethod = 15795
+	OpcuaNodeIdServicesMethod_GenerateFileForWriteMethodType                                                                                                                           OpcuaNodeIdServicesMethod = 15798
+	OpcuaNodeIdServicesMethod_CloseAndCommitMethodType                                                                                                                                 OpcuaNodeIdServicesMethod = 15800
+	OpcuaNodeIdServicesMethod_FileTransferStateMachineType_Reset                                                                                                                       OpcuaNodeIdServicesMethod = 15843
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_Status_Enable                                                                                                                       OpcuaNodeIdServicesMethod = 15846
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_Status_Disable                                                                                                                      OpcuaNodeIdServicesMethod = 15847
+	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_GetSecurityKeys                                                                                                                     OpcuaNodeIdServicesMethod = 15907
+	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_GetSecurityGroup                                                                                                                    OpcuaNodeIdServicesMethod = 15910
+	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_SecurityGroups_AddSecurityGroup                                                                                                     OpcuaNodeIdServicesMethod = 15914
+	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_SecurityGroups_RemoveSecurityGroup                                                                                                  OpcuaNodeIdServicesMethod = 15917
+	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_Open                                                                                                                OpcuaNodeIdServicesMethod = 15971
+	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_Close                                                                                                               OpcuaNodeIdServicesMethod = 15974
+	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_Read                                                                                                                OpcuaNodeIdServicesMethod = 15976
+	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_Write                                                                                                               OpcuaNodeIdServicesMethod = 15979
+	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_GetPosition                                                                                                         OpcuaNodeIdServicesMethod = 15981
+	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_SetPosition                                                                                                         OpcuaNodeIdServicesMethod = 15984
+	OpcuaNodeIdServicesMethod_OPCUANamespaceMetadata_NamespaceFile_ExportNamespace                                                                                                     OpcuaNodeIdServicesMethod = 15986
+	OpcuaNodeIdServicesMethod_RoleSetType_AddRole                                                                                                                                      OpcuaNodeIdServicesMethod = 15997
+	OpcuaNodeIdServicesMethod_RoleSetType_RemoveRole                                                                                                                                   OpcuaNodeIdServicesMethod = 16000
+	OpcuaNodeIdServicesMethod_AddRoleMethodType                                                                                                                                        OpcuaNodeIdServicesMethod = 16002
+	OpcuaNodeIdServicesMethod_RemoveRoleMethodType                                                                                                                                     OpcuaNodeIdServicesMethod = 16005
+	OpcuaNodeIdServicesMethod_WellKnownRole_Engineer_AddIdentity                                                                                                                       OpcuaNodeIdServicesMethod = 16041
+	OpcuaNodeIdServicesMethod_WellKnownRole_Engineer_RemoveIdentity                                                                                                                    OpcuaNodeIdServicesMethod = 16043
+	OpcuaNodeIdServicesMethod_RoleSetType_RoleName_Placeholder_AddApplication                                                                                                          OpcuaNodeIdServicesMethod = 16165
+	OpcuaNodeIdServicesMethod_RoleSetType_RoleName_Placeholder_RemoveApplication                                                                                                       OpcuaNodeIdServicesMethod = 16167
+	OpcuaNodeIdServicesMethod_RoleSetType_RoleName_Placeholder_AddEndpoint                                                                                                             OpcuaNodeIdServicesMethod = 16169
+	OpcuaNodeIdServicesMethod_RoleSetType_RoleName_Placeholder_RemoveEndpoint                                                                                                          OpcuaNodeIdServicesMethod = 16171
+	OpcuaNodeIdServicesMethod_RoleType_AddApplication                                                                                                                                  OpcuaNodeIdServicesMethod = 16176
+	OpcuaNodeIdServicesMethod_RoleType_RemoveApplication                                                                                                                               OpcuaNodeIdServicesMethod = 16178
+	OpcuaNodeIdServicesMethod_RoleType_AddEndpoint                                                                                                                                     OpcuaNodeIdServicesMethod = 16180
+	OpcuaNodeIdServicesMethod_RoleType_RemoveEndpoint                                                                                                                                  OpcuaNodeIdServicesMethod = 16182
+	OpcuaNodeIdServicesMethod_AddApplicationMethodType                                                                                                                                 OpcuaNodeIdServicesMethod = 16184
+	OpcuaNodeIdServicesMethod_RemoveApplicationMethodType                                                                                                                              OpcuaNodeIdServicesMethod = 16186
+	OpcuaNodeIdServicesMethod_AddEndpointMethodType                                                                                                                                    OpcuaNodeIdServicesMethod = 16188
+	OpcuaNodeIdServicesMethod_RemoveEndpointMethodType                                                                                                                                 OpcuaNodeIdServicesMethod = 16190
+	OpcuaNodeIdServicesMethod_WellKnownRole_Anonymous_AddApplication                                                                                                                   OpcuaNodeIdServicesMethod = 16195
+	OpcuaNodeIdServicesMethod_WellKnownRole_Anonymous_RemoveApplication                                                                                                                OpcuaNodeIdServicesMethod = 16197
+	OpcuaNodeIdServicesMethod_WellKnownRole_Anonymous_AddEndpoint                                                                                                                      OpcuaNodeIdServicesMethod = 16199
+	OpcuaNodeIdServicesMethod_WellKnownRole_Anonymous_RemoveEndpoint                                                                                                                   OpcuaNodeIdServicesMethod = 16201
+	OpcuaNodeIdServicesMethod_WellKnownRole_AuthenticatedUser_AddApplication                                                                                                           OpcuaNodeIdServicesMethod = 16206
+	OpcuaNodeIdServicesMethod_WellKnownRole_AuthenticatedUser_RemoveApplication                                                                                                        OpcuaNodeIdServicesMethod = 16208
+	OpcuaNodeIdServicesMethod_WellKnownRole_AuthenticatedUser_AddEndpoint                                                                                                              OpcuaNodeIdServicesMethod = 16210
+	OpcuaNodeIdServicesMethod_WellKnownRole_AuthenticatedUser_RemoveEndpoint                                                                                                           OpcuaNodeIdServicesMethod = 16212
+	OpcuaNodeIdServicesMethod_WellKnownRole_Observer_AddApplication                                                                                                                    OpcuaNodeIdServicesMethod = 16217
+	OpcuaNodeIdServicesMethod_WellKnownRole_Observer_RemoveApplication                                                                                                                 OpcuaNodeIdServicesMethod = 16219
+	OpcuaNodeIdServicesMethod_WellKnownRole_Observer_AddEndpoint                                                                                                                       OpcuaNodeIdServicesMethod = 16221
+	OpcuaNodeIdServicesMethod_WellKnownRole_Observer_RemoveEndpoint                                                                                                                    OpcuaNodeIdServicesMethod = 16223
+	OpcuaNodeIdServicesMethod_WellKnownRole_Operator_AddApplication                                                                                                                    OpcuaNodeIdServicesMethod = 16228
+	OpcuaNodeIdServicesMethod_WellKnownRole_Operator_RemoveApplication                                                                                                                 OpcuaNodeIdServicesMethod = 16230
+	OpcuaNodeIdServicesMethod_WellKnownRole_Operator_AddEndpoint                                                                                                                       OpcuaNodeIdServicesMethod = 16232
+	OpcuaNodeIdServicesMethod_WellKnownRole_Operator_RemoveEndpoint                                                                                                                    OpcuaNodeIdServicesMethod = 16234
+	OpcuaNodeIdServicesMethod_WellKnownRole_Engineer_AddApplication                                                                                                                    OpcuaNodeIdServicesMethod = 16239
+	OpcuaNodeIdServicesMethod_WellKnownRole_Engineer_RemoveApplication                                                                                                                 OpcuaNodeIdServicesMethod = 16241
+	OpcuaNodeIdServicesMethod_WellKnownRole_Engineer_AddEndpoint                                                                                                                       OpcuaNodeIdServicesMethod = 16243
+	OpcuaNodeIdServicesMethod_WellKnownRole_Engineer_RemoveEndpoint                                                                                                                    OpcuaNodeIdServicesMethod = 16245
+	OpcuaNodeIdServicesMethod_WellKnownRole_Supervisor_AddApplication                                                                                                                  OpcuaNodeIdServicesMethod = 16250
+	OpcuaNodeIdServicesMethod_WellKnownRole_Supervisor_RemoveApplication                                                                                                               OpcuaNodeIdServicesMethod = 16252
+	OpcuaNodeIdServicesMethod_WellKnownRole_Supervisor_AddEndpoint                                                                                                                     OpcuaNodeIdServicesMethod = 16254
+	OpcuaNodeIdServicesMethod_WellKnownRole_Supervisor_RemoveEndpoint                                                                                                                  OpcuaNodeIdServicesMethod = 16256
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityAdmin_AddApplication                                                                                                               OpcuaNodeIdServicesMethod = 16261
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityAdmin_RemoveApplication                                                                                                            OpcuaNodeIdServicesMethod = 16263
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityAdmin_AddEndpoint                                                                                                                  OpcuaNodeIdServicesMethod = 16265
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityAdmin_RemoveEndpoint                                                                                                               OpcuaNodeIdServicesMethod = 16267
+	OpcuaNodeIdServicesMethod_WellKnownRole_ConfigureAdmin_AddApplication                                                                                                              OpcuaNodeIdServicesMethod = 16272
+	OpcuaNodeIdServicesMethod_WellKnownRole_ConfigureAdmin_RemoveApplication                                                                                                           OpcuaNodeIdServicesMethod = 16274
+	OpcuaNodeIdServicesMethod_WellKnownRole_ConfigureAdmin_AddEndpoint                                                                                                                 OpcuaNodeIdServicesMethod = 16276
+	OpcuaNodeIdServicesMethod_WellKnownRole_ConfigureAdmin_RemoveEndpoint                                                                                                              OpcuaNodeIdServicesMethod = 16278
+	OpcuaNodeIdServicesMethod_ServerType_ServerCapabilities_RoleSet_AddRole                                                                                                            OpcuaNodeIdServicesMethod = 16290
+	OpcuaNodeIdServicesMethod_ServerType_ServerCapabilities_RoleSet_RemoveRole                                                                                                         OpcuaNodeIdServicesMethod = 16293
+	OpcuaNodeIdServicesMethod_ServerCapabilitiesType_RoleSet_AddRole                                                                                                                   OpcuaNodeIdServicesMethod = 16296
+	OpcuaNodeIdServicesMethod_ServerCapabilitiesType_RoleSet_RemoveRole                                                                                                                OpcuaNodeIdServicesMethod = 16299
+	OpcuaNodeIdServicesMethod_Server_ServerCapabilities_RoleSet_AddRole                                                                                                                OpcuaNodeIdServicesMethod = 16301
+	OpcuaNodeIdServicesMethod_Server_ServerCapabilities_RoleSet_RemoveRole                                                                                                             OpcuaNodeIdServicesMethod = 16304
+	OpcuaNodeIdServicesMethod_FileSystem_CreateDirectory                                                                                                                               OpcuaNodeIdServicesMethod = 16348
+	OpcuaNodeIdServicesMethod_FileSystem_CreateFile                                                                                                                                    OpcuaNodeIdServicesMethod = 16351
+	OpcuaNodeIdServicesMethod_FileSystem_DeleteFileSystemObject                                                                                                                        OpcuaNodeIdServicesMethod = 16354
+	OpcuaNodeIdServicesMethod_FileSystem_MoveOrCopy                                                                                                                                    OpcuaNodeIdServicesMethod = 16356
+	OpcuaNodeIdServicesMethod_AlarmConditionType_Silence                                                                                                                               OpcuaNodeIdServicesMethod = 16402
+	OpcuaNodeIdServicesMethod_AlarmConditionType_Suppress                                                                                                                              OpcuaNodeIdServicesMethod = 16403
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Disable                                                                                                OpcuaNodeIdServicesMethod = 16439
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Enable                                                                                                 OpcuaNodeIdServicesMethod = 16440
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_AddComment                                                                                             OpcuaNodeIdServicesMethod = 16441
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Acknowledge                                                                                            OpcuaNodeIdServicesMethod = 16461
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Confirm                                                                                                OpcuaNodeIdServicesMethod = 16463
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState_Unshelve                                                                                 OpcuaNodeIdServicesMethod = 16515
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState_OneShotShelve                                                                            OpcuaNodeIdServicesMethod = 16516
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState_TimedShelve                                                                              OpcuaNodeIdServicesMethod = 16517
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Silence                                                                                                OpcuaNodeIdServicesMethod = 16533
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Suppress                                                                                               OpcuaNodeIdServicesMethod = 16534
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup                                                                                           OpcuaNodeIdServicesMethod = 16535
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_AddReaderGroup                                                                                           OpcuaNodeIdServicesMethod = 16560
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_AddConnection                                                                                                                       OpcuaNodeIdServicesMethod = 16598
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_AddPublishedDataItemsTemplate                                                                                     OpcuaNodeIdServicesMethod = 16601
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_AddPublishedEventsTemplate                                                                                        OpcuaNodeIdServicesMethod = 16639
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_AddDataSetFolder                                                                                                  OpcuaNodeIdServicesMethod = 16651
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_RemoveDataSetFolder                                                                                               OpcuaNodeIdServicesMethod = 16680
+	OpcuaNodeIdServicesMethod_AddConnectionMethodType                                                                                                                                  OpcuaNodeIdServicesMethod = 16691
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Open                                  OpcuaNodeIdServicesMethod = 16717
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Close                                 OpcuaNodeIdServicesMethod = 16724
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Read                                  OpcuaNodeIdServicesMethod = 16726
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Write                                 OpcuaNodeIdServicesMethod = 16729
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition                           OpcuaNodeIdServicesMethod = 16732
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition                           OpcuaNodeIdServicesMethod = 16735
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks                         OpcuaNodeIdServicesMethod = 16741
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate                        OpcuaNodeIdServicesMethod = 16744
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate                        OpcuaNodeIdServicesMethod = 16747
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate                     OpcuaNodeIdServicesMethod = 16749
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_GetRejectedList                                 OpcuaNodeIdServicesMethod = 16752
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable                      OpcuaNodeIdServicesMethod = 16790
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable                       OpcuaNodeIdServicesMethod = 16791
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment                   OpcuaNodeIdServicesMethod = 16792
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge                  OpcuaNodeIdServicesMethod = 16812
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm                      OpcuaNodeIdServicesMethod = 16814
+	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate                                                                            OpcuaNodeIdServicesMethod = 16842
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve    OpcuaNodeIdServicesMethod = 16864
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2   OpcuaNodeIdServicesMethod = 16866
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve       OpcuaNodeIdServicesMethod = 16868
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2      OpcuaNodeIdServicesMethod = 16869
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve  OpcuaNodeIdServicesMethod = 16871
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2 OpcuaNodeIdServicesMethod = 16872
+	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate                                                                               OpcuaNodeIdServicesMethod = 16881
+	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder                                                                                         OpcuaNodeIdServicesMethod = 16884
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence                      OpcuaNodeIdServicesMethod = 16911
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress                     OpcuaNodeIdServicesMethod = 16912
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2                    OpcuaNodeIdServicesMethod = 16913
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress                   OpcuaNodeIdServicesMethod = 16915
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2                  OpcuaNodeIdServicesMethod = 16916
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService            OpcuaNodeIdServicesMethod = 16918
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2           OpcuaNodeIdServicesMethod = 16919
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService               OpcuaNodeIdServicesMethod = 16921
+	OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_RemoveDataSetFolder                                                                                      OpcuaNodeIdServicesMethod = 16923
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2              OpcuaNodeIdServicesMethod = 16926
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset                        OpcuaNodeIdServicesMethod = 16928
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2                       OpcuaNodeIdServicesMethod = 16929
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships          OpcuaNodeIdServicesMethod = 16931
+	OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedDataItemsTemplate                                                                                                          OpcuaNodeIdServicesMethod = 16935
+	OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedEventsTemplate                                                                                                             OpcuaNodeIdServicesMethod = 16960
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable                      OpcuaNodeIdServicesMethod = 16977
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable                       OpcuaNodeIdServicesMethod = 16978
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment                   OpcuaNodeIdServicesMethod = 16979
+	OpcuaNodeIdServicesMethod_DataSetFolderType_AddDataSetFolder                                                                                                                       OpcuaNodeIdServicesMethod = 16994
+	OpcuaNodeIdServicesMethod_DataSetFolderType_RemoveDataSetFolder                                                                                                                    OpcuaNodeIdServicesMethod = 16997
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge                  OpcuaNodeIdServicesMethod = 17003
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm                      OpcuaNodeIdServicesMethod = 17005
+	OpcuaNodeIdServicesMethod_AddPublishedDataItemsTemplateMethodType                                                                                                                  OpcuaNodeIdServicesMethod = 17030
+	OpcuaNodeIdServicesMethod_AddPublishedEventsTemplateMethodType                                                                                                                     OpcuaNodeIdServicesMethod = 17033
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve    OpcuaNodeIdServicesMethod = 17056
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2   OpcuaNodeIdServicesMethod = 17058
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve       OpcuaNodeIdServicesMethod = 17060
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2      OpcuaNodeIdServicesMethod = 17061
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve  OpcuaNodeIdServicesMethod = 17063
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2 OpcuaNodeIdServicesMethod = 17064
+	OpcuaNodeIdServicesMethod_AddDataSetFolderMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 17067
+	OpcuaNodeIdServicesMethod_RemoveDataSetFolderMethodType                                                                                                                            OpcuaNodeIdServicesMethod = 17079
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence                      OpcuaNodeIdServicesMethod = 17103
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress                     OpcuaNodeIdServicesMethod = 17104
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2                    OpcuaNodeIdServicesMethod = 17105
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress                   OpcuaNodeIdServicesMethod = 17107
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2                  OpcuaNodeIdServicesMethod = 17108
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService            OpcuaNodeIdServicesMethod = 17110
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2           OpcuaNodeIdServicesMethod = 17111
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService               OpcuaNodeIdServicesMethod = 17113
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2              OpcuaNodeIdServicesMethod = 17114
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset                        OpcuaNodeIdServicesMethod = 17116
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2                       OpcuaNodeIdServicesMethod = 17117
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships          OpcuaNodeIdServicesMethod = 17119
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Open                                        OpcuaNodeIdServicesMethod = 17134
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Close                                       OpcuaNodeIdServicesMethod = 17137
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Read                                        OpcuaNodeIdServicesMethod = 17139
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Write                                       OpcuaNodeIdServicesMethod = 17142
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition                                 OpcuaNodeIdServicesMethod = 17144
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition                                 OpcuaNodeIdServicesMethod = 17147
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks                               OpcuaNodeIdServicesMethod = 17153
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate                              OpcuaNodeIdServicesMethod = 17156
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate                              OpcuaNodeIdServicesMethod = 17159
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate                           OpcuaNodeIdServicesMethod = 17161
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_GetRejectedList                                       OpcuaNodeIdServicesMethod = 17164
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable                            OpcuaNodeIdServicesMethod = 17199
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable                             OpcuaNodeIdServicesMethod = 17200
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment                         OpcuaNodeIdServicesMethod = 17205
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge                        OpcuaNodeIdServicesMethod = 17237
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm                            OpcuaNodeIdServicesMethod = 17239
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_AddDataSetWriter                                                                                        OpcuaNodeIdServicesMethod = 17293
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_SetSecurityKeys                                                                                                                     OpcuaNodeIdServicesMethod = 17296
+	OpcuaNodeIdServicesMethod_SetSecurityKeysMethodType                                                                                                                                OpcuaNodeIdServicesMethod = 17298
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_Status_Enable                                                                                           OpcuaNodeIdServicesMethod = 17316
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_Status_Disable                                                                                          OpcuaNodeIdServicesMethod = 17317
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_RemoveDataSetWriter                                                                                     OpcuaNodeIdServicesMethod = 17323
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_Status_Enable                                                                                           OpcuaNodeIdServicesMethod = 17331
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_Status_Disable                                                                                          OpcuaNodeIdServicesMethod = 17332
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_RemoveDataSetReader                                                                                     OpcuaNodeIdServicesMethod = 17333
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve          OpcuaNodeIdServicesMethod = 17340
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2         OpcuaNodeIdServicesMethod = 17342
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve             OpcuaNodeIdServicesMethod = 17344
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2            OpcuaNodeIdServicesMethod = 17345
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve        OpcuaNodeIdServicesMethod = 17347
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2       OpcuaNodeIdServicesMethod = 17348
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_AddDataSetReader                                                                                        OpcuaNodeIdServicesMethod = 17355
+	OpcuaNodeIdServicesMethod_PublishSubscribe_SetSecurityKeys                                                                                                                         OpcuaNodeIdServicesMethod = 17364
+	OpcuaNodeIdServicesMethod_PublishSubscribe_AddConnection                                                                                                                           OpcuaNodeIdServicesMethod = 17366
+	OpcuaNodeIdServicesMethod_PublishSubscribe_RemoveConnection                                                                                                                        OpcuaNodeIdServicesMethod = 17369
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_AddPublishedDataItems                                                                                                 OpcuaNodeIdServicesMethod = 17372
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_AddPublishedEvents                                                                                                    OpcuaNodeIdServicesMethod = 17375
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_AddPublishedDataItemsTemplate                                                                                         OpcuaNodeIdServicesMethod = 17378
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_AddPublishedEventsTemplate                                                                                            OpcuaNodeIdServicesMethod = 17381
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_RemovePublishedDataSet                                                                                                OpcuaNodeIdServicesMethod = 17384
+	OpcuaNodeIdServicesMethod_DataSetReaderType_CreateTargetVariables                                                                                                                  OpcuaNodeIdServicesMethod = 17386
+	OpcuaNodeIdServicesMethod_DataSetReaderType_CreateDataSetMirror                                                                                                                    OpcuaNodeIdServicesMethod = 17389
+	OpcuaNodeIdServicesMethod_DataSetReaderTypeCreateTargetVariablesMethodType                                                                                                         OpcuaNodeIdServicesMethod = 17392
+	OpcuaNodeIdServicesMethod_DataSetReaderTypeCreateDataSetMirrorMethodType                                                                                                           OpcuaNodeIdServicesMethod = 17395
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_AddDataSetFolder                                                                                                      OpcuaNodeIdServicesMethod = 17398
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PublishedDataSets_RemoveDataSetFolder                                                                                                   OpcuaNodeIdServicesMethod = 17403
+	OpcuaNodeIdServicesMethod_PublishSubscribe_Status_Enable                                                                                                                           OpcuaNodeIdServicesMethod = 17407
+	OpcuaNodeIdServicesMethod_PublishSubscribe_Status_Disable                                                                                                                          OpcuaNodeIdServicesMethod = 17408
+	OpcuaNodeIdServicesMethod_PublishSubscribe_Diagnostics_Reset                                                                                                                       OpcuaNodeIdServicesMethod = 17421
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_AddWriterGroup                                                                                                                      OpcuaNodeIdServicesMethod = 17427
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_AddReaderGroup                                                                                                                      OpcuaNodeIdServicesMethod = 17465
+	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationFolderType_ServiceName_Placeholder_GetEncryptingKey                                                                            OpcuaNodeIdServicesMethod = 17516
+	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationFolderType_ServiceName_Placeholder_UpdateCredential                                                                            OpcuaNodeIdServicesMethod = 17519
+	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationFolderType_ServiceName_Placeholder_DeleteCredential                                                                            OpcuaNodeIdServicesMethod = 17521
+	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationFolderType_CreateCredential                                                                                                    OpcuaNodeIdServicesMethod = 17522
+	OpcuaNodeIdServicesMethod_KeyCredentialConfiguration_CreateCredential                                                                                                              OpcuaNodeIdServicesMethod = 17528
+	OpcuaNodeIdServicesMethod_GetEncryptingKeyMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 17531
+	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_GetEncryptingKey                                                                                                          OpcuaNodeIdServicesMethod = 17534
+	OpcuaNodeIdServicesMethod_PubSubConnectionTypeAddWriterGroupMethodType                                                                                                             OpcuaNodeIdServicesMethod = 17561
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence                            OpcuaNodeIdServicesMethod = 17572
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress                           OpcuaNodeIdServicesMethod = 17573
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2                          OpcuaNodeIdServicesMethod = 17574
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress                         OpcuaNodeIdServicesMethod = 17586
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2                        OpcuaNodeIdServicesMethod = 17587
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService                  OpcuaNodeIdServicesMethod = 17596
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2                 OpcuaNodeIdServicesMethod = 17599
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService                     OpcuaNodeIdServicesMethod = 17616
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2                    OpcuaNodeIdServicesMethod = 17617
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset                              OpcuaNodeIdServicesMethod = 17619
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2                             OpcuaNodeIdServicesMethod = 17620
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships                OpcuaNodeIdServicesMethod = 17622
+	OpcuaNodeIdServicesMethod_PubSubConnectionAddReaderGroupGroupMethodType                                                                                                            OpcuaNodeIdServicesMethod = 17630
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable                            OpcuaNodeIdServicesMethod = 17678
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable                             OpcuaNodeIdServicesMethod = 17679
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment                         OpcuaNodeIdServicesMethod = 17680
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge                        OpcuaNodeIdServicesMethod = 17700
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm                            OpcuaNodeIdServicesMethod = 17702
+	OpcuaNodeIdServicesMethod_FileDirectoryType_FileDirectoryName_Placeholder_DeleteFileSystemObject                                                                                   OpcuaNodeIdServicesMethod = 17718
+	OpcuaNodeIdServicesMethod_WriterGroupType_DataSetWriterName_Placeholder_Status_Enable                                                                                              OpcuaNodeIdServicesMethod = 17751
+	OpcuaNodeIdServicesMethod_WriterGroupType_DataSetWriterName_Placeholder_Status_Disable                                                                                             OpcuaNodeIdServicesMethod = 17752
+	OpcuaNodeIdServicesMethod_WriterGroupType_DataSetWriterName_Placeholder_Diagnostics_Reset                                                                                          OpcuaNodeIdServicesMethod = 17765
+	OpcuaNodeIdServicesMethod_WriterGroupType_Diagnostics_Reset                                                                                                                        OpcuaNodeIdServicesMethod = 17824
+	OpcuaNodeIdServicesMethod_AlarmConditionType_Unsuppress                                                                                                                            OpcuaNodeIdServicesMethod = 17868
+	OpcuaNodeIdServicesMethod_AlarmConditionType_RemoveFromService                                                                                                                     OpcuaNodeIdServicesMethod = 17869
+	OpcuaNodeIdServicesMethod_AlarmConditionType_PlaceInService                                                                                                                        OpcuaNodeIdServicesMethod = 17870
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Unsuppress                                                                                             OpcuaNodeIdServicesMethod = 17875
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_RemoveFromService                                                                                      OpcuaNodeIdServicesMethod = 17876
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_PlaceInService                                                                                         OpcuaNodeIdServicesMethod = 17877
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve          OpcuaNodeIdServicesMethod = 17917
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2         OpcuaNodeIdServicesMethod = 17919
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve             OpcuaNodeIdServicesMethod = 17922
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2            OpcuaNodeIdServicesMethod = 17923
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve        OpcuaNodeIdServicesMethod = 17925
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2       OpcuaNodeIdServicesMethod = 17926
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence                            OpcuaNodeIdServicesMethod = 17965
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress                           OpcuaNodeIdServicesMethod = 17966
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2                          OpcuaNodeIdServicesMethod = 17967
+	OpcuaNodeIdServicesMethod_WriterGroupType_AddDataSetWriter                                                                                                                         OpcuaNodeIdServicesMethod = 17969
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress                         OpcuaNodeIdServicesMethod = 17970
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2                        OpcuaNodeIdServicesMethod = 17971
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService                  OpcuaNodeIdServicesMethod = 17973
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2                 OpcuaNodeIdServicesMethod = 17974
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService                     OpcuaNodeIdServicesMethod = 17977
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2                    OpcuaNodeIdServicesMethod = 17978
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset                              OpcuaNodeIdServicesMethod = 17980
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2                             OpcuaNodeIdServicesMethod = 17981
+	OpcuaNodeIdServicesMethod_WriterGroupType_RemoveDataSetWriter                                                                                                                      OpcuaNodeIdServicesMethod = 17992
+	OpcuaNodeIdServicesMethod_PubSubGroupTypeAddWriterMethodType                                                                                                                       OpcuaNodeIdServicesMethod = 17994
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships                OpcuaNodeIdServicesMethod = 18000
+	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_UpdateCredential                                                                                                          OpcuaNodeIdServicesMethod = 18006
+	OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_DeleteCredential                                                                                                          OpcuaNodeIdServicesMethod = 18008
+	OpcuaNodeIdServicesMethod_KeyCredentialUpdateMethodType                                                                                                                            OpcuaNodeIdServicesMethod = 18009
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Open                                    OpcuaNodeIdServicesMethod = 18024
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Close                                   OpcuaNodeIdServicesMethod = 18027
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Read                                    OpcuaNodeIdServicesMethod = 18031
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Write                                   OpcuaNodeIdServicesMethod = 18034
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition                             OpcuaNodeIdServicesMethod = 18036
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition                             OpcuaNodeIdServicesMethod = 18039
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks                           OpcuaNodeIdServicesMethod = 18045
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate                          OpcuaNodeIdServicesMethod = 18049
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate                          OpcuaNodeIdServicesMethod = 18052
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate                       OpcuaNodeIdServicesMethod = 18054
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_GetRejectedList                                   OpcuaNodeIdServicesMethod = 18057
+	OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_Status_Enable                                                                                              OpcuaNodeIdServicesMethod = 18090
+	OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_Status_Disable                                                                                             OpcuaNodeIdServicesMethod = 18091
+	OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_Reset                                                                                          OpcuaNodeIdServicesMethod = 18104
+	OpcuaNodeIdServicesMethod_AlarmConditionType_Reset                                                                                                                                 OpcuaNodeIdServicesMethod = 18199
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Reset                                                                                                  OpcuaNodeIdServicesMethod = 18212
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable                        OpcuaNodeIdServicesMethod = 18225
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable                         OpcuaNodeIdServicesMethod = 18226
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment                     OpcuaNodeIdServicesMethod = 18227
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge                    OpcuaNodeIdServicesMethod = 18247
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm                        OpcuaNodeIdServicesMethod = 18249
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve      OpcuaNodeIdServicesMethod = 18294
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2     OpcuaNodeIdServicesMethod = 18296
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve         OpcuaNodeIdServicesMethod = 18298
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2        OpcuaNodeIdServicesMethod = 18299
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve    OpcuaNodeIdServicesMethod = 18301
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2   OpcuaNodeIdServicesMethod = 18302
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence                        OpcuaNodeIdServicesMethod = 18335
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress                       OpcuaNodeIdServicesMethod = 18336
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2                      OpcuaNodeIdServicesMethod = 18337
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress                     OpcuaNodeIdServicesMethod = 18339
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2                    OpcuaNodeIdServicesMethod = 18340
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService              OpcuaNodeIdServicesMethod = 18342
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2             OpcuaNodeIdServicesMethod = 18343
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService                 OpcuaNodeIdServicesMethod = 18345
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2                OpcuaNodeIdServicesMethod = 18346
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset                          OpcuaNodeIdServicesMethod = 18349
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2                         OpcuaNodeIdServicesMethod = 18350
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships            OpcuaNodeIdServicesMethod = 18352
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable                        OpcuaNodeIdServicesMethod = 18392
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable                         OpcuaNodeIdServicesMethod = 18393
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment                     OpcuaNodeIdServicesMethod = 18394
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge                    OpcuaNodeIdServicesMethod = 18414
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm                        OpcuaNodeIdServicesMethod = 18416
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve      OpcuaNodeIdServicesMethod = 18461
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2     OpcuaNodeIdServicesMethod = 18463
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve         OpcuaNodeIdServicesMethod = 18465
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2        OpcuaNodeIdServicesMethod = 18466
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve    OpcuaNodeIdServicesMethod = 18468
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2   OpcuaNodeIdServicesMethod = 18469
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence                        OpcuaNodeIdServicesMethod = 18503
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress                       OpcuaNodeIdServicesMethod = 18504
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2                      OpcuaNodeIdServicesMethod = 18505
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress                     OpcuaNodeIdServicesMethod = 18507
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2                    OpcuaNodeIdServicesMethod = 18508
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService              OpcuaNodeIdServicesMethod = 18510
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2             OpcuaNodeIdServicesMethod = 18511
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService                 OpcuaNodeIdServicesMethod = 18513
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2                OpcuaNodeIdServicesMethod = 18514
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset                          OpcuaNodeIdServicesMethod = 18516
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2                         OpcuaNodeIdServicesMethod = 18517
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships            OpcuaNodeIdServicesMethod = 18519
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_UpdateCertificate                                                                         OpcuaNodeIdServicesMethod = 18533
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetCertificates                                                                           OpcuaNodeIdServicesMethod = 18536
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_ApplyChanges                                                                              OpcuaNodeIdServicesMethod = 18539
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CancelChanges                                                                             OpcuaNodeIdServicesMethod = 18540
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CreateSigningRequest                                                                      OpcuaNodeIdServicesMethod = 18541
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetRejectedList                                                                           OpcuaNodeIdServicesMethod = 18544
+	OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_ResetToServerDefaults                                                                     OpcuaNodeIdServicesMethod = 18546
+	OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddIdentity                                                                                                             OpcuaNodeIdServicesMethod = 18632
+	OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveIdentity                                                                                                          OpcuaNodeIdServicesMethod = 18634
+	OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddApplication                                                                                                          OpcuaNodeIdServicesMethod = 18636
+	OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveApplication                                                                                                       OpcuaNodeIdServicesMethod = 18638
+	OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddEndpoint                                                                                                             OpcuaNodeIdServicesMethod = 18640
+	OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveEndpoint                                                                                                          OpcuaNodeIdServicesMethod = 18642
+	OpcuaNodeIdServicesMethod_AlarmMetricsType_Reset                                                                                                                                   OpcuaNodeIdServicesMethod = 18666
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_Reset                                                                                        OpcuaNodeIdServicesMethod = 18679
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_Diagnostics_Reset                                                                                                                   OpcuaNodeIdServicesMethod = 18727
+	OpcuaNodeIdServicesMethod_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Reset                                                                                     OpcuaNodeIdServicesMethod = 18883
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics_Reset                                                                                       OpcuaNodeIdServicesMethod = 19119
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_Diagnostics_Reset                                                                                       OpcuaNodeIdServicesMethod = 19188
+	OpcuaNodeIdServicesMethod_PubSubConnectionType_Diagnostics_Reset                                                                                                                   OpcuaNodeIdServicesMethod = 19253
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Disable                                                                                                          OpcuaNodeIdServicesMethod = 19483
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Enable                                                                                                           OpcuaNodeIdServicesMethod = 19484
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_AddComment                                                                                                       OpcuaNodeIdServicesMethod = 19485
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Acknowledge                                                                                                      OpcuaNodeIdServicesMethod = 19505
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Confirm                                                                                                          OpcuaNodeIdServicesMethod = 19507
+	OpcuaNodeIdServicesMethod_DataSetWriterType_Diagnostics_Reset                                                                                                                      OpcuaNodeIdServicesMethod = 19562
+	OpcuaNodeIdServicesMethod_DataSetReaderType_Diagnostics_Reset                                                                                                                      OpcuaNodeIdServicesMethod = 19621
+	OpcuaNodeIdServicesMethod_PubSubDiagnosticsType_Reset                                                                                                                              OpcuaNodeIdServicesMethod = 19689
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve                                                                                        OpcuaNodeIdServicesMethod = 20097
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_Unshelve                                                                                           OpcuaNodeIdServicesMethod = 20099
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_OneShotShelve                                                                                      OpcuaNodeIdServicesMethod = 20100
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Silence                                                                                                          OpcuaNodeIdServicesMethod = 20132
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Suppress                                                                                                         OpcuaNodeIdServicesMethod = 20133
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Unsuppress                                                                                                       OpcuaNodeIdServicesMethod = 20134
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_RemoveFromService                                                                                                OpcuaNodeIdServicesMethod = 20135
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_PlaceInService                                                                                                   OpcuaNodeIdServicesMethod = 20136
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Reset                                                                                                            OpcuaNodeIdServicesMethod = 20137
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Disable                                                                                                          OpcuaNodeIdServicesMethod = 20176
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Enable                                                                                                           OpcuaNodeIdServicesMethod = 20177
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_AddComment                                                                                                       OpcuaNodeIdServicesMethod = 20178
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Acknowledge                                                                                                      OpcuaNodeIdServicesMethod = 20198
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Confirm                                                                                                          OpcuaNodeIdServicesMethod = 20200
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_ShelvingState_TimedShelve                                                                                        OpcuaNodeIdServicesMethod = 20245
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_ShelvingState_Unshelve                                                                                           OpcuaNodeIdServicesMethod = 20247
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_ShelvingState_OneShotShelve                                                                                      OpcuaNodeIdServicesMethod = 20248
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Silence                                                                                                          OpcuaNodeIdServicesMethod = 20280
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Suppress                                                                                                         OpcuaNodeIdServicesMethod = 20281
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Unsuppress                                                                                                       OpcuaNodeIdServicesMethod = 20282
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_RemoveFromService                                                                                                OpcuaNodeIdServicesMethod = 20283
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_PlaceInService                                                                                                   OpcuaNodeIdServicesMethod = 20284
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Reset                                                                                                            OpcuaNodeIdServicesMethod = 20285
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Disable                                                                            OpcuaNodeIdServicesMethod = 20324
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Enable                                                                             OpcuaNodeIdServicesMethod = 20325
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_AddComment                                                                         OpcuaNodeIdServicesMethod = 20326
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Acknowledge                                                                        OpcuaNodeIdServicesMethod = 20346
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Confirm                                                                            OpcuaNodeIdServicesMethod = 20348
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve                                                          OpcuaNodeIdServicesMethod = 20393
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve                                                             OpcuaNodeIdServicesMethod = 20395
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve                                                        OpcuaNodeIdServicesMethod = 20396
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Silence                                                                            OpcuaNodeIdServicesMethod = 20430
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Suppress                                                                           OpcuaNodeIdServicesMethod = 20431
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Unsuppress                                                                         OpcuaNodeIdServicesMethod = 20432
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_RemoveFromService                                                                  OpcuaNodeIdServicesMethod = 20433
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_PlaceInService                                                                     OpcuaNodeIdServicesMethod = 20434
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Reset                                                                              OpcuaNodeIdServicesMethod = 20435
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Disable                                                                            OpcuaNodeIdServicesMethod = 20474
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Enable                                                                             OpcuaNodeIdServicesMethod = 20475
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_AddComment                                                                         OpcuaNodeIdServicesMethod = 20476
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge                                                                        OpcuaNodeIdServicesMethod = 20496
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Confirm                                                                            OpcuaNodeIdServicesMethod = 20498
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                                          OpcuaNodeIdServicesMethod = 20543
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve                                                             OpcuaNodeIdServicesMethod = 20545
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                                        OpcuaNodeIdServicesMethod = 20546
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Silence                                                                            OpcuaNodeIdServicesMethod = 20578
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Suppress                                                                           OpcuaNodeIdServicesMethod = 20579
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress                                                                         OpcuaNodeIdServicesMethod = 20580
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService                                                                  OpcuaNodeIdServicesMethod = 20581
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService                                                                     OpcuaNodeIdServicesMethod = 20582
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Reset                                                                              OpcuaNodeIdServicesMethod = 20583
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Disable                                                                                  OpcuaNodeIdServicesMethod = 20622
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Enable                                                                                   OpcuaNodeIdServicesMethod = 20623
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_AddComment                                                                               OpcuaNodeIdServicesMethod = 20624
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Acknowledge                                                                              OpcuaNodeIdServicesMethod = 20644
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Confirm                                                                                  OpcuaNodeIdServicesMethod = 20646
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve                                                                OpcuaNodeIdServicesMethod = 20691
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve                                                                   OpcuaNodeIdServicesMethod = 20693
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve                                                              OpcuaNodeIdServicesMethod = 20694
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Silence                                                                                  OpcuaNodeIdServicesMethod = 20726
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Suppress                                                                                 OpcuaNodeIdServicesMethod = 20727
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Unsuppress                                                                               OpcuaNodeIdServicesMethod = 20728
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_RemoveFromService                                                                        OpcuaNodeIdServicesMethod = 20729
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_PlaceInService                                                                           OpcuaNodeIdServicesMethod = 20730
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Reset                                                                                    OpcuaNodeIdServicesMethod = 20731
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Disable                                                                                  OpcuaNodeIdServicesMethod = 20770
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Enable                                                                                   OpcuaNodeIdServicesMethod = 20771
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_AddComment                                                                               OpcuaNodeIdServicesMethod = 20772
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge                                                                              OpcuaNodeIdServicesMethod = 20792
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Confirm                                                                                  OpcuaNodeIdServicesMethod = 20794
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                                                OpcuaNodeIdServicesMethod = 20839
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve                                                                   OpcuaNodeIdServicesMethod = 20841
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                                              OpcuaNodeIdServicesMethod = 20842
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Silence                                                                                  OpcuaNodeIdServicesMethod = 20874
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Suppress                                                                                 OpcuaNodeIdServicesMethod = 20875
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress                                                                               OpcuaNodeIdServicesMethod = 20876
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService                                                                        OpcuaNodeIdServicesMethod = 20877
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService                                                                           OpcuaNodeIdServicesMethod = 20878
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Reset                                                                                    OpcuaNodeIdServicesMethod = 20879
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Disable                                                                              OpcuaNodeIdServicesMethod = 20918
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Enable                                                                               OpcuaNodeIdServicesMethod = 20919
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_AddComment                                                                           OpcuaNodeIdServicesMethod = 20920
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Acknowledge                                                                          OpcuaNodeIdServicesMethod = 20940
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Confirm                                                                              OpcuaNodeIdServicesMethod = 20942
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve                                                            OpcuaNodeIdServicesMethod = 20987
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve                                                               OpcuaNodeIdServicesMethod = 20989
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve                                                          OpcuaNodeIdServicesMethod = 20990
+	OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_CreateTargetVariables                                                                                      OpcuaNodeIdServicesMethod = 21009
+	OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_CreateDataSetMirror                                                                                        OpcuaNodeIdServicesMethod = 21012
+	OpcuaNodeIdServicesMethod_ReaderGroupType_Diagnostics_Reset                                                                                                                        OpcuaNodeIdServicesMethod = 21027
+	OpcuaNodeIdServicesMethod_ReaderGroupType_AddDataSetReader                                                                                                                         OpcuaNodeIdServicesMethod = 21082
+	OpcuaNodeIdServicesMethod_ReaderGroupType_RemoveDataSetReader                                                                                                                      OpcuaNodeIdServicesMethod = 21085
+	OpcuaNodeIdServicesMethod_PubSubGroupTypeAddReaderMethodType                                                                                                                       OpcuaNodeIdServicesMethod = 21087
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Silence                                                                              OpcuaNodeIdServicesMethod = 21225
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Suppress                                                                             OpcuaNodeIdServicesMethod = 21226
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Unsuppress                                                                           OpcuaNodeIdServicesMethod = 21227
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_RemoveFromService                                                                    OpcuaNodeIdServicesMethod = 21228
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_PlaceInService                                                                       OpcuaNodeIdServicesMethod = 21229
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Reset                                                                                OpcuaNodeIdServicesMethod = 21230
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Disable                                                                              OpcuaNodeIdServicesMethod = 21269
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Enable                                                                               OpcuaNodeIdServicesMethod = 21270
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_AddComment                                                                           OpcuaNodeIdServicesMethod = 21271
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge                                                                          OpcuaNodeIdServicesMethod = 21291
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Confirm                                                                              OpcuaNodeIdServicesMethod = 21293
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                                            OpcuaNodeIdServicesMethod = 21338
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve                                                               OpcuaNodeIdServicesMethod = 21340
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                                          OpcuaNodeIdServicesMethod = 21341
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Silence                                                                              OpcuaNodeIdServicesMethod = 21373
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Suppress                                                                             OpcuaNodeIdServicesMethod = 21374
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress                                                                           OpcuaNodeIdServicesMethod = 21375
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService                                                                    OpcuaNodeIdServicesMethod = 21376
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService                                                                       OpcuaNodeIdServicesMethod = 21377
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Reset                                                                                OpcuaNodeIdServicesMethod = 21378
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Disable                                                                        OpcuaNodeIdServicesMethod = 21417
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Enable                                                                         OpcuaNodeIdServicesMethod = 21418
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_AddComment                                                                     OpcuaNodeIdServicesMethod = 21419
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Acknowledge                                                                    OpcuaNodeIdServicesMethod = 21439
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Confirm                                                                        OpcuaNodeIdServicesMethod = 21441
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState_TimedShelve                                                      OpcuaNodeIdServicesMethod = 21486
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState_Unshelve                                                         OpcuaNodeIdServicesMethod = 21488
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState_OneShotShelve                                                    OpcuaNodeIdServicesMethod = 21489
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Silence                                                                        OpcuaNodeIdServicesMethod = 21521
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Suppress                                                                       OpcuaNodeIdServicesMethod = 21522
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Unsuppress                                                                     OpcuaNodeIdServicesMethod = 21523
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_RemoveFromService                                                              OpcuaNodeIdServicesMethod = 21524
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_PlaceInService                                                                 OpcuaNodeIdServicesMethod = 21525
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Reset                                                                          OpcuaNodeIdServicesMethod = 21526
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Disable                                                                        OpcuaNodeIdServicesMethod = 21565
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Enable                                                                         OpcuaNodeIdServicesMethod = 21566
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_AddComment                                                                     OpcuaNodeIdServicesMethod = 21567
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Acknowledge                                                                    OpcuaNodeIdServicesMethod = 21587
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Confirm                                                                        OpcuaNodeIdServicesMethod = 21589
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_TimedShelve                                                      OpcuaNodeIdServicesMethod = 21634
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_Unshelve                                                         OpcuaNodeIdServicesMethod = 21636
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_OneShotShelve                                                    OpcuaNodeIdServicesMethod = 21637
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Silence                                                                        OpcuaNodeIdServicesMethod = 21669
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Suppress                                                                       OpcuaNodeIdServicesMethod = 21670
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Unsuppress                                                                     OpcuaNodeIdServicesMethod = 21671
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_RemoveFromService                                                              OpcuaNodeIdServicesMethod = 21672
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_PlaceInService                                                                 OpcuaNodeIdServicesMethod = 21673
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Reset                                                                          OpcuaNodeIdServicesMethod = 21674
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable                                                             OpcuaNodeIdServicesMethod = 21713
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable                                                              OpcuaNodeIdServicesMethod = 21714
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment                                                          OpcuaNodeIdServicesMethod = 21715
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge                                                         OpcuaNodeIdServicesMethod = 21735
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm                                                             OpcuaNodeIdServicesMethod = 21737
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve                                           OpcuaNodeIdServicesMethod = 21782
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve                                              OpcuaNodeIdServicesMethod = 21784
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve                                         OpcuaNodeIdServicesMethod = 21785
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence                                                             OpcuaNodeIdServicesMethod = 21817
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress                                                            OpcuaNodeIdServicesMethod = 21818
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress                                                          OpcuaNodeIdServicesMethod = 21819
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService                                                   OpcuaNodeIdServicesMethod = 21820
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService                                                      OpcuaNodeIdServicesMethod = 21821
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset                                                               OpcuaNodeIdServicesMethod = 21822
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable                                                             OpcuaNodeIdServicesMethod = 21861
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable                                                              OpcuaNodeIdServicesMethod = 21862
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment                                                          OpcuaNodeIdServicesMethod = 21863
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge                                                         OpcuaNodeIdServicesMethod = 21883
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm                                                             OpcuaNodeIdServicesMethod = 21885
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                           OpcuaNodeIdServicesMethod = 21930
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve                                              OpcuaNodeIdServicesMethod = 21932
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                         OpcuaNodeIdServicesMethod = 21933
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence                                                             OpcuaNodeIdServicesMethod = 21965
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress                                                            OpcuaNodeIdServicesMethod = 21966
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress                                                          OpcuaNodeIdServicesMethod = 21967
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService                                                   OpcuaNodeIdServicesMethod = 21968
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService                                                      OpcuaNodeIdServicesMethod = 21969
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset                                                               OpcuaNodeIdServicesMethod = 21970
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable                                                                   OpcuaNodeIdServicesMethod = 22009
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable                                                                    OpcuaNodeIdServicesMethod = 22010
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment                                                                OpcuaNodeIdServicesMethod = 22011
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge                                                               OpcuaNodeIdServicesMethod = 22031
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm                                                                   OpcuaNodeIdServicesMethod = 22033
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve                                                 OpcuaNodeIdServicesMethod = 22078
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve                                                    OpcuaNodeIdServicesMethod = 22080
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve                                               OpcuaNodeIdServicesMethod = 22081
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence                                                                   OpcuaNodeIdServicesMethod = 22113
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress                                                                  OpcuaNodeIdServicesMethod = 22114
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress                                                                OpcuaNodeIdServicesMethod = 22115
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService                                                         OpcuaNodeIdServicesMethod = 22116
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService                                                            OpcuaNodeIdServicesMethod = 22117
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset                                                                     OpcuaNodeIdServicesMethod = 22118
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable                                                                   OpcuaNodeIdServicesMethod = 22157
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable                                                                    OpcuaNodeIdServicesMethod = 22158
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment                                                                OpcuaNodeIdServicesMethod = 22159
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge                                                               OpcuaNodeIdServicesMethod = 22179
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm                                                                   OpcuaNodeIdServicesMethod = 22181
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                                 OpcuaNodeIdServicesMethod = 22226
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve                                                    OpcuaNodeIdServicesMethod = 22228
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                               OpcuaNodeIdServicesMethod = 22229
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence                                                                   OpcuaNodeIdServicesMethod = 22261
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress                                                                  OpcuaNodeIdServicesMethod = 22262
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress                                                                OpcuaNodeIdServicesMethod = 22263
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService                                                         OpcuaNodeIdServicesMethod = 22264
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService                                                            OpcuaNodeIdServicesMethod = 22265
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset                                                                     OpcuaNodeIdServicesMethod = 22266
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable                                                               OpcuaNodeIdServicesMethod = 22305
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable                                                                OpcuaNodeIdServicesMethod = 22306
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment                                                            OpcuaNodeIdServicesMethod = 22307
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge                                                           OpcuaNodeIdServicesMethod = 22327
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm                                                               OpcuaNodeIdServicesMethod = 22329
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve                                             OpcuaNodeIdServicesMethod = 22374
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve                                                OpcuaNodeIdServicesMethod = 22376
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve                                           OpcuaNodeIdServicesMethod = 22377
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence                                                               OpcuaNodeIdServicesMethod = 22409
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress                                                              OpcuaNodeIdServicesMethod = 22410
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress                                                            OpcuaNodeIdServicesMethod = 22411
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService                                                     OpcuaNodeIdServicesMethod = 22412
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService                                                        OpcuaNodeIdServicesMethod = 22413
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset                                                                 OpcuaNodeIdServicesMethod = 22414
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable                                                               OpcuaNodeIdServicesMethod = 22453
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable                                                                OpcuaNodeIdServicesMethod = 22454
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment                                                            OpcuaNodeIdServicesMethod = 22455
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge                                                           OpcuaNodeIdServicesMethod = 22475
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm                                                               OpcuaNodeIdServicesMethod = 22477
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                             OpcuaNodeIdServicesMethod = 22522
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve                                                OpcuaNodeIdServicesMethod = 22524
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                           OpcuaNodeIdServicesMethod = 22525
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence                                                               OpcuaNodeIdServicesMethod = 22557
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress                                                              OpcuaNodeIdServicesMethod = 22558
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress                                                            OpcuaNodeIdServicesMethod = 22559
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService                                                     OpcuaNodeIdServicesMethod = 22560
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService                                                        OpcuaNodeIdServicesMethod = 22561
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset                                                                 OpcuaNodeIdServicesMethod = 22562
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable                                                                 OpcuaNodeIdServicesMethod = 22601
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable                                                                  OpcuaNodeIdServicesMethod = 22602
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment                                                              OpcuaNodeIdServicesMethod = 22603
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge                                                             OpcuaNodeIdServicesMethod = 22623
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm                                                                 OpcuaNodeIdServicesMethod = 22625
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve                                               OpcuaNodeIdServicesMethod = 22670
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve                                                  OpcuaNodeIdServicesMethod = 22672
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve                                             OpcuaNodeIdServicesMethod = 22673
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence                                                                 OpcuaNodeIdServicesMethod = 22705
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress                                                                OpcuaNodeIdServicesMethod = 22706
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress                                                              OpcuaNodeIdServicesMethod = 22707
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService                                                       OpcuaNodeIdServicesMethod = 22708
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService                                                          OpcuaNodeIdServicesMethod = 22709
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset                                                                   OpcuaNodeIdServicesMethod = 22710
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable                                                                 OpcuaNodeIdServicesMethod = 22749
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable                                                                  OpcuaNodeIdServicesMethod = 22750
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment                                                              OpcuaNodeIdServicesMethod = 22751
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge                                                             OpcuaNodeIdServicesMethod = 22771
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm                                                                 OpcuaNodeIdServicesMethod = 22773
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                               OpcuaNodeIdServicesMethod = 22818
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve                                                  OpcuaNodeIdServicesMethod = 22820
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                             OpcuaNodeIdServicesMethod = 22821
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence                                                                 OpcuaNodeIdServicesMethod = 22853
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress                                                                OpcuaNodeIdServicesMethod = 22854
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress                                                              OpcuaNodeIdServicesMethod = 22855
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService                                                       OpcuaNodeIdServicesMethod = 22856
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService                                                          OpcuaNodeIdServicesMethod = 22857
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset                                                                   OpcuaNodeIdServicesMethod = 22858
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable                                                                       OpcuaNodeIdServicesMethod = 22897
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable                                                                        OpcuaNodeIdServicesMethod = 22898
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment                                                                    OpcuaNodeIdServicesMethod = 22899
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge                                                                   OpcuaNodeIdServicesMethod = 22919
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm                                                                       OpcuaNodeIdServicesMethod = 22921
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve                                                     OpcuaNodeIdServicesMethod = 22966
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve                                                        OpcuaNodeIdServicesMethod = 22968
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve                                                   OpcuaNodeIdServicesMethod = 22969
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence                                                                       OpcuaNodeIdServicesMethod = 23001
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress                                                                      OpcuaNodeIdServicesMethod = 23002
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress                                                                    OpcuaNodeIdServicesMethod = 23003
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService                                                             OpcuaNodeIdServicesMethod = 23004
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService                                                                OpcuaNodeIdServicesMethod = 23005
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset                                                                         OpcuaNodeIdServicesMethod = 23006
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable                                                                       OpcuaNodeIdServicesMethod = 23045
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable                                                                        OpcuaNodeIdServicesMethod = 23046
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment                                                                    OpcuaNodeIdServicesMethod = 23047
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge                                                                   OpcuaNodeIdServicesMethod = 23067
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm                                                                       OpcuaNodeIdServicesMethod = 23069
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                                     OpcuaNodeIdServicesMethod = 23114
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve                                                        OpcuaNodeIdServicesMethod = 23116
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                                   OpcuaNodeIdServicesMethod = 23117
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence                                                                       OpcuaNodeIdServicesMethod = 23149
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress                                                                      OpcuaNodeIdServicesMethod = 23150
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress                                                                    OpcuaNodeIdServicesMethod = 23151
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService                                                             OpcuaNodeIdServicesMethod = 23152
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService                                                                OpcuaNodeIdServicesMethod = 23153
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset                                                                         OpcuaNodeIdServicesMethod = 23154
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable                                                                   OpcuaNodeIdServicesMethod = 23193
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable                                                                    OpcuaNodeIdServicesMethod = 23194
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment                                                                OpcuaNodeIdServicesMethod = 23195
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge                                                               OpcuaNodeIdServicesMethod = 23215
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm                                                                   OpcuaNodeIdServicesMethod = 23217
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve                                                 OpcuaNodeIdServicesMethod = 23262
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve                                                    OpcuaNodeIdServicesMethod = 23264
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve                                               OpcuaNodeIdServicesMethod = 23265
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence                                                                   OpcuaNodeIdServicesMethod = 23297
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress                                                                  OpcuaNodeIdServicesMethod = 23298
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress                                                                OpcuaNodeIdServicesMethod = 23299
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService                                                         OpcuaNodeIdServicesMethod = 23300
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService                                                            OpcuaNodeIdServicesMethod = 23301
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset                                                                     OpcuaNodeIdServicesMethod = 23302
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable                                                                   OpcuaNodeIdServicesMethod = 23341
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable                                                                    OpcuaNodeIdServicesMethod = 23342
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment                                                                OpcuaNodeIdServicesMethod = 23343
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge                                                               OpcuaNodeIdServicesMethod = 23363
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm                                                                   OpcuaNodeIdServicesMethod = 23365
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve                                                 OpcuaNodeIdServicesMethod = 23410
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve                                                    OpcuaNodeIdServicesMethod = 23412
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                                               OpcuaNodeIdServicesMethod = 23413
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence                                                                   OpcuaNodeIdServicesMethod = 23445
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress                                                                  OpcuaNodeIdServicesMethod = 23446
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress                                                                OpcuaNodeIdServicesMethod = 23447
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService                                                         OpcuaNodeIdServicesMethod = 23448
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService                                                            OpcuaNodeIdServicesMethod = 23449
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset                                                                     OpcuaNodeIdServicesMethod = 23450
+	OpcuaNodeIdServicesMethod_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias                                                                                       OpcuaNodeIdServicesMethod = 23459
+	OpcuaNodeIdServicesMethod_AliasNameCategoryType_FindAlias                                                                                                                          OpcuaNodeIdServicesMethod = 23462
+	OpcuaNodeIdServicesMethod_FindAliasMethodType                                                                                                                                      OpcuaNodeIdServicesMethod = 23465
+	OpcuaNodeIdServicesMethod_Aliases_FindAlias                                                                                                                                        OpcuaNodeIdServicesMethod = 23476
+	OpcuaNodeIdServicesMethod_TagVariables_FindAlias                                                                                                                                   OpcuaNodeIdServicesMethod = 23485
+	OpcuaNodeIdServicesMethod_Topics_FindAlias                                                                                                                                         OpcuaNodeIdServicesMethod = 23494
+	OpcuaNodeIdServicesMethod_CertificateGroupType_GetRejectedList                                                                                                                     OpcuaNodeIdServicesMethod = 23526
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_GetRejectedList                                                                                       OpcuaNodeIdServicesMethod = 23529
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_GetRejectedList                                                                                             OpcuaNodeIdServicesMethod = 23531
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_GetRejectedList                                                                                         OpcuaNodeIdServicesMethod = 23533
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_GetRejectedList                                                                                   OpcuaNodeIdServicesMethod = 23535
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_GetRejectedList                                                                        OpcuaNodeIdServicesMethod = 23544
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_GetRejectedList                                                                              OpcuaNodeIdServicesMethod = 23546
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_GetRejectedList                                                                          OpcuaNodeIdServicesMethod = 23548
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_GetRejectedList                                                                            OpcuaNodeIdServicesMethod = 23550
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_GetRejectedList                                                                                  OpcuaNodeIdServicesMethod = 23552
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_GetRejectedList                                                                              OpcuaNodeIdServicesMethod = 23554
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_AddDataSetFolder                                                                                                 OpcuaNodeIdServicesMethod = 23637
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_RemoveDataSetFolder                                                                                              OpcuaNodeIdServicesMethod = 23640
+	OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_AddDataSetFolder                                                                                                     OpcuaNodeIdServicesMethod = 23673
+	OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_RemoveDataSetFolder                                                                                                  OpcuaNodeIdServicesMethod = 23676
+	OpcuaNodeIdServicesMethod_GetConnectionMethodType                                                                                                                                  OpcuaNodeIdServicesMethod = 23726
+	OpcuaNodeIdServicesMethod_ModifyConnectionMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 23729
+	OpcuaNodeIdServicesMethod_GetWriterGroupMethodType                                                                                                                                 OpcuaNodeIdServicesMethod = 23745
+	OpcuaNodeIdServicesMethod_ModifyWriterGroupMethodType                                                                                                                              OpcuaNodeIdServicesMethod = 23748
+	OpcuaNodeIdServicesMethod_GetReaderGroupMethodType                                                                                                                                 OpcuaNodeIdServicesMethod = 23767
+	OpcuaNodeIdServicesMethod_ModifyReaderGroupMethodType                                                                                                                              OpcuaNodeIdServicesMethod = 23770
+	OpcuaNodeIdServicesMethod_GetDataSetWriterMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 23779
+	OpcuaNodeIdServicesMethod_ModifyDataSetWriterMethodType                                                                                                                            OpcuaNodeIdServicesMethod = 23781
+	OpcuaNodeIdServicesMethod_GetDataSetReaderMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 23790
+	OpcuaNodeIdServicesMethod_ModifyDataSetReaderMethodType                                                                                                                            OpcuaNodeIdServicesMethod = 23792
+	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddSubscribedDataSet                                                                 OpcuaNodeIdServicesMethod = 23797
+	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_RemoveSubscribedDataSet                                                              OpcuaNodeIdServicesMethod = 23800
+	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddDataSetFolder                                                                     OpcuaNodeIdServicesMethod = 23802
+	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_RemoveDataSetFolder                                                                  OpcuaNodeIdServicesMethod = 23805
+	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_AddSubscribedDataSet                                                                                                         OpcuaNodeIdServicesMethod = 23811
+	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_RemoveSubscribedDataSet                                                                                                      OpcuaNodeIdServicesMethod = 23814
+	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_AddDataSetFolder                                                                                                             OpcuaNodeIdServicesMethod = 23816
+	OpcuaNodeIdServicesMethod_SubscribedDataSetFolderType_RemoveDataSetFolder                                                                                                          OpcuaNodeIdServicesMethod = 23819
+	OpcuaNodeIdServicesMethod_AddSubscribedDataSetMethodType                                                                                                                           OpcuaNodeIdServicesMethod = 23821
+	OpcuaNodeIdServicesMethod_RemoveSubscribedDataSetMethodType                                                                                                                        OpcuaNodeIdServicesMethod = 23824
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_AddSubscribedDataSet                                                                                             OpcuaNodeIdServicesMethod = 24004
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_RemoveSubscribedDataSet                                                                                          OpcuaNodeIdServicesMethod = 24007
+	OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_AddSubscribedDataSet                                                                                                 OpcuaNodeIdServicesMethod = 24010
+	OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_RemoveSubscribedDataSet                                                                                              OpcuaNodeIdServicesMethod = 24013
+	OpcuaNodeIdServicesMethod_UserManagementType_AddUser                                                                                                                               OpcuaNodeIdServicesMethod = 24269
+	OpcuaNodeIdServicesMethod_UserManagementType_ModifyUser                                                                                                                            OpcuaNodeIdServicesMethod = 24271
+	OpcuaNodeIdServicesMethod_UserManagementType_RemoveUser                                                                                                                            OpcuaNodeIdServicesMethod = 24273
+	OpcuaNodeIdServicesMethod_UserManagementType_ChangePassword                                                                                                                        OpcuaNodeIdServicesMethod = 24275
+	OpcuaNodeIdServicesMethod_AddUserMethodType                                                                                                                                        OpcuaNodeIdServicesMethod = 24282
+	OpcuaNodeIdServicesMethod_ModifyUserMethodType                                                                                                                                     OpcuaNodeIdServicesMethod = 24284
+	OpcuaNodeIdServicesMethod_RemoveUserMethodType                                                                                                                                     OpcuaNodeIdServicesMethod = 24286
+	OpcuaNodeIdServicesMethod_ChangePasswordMethodType                                                                                                                                 OpcuaNodeIdServicesMethod = 24288
+	OpcuaNodeIdServicesMethod_UserManagement_AddUser                                                                                                                                   OpcuaNodeIdServicesMethod = 24304
+	OpcuaNodeIdServicesMethod_UserManagement_ModifyUser                                                                                                                                OpcuaNodeIdServicesMethod = 24306
+	OpcuaNodeIdServicesMethod_UserManagement_RemoveUser                                                                                                                                OpcuaNodeIdServicesMethod = 24308
+	OpcuaNodeIdServicesMethod_UserManagement_ChangePassword                                                                                                                            OpcuaNodeIdServicesMethod = 24310
+	OpcuaNodeIdServicesMethod_DialogConditionType_Respond2                                                                                                                             OpcuaNodeIdServicesMethod = 24312
+	OpcuaNodeIdServicesMethod_DialogResponse2MethodType                                                                                                                                OpcuaNodeIdServicesMethod = 24314
+	OpcuaNodeIdServicesMethod_AlarmConditionType_Suppress2                                                                                                                             OpcuaNodeIdServicesMethod = 24316
+	OpcuaNodeIdServicesMethod_AlarmConditionType_Unsuppress2                                                                                                                           OpcuaNodeIdServicesMethod = 24318
+	OpcuaNodeIdServicesMethod_AlarmConditionType_RemoveFromService2                                                                                                                    OpcuaNodeIdServicesMethod = 24320
+	OpcuaNodeIdServicesMethod_AlarmConditionType_PlaceInService2                                                                                                                       OpcuaNodeIdServicesMethod = 24322
+	OpcuaNodeIdServicesMethod_AlarmConditionType_Reset2                                                                                                                                OpcuaNodeIdServicesMethod = 24324
+	OpcuaNodeIdServicesMethod_WithCommentMethodType                                                                                                                                    OpcuaNodeIdServicesMethod = 24326
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Suppress2                                                                                              OpcuaNodeIdServicesMethod = 24328
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Unsuppress2                                                                                            OpcuaNodeIdServicesMethod = 24330
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_RemoveFromService2                                                                                     OpcuaNodeIdServicesMethod = 24332
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_PlaceInService2                                                                                        OpcuaNodeIdServicesMethod = 24334
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Reset2                                                                                                 OpcuaNodeIdServicesMethod = 24336
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Suppress2                                                                                                        OpcuaNodeIdServicesMethod = 24518
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Unsuppress2                                                                                                      OpcuaNodeIdServicesMethod = 24520
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_RemoveFromService2                                                                                               OpcuaNodeIdServicesMethod = 24522
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_PlaceInService2                                                                                                  OpcuaNodeIdServicesMethod = 24524
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_Reset2                                                                                                           OpcuaNodeIdServicesMethod = 24526
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Suppress2                                                                                                        OpcuaNodeIdServicesMethod = 24528
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Unsuppress2                                                                                                      OpcuaNodeIdServicesMethod = 24530
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_RemoveFromService2                                                                                               OpcuaNodeIdServicesMethod = 24532
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_PlaceInService2                                                                                                  OpcuaNodeIdServicesMethod = 24534
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_Reset2                                                                                                           OpcuaNodeIdServicesMethod = 24536
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Suppress2                                                                          OpcuaNodeIdServicesMethod = 24538
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Unsuppress2                                                                        OpcuaNodeIdServicesMethod = 24540
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_RemoveFromService2                                                                 OpcuaNodeIdServicesMethod = 24542
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_PlaceInService2                                                                    OpcuaNodeIdServicesMethod = 24544
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_Reset2                                                                             OpcuaNodeIdServicesMethod = 24546
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Suppress2                                                                          OpcuaNodeIdServicesMethod = 24548
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2                                                                        OpcuaNodeIdServicesMethod = 24550
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2                                                                 OpcuaNodeIdServicesMethod = 24552
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2                                                                    OpcuaNodeIdServicesMethod = 24554
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_Reset2                                                                             OpcuaNodeIdServicesMethod = 24556
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Suppress2                                                                                OpcuaNodeIdServicesMethod = 24558
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Unsuppress2                                                                              OpcuaNodeIdServicesMethod = 24560
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_RemoveFromService2                                                                       OpcuaNodeIdServicesMethod = 24562
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_PlaceInService2                                                                          OpcuaNodeIdServicesMethod = 24564
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_Reset2                                                                                   OpcuaNodeIdServicesMethod = 24566
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Suppress2                                                                                OpcuaNodeIdServicesMethod = 24568
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2                                                                              OpcuaNodeIdServicesMethod = 24570
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2                                                                       OpcuaNodeIdServicesMethod = 24572
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2                                                                          OpcuaNodeIdServicesMethod = 24574
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_Reset2                                                                                   OpcuaNodeIdServicesMethod = 24576
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Suppress2                                                                            OpcuaNodeIdServicesMethod = 24578
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Unsuppress2                                                                          OpcuaNodeIdServicesMethod = 24580
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2                                                                   OpcuaNodeIdServicesMethod = 24582
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_PlaceInService2                                                                      OpcuaNodeIdServicesMethod = 24584
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_Reset2                                                                               OpcuaNodeIdServicesMethod = 24586
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2                                                                            OpcuaNodeIdServicesMethod = 24588
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2                                                                          OpcuaNodeIdServicesMethod = 24590
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2                                                                   OpcuaNodeIdServicesMethod = 24592
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2                                                                      OpcuaNodeIdServicesMethod = 24594
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_Reset2                                                                               OpcuaNodeIdServicesMethod = 24596
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Suppress2                                                                      OpcuaNodeIdServicesMethod = 24598
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Unsuppress2                                                                    OpcuaNodeIdServicesMethod = 24600
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_RemoveFromService2                                                             OpcuaNodeIdServicesMethod = 24602
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_PlaceInService2                                                                OpcuaNodeIdServicesMethod = 24604
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_Reset2                                                                         OpcuaNodeIdServicesMethod = 24606
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Suppress2                                                                      OpcuaNodeIdServicesMethod = 24608
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Unsuppress2                                                                    OpcuaNodeIdServicesMethod = 24610
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_RemoveFromService2                                                             OpcuaNodeIdServicesMethod = 24612
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_PlaceInService2                                                                OpcuaNodeIdServicesMethod = 24614
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Reset2                                                                         OpcuaNodeIdServicesMethod = 24616
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2                                                           OpcuaNodeIdServicesMethod = 24618
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2                                                         OpcuaNodeIdServicesMethod = 24620
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2                                                  OpcuaNodeIdServicesMethod = 24622
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2                                                     OpcuaNodeIdServicesMethod = 24624
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2                                                              OpcuaNodeIdServicesMethod = 24626
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2                                                           OpcuaNodeIdServicesMethod = 24628
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2                                                         OpcuaNodeIdServicesMethod = 24630
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2                                                  OpcuaNodeIdServicesMethod = 24632
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2                                                     OpcuaNodeIdServicesMethod = 24634
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2                                                              OpcuaNodeIdServicesMethod = 24636
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2                                                                 OpcuaNodeIdServicesMethod = 24638
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2                                                               OpcuaNodeIdServicesMethod = 24640
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2                                                        OpcuaNodeIdServicesMethod = 24642
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2                                                           OpcuaNodeIdServicesMethod = 24644
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2                                                                    OpcuaNodeIdServicesMethod = 24646
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2                                                                 OpcuaNodeIdServicesMethod = 24648
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2                                                               OpcuaNodeIdServicesMethod = 24650
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2                                                        OpcuaNodeIdServicesMethod = 24652
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2                                                           OpcuaNodeIdServicesMethod = 24654
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2                                                                    OpcuaNodeIdServicesMethod = 24656
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2                                                             OpcuaNodeIdServicesMethod = 24658
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2                                                           OpcuaNodeIdServicesMethod = 24660
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2                                                    OpcuaNodeIdServicesMethod = 24662
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2                                                       OpcuaNodeIdServicesMethod = 24664
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2                                                                OpcuaNodeIdServicesMethod = 24666
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2                                                             OpcuaNodeIdServicesMethod = 24668
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2                                                           OpcuaNodeIdServicesMethod = 24670
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2                                                    OpcuaNodeIdServicesMethod = 24672
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2                                                       OpcuaNodeIdServicesMethod = 24674
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2                                                                OpcuaNodeIdServicesMethod = 24676
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2                                                               OpcuaNodeIdServicesMethod = 24678
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2                                                             OpcuaNodeIdServicesMethod = 24680
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2                                                      OpcuaNodeIdServicesMethod = 24682
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2                                                         OpcuaNodeIdServicesMethod = 24684
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2                                                                  OpcuaNodeIdServicesMethod = 24686
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2                                                               OpcuaNodeIdServicesMethod = 24688
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2                                                             OpcuaNodeIdServicesMethod = 24690
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2                                                      OpcuaNodeIdServicesMethod = 24692
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2                                                         OpcuaNodeIdServicesMethod = 24694
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2                                                                  OpcuaNodeIdServicesMethod = 24696
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2                                                                     OpcuaNodeIdServicesMethod = 24698
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2                                                                   OpcuaNodeIdServicesMethod = 24700
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2                                                            OpcuaNodeIdServicesMethod = 24702
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2                                                               OpcuaNodeIdServicesMethod = 24704
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2                                                                        OpcuaNodeIdServicesMethod = 24706
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2                                                                     OpcuaNodeIdServicesMethod = 24708
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2                                                                   OpcuaNodeIdServicesMethod = 24710
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2                                                            OpcuaNodeIdServicesMethod = 24712
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2                                                               OpcuaNodeIdServicesMethod = 24714
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2                                                                        OpcuaNodeIdServicesMethod = 24716
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2                                                                 OpcuaNodeIdServicesMethod = 24718
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2                                                               OpcuaNodeIdServicesMethod = 24720
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2                                                        OpcuaNodeIdServicesMethod = 24722
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2                                                           OpcuaNodeIdServicesMethod = 24724
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2                                                                    OpcuaNodeIdServicesMethod = 24726
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2                                                                 OpcuaNodeIdServicesMethod = 24728
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2                                                               OpcuaNodeIdServicesMethod = 24730
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2                                                        OpcuaNodeIdServicesMethod = 24732
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2                                                           OpcuaNodeIdServicesMethod = 24734
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2                                                                    OpcuaNodeIdServicesMethod = 24736
+	OpcuaNodeIdServicesMethod_AlarmConditionType_ShelvingState_TimedShelve2                                                                                                            OpcuaNodeIdServicesMethod = 24738
+	OpcuaNodeIdServicesMethod_AlarmConditionType_ShelvingState_Unshelve2                                                                                                               OpcuaNodeIdServicesMethod = 24740
+	OpcuaNodeIdServicesMethod_AlarmConditionType_ShelvingState_OneShotShelve2                                                                                                          OpcuaNodeIdServicesMethod = 24742
+	OpcuaNodeIdServicesMethod_AlarmConditionType_GetGroupMemberships                                                                                                                   OpcuaNodeIdServicesMethod = 24744
+	OpcuaNodeIdServicesMethod_GetGroupMembershipsMethodType                                                                                                                            OpcuaNodeIdServicesMethod = 24746
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState_TimedShelve2                                                                             OpcuaNodeIdServicesMethod = 24748
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState_Unshelve2                                                                                OpcuaNodeIdServicesMethod = 24750
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_ShelvingState_OneShotShelve2                                                                           OpcuaNodeIdServicesMethod = 24752
+	OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_GetGroupMemberships                                                                                    OpcuaNodeIdServicesMethod = 24754
+	OpcuaNodeIdServicesMethod_ShelvedStateMachineType_TimedShelve2                                                                                                                     OpcuaNodeIdServicesMethod = 24756
+	OpcuaNodeIdServicesMethod_ShelvedStateMachineType_Unshelve2                                                                                                                        OpcuaNodeIdServicesMethod = 24758
+	OpcuaNodeIdServicesMethod_ShelvedStateMachineType_OneShotShelve2                                                                                                                   OpcuaNodeIdServicesMethod = 24760
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve2                                                                                       OpcuaNodeIdServicesMethod = 24978
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_Unshelve2                                                                                          OpcuaNodeIdServicesMethod = 24980
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_OneShotShelve2                                                                                     OpcuaNodeIdServicesMethod = 24982
+	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_GetGroupMemberships                                                                                              OpcuaNodeIdServicesMethod = 24984
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_ShelvingState_TimedShelve2                                                                                       OpcuaNodeIdServicesMethod = 24986
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_ShelvingState_Unshelve2                                                                                          OpcuaNodeIdServicesMethod = 24988
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_ShelvingState_OneShotShelve2                                                                                     OpcuaNodeIdServicesMethod = 24990
+	OpcuaNodeIdServicesMethod_CertificateGroupType_TrustListOutOfDate_GetGroupMemberships                                                                                              OpcuaNodeIdServicesMethod = 24992
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2                                                         OpcuaNodeIdServicesMethod = 24994
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2                                                            OpcuaNodeIdServicesMethod = 24996
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2                                                       OpcuaNodeIdServicesMethod = 24998
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships                                                                OpcuaNodeIdServicesMethod = 25000
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                                         OpcuaNodeIdServicesMethod = 25002
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                                            OpcuaNodeIdServicesMethod = 25004
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                                       OpcuaNodeIdServicesMethod = 25006
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships                                                                OpcuaNodeIdServicesMethod = 25008
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2                                                               OpcuaNodeIdServicesMethod = 25010
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2                                                                  OpcuaNodeIdServicesMethod = 25012
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2                                                             OpcuaNodeIdServicesMethod = 25014
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships                                                                      OpcuaNodeIdServicesMethod = 25016
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                                               OpcuaNodeIdServicesMethod = 25018
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                                                  OpcuaNodeIdServicesMethod = 25020
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                                             OpcuaNodeIdServicesMethod = 25022
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships                                                                      OpcuaNodeIdServicesMethod = 25024
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2                                                           OpcuaNodeIdServicesMethod = 25026
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2                                                              OpcuaNodeIdServicesMethod = 25028
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2                                                         OpcuaNodeIdServicesMethod = 25030
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships                                                                  OpcuaNodeIdServicesMethod = 25032
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                                           OpcuaNodeIdServicesMethod = 25034
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                                              OpcuaNodeIdServicesMethod = 25036
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                                         OpcuaNodeIdServicesMethod = 25038
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships                                                                  OpcuaNodeIdServicesMethod = 25040
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState_TimedShelve2                                                     OpcuaNodeIdServicesMethod = 25042
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState_Unshelve2                                                        OpcuaNodeIdServicesMethod = 25044
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_ShelvingState_OneShotShelve2                                                   OpcuaNodeIdServicesMethod = 25046
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateExpired_GetGroupMemberships                                                            OpcuaNodeIdServicesMethod = 25048
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_TimedShelve2                                                     OpcuaNodeIdServicesMethod = 25050
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_Unshelve2                                                        OpcuaNodeIdServicesMethod = 25052
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_OneShotShelve2                                                   OpcuaNodeIdServicesMethod = 25054
+	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_GetGroupMemberships                                                            OpcuaNodeIdServicesMethod = 25056
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2                                          OpcuaNodeIdServicesMethod = 25058
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2                                             OpcuaNodeIdServicesMethod = 25060
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2                                        OpcuaNodeIdServicesMethod = 25062
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships                                                 OpcuaNodeIdServicesMethod = 25064
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                          OpcuaNodeIdServicesMethod = 25066
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                             OpcuaNodeIdServicesMethod = 25068
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                        OpcuaNodeIdServicesMethod = 25070
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships                                                 OpcuaNodeIdServicesMethod = 25072
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2                                                OpcuaNodeIdServicesMethod = 25074
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2                                                   OpcuaNodeIdServicesMethod = 25076
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2                                              OpcuaNodeIdServicesMethod = 25078
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships                                                       OpcuaNodeIdServicesMethod = 25080
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                                OpcuaNodeIdServicesMethod = 25082
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                                   OpcuaNodeIdServicesMethod = 25084
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                              OpcuaNodeIdServicesMethod = 25086
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships                                                       OpcuaNodeIdServicesMethod = 25088
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2                                            OpcuaNodeIdServicesMethod = 25090
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2                                               OpcuaNodeIdServicesMethod = 25092
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2                                          OpcuaNodeIdServicesMethod = 25094
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships                                                   OpcuaNodeIdServicesMethod = 25096
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                            OpcuaNodeIdServicesMethod = 25098
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                               OpcuaNodeIdServicesMethod = 25100
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                          OpcuaNodeIdServicesMethod = 25102
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships                                                   OpcuaNodeIdServicesMethod = 25104
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2                                              OpcuaNodeIdServicesMethod = 25106
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2                                                 OpcuaNodeIdServicesMethod = 25108
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2                                            OpcuaNodeIdServicesMethod = 25110
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships                                                     OpcuaNodeIdServicesMethod = 25112
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                              OpcuaNodeIdServicesMethod = 25114
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                                 OpcuaNodeIdServicesMethod = 25116
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                            OpcuaNodeIdServicesMethod = 25118
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships                                                     OpcuaNodeIdServicesMethod = 25120
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2                                                    OpcuaNodeIdServicesMethod = 25122
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2                                                       OpcuaNodeIdServicesMethod = 25124
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2                                                  OpcuaNodeIdServicesMethod = 25126
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships                                                           OpcuaNodeIdServicesMethod = 25128
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                                    OpcuaNodeIdServicesMethod = 25130
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                                       OpcuaNodeIdServicesMethod = 25132
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                                  OpcuaNodeIdServicesMethod = 25134
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships                                                           OpcuaNodeIdServicesMethod = 25136
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2                                                OpcuaNodeIdServicesMethod = 25138
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2                                                   OpcuaNodeIdServicesMethod = 25140
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2                                              OpcuaNodeIdServicesMethod = 25142
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships                                                       OpcuaNodeIdServicesMethod = 25144
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                                                OpcuaNodeIdServicesMethod = 25146
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2                                                   OpcuaNodeIdServicesMethod = 25148
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                                              OpcuaNodeIdServicesMethod = 25150
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships                                                       OpcuaNodeIdServicesMethod = 25152
+	OpcuaNodeIdServicesMethod_TimedShelve2MethodType                                                                                                                                   OpcuaNodeIdServicesMethod = 25157
+	OpcuaNodeIdServicesMethod_PriorityMappingTableType_AddPriorityMappingEntry                                                                                                         OpcuaNodeIdServicesMethod = 25229
+	OpcuaNodeIdServicesMethod_PriorityMappingTableType_DeletePriorityMappingEntry                                                                                                      OpcuaNodeIdServicesMethod = 25231
+	OpcuaNodeIdServicesMethod_AddPriorityMappingEntryMethodType                                                                                                                        OpcuaNodeIdServicesMethod = 25233
+	OpcuaNodeIdServicesMethod_DeletePriorityMappingEntryMethodType                                                                                                                     OpcuaNodeIdServicesMethod = 25235
+	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_SecurityGroups_AddSecurityGroupFolder                                                                                               OpcuaNodeIdServicesMethod = 25271
+	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_SecurityGroups_RemoveSecurityGroupFolder                                                                                            OpcuaNodeIdServicesMethod = 25274
+	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_KeyPushTargets_AddPushTarget                                                                                                        OpcuaNodeIdServicesMethod = 25278
+	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_KeyPushTargets_RemovePushTarget                                                                                                     OpcuaNodeIdServicesMethod = 25281
+	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_KeyPushTargets_AddPushTargetFolder                                                                                                  OpcuaNodeIdServicesMethod = 25283
+	OpcuaNodeIdServicesMethod_PubSubKeyServiceType_KeyPushTargets_RemovePushTargetFolder                                                                                               OpcuaNodeIdServicesMethod = 25286
+	OpcuaNodeIdServicesMethod_AddSecurityGroupFolderMethodType                                                                                                                         OpcuaNodeIdServicesMethod = 25288
+	OpcuaNodeIdServicesMethod_RemoveSecurityGroupFolderMethodType                                                                                                                      OpcuaNodeIdServicesMethod = 25291
+	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder_AddSecurityGroupFolder                                                                       OpcuaNodeIdServicesMethod = 25293
+	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_SecurityGroupFolderName_Placeholder_RemoveSecurityGroupFolder                                                                    OpcuaNodeIdServicesMethod = 25296
+	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_AddSecurityGroupFolder                                                                                                           OpcuaNodeIdServicesMethod = 25312
+	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_RemoveSecurityGroupFolder                                                                                                        OpcuaNodeIdServicesMethod = 25315
+	OpcuaNodeIdServicesMethod_ConnectSecurityGroupsMethodType                                                                                                                          OpcuaNodeIdServicesMethod = 25331
+	OpcuaNodeIdServicesMethod_DisconnectSecurityGroupsMethodType                                                                                                                       OpcuaNodeIdServicesMethod = 25334
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetFolderName_Placeholder_AddPushTarget                                                                             OpcuaNodeIdServicesMethod = 25348
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetFolderName_Placeholder_RemovePushTarget                                                                          OpcuaNodeIdServicesMethod = 25351
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetFolderName_Placeholder_AddPushTargetFolder                                                                       OpcuaNodeIdServicesMethod = 25353
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetFolderName_Placeholder_RemovePushTargetFolder                                                                    OpcuaNodeIdServicesMethod = 25356
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_AddPushTarget                                                                                                              OpcuaNodeIdServicesMethod = 25366
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_RemovePushTarget                                                                                                           OpcuaNodeIdServicesMethod = 25369
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_AddPushTargetFolder                                                                                                        OpcuaNodeIdServicesMethod = 25371
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_RemovePushTargetFolder                                                                                                     OpcuaNodeIdServicesMethod = 25374
+	OpcuaNodeIdServicesMethod_AddPushTargetMethodType                                                                                                                                  OpcuaNodeIdServicesMethod = 25376
+	OpcuaNodeIdServicesMethod_RemovePushTargetMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 25379
+	OpcuaNodeIdServicesMethod_AddPushTargetFolderMethodType                                                                                                                            OpcuaNodeIdServicesMethod = 25381
+	OpcuaNodeIdServicesMethod_RemovePushTargetFolderMethodType                                                                                                                         OpcuaNodeIdServicesMethod = 25384
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_Open                                                                                                            OpcuaNodeIdServicesMethod = 25411
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_Close                                                                                                           OpcuaNodeIdServicesMethod = 25414
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_Read                                                                                                            OpcuaNodeIdServicesMethod = 25416
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_Write                                                                                                           OpcuaNodeIdServicesMethod = 25419
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_GetPosition                                                                                                     OpcuaNodeIdServicesMethod = 25421
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_SetPosition                                                                                                     OpcuaNodeIdServicesMethod = 25424
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_ReserveIds                                                                                                      OpcuaNodeIdServicesMethod = 25426
+	OpcuaNodeIdServicesMethod_PublishSubscribeType_PubSubConfiguration_CloseAndUpdate                                                                                                  OpcuaNodeIdServicesMethod = 25429
+	OpcuaNodeIdServicesMethod_PublishSubscribe_SecurityGroups_AddSecurityGroupFolder                                                                                                   OpcuaNodeIdServicesMethod = 25434
+	OpcuaNodeIdServicesMethod_PublishSubscribe_SecurityGroups_RemoveSecurityGroupFolder                                                                                                OpcuaNodeIdServicesMethod = 25437
+	OpcuaNodeIdServicesMethod_PublishSubscribe_KeyPushTargets_AddPushTarget                                                                                                            OpcuaNodeIdServicesMethod = 25441
+	OpcuaNodeIdServicesMethod_PublishSubscribe_KeyPushTargets_RemovePushTarget                                                                                                         OpcuaNodeIdServicesMethod = 25444
+	OpcuaNodeIdServicesMethod_PublishSubscribe_KeyPushTargets_AddPushTargetFolder                                                                                                      OpcuaNodeIdServicesMethod = 25446
+	OpcuaNodeIdServicesMethod_PublishSubscribe_KeyPushTargets_RemovePushTargetFolder                                                                                                   OpcuaNodeIdServicesMethod = 25449
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_Open                                                                                                                OpcuaNodeIdServicesMethod = 25459
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_Close                                                                                                               OpcuaNodeIdServicesMethod = 25462
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_Read                                                                                                                OpcuaNodeIdServicesMethod = 25464
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_Write                                                                                                               OpcuaNodeIdServicesMethod = 25467
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_GetPosition                                                                                                         OpcuaNodeIdServicesMethod = 25469
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_SetPosition                                                                                                         OpcuaNodeIdServicesMethod = 25472
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_ReserveIds                                                                                                          OpcuaNodeIdServicesMethod = 25474
+	OpcuaNodeIdServicesMethod_PublishSubscribe_PubSubConfiguration_CloseAndUpdate                                                                                                      OpcuaNodeIdServicesMethod = 25477
+	OpcuaNodeIdServicesMethod_PubSubConfigurationType_ReserveIds                                                                                                                       OpcuaNodeIdServicesMethod = 25505
+	OpcuaNodeIdServicesMethod_PubSubConfigurationType_CloseAndUpdate                                                                                                                   OpcuaNodeIdServicesMethod = 25508
+	OpcuaNodeIdServicesMethod_PubSubConfigurationTypeReserveIdsMethodType                                                                                                              OpcuaNodeIdServicesMethod = 25511
+	OpcuaNodeIdServicesMethod_PubSubConfigurationTypeCloseAndUpdateMethodType                                                                                                          OpcuaNodeIdServicesMethod = 25514
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAdmin_AddIdentity                                                                                                         OpcuaNodeIdServicesMethod = 25572
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAdmin_RemoveIdentity                                                                                                      OpcuaNodeIdServicesMethod = 25574
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAdmin_AddApplication                                                                                                      OpcuaNodeIdServicesMethod = 25576
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAdmin_RemoveApplication                                                                                                   OpcuaNodeIdServicesMethod = 25578
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAdmin_AddEndpoint                                                                                                         OpcuaNodeIdServicesMethod = 25580
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAdmin_RemoveEndpoint                                                                                                      OpcuaNodeIdServicesMethod = 25582
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerPush_AddIdentity                                                                                                          OpcuaNodeIdServicesMethod = 25591
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerPush_RemoveIdentity                                                                                                       OpcuaNodeIdServicesMethod = 25593
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerPush_AddApplication                                                                                                       OpcuaNodeIdServicesMethod = 25595
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerPush_RemoveApplication                                                                                                    OpcuaNodeIdServicesMethod = 25597
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerPush_AddEndpoint                                                                                                          OpcuaNodeIdServicesMethod = 25599
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerPush_RemoveEndpoint                                                                                                       OpcuaNodeIdServicesMethod = 25601
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAccess_AddIdentity                                                                                                        OpcuaNodeIdServicesMethod = 25610
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAccess_RemoveIdentity                                                                                                     OpcuaNodeIdServicesMethod = 25612
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAccess_AddApplication                                                                                                     OpcuaNodeIdServicesMethod = 25614
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAccess_RemoveApplication                                                                                                  OpcuaNodeIdServicesMethod = 25616
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAccess_AddEndpoint                                                                                                        OpcuaNodeIdServicesMethod = 25618
+	OpcuaNodeIdServicesMethod_WellKnownRole_SecurityKeyServerAccess_RemoveEndpoint                                                                                                     OpcuaNodeIdServicesMethod = 25620
+	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_SecurityGroupName_Placeholder_InvalidateKeys                                                                                     OpcuaNodeIdServicesMethod = 25622
+	OpcuaNodeIdServicesMethod_SecurityGroupFolderType_SecurityGroupName_Placeholder_ForceKeyRotation                                                                                   OpcuaNodeIdServicesMethod = 25623
+	OpcuaNodeIdServicesMethod_SecurityGroupType_InvalidateKeys                                                                                                                         OpcuaNodeIdServicesMethod = 25624
+	OpcuaNodeIdServicesMethod_SecurityGroupType_ForceKeyRotation                                                                                                                       OpcuaNodeIdServicesMethod = 25625
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetType_SecurityGroupName_Placeholder_InvalidateKeys                                                                                     OpcuaNodeIdServicesMethod = 25632
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetType_SecurityGroupName_Placeholder_ForceKeyRotation                                                                                   OpcuaNodeIdServicesMethod = 25633
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetType_ConnectSecurityGroups                                                                                                            OpcuaNodeIdServicesMethod = 25641
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetType_DisconnectSecurityGroups                                                                                                         OpcuaNodeIdServicesMethod = 25644
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetType_TriggerKeyUpdate                                                                                                                 OpcuaNodeIdServicesMethod = 25647
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_ConnectSecurityGroups                                                                           OpcuaNodeIdServicesMethod = 25655
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups                                                                        OpcuaNodeIdServicesMethod = 25658
+	OpcuaNodeIdServicesMethod_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_TriggerKeyUpdate                                                                                OpcuaNodeIdServicesMethod = 25661
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_CancelChanges                                                                                                                    OpcuaNodeIdServicesMethod = 25698
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_ResetToServerDefaults                                                                                                            OpcuaNodeIdServicesMethod = 25699
+	OpcuaNodeIdServicesMethod_ServerConfiguration_CancelChanges                                                                                                                        OpcuaNodeIdServicesMethod = 25708
+	OpcuaNodeIdServicesMethod_ServerConfiguration_ResetToServerDefaults                                                                                                                OpcuaNodeIdServicesMethod = 25709
+	OpcuaNodeIdServicesMethod_RequestTicketsMethodType                                                                                                                                 OpcuaNodeIdServicesMethod = 25727
+	OpcuaNodeIdServicesMethod_SetRegistrarEndpointsMethodType                                                                                                                          OpcuaNodeIdServicesMethod = 25729
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_RequestTickets                                                                                                                   OpcuaNodeIdServicesMethod = 26873
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_SetRegistrarEndpoints                                                                                                            OpcuaNodeIdServicesMethod = 26875
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Open                                             OpcuaNodeIdServicesMethod = 26889
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Close                                            OpcuaNodeIdServicesMethod = 26892
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Read                                             OpcuaNodeIdServicesMethod = 26894
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Write                                            OpcuaNodeIdServicesMethod = 26897
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition                                      OpcuaNodeIdServicesMethod = 26899
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition                                      OpcuaNodeIdServicesMethod = 26902
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks                                    OpcuaNodeIdServicesMethod = 26907
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate                                   OpcuaNodeIdServicesMethod = 26910
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate                                   OpcuaNodeIdServicesMethod = 26913
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate                                OpcuaNodeIdServicesMethod = 26915
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_GetRejectedList                                            OpcuaNodeIdServicesMethod = 26919
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable                                 OpcuaNodeIdServicesMethod = 26954
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable                                  OpcuaNodeIdServicesMethod = 26955
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment                              OpcuaNodeIdServicesMethod = 26956
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge                             OpcuaNodeIdServicesMethod = 26976
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm                                 OpcuaNodeIdServicesMethod = 26978
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve               OpcuaNodeIdServicesMethod = 27023
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2              OpcuaNodeIdServicesMethod = 27025
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve                  OpcuaNodeIdServicesMethod = 27027
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2                 OpcuaNodeIdServicesMethod = 27028
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve             OpcuaNodeIdServicesMethod = 27030
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2            OpcuaNodeIdServicesMethod = 27031
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence                                 OpcuaNodeIdServicesMethod = 27064
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress                                OpcuaNodeIdServicesMethod = 27065
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2                               OpcuaNodeIdServicesMethod = 27066
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress                              OpcuaNodeIdServicesMethod = 27068
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2                             OpcuaNodeIdServicesMethod = 27069
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService                       OpcuaNodeIdServicesMethod = 27071
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2                      OpcuaNodeIdServicesMethod = 27072
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService                          OpcuaNodeIdServicesMethod = 27074
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2                         OpcuaNodeIdServicesMethod = 27075
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset                                   OpcuaNodeIdServicesMethod = 27077
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2                                  OpcuaNodeIdServicesMethod = 27078
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships                     OpcuaNodeIdServicesMethod = 27080
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable                                 OpcuaNodeIdServicesMethod = 27120
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable                                  OpcuaNodeIdServicesMethod = 27121
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment                              OpcuaNodeIdServicesMethod = 27122
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge                             OpcuaNodeIdServicesMethod = 27142
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm                                 OpcuaNodeIdServicesMethod = 27144
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve               OpcuaNodeIdServicesMethod = 27189
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2              OpcuaNodeIdServicesMethod = 27191
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve                  OpcuaNodeIdServicesMethod = 27193
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2                 OpcuaNodeIdServicesMethod = 27194
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve             OpcuaNodeIdServicesMethod = 27196
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2            OpcuaNodeIdServicesMethod = 27197
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence                                 OpcuaNodeIdServicesMethod = 27230
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress                                OpcuaNodeIdServicesMethod = 27231
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2                               OpcuaNodeIdServicesMethod = 27232
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress                              OpcuaNodeIdServicesMethod = 27234
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2                             OpcuaNodeIdServicesMethod = 27235
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService                       OpcuaNodeIdServicesMethod = 27237
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2                      OpcuaNodeIdServicesMethod = 27238
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService                          OpcuaNodeIdServicesMethod = 27240
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2                         OpcuaNodeIdServicesMethod = 27241
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset                                   OpcuaNodeIdServicesMethod = 27243
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2                                  OpcuaNodeIdServicesMethod = 27244
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships                     OpcuaNodeIdServicesMethod = 27246
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Open                                                   OpcuaNodeIdServicesMethod = 27261
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Close                                                  OpcuaNodeIdServicesMethod = 27264
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Read                                                   OpcuaNodeIdServicesMethod = 27266
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Write                                                  OpcuaNodeIdServicesMethod = 27269
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition                                            OpcuaNodeIdServicesMethod = 27271
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition                                            OpcuaNodeIdServicesMethod = 27274
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks                                          OpcuaNodeIdServicesMethod = 27279
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate                                         OpcuaNodeIdServicesMethod = 27282
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate                                         OpcuaNodeIdServicesMethod = 27285
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate                                      OpcuaNodeIdServicesMethod = 27287
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_GetRejectedList                                                  OpcuaNodeIdServicesMethod = 27291
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable                                       OpcuaNodeIdServicesMethod = 27326
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable                                        OpcuaNodeIdServicesMethod = 27327
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment                                    OpcuaNodeIdServicesMethod = 27328
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge                                   OpcuaNodeIdServicesMethod = 27348
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm                                       OpcuaNodeIdServicesMethod = 27350
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve                     OpcuaNodeIdServicesMethod = 27395
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2                    OpcuaNodeIdServicesMethod = 27397
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve                        OpcuaNodeIdServicesMethod = 27399
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2                       OpcuaNodeIdServicesMethod = 27400
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve                   OpcuaNodeIdServicesMethod = 27402
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2                  OpcuaNodeIdServicesMethod = 27403
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence                                       OpcuaNodeIdServicesMethod = 27436
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress                                      OpcuaNodeIdServicesMethod = 27437
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2                                     OpcuaNodeIdServicesMethod = 27438
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress                                    OpcuaNodeIdServicesMethod = 27440
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2                                   OpcuaNodeIdServicesMethod = 27441
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService                             OpcuaNodeIdServicesMethod = 27443
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2                            OpcuaNodeIdServicesMethod = 27444
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService                                OpcuaNodeIdServicesMethod = 27446
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2                               OpcuaNodeIdServicesMethod = 27447
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset                                         OpcuaNodeIdServicesMethod = 27449
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2                                        OpcuaNodeIdServicesMethod = 27450
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships                           OpcuaNodeIdServicesMethod = 27452
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable                                       OpcuaNodeIdServicesMethod = 27492
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable                                        OpcuaNodeIdServicesMethod = 27493
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment                                    OpcuaNodeIdServicesMethod = 27494
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge                                   OpcuaNodeIdServicesMethod = 27514
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm                                       OpcuaNodeIdServicesMethod = 27516
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve                     OpcuaNodeIdServicesMethod = 27561
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                    OpcuaNodeIdServicesMethod = 27563
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve                        OpcuaNodeIdServicesMethod = 27565
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2                       OpcuaNodeIdServicesMethod = 27566
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve                   OpcuaNodeIdServicesMethod = 27568
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2                  OpcuaNodeIdServicesMethod = 27569
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence                                       OpcuaNodeIdServicesMethod = 27602
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress                                      OpcuaNodeIdServicesMethod = 27603
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2                                     OpcuaNodeIdServicesMethod = 27604
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress                                    OpcuaNodeIdServicesMethod = 27606
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2                                   OpcuaNodeIdServicesMethod = 27607
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService                             OpcuaNodeIdServicesMethod = 27609
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2                            OpcuaNodeIdServicesMethod = 27610
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService                                OpcuaNodeIdServicesMethod = 27612
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2                               OpcuaNodeIdServicesMethod = 27613
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset                                         OpcuaNodeIdServicesMethod = 27615
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2                                        OpcuaNodeIdServicesMethod = 27616
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships                           OpcuaNodeIdServicesMethod = 27618
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Open                                               OpcuaNodeIdServicesMethod = 27633
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Close                                              OpcuaNodeIdServicesMethod = 27636
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Read                                               OpcuaNodeIdServicesMethod = 27638
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Write                                              OpcuaNodeIdServicesMethod = 27641
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition                                        OpcuaNodeIdServicesMethod = 27643
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition                                        OpcuaNodeIdServicesMethod = 27646
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks                                      OpcuaNodeIdServicesMethod = 27651
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate                                     OpcuaNodeIdServicesMethod = 27654
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate                                     OpcuaNodeIdServicesMethod = 27657
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate                                  OpcuaNodeIdServicesMethod = 27659
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_GetRejectedList                                              OpcuaNodeIdServicesMethod = 27663
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable                                   OpcuaNodeIdServicesMethod = 27698
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable                                    OpcuaNodeIdServicesMethod = 27699
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment                                OpcuaNodeIdServicesMethod = 27700
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge                               OpcuaNodeIdServicesMethod = 27720
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm                                   OpcuaNodeIdServicesMethod = 27722
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve                 OpcuaNodeIdServicesMethod = 27767
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2                OpcuaNodeIdServicesMethod = 27769
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve                    OpcuaNodeIdServicesMethod = 27771
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2                   OpcuaNodeIdServicesMethod = 27772
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve               OpcuaNodeIdServicesMethod = 27774
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2              OpcuaNodeIdServicesMethod = 27775
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence                                   OpcuaNodeIdServicesMethod = 27808
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress                                  OpcuaNodeIdServicesMethod = 27809
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2                                 OpcuaNodeIdServicesMethod = 27810
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress                                OpcuaNodeIdServicesMethod = 27812
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2                               OpcuaNodeIdServicesMethod = 27813
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService                         OpcuaNodeIdServicesMethod = 27815
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2                        OpcuaNodeIdServicesMethod = 27816
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService                            OpcuaNodeIdServicesMethod = 27818
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2                           OpcuaNodeIdServicesMethod = 27819
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset                                     OpcuaNodeIdServicesMethod = 27821
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2                                    OpcuaNodeIdServicesMethod = 27822
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships                       OpcuaNodeIdServicesMethod = 27824
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable                                   OpcuaNodeIdServicesMethod = 27864
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable                                    OpcuaNodeIdServicesMethod = 27865
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment                                OpcuaNodeIdServicesMethod = 27866
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge                               OpcuaNodeIdServicesMethod = 27886
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm                                   OpcuaNodeIdServicesMethod = 27888
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve                 OpcuaNodeIdServicesMethod = 27933
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2                OpcuaNodeIdServicesMethod = 27935
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve                    OpcuaNodeIdServicesMethod = 27937
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2                   OpcuaNodeIdServicesMethod = 27938
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve               OpcuaNodeIdServicesMethod = 27940
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2              OpcuaNodeIdServicesMethod = 27941
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence                                   OpcuaNodeIdServicesMethod = 27974
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress                                  OpcuaNodeIdServicesMethod = 27975
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2                                 OpcuaNodeIdServicesMethod = 27976
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress                                OpcuaNodeIdServicesMethod = 27978
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2                               OpcuaNodeIdServicesMethod = 27979
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService                         OpcuaNodeIdServicesMethod = 27981
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2                        OpcuaNodeIdServicesMethod = 27982
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService                            OpcuaNodeIdServicesMethod = 27984
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2                           OpcuaNodeIdServicesMethod = 27985
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset                                     OpcuaNodeIdServicesMethod = 27987
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2                                    OpcuaNodeIdServicesMethod = 27988
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships                       OpcuaNodeIdServicesMethod = 27990
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_UpdateCertificate                                                                                    OpcuaNodeIdServicesMethod = 28005
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_ApplyChanges                                                                                         OpcuaNodeIdServicesMethod = 28008
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CancelChanges                                                                                        OpcuaNodeIdServicesMethod = 28009
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_CreateSigningRequest                                                                                 OpcuaNodeIdServicesMethod = 28010
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_GetRejectedList                                                                                      OpcuaNodeIdServicesMethod = 28013
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_ResetToServerDefaults                                                                                OpcuaNodeIdServicesMethod = 28015
+	OpcuaNodeIdServicesMethod_ProvisionableDevice_RequestTickets                                                                                                                       OpcuaNodeIdServicesMethod = 29880
+	OpcuaNodeIdServicesMethod_ProvisionableDevice_SetRegistrarEndpoints                                                                                                                OpcuaNodeIdServicesMethod = 29882
+	OpcuaNodeIdServicesMethod_GetCertificatesMethodType                                                                                                                                OpcuaNodeIdServicesMethod = 32282
+	OpcuaNodeIdServicesMethod_ServerConfigurationType_GetCertificates                                                                                                                  OpcuaNodeIdServicesMethod = 32296
+	OpcuaNodeIdServicesMethod_ServerConfiguration_GetCertificates                                                                                                                      OpcuaNodeIdServicesMethod = 32333
+	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_GetCertificates                                                                                      OpcuaNodeIdServicesMethod = 32359
+	OpcuaNodeIdServicesMethod_NonTransparentBackupRedundancyType_Failover                                                                                                              OpcuaNodeIdServicesMethod = 32416
 )
 
 var OpcuaNodeIdServicesMethodValues []OpcuaNodeIdServicesMethod
@@ -1791,18 +1975,91 @@ func init() {
 		OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_AddDataSetFolder,
 		OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_RemoveDataSetFolder,
 		OpcuaNodeIdServicesMethod_AddConnectionMethodType,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Open,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Close,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Read,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Write,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_GetRejectedList,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm,
 		OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2,
 		OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate,
 		OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService,
 		OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_RemoveDataSetFolder,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships,
 		OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedDataItemsTemplate,
 		OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedEventsTemplate,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment,
 		OpcuaNodeIdServicesMethod_DataSetFolderType_AddDataSetFolder,
 		OpcuaNodeIdServicesMethod_DataSetFolderType_RemoveDataSetFolder,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm,
 		OpcuaNodeIdServicesMethod_AddPublishedDataItemsTemplateMethodType,
 		OpcuaNodeIdServicesMethod_AddPublishedEventsTemplateMethodType,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2,
 		OpcuaNodeIdServicesMethod_AddDataSetFolderMethodType,
 		OpcuaNodeIdServicesMethod_RemoveDataSetFolderMethodType,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Open,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Close,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Read,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Write,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_GetRejectedList,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm,
 		OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_AddDataSetWriter,
 		OpcuaNodeIdServicesMethod_PublishSubscribeType_SetSecurityKeys,
 		OpcuaNodeIdServicesMethod_SetSecurityKeysMethodType,
@@ -1812,6 +2069,12 @@ func init() {
 		OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_Status_Enable,
 		OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_Status_Disable,
 		OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_RemoveDataSetReader,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2,
 		OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_AddDataSetReader,
 		OpcuaNodeIdServicesMethod_PublishSubscribe_SetSecurityKeys,
 		OpcuaNodeIdServicesMethod_PublishSubscribe_AddConnection,
@@ -1840,7 +2103,24 @@ func init() {
 		OpcuaNodeIdServicesMethod_GetEncryptingKeyMethodType,
 		OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_GetEncryptingKey,
 		OpcuaNodeIdServicesMethod_PubSubConnectionTypeAddWriterGroupMethodType,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships,
 		OpcuaNodeIdServicesMethod_PubSubConnectionAddReaderGroupGroupMethodType,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm,
 		OpcuaNodeIdServicesMethod_FileDirectoryType_FileDirectoryName_Placeholder_DeleteFileSystemObject,
 		OpcuaNodeIdServicesMethod_WriterGroupType_DataSetWriterName_Placeholder_Status_Enable,
 		OpcuaNodeIdServicesMethod_WriterGroupType_DataSetWriterName_Placeholder_Status_Disable,
@@ -1852,17 +2132,105 @@ func init() {
 		OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Unsuppress,
 		OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_RemoveFromService,
 		OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_PlaceInService,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2,
 		OpcuaNodeIdServicesMethod_WriterGroupType_AddDataSetWriter,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2,
 		OpcuaNodeIdServicesMethod_WriterGroupType_RemoveDataSetWriter,
 		OpcuaNodeIdServicesMethod_PubSubGroupTypeAddWriterMethodType,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships,
 		OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_UpdateCredential,
 		OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_DeleteCredential,
 		OpcuaNodeIdServicesMethod_KeyCredentialUpdateMethodType,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Open,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Close,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Read,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Write,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_GetRejectedList,
 		OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_Status_Enable,
 		OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_Status_Disable,
 		OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_Reset,
 		OpcuaNodeIdServicesMethod_AlarmConditionType_Reset,
 		OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Reset,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_UpdateCertificate,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetCertificates,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_ApplyChanges,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CancelChanges,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CreateSigningRequest,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetRejectedList,
+		OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_ResetToServerDefaults,
+		OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddIdentity,
+		OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveIdentity,
+		OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddApplication,
+		OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveApplication,
+		OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddEndpoint,
+		OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveEndpoint,
 		OpcuaNodeIdServicesMethod_AlarmMetricsType_Reset,
 		OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_Reset,
 		OpcuaNodeIdServicesMethod_PublishSubscribeType_Diagnostics_Reset,
@@ -3495,30 +3863,176 @@ func OpcuaNodeIdServicesMethodByValue(value int32) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_RemoveDataSetFolder, true
 	case 16691:
 		return OpcuaNodeIdServicesMethod_AddConnectionMethodType, true
+	case 16717:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Open, true
+	case 16724:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Close, true
+	case 16726:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Read, true
+	case 16729:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Write, true
+	case 16732:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition, true
+	case 16735:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition, true
+	case 16741:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks, true
+	case 16744:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate, true
+	case 16747:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate, true
+	case 16749:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate, true
+	case 16752:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_GetRejectedList, true
+	case 16790:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable, true
+	case 16791:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable, true
+	case 16792:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment, true
+	case 16812:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge, true
+	case 16814:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm, true
 	case 16842:
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate, true
+	case 16864:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve, true
+	case 16866:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2, true
+	case 16868:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve, true
+	case 16869:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2, true
+	case 16871:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve, true
+	case 16872:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2, true
 	case 16881:
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate, true
 	case 16884:
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder, true
+	case 16911:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence, true
+	case 16912:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress, true
+	case 16913:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2, true
+	case 16915:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress, true
+	case 16916:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2, true
+	case 16918:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService, true
+	case 16919:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2, true
+	case 16921:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService, true
 	case 16923:
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_RemoveDataSetFolder, true
+	case 16926:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2, true
+	case 16928:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset, true
+	case 16929:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2, true
+	case 16931:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships, true
 	case 16935:
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedDataItemsTemplate, true
 	case 16960:
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedEventsTemplate, true
+	case 16977:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable, true
+	case 16978:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable, true
+	case 16979:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment, true
 	case 16994:
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_AddDataSetFolder, true
 	case 16997:
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_RemoveDataSetFolder, true
+	case 17003:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge, true
+	case 17005:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm, true
 	case 17030:
 		return OpcuaNodeIdServicesMethod_AddPublishedDataItemsTemplateMethodType, true
 	case 17033:
 		return OpcuaNodeIdServicesMethod_AddPublishedEventsTemplateMethodType, true
+	case 17056:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve, true
+	case 17058:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2, true
+	case 17060:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve, true
+	case 17061:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2, true
+	case 17063:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve, true
+	case 17064:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2, true
 	case 17067:
 		return OpcuaNodeIdServicesMethod_AddDataSetFolderMethodType, true
 	case 17079:
 		return OpcuaNodeIdServicesMethod_RemoveDataSetFolderMethodType, true
+	case 17103:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence, true
+	case 17104:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress, true
+	case 17105:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2, true
+	case 17107:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress, true
+	case 17108:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2, true
+	case 17110:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService, true
+	case 17111:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2, true
+	case 17113:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService, true
+	case 17114:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2, true
+	case 17116:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset, true
+	case 17117:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2, true
+	case 17119:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships, true
+	case 17134:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Open, true
+	case 17137:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Close, true
+	case 17139:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Read, true
+	case 17142:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Write, true
+	case 17144:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition, true
+	case 17147:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition, true
+	case 17153:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks, true
+	case 17156:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate, true
+	case 17159:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate, true
+	case 17161:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate, true
+	case 17164:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_GetRejectedList, true
+	case 17199:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable, true
+	case 17200:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable, true
+	case 17205:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment, true
+	case 17237:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge, true
+	case 17239:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm, true
 	case 17293:
 		return OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_AddDataSetWriter, true
 	case 17296:
@@ -3537,6 +4051,18 @@ func OpcuaNodeIdServicesMethodByValue(value int32) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_Status_Disable, true
 	case 17333:
 		return OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_RemoveDataSetReader, true
+	case 17340:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve, true
+	case 17342:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2, true
+	case 17344:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve, true
+	case 17345:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2, true
+	case 17347:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve, true
+	case 17348:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2, true
 	case 17355:
 		return OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_AddDataSetReader, true
 	case 17364:
@@ -3593,8 +4119,42 @@ func OpcuaNodeIdServicesMethodByValue(value int32) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_GetEncryptingKey, true
 	case 17561:
 		return OpcuaNodeIdServicesMethod_PubSubConnectionTypeAddWriterGroupMethodType, true
+	case 17572:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence, true
+	case 17573:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress, true
+	case 17574:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2, true
+	case 17586:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress, true
+	case 17587:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2, true
+	case 17596:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService, true
+	case 17599:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2, true
+	case 17616:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService, true
+	case 17617:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2, true
+	case 17619:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset, true
+	case 17620:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2, true
+	case 17622:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships, true
 	case 17630:
 		return OpcuaNodeIdServicesMethod_PubSubConnectionAddReaderGroupGroupMethodType, true
+	case 17678:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable, true
+	case 17679:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable, true
+	case 17680:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment, true
+	case 17700:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge, true
+	case 17702:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm, true
 	case 17718:
 		return OpcuaNodeIdServicesMethod_FileDirectoryType_FileDirectoryName_Placeholder_DeleteFileSystemObject, true
 	case 17751:
@@ -3617,18 +4177,76 @@ func OpcuaNodeIdServicesMethodByValue(value int32) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_RemoveFromService, true
 	case 17877:
 		return OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_PlaceInService, true
+	case 17917:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve, true
+	case 17919:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2, true
+	case 17922:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve, true
+	case 17923:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2, true
+	case 17925:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve, true
+	case 17926:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2, true
+	case 17965:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence, true
+	case 17966:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress, true
+	case 17967:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2, true
 	case 17969:
 		return OpcuaNodeIdServicesMethod_WriterGroupType_AddDataSetWriter, true
+	case 17970:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress, true
+	case 17971:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2, true
+	case 17973:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService, true
+	case 17974:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2, true
+	case 17977:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService, true
+	case 17978:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2, true
+	case 17980:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset, true
+	case 17981:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2, true
 	case 17992:
 		return OpcuaNodeIdServicesMethod_WriterGroupType_RemoveDataSetWriter, true
 	case 17994:
 		return OpcuaNodeIdServicesMethod_PubSubGroupTypeAddWriterMethodType, true
+	case 18000:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships, true
 	case 18006:
 		return OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_UpdateCredential, true
 	case 18008:
 		return OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_DeleteCredential, true
 	case 18009:
 		return OpcuaNodeIdServicesMethod_KeyCredentialUpdateMethodType, true
+	case 18024:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Open, true
+	case 18027:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Close, true
+	case 18031:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Read, true
+	case 18034:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Write, true
+	case 18036:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition, true
+	case 18039:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition, true
+	case 18045:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks, true
+	case 18049:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate, true
+	case 18052:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate, true
+	case 18054:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate, true
+	case 18057:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_GetRejectedList, true
 	case 18090:
 		return OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_Status_Enable, true
 	case 18091:
@@ -3639,6 +4257,124 @@ func OpcuaNodeIdServicesMethodByValue(value int32) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_AlarmConditionType_Reset, true
 	case 18212:
 		return OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Reset, true
+	case 18225:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable, true
+	case 18226:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable, true
+	case 18227:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment, true
+	case 18247:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge, true
+	case 18249:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm, true
+	case 18294:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve, true
+	case 18296:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2, true
+	case 18298:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve, true
+	case 18299:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2, true
+	case 18301:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve, true
+	case 18302:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2, true
+	case 18335:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence, true
+	case 18336:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress, true
+	case 18337:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2, true
+	case 18339:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress, true
+	case 18340:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2, true
+	case 18342:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService, true
+	case 18343:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2, true
+	case 18345:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService, true
+	case 18346:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2, true
+	case 18349:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset, true
+	case 18350:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2, true
+	case 18352:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships, true
+	case 18392:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable, true
+	case 18393:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable, true
+	case 18394:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment, true
+	case 18414:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge, true
+	case 18416:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm, true
+	case 18461:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve, true
+	case 18463:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2, true
+	case 18465:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve, true
+	case 18466:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2, true
+	case 18468:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve, true
+	case 18469:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2, true
+	case 18503:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence, true
+	case 18504:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress, true
+	case 18505:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2, true
+	case 18507:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress, true
+	case 18508:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2, true
+	case 18510:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService, true
+	case 18511:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2, true
+	case 18513:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService, true
+	case 18514:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2, true
+	case 18516:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset, true
+	case 18517:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2, true
+	case 18519:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships, true
+	case 18533:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_UpdateCertificate, true
+	case 18536:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetCertificates, true
+	case 18539:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_ApplyChanges, true
+	case 18540:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CancelChanges, true
+	case 18541:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CreateSigningRequest, true
+	case 18544:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetRejectedList, true
+	case 18546:
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_ResetToServerDefaults, true
+	case 18632:
+		return OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddIdentity, true
+	case 18634:
+		return OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveIdentity, true
+	case 18636:
+		return OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddApplication, true
+	case 18638:
+		return OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveApplication, true
+	case 18640:
+		return OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddEndpoint, true
+	case 18642:
+		return OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveEndpoint, true
 	case 18666:
 		return OpcuaNodeIdServicesMethod_AlarmMetricsType_Reset, true
 	case 18679:
@@ -6199,30 +6935,176 @@ func OpcuaNodeIdServicesMethodByName(value string) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_PublishSubscribeType_PublishedDataSets_RemoveDataSetFolder, true
 	case "AddConnectionMethodType":
 		return OpcuaNodeIdServicesMethod_AddConnectionMethodType, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Open":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Open, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Close":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Close, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Read":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Read, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Write":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Write, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_GetRejectedList":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_GetRejectedList, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm, true
 	case "DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate":
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2, true
 	case "DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate":
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate, true
 	case "DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder":
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService, true
 	case "DataSetFolderType_DataSetFolderName_Placeholder_RemoveDataSetFolder":
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_RemoveDataSetFolder, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships, true
 	case "DataSetFolderType_AddPublishedDataItemsTemplate":
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedDataItemsTemplate, true
 	case "DataSetFolderType_AddPublishedEventsTemplate":
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedEventsTemplate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment, true
 	case "DataSetFolderType_AddDataSetFolder":
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_AddDataSetFolder, true
 	case "DataSetFolderType_RemoveDataSetFolder":
 		return OpcuaNodeIdServicesMethod_DataSetFolderType_RemoveDataSetFolder, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm, true
 	case "AddPublishedDataItemsTemplateMethodType":
 		return OpcuaNodeIdServicesMethod_AddPublishedDataItemsTemplateMethodType, true
 	case "AddPublishedEventsTemplateMethodType":
 		return OpcuaNodeIdServicesMethod_AddPublishedEventsTemplateMethodType, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2, true
 	case "AddDataSetFolderMethodType":
 		return OpcuaNodeIdServicesMethod_AddDataSetFolderMethodType, true
 	case "RemoveDataSetFolderMethodType":
 		return OpcuaNodeIdServicesMethod_RemoveDataSetFolderMethodType, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Open":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Open, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Close":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Close, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Read":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Read, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Write":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Write, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_GetRejectedList":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_GetRejectedList, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm, true
 	case "PubSubConnectionType_WriterGroupName_Placeholder_AddDataSetWriter":
 		return OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_AddDataSetWriter, true
 	case "PublishSubscribeType_SetSecurityKeys":
@@ -6241,6 +7123,18 @@ func OpcuaNodeIdServicesMethodByName(value string) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_Status_Disable, true
 	case "PubSubConnectionType_ReaderGroupName_Placeholder_RemoveDataSetReader":
 		return OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_RemoveDataSetReader, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2, true
 	case "PubSubConnectionType_ReaderGroupName_Placeholder_AddDataSetReader":
 		return OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_AddDataSetReader, true
 	case "PublishSubscribe_SetSecurityKeys":
@@ -6297,8 +7191,42 @@ func OpcuaNodeIdServicesMethodByName(value string) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_GetEncryptingKey, true
 	case "PubSubConnectionTypeAddWriterGroupMethodType":
 		return OpcuaNodeIdServicesMethod_PubSubConnectionTypeAddWriterGroupMethodType, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships, true
 	case "PubSubConnectionAddReaderGroupGroupMethodType":
 		return OpcuaNodeIdServicesMethod_PubSubConnectionAddReaderGroupGroupMethodType, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm, true
 	case "FileDirectoryType_FileDirectoryName_Placeholder_DeleteFileSystemObject":
 		return OpcuaNodeIdServicesMethod_FileDirectoryType_FileDirectoryName_Placeholder_DeleteFileSystemObject, true
 	case "WriterGroupType_DataSetWriterName_Placeholder_Status_Enable":
@@ -6321,18 +7249,76 @@ func OpcuaNodeIdServicesMethodByName(value string) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_RemoveFromService, true
 	case "AlarmGroupType_AlarmConditionInstance_Placeholder_PlaceInService":
 		return OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_PlaceInService, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2, true
 	case "WriterGroupType_AddDataSetWriter":
 		return OpcuaNodeIdServicesMethod_WriterGroupType_AddDataSetWriter, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2, true
 	case "WriterGroupType_RemoveDataSetWriter":
 		return OpcuaNodeIdServicesMethod_WriterGroupType_RemoveDataSetWriter, true
 	case "PubSubGroupTypeAddWriterMethodType":
 		return OpcuaNodeIdServicesMethod_PubSubGroupTypeAddWriterMethodType, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships, true
 	case "KeyCredentialConfigurationType_UpdateCredential":
 		return OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_UpdateCredential, true
 	case "KeyCredentialConfigurationType_DeleteCredential":
 		return OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_DeleteCredential, true
 	case "KeyCredentialUpdateMethodType":
 		return OpcuaNodeIdServicesMethod_KeyCredentialUpdateMethodType, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Open":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Open, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Close":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Close, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Read":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Read, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Write":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Write, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_GetRejectedList":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_GetRejectedList, true
 	case "ReaderGroupType_DataSetReaderName_Placeholder_Status_Enable":
 		return OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_Status_Enable, true
 	case "ReaderGroupType_DataSetReaderName_Placeholder_Status_Disable":
@@ -6343,6 +7329,124 @@ func OpcuaNodeIdServicesMethodByName(value string) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_AlarmConditionType_Reset, true
 	case "AlarmGroupType_AlarmConditionInstance_Placeholder_Reset":
 		return OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Reset, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_UpdateCertificate":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_UpdateCertificate, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetCertificates":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetCertificates, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_ApplyChanges":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_ApplyChanges, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CancelChanges":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CancelChanges, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CreateSigningRequest":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CreateSigningRequest, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetRejectedList":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetRejectedList, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_ResetToServerDefaults":
+		return OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_ResetToServerDefaults, true
+	case "WellKnownRole_TrustedApplication_AddIdentity":
+		return OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddIdentity, true
+	case "WellKnownRole_TrustedApplication_RemoveIdentity":
+		return OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveIdentity, true
+	case "WellKnownRole_TrustedApplication_AddApplication":
+		return OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddApplication, true
+	case "WellKnownRole_TrustedApplication_RemoveApplication":
+		return OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveApplication, true
+	case "WellKnownRole_TrustedApplication_AddEndpoint":
+		return OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddEndpoint, true
+	case "WellKnownRole_TrustedApplication_RemoveEndpoint":
+		return OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveEndpoint, true
 	case "AlarmMetricsType_Reset":
 		return OpcuaNodeIdServicesMethod_AlarmMetricsType_Reset, true
 	case "PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_Reset":
@@ -8968,30 +10072,176 @@ func (e OpcuaNodeIdServicesMethod) PLC4XEnumName() string {
 		return "PublishSubscribeType_PublishedDataSets_RemoveDataSetFolder"
 	case OpcuaNodeIdServicesMethod_AddConnectionMethodType:
 		return "AddConnectionMethodType"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Open:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Open"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Close:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Close"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Read:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Read"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Write:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Write"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_GetRejectedList:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_GetRejectedList"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm"
 	case OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate:
 		return "DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2"
 	case OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate:
 		return "DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate"
 	case OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder:
 		return "DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService"
 	case OpcuaNodeIdServicesMethod_DataSetFolderType_DataSetFolderName_Placeholder_RemoveDataSetFolder:
 		return "DataSetFolderType_DataSetFolderName_Placeholder_RemoveDataSetFolder"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships"
 	case OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedDataItemsTemplate:
 		return "DataSetFolderType_AddPublishedDataItemsTemplate"
 	case OpcuaNodeIdServicesMethod_DataSetFolderType_AddPublishedEventsTemplate:
 		return "DataSetFolderType_AddPublishedEventsTemplate"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment"
 	case OpcuaNodeIdServicesMethod_DataSetFolderType_AddDataSetFolder:
 		return "DataSetFolderType_AddDataSetFolder"
 	case OpcuaNodeIdServicesMethod_DataSetFolderType_RemoveDataSetFolder:
 		return "DataSetFolderType_RemoveDataSetFolder"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm"
 	case OpcuaNodeIdServicesMethod_AddPublishedDataItemsTemplateMethodType:
 		return "AddPublishedDataItemsTemplateMethodType"
 	case OpcuaNodeIdServicesMethod_AddPublishedEventsTemplateMethodType:
 		return "AddPublishedEventsTemplateMethodType"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2"
 	case OpcuaNodeIdServicesMethod_AddDataSetFolderMethodType:
 		return "AddDataSetFolderMethodType"
 	case OpcuaNodeIdServicesMethod_RemoveDataSetFolderMethodType:
 		return "RemoveDataSetFolderMethodType"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Open:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Open"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Close:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Close"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Read:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Read"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Write:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Write"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_GetRejectedList:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_GetRejectedList"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm"
 	case OpcuaNodeIdServicesMethod_PubSubConnectionType_WriterGroupName_Placeholder_AddDataSetWriter:
 		return "PubSubConnectionType_WriterGroupName_Placeholder_AddDataSetWriter"
 	case OpcuaNodeIdServicesMethod_PublishSubscribeType_SetSecurityKeys:
@@ -9010,6 +10260,18 @@ func (e OpcuaNodeIdServicesMethod) PLC4XEnumName() string {
 		return "PubSubConnectionType_ReaderGroupName_Placeholder_Status_Disable"
 	case OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_RemoveDataSetReader:
 		return "PubSubConnectionType_ReaderGroupName_Placeholder_RemoveDataSetReader"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2"
 	case OpcuaNodeIdServicesMethod_PubSubConnectionType_ReaderGroupName_Placeholder_AddDataSetReader:
 		return "PubSubConnectionType_ReaderGroupName_Placeholder_AddDataSetReader"
 	case OpcuaNodeIdServicesMethod_PublishSubscribe_SetSecurityKeys:
@@ -9066,8 +10328,42 @@ func (e OpcuaNodeIdServicesMethod) PLC4XEnumName() string {
 		return "KeyCredentialConfigurationType_GetEncryptingKey"
 	case OpcuaNodeIdServicesMethod_PubSubConnectionTypeAddWriterGroupMethodType:
 		return "PubSubConnectionTypeAddWriterGroupMethodType"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships"
 	case OpcuaNodeIdServicesMethod_PubSubConnectionAddReaderGroupGroupMethodType:
 		return "PubSubConnectionAddReaderGroupGroupMethodType"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm"
 	case OpcuaNodeIdServicesMethod_FileDirectoryType_FileDirectoryName_Placeholder_DeleteFileSystemObject:
 		return "FileDirectoryType_FileDirectoryName_Placeholder_DeleteFileSystemObject"
 	case OpcuaNodeIdServicesMethod_WriterGroupType_DataSetWriterName_Placeholder_Status_Enable:
@@ -9090,18 +10386,76 @@ func (e OpcuaNodeIdServicesMethod) PLC4XEnumName() string {
 		return "AlarmGroupType_AlarmConditionInstance_Placeholder_RemoveFromService"
 	case OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_PlaceInService:
 		return "AlarmGroupType_AlarmConditionInstance_Placeholder_PlaceInService"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2"
 	case OpcuaNodeIdServicesMethod_WriterGroupType_AddDataSetWriter:
 		return "WriterGroupType_AddDataSetWriter"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2"
 	case OpcuaNodeIdServicesMethod_WriterGroupType_RemoveDataSetWriter:
 		return "WriterGroupType_RemoveDataSetWriter"
 	case OpcuaNodeIdServicesMethod_PubSubGroupTypeAddWriterMethodType:
 		return "PubSubGroupTypeAddWriterMethodType"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships"
 	case OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_UpdateCredential:
 		return "KeyCredentialConfigurationType_UpdateCredential"
 	case OpcuaNodeIdServicesMethod_KeyCredentialConfigurationType_DeleteCredential:
 		return "KeyCredentialConfigurationType_DeleteCredential"
 	case OpcuaNodeIdServicesMethod_KeyCredentialUpdateMethodType:
 		return "KeyCredentialUpdateMethodType"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Open:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Open"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Close:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Close"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Read:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Read"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Write:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Write"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_GetRejectedList:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_GetRejectedList"
 	case OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_Status_Enable:
 		return "ReaderGroupType_DataSetReaderName_Placeholder_Status_Enable"
 	case OpcuaNodeIdServicesMethod_ReaderGroupType_DataSetReaderName_Placeholder_Status_Disable:
@@ -9112,6 +10466,124 @@ func (e OpcuaNodeIdServicesMethod) PLC4XEnumName() string {
 		return "AlarmConditionType_Reset"
 	case OpcuaNodeIdServicesMethod_AlarmGroupType_AlarmConditionInstance_Placeholder_Reset:
 		return "AlarmGroupType_AlarmConditionInstance_Placeholder_Reset"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_UpdateCertificate:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_UpdateCertificate"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetCertificates:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetCertificates"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_ApplyChanges:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_ApplyChanges"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CancelChanges:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CancelChanges"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_CreateSigningRequest:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_CreateSigningRequest"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetRejectedList:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetRejectedList"
+	case OpcuaNodeIdServicesMethod_ApplicationConfigurationFolderType_ApplicationName_Placeholder_ResetToServerDefaults:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_ResetToServerDefaults"
+	case OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddIdentity:
+		return "WellKnownRole_TrustedApplication_AddIdentity"
+	case OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveIdentity:
+		return "WellKnownRole_TrustedApplication_RemoveIdentity"
+	case OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddApplication:
+		return "WellKnownRole_TrustedApplication_AddApplication"
+	case OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveApplication:
+		return "WellKnownRole_TrustedApplication_RemoveApplication"
+	case OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_AddEndpoint:
+		return "WellKnownRole_TrustedApplication_AddEndpoint"
+	case OpcuaNodeIdServicesMethod_WellKnownRole_TrustedApplication_RemoveEndpoint:
+		return "WellKnownRole_TrustedApplication_RemoveEndpoint"
 	case OpcuaNodeIdServicesMethod_AlarmMetricsType_Reset:
 		return "AlarmMetricsType_Reset"
 	case OpcuaNodeIdServicesMethod_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_Reset:

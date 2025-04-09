@@ -29,7 +29,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 )
 
-//go:generate plc4xGenerator -type=UDPActor -prefix=udp_
+//go:generate go tool plc4xGenerator -type=UDPActor -prefix=udp_
 type UDPActor struct {
 	director *UDPDirector `stringer:"true"`
 	timeout  uint32

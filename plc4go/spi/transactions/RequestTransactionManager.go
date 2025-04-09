@@ -111,7 +111,7 @@ type withCustomExecutor struct {
 	executor pool.Executor
 }
 
-//go:generate plc4xGenerator -type=requestTransactionManager
+//go:generate go tool plc4xGenerator -type=requestTransactionManager
 type requestTransactionManager struct {
 	runningRequests     []*requestTransaction
 	runningRequestMutex sync.RWMutex
@@ -245,6 +245,7 @@ func (r *requestTransactionManager) endRequest(transaction *requestTransaction) 
 }
 
 func (r *requestTransactionManager) Close() error {
+	defer utils.StopWarn(r.log)()
 	return r.CloseGraceful(0)
 }
 
@@ -253,7 +254,6 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	r.shutdown.Store(true)
 	if timeout > 0 {
 		timer := time.NewTimer(timeout)
-		defer utils.CleanupTimer(timer)
 	gracefulLoop:
 		for {
 			r.runningRequestMutex.RLock()

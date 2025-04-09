@@ -41,20 +41,17 @@ type IOpcuaNodeIdServicesVariableQuantity interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_Symbol                                                      OpcuaNodeIdServicesVariableQuantity = 32476
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_Description                                                 OpcuaNodeIdServicesVariableQuantity = 32477
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_Annotation                                                  OpcuaNodeIdServicesVariableQuantity = 32478
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_ConversionService                                           OpcuaNodeIdServicesVariableQuantity = 32479
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_Dimension                                                   OpcuaNodeIdServicesVariableQuantity = 32480
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Symbol                   OpcuaNodeIdServicesVariableQuantity = 32483
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Description              OpcuaNodeIdServicesVariableQuantity = 32484
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_UnitSystem               OpcuaNodeIdServicesVariableQuantity = 32485
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Discipline               OpcuaNodeIdServicesVariableQuantity = 32486
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_ConversionLimit          OpcuaNodeIdServicesVariableQuantity = 32496
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Symbol      OpcuaNodeIdServicesVariableQuantity = 32498
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Description OpcuaNodeIdServicesVariableQuantity = 32499
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_UnitSystem  OpcuaNodeIdServicesVariableQuantity = 32500
-	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Discipline  OpcuaNodeIdServicesVariableQuantity = 32501
+	OpcuaNodeIdServicesVariableQuantity_QuantityType_Symbol                                                     OpcuaNodeIdServicesVariableQuantity = 32476
+	OpcuaNodeIdServicesVariableQuantity_QuantityType_Annotation                                                 OpcuaNodeIdServicesVariableQuantity = 32478
+	OpcuaNodeIdServicesVariableQuantity_QuantityType_ConversionService                                          OpcuaNodeIdServicesVariableQuantity = 32479
+	OpcuaNodeIdServicesVariableQuantity_QuantityType_Dimension                                                  OpcuaNodeIdServicesVariableQuantity = 32480
+	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Symbol                  OpcuaNodeIdServicesVariableQuantity = 32483
+	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_UnitSystem              OpcuaNodeIdServicesVariableQuantity = 32485
+	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Discipline              OpcuaNodeIdServicesVariableQuantity = 32486
+	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_ConversionLimit         OpcuaNodeIdServicesVariableQuantity = 32496
+	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Symbol     OpcuaNodeIdServicesVariableQuantity = 32498
+	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_UnitSystem OpcuaNodeIdServicesVariableQuantity = 32500
+	OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Discipline OpcuaNodeIdServicesVariableQuantity = 32501
 )
 
 var OpcuaNodeIdServicesVariableQuantityValues []OpcuaNodeIdServicesVariableQuantity
@@ -63,17 +60,14 @@ func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableQuantityValues = []OpcuaNodeIdServicesVariableQuantity{
 		OpcuaNodeIdServicesVariableQuantity_QuantityType_Symbol,
-		OpcuaNodeIdServicesVariableQuantity_QuantityType_Description,
 		OpcuaNodeIdServicesVariableQuantity_QuantityType_Annotation,
 		OpcuaNodeIdServicesVariableQuantity_QuantityType_ConversionService,
 		OpcuaNodeIdServicesVariableQuantity_QuantityType_Dimension,
 		OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Symbol,
-		OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Description,
 		OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_UnitSystem,
 		OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Discipline,
 		OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_ConversionLimit,
 		OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Symbol,
-		OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Description,
 		OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_UnitSystem,
 		OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Discipline,
 	}
@@ -83,8 +77,6 @@ func OpcuaNodeIdServicesVariableQuantityByValue(value int32) (enum OpcuaNodeIdSe
 	switch value {
 	case 32476:
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_Symbol, true
-	case 32477:
-		return OpcuaNodeIdServicesVariableQuantity_QuantityType_Description, true
 	case 32478:
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_Annotation, true
 	case 32479:
@@ -93,8 +85,6 @@ func OpcuaNodeIdServicesVariableQuantityByValue(value int32) (enum OpcuaNodeIdSe
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_Dimension, true
 	case 32483:
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Symbol, true
-	case 32484:
-		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Description, true
 	case 32485:
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_UnitSystem, true
 	case 32486:
@@ -103,8 +93,6 @@ func OpcuaNodeIdServicesVariableQuantityByValue(value int32) (enum OpcuaNodeIdSe
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_ConversionLimit, true
 	case 32498:
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Symbol, true
-	case 32499:
-		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Description, true
 	case 32500:
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_UnitSystem, true
 	case 32501:
@@ -117,8 +105,6 @@ func OpcuaNodeIdServicesVariableQuantityByName(value string) (enum OpcuaNodeIdSe
 	switch value {
 	case "QuantityType_Symbol":
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_Symbol, true
-	case "QuantityType_Description":
-		return OpcuaNodeIdServicesVariableQuantity_QuantityType_Description, true
 	case "QuantityType_Annotation":
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_Annotation, true
 	case "QuantityType_ConversionService":
@@ -127,8 +113,6 @@ func OpcuaNodeIdServicesVariableQuantityByName(value string) (enum OpcuaNodeIdSe
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_Dimension, true
 	case "QuantityType_ServerUnits_ServerUnit_Placeholder_Symbol":
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Symbol, true
-	case "QuantityType_ServerUnits_ServerUnit_Placeholder_Description":
-		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Description, true
 	case "QuantityType_ServerUnits_ServerUnit_Placeholder_UnitSystem":
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_UnitSystem, true
 	case "QuantityType_ServerUnits_ServerUnit_Placeholder_Discipline":
@@ -137,8 +121,6 @@ func OpcuaNodeIdServicesVariableQuantityByName(value string) (enum OpcuaNodeIdSe
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_ConversionLimit, true
 	case "QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Symbol":
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Symbol, true
-	case "QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Description":
-		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Description, true
 	case "QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_UnitSystem":
 		return OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_UnitSystem, true
 	case "QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Discipline":
@@ -216,8 +198,6 @@ func (e OpcuaNodeIdServicesVariableQuantity) PLC4XEnumName() string {
 	switch e {
 	case OpcuaNodeIdServicesVariableQuantity_QuantityType_Symbol:
 		return "QuantityType_Symbol"
-	case OpcuaNodeIdServicesVariableQuantity_QuantityType_Description:
-		return "QuantityType_Description"
 	case OpcuaNodeIdServicesVariableQuantity_QuantityType_Annotation:
 		return "QuantityType_Annotation"
 	case OpcuaNodeIdServicesVariableQuantity_QuantityType_ConversionService:
@@ -226,8 +206,6 @@ func (e OpcuaNodeIdServicesVariableQuantity) PLC4XEnumName() string {
 		return "QuantityType_Dimension"
 	case OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Symbol:
 		return "QuantityType_ServerUnits_ServerUnit_Placeholder_Symbol"
-	case OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Description:
-		return "QuantityType_ServerUnits_ServerUnit_Placeholder_Description"
 	case OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_UnitSystem:
 		return "QuantityType_ServerUnits_ServerUnit_Placeholder_UnitSystem"
 	case OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_Discipline:
@@ -236,8 +214,6 @@ func (e OpcuaNodeIdServicesVariableQuantity) PLC4XEnumName() string {
 		return "QuantityType_ServerUnits_ServerUnit_Placeholder_ConversionLimit"
 	case OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Symbol:
 		return "QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Symbol"
-	case OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Description:
-		return "QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Description"
 	case OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_UnitSystem:
 		return "QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_UnitSystem"
 	case OpcuaNodeIdServicesVariableQuantity_QuantityType_ServerUnits_ServerUnit_Placeholder_CoherentUnit_Discipline:

@@ -90,7 +90,11 @@ public abstract class NettyChannelFactory implements ChannelFactory {
      * Transports which have to use a different EventLoopGroup have to override {#getEventLoopGroup()}.
      */
     public EventLoopGroup getEventLoopGroup() {
-        return new NioEventLoopGroup();
+        // NOTE: Per default netty creates two threads per cpu core. However, we are not running a server but usually
+        // are expecting only a request for a response, Netty also cleans up idle threads in the group, so we're
+        // setting this to a low number as a test, if this proves to not cause issues, we'll leave it. If there are
+        // issues, I hope this note helps track them down.
+        return new NioEventLoopGroup(1);
     }
 
     @Override

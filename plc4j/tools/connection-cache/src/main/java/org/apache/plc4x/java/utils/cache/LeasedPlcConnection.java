@@ -56,7 +56,7 @@ public class LeasedPlcConnection implements EventPlcConnection {
         this.connectionContainer = connectionContainer;
         this.connection = new AtomicReference<>(connection);
         this.invalidateConnection = false;
-        this.usageTimer = new Timer();
+        this.usageTimer = new Timer("CC-Usage-Timer-" + Thread.currentThread().getId());
         this.maxUseDuration = maxUseTime;
         this.usageTimer.schedule(new TimerTask() {
             @Override

@@ -51,9 +51,9 @@
         <asfext:pmc rdf:resource="https://plc4x.apache.org/"/>
         <shortdesc>Universal API for communicating with programmable logic controllers.</shortdesc>
         <description>PLC4X is a set of libraries for communicating with industrial programmable logic controllers (PLCs) using a variety of protocols but with a shared API.</description>
-        <bug-database rdf:resource="https://issues.apache.org/jira/projects/PLC4X"/>
-        <download-page rdf:resource="https://plc4x.apache.org/users/download.html"/>
-        <mailing-list rdf:resource="https://plc4x.apache.org/mailing-lists.html"/>
+        <bug-database rdf:resource="https://github.com/apache/plc4x/issues"/>
+        <download-page rdf:resource="https://plc4x.apache.org/plc4x/latest/users/download.html"/>
+        <mailing-list rdf:resource="https://plc4x.apache.org/plc4x/latest/mailing-lists.html"/>
 
         <programming-language>C</programming-language>
         <programming-language>C++</programming-language>

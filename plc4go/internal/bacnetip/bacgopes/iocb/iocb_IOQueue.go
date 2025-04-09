@@ -31,7 +31,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate plc4xGenerator -type=IOQueue -prefix=iocb_
+//go:generate go tool plc4xGenerator -type=IOQueue -prefix=iocb_
 type IOQueue struct {
 	name     string
 	notEmpty sync.Cond
@@ -64,7 +64,7 @@ func (i *IOQueue) Put(iocb IOCBContract) error {
 	// add the request to the end of the list of iocb's at same priority
 	priority := iocb.getPriority()
 
-	heap.Push(&i.Queue, PriorityItem[int, IOCBContract]{iocb, priority, 0})
+	heap.Push(&i.Queue, PriorityItem[int, IOCBContract]{Value: iocb, Priority: priority})
 
 	i.notEmpty.Broadcast()
 	return nil
@@ -86,7 +86,7 @@ func (i *IOQueue) Get(block bool, delay *time.Duration) (IOCBContract, error) {
 	// wait for something to be in the queue
 	if len(i.Queue) == 0 {
 		if delay != nil {
-			gotSomething := make(chan any)
+			gotSomething := make(chan struct{})
 			i.wg.Add(1)
 			go func() {
 				defer i.wg.Done()
@@ -94,7 +94,6 @@ func (i *IOQueue) Get(block bool, delay *time.Duration) (IOCBContract, error) {
 				close(gotSomething)
 			}()
 			timeout := time.NewTimer(*delay)
-			defer utils.CleanupTimer(timeout)
 			select {
 			case <-gotSomething:
 			case <-timeout.C:
@@ -150,6 +149,7 @@ func (i *IOQueue) Abort(err error) {
 }
 
 func (i *IOQueue) Close() error {
+	defer utils.StopWarn(i.log)()
 	i.log.Debug().Msg("IOQueue closing")
 	defer func() {
 		i.log.Debug().Msg("waiting for running tasks to finnish")

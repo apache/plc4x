@@ -2244,7 +2244,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ApparantEnergy: // DINT
+	case datapointType == KnxDatapointType_DPT_ApparentEnergy: // DINT
 		// Reserved Field (Just skip the bytes)
 		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
@@ -2286,7 +2286,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ApparantEnergy_kVAh: // DINT
+	case datapointType == KnxDatapointType_DPT_ApparentEnergy_kVAh: // DINT
 		// Reserved Field (Just skip the bytes)
 		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
@@ -6313,7 +6313,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcLINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ApparantEnergy_V64: // LINT
+	case datapointType == KnxDatapointType_DPT_ApparentEnergy_V64: // LINT
 		// Reserved Field (Just skip the bytes)
 		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
@@ -9848,7 +9848,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt32("value", 32, int32(value.GetInt32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case datapointType == KnxDatapointType_DPT_ApparantEnergy: // DINT
+	case datapointType == KnxDatapointType_DPT_ApparentEnergy: // DINT
 		// Reserved Field (Just skip the bytes)
 		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
@@ -9878,7 +9878,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt32("value", 32, int32(value.GetInt32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case datapointType == KnxDatapointType_DPT_ApparantEnergy_kVAh: // DINT
+	case datapointType == KnxDatapointType_DPT_ApparentEnergy_kVAh: // DINT
 		// Reserved Field (Just skip the bytes)
 		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
@@ -12603,7 +12603,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt64("value", 64, int64(value.GetInt64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case datapointType == KnxDatapointType_DPT_ApparantEnergy_V64: // LINT
+	case datapointType == KnxDatapointType_DPT_ApparentEnergy_V64: // LINT
 		// Reserved Field (Just skip the bytes)
 		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")

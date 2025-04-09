@@ -53,12 +53,12 @@ func (r RouterStatus) String() string {
 	}
 }
 
-//go:generate plc4xGenerator -type=Router -prefix=netservice_
+//go:generate go tool plc4xGenerator -type=Router -prefix=netservice_
 type Router struct {
 	addresses map[string]*RouterInfo // TODO: this is a address but using pointer as key is bad
 }
 
-//go:generate plc4xGenerator -type=RouterInfo -prefix=netservice_
+//go:generate go tool plc4xGenerator -type=RouterInfo -prefix=netservice_
 type RouterInfo struct {
 	snet    netKey   `stringer:"true"`
 	address *Address `stringer:"true"`
@@ -71,7 +71,7 @@ type snetDnetTuple struct {
 	dnet netKey
 }
 
-//go:generate plc4xGenerator -type=RouterInfoCache -prefix=netservice_
+//go:generate go tool plc4xGenerator -type=RouterInfoCache -prefix=netservice_
 type RouterInfoCache struct {
 	routers  map[netKey]*Router
 	pathInfo map[snetDnetTuple]*RouterInfo

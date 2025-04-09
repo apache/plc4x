@@ -94,7 +94,16 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
             @Override
             public void sendToWire(T msg) {
-                pipeline.writeAndFlush(msg).syncUninterruptibly();
+                // Under heavy load, we were sometimes getting "Failed to mark a promise as success because it has succeeded already" errors.
+                // See: https://github.com/apache/plc4x/issues/2043
+                try {
+                    pipeline.writeAndFlush(msg);//.syncUninterruptibly();
+                } catch (Throwable t) {
+                    logger.error("Error sending message", t);
+                    if(logger.isDebugEnabled()) {
+                        logger.debug("Message: {}", msg);
+                    }
+                }
             }
 
             @Override
@@ -259,7 +268,10 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         return timeoutException -> {
             final HandlerRegistration registration = reference.get();
             registeredHandlers.remove(registration);
-            onTimeoutConsumer.accept(timeoutException);
+            // Only call the timeout handler, if there is one.
+            if(onTimeoutConsumer != null) {
+                onTimeoutConsumer.accept(timeoutException);
+            }
             registration.confirmError();
         };
     }

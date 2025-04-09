@@ -442,18 +442,164 @@ public enum OpcuaNodeIdServicesMethod {
   PublishSubscribeType_PublishedDataSets_AddDataSetFolder((int) 16651L),
   PublishSubscribeType_PublishedDataSets_RemoveDataSetFolder((int) 16680L),
   AddConnectionMethodType((int) 16691L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Open(
+      (int) 16717L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Close(
+      (int) 16724L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Read(
+      (int) 16726L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Write(
+      (int) 16729L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition(
+      (int) 16732L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition(
+      (int) 16735L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks(
+      (int) 16741L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate(
+      (int) 16744L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate(
+      (int) 16747L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate(
+      (int) 16749L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_GetRejectedList(
+      (int) 16752L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable(
+      (int) 16790L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable(
+      (int) 16791L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment(
+      (int) 16792L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge(
+      (int) 16812L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm(
+      (int) 16814L),
   DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate((int) 16842L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve(
+      (int) 16864L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2(
+      (int) 16866L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve(
+      (int) 16868L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2(
+      (int) 16869L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve(
+      (int) 16871L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2(
+      (int) 16872L),
   DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate((int) 16881L),
   DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder((int) 16884L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence(
+      (int) 16911L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress(
+      (int) 16912L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2(
+      (int) 16913L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress(
+      (int) 16915L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2(
+      (int) 16916L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService(
+      (int) 16918L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2(
+      (int) 16919L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService(
+      (int) 16921L),
   DataSetFolderType_DataSetFolderName_Placeholder_RemoveDataSetFolder((int) 16923L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2(
+      (int) 16926L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset(
+      (int) 16928L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2(
+      (int) 16929L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships(
+      (int) 16931L),
   DataSetFolderType_AddPublishedDataItemsTemplate((int) 16935L),
   DataSetFolderType_AddPublishedEventsTemplate((int) 16960L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable(
+      (int) 16977L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable(
+      (int) 16978L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment(
+      (int) 16979L),
   DataSetFolderType_AddDataSetFolder((int) 16994L),
   DataSetFolderType_RemoveDataSetFolder((int) 16997L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge(
+      (int) 17003L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm(
+      (int) 17005L),
   AddPublishedDataItemsTemplateMethodType((int) 17030L),
   AddPublishedEventsTemplateMethodType((int) 17033L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve(
+      (int) 17056L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2(
+      (int) 17058L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve(
+      (int) 17060L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2(
+      (int) 17061L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve(
+      (int) 17063L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2(
+      (int) 17064L),
   AddDataSetFolderMethodType((int) 17067L),
   RemoveDataSetFolderMethodType((int) 17079L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence(
+      (int) 17103L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress(
+      (int) 17104L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2(
+      (int) 17105L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress(
+      (int) 17107L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2(
+      (int) 17108L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService(
+      (int) 17110L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2(
+      (int) 17111L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService(
+      (int) 17113L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2(
+      (int) 17114L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset(
+      (int) 17116L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2(
+      (int) 17117L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships(
+      (int) 17119L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Open(
+      (int) 17134L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Close(
+      (int) 17137L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Read(
+      (int) 17139L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Write(
+      (int) 17142L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition(
+      (int) 17144L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition(
+      (int) 17147L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks(
+      (int) 17153L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate(
+      (int) 17156L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate(
+      (int) 17159L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate(
+      (int) 17161L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_GetRejectedList(
+      (int) 17164L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable(
+      (int) 17199L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable(
+      (int) 17200L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment(
+      (int) 17205L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge(
+      (int) 17237L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm(
+      (int) 17239L),
   PubSubConnectionType_WriterGroupName_Placeholder_AddDataSetWriter((int) 17293L),
   PublishSubscribeType_SetSecurityKeys((int) 17296L),
   SetSecurityKeysMethodType((int) 17298L),
@@ -463,6 +609,18 @@ public enum OpcuaNodeIdServicesMethod {
   PubSubConnectionType_ReaderGroupName_Placeholder_Status_Enable((int) 17331L),
   PubSubConnectionType_ReaderGroupName_Placeholder_Status_Disable((int) 17332L),
   PubSubConnectionType_ReaderGroupName_Placeholder_RemoveDataSetReader((int) 17333L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve(
+      (int) 17340L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2(
+      (int) 17342L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve(
+      (int) 17344L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2(
+      (int) 17345L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve(
+      (int) 17347L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2(
+      (int) 17348L),
   PubSubConnectionType_ReaderGroupName_Placeholder_AddDataSetReader((int) 17355L),
   PublishSubscribe_SetSecurityKeys((int) 17364L),
   PublishSubscribe_AddConnection((int) 17366L),
@@ -491,7 +649,41 @@ public enum OpcuaNodeIdServicesMethod {
   GetEncryptingKeyMethodType((int) 17531L),
   KeyCredentialConfigurationType_GetEncryptingKey((int) 17534L),
   PubSubConnectionTypeAddWriterGroupMethodType((int) 17561L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence(
+      (int) 17572L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress(
+      (int) 17573L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2(
+      (int) 17574L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress(
+      (int) 17586L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2(
+      (int) 17587L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService(
+      (int) 17596L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2(
+      (int) 17599L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService(
+      (int) 17616L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2(
+      (int) 17617L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset(
+      (int) 17619L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2(
+      (int) 17620L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships(
+      (int) 17622L),
   PubSubConnectionAddReaderGroupGroupMethodType((int) 17630L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable(
+      (int) 17678L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable(
+      (int) 17679L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment(
+      (int) 17680L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge(
+      (int) 17700L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm(
+      (int) 17702L),
   FileDirectoryType_FileDirectoryName_Placeholder_DeleteFileSystemObject((int) 17718L),
   WriterGroupType_DataSetWriterName_Placeholder_Status_Enable((int) 17751L),
   WriterGroupType_DataSetWriterName_Placeholder_Status_Disable((int) 17752L),
@@ -503,17 +695,181 @@ public enum OpcuaNodeIdServicesMethod {
   AlarmGroupType_AlarmConditionInstance_Placeholder_Unsuppress((int) 17875L),
   AlarmGroupType_AlarmConditionInstance_Placeholder_RemoveFromService((int) 17876L),
   AlarmGroupType_AlarmConditionInstance_Placeholder_PlaceInService((int) 17877L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve(
+      (int) 17917L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2(
+      (int) 17919L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve(
+      (int) 17922L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2(
+      (int) 17923L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve(
+      (int) 17925L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2(
+      (int) 17926L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence(
+      (int) 17965L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress(
+      (int) 17966L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2(
+      (int) 17967L),
   WriterGroupType_AddDataSetWriter((int) 17969L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress(
+      (int) 17970L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2(
+      (int) 17971L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService(
+      (int) 17973L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2(
+      (int) 17974L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService(
+      (int) 17977L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2(
+      (int) 17978L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset(
+      (int) 17980L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2(
+      (int) 17981L),
   WriterGroupType_RemoveDataSetWriter((int) 17992L),
   PubSubGroupTypeAddWriterMethodType((int) 17994L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships(
+      (int) 18000L),
   KeyCredentialConfigurationType_UpdateCredential((int) 18006L),
   KeyCredentialConfigurationType_DeleteCredential((int) 18008L),
   KeyCredentialUpdateMethodType((int) 18009L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Open(
+      (int) 18024L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Close(
+      (int) 18027L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Read(
+      (int) 18031L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Write(
+      (int) 18034L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition(
+      (int) 18036L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition(
+      (int) 18039L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks(
+      (int) 18045L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate(
+      (int) 18049L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate(
+      (int) 18052L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate(
+      (int) 18054L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_GetRejectedList(
+      (int) 18057L),
   ReaderGroupType_DataSetReaderName_Placeholder_Status_Enable((int) 18090L),
   ReaderGroupType_DataSetReaderName_Placeholder_Status_Disable((int) 18091L),
   ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_Reset((int) 18104L),
   AlarmConditionType_Reset((int) 18199L),
   AlarmGroupType_AlarmConditionInstance_Placeholder_Reset((int) 18212L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable(
+      (int) 18225L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable(
+      (int) 18226L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment(
+      (int) 18227L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge(
+      (int) 18247L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm(
+      (int) 18249L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve(
+      (int) 18294L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2(
+      (int) 18296L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve(
+      (int) 18298L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2(
+      (int) 18299L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve(
+      (int) 18301L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2(
+      (int) 18302L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence(
+      (int) 18335L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress(
+      (int) 18336L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2(
+      (int) 18337L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress(
+      (int) 18339L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2(
+      (int) 18340L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService(
+      (int) 18342L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2(
+      (int) 18343L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService(
+      (int) 18345L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2(
+      (int) 18346L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset(
+      (int) 18349L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2(
+      (int) 18350L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships(
+      (int) 18352L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable(
+      (int) 18392L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable(
+      (int) 18393L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment(
+      (int) 18394L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge(
+      (int) 18414L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm(
+      (int) 18416L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve(
+      (int) 18461L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2(
+      (int) 18463L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve(
+      (int) 18465L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2(
+      (int) 18466L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve(
+      (int) 18468L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2(
+      (int) 18469L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence(
+      (int) 18503L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress(
+      (int) 18504L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2(
+      (int) 18505L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress(
+      (int) 18507L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2(
+      (int) 18508L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService(
+      (int) 18510L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2(
+      (int) 18511L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService(
+      (int) 18513L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2(
+      (int) 18514L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset(
+      (int) 18516L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2(
+      (int) 18517L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships(
+      (int) 18519L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_UpdateCertificate((int) 18533L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetCertificates((int) 18536L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_ApplyChanges((int) 18539L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CancelChanges((int) 18540L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_CreateSigningRequest((int) 18541L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_GetRejectedList((int) 18544L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_ResetToServerDefaults(
+      (int) 18546L),
+  WellKnownRole_TrustedApplication_AddIdentity((int) 18632L),
+  WellKnownRole_TrustedApplication_RemoveIdentity((int) 18634L),
+  WellKnownRole_TrustedApplication_AddApplication((int) 18636L),
+  WellKnownRole_TrustedApplication_RemoveApplication((int) 18638L),
+  WellKnownRole_TrustedApplication_AddEndpoint((int) 18640L),
+  WellKnownRole_TrustedApplication_RemoveEndpoint((int) 18642L),
   AlarmMetricsType_Reset((int) 18666L),
   PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_Reset((int) 18679L),
   PublishSubscribeType_Diagnostics_Reset((int) 18727L),

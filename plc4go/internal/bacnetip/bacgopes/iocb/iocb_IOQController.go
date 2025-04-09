@@ -29,6 +29,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/core"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type IOQControllerRequirements interface {
@@ -36,7 +37,7 @@ type IOQControllerRequirements interface {
 	ProcessIO(iocb IOCBContract) error
 }
 
-//go:generate plc4xGenerator -type=IOQController -prefix=iocb_
+//go:generate go tool plc4xGenerator -type=IOQController -prefix=iocb_
 type IOQController struct {
 	*IOController `stringer:"true"`
 
@@ -286,6 +287,7 @@ func (i *IOQController) _waitTrigger(_ Args, _ KWArgs) error {
 }
 
 func (i *IOQController) Close() error {
+	defer utils.StopWarn(i.log)()
 	if i.IoQueue != nil {
 		return i.IoQueue.Close()
 	}

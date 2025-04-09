@@ -31,6 +31,10 @@ import java.util.Objects;
 
 public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
+    public static final long LAST_SEVEN_BITS = (byte) 0x7F;
+    public static final long SEVENTH_BIT = (byte) 0x40;
+    public static final long EIGHTH_BIT = (byte) 0x80;
+
     private final MyDefaultBitInput bi;
     private ByteOrder byteOrder;
     private final int totalBytes;
@@ -311,6 +315,26 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                         value += (long) (digit * Math.pow(10, i));
                     }
                     return value;
+                case "VARUDINT": {
+                    long result = 0;
+                    int shift = 0;
+                    for (int i = 0; i < 4; i++) {
+                        short b = bi.readShort(true, 8);
+                        // Add the lower 7 bits of b, shifted appropriately.
+                        result = result << shift;
+                        result |= ((long) b & 0x0000007F);
+                        // If the most significant bit is 0, this is the last byte.
+                        if ((b & 0x80) == 0) {
+                            break;
+                        }
+                        shift = 7;
+                        // Ensure we do not exceed the maximum allowed bit length.
+                        if (shift >= bitLength) {
+                            throw new ParseException("var-length-uint exceeds allowed bit length " + bitLength);
+                        }
+                    }
+                    return result;
+                }
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         final long longValue = bi.readLong(true, bitLength);
@@ -331,9 +355,6 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
         //Support specific case where value less than 64 bits and big endian.
         if (bitLength <= 0) {
             throw new ParseException("unsigned long must contain at least 1 bit");
-        }
-        if (bitLength > 64) {
-            throw new ParseException("unsigned long can only contain max 64 bits");
         }
         try {
             String encoding = extractEncoding(readerArgs).orElse("default");
@@ -366,6 +387,27 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                         value = value.add(BigInteger.valueOf(digit).multiply(BigInteger.valueOf(10).pow(i)));
                     }
                     return value;
+                case "VARUDINT": {
+                    long result = 0;
+                    for (int i = 0; i < 16; i++) {
+                        short b = bi.readShort(true, 8);
+
+                        // if this is the first byte, and it's negative (the 7th bit is true)
+                        // initialize the result with a value where all bits are 1
+                        if((i == 0) && ((b & SEVENTH_BIT) != 0)) {
+                            result = -1;
+                        }
+
+                        // Add the lower 7 bits of b, shifted appropriately.
+                        result = result << 7;
+                        result |= (int) (b & LAST_SEVEN_BITS);
+                        // If the most significant bit is 0, this is the last byte.
+                        if ((b & EIGHTH_BIT) == 0) {
+                            break;
+                        }
+                    }
+                    return BigInteger.valueOf(result);
+                }
                 case "default":
                     // Read as signed value
                     long val = bi.readLong(false, bitLength);
@@ -431,10 +473,38 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("int can only contain max 32 bits");
         }
         try {
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                return Integer.reverseBytes(bi.readInt(false, bitLength));
+            String encoding = extractEncoding(readerArgs).orElse("default");
+            switch (encoding) {
+                case "VARDINT": {
+                    int result = 0;
+                    for (int i = 0; i < 5; i++) {
+                        short b = bi.readShort(true, 8);
+
+                        // if this is the first byte, and it's negative (the 7th bit is true)
+                        // initialize the result with a value where all bits are 1
+                        if((i == 0) && ((b & SEVENTH_BIT) != 0)) {
+                            result = -1;
+                        }
+
+                        // Add the lower 7 bits of b, shifted appropriately.
+                        result = result << 7;
+                        result |= (int) (b & LAST_SEVEN_BITS);
+                        // If the most significant bit is 0, this is the last byte.
+                        if ((b & EIGHTH_BIT) == 0) {
+                            break;
+                        }
+                    }
+                    return result;
+                }
+                case "default":
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        return Integer.reverseBytes(bi.readInt(false, bitLength));
+                    }
+                    return bi.readInt(false, bitLength);
+
+                default:
+                    throw new ParseException("unsupported encoding '" + encoding + "'");
             }
-            return bi.readInt(false, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading signed int", e);
         }
@@ -450,10 +520,17 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("long can only contain max 64 bits");
         }
         try {
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                return Long.reverseBytes(bi.readLong(false, bitLength));
+            String encoding = extractEncoding(readerArgs).orElse("default");
+            switch (encoding) {
+                case "default":
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        return Long.reverseBytes(bi.readLong(false, bitLength));
+                    }
+                    return bi.readLong(false, bitLength);
+
+                default:
+                    throw new ParseException("unsupported encoding '" + encoding + "'");
             }
-            return bi.readLong(false, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading signed long", e);
         }
