@@ -31,7 +31,7 @@ At the root level of these specs are a set of `type`, `discriminatedType`, `data
 
 `type` elements are objects who`s content and structure is independent of the input.
 
-An example would be the `TPKTPacket` of the `S7` format:
+An example would be the `FinsTcpPacket` of the `S7` format:
 
 ....
 [type TPKTPacket

@@ -60,6 +60,7 @@
     <module>simulated</module>
     <module>socketcan</module>
     <module>umas</module>
+      <module>fins</module>
   </modules>
 
   <build>
