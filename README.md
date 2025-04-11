@@ -134,6 +134,9 @@ All requirements are retrieved by the build itself
 
 ### Building with Docker
 
+Part of the build requires quite a bit of ram. 
+Before running the Docker build, please ensure that the Docker runtime has at least 12GB of ram available. 
+
 If you don't want to bother setting up the environment on your normal system, and you have Docker installed, you can also build everything in a Docker container:
 
 ```

@@ -786,7 +786,7 @@
     ['34' M_ZUMTOBEL ['55', '"ZUMTOBEL"']]
     ['35' M_HOLEC_SYSTEMEN ['56', '"HOLEC Systemen"']]
     ['36' M_PHOENIX_CONTACT ['57', '"Phoenix Contact"']]
-    ['37' M_WAGO_KONTAKTTECHNIK ['61', '"WAGO Kontakttechnik"']]
+    ['37' M_WAGO_GMBH_AND_CO_KG ['61', '"WAGO GmbH & Co.KG"']]
     ['38' M_KNXPRESSO ['62', '"knXpresso"']]
     ['39' M_WIELAND_ELECTRIC ['66', '"Wieland Electric"']]
     ['40' M_HERMANN_KLEINHUIS ['67', '"Hermann Kleinhuis"']]
@@ -1472,8 +1472,9 @@
     ['720' M_MICRO_TEK_SRL_F_M_C_TRADE_MARK ['781', '"Micro Tek Srl (F.M.C trade mark)"']]
     ['721' M_ORENDA_ELECTRIC ['782', '"Orenda Electric"']]
     ['722' M_ERSE_KABLO ['783', '"ERSE KABLO"']]
-    ['723' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['724' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['723' M_PRADO_EUROPE_BV ['784', '"prado europe bv"']]
+    ['724' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['725' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

@@ -61,7 +61,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_ZUMTOBEL = 34,
         M_HOLEC_SYSTEMEN = 35,
         M_PHOENIX_CONTACT = 36,
-        M_WAGO_KONTAKTTECHNIK = 37,
+        M_WAGO_GMBH_AND_CO_KG = 37,
         M_KNXPRESSO = 38,
         M_WIELAND_ELECTRIC = 39,
         M_HERMANN_KLEINHUIS = 40,
@@ -747,8 +747,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_MICRO_TEK_SRL_F_M_C_TRADE_MARK = 720,
         M_ORENDA_ELECTRIC = 721,
         M_ERSE_KABLO = 722,
-        M_ABB___RESERVED = 723,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 724,
+        M_PRADO_EUROPE_BV = 723,
+        M_ABB___RESERVED = 724,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 725,
     }
 
     public static class KnxManufacturerInfo
@@ -1661,7 +1662,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_UBEE_INTERACTIVE_EUROPE: { /* '369' */
                     return 420;
                 }
-                case KnxManufacturer.M_WAGO_KONTAKTTECHNIK: { /* '37' */
+                case KnxManufacturer.M_WAGO_GMBH_AND_CO_KG: { /* '37' */
                     return 61;
                 }
                 case KnxManufacturer.M_REXEL: { /* '370' */
@@ -2840,10 +2841,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_ERSE_KABLO: { /* '722' */
                     return 783;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '723' */
+                case KnxManufacturer.M_PRADO_EUROPE_BV: { /* '723' */
+                    return 784;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '724' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '724' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '725' */
                     return 43959;
                 }
                 case KnxManufacturer.M_AGFEO: { /* '73' */
@@ -3846,8 +3850,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_UBEE_INTERACTIVE_EUROPE: { /* '369' */
                     return "Ubee Interactive Europe";
                 }
-                case KnxManufacturer.M_WAGO_KONTAKTTECHNIK: { /* '37' */
-                    return "WAGO Kontakttechnik";
+                case KnxManufacturer.M_WAGO_GMBH_AND_CO_KG: { /* '37' */
+                    return "WAGO GmbH & Co.KG";
                 }
                 case KnxManufacturer.M_REXEL: { /* '370' */
                     return "Rexel";
@@ -5025,10 +5029,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_ERSE_KABLO: { /* '722' */
                     return "ERSE KABLO";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '723' */
+                case KnxManufacturer.M_PRADO_EUROPE_BV: { /* '723' */
+                    return "prado europe bv";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '724' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '724' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '725' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_AGFEO: { /* '73' */

@@ -80,7 +80,7 @@ const (
 	KnxManufacturer_M_ZUMTOBEL                                           KnxManufacturer = 34
 	KnxManufacturer_M_HOLEC_SYSTEMEN                                     KnxManufacturer = 35
 	KnxManufacturer_M_PHOENIX_CONTACT                                    KnxManufacturer = 36
-	KnxManufacturer_M_WAGO_KONTAKTTECHNIK                                KnxManufacturer = 37
+	KnxManufacturer_M_WAGO_GMBH_AND_CO_KG                                KnxManufacturer = 37
 	KnxManufacturer_M_KNXPRESSO                                          KnxManufacturer = 38
 	KnxManufacturer_M_WIELAND_ELECTRIC                                   KnxManufacturer = 39
 	KnxManufacturer_M_HERMANN_KLEINHUIS                                  KnxManufacturer = 40
@@ -766,8 +766,9 @@ const (
 	KnxManufacturer_M_MICRO_TEK_SRL_F_M_C_TRADE_MARK                     KnxManufacturer = 720
 	KnxManufacturer_M_ORENDA_ELECTRIC                                    KnxManufacturer = 721
 	KnxManufacturer_M_ERSE_KABLO                                         KnxManufacturer = 722
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 723
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 724
+	KnxManufacturer_M_PRADO_EUROPE_BV                                    KnxManufacturer = 723
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 724
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 725
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -812,7 +813,7 @@ func init() {
 		KnxManufacturer_M_ZUMTOBEL,
 		KnxManufacturer_M_HOLEC_SYSTEMEN,
 		KnxManufacturer_M_PHOENIX_CONTACT,
-		KnxManufacturer_M_WAGO_KONTAKTTECHNIK,
+		KnxManufacturer_M_WAGO_GMBH_AND_CO_KG,
 		KnxManufacturer_M_KNXPRESSO,
 		KnxManufacturer_M_WIELAND_ELECTRIC,
 		KnxManufacturer_M_HERMANN_KLEINHUIS,
@@ -1498,6 +1499,7 @@ func init() {
 		KnxManufacturer_M_MICRO_TEK_SRL_F_M_C_TRADE_MARK,
 		KnxManufacturer_M_ORENDA_ELECTRIC,
 		KnxManufacturer_M_ERSE_KABLO,
+		KnxManufacturer_M_PRADO_EUROPE_BV,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4283,10 +4285,14 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 723:
 		{ /* '723' */
-			return 43954
+			return 784
 		}
 	case 724:
 		{ /* '724' */
+			return 43954
+		}
+	case 725:
+		{ /* '725' */
 			return 43959
 		}
 	case 73:
@@ -5629,7 +5635,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 37:
 		{ /* '37' */
-			return "WAGO Kontakttechnik"
+			return "WAGO GmbH & Co.KG"
 		}
 	case 370:
 		{ /* '370' */
@@ -7201,10 +7207,14 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 723:
 		{ /* '723' */
-			return "ABB - reserved"
+			return "prado europe bv"
 		}
 	case 724:
 		{ /* '724' */
+			return "ABB - reserved"
+		}
+	case 725:
+		{ /* '725' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 73:
@@ -7943,7 +7953,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 369:
 		return KnxManufacturer_M_UBEE_INTERACTIVE_EUROPE, true
 	case 37:
-		return KnxManufacturer_M_WAGO_KONTAKTTECHNIK, true
+		return KnxManufacturer_M_WAGO_GMBH_AND_CO_KG, true
 	case 370:
 		return KnxManufacturer_M_REXEL, true
 	case 371:
@@ -8729,8 +8739,10 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 722:
 		return KnxManufacturer_M_ERSE_KABLO, true
 	case 723:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_PRADO_EUROPE_BV, true
 	case 724:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 725:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 73:
 		return KnxManufacturer_M_AGFEO, true
@@ -9398,8 +9410,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_SABIANA_SPA, true
 	case "M_UBEE_INTERACTIVE_EUROPE":
 		return KnxManufacturer_M_UBEE_INTERACTIVE_EUROPE, true
-	case "M_WAGO_KONTAKTTECHNIK":
-		return KnxManufacturer_M_WAGO_KONTAKTTECHNIK, true
+	case "M_WAGO_GMBH_AND_CO_KG":
+		return KnxManufacturer_M_WAGO_GMBH_AND_CO_KG, true
 	case "M_REXEL":
 		return KnxManufacturer_M_REXEL, true
 	case "M_GES_TEKNIK_A_S_":
@@ -10184,6 +10196,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_ORENDA_ELECTRIC, true
 	case "M_ERSE_KABLO":
 		return KnxManufacturer_M_ERSE_KABLO, true
+	case "M_PRADO_EUROPE_BV":
+		return KnxManufacturer_M_PRADO_EUROPE_BV, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -10926,8 +10940,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_SABIANA_SPA"
 	case KnxManufacturer_M_UBEE_INTERACTIVE_EUROPE:
 		return "M_UBEE_INTERACTIVE_EUROPE"
-	case KnxManufacturer_M_WAGO_KONTAKTTECHNIK:
-		return "M_WAGO_KONTAKTTECHNIK"
+	case KnxManufacturer_M_WAGO_GMBH_AND_CO_KG:
+		return "M_WAGO_GMBH_AND_CO_KG"
 	case KnxManufacturer_M_REXEL:
 		return "M_REXEL"
 	case KnxManufacturer_M_GES_TEKNIK_A_S_:
@@ -11712,6 +11726,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_ORENDA_ELECTRIC"
 	case KnxManufacturer_M_ERSE_KABLO:
 		return "M_ERSE_KABLO"
+	case KnxManufacturer_M_PRADO_EUROPE_BV:
+		return "M_PRADO_EUROPE_BV"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
