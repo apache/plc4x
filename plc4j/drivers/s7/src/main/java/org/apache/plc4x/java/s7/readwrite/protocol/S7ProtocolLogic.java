@@ -163,6 +163,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
+        logger.info("onConnect");
         if (context.isPassive()) {
             logger.info("S7 Driver running in PASSIVE mode.");
             s7DriverContext.setPassiveMode(true);
@@ -257,8 +258,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      */
     @Override
     public void onDisconnect(ConversationContext<TPKTPacket> context) {
+        logger.info("onDisconnect");        
         // 1. Here we shut down the local task executor.
-        clientExecutorService.shutdown();
+        clientExecutorService.shutdownNow();
         // 2. Performs the shutdown of the transaction executor.
         tm.shutdown();
         // 3. Finish the execution of the tasks for the handling of Events.
@@ -1532,9 +1534,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             .check(p -> p.getTpduReference() == tpduId)
             .handle(p -> {
                 // Finish the request-transaction.
-                transaction.endRequest();
-
                 try {
+                    transaction.endRequest();                    
                     future.complete(p);
                 } catch (Exception e) {
                     logger.warn("Error sending 'write' message: '{}'", e.getMessage(), e);
