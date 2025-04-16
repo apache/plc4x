@@ -228,12 +228,14 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                             break;
                         }
 
+                        var byteOrder = modbusTag.getByteOrder() != null ? modbusTag.getByteOrder() : modbusContext.getByteOrder();
+
                         byte[] responseData = response.getResponseDataForTag(modbusTag);
-                        ReadBuffer readBuffer = getReadBuffer(responseData, modbusContext.getByteOrder());
+                        ReadBuffer readBuffer = getReadBuffer(responseData, byteOrder);
                         try {
                             PlcValue plcValue = DataItem.staticParse(readBuffer, modbusTag.getDataType(),
                                 modbusTag.getNumberOfElements(),
-                                modbusContext.getByteOrder() == ModbusByteOrder.BIG_ENDIAN);
+                                byteOrder == ModbusByteOrder.BIG_ENDIAN);
                             values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue));
                         } catch (ParseException e) {
                             values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
