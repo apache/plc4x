@@ -166,7 +166,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             }
 
             ((S7HMux) s7hmux).setEmbededhannel(channel, configuration);
-//            channel.pipeline().addFirst((new LoggingHandler("CEOS"))); 
+            //channel.pipeline().addFirst((new LoggingHandler("CEOS"))); 
             /*
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
