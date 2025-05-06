@@ -129,7 +129,7 @@
     <!-- It seems freemarker 2.3.32 was the last to support Java 11, 2.3.33 requires Java 16 -->
     <freemarker.version>2.3.34</freemarker.version>
     <groovy.version>4.0.25</groovy.version>
-    <guava.version>33.4.0-jre</guava.version>
+    <guava.version>33.4.8-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
