@@ -211,7 +211,7 @@
       <plugin>
         <groupId>com.igormaznitsa</groupId>
         <artifactId>gosdk-wrapper-maven-plugin</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.4</version>
         <executions>
           <!-- Run the go code-generation -->
           <execution>
