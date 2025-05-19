@@ -151,7 +151,7 @@
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.17</slf4j.version>
     <vavr.version>0.10.6</vavr.version>
-    <xmlunit.version>2.10.0</xmlunit.version>
+    <xmlunit.version>2.10.1</xmlunit.version>
 
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.2.6</asciidoctor.maven.plugin.version>
