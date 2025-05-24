@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -39,7 +40,9 @@ type IKnxDatapointType interface {
 	utils.LengthAware
 	utils.Serializable
 	Number() uint16
+	PlcValueTpe() values.PlcValueType
 	Name() string
+	Id() string
 	DatapointMainType() KnxDatapointMainType
 }
 
@@ -2184,6 +2187,1432 @@ func KnxDatapointTypeFirstEnumForFieldNumber(value uint16) (enum KnxDatapointTyp
 	return 0, false
 }
 
+func (e KnxDatapointType) PlcValueTpe() values.PlcValueType {
+	switch e {
+	case 0:
+		{ /* '0' */
+			return values.Struct
+		}
+	case 1:
+		{ /* '1' */
+			return values.BOOL
+		}
+	case 10:
+		{ /* '10' */
+			return values.UDINT
+		}
+	case 100:
+		{ /* '100' */
+			return values.REAL
+		}
+	case 101:
+		{ /* '101' */
+			return values.REAL
+		}
+	case 102:
+		{ /* '102' */
+			return values.REAL
+		}
+	case 103:
+		{ /* '103' */
+			return values.REAL
+		}
+	case 104:
+		{ /* '104' */
+			return values.REAL
+		}
+	case 105:
+		{ /* '105' */
+			return values.REAL
+		}
+	case 106:
+		{ /* '106' */
+			return values.REAL
+		}
+	case 107:
+		{ /* '107' */
+			return values.REAL
+		}
+	case 108:
+		{ /* '108' */
+			return values.REAL
+		}
+	case 109:
+		{ /* '109' */
+			return values.REAL
+		}
+	case 11:
+		{ /* '11' */
+			return values.DINT
+		}
+	case 110:
+		{ /* '110' */
+			return values.REAL
+		}
+	case 111:
+		{ /* '111' */
+			return values.REAL
+		}
+	case 112:
+		{ /* '112' */
+			return values.REAL
+		}
+	case 113:
+		{ /* '113' */
+			return values.REAL
+		}
+	case 114:
+		{ /* '114' */
+			return values.REAL
+		}
+	case 115:
+		{ /* '115' */
+			return values.REAL
+		}
+	case 116:
+		{ /* '116' */
+			return values.REAL
+		}
+	case 117:
+		{ /* '117' */
+			return values.REAL
+		}
+	case 118:
+		{ /* '118' */
+			return values.REAL
+		}
+	case 119:
+		{ /* '119' */
+			return values.REAL
+		}
+	case 12:
+		{ /* '12' */
+			return values.ULINT
+		}
+	case 120:
+		{ /* '120' */
+			return values.REAL
+		}
+	case 121:
+		{ /* '121' */
+			return values.REAL
+		}
+	case 122:
+		{ /* '122' */
+			return values.Struct
+		}
+	case 123:
+		{ /* '123' */
+			return values.Struct
+		}
+	case 124:
+		{ /* '124' */
+			return values.UDINT
+		}
+	case 125:
+		{ /* '125' */
+			return values.UDINT
+		}
+	case 126:
+		{ /* '126' */
+			return values.UDINT
+		}
+	case 127:
+		{ /* '127' */
+			return values.UDINT
+		}
+	case 128:
+		{ /* '128' */
+			return values.UDINT
+		}
+	case 129:
+		{ /* '129' */
+			return values.UDINT
+		}
+	case 13:
+		{ /* '13' */
+			return values.LINT
+		}
+	case 130:
+		{ /* '130' */
+			return values.DINT
+		}
+	case 131:
+		{ /* '131' */
+			return values.DINT
+		}
+	case 132:
+		{ /* '132' */
+			return values.DINT
+		}
+	case 133:
+		{ /* '133' */
+			return values.DINT
+		}
+	case 134:
+		{ /* '134' */
+			return values.DINT
+		}
+	case 135:
+		{ /* '135' */
+			return values.DINT
+		}
+	case 136:
+		{ /* '136' */
+			return values.DINT
+		}
+	case 137:
+		{ /* '137' */
+			return values.DINT
+		}
+	case 138:
+		{ /* '138' */
+			return values.DINT
+		}
+	case 139:
+		{ /* '139' */
+			return values.DINT
+		}
+	case 14:
+		{ /* '14' */
+			return values.REAL
+		}
+	case 140:
+		{ /* '140' */
+			return values.DINT
+		}
+	case 141:
+		{ /* '141' */
+			return values.DINT
+		}
+	case 142:
+		{ /* '142' */
+			return values.REAL
+		}
+	case 143:
+		{ /* '143' */
+			return values.REAL
+		}
+	case 144:
+		{ /* '144' */
+			return values.REAL
+		}
+	case 145:
+		{ /* '145' */
+			return values.REAL
+		}
+	case 146:
+		{ /* '146' */
+			return values.REAL
+		}
+	case 147:
+		{ /* '147' */
+			return values.REAL
+		}
+	case 148:
+		{ /* '148' */
+			return values.REAL
+		}
+	case 149:
+		{ /* '149' */
+			return values.REAL
+		}
+	case 15:
+		{ /* '15' */
+			return values.LREAL
+		}
+	case 150:
+		{ /* '150' */
+			return values.REAL
+		}
+	case 151:
+		{ /* '151' */
+			return values.REAL
+		}
+	case 152:
+		{ /* '152' */
+			return values.REAL
+		}
+	case 153:
+		{ /* '153' */
+			return values.REAL
+		}
+	case 154:
+		{ /* '154' */
+			return values.REAL
+		}
+	case 155:
+		{ /* '155' */
+			return values.REAL
+		}
+	case 156:
+		{ /* '156' */
+			return values.REAL
+		}
+	case 157:
+		{ /* '157' */
+			return values.REAL
+		}
+	case 158:
+		{ /* '158' */
+			return values.REAL
+		}
+	case 159:
+		{ /* '159' */
+			return values.REAL
+		}
+	case 16:
+		{ /* '16' */
+			return values.CHAR
+		}
+	case 160:
+		{ /* '160' */
+			return values.REAL
+		}
+	case 161:
+		{ /* '161' */
+			return values.REAL
+		}
+	case 162:
+		{ /* '162' */
+			return values.REAL
+		}
+	case 163:
+		{ /* '163' */
+			return values.REAL
+		}
+	case 164:
+		{ /* '164' */
+			return values.REAL
+		}
+	case 165:
+		{ /* '165' */
+			return values.REAL
+		}
+	case 166:
+		{ /* '166' */
+			return values.REAL
+		}
+	case 167:
+		{ /* '167' */
+			return values.REAL
+		}
+	case 168:
+		{ /* '168' */
+			return values.REAL
+		}
+	case 169:
+		{ /* '169' */
+			return values.REAL
+		}
+	case 17:
+		{ /* '17' */
+			return values.WCHAR
+		}
+	case 170:
+		{ /* '170' */
+			return values.REAL
+		}
+	case 171:
+		{ /* '171' */
+			return values.REAL
+		}
+	case 172:
+		{ /* '172' */
+			return values.REAL
+		}
+	case 173:
+		{ /* '173' */
+			return values.REAL
+		}
+	case 174:
+		{ /* '174' */
+			return values.REAL
+		}
+	case 175:
+		{ /* '175' */
+			return values.REAL
+		}
+	case 176:
+		{ /* '176' */
+			return values.REAL
+		}
+	case 177:
+		{ /* '177' */
+			return values.REAL
+		}
+	case 178:
+		{ /* '178' */
+			return values.REAL
+		}
+	case 179:
+		{ /* '179' */
+			return values.REAL
+		}
+	case 18:
+		{ /* '18' */
+			return values.STRING
+		}
+	case 180:
+		{ /* '180' */
+			return values.REAL
+		}
+	case 181:
+		{ /* '181' */
+			return values.REAL
+		}
+	case 182:
+		{ /* '182' */
+			return values.REAL
+		}
+	case 183:
+		{ /* '183' */
+			return values.REAL
+		}
+	case 184:
+		{ /* '184' */
+			return values.REAL
+		}
+	case 185:
+		{ /* '185' */
+			return values.REAL
+		}
+	case 186:
+		{ /* '186' */
+			return values.REAL
+		}
+	case 187:
+		{ /* '187' */
+			return values.REAL
+		}
+	case 188:
+		{ /* '188' */
+			return values.REAL
+		}
+	case 189:
+		{ /* '189' */
+			return values.REAL
+		}
+	case 19:
+		{ /* '19' */
+			return values.WSTRING
+		}
+	case 190:
+		{ /* '190' */
+			return values.REAL
+		}
+	case 191:
+		{ /* '191' */
+			return values.REAL
+		}
+	case 192:
+		{ /* '192' */
+			return values.REAL
+		}
+	case 193:
+		{ /* '193' */
+			return values.REAL
+		}
+	case 194:
+		{ /* '194' */
+			return values.REAL
+		}
+	case 195:
+		{ /* '195' */
+			return values.REAL
+		}
+	case 196:
+		{ /* '196' */
+			return values.REAL
+		}
+	case 197:
+		{ /* '197' */
+			return values.REAL
+		}
+	case 198:
+		{ /* '198' */
+			return values.REAL
+		}
+	case 199:
+		{ /* '199' */
+			return values.REAL
+		}
+	case 2:
+		{ /* '2' */
+			return values.BYTE
+		}
+	case 20:
+		{ /* '20' */
+			return values.TIME
+		}
+	case 200:
+		{ /* '200' */
+			return values.REAL
+		}
+	case 201:
+		{ /* '201' */
+			return values.REAL
+		}
+	case 202:
+		{ /* '202' */
+			return values.REAL
+		}
+	case 203:
+		{ /* '203' */
+			return values.REAL
+		}
+	case 204:
+		{ /* '204' */
+			return values.REAL
+		}
+	case 205:
+		{ /* '205' */
+			return values.REAL
+		}
+	case 206:
+		{ /* '206' */
+			return values.REAL
+		}
+	case 207:
+		{ /* '207' */
+			return values.REAL
+		}
+	case 208:
+		{ /* '208' */
+			return values.REAL
+		}
+	case 209:
+		{ /* '209' */
+			return values.REAL
+		}
+	case 21:
+		{ /* '21' */
+			return values.LTIME
+		}
+	case 210:
+		{ /* '210' */
+			return values.REAL
+		}
+	case 211:
+		{ /* '211' */
+			return values.REAL
+		}
+	case 212:
+		{ /* '212' */
+			return values.REAL
+		}
+	case 213:
+		{ /* '213' */
+			return values.REAL
+		}
+	case 214:
+		{ /* '214' */
+			return values.REAL
+		}
+	case 215:
+		{ /* '215' */
+			return values.REAL
+		}
+	case 216:
+		{ /* '216' */
+			return values.REAL
+		}
+	case 217:
+		{ /* '217' */
+			return values.REAL
+		}
+	case 218:
+		{ /* '218' */
+			return values.REAL
+		}
+	case 219:
+		{ /* '219' */
+			return values.REAL
+		}
+	case 22:
+		{ /* '22' */
+			return values.DATE
+		}
+	case 220:
+		{ /* '220' */
+			return values.REAL
+		}
+	case 221:
+		{ /* '221' */
+			return values.REAL
+		}
+	case 222:
+		{ /* '222' */
+			return values.REAL
+		}
+	case 223:
+		{ /* '223' */
+			return values.REAL
+		}
+	case 224:
+		{ /* '224' */
+			return values.REAL
+		}
+	case 225:
+		{ /* '225' */
+			return values.Struct
+		}
+	case 226:
+		{ /* '226' */
+			return values.STRING
+		}
+	case 227:
+		{ /* '227' */
+			return values.STRING
+		}
+	case 228:
+		{ /* '228' */
+			return values.USINT
+		}
+	case 229:
+		{ /* '229' */
+			return values.Struct
+		}
+	case 23:
+		{ /* '23' */
+			return values.TIME_OF_DAY
+		}
+	case 230:
+		{ /* '230' */
+			return values.Struct
+		}
+	case 231:
+		{ /* '231' */
+			return values.USINT
+		}
+	case 232:
+		{ /* '232' */
+			return values.USINT
+		}
+	case 233:
+		{ /* '233' */
+			return values.USINT
+		}
+	case 234:
+		{ /* '234' */
+			return values.USINT
+		}
+	case 235:
+		{ /* '235' */
+			return values.USINT
+		}
+	case 236:
+		{ /* '236' */
+			return values.USINT
+		}
+	case 237:
+		{ /* '237' */
+			return values.USINT
+		}
+	case 238:
+		{ /* '238' */
+			return values.USINT
+		}
+	case 239:
+		{ /* '239' */
+			return values.USINT
+		}
+	case 24:
+		{ /* '24' */
+			return values.TIME_OF_DAY
+		}
+	case 240:
+		{ /* '240' */
+			return values.USINT
+		}
+	case 241:
+		{ /* '241' */
+			return values.USINT
+		}
+	case 242:
+		{ /* '242' */
+			return values.USINT
+		}
+	case 243:
+		{ /* '243' */
+			return values.USINT
+		}
+	case 244:
+		{ /* '244' */
+			return values.USINT
+		}
+	case 245:
+		{ /* '245' */
+			return values.USINT
+		}
+	case 246:
+		{ /* '246' */
+			return values.USINT
+		}
+	case 247:
+		{ /* '247' */
+			return values.USINT
+		}
+	case 248:
+		{ /* '248' */
+			return values.USINT
+		}
+	case 249:
+		{ /* '249' */
+			return values.USINT
+		}
+	case 25:
+		{ /* '25' */
+			return values.DATE_AND_TIME
+		}
+	case 250:
+		{ /* '250' */
+			return values.USINT
+		}
+	case 251:
+		{ /* '251' */
+			return values.USINT
+		}
+	case 252:
+		{ /* '252' */
+			return values.USINT
+		}
+	case 253:
+		{ /* '253' */
+			return values.USINT
+		}
+	case 254:
+		{ /* '254' */
+			return values.USINT
+		}
+	case 255:
+		{ /* '255' */
+			return values.USINT
+		}
+	case 256:
+		{ /* '256' */
+			return values.USINT
+		}
+	case 257:
+		{ /* '257' */
+			return values.USINT
+		}
+	case 258:
+		{ /* '258' */
+			return values.USINT
+		}
+	case 259:
+		{ /* '259' */
+			return values.USINT
+		}
+	case 26:
+		{ /* '26' */
+			return values.DATE_AND_TIME
+		}
+	case 260:
+		{ /* '260' */
+			return values.USINT
+		}
+	case 261:
+		{ /* '261' */
+			return values.USINT
+		}
+	case 262:
+		{ /* '262' */
+			return values.USINT
+		}
+	case 263:
+		{ /* '263' */
+			return values.USINT
+		}
+	case 264:
+		{ /* '264' */
+			return values.USINT
+		}
+	case 265:
+		{ /* '265' */
+			return values.USINT
+		}
+	case 266:
+		{ /* '266' */
+			return values.USINT
+		}
+	case 267:
+		{ /* '267' */
+			return values.USINT
+		}
+	case 268:
+		{ /* '268' */
+			return values.USINT
+		}
+	case 269:
+		{ /* '269' */
+			return values.USINT
+		}
+	case 27:
+		{ /* '27' */
+			return values.BOOL
+		}
+	case 270:
+		{ /* '270' */
+			return values.USINT
+		}
+	case 271:
+		{ /* '271' */
+			return values.USINT
+		}
+	case 272:
+		{ /* '272' */
+			return values.USINT
+		}
+	case 273:
+		{ /* '273' */
+			return values.USINT
+		}
+	case 274:
+		{ /* '274' */
+			return values.USINT
+		}
+	case 275:
+		{ /* '275' */
+			return values.USINT
+		}
+	case 276:
+		{ /* '276' */
+			return values.USINT
+		}
+	case 277:
+		{ /* '277' */
+			return values.USINT
+		}
+	case 278:
+		{ /* '278' */
+			return values.USINT
+		}
+	case 279:
+		{ /* '279' */
+			return values.USINT
+		}
+	case 28:
+		{ /* '28' */
+			return values.BOOL
+		}
+	case 280:
+		{ /* '280' */
+			return values.USINT
+		}
+	case 281:
+		{ /* '281' */
+			return values.USINT
+		}
+	case 282:
+		{ /* '282' */
+			return values.USINT
+		}
+	case 283:
+		{ /* '283' */
+			return values.USINT
+		}
+	case 284:
+		{ /* '284' */
+			return values.USINT
+		}
+	case 285:
+		{ /* '285' */
+			return values.USINT
+		}
+	case 286:
+		{ /* '286' */
+			return values.USINT
+		}
+	case 287:
+		{ /* '287' */
+			return values.USINT
+		}
+	case 288:
+		{ /* '288' */
+			return values.Struct
+		}
+	case 289:
+		{ /* '289' */
+			return values.Struct
+		}
+	case 29:
+		{ /* '29' */
+			return values.BOOL
+		}
+	case 290:
+		{ /* '290' */
+			return values.Struct
+		}
+	case 291:
+		{ /* '291' */
+			return values.BOOL
+		}
+	case 292:
+		{ /* '292' */
+			return values.Struct
+		}
+	case 293:
+		{ /* '293' */
+			return values.Struct
+		}
+	case 294:
+		{ /* '294' */
+			return values.Struct
+		}
+	case 295:
+		{ /* '295' */
+			return values.BOOL
+		}
+	case 296:
+		{ /* '296' */
+			return values.Struct
+		}
+	case 297:
+		{ /* '297' */
+			return values.Struct
+		}
+	case 298:
+		{ /* '298' */
+			return values.Struct
+		}
+	case 299:
+		{ /* '299' */
+			return values.Struct
+		}
+	case 3:
+		{ /* '3' */
+			return values.WORD
+		}
+	case 30:
+		{ /* '30' */
+			return values.BOOL
+		}
+	case 300:
+		{ /* '300' */
+			return values.Struct
+		}
+	case 301:
+		{ /* '301' */
+			return values.Struct
+		}
+	case 302:
+		{ /* '302' */
+			return values.Struct
+		}
+	case 303:
+		{ /* '303' */
+			return values.Struct
+		}
+	case 304:
+		{ /* '304' */
+			return values.Struct
+		}
+	case 305:
+		{ /* '305' */
+			return values.Struct
+		}
+	case 306:
+		{ /* '306' */
+			return values.Struct
+		}
+	case 307:
+		{ /* '307' */
+			return values.Struct
+		}
+	case 308:
+		{ /* '308' */
+			return values.USINT
+		}
+	case 309:
+		{ /* '309' */
+			return values.USINT
+		}
+	case 31:
+		{ /* '31' */
+			return values.BOOL
+		}
+	case 310:
+		{ /* '310' */
+			return values.USINT
+		}
+	case 311:
+		{ /* '311' */
+			return values.USINT
+		}
+	case 312:
+		{ /* '312' */
+			return values.Struct
+		}
+	case 313:
+		{ /* '313' */
+			return values.Struct
+		}
+	case 314:
+		{ /* '314' */
+			return values.Struct
+		}
+	case 315:
+		{ /* '315' */
+			return values.LINT
+		}
+	case 316:
+		{ /* '316' */
+			return values.LINT
+		}
+	case 317:
+		{ /* '317' */
+			return values.LINT
+		}
+	case 318:
+		{ /* '318' */
+			return values.Struct
+		}
+	case 319:
+		{ /* '319' */
+			return values.Struct
+		}
+	case 32:
+		{ /* '32' */
+			return values.BOOL
+		}
+	case 320:
+		{ /* '320' */
+			return values.Struct
+		}
+	case 321:
+		{ /* '321' */
+			return values.Struct
+		}
+	case 322:
+		{ /* '322' */
+			return values.Struct
+		}
+	case 323:
+		{ /* '323' */
+			return values.Struct
+		}
+	case 324:
+		{ /* '324' */
+			return values.Struct
+		}
+	case 325:
+		{ /* '325' */
+			return values.Struct
+		}
+	case 326:
+		{ /* '326' */
+			return values.Struct
+		}
+	case 327:
+		{ /* '327' */
+			return values.Struct
+		}
+	case 328:
+		{ /* '328' */
+			return values.Struct
+		}
+	case 329:
+		{ /* '329' */
+			return values.Struct
+		}
+	case 33:
+		{ /* '33' */
+			return values.BOOL
+		}
+	case 330:
+		{ /* '330' */
+			return values.Struct
+		}
+	case 331:
+		{ /* '331' */
+			return values.Struct
+		}
+	case 332:
+		{ /* '332' */
+			return values.Struct
+		}
+	case 333:
+		{ /* '333' */
+			return values.STRING
+		}
+	case 334:
+		{ /* '334' */
+			return values.Struct
+		}
+	case 335:
+		{ /* '335' */
+			return values.Struct
+		}
+	case 336:
+		{ /* '336' */
+			return values.Struct
+		}
+	case 337:
+		{ /* '337' */
+			return values.Struct
+		}
+	case 338:
+		{ /* '338' */
+			return values.Struct
+		}
+	case 339:
+		{ /* '339' */
+			return values.Struct
+		}
+	case 34:
+		{ /* '34' */
+			return values.BOOL
+		}
+	case 340:
+		{ /* '340' */
+			return values.Struct
+		}
+	case 341:
+		{ /* '341' */
+			return values.Struct
+		}
+	case 342:
+		{ /* '342' */
+			return values.Struct
+		}
+	case 343:
+		{ /* '343' */
+			return values.Struct
+		}
+	case 344:
+		{ /* '344' */
+			return values.Struct
+		}
+	case 345:
+		{ /* '345' */
+			return values.Struct
+		}
+	case 346:
+		{ /* '346' */
+			return values.Struct
+		}
+	case 347:
+		{ /* '347' */
+			return values.Struct
+		}
+	case 348:
+		{ /* '348' */
+			return values.Struct
+		}
+	case 349:
+		{ /* '349' */
+			return values.Struct
+		}
+	case 35:
+		{ /* '35' */
+			return values.BOOL
+		}
+	case 350:
+		{ /* '350' */
+			return values.Struct
+		}
+	case 351:
+		{ /* '351' */
+			return values.Struct
+		}
+	case 36:
+		{ /* '36' */
+			return values.BOOL
+		}
+	case 37:
+		{ /* '37' */
+			return values.BOOL
+		}
+	case 38:
+		{ /* '38' */
+			return values.BOOL
+		}
+	case 39:
+		{ /* '39' */
+			return values.BOOL
+		}
+	case 4:
+		{ /* '4' */
+			return values.DWORD
+		}
+	case 40:
+		{ /* '40' */
+			return values.BOOL
+		}
+	case 41:
+		{ /* '41' */
+			return values.BOOL
+		}
+	case 42:
+		{ /* '42' */
+			return values.BOOL
+		}
+	case 43:
+		{ /* '43' */
+			return values.BOOL
+		}
+	case 44:
+		{ /* '44' */
+			return values.BOOL
+		}
+	case 45:
+		{ /* '45' */
+			return values.BOOL
+		}
+	case 46:
+		{ /* '46' */
+			return values.BOOL
+		}
+	case 47:
+		{ /* '47' */
+			return values.BOOL
+		}
+	case 48:
+		{ /* '48' */
+			return values.BOOL
+		}
+	case 49:
+		{ /* '49' */
+			return values.BOOL
+		}
+	case 5:
+		{ /* '5' */
+			return values.LWORD
+		}
+	case 50:
+		{ /* '50' */
+			return values.BOOL
+		}
+	case 51:
+		{ /* '51' */
+			return values.Struct
+		}
+	case 52:
+		{ /* '52' */
+			return values.Struct
+		}
+	case 53:
+		{ /* '53' */
+			return values.Struct
+		}
+	case 54:
+		{ /* '54' */
+			return values.Struct
+		}
+	case 55:
+		{ /* '55' */
+			return values.Struct
+		}
+	case 56:
+		{ /* '56' */
+			return values.Struct
+		}
+	case 57:
+		{ /* '57' */
+			return values.Struct
+		}
+	case 58:
+		{ /* '58' */
+			return values.Struct
+		}
+	case 59:
+		{ /* '59' */
+			return values.Struct
+		}
+	case 6:
+		{ /* '6' */
+			return values.USINT
+		}
+	case 60:
+		{ /* '60' */
+			return values.Struct
+		}
+	case 61:
+		{ /* '61' */
+			return values.Struct
+		}
+	case 62:
+		{ /* '62' */
+			return values.Struct
+		}
+	case 63:
+		{ /* '63' */
+			return values.Struct
+		}
+	case 64:
+		{ /* '64' */
+			return values.Struct
+		}
+	case 65:
+		{ /* '65' */
+			return values.STRING
+		}
+	case 66:
+		{ /* '66' */
+			return values.STRING
+		}
+	case 67:
+		{ /* '67' */
+			return values.USINT
+		}
+	case 68:
+		{ /* '68' */
+			return values.USINT
+		}
+	case 69:
+		{ /* '69' */
+			return values.USINT
+		}
+	case 7:
+		{ /* '7' */
+			return values.SINT
+		}
+	case 70:
+		{ /* '70' */
+			return values.USINT
+		}
+	case 71:
+		{ /* '71' */
+			return values.USINT
+		}
+	case 72:
+		{ /* '72' */
+			return values.USINT
+		}
+	case 73:
+		{ /* '73' */
+			return values.USINT
+		}
+	case 74:
+		{ /* '74' */
+			return values.SINT
+		}
+	case 75:
+		{ /* '75' */
+			return values.SINT
+		}
+	case 76:
+		{ /* '76' */
+			return values.Struct
+		}
+	case 77:
+		{ /* '77' */
+			return values.UINT
+		}
+	case 78:
+		{ /* '78' */
+			return values.UINT
+		}
+	case 79:
+		{ /* '79' */
+			return values.UINT
+		}
+	case 8:
+		{ /* '8' */
+			return values.UINT
+		}
+	case 80:
+		{ /* '80' */
+			return values.UINT
+		}
+	case 81:
+		{ /* '81' */
+			return values.UINT
+		}
+	case 82:
+		{ /* '82' */
+			return values.UINT
+		}
+	case 83:
+		{ /* '83' */
+			return values.UINT
+		}
+	case 84:
+		{ /* '84' */
+			return values.UINT
+		}
+	case 85:
+		{ /* '85' */
+			return values.UINT
+		}
+	case 86:
+		{ /* '86' */
+			return values.UINT
+		}
+	case 87:
+		{ /* '87' */
+			return values.UINT
+		}
+	case 88:
+		{ /* '88' */
+			return values.UINT
+		}
+	case 89:
+		{ /* '89' */
+			return values.INT
+		}
+	case 9:
+		{ /* '9' */
+			return values.INT
+		}
+	case 90:
+		{ /* '90' */
+			return values.INT
+		}
+	case 91:
+		{ /* '91' */
+			return values.INT
+		}
+	case 92:
+		{ /* '92' */
+			return values.INT
+		}
+	case 93:
+		{ /* '93' */
+			return values.INT
+		}
+	case 94:
+		{ /* '94' */
+			return values.INT
+		}
+	case 95:
+		{ /* '95' */
+			return values.INT
+		}
+	case 96:
+		{ /* '96' */
+			return values.INT
+		}
+	case 97:
+		{ /* '97' */
+			return values.INT
+		}
+	case 98:
+		{ /* '98' */
+			return values.INT
+		}
+	case 99:
+		{ /* '99' */
+			return values.REAL
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func KnxDatapointTypeFirstEnumForFieldPlcValueTpe(value values.PlcValueType) (enum KnxDatapointType, ok bool) {
+	for _, sizeValue := range KnxDatapointTypeValues {
+		if sizeValue.PlcValueTpe() == value {
+			return sizeValue, true
+		}
+	}
+	return 0, false
+}
+
 func (e KnxDatapointType) Name() string {
 	switch e {
 	case 0:
@@ -3604,6 +5033,1432 @@ func (e KnxDatapointType) Name() string {
 func KnxDatapointTypeFirstEnumForFieldName(value string) (enum KnxDatapointType, ok bool) {
 	for _, sizeValue := range KnxDatapointTypeValues {
 		if sizeValue.Name() == value {
+			return sizeValue, true
+		}
+	}
+	return 0, false
+}
+
+func (e KnxDatapointType) Id() string {
+	switch e {
+	case 0:
+		{ /* '0' */
+			return ""
+		}
+	case 1:
+		{ /* '1' */
+			return ""
+		}
+	case 10:
+		{ /* '10' */
+			return ""
+		}
+	case 100:
+		{ /* '100' */
+			return "DPST-9-2"
+		}
+	case 101:
+		{ /* '101' */
+			return "DPST-9-3"
+		}
+	case 102:
+		{ /* '102' */
+			return "DPST-9-4"
+		}
+	case 103:
+		{ /* '103' */
+			return "DPST-9-5"
+		}
+	case 104:
+		{ /* '104' */
+			return "DPST-9-6"
+		}
+	case 105:
+		{ /* '105' */
+			return "DPST-9-7"
+		}
+	case 106:
+		{ /* '106' */
+			return "DPST-9-8"
+		}
+	case 107:
+		{ /* '107' */
+			return "DPST-9-9"
+		}
+	case 108:
+		{ /* '108' */
+			return "DPST-9-10"
+		}
+	case 109:
+		{ /* '109' */
+			return "DPST-9-11"
+		}
+	case 11:
+		{ /* '11' */
+			return ""
+		}
+	case 110:
+		{ /* '110' */
+			return "DPST-9-20"
+		}
+	case 111:
+		{ /* '111' */
+			return "DPST-9-21"
+		}
+	case 112:
+		{ /* '112' */
+			return "DPST-9-22"
+		}
+	case 113:
+		{ /* '113' */
+			return "DPST-9-23"
+		}
+	case 114:
+		{ /* '114' */
+			return "DPST-9-24"
+		}
+	case 115:
+		{ /* '115' */
+			return "DPST-9-25"
+		}
+	case 116:
+		{ /* '116' */
+			return "DPST-9-26"
+		}
+	case 117:
+		{ /* '117' */
+			return "DPST-9-27"
+		}
+	case 118:
+		{ /* '118' */
+			return "DPST-9-28"
+		}
+	case 119:
+		{ /* '119' */
+			return "DPST-9-29"
+		}
+	case 12:
+		{ /* '12' */
+			return ""
+		}
+	case 120:
+		{ /* '120' */
+			return "DPST-9-30"
+		}
+	case 121:
+		{ /* '121' */
+			return "DPST-9-31"
+		}
+	case 122:
+		{ /* '122' */
+			return "DPST-10-1"
+		}
+	case 123:
+		{ /* '123' */
+			return "DPST-11-1"
+		}
+	case 124:
+		{ /* '124' */
+			return "DPST-12-1"
+		}
+	case 125:
+		{ /* '125' */
+			return "DPST-12-100"
+		}
+	case 126:
+		{ /* '126' */
+			return "DPST-12-101"
+		}
+	case 127:
+		{ /* '127' */
+			return "DPST-12-102"
+		}
+	case 128:
+		{ /* '128' */
+			return "DPST-12-1200"
+		}
+	case 129:
+		{ /* '129' */
+			return "DPST-12-1201"
+		}
+	case 13:
+		{ /* '13' */
+			return ""
+		}
+	case 130:
+		{ /* '130' */
+			return "DPST-13-1"
+		}
+	case 131:
+		{ /* '131' */
+			return "DPST-13-2"
+		}
+	case 132:
+		{ /* '132' */
+			return "DPST-13-10"
+		}
+	case 133:
+		{ /* '133' */
+			return "DPST-13-11"
+		}
+	case 134:
+		{ /* '134' */
+			return "DPST-13-12"
+		}
+	case 135:
+		{ /* '135' */
+			return "DPST-13-13"
+		}
+	case 136:
+		{ /* '136' */
+			return "DPST-13-14"
+		}
+	case 137:
+		{ /* '137' */
+			return "DPST-13-15"
+		}
+	case 138:
+		{ /* '138' */
+			return "DPST-13-16"
+		}
+	case 139:
+		{ /* '139' */
+			return "DPST-13-100"
+		}
+	case 14:
+		{ /* '14' */
+			return ""
+		}
+	case 140:
+		{ /* '140' */
+			return "DPST-13-1200"
+		}
+	case 141:
+		{ /* '141' */
+			return "DPST-13-1201"
+		}
+	case 142:
+		{ /* '142' */
+			return "DPST-14-0"
+		}
+	case 143:
+		{ /* '143' */
+			return "DPST-14-1"
+		}
+	case 144:
+		{ /* '144' */
+			return "DPST-14-2"
+		}
+	case 145:
+		{ /* '145' */
+			return "DPST-14-3"
+		}
+	case 146:
+		{ /* '146' */
+			return "DPST-14-4"
+		}
+	case 147:
+		{ /* '147' */
+			return "DPST-14-5"
+		}
+	case 148:
+		{ /* '148' */
+			return "DPST-14-6"
+		}
+	case 149:
+		{ /* '149' */
+			return "DPST-14-7"
+		}
+	case 15:
+		{ /* '15' */
+			return ""
+		}
+	case 150:
+		{ /* '150' */
+			return "DPST-14-8"
+		}
+	case 151:
+		{ /* '151' */
+			return "DPST-14-9"
+		}
+	case 152:
+		{ /* '152' */
+			return "DPST-14-10"
+		}
+	case 153:
+		{ /* '153' */
+			return "DPST-14-11"
+		}
+	case 154:
+		{ /* '154' */
+			return "DPST-14-12"
+		}
+	case 155:
+		{ /* '155' */
+			return "DPST-14-13"
+		}
+	case 156:
+		{ /* '156' */
+			return "DPST-14-14"
+		}
+	case 157:
+		{ /* '157' */
+			return "DPST-14-15"
+		}
+	case 158:
+		{ /* '158' */
+			return "DPST-14-16"
+		}
+	case 159:
+		{ /* '159' */
+			return "DPST-14-17"
+		}
+	case 16:
+		{ /* '16' */
+			return ""
+		}
+	case 160:
+		{ /* '160' */
+			return "DPST-14-18"
+		}
+	case 161:
+		{ /* '161' */
+			return "DPST-14-19"
+		}
+	case 162:
+		{ /* '162' */
+			return "DPST-14-20"
+		}
+	case 163:
+		{ /* '163' */
+			return "DPST-14-21"
+		}
+	case 164:
+		{ /* '164' */
+			return "DPST-14-22"
+		}
+	case 165:
+		{ /* '165' */
+			return "DPST-14-23"
+		}
+	case 166:
+		{ /* '166' */
+			return "DPST-14-24"
+		}
+	case 167:
+		{ /* '167' */
+			return "DPST-14-25"
+		}
+	case 168:
+		{ /* '168' */
+			return "DPST-14-26"
+		}
+	case 169:
+		{ /* '169' */
+			return "DPST-14-27"
+		}
+	case 17:
+		{ /* '17' */
+			return ""
+		}
+	case 170:
+		{ /* '170' */
+			return "DPST-14-28"
+		}
+	case 171:
+		{ /* '171' */
+			return "DPST-14-29"
+		}
+	case 172:
+		{ /* '172' */
+			return "DPST-14-30"
+		}
+	case 173:
+		{ /* '173' */
+			return "DPST-14-31"
+		}
+	case 174:
+		{ /* '174' */
+			return "DPST-14-32"
+		}
+	case 175:
+		{ /* '175' */
+			return "DPST-14-33"
+		}
+	case 176:
+		{ /* '176' */
+			return "DPST-14-34"
+		}
+	case 177:
+		{ /* '177' */
+			return "DPST-14-35"
+		}
+	case 178:
+		{ /* '178' */
+			return "DPST-14-36"
+		}
+	case 179:
+		{ /* '179' */
+			return "DPST-14-37"
+		}
+	case 18:
+		{ /* '18' */
+			return ""
+		}
+	case 180:
+		{ /* '180' */
+			return "DPST-14-38"
+		}
+	case 181:
+		{ /* '181' */
+			return "DPST-14-39"
+		}
+	case 182:
+		{ /* '182' */
+			return "DPST-14-40"
+		}
+	case 183:
+		{ /* '183' */
+			return "DPST-14-41"
+		}
+	case 184:
+		{ /* '184' */
+			return "DPST-14-42"
+		}
+	case 185:
+		{ /* '185' */
+			return "DPST-14-43"
+		}
+	case 186:
+		{ /* '186' */
+			return "DPST-14-44"
+		}
+	case 187:
+		{ /* '187' */
+			return "DPST-14-45"
+		}
+	case 188:
+		{ /* '188' */
+			return "DPST-14-46"
+		}
+	case 189:
+		{ /* '189' */
+			return "DPST-14-47"
+		}
+	case 19:
+		{ /* '19' */
+			return ""
+		}
+	case 190:
+		{ /* '190' */
+			return "DPST-14-48"
+		}
+	case 191:
+		{ /* '191' */
+			return "DPST-14-49"
+		}
+	case 192:
+		{ /* '192' */
+			return "DPST-14-50"
+		}
+	case 193:
+		{ /* '193' */
+			return "DPST-14-51"
+		}
+	case 194:
+		{ /* '194' */
+			return "DPST-14-52"
+		}
+	case 195:
+		{ /* '195' */
+			return "DPST-14-53"
+		}
+	case 196:
+		{ /* '196' */
+			return "DPST-14-54"
+		}
+	case 197:
+		{ /* '197' */
+			return "DPST-14-55"
+		}
+	case 198:
+		{ /* '198' */
+			return "DPST-14-56"
+		}
+	case 199:
+		{ /* '199' */
+			return "DPST-14-57"
+		}
+	case 2:
+		{ /* '2' */
+			return ""
+		}
+	case 20:
+		{ /* '20' */
+			return ""
+		}
+	case 200:
+		{ /* '200' */
+			return "DPST-14-58"
+		}
+	case 201:
+		{ /* '201' */
+			return "DPST-14-59"
+		}
+	case 202:
+		{ /* '202' */
+			return "DPST-14-60"
+		}
+	case 203:
+		{ /* '203' */
+			return "DPST-14-61"
+		}
+	case 204:
+		{ /* '204' */
+			return "DPST-14-62"
+		}
+	case 205:
+		{ /* '205' */
+			return "DPST-14-63"
+		}
+	case 206:
+		{ /* '206' */
+			return "DPST-14-64"
+		}
+	case 207:
+		{ /* '207' */
+			return "DPST-14-65"
+		}
+	case 208:
+		{ /* '208' */
+			return "DPST-14-66"
+		}
+	case 209:
+		{ /* '209' */
+			return "DPST-14-67"
+		}
+	case 21:
+		{ /* '21' */
+			return ""
+		}
+	case 210:
+		{ /* '210' */
+			return "DPST-14-68"
+		}
+	case 211:
+		{ /* '211' */
+			return "DPST-14-69"
+		}
+	case 212:
+		{ /* '212' */
+			return "DPST-14-70"
+		}
+	case 213:
+		{ /* '213' */
+			return "DPST-14-71"
+		}
+	case 214:
+		{ /* '214' */
+			return "DPST-14-72"
+		}
+	case 215:
+		{ /* '215' */
+			return "DPST-14-73"
+		}
+	case 216:
+		{ /* '216' */
+			return "DPST-14-74"
+		}
+	case 217:
+		{ /* '217' */
+			return "DPST-14-75"
+		}
+	case 218:
+		{ /* '218' */
+			return "DPST-14-76"
+		}
+	case 219:
+		{ /* '219' */
+			return "DPST-14-77"
+		}
+	case 22:
+		{ /* '22' */
+			return ""
+		}
+	case 220:
+		{ /* '220' */
+			return "DPST-14-78"
+		}
+	case 221:
+		{ /* '221' */
+			return "DPST-14-79"
+		}
+	case 222:
+		{ /* '222' */
+			return "DPST-14-80"
+		}
+	case 223:
+		{ /* '223' */
+			return "DPST-14-1200"
+		}
+	case 224:
+		{ /* '224' */
+			return "DPST-14-1201"
+		}
+	case 225:
+		{ /* '225' */
+			return "DPST-15-0"
+		}
+	case 226:
+		{ /* '226' */
+			return "DPST-16-0"
+		}
+	case 227:
+		{ /* '227' */
+			return "DPST-16-1"
+		}
+	case 228:
+		{ /* '228' */
+			return "DPST-17-1"
+		}
+	case 229:
+		{ /* '229' */
+			return "DPST-18-1"
+		}
+	case 23:
+		{ /* '23' */
+			return ""
+		}
+	case 230:
+		{ /* '230' */
+			return "DPST-19-1"
+		}
+	case 231:
+		{ /* '231' */
+			return "DPST-20-1"
+		}
+	case 232:
+		{ /* '232' */
+			return "DPST-20-2"
+		}
+	case 233:
+		{ /* '233' */
+			return "DPST-20-3"
+		}
+	case 234:
+		{ /* '234' */
+			return "DPST-20-4"
+		}
+	case 235:
+		{ /* '235' */
+			return "DPST-20-5"
+		}
+	case 236:
+		{ /* '236' */
+			return "DPST-20-6"
+		}
+	case 237:
+		{ /* '237' */
+			return "DPST-20-7"
+		}
+	case 238:
+		{ /* '238' */
+			return "DPST-20-8"
+		}
+	case 239:
+		{ /* '239' */
+			return "DPST-20-11"
+		}
+	case 24:
+		{ /* '24' */
+			return ""
+		}
+	case 240:
+		{ /* '240' */
+			return "DPST-20-12"
+		}
+	case 241:
+		{ /* '241' */
+			return "DPST-20-13"
+		}
+	case 242:
+		{ /* '242' */
+			return "DPST-20-14"
+		}
+	case 243:
+		{ /* '243' */
+			return "DPST-20-17"
+		}
+	case 244:
+		{ /* '244' */
+			return "DPST-20-20"
+		}
+	case 245:
+		{ /* '245' */
+			return "DPST-20-21"
+		}
+	case 246:
+		{ /* '246' */
+			return "DPST-20-22"
+		}
+	case 247:
+		{ /* '247' */
+			return "DPST-20-100"
+		}
+	case 248:
+		{ /* '248' */
+			return "DPST-20-101"
+		}
+	case 249:
+		{ /* '249' */
+			return "DPST-20-102"
+		}
+	case 25:
+		{ /* '25' */
+			return ""
+		}
+	case 250:
+		{ /* '250' */
+			return "DPST-20-103"
+		}
+	case 251:
+		{ /* '251' */
+			return "DPST-20-104"
+		}
+	case 252:
+		{ /* '252' */
+			return "DPST-20-105"
+		}
+	case 253:
+		{ /* '253' */
+			return "DPST-20-106"
+		}
+	case 254:
+		{ /* '254' */
+			return "DPST-20-107"
+		}
+	case 255:
+		{ /* '255' */
+			return "DPST-20-108"
+		}
+	case 256:
+		{ /* '256' */
+			return "DPST-20-109"
+		}
+	case 257:
+		{ /* '257' */
+			return "DPST-20-110"
+		}
+	case 258:
+		{ /* '258' */
+			return "DPST-20-111"
+		}
+	case 259:
+		{ /* '259' */
+			return "DPST-20-112"
+		}
+	case 26:
+		{ /* '26' */
+			return ""
+		}
+	case 260:
+		{ /* '260' */
+			return "DPST-20-113"
+		}
+	case 261:
+		{ /* '261' */
+			return "DPST-20-114"
+		}
+	case 262:
+		{ /* '262' */
+			return "DPST-20-115"
+		}
+	case 263:
+		{ /* '263' */
+			return "DPST-20-116"
+		}
+	case 264:
+		{ /* '264' */
+			return "DPST-20-120"
+		}
+	case 265:
+		{ /* '265' */
+			return "DPST-20-121"
+		}
+	case 266:
+		{ /* '266' */
+			return "DPST-20-122"
+		}
+	case 267:
+		{ /* '267' */
+			return "DPST-20-600"
+		}
+	case 268:
+		{ /* '268' */
+			return "DPST-20-601"
+		}
+	case 269:
+		{ /* '269' */
+			return "DPST-20-602"
+		}
+	case 27:
+		{ /* '27' */
+			return "DPST-1-1"
+		}
+	case 270:
+		{ /* '270' */
+			return "DPST-20-603"
+		}
+	case 271:
+		{ /* '271' */
+			return "DPST-20-604"
+		}
+	case 272:
+		{ /* '272' */
+			return "DPST-20-605"
+		}
+	case 273:
+		{ /* '273' */
+			return "DPST-20-606"
+		}
+	case 274:
+		{ /* '274' */
+			return "DPST-20-607"
+		}
+	case 275:
+		{ /* '275' */
+			return "DPST-20-608"
+		}
+	case 276:
+		{ /* '276' */
+			return "DPST-20-609"
+		}
+	case 277:
+		{ /* '277' */
+			return "DPST-20-610"
+		}
+	case 278:
+		{ /* '278' */
+			return "DPST-20-611"
+		}
+	case 279:
+		{ /* '279' */
+			return "DPST-20-612"
+		}
+	case 28:
+		{ /* '28' */
+			return "DPST-1-2"
+		}
+	case 280:
+		{ /* '280' */
+			return "DPST-20-801"
+		}
+	case 281:
+		{ /* '281' */
+			return "DPST-20-802"
+		}
+	case 282:
+		{ /* '282' */
+			return "DPST-20-803"
+		}
+	case 283:
+		{ /* '283' */
+			return "DPST-20-804"
+		}
+	case 284:
+		{ /* '284' */
+			return "DPST-20-1000"
+		}
+	case 285:
+		{ /* '285' */
+			return "DPST-20-1001"
+		}
+	case 286:
+		{ /* '286' */
+			return "DPST-20-1002"
+		}
+	case 287:
+		{ /* '287' */
+			return "DPST-20-1003"
+		}
+	case 288:
+		{ /* '288' */
+			return "DPST-21-1"
+		}
+	case 289:
+		{ /* '289' */
+			return "DPST-21-2"
+		}
+	case 29:
+		{ /* '29' */
+			return "DPST-1-3"
+		}
+	case 290:
+		{ /* '290' */
+			return "DPST-21-100"
+		}
+	case 291:
+		{ /* '291' */
+			return "DPST-21-101"
+		}
+	case 292:
+		{ /* '292' */
+			return "DPST-21-102"
+		}
+	case 293:
+		{ /* '293' */
+			return "DPST-21-103"
+		}
+	case 294:
+		{ /* '294' */
+			return "DPST-21-104"
+		}
+	case 295:
+		{ /* '295' */
+			return "DPST-21-105"
+		}
+	case 296:
+		{ /* '296' */
+			return "DPST-21-106"
+		}
+	case 297:
+		{ /* '297' */
+			return "DPST-21-107"
+		}
+	case 298:
+		{ /* '298' */
+			return "DPST-21-601"
+		}
+	case 299:
+		{ /* '299' */
+			return "DPST-21-1000"
+		}
+	case 3:
+		{ /* '3' */
+			return ""
+		}
+	case 30:
+		{ /* '30' */
+			return "DPST-1-4"
+		}
+	case 300:
+		{ /* '300' */
+			return "DPST-21-1001"
+		}
+	case 301:
+		{ /* '301' */
+			return "DPST-21-1010"
+		}
+	case 302:
+		{ /* '302' */
+			return "DPST-22-100"
+		}
+	case 303:
+		{ /* '303' */
+			return "DPST-22-101"
+		}
+	case 304:
+		{ /* '304' */
+			return "DPST-22-102"
+		}
+	case 305:
+		{ /* '305' */
+			return "DPST-22-103"
+		}
+	case 306:
+		{ /* '306' */
+			return "DPST-22-1000"
+		}
+	case 307:
+		{ /* '307' */
+			return "DPST-22-1010"
+		}
+	case 308:
+		{ /* '308' */
+			return "DPST-23-1"
+		}
+	case 309:
+		{ /* '309' */
+			return "DPST-23-2"
+		}
+	case 31:
+		{ /* '31' */
+			return "DPST-1-5"
+		}
+	case 310:
+		{ /* '310' */
+			return "DPST-23-3"
+		}
+	case 311:
+		{ /* '311' */
+			return "DPST-23-102"
+		}
+	case 312:
+		{ /* '312' */
+			return "DPST-25-1000"
+		}
+	case 313:
+		{ /* '313' */
+			return "DPST-26-1"
+		}
+	case 314:
+		{ /* '314' */
+			return "DPST-27-1"
+		}
+	case 315:
+		{ /* '315' */
+			return "DPST-29-10"
+		}
+	case 316:
+		{ /* '316' */
+			return "DPST-29-11"
+		}
+	case 317:
+		{ /* '317' */
+			return "DPST-29-12"
+		}
+	case 318:
+		{ /* '318' */
+			return "DPST-30-1010"
+		}
+	case 319:
+		{ /* '319' */
+			return "DPST-206-100"
+		}
+	case 32:
+		{ /* '32' */
+			return "DPST-1-6"
+		}
+	case 320:
+		{ /* '320' */
+			return "DPST-206-102"
+		}
+	case 321:
+		{ /* '321' */
+			return "DPST-206-104"
+		}
+	case 322:
+		{ /* '322' */
+			return "DPST-206-105"
+		}
+	case 323:
+		{ /* '323' */
+			return "DPST-207-600"
+		}
+	case 324:
+		{ /* '324' */
+			return "DPST-217-1"
+		}
+	case 325:
+		{ /* '325' */
+			return "DPST-219-1"
+		}
+	case 326:
+		{ /* '326' */
+			return "DPST-222-100"
+		}
+	case 327:
+		{ /* '327' */
+			return "DPST-222-101"
+		}
+	case 328:
+		{ /* '328' */
+			return "DPST-225-1"
+		}
+	case 329:
+		{ /* '329' */
+			return "DPST-225-2"
+		}
+	case 33:
+		{ /* '33' */
+			return "DPST-1-7"
+		}
+	case 330:
+		{ /* '330' */
+			return "DPST-229-1"
+		}
+	case 331:
+		{ /* '331' */
+			return "DPST-230-1000"
+		}
+	case 332:
+		{ /* '332' */
+			return "DPST-232-600"
+		}
+	case 333:
+		{ /* '333' */
+			return "DPST-234-1"
+		}
+	case 334:
+		{ /* '334' */
+			return "DPST-235-1"
+		}
+	case 335:
+		{ /* '335' */
+			return "DPST-236-1"
+		}
+	case 336:
+		{ /* '336' */
+			return "DPST-237-600"
+		}
+	case 337:
+		{ /* '337' */
+			return "DPST-238-600"
+		}
+	case 338:
+		{ /* '338' */
+			return "DPST-240-800"
+		}
+	case 339:
+		{ /* '339' */
+			return "DPST-241-800"
+		}
+	case 34:
+		{ /* '34' */
+			return "DPST-1-8"
+		}
+	case 340:
+		{ /* '340' */
+			return "DPST-242-600"
+		}
+	case 341:
+		{ /* '341' */
+			return "DPST-244-600"
+		}
+	case 342:
+		{ /* '342' */
+			return "DPST-245-600"
+		}
+	case 343:
+		{ /* '343' */
+			return "DPST-246-600"
+		}
+	case 344:
+		{ /* '344' */
+			return "DPST-249-600"
+		}
+	case 345:
+		{ /* '345' */
+			return "DPST-250-600"
+		}
+	case 346:
+		{ /* '346' */
+			return "DPST-251-600"
+		}
+	case 347:
+		{ /* '347' */
+			return "DPST-252-600"
+		}
+	case 348:
+		{ /* '348' */
+			return "DPST-254-600"
+		}
+	case 349:
+		{ /* '349' */
+			return "DPST-255-1"
+		}
+	case 35:
+		{ /* '35' */
+			return "DPST-1-9"
+		}
+	case 350:
+		{ /* '350' */
+			return "DPST-275-100"
+		}
+	case 351:
+		{ /* '351' */
+			return "DPST-275-101"
+		}
+	case 36:
+		{ /* '36' */
+			return "DPST-1-10"
+		}
+	case 37:
+		{ /* '37' */
+			return "DPST-1-11"
+		}
+	case 38:
+		{ /* '38' */
+			return "DPST-1-12"
+		}
+	case 39:
+		{ /* '39' */
+			return "DPST-1-13"
+		}
+	case 4:
+		{ /* '4' */
+			return ""
+		}
+	case 40:
+		{ /* '40' */
+			return "DPST-1-14"
+		}
+	case 41:
+		{ /* '41' */
+			return "DPST-1-15"
+		}
+	case 42:
+		{ /* '42' */
+			return "DPST-1-16"
+		}
+	case 43:
+		{ /* '43' */
+			return "DPST-1-17"
+		}
+	case 44:
+		{ /* '44' */
+			return "DPST-1-18"
+		}
+	case 45:
+		{ /* '45' */
+			return "DPST-1-19"
+		}
+	case 46:
+		{ /* '46' */
+			return "DPST-1-21"
+		}
+	case 47:
+		{ /* '47' */
+			return "DPST-1-22"
+		}
+	case 48:
+		{ /* '48' */
+			return "DPST-1-23"
+		}
+	case 49:
+		{ /* '49' */
+			return "DPST-1-24"
+		}
+	case 5:
+		{ /* '5' */
+			return ""
+		}
+	case 50:
+		{ /* '50' */
+			return "DPST-1-100"
+		}
+	case 51:
+		{ /* '51' */
+			return "DPST-2-1"
+		}
+	case 52:
+		{ /* '52' */
+			return "DPST-2-2"
+		}
+	case 53:
+		{ /* '53' */
+			return "DPST-2-3"
+		}
+	case 54:
+		{ /* '54' */
+			return "DPST-2-4"
+		}
+	case 55:
+		{ /* '55' */
+			return "DPST-2-5"
+		}
+	case 56:
+		{ /* '56' */
+			return "DPST-2-6"
+		}
+	case 57:
+		{ /* '57' */
+			return "DPST-2-7"
+		}
+	case 58:
+		{ /* '58' */
+			return "DPST-2-8"
+		}
+	case 59:
+		{ /* '59' */
+			return "DPST-2-9"
+		}
+	case 6:
+		{ /* '6' */
+			return ""
+		}
+	case 60:
+		{ /* '60' */
+			return "DPST-2-10"
+		}
+	case 61:
+		{ /* '61' */
+			return "DPST-2-11"
+		}
+	case 62:
+		{ /* '62' */
+			return "DPST-2-12"
+		}
+	case 63:
+		{ /* '63' */
+			return "DPST-3-7"
+		}
+	case 64:
+		{ /* '64' */
+			return "DPST-3-8"
+		}
+	case 65:
+		{ /* '65' */
+			return "DPST-4-1"
+		}
+	case 66:
+		{ /* '66' */
+			return "DPST-4-2"
+		}
+	case 67:
+		{ /* '67' */
+			return "DPST-5-1"
+		}
+	case 68:
+		{ /* '68' */
+			return "DPST-5-3"
+		}
+	case 69:
+		{ /* '69' */
+			return "DPST-5-4"
+		}
+	case 7:
+		{ /* '7' */
+			return ""
+		}
+	case 70:
+		{ /* '70' */
+			return "DPST-5-5"
+		}
+	case 71:
+		{ /* '71' */
+			return "DPST-5-6"
+		}
+	case 72:
+		{ /* '72' */
+			return "DPST-5-10"
+		}
+	case 73:
+		{ /* '73' */
+			return "DPST-5-100"
+		}
+	case 74:
+		{ /* '74' */
+			return "DPST-6-1"
+		}
+	case 75:
+		{ /* '75' */
+			return "DPST-6-10"
+		}
+	case 76:
+		{ /* '76' */
+			return "DPST-6-20"
+		}
+	case 77:
+		{ /* '77' */
+			return "DPST-7-1"
+		}
+	case 78:
+		{ /* '78' */
+			return "DPST-7-2"
+		}
+	case 79:
+		{ /* '79' */
+			return "DPST-7-3"
+		}
+	case 8:
+		{ /* '8' */
+			return ""
+		}
+	case 80:
+		{ /* '80' */
+			return "DPST-7-4"
+		}
+	case 81:
+		{ /* '81' */
+			return "DPST-7-5"
+		}
+	case 82:
+		{ /* '82' */
+			return "DPST-7-6"
+		}
+	case 83:
+		{ /* '83' */
+			return "DPST-7-7"
+		}
+	case 84:
+		{ /* '84' */
+			return "DPST-7-10"
+		}
+	case 85:
+		{ /* '85' */
+			return "DPST-7-11"
+		}
+	case 86:
+		{ /* '86' */
+			return "DPST-7-12"
+		}
+	case 87:
+		{ /* '87' */
+			return "DPST-7-13"
+		}
+	case 88:
+		{ /* '88' */
+			return "DPST-7-600"
+		}
+	case 89:
+		{ /* '89' */
+			return "DPST-8-1"
+		}
+	case 9:
+		{ /* '9' */
+			return ""
+		}
+	case 90:
+		{ /* '90' */
+			return "DPST-8-2"
+		}
+	case 91:
+		{ /* '91' */
+			return "DPST-8-3"
+		}
+	case 92:
+		{ /* '92' */
+			return "DPST-8-4"
+		}
+	case 93:
+		{ /* '93' */
+			return "DPST-8-5"
+		}
+	case 94:
+		{ /* '94' */
+			return "DPST-8-6"
+		}
+	case 95:
+		{ /* '95' */
+			return "DPST-8-7"
+		}
+	case 96:
+		{ /* '96' */
+			return "DPST-8-10"
+		}
+	case 97:
+		{ /* '97' */
+			return "DPST-8-11"
+		}
+	case 98:
+		{ /* '98' */
+			return "DPST-8-12"
+		}
+	case 99:
+		{ /* '99' */
+			return "DPST-9-1"
+		}
+	default:
+		{
+			return ""
+		}
+	}
+}
+
+func KnxDatapointTypeFirstEnumForFieldId(value string) (enum KnxDatapointType, ok bool) {
+	for _, sizeValue := range KnxDatapointTypeValues {
+		if sizeValue.Id() == value {
 			return sizeValue, true
 		}
 	}
@@ -6522,8 +9377,14 @@ func (e KnxDatapointType) GetValue() uint32 {
 func (e KnxDatapointType) GetNumber() uint16 {
 	return e.Number()
 }
+func (e KnxDatapointType) GetPlcValueTpe() values.PlcValueType {
+	return e.PlcValueTpe()
+}
 func (e KnxDatapointType) GetName() string {
 	return e.Name()
+}
+func (e KnxDatapointType) GetId() string {
+	return e.Id()
 }
 func (e KnxDatapointType) GetDatapointMainType() KnxDatapointMainType {
 	return e.DatapointMainType()

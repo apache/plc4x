@@ -36,13 +36,15 @@ public class CsLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
-    public List<String> supportedOutputFlavors() {
-        return Arrays.asList("read-write", "read-only", "passive");
+    public Set<String> supportedOptions() {
+        return new HashSet<>(List.of(
+            // Map containing the type-names for external types.
+            "externalTypes"));
     }
 
     @Override
-    public Set<String> supportedOptions() {
-        return null;
+    public List<String> supportedOutputFlavors() {
+        return Arrays.asList("read-write", "read-only", "passive");
     }
 
     @Override

@@ -25,6 +25,7 @@ using NLog;
 using org.apache.plc4net.api.value;
 using org.apache.plc4net.spi.generation;
 using org.apache.plc4net.spi.model.values;
+using org.apache.plc4net.types;
 
 namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
 {

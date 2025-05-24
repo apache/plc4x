@@ -28,9 +28,7 @@ import java.security.Signature;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
@@ -54,8 +52,6 @@ import org.apache.plc4x.java.spi.transaction.RequestTransactionManager.RequestTr
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -95,7 +91,6 @@ public class SecureChannel {
     private final OpcuaDriverContext driverContext;
     private final Conversation conversation;
     private ScheduledFuture<?> keepAlive;
-    private final Set<String> endpoints = new HashSet<>();
     private double sessionTimeout;
     private long revisedLifetime;
 
@@ -116,17 +111,6 @@ public class SecureChannel {
         } else {
             this.username = configuration.getUsername();
             this.password = configuration.getPassword();
-        }
-
-        // Generate a list of endpoints we can use.
-        try {
-            InetAddress address = InetAddress.getByName(driverContext.getHost());
-            this.endpoints.add("opc.tcp://" + address.getHostAddress() + ":" + driverContext.getPort() + driverContext.getTransportEndpoint());
-            this.endpoints.add("opc.tcp://" + address.getHostName() + ":" + driverContext.getPort() + driverContext.getTransportEndpoint());
-            this.endpoints.add("opc.tcp://" + address.getCanonicalHostName() + ":" + driverContext.getPort() + driverContext.getTransportEndpoint());
-        } catch (UnknownHostException e) {
-            LOGGER.warn("Unable to resolve host name. Using original host from connection string which may cause issues connecting to server");
-            this.endpoints.add(driverContext.getHost());
         }
 
         if (conversation.getSecurityPolicy() == SecurityPolicy.NONE) {
@@ -314,23 +298,10 @@ public class SecureChannel {
         conversation.setRemoteCertificate(getX509Certificate(sessionResponse.getServerCertificate().getStringValue()));
         conversation.setRemoteNonce(sessionResponse.getServerNonce().getStringValue());
 
-        List<String> contactPoints = new ArrayList<>(3);
-        String port = driverContext.getPort() == null ? "" : ":" + driverContext.getPort();
-        try {
-            InetAddress address = InetAddress.getByName(driverContext.getHost());
-            contactPoints.add("opc.tcp://" + address.getHostAddress() + port + driverContext.getTransportEndpoint());
-            contactPoints.add("opc.tcp://" + address.getHostName() + port + driverContext.getTransportEndpoint());
-            contactPoints.add("opc.tcp://" + address.getCanonicalHostName() + port + driverContext.getTransportEndpoint());
-        } catch (UnknownHostException e) {
-            // fall back to declared host
-            contactPoints.add("opc.tcp://" + driverContext.getHost() + port + driverContext.getTransportEndpoint());
-            LOGGER.warn("Could not reach host {}, possible network failure", driverContext.getHost(), e);
-        }
-
-        Entry<EndpointDescription, UserTokenPolicy> selectedEndpoint = selectEndpoint(sessionResponse.getServerEndpoints(), contactPoints,
+        Entry<EndpointDescription, UserTokenPolicy> selectedEndpoint = selectEndpoint(sessionResponse.getServerEndpoints(),
             configuration.getSecurityPolicy(), configuration.getMessageSecurity());
         if (selectedEndpoint == null) {
-            throw new PlcRuntimeException("Unable to find endpoint matching  " + contactPoints.get(0));
+            throw new PlcRuntimeException("Unable to find endpoint matching  " + driverContext.getEndpoint());
         }
 
         PascalString policyId = selectedEndpoint.getValue().getPolicyId();
@@ -421,7 +392,8 @@ public class SecureChannel {
         );
 
         return conversation.submit(endpointsRequest, GetEndpointsResponse.class).thenApply(response -> {
-            Entry<EndpointDescription, UserTokenPolicy> entry = selectEndpoint(response.getEndpoints(), this.endpoints, this.configuration.getSecurityPolicy(), this.configuration.getMessageSecurity());
+            Entry<EndpointDescription, UserTokenPolicy> entry = selectEndpoint(response.getEndpoints(),
+                this.configuration.getSecurityPolicy(), this.configuration.getMessageSecurity());
 
             if (entry == null) {
                 Set<String> endpointUris = response.getEndpoints().stream()
@@ -494,19 +466,18 @@ public class SecureChannel {
      * Selects the endpoint and authentication policy based on client settings.
      *
      * @param extensionObjects Endpoint descriptions returned by the server.
-     * @param contactPoints Contact points expected by client.
      * @param securityPolicy Security policy searched in endpoints.
      * @param messageSecurity Message security needed by client.
      * @return Endpoint matching given.
      */
-    private Entry<EndpointDescription, UserTokenPolicy> selectEndpoint(List<EndpointDescription> extensionObjects, Collection<String> contactPoints,
+    private Entry<EndpointDescription, UserTokenPolicy> selectEndpoint(List<EndpointDescription> extensionObjects,
         SecurityPolicy securityPolicy, MessageSecurity messageSecurity) throws PlcRuntimeException {
         // Get a list of the endpoints which match ours.
         MessageSecurityMode effectiveMessageSecurity = SecurityPolicy.NONE == securityPolicy ? MessageSecurityMode.messageSecurityModeNone : messageSecurity.getMode();
         List<Entry<EndpointDescription, UserTokenPolicy>> serverEndpoints = new ArrayList<>();
 
         for (EndpointDescription endpointDescription : extensionObjects) {
-            if (isMatchingEndpoint(endpointDescription, contactPoints)) {
+            if (isMatchingEndpointDescription(endpointDescription)) {
                 boolean policyMatch = endpointDescription.getSecurityPolicyUri().getStringValue().equals(securityPolicy.getSecurityPolicyUri());
                 boolean msgSecurityMatch = endpointDescription.getSecurityMode().equals(effectiveMessageSecurity);
 
@@ -530,22 +501,32 @@ public class SecureChannel {
         return serverEndpoints.get(0);
     }
 
+    private boolean isMatchingEndpointDescription(EndpointDescription endpointDescription) {
+        if (isMatchingEndpoint(endpointDescription, driverContext.getHost(), driverContext.getPort(), driverContext.getTransportEndpoint())) {
+            return true;
+        }
+        if (configuration.getEndpointHost() != null) {
+            return isMatchingEndpoint(endpointDescription, configuration.getEndpointHost(), configuration.getEndpointPort() == null ? driverContext.getPort() : String.valueOf(configuration.getEndpointPort()), driverContext.getTransportEndpoint());
+        } else if (configuration.getEndpointPort() != null) {
+            return isMatchingEndpoint(endpointDescription, driverContext.getHost(), configuration.getEndpointPort().toString(), driverContext.getTransportEndpoint());
+        }
+        return false;
+    }
+
     /**
      * Checks each component of the return endpoint description against the connection string.
      * If all are correct then return true.
      *
      * @param endpoint - EndpointDescription returned from server
+     * @param host Permitted host
+     * @param port Permitted port
+     * @param transportEndpoint Transport endpoint
      * @return true if this endpoint matches our configuration
      * @throws PlcRuntimeException - If the returned endpoint string doesn't match the format expected
      */
-    private static boolean isMatchingEndpoint(EndpointDescription endpoint, Collection<String> contactPoints) throws PlcRuntimeException {
-        // Split up the connection string into it's individual segments.
-        for (String contactPoint : contactPoints) {
-            if (endpoint.getEndpointUrl().getStringValue().startsWith(contactPoint)) {
-                return true;
-            }
-        }
-        return false;
+    private static boolean isMatchingEndpoint(EndpointDescription endpoint, String host, String port, String transportEndpoint) throws PlcRuntimeException {
+        String portAddition = port == null ? "" : ":" + port;
+        return endpoint.getEndpointUrl().getStringValue().startsWith("opc.tcp://" + host + portAddition + transportEndpoint);
     }
 
     /**

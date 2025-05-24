@@ -25,7 +25,7 @@
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.cs.CsLanguageTemplateHelper" -->
 <#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
-${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/model/${type.name}.cs
+<#if !helper.isExternal()>${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/model/${type.name}.cs</#if>
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -53,6 +53,9 @@ using NLog;
 using org.apache.plc4net.api.value;
 using org.apache.plc4net.spi.generation;
 using org.apache.plc4net.spi.model.values;
+<#list helper.getRequiredImports() as import>
+using ${import};
+</#list>
 
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.parserArguments.orElseThrow()></#if>

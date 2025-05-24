@@ -71,12 +71,12 @@ public class ManualModbusTCPDriverTest extends ManualTest {
     public static void main(String[] args) throws Exception {
         ManualModbusTCPDriverTest test = new ManualModbusTCPDriverTest("modbus-tcp://192.168.23.30");
         test.addTestCase("holding-register:1:BOOL", new PlcBOOL(true)); // 0001
-        test.addTestCase("holding-register:2:BYTE", new PlcBYTE(42)); // 2A
-        //test.addTestCase("holding-register:3:WORD", new PlcWORD(42424)); // A5B8
+        test.addTestCase("holding-register:2:BYTE", new PlcBYTE(42)); // 002A
+        test.addTestCase("holding-register:3:WORD", new PlcWORD(42424)); // A5B8
         test.addTestCase("holding-register:4:DWORD", new PlcDWORD(4242442424L)); // FCDE 88B8
-//        test.addTestCase("holding-register:6:LWORD", new PlcLWORD(4242442424242424242L)); // FCDE 88B8 FCDE 88B8
-        test.addTestCase("holding-register:10:SINT", new PlcSINT(-42)); // D6
-        test.addTestCase("holding-register:11:USINT", new PlcUSINT(42)); // 2A
+        test.addTestCase("holding-register:6:LWORD", new PlcLWORD(4242442424242424242L)); // 3AE0 2EE8 4D04 49B2
+        test.addTestCase("holding-register:10:SINT", new PlcSINT(-42)); // FFD6
+        test.addTestCase("holding-register:11:USINT", new PlcUSINT(42)); // 002A
         test.addTestCase("holding-register:12:INT", new PlcINT(-2424)); // F688
         test.addTestCase("holding-register:13:UINT", new PlcUINT(42424)); // A5B8
         test.addTestCase("holding-register:14:DINT", new PlcDINT(-242442424)); // F18C 9F48

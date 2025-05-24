@@ -477,7 +477,8 @@ public enum KnxManufacturer {
   M_ONTROL((int) 419, (int) 471, (String) "Ontrol"),
   M_STARNET((int) 420, (int) 472, (String) "Starnet"),
   M_BETA_CAVI((int) 421, (int) 473, (String) "BETA CAVI"),
-  M_EASEMORE((int) 422, (int) 474, (String) "EaseMore"),
+  M_HANGZHOU_YIYUE_TECHNOLOGY_CO___LTD_(
+      (int) 422, (int) 474, (String) "Hangzhou YiYue Technology Co., Ltd."),
   M_VIVALDI_SRL((int) 423, (int) 475, (String) "Vivaldi srl"),
   M_GREE_ELECTRIC_APPLIANCES_INC__OF_ZHUHAI(
       (int) 424, (int) 476, (String) "Gree Electric Appliances,Inc. of Zhuhai"),
@@ -844,9 +845,20 @@ public enum KnxManufacturer {
   M_ORENDA_ELECTRIC((int) 721, (int) 782, (String) "Orenda Electric"),
   M_ERSE_KABLO((int) 722, (int) 783, (String) "ERSE KABLO"),
   M_PRADO_EUROPE_BV((int) 723, (int) 784, (String) "prado europe bv"),
-  M_ABB___RESERVED((int) 724, (int) 43954, (String) "ABB - reserved"),
+  M_E2S_GBR((int) 724, (int) 785, (String) "e2s GbR"),
+  M_UNITLINK((int) 725, (int) 786, (String) "UnitLink"),
+  M_ONNA((int) 726, (int) 787, (String) "ONNA"),
+  M_CENTERSVET_LLC((int) 727, (int) 788, (String) "CENTERSVET LLC"),
+  M_ADVECO_TECHNOLOGY_CO___LTD_((int) 728, (int) 789, (String) "Adveco Technology Co., Ltd."),
+  M_FR__LUERSSEN_WERFT((int) 729, (int) 790, (String) "Fr. Lürssen Werft"),
+  M_MYLYR((int) 730, (int) 791, (String) "mylyr"),
+  M_HYUNDAI_HT((int) 731, (int) 792, (String) "HYUNDAI HT"),
+  M_GUANGDONG_YUEJINGRUN_TECHNOLOGY_CO__LTD(
+      (int) 732, (int) 793, (String) "Guangdong Yuejingrun Technology Co.,Ltd"),
+  M_SMATEK_ELECTRONICS_LIMITED((int) 733, (int) 794, (String) "SMATEK ELECTRONICS LIMITED"),
+  M_ABB___RESERVED((int) 734, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 725, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 735, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

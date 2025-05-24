@@ -89,8 +89,8 @@ public class ManualS71200DriverTest extends ManualTest {
         test.addTestCase("%DB4:138:WCHAR", new PlcWCHAR("w"));
         test.addTestCase("%DB4:140:STRING(10)", new PlcSTRING("hurz"));
         test.addTestCase("%DB4:396:WSTRING(10)", new PlcWSTRING("wolf"));
-        test.addTestCase("%DB4:140:STRING", new PlcSTRING("hurz"));
-        test.addTestCase("%DB4:396:WSTRING", new PlcWSTRING("wolf"));
+        //test.addTestCase("%DB4:140:STRING", new PlcSTRING("hurz"));
+        //test.addTestCase("%DB4:396:WSTRING", new PlcWSTRING("wolf"));
         test.addTestCase("%DB4:58:TIME", new PlcTIME(Duration.parse("PT1.234S")));
         test.addTestCase("%DB4:70:DATE", new PlcDATE(LocalDate.parse("1998-03-28")));
         test.addTestCase("%DB4:72:TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));

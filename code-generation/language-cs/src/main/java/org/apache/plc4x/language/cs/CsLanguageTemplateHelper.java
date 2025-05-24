@@ -61,6 +61,25 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 String.join("", languageFlavorName.split("-")));
     }
 
+    public Set<String> getRequiredImports() {
+        if(options.containsKey("externalTypes")) {
+            Object externalTypes = options.get("externalTypes");
+            if (!(externalTypes instanceof Map)) {
+                throw new IllegalArgumentException("The option 'externalTypes' is not a Map");
+            }
+            Map<String, Object> externalTypesMap = (Map<String, Object>) externalTypes;
+
+            Set<String> externalTypesSet = new HashSet<>(externalTypesMap.size());
+            for (String externalType : externalTypesMap.keySet()) {
+                String externalTypeNamespace = (String) externalTypesMap.get(externalType);
+                externalTypesSet.add(externalTypeNamespace);
+            }
+            return externalTypesSet;
+        }
+
+        return Collections.emptySet();
+    }
+
     @Override
     public String getLanguageTypeNameForField(Field field) {
         // If the referenced type is a DataIo type, the value is of type PlcValue.
@@ -79,6 +98,32 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     @Override
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference) {
+        if(options.containsKey("externalTypes")) {
+            Object externalTypes = options.get("externalTypes");
+            if(!(externalTypes instanceof Map)) {
+                throw new IllegalArgumentException("The option 'externalTypes' is not a Map");
+            }
+            Map<String, Object> externalTypesMap = (Map<String, Object>) externalTypes;
+
+            String typeName = null;
+            if(typeReference.isComplexTypeReference()) {
+                typeName = typeReference.asComplexTypeReference().orElseThrow().getName();
+            } else if(typeReference.isEnumTypeReference()) {
+                typeName = typeReference.asEnumTypeReference().orElseThrow().getName();
+            }
+            if((typeName != null) && externalTypesMap.containsKey(typeName)) {
+                String replacement = externalTypesMap.get(typeName).toString();
+                String namespaceAlias;
+                if(replacement.contains(" ")) {
+                    namespaceAlias = replacement.split(" ")[0];
+                } else {
+                    String[] split = replacement.split("/");
+                    namespaceAlias = split[split.length - 1];
+                }
+                return namespaceAlias + "." + typeName;
+            }
+        }
+
         Objects.requireNonNull(typeReference);
         if (typeReference instanceof ArrayTypeReference) {
             final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
@@ -1189,6 +1234,21 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     return "\"" + valueString + "\"";
             }
         } else if (typeReference.isEnumTypeReference()) {
+            if(options.containsKey("externalTypes")) {
+                Object externalTypes = options.get("externalTypes");
+                if (!(externalTypes instanceof Map)) {
+                    throw new IllegalArgumentException("The option 'externalTypes' is not a Map");
+                }
+                Map<String, Object> externalTypesMap = (Map<String, Object>) externalTypes;
+
+                // If this is an external type
+                if(externalTypesMap.containsKey(typeReference.asEnumTypeReference().orElseThrow().getName())) {
+                    String namespace = (String) externalTypesMap.get(typeReference.asEnumTypeReference().orElseThrow().getName());
+                    String namespacePrefix = namespace.contains(".") ? namespace.substring(namespace.lastIndexOf(".") + 1) : namespace;
+                    return namespacePrefix + "." + typeReference.asEnumTypeReference().orElseThrow().getName() + "." + valueString;
+                }
+            }
+
             return "model." + typeReference.asEnumTypeReference().orElseThrow().getName() + "." + valueString;
         }
         return valueString;

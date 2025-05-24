@@ -136,11 +136,11 @@ public class OpcuaConfiguration implements PlcConnectionConfiguration {
     private Limits limits;
 
     @ConfigurationParameter("endpoint-host")
-    @Description("Endpoint host used to establish secure channel.")
+    @Description("Endpoint host used to establish secure channel connection. Used when client made connection to server which advertises different hostname than one used for network connection.")
     private String endpointHost;
 
     @ConfigurationParameter("endpoint-port")
-    @Description("Endpoint port used to establish secure channel")
+    @Description("Endpoint port used to establish secure channel. Used when client made connection to server which advertises different port number than one used for network connection.")
     private Integer endpointPort;
 
     public String getProtocolCode() {

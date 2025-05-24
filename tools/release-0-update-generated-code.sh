@@ -73,31 +73,77 @@ done
 # Delete the PLC4C code (local)
 echo " - Deleting:  $DIRECTORY/plc4c/generated-sources"
 rm -r "$DIRECTORY/plc4c/generated-sources"
-# TODO: delete the generated code for go, c# and python.
-
-# TODO: Possibly check, if the year in the NOTICE is outdated
+# Delete the PLC4Go code (local)
+echo " - Deleting:  generated files in $DIRECTORY/plc4c/generated-sources"
+find "$DIRECTORY/plc4go/protocols" -mindepth 2 -type f ! \( -name 'StaticHelper.go' -o -name 'StaticHelper_test.go' \) -exec rm -v {} \;
+# Delete the PLC4Net code (local)
+echo " - Deleting:  generated files in $DIRECTORY/plc4net/drivers"
+for dir in "$DIRECTORY/plc4net/drivers"/*; do
+    # Delete generated classes
+    if [[ -d "$dir" && ! "$(basename "$dir")" =~ -test$ ]]; then
+        SRC_DIR="$dir/src"
+        if [[ -d "$SRC_DIR" ]]; then
+            echo "🧹 Deleting files in: $SRC_DIR"
+            find "$SRC_DIR" -type f -exec rm -v {} \;
+        fi
+    else
+        SRC_DIR="$dir/resources"
+        if [[ -d "$SRC_DIR" ]]; then
+            echo "🧹 Deleting files in: $SRC_DIR"
+            find "$SRC_DIR" -type f -exec rm -v {} \;
+        fi
+    fi
+done
+# Delete the PLC4Py code (local)
+echo " - Deleting:  generated files in $DIRECTORY/plc4py/plc4py/protocols"
+find "$DIRECTORY/plc4py/plc4py/protocols" -mindepth 2 -type f ! \( -name '__init__.py' -o -name 'StaticHelper.py' \) -exec rm -v {} \;
 
 ########################################################################################################################
-# 4. Run the maven build for all modules with "update-generated-code" enabled (Docker container)
+# 4. Make sure the NOTICE file has the current year in the second line
 ########################################################################################################################
 
-docker compose build
+NOTICE_FILE="../NOTICE"
+CURRENT_YEAR=$(date +%Y)
+EXPECTED="Copyright 2017-${CURRENT_YEAR} The Apache Software Foundation"
+
+# Extract the second line
+SECOND_LINE=$(sed -n '2p' "$NOTICE_FILE")
+
+if [[ "$SECOND_LINE" != "$EXPECTED" ]]; then
+    echo "✏️  Updating $NOTICE_FILE"
+
+    # Replace line 2 with the expected text
+    awk -v expected="$EXPECTED" 'NR==2 {$0=expected} {print}' "$NOTICE_FILE" > "$NOTICE_FILE.tmp" &&
+    mv "$NOTICE_FILE.tmp" "$NOTICE_FILE"
+else
+    echo "✅ $NOTICE_FILE is already up to date."
+fi
+
+########################################################################################################################
+# 5 Run the maven build for all modules with "update-generated-code" enabled (Docker container)
+########################################################################################################################
+
+if ! docker compose build; then
+    echo "❌ Got non-0 exit code from building the release docker container, aborting."
+    exit 1
+fi
+
 if ! docker compose run releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository clean package -DskipTests; then
-    echo "❌ Got non-0 exit code from docker compose, aborting."
+    echo "❌ Got non-0 exit code from running the code-generation inside docker, aborting."
     exit 1
 fi
 
 ########################################################################################################################
-# 5. Make sure the generated driver documentation is up-to-date.
+# 6. Make sure the generated driver documentation is up-to-date.
 ########################################################################################################################
 
 if ! docker compose run releaser bash /ws/mvnw -e -P with-java -Dmaven.repo.local=/ws/out/.repository clean site -pl :plc4j-driver-all; then
-    echo "❌ Got non-0 exit code from docker compose, aborting."
+    echo "❌ Got non-0 exit code from running the site code-generation inside docker, aborting."
     exit 1
 fi
 
 ########################################################################################################################
-# 6. Commit and push any changed files
+# 7. Commit and push any changed files
 ########################################################################################################################
 
 if [[ $(git status --porcelain) ]]; then

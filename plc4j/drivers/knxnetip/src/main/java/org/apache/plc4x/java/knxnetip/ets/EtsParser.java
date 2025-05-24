@@ -100,6 +100,9 @@ public class EtsParser {
                 Document projectHeaderDoc;
                 Document projectDoc;
                 String projectNumber = this.getProjectNumber(zipFile);
+                // If the project is not password protected, it contains a file called `project.xml`
+                // If it is a password protected one, there is a zip file inside, {project-number}.zip,
+                // which is password protected, which then contains the project.xml.
                 FileHeader projectFileHeader = zipFile.getFileHeader(projectNumber + "/project.xml");
                 if (projectFileHeader == null) {
                     // This is the case of a knxproj file which is password-protected

@@ -172,14 +172,20 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
             if(holdingRegister.getByteOrder() != null) {
                 byteOrder = holdingRegister.getByteOrder();
             }
-            ModbusPDUWriteMultipleHoldingRegistersRequest request =
-                new ModbusPDUWriteMultipleHoldingRegistersRequest(holdingRegister.getAddress(),
-                    holdingRegister.getLengthWords(), fromPlcValue(tag, plcValue, byteOrder));
-            if (request.getValue().length == holdingRegister.getLengthWords() * 2) {
-                return request;
+            byte[] bytes = fromPlcValue(tag, plcValue, byteOrder);
+            if(bytes.length == 2) {
+                int value = ((bytes[0] & 0xFF) << 8) | (bytes[1] & 0xFF);
+                return new ModbusPDUWriteSingleRegisterRequest(holdingRegister.getAddress(), value);
             } else {
-                throw new PlcRuntimeException("Number of requested values (" + request.getValue().length / 2 +
-                    ") doesn't match number of requested addresses (" + holdingRegister.getLengthWords() + ")");
+                ModbusPDUWriteMultipleHoldingRegistersRequest request =
+                    new ModbusPDUWriteMultipleHoldingRegistersRequest(holdingRegister.getAddress(),
+                        holdingRegister.getLengthWords(), bytes);
+                if (request.getValue().length == holdingRegister.getLengthWords() * 2) {
+                    return request;
+                } else {
+                    throw new PlcRuntimeException("Number of requested values (" + request.getValue().length / 2 +
+                        ") doesn't match number of requested addresses (" + holdingRegister.getLengthWords() + ")");
+                }
             }
         } else if (tag instanceof ModbusTagExtendedRegister) {
             ModbusTagExtendedRegister extendedRegister = (ModbusTagExtendedRegister) tag;

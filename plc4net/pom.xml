@@ -133,6 +133,11 @@
                   <languageName>C#</languageName>
                   <outputFlavor>read-write</outputFlavor>
                   <outputDir>${project.basedir}/drivers/knxnetip/src</outputDir>
+                  <options>
+                    <externalTypes>
+                      <PlcValueType>org.apache.plc4net.types</PlcValueType>
+                    </externalTypes>
+                  </options>
                 </configuration>
               </execution>
             </executions>

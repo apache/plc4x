@@ -192,7 +192,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                 }
                 // Go through all responses till we find one where that contains the current tag's data.
                 for (Response response : responses.get(tagType)) {
-                    if(modbusTag instanceof ModbusTagCoil) {
+                    if((modbusTag instanceof ModbusTagCoil) || (modbusTag instanceof ModbusTagDiscreteInput)) {
                         if(response.matchesCoil(modbusTag)) {
                             // If this response was invalid, return all associated addresses as equally invalid.
                             // TODO: Possibly it would be worth doing a single item request for each of these
@@ -204,12 +204,11 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                                 break;
                             }
 
-                            // Coils are read completely different from registers.
-                            ModbusTagCoil coilTag = (ModbusTagCoil) modbusTag;
+                            // Coils and Discrete Inputs are read completely different from registers.
 
                             // Calculate the byte that contains the response for this Coil
                             byte[] responseData = response.getResponseData();
-                            int bitPosition = coilTag.getAddress() - response.startingAddress;
+                            int bitPosition = modbusTag.getAddress() - response.startingAddress;
                             int bytePosition = bitPosition / 8;
                             int bitPositionInByte = bitPosition % 8;
                             boolean isBitSet = (responseData[bytePosition] & (1 << bitPositionInByte)) != 0;
@@ -229,12 +228,14 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                             break;
                         }
 
+                        var byteOrder = modbusTag.getByteOrder() != null ? modbusTag.getByteOrder() : modbusContext.getByteOrder();
+
                         byte[] responseData = response.getResponseDataForTag(modbusTag);
-                        ReadBuffer readBuffer = getReadBuffer(responseData, modbusContext.getByteOrder());
+                        ReadBuffer readBuffer = getReadBuffer(responseData, byteOrder);
                         try {
                             PlcValue plcValue = DataItem.staticParse(readBuffer, modbusTag.getDataType(),
                                 modbusTag.getNumberOfElements(),
-                                modbusContext.getByteOrder() == ModbusByteOrder.BIG_ENDIAN);
+                                byteOrder == ModbusByteOrder.BIG_ENDIAN);
                             values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue));
                         } catch (ParseException e) {
                             values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));

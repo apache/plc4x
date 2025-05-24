@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
@@ -500,9 +501,11 @@ public class OpcuaPlcDriverTest {
     public void multipleThreads() throws Exception {
         class ReadWorker extends Thread {
             private final PlcConnection connection;
+            private final CountDownLatch latch;
 
-            public ReadWorker(PlcConnection opcuaConnection) {
+            public ReadWorker(PlcConnection opcuaConnection, CountDownLatch latch) {
                 this.connection = opcuaConnection;
+                this.latch = latch;
             }
 
             @Override
@@ -516,21 +519,24 @@ public class OpcuaPlcDriverTest {
                         PlcReadResponse read_response = read_request.execute().get();
                         assertThat(read_response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
                     }
-
                 } catch (ExecutionException e) {
                     LOGGER.error("run aborted", e);
                 } catch (InterruptedException e) {
+                    LOGGER.error("thread interrupted", e);
                     Thread.currentThread().interrupt();
-                    throw new RuntimeException(e);
+                } finally {
+                    this.latch.countDown();
                 }
             }
         }
 
         class WriteWorker extends Thread {
             private final PlcConnection connection;
+            private final CountDownLatch latch;
 
-            public WriteWorker(PlcConnection opcuaConnection) {
+            public WriteWorker(PlcConnection opcuaConnection, CountDownLatch latch) {
                 this.connection = opcuaConnection;
+                this.latch = latch;
             }
 
             @Override
@@ -547,8 +553,10 @@ public class OpcuaPlcDriverTest {
                 } catch (ExecutionException e) {
                     LOGGER.error("run aborted", e);
                 } catch (InterruptedException e) {
+                    LOGGER.error("thread interrupted", e);
                     Thread.currentThread().interrupt();
-                    throw new RuntimeException(e);
+                } finally {
+                    this.latch.countDown();
                 }
             }
         }
@@ -558,13 +566,13 @@ public class OpcuaPlcDriverTest {
         Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
         assertThat(opcuaConnection).is(is_connected);
 
-        ReadWorker read_worker = new ReadWorker(opcuaConnection);
-        WriteWorker write_worker = new WriteWorker(opcuaConnection);
+        CountDownLatch latch = new CountDownLatch(2);
+        ReadWorker read_worker = new ReadWorker(opcuaConnection, latch);
+        WriteWorker write_worker = new WriteWorker(opcuaConnection, latch);
         read_worker.start();
         write_worker.start();
 
-        read_worker.join();
-        write_worker.join();
+        latch.await();
 
         opcuaConnection.close();
         assert !opcuaConnection.isConnected();

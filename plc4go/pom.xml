@@ -211,7 +211,7 @@
       <plugin>
         <groupId>com.igormaznitsa</groupId>
         <artifactId>gosdk-wrapper-maven-plugin</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.4</version>
         <executions>
           <!-- Run the go code-generation -->
           <execution>
@@ -645,6 +645,11 @@
                   <languageName>go</languageName>
                   <outputFlavor>read-write</outputFlavor>
                   <outputDir>${project.basedir}/protocols</outputDir>
+                  <options>
+                    <externalTypes>
+                      <PlcValueType>github.com/apache/plc4x/plc4go/pkg/api/values</PlcValueType>
+                    </externalTypes>
+                  </options>
                 </configuration>
               </execution>
               <execution>

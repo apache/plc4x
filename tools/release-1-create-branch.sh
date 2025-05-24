@@ -47,27 +47,6 @@ echo "Release Branch Name: '$BRANCH_NAME'"
 echo "New develop Version: '$NEW_VERSION'"
 
 ########################################################################################################################
-# 2. Make sure the NOTICE file has the current year in the second line
-########################################################################################################################
-
-NOTICE_FILE="../NOTICE"
-CURRENT_YEAR=$(date +%Y)
-EXPECTED="Copyright 2017-${CURRENT_YEAR} The Apache Software Foundation"
-
-# Extract the second line
-SECOND_LINE=$(sed -n '2p' "$NOTICE_FILE")
-
-if [[ "$SECOND_LINE" != "$EXPECTED" ]]; then
-    echo "✏️  Updating $NOTICE_FILE"
-
-    # Replace line 2 with the expected text
-    awk -v expected="$EXPECTED" 'NR==2 {$0=expected} {print}' "$NOTICE_FILE" > "$NOTICE_FILE.tmp" &&
-    mv "$NOTICE_FILE.tmp" "$NOTICE_FILE"
-else
-    echo "✅ $NOTICE_FILE is already up to date."
-fi
-
-########################################################################################################################
 # 3. Ask if the RELEASE_NOTES have been filled out at all (local)
 ########################################################################################################################
 
@@ -93,7 +72,10 @@ fi
 # 5 Remove the "(Unreleased)" prefix from the current version of the RELEASE_NOTES file (local)
 ########################################################################################################################
 
-sed -i '' "s/(Unreleased) Apache PLC4X $PROJECT_VERSION*/Apache PLC4X $RELEASE_VERSION/" ../RELEASE_NOTES
+if ! sed -i '' "s/(Unreleased) Apache PLC4X $PROJECT_VERSION*/Apache PLC4X $RELEASE_VERSION/" ../RELEASE_NOTES; then
+    echo "❌ Got non-0 exit code from updating RELEASE_NOTES, aborting."
+    exit 1
+fi
 
 ########################################################################################################################
 # 6. Add a new section for the new version to the RELEASE_NOTES file (local)
@@ -115,25 +97,40 @@ Bug Fixes\n\
 ==============================================================\n\
 "
 echo NEW_VERSION
-sed -i '' "1s/.*/$NEW_HEADER/" ../RELEASE_NOTES
+if ! sed -i '' "1s/.*/$NEW_HEADER/" ../RELEASE_NOTES; then
+    echo "❌ Got non-0 exit code from adding a new header to RELEASE_NOTES, aborting."
+    exit 1
+fi
 
 ########################################################################################################################
 # 7. Commit the change (local)
 ########################################################################################################################
 
-git add --all
-git commit -m "chore: prepared the RELEASE_NOTES for the next version."
+if ! git add --all; then
+    echo "❌ Got non-0 exit code from adding all changes files, aborting."
+    exit 1
+fi
+if ! git commit -m "chore: prepared the RELEASE_NOTES for the next version."; then
+    echo "❌ Got non-0 exit code from committing changes files, aborting."
+    exit 1
+fi
 
 ########################################################################################################################
 # 8. Push the changes (local)
 ########################################################################################################################
 
-git push
+if ! git push; then
+    echo "❌ Got non-0 exit code from pushing changes, aborting."
+    exit 1
+fi
 
 ########################################################################################################################
 # 9. Switch to the release branch (local)
 ########################################################################################################################
 
-git checkout "$BRANCH_NAME"
+if ! git checkout "$BRANCH_NAME"; then
+    echo "❌ Got non-0 exit code from switching branches to the release branch, aborting."
+    exit 1
+fi
 
 echo "✅ Release branch creation complete. We have switched the local branch to the release branch. Please continue with 'release-2-prepare-release.sh' as soon as the release branch is ready for being released."

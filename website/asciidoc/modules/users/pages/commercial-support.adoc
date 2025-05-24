@@ -26,7 +26,7 @@ image::users/toddy-loves-apache.png[width=200,float=left]
 As every Apache project, so is `Apache PLC4X` generally available and usable by anyone free of charge.
 
 Also does the `Apache PLC4X Community` offer free support on the official project `Mailinglist`.
-This support is however done voluntatily by the community, so there are no service-level-agreements, guaranteed reaction times or guarantee that an issue will be addressed or solved.
+This support is however done voluntarily by the community, so there are no service-level-agreements, guaranteed reaction times or guarantee that an issue will be addressed or solved.
 
 If you or your business has higher demands on guaranteed availability and execution of support requests,
 the following individuals and companies have commercial support offerings.
@@ -36,9 +36,11 @@ The information provided here was provided by the entities named, and is not ver
 |===
 ||Name |Description |Contact Person(s) |Contact Email(s) |Contact Phone(s) |Involvement Level
 
+a|image::users/companies/logo-accso.png[accso, 200, 200] |https://accso.de/[Assso - Accelerated Solutions GmbH,opts=nofollow]|consulting, workshops, individual software development, protocol/driver development |Christofer Dutz |christofer.dutz@accso.de |  |PMC Member
+
 a|image::users/companies/logo-connectorio.png[connectorio, 200, 200] |https://connectorio.com/solutions/apache-plc4x/[ConnectorIO sp. z o.o.^,opts=nofollow]|workshops, individual software development|Łukasz Dywicki |lukasz@connectorio.com |  |PMC Member
 
-a|image::users/companies/logo-timecho.png[timecho, 200, 200]  |https://www.timecho-global.com/[Timecho Europe GmbH,opts=nofollow] |consulting, workshops, individual software development, protocol/driver development, data-storage solutions |Christofer Dutz |christofer.dutz@timecho.com |  |PMC Member
+a|image::users/companies/logo-timecho.png[timecho, 200, 200]  |https://www.timecho-global.com/[Timecho Europe GmbH,opts=nofollow] |consulting, workshops, individual software development, protocol/driver development, data-storage solutions |Pengchen Zheng |pengcheng.zheng@timecho.com |  |
 
 |===
 
@@ -48,6 +50,8 @@ Anyone who provides `Apache PLC4X` related services can be added to this list (e
 
 == How can I get added to this list?
 
-Please create a Pull-Request on GitHub as described https://plc4x.apache.org/developers/contributing.html[here]. The resource requiring editing can be found https://github.com/apache/plc4x/blob/develop/website/asciidoc/modules/users/pages/commercial-support.adoc[here]
+Please create a Pull-Request on GitHub as described https://plc4x.apache.org/latest/developers/contributing.html[here]. The resource requiring editing can be found https://github.com/apache/plc4x/blob/develop/website/asciidoc/modules/users/pages/commercial-support.adoc[here]
+
+When updating the table, please keep the alphabetical sort by company name.
 
 We will then check if the entry fulfills the requirements and accept the changes as soon as all of these have been addressed.
