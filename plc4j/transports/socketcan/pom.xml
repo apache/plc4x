@@ -59,17 +59,14 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-can</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>tel.schich</groupId>
@@ -117,14 +114,12 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-socketcan</artifactId>
-          <version>0.13.0-SNAPSHOT</version>
           <scope>provided</scope>
         </dependency>
 
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-code-generation-language-java</artifactId>
-          <version>0.13.0-SNAPSHOT</version>
           <scope>provided</scope>
         </dependency>
       </dependencies>
