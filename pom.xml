@@ -150,7 +150,7 @@
     <netty.version>4.1.119.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.17</slf4j.version>
-    <vavr.version>0.10.6</vavr.version>
+    <vavr.version>0.10.7</vavr.version>
     <xmlunit.version>2.10.3</xmlunit.version>
 
     <!-- Site properties -->
