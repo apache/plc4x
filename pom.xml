@@ -126,7 +126,7 @@
     <commons-csv.version>1.14.1</commons-csv.version>
     <dom4j.version>2.2.0</dom4j.version>
     <!-- Starting with version 4, equalsverifier requires java 17 -->
-    <equalsverifier.version>3.19.4</equalsverifier.version>
+    <equalsverifier.version>4.0.7</equalsverifier.version>
     <!-- It seems freemarker 2.3.32 was the last to support Java 11, 2.3.33 requires Java 16 -->
     <freemarker.version>2.3.34</freemarker.version>
     <groovy.version>4.0.28</groovy.version>
