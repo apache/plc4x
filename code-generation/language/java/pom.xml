@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation-language</artifactId>
-    <version>0.13.0-SNAPSHOT</version>
+    <version>0.13.0</version>
   </parent>
 
   <artifactId>plc4x-code-generation-language-java</artifactId>
@@ -33,7 +33,7 @@
   <description>Code generation template for generating Java code</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:55:10Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2025-08-02T13:58:13Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -95,12 +95,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-language-base-freemarker</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.13.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.13.0</version>
     </dependency>
 
     <dependency>
@@ -125,37 +125,37 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.13.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.13.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-tcp</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.13.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.13.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-test</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.13.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-test</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.13.0</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
