@@ -91,7 +91,7 @@ fi
 ########################################################################################################################
 
 echo "Signing artifacts:"
-find $DIRECTORY/out/.local-artifacts-dir -print | grep -E '^((.*\.pom)|(.*\.jar)|(.*\.kar)|(.*\.nar)|(.*-features\.xml)|(.*-cyclonedx\.json)|(.*-cyclonedx\.xml)|(.*-site\.xml)|(.*\.zip))$' | while read -r line ; do
+find "$DIRECTORY/out/.local-artifacts-dir" -print | grep -E '^((.*\.pom)|(.*\.jar)|(.*\.kar)|(.*\.nar)|(.*-features\.xml)|(.*-cyclonedx\.json)|(.*-cyclonedx\.xml)|(.*-site\.xml)|(.*\.zip))$' | while read -r line ; do
     echo "Processing $line"
     if ! gpg -ab "$line"; then
         echo "❌ Got non-0 exit code from signing artifact, aborting."
@@ -112,7 +112,7 @@ echo "Deploying artifacts:"
 STAGING_PROFILE_ID=15cd9d785359f8
 # Clean up any pre-existing properties file, as otherwise we'll also deploy that,
 # and that will cause errors when closing.
-rm "$DIRECTORY/out/.local-artifacs-dir/$STAGING_PROFILE_ID.properties"
+rm "$DIRECTORY/out/.local-artifacts-dir/$STAGING_PROFILE_ID.properties"
 if ! "$DIRECTORY/mvnw" -f "$DIRECTORY/tools/stage.pom" nexus-staging:deploy-staged-repository -DstagingProfileId=$STAGING_PROFILE_ID; then
     echo "❌ Got non-0 exit code from staging artifacts, aborting."
     exit 1
