@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.13.0</version>
+    <version>0.13.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j</artifactId>
@@ -34,7 +34,7 @@
   <description>Implementation of the protocol adapters for usage as Java library.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:58:13Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2025-08-02T14:15:25Z</project.build.outputTimestamp>
   </properties>
 
   <modules>
