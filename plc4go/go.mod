@@ -27,7 +27,7 @@ require (
 	github.com/cstockton/go-conv v1.0.0
 	github.com/fatih/color v1.18.0
 	github.com/google/uuid v1.6.0
-	github.com/gopacket/gopacket v1.3.1
+	github.com/gopacket/gopacket v1.4.0
 	github.com/icza/bitio v1.1.0
 	github.com/jacobsa/go-serial v0.0.0-20180131005756-15cf729a72d4
 	github.com/libp2p/go-reuseport v0.4.0
