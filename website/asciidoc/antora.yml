@@ -17,8 +17,8 @@
 # under the License.
 #
 name: plc4x
-version: 'latest'
-prerelease: True
+version: '0.12.0'
+prerelease: False
 title: PLC4X
 start_page: users:index.adoc
 nav:
