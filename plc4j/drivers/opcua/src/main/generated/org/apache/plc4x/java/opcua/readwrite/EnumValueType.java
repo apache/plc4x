@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class EnumValueType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "7596";
+  public Integer getExtensionId() {
+    return (int) 7596;
   }
 
   // Properties.
@@ -77,10 +77,10 @@ public class EnumValueType extends ExtensionObjectDefinition implements Message 
     writeSimpleField("value", value, writeSignedLong(writeBuffer, 64));
 
     // Simple Field (displayName)
-    writeSimpleField("displayName", displayName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("displayName", displayName, writeComplex(writeBuffer));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     writeBuffer.popContext("EnumValueType");
   }
@@ -109,7 +109,7 @@ public class EnumValueType extends ExtensionObjectDefinition implements Message 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("EnumValueType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -118,15 +118,11 @@ public class EnumValueType extends ExtensionObjectDefinition implements Message 
 
     LocalizedText displayName =
         readSimpleField(
-            "displayName",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "displayName", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     LocalizedText description =
         readSimpleField(
-            "description",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "description", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("EnumValueType");
     // Create the instance

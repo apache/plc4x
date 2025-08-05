@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RelativePathElement extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "539";
+  public Integer getExtensionId() {
+    return (int) 539;
   }
 
   // Properties.
@@ -84,8 +84,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("RelativePathElement");
 
     // Simple Field (referenceTypeId)
-    writeSimpleField(
-        "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceTypeId", referenceTypeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 6));
@@ -97,7 +96,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
     writeSimpleField("isInverse", isInverse, writeBoolean(writeBuffer));
 
     // Simple Field (targetName)
-    writeSimpleField("targetName", targetName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetName", targetName, writeComplex(writeBuffer));
 
     writeBuffer.popContext("RelativePathElement");
   }
@@ -132,15 +131,14 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RelativePathElement");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId referenceTypeId =
         readSimpleField(
-            "referenceTypeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "referenceTypeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 6), (byte) 0x00);
@@ -151,9 +149,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
 
     QualifiedName targetName =
         readSimpleField(
-            "targetName",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "targetName", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("RelativePathElement");
     // Create the instance

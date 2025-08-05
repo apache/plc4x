@@ -21,10 +21,11 @@ package utils
 
 import (
 	"context"
-	"github.com/rs/zerolog"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateArrayContext(t *testing.T) {

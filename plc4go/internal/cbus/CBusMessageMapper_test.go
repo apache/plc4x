@@ -23,6 +23,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -30,8 +32,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestTagToCBusMessage(t *testing.T) {
@@ -55,7 +55,13 @@ func TestTagToCBusMessage(t *testing.T) {
 		{
 			name: "direct status binary",
 			args: args{
-				tag:            NewStatusTag(nil, StatusRequestTypeBinaryState, nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, 1),
+				tag: NewStatusTag(
+					nil,
+					StatusRequestTypeBinaryState,
+					nil,
+					readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+					1,
+				),
 				alphaGenerator: &AlphaGenerator{},
 				messageCodec: &MessageCodec{
 					cbusOptions:    cbusOptions,
@@ -64,25 +70,30 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToMultiPoint(
-						readWriteModel.NewCBusPointToMultiPointCommandStatus(
-							readWriteModel.NewStatusRequestBinaryState(
-								readWriteModel.ApplicationIdContainer_LIGHTING_3A,
-								122,
-							),
-							58,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusHeader(
+							readWriteModel.PriorityClass_Class4,
+							false,
+							0,
+							readWriteModel.DestinationAddressType_PointToMultiPoint,
+						),
+						readWriteModel.NewCBusPointToMultiPointCommandStatus(
+							58,
+							readWriteModel.NewStatusRequestBinaryState(
+								122,
+								readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -106,26 +117,26 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToMultiPoint(
-						readWriteModel.NewCBusPointToMultiPointCommandStatus(
-							readWriteModel.NewStatusRequestLevel(
-								readWriteModel.ApplicationIdContainer_LIGHTING_3A,
-								13,
-								115,
-							),
-							58,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint),
+						readWriteModel.NewCBusPointToMultiPointCommandStatus(
+							58,
+							readWriteModel.NewStatusRequestLevel(
+								115,
+								readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+								13,
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -146,27 +157,27 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToPointToMultiPoint(
-						readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(
-							readWriteModel.NewStatusRequestBinaryState(
-								readWriteModel.ApplicationIdContainer_LIGHTING_3A,
-								122,
-							),
-							readWriteModel.NewBridgeAddress(12),
-							readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(1, 1), []readWriteModel.BridgeAddress{}),
-							58,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
+						readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(
+							readWriteModel.NewBridgeAddress(12),
+							readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(1, 1), []readWriteModel.BridgeAddress{}),
+							58,
+							readWriteModel.NewStatusRequestBinaryState(
+								122,
+								readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -187,27 +198,27 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToPointToMultiPoint(
-						readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(
-							readWriteModel.NewStatusRequestBinaryState(
-								readWriteModel.ApplicationIdContainer_LIGHTING_3A,
-								122,
-							),
-							readWriteModel.NewBridgeAddress(12),
-							readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(2, 2), []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(13)}),
-							58,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
+						readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(
+							readWriteModel.NewBridgeAddress(12),
+							readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(2, 2), []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(13)}),
+							58,
+							readWriteModel.NewStatusRequestBinaryState(
+								122,
+								readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -228,27 +239,27 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToPointToMultiPoint(
-						readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(
-							readWriteModel.NewStatusRequestBinaryState(
-								readWriteModel.ApplicationIdContainer_LIGHTING_3A,
-								122,
-							),
-							readWriteModel.NewBridgeAddress(12),
-							readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(6, 6), []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(13), readWriteModel.NewBridgeAddress(14), readWriteModel.NewBridgeAddress(15), readWriteModel.NewBridgeAddress(16), readWriteModel.NewBridgeAddress(17)}),
-							58,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
+						readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(
+							readWriteModel.NewBridgeAddress(12),
+							readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(6, 6), []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(13), readWriteModel.NewBridgeAddress(14), readWriteModel.NewBridgeAddress(15), readWriteModel.NewBridgeAddress(16), readWriteModel.NewBridgeAddress(17)}),
+							58,
+							readWriteModel.NewStatusRequestBinaryState(
+								122,
+								readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -281,29 +292,29 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToPoint(
-						readWriteModel.NewCBusPointToPointCommandDirect(
-							readWriteModel.NewUnitAddress(1),
-							0,
-							readWriteModel.NewCALDataRecall(
-								readWriteModel.Parameter_BAUD_RATE_SELECTOR,
-								1,
-								readWriteModel.CALCommandTypeContainer_CALCommandRecall,
-								nil,
-								requestContext,
-							),
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToPointCommandDirect(
+							0,
+							readWriteModel.NewCALDataRecall(
+								readWriteModel.CALCommandTypeContainer_CALCommandRecall,
+								nil,
+								readWriteModel.Parameter_BAUD_RATE_SELECTOR,
+								1,
+								requestContext,
+							),
+							readWriteModel.NewUnitAddress(1),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -324,28 +335,28 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToPoint(
-						readWriteModel.NewCBusPointToPointCommandDirect(
-							readWriteModel.NewUnitAddress(1),
-							0,
-							readWriteModel.NewCALDataIdentify(
-								readWriteModel.Attribute_Manufacturer,
-								readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-								nil,
-								requestContext,
-							),
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToPointCommandDirect(
+							0,
+							readWriteModel.NewCALDataIdentify(
+								readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+								nil,
+								readWriteModel.Attribute_Manufacturer,
+								requestContext,
+							),
+							readWriteModel.NewUnitAddress(1),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -366,29 +377,29 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToPoint(
-						readWriteModel.NewCBusPointToPointCommandDirect(
-							readWriteModel.NewUnitAddress(1),
-							0,
-							readWriteModel.NewCALDataGetStatus(
-								readWriteModel.Parameter_BAUD_RATE_SELECTOR,
-								1,
-								readWriteModel.CALCommandTypeContainer_CALCommandGetStatus,
-								nil,
-								requestContext,
-							),
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToPointCommandDirect(
+							0,
+							readWriteModel.NewCALDataGetStatus(
+								readWriteModel.CALCommandTypeContainer_CALCommandGetStatus,
+								nil,
+								readWriteModel.Parameter_BAUD_RATE_SELECTOR,
+								1,
+								requestContext,
+							),
+							readWriteModel.NewUnitAddress(1),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -454,30 +465,30 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToMultiPoint(
-						readWriteModel.NewCBusPointToMultiPointCommandNormal(
-							readWriteModel.ApplicationIdContainer_TEMPERATURE_BROADCAST_19,
-							readWriteModel.NewSALDataTemperatureBroadcast(
-								readWriteModel.NewTemperatureBroadcastData(
-									readWriteModel.TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent1_2Bytes,
-									2,
-									3,
-								),
-								nil,
-							),
-							0,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							0,
+							readWriteModel.ApplicationIdContainer_TEMPERATURE_BROADCAST_19,
+							readWriteModel.NewSALDataTemperatureBroadcast(
+								nil,
+								readWriteModel.NewTemperatureBroadcastData(
+									readWriteModel.TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent1_2Bytes,
+									2,
+									3,
+								),
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -627,29 +638,29 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToMultiPoint(
-						readWriteModel.NewCBusPointToMultiPointCommandNormal(
-							readWriteModel.ApplicationIdContainer_LIGHTING_3A,
-							readWriteModel.NewSALDataLighting(
-								readWriteModel.NewLightingDataOn(
-									2,
-									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
-								),
-								nil,
-							),
-							0,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							0,
+							readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+							readWriteModel.NewSALDataLighting(
+								nil,
+								readWriteModel.NewLightingDataOn(
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+									2,
+								),
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -672,29 +683,29 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToMultiPoint(
-						readWriteModel.NewCBusPointToMultiPointCommandNormal(
-							readWriteModel.ApplicationIdContainer_LIGHTING_3A,
-							readWriteModel.NewSALDataLighting(
-								readWriteModel.NewLightingDataOff(
-									2,
-									readWriteModel.LightingCommandTypeContainer_LightingCommandOff,
-								),
-								nil,
-							),
-							0,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							0,
+							readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+							readWriteModel.NewSALDataLighting(
+								nil,
+								readWriteModel.NewLightingDataOff(
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOff,
+									2,
+								),
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -721,30 +732,30 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToMultiPoint(
-						readWriteModel.NewCBusPointToMultiPointCommandNormal(
-							readWriteModel.ApplicationIdContainer_LIGHTING_3A,
-							readWriteModel.NewSALDataLighting(
-								readWriteModel.NewLightingDataRampToLevel(
-									2,
-									3,
-									readWriteModel.LightingCommandTypeContainer_LightingCommandRampToLevel_4Second,
-								),
-								nil,
-							),
-							0,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							0,
+							readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+							readWriteModel.NewSALDataLighting(
+								nil,
+								readWriteModel.NewLightingDataRampToLevel(
+									readWriteModel.LightingCommandTypeContainer_LightingCommandRampToLevel_4Second,
+									2,
+									3,
+								),
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -767,29 +778,29 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToMultiPoint(
-						readWriteModel.NewCBusPointToMultiPointCommandNormal(
-							readWriteModel.ApplicationIdContainer_LIGHTING_3A,
-							readWriteModel.NewSALDataLighting(
-								readWriteModel.NewLightingDataTerminateRamp(
-									2,
-									readWriteModel.LightingCommandTypeContainer_LightingCommandTerminateRamp,
-								),
-								nil,
-							),
-							0,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							0,
+							readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+							readWriteModel.NewSALDataLighting(
+								nil,
+								readWriteModel.NewLightingDataTerminateRamp(
+									readWriteModel.LightingCommandTypeContainer_LightingCommandTerminateRamp,
+									2,
+								),
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -813,29 +824,29 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToMultiPoint(
-						readWriteModel.NewCBusPointToMultiPointCommandNormal(
-							readWriteModel.ApplicationIdContainer_VENTILATION_70,
-							readWriteModel.NewSALDataLighting(
-								readWriteModel.NewLightingDataOn(
-									2,
-									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
-								),
-								nil,
-							),
-							0,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							0,
+							readWriteModel.ApplicationIdContainer_VENTILATION_70,
+							readWriteModel.NewSALDataLighting(
+								nil,
+								readWriteModel.NewLightingDataOn(
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+									2,
+								),
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -858,29 +869,29 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToMultiPoint(
-						readWriteModel.NewCBusPointToMultiPointCommandNormal(
-							readWriteModel.ApplicationIdContainer_IRRIGATION_CONTROL_71,
-							readWriteModel.NewSALDataLighting(
-								readWriteModel.NewLightingDataOn(
-									2,
-									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
-								),
-								nil,
-							),
-							0,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							0,
+							readWriteModel.ApplicationIdContainer_IRRIGATION_CONTROL_71,
+							readWriteModel.NewSALDataLighting(
+								nil,
+								readWriteModel.NewLightingDataOn(
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+									2,
+								),
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -903,29 +914,29 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToMultiPoint(
-						readWriteModel.NewCBusPointToMultiPointCommandNormal(
-							readWriteModel.ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72,
-							readWriteModel.NewSALDataLighting(
-								readWriteModel.NewLightingDataOn(
-									2,
-									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
-								),
-								nil,
-							),
-							0,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							0,
+							readWriteModel.ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72,
+							readWriteModel.NewSALDataLighting(
+								nil,
+								readWriteModel.NewLightingDataOn(
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+									2,
+								),
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -948,29 +959,29 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToMultiPoint(
-						readWriteModel.NewCBusPointToMultiPointCommandNormal(
-							readWriteModel.ApplicationIdContainer_HEATING_88,
-							readWriteModel.NewSALDataLighting(
-								readWriteModel.NewLightingDataOn(
-									2,
-									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
-								),
-								nil,
-							),
-							0,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							0,
+							readWriteModel.ApplicationIdContainer_HEATING_88,
+							readWriteModel.NewSALDataLighting(
+								nil,
+								readWriteModel.NewLightingDataOn(
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+									2,
+								),
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -993,29 +1004,29 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToMultiPoint(
-						readWriteModel.NewCBusPointToMultiPointCommandNormal(
-							readWriteModel.ApplicationIdContainer_AUDIO_AND_VIDEO_CD,
-							readWriteModel.NewSALDataLighting(
-								readWriteModel.NewLightingDataOn(
-									2,
-									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
-								),
-								nil,
-							),
-							0,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							0,
+							readWriteModel.ApplicationIdContainer_AUDIO_AND_VIDEO_CD,
+							readWriteModel.NewSALDataLighting(
+								nil,
+								readWriteModel.NewLightingDataOn(
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+									2,
+								),
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -1038,29 +1049,29 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestCommand(
-					readWriteModel.NewCBusCommandPointToMultiPoint(
-						readWriteModel.NewCBusPointToMultiPointCommandNormal(
-							readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
-							readWriteModel.NewSALDataLighting(
-								readWriteModel.NewLightingDataOn(
-									2,
-									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
-								),
-								nil,
-							),
-							0,
-							cbusOptions,
-						),
-						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
-						cbusOptions,
-					),
-					nil,
-					readWriteModel.NewAlpha(0),
 					readWriteModel.RequestType_REQUEST_COMMAND,
 					nil,
 					nil,
 					readWriteModel.RequestType_EMPTY,
 					readWriteModel.NewRequestTermination(),
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							0,
+							readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+							readWriteModel.NewSALDataLighting(
+								nil,
+								readWriteModel.NewLightingDataOn(
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+									2,
+								),
+							),
+							cbusOptions,
+						),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
 					cbusOptions,
 				),
 				requestContext,
@@ -1091,8 +1102,8 @@ func TestTagToCBusMessage(t *testing.T) {
 				return
 			}
 			if !assert.Equal(t, gotCBusMessage, tt.wantCBusMessage) {
-				gotBox := utils.BoxAnything("got", gotCBusMessage, 120)
-				wantBox := utils.BoxAnything("want", tt.wantCBusMessage, 120)
+				gotBox := utils.BoxAnything(gotCBusMessage, utils.WithAsciiBoxName("got"), utils.WithAsciiBoxCharWidth(120))
+				wantBox := utils.BoxAnything(tt.wantCBusMessage, utils.WithAsciiBoxName("want"), utils.WithAsciiBoxCharWidth(120))
 				t.Errorf("TagToCBusMessage():\n%s", utils.NewAsciiBoxWriter().BoxSideBySide(gotBox, wantBox))
 			}
 			if gotSupportsRead != tt.wantSupportsRead {
@@ -1123,14 +1134,18 @@ func Test_producePointToPointCommand(t *testing.T) {
 	}{
 		{
 			name: "no bridge",
+			args: args{
+				unitAddress: readWriteModel.NewUnitAddress(0),
+				calData:     readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
+			},
 			want: readWriteModel.NewCBusCommandPointToPoint(
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
 				readWriteModel.NewCBusPointToPointCommandDirect(
-					nil,
 					0,
-					nil,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
+					readWriteModel.NewUnitAddress(0),
 					nil,
 				),
-				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
 				nil,
 			),
 			wantErr: assert.NoError,
@@ -1138,23 +1153,25 @@ func Test_producePointToPointCommand(t *testing.T) {
 		{
 			name: "one bridge",
 			args: args{
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				bridgeAddresses: []readWriteModel.BridgeAddress{
 					readWriteModel.NewBridgeAddress(1),
 				},
+				calData: readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
 			},
 			want: readWriteModel.NewCBusCommandPointToPoint(
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
 				readWriteModel.NewCBusPointToPointCommandIndirect(
+					0,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewNetworkRoute(
 						readWriteModel.NewNetworkProtocolControlInformation(1, 1),
 						[]readWriteModel.BridgeAddress{},
 					),
-					nil,
-					0,
-					nil,
+					readWriteModel.NewUnitAddress(0),
 					nil,
 				),
-				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
 				nil,
 			),
 			wantErr: assert.NoError,
@@ -1162,6 +1179,7 @@ func Test_producePointToPointCommand(t *testing.T) {
 		{
 			name: "6 bridges",
 			args: args{
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				bridgeAddresses: []readWriteModel.BridgeAddress{
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewBridgeAddress(2),
@@ -1170,9 +1188,13 @@ func Test_producePointToPointCommand(t *testing.T) {
 					readWriteModel.NewBridgeAddress(5),
 					readWriteModel.NewBridgeAddress(6),
 				},
+				calData: readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
 			},
 			want: readWriteModel.NewCBusCommandPointToPoint(
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
 				readWriteModel.NewCBusPointToPointCommandIndirect(
+					0,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewNetworkRoute(
 						readWriteModel.NewNetworkProtocolControlInformation(6, 6),
@@ -1184,19 +1206,17 @@ func Test_producePointToPointCommand(t *testing.T) {
 							readWriteModel.NewBridgeAddress(6),
 						},
 					),
+					readWriteModel.NewUnitAddress(0),
 					nil,
-					0,
-					nil,
-					nil,
-				), readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+				),
 				nil,
 			),
 			wantErr: assert.NoError,
 		},
 		{
 			name: "7 bridges",
-
 			args: args{
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				bridgeAddresses: []readWriteModel.BridgeAddress{
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewBridgeAddress(2),
@@ -1236,9 +1256,19 @@ func Test_producePointToMultiPointCommandStatus(t *testing.T) {
 	}{
 		{
 			name: "no bridge",
+			args: args{
+				statusRequest: readWriteModel.NewStatusRequestBinaryState(9, readWriteModel.ApplicationIdContainer_RESERVED_00),
+			},
 			want: readWriteModel.NewCBusCommandPointToMultiPoint(
-				readWriteModel.NewCBusPointToMultiPointCommandStatus(nil, 0, nil),
 				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint),
+				readWriteModel.NewCBusPointToMultiPointCommandStatus(
+					0,
+					readWriteModel.NewStatusRequestBinaryState(
+						9,
+						readWriteModel.ApplicationIdContainer_RESERVED_00,
+					),
+					nil,
+				),
 				nil,
 			),
 			wantErr: assert.NoError,
@@ -1249,19 +1279,20 @@ func Test_producePointToMultiPointCommandStatus(t *testing.T) {
 				bridgeAddresses: []readWriteModel.BridgeAddress{
 					readWriteModel.NewBridgeAddress(1),
 				},
+				statusRequest: readWriteModel.NewStatusRequestBinaryState(9, readWriteModel.ApplicationIdContainer_RESERVED_00),
 			},
 			want: readWriteModel.NewCBusCommandPointToPointToMultiPoint(
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
 				readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(
-					nil,
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewNetworkRoute(
 						readWriteModel.NewNetworkProtocolControlInformation(1, 1),
 						[]readWriteModel.BridgeAddress{},
 					),
 					0,
+					readWriteModel.NewStatusRequestBinaryState(9, readWriteModel.ApplicationIdContainer_RESERVED_00),
 					nil,
 				),
-				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
 				nil,
 			),
 			wantErr: assert.NoError,
@@ -1277,10 +1308,11 @@ func Test_producePointToMultiPointCommandStatus(t *testing.T) {
 					readWriteModel.NewBridgeAddress(5),
 					readWriteModel.NewBridgeAddress(6),
 				},
+				statusRequest: readWriteModel.NewStatusRequestBinaryState(9, readWriteModel.ApplicationIdContainer_RESERVED_00),
 			},
 			want: readWriteModel.NewCBusCommandPointToPointToMultiPoint(
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
 				readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(
-					nil,
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewNetworkRoute(
 						readWriteModel.NewNetworkProtocolControlInformation(6, 6),
@@ -1293,16 +1325,15 @@ func Test_producePointToMultiPointCommandStatus(t *testing.T) {
 						},
 					),
 					0,
+					readWriteModel.NewStatusRequestBinaryState(9, readWriteModel.ApplicationIdContainer_RESERVED_00),
 					nil,
 				),
-				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
 				nil,
 			),
 			wantErr: assert.NoError,
 		},
 		{
 			name: "7 bridges",
-
 			args: args{
 				bridgeAddresses: []readWriteModel.BridgeAddress{
 					readWriteModel.NewBridgeAddress(1),
@@ -1313,6 +1344,7 @@ func Test_producePointToMultiPointCommandStatus(t *testing.T) {
 					readWriteModel.NewBridgeAddress(6),
 					readWriteModel.NewBridgeAddress(7),
 				},
+				statusRequest: readWriteModel.NewStatusRequestBinaryState(9, readWriteModel.ApplicationIdContainer_RESERVED_00),
 			},
 			wantErr: assert.Error,
 		},
@@ -1343,9 +1375,17 @@ func Test_producePointToMultiPointCommandNormal(t *testing.T) {
 	}{
 		{
 			name: "no bridge",
+			args: args{
+				salData: readWriteModel.NewSALDataFreeUsage(nil),
+			},
 			want: readWriteModel.NewCBusCommandPointToMultiPoint(
-				readWriteModel.NewCBusPointToMultiPointCommandNormal(0, nil, 0, nil),
 				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+				readWriteModel.NewCBusPointToMultiPointCommandNormal(
+					0,
+					0,
+					readWriteModel.NewSALDataFreeUsage(nil),
+					nil,
+				),
 				nil,
 			),
 			wantErr: assert.NoError,
@@ -1356,20 +1396,21 @@ func Test_producePointToMultiPointCommandNormal(t *testing.T) {
 				bridgeAddresses: []readWriteModel.BridgeAddress{
 					readWriteModel.NewBridgeAddress(1),
 				},
+				salData: readWriteModel.NewSALDataFreeUsage(nil),
 			},
 			want: readWriteModel.NewCBusCommandPointToPointToMultiPoint(
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
 				readWriteModel.NewCBusPointToPointToMultiPointCommandNormal(
-					0,
-					nil,
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewNetworkRoute(
 						readWriteModel.NewNetworkProtocolControlInformation(1, 1),
 						[]readWriteModel.BridgeAddress{},
 					),
 					0,
+					0,
+					readWriteModel.NewSALDataFreeUsage(nil),
 					nil,
 				),
-				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
 				nil,
 			),
 			wantErr: assert.NoError,
@@ -1385,11 +1426,11 @@ func Test_producePointToMultiPointCommandNormal(t *testing.T) {
 					readWriteModel.NewBridgeAddress(5),
 					readWriteModel.NewBridgeAddress(6),
 				},
+				salData: readWriteModel.NewSALDataFreeUsage(nil),
 			},
 			want: readWriteModel.NewCBusCommandPointToPointToMultiPoint(
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
 				readWriteModel.NewCBusPointToPointToMultiPointCommandNormal(
-					0,
-					nil,
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewNetworkRoute(
 						readWriteModel.NewNetworkProtocolControlInformation(6, 6),
@@ -1402,9 +1443,10 @@ func Test_producePointToMultiPointCommandNormal(t *testing.T) {
 						},
 					),
 					0,
+					0,
+					readWriteModel.NewSALDataFreeUsage(nil),
 					nil,
 				),
-				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
 				nil,
 			),
 			wantErr: assert.NoError,
@@ -1492,9 +1534,16 @@ func TestMapEncodedReply(t *testing.T) {
 						readWriteModel.NewStatusByte(readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR, readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF),
 						readWriteModel.NewStatusByte(readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR, readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF),
 					}
-					calDataStatus := readWriteModel.NewCALDataStatus(readWriteModel.ApplicationIdContainer_LIGHTING_3A, 0, statusBytes, readWriteModel.CALCommandTypeContainer_CALCommandStatus_0Bytes, nil, nil)
+					calDataStatus := readWriteModel.NewCALDataStatus(
+						readWriteModel.CALCommandTypeContainer_CALCommandStatus_0Bytes,
+						nil,
+						readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+						0,
+						statusBytes,
+						nil,
+					)
 					calReplyShort := readWriteModel.NewCALReplyShort(0, calDataStatus, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyShort, 0, nil, nil)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyShort, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -1557,16 +1606,41 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataStatusExtendedExactly (binary)",
+			name: "CALDataStatusExtended (binary)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					statusBytes := []readWriteModel.StatusByte{
 						readWriteModel.NewStatusByte(readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR, readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF),
 						readWriteModel.NewStatusByte(readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR, readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF),
 					}
-					calDataStatus := readWriteModel.NewCALDataStatusExtended(readWriteModel.StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE, readWriteModel.ApplicationIdContainer_LIGHTING_3A, 0, statusBytes, nil, readWriteModel.CALCommandTypeContainer_CALCommandStatus_0Bytes, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataStatus, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataStatus := readWriteModel.NewCALDataStatusExtended(
+						readWriteModel.CALCommandTypeContainer_CALCommandStatus_0Bytes,
+						nil,
+						readWriteModel.StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE,
+						readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+						0,
+						statusBytes,
+						nil,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataStatus,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(
+						0,
+						calReplyLong,
+						nil,
+						nil,
+					)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -1626,17 +1700,41 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataStatusExtendedExactly (level)",
+			name: "CALDataStatusExtended (level)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					levelInformation := []readWriteModel.LevelInformation{
-						readWriteModel.NewLevelInformationNormal(readWriteModel.LevelInformationNibblePair_Value_A, readWriteModel.LevelInformationNibblePair_Value_F, 13),
+						readWriteModel.NewLevelInformationNormal(
+							13,
+							readWriteModel.LevelInformationNibblePair_Value_A,
+							readWriteModel.LevelInformationNibblePair_Value_F,
+						),
 						readWriteModel.NewLevelInformationAbsent(13),
 						readWriteModel.NewLevelInformationCorrupted(13, 14, 15, 16, 17),
 					}
-					calDataStatus := readWriteModel.NewCALDataStatusExtended(readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE, readWriteModel.ApplicationIdContainer_LIGHTING_3A, 0, nil, levelInformation, readWriteModel.CALCommandTypeContainer_CALCommandStatus_0Bytes, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataStatus, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataStatus := readWriteModel.NewCALDataStatusExtended(
+						readWriteModel.CALCommandTypeContainer_CALCommandStatus_0Bytes,
+						nil,
+						readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE,
+						readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+						0,
+						nil,
+						levelInformation,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataStatus,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -1687,13 +1785,30 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataIdentifyReplyExactly (sense levels)",
+			name: "CALDataIdentifyReply (sense levels)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandCurrentSenseLevels([]byte{1, 2, 3, 4}, 4)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_CurrentSenseLevels, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_CurrentSenseLevels,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -1738,13 +1853,30 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataIdentifyReplyExactly (delays)",
+			name: "CALDataIdentifyReply (delays)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandDelays([]byte{1, 2, 3, 4}, 5, 5)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_Delays, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_Delays,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -1792,7 +1924,7 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataIdentifyReplyExactly (dsi status)",
+			name: "CALDataIdentifyReply (dsi status)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandDSIStatus(
@@ -1808,9 +1940,26 @@ func TestMapEncodedReply(t *testing.T) {
 						12,
 						9,
 					)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -1866,7 +2015,7 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataIdentifyReplyExactly (extended diagnostic summary)",
+			name: "CALDataIdentifyReply (extended diagnostic summary)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandExtendedDiagnosticSummary(
@@ -1891,9 +2040,26 @@ func TestMapEncodedReply(t *testing.T) {
 						true,
 						8,
 					)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -1958,13 +2124,30 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataIdentifyReplyExactly (summary)",
+			name: "CALDataIdentifyReply (summary)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandSummary("pineapple", 1, "13", 3)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -2013,13 +2196,30 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataIdentifyReplyExactly (firmware version)",
+			name: "CALDataIdentifyReply (firmware version)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandFirmwareVersion("13", 1)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -2068,9 +2268,26 @@ func TestMapEncodedReply(t *testing.T) {
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandGAVPhysicalAddresses([]byte{1, 2, 3, 4}, 4)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -2119,9 +2336,26 @@ func TestMapEncodedReply(t *testing.T) {
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandGAVValuesCurrent([]byte{1, 2, 3, 4}, 4)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -2170,9 +2404,26 @@ func TestMapEncodedReply(t *testing.T) {
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandGAVValuesStored([]byte{1, 2, 3, 4}, 4)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -2224,9 +2475,26 @@ func TestMapEncodedReply(t *testing.T) {
 						readWriteModel.NewLogicAssignment(true, true, true, true, true, true),
 						readWriteModel.NewLogicAssignment(true, true, true, true, true, true),
 					}, 4)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -2292,9 +2560,26 @@ func TestMapEncodedReply(t *testing.T) {
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandManufacturer("Apache", 13)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -2343,9 +2628,26 @@ func TestMapEncodedReply(t *testing.T) {
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandMaximumLevels([]byte{1, 2, 3, 4}, 1)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -2394,9 +2696,26 @@ func TestMapEncodedReply(t *testing.T) {
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandMinimumLevels([]byte{1, 2, 3, 4}, 1)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -2445,9 +2764,26 @@ func TestMapEncodedReply(t *testing.T) {
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandNetworkTerminalLevels([]byte{1, 2, 3, 4}, 1)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -2496,9 +2832,26 @@ func TestMapEncodedReply(t *testing.T) {
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandNetworkVoltage("13.3", "3", 3)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -2549,9 +2902,26 @@ func TestMapEncodedReply(t *testing.T) {
 					gavStoreEnabledByte1 := byte(2)
 					gavStoreEnabledByte2 := byte(3)
 					command := readWriteModel.NewIdentifyReplyCommandOutputUnitSummary(readWriteModel.NewIdentifyReplyCommandUnitSummary(true, true, true, true, true, true, true, true), &gavStoreEnabledByte1, &gavStoreEnabledByte2, 13, 13)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -2614,9 +2984,26 @@ func TestMapEncodedReply(t *testing.T) {
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandTerminalLevels([]byte{1, 2, 3, 4}, 4)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
@@ -2665,9 +3052,26 @@ func TestMapEncodedReply(t *testing.T) {
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandType("chonkers", 4)
-					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
-					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
-					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_DSIStatus,
+						command,
+						nil,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(0, calReplyLong, nil, nil)
 				}(),
 				tagName: "someTag",
 				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {

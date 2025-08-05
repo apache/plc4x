@@ -83,7 +83,7 @@ public class BACnetConstructedDataPositiveIntegerValueFaultLowLimit extends BACn
     writeBuffer.pushContext("BACnetConstructedDataPositiveIntegerValueFaultLowLimit");
 
     // Simple Field (faultLowLimit)
-    writeSimpleField("faultLowLimit", faultLowLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("faultLowLimit", faultLowLimit, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataPositiveIntegerValueFaultLowLimit extends BACn
     BACnetApplicationTagUnsignedInteger faultLowLimit =
         readSimpleField(
             "faultLowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

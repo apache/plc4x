@@ -21,8 +21,9 @@ package values
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestValues(t *testing.T) {
@@ -64,7 +65,7 @@ func TestValues(t *testing.T) {
 		t.Run(fmt.Sprintf("value %d", value), func(t *testing.T) {
 			valueString := value.String()
 			assert.NotEmpty(t, valueString)
-			valueType, ok := PlcValueByName(valueString)
+			valueType, ok := PlcValueTypeByName(valueString)
 			expectedValue := value
 			expectedOk := true
 			if value == 0xff {

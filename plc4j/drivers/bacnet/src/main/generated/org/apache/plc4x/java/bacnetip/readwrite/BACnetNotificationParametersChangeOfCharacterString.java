@@ -100,21 +100,19 @@ public class BACnetNotificationParametersChangeOfCharacterString
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfCharacterString");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (changedValue)
-    writeSimpleField("changedValue", changedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("changedValue", changedValue, writeComplex(writeBuffer));
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Simple Field (alarmValue)
-    writeSimpleField("alarmValue", alarmValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("alarmValue", alarmValue, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfCharacterString");
   }
@@ -161,14 +159,14 @@ public class BACnetNotificationParametersChangeOfCharacterString
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetContextTagCharacterString changedValue =
         readSimpleField(
             "changedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(
@@ -180,7 +178,7 @@ public class BACnetNotificationParametersChangeOfCharacterString
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -189,7 +187,7 @@ public class BACnetNotificationParametersChangeOfCharacterString
     BACnetContextTagCharacterString alarmValue =
         readSimpleField(
             "alarmValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(
@@ -201,7 +199,7 @@ public class BACnetNotificationParametersChangeOfCharacterString
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

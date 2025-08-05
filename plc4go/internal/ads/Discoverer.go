@@ -23,13 +23,15 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"net"
 	"net/url"
 	"runtime/debug"
 	"strconv"
+	"sync"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -37,6 +39,7 @@ import (
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
@@ -48,6 +51,8 @@ type discovery struct {
 }
 
 type Discoverer struct {
+	wg sync.WaitGroup // use to track spawned go routines
+
 	passLogToModel bool
 	log            zerolog.Logger
 }
@@ -77,7 +82,13 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	deviceNames := options.FilterDiscoveryOptionsDeviceName(discoveryOptions)
 	if len(deviceNames) > 0 {
 		for _, curInterface := range allInterfaces {
+			if err := ctx.Err(); err != nil {
+				return err
+			}
 			for _, deviceNameOption := range deviceNames {
+				if err := ctx.Err(); err != nil {
+					return err
+				}
 				if curInterface.Name == deviceNameOption.GetDeviceName() {
 					interfaces = append(interfaces, curInterface)
 					break
@@ -91,6 +102,9 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	// Iterate over all selected network devices and filter out all the devices with IPv4 configured
 	var discoveryItems []*discovery
 	for _, interf := range interfaces {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		addrs, err := interf.Addrs()
 		if err != nil {
 			return err
@@ -99,6 +113,9 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		// For ADS we're only interested in IPv4 addresses, as it doesn't
 		// seem to work with IPv6.
 		for _, addr := range addrs {
+			if err := ctx.Err(); err != nil {
+				return err
+			}
 			var ipv4Addr net.IP
 			switch addr.(type) {
 			// If the device is configured to communicate with a subnet
@@ -136,6 +153,9 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 
 	// Open a listening udp socket for each of the discoveryItems
 	for _, discoveryItem := range discoveryItems {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		responseAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", discoveryItem.localAddress, model.AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT))
 		if err != nil {
 			return errors.Wrap(err, "error resolving udp")
@@ -147,7 +167,9 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		discoveryItem.socket = socket
 
 		// Start a worker to receive responses
+		d.wg.Add(1)
 		go func(discoveryItem *discovery) {
+			defer d.wg.Done()
 			defer func() {
 				if err := recover(); err != nil {
 					d.log.Error().
@@ -158,6 +180,10 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 			}()
 			buf := make([]byte, 1024)
 			for {
+				if err := ctx.Err(); err != nil {
+					d.log.Debug().Err(ctx.Err()).Msg("ending")
+					return
+				}
 				length, fromAddr, err := socket.ReadFromUDP(buf)
 				if length == 0 {
 					continue
@@ -181,6 +207,10 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				var versionBlock model.AdsDiscoveryBlockVersion
 				var fingerprintBlock model.AdsDiscoveryBlockFingerprint
 				for _, block := range discoveryResponse.GetBlocks() {
+					if err := ctx.Err(); err != nil {
+						d.log.Debug().Err(err).Msg("ending")
+						return
+					}
 					switch block.GetBlockType() {
 					case model.AdsDiscoveryBlockType_HOST_NAME:
 						hostNameBlock = block.(model.AdsDiscoveryBlockHostName)
@@ -245,6 +275,10 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	}
 	defer func() {
 		for _, discoveryItem := range discoveryItems {
+			if err := ctx.Err(); err != nil {
+				d.log.Debug().Err(err).Msg("ending")
+				return
+			}
 			if discoveryItem.socket != nil {
 				if err := discoveryItem.socket.Close(); err != nil {
 					d.log.Debug().Err(err).Msg("errored")
@@ -258,6 +292,9 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 
 	// Iterate over all network devices of this system.
 	for _, discoveryItem := range discoveryItems {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		// Prepare the discovery packet data
 		// Create the discovery request message for this device.
 		amsNetId := model.NewAmsNetId(discoveryItem.localAddress[0], discoveryItem.localAddress[1], discoveryItem.localAddress[2], discoveryItem.localAddress[3], uint8(1), uint8(1))
@@ -297,5 +334,12 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	}
 
 	time.Sleep(time.Second * 10)
+	return nil
+}
+
+func (d *Discoverer) Close() error {
+	defer utils.StopWarn(d.log)()
+	d.log.Trace().Msg("Waiting for goroutines to stop")
+	d.wg.Wait()
 	return nil
 }

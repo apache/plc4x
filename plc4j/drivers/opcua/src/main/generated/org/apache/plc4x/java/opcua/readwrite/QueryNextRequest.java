@@ -38,17 +38,17 @@ import org.apache.plc4x.java.spi.generation.*;
 public class QueryNextRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "621";
+  public Integer getExtensionId() {
+    return (int) 621;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final boolean releaseContinuationPoint;
   protected final PascalByteString continuationPoint;
 
   public QueryNextRequest(
-      ExtensionObjectDefinition requestHeader,
+      RequestHeader requestHeader,
       boolean releaseContinuationPoint,
       PascalByteString continuationPoint) {
     super();
@@ -57,7 +57,7 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
     this.continuationPoint = continuationPoint;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -77,7 +77,7 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
     writeBuffer.pushContext("QueryNextRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -87,8 +87,7 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
         "releaseContinuationPoint", releaseContinuationPoint, writeBoolean(writeBuffer));
 
     // Simple Field (continuationPoint)
-    writeSimpleField(
-        "continuationPoint", continuationPoint, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("continuationPoint", continuationPoint, writeComplex(writeBuffer));
 
     writeBuffer.popContext("QueryNextRequest");
   }
@@ -120,16 +119,17 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("QueryNextRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+            readComplex(
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     Byte reservedField0 =
@@ -141,8 +141,7 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
     PascalByteString continuationPoint =
         readSimpleField(
             "continuationPoint",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("QueryNextRequest");
     // Create the instance
@@ -152,12 +151,12 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
 
   public static class QueryNextRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final boolean releaseContinuationPoint;
     private final PascalByteString continuationPoint;
 
     public QueryNextRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
+        RequestHeader requestHeader,
         boolean releaseContinuationPoint,
         PascalByteString continuationPoint) {
       this.requestHeader = requestHeader;

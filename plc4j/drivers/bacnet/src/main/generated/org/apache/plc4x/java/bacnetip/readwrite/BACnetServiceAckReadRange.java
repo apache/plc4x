@@ -110,29 +110,25 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
     writeBuffer.pushContext("BACnetServiceAckReadRange");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (propertyArrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "propertyArrayIndex", propertyArrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("propertyArrayIndex", propertyArrayIndex, writeComplex(writeBuffer));
 
     // Simple Field (resultFlags)
-    writeSimpleField("resultFlags", resultFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("resultFlags", resultFlags, writeComplex(writeBuffer));
 
     // Simple Field (itemCount)
-    writeSimpleField("itemCount", itemCount, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("itemCount", itemCount, writeComplex(writeBuffer));
 
     // Optional Field (itemData) (Can be skipped, if the value is null)
-    writeOptionalField("itemData", itemData, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("itemData", itemData, writeComplex(writeBuffer));
 
     // Optional Field (firstSequenceNumber) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "firstSequenceNumber", firstSequenceNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("firstSequenceNumber", firstSequenceNumber, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckReadRange");
   }
@@ -187,7 +183,7 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -199,7 +195,7 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -208,7 +204,7 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
     BACnetContextTagUnsignedInteger propertyArrayIndex =
         readOptionalField(
             "propertyArrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -220,7 +216,7 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
     BACnetResultFlagsTagged resultFlags =
         readSimpleField(
             "resultFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetResultFlagsTagged.staticParse(
                         readBuffer, (short) (3), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -229,7 +225,7 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
     BACnetContextTagUnsignedInteger itemCount =
         readSimpleField(
             "itemCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -241,7 +237,7 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
     BACnetConstructedData itemData =
         readOptionalField(
             "itemData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,
@@ -257,7 +253,7 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
     BACnetContextTagUnsignedInteger firstSequenceNumber =
         readOptionalField(
             "firstSequenceNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

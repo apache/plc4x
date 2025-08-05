@@ -24,34 +24,20 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.11.0</version>
+    <version>0.13.0</version>
   </parent>
 
   <artifactId>plc4j-driver-opcua</artifactId>
+
   <name>PLC4J: Driver: OPC UA</name>
   <description>Implementation of a PLC4X driver able to speak with devices using the OPC UA protocol.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2025-08-02T13:58:13Z</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
-        <plugin>
-          <groupId>org.apache.plc4x.plugins</groupId>
-          <artifactId>plc4x-maven-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>generate-driver</id>
-              <phase>generate-sources</phase>
-              <goals>
-                <goal>generate-driver</goal>
-              </goals>
-              <configuration>
-                <protocolName>opcua</protocolName>
-                <languageName>java</languageName>
-                <outputFlavor>read-write</outputFlavor>
-                <outputDir>src/main/generated</outputDir>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
         <artifactId>karaf-maven-plugin</artifactId>
@@ -84,6 +70,23 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-milo-dependencies</id>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <phase>test-compile</phase>
+            <configuration>
+              <includeArtifactIds>server-examples</includeArtifactIds>
+              <outputDirectory>${project.build.directory}/milo-testcontainer</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -112,16 +115,6 @@
           </excludes>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4x-protocols-opcua</usedDependency>
-          </usedDependencies>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
@@ -129,19 +122,13 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.11.0</version>
+      <version>0.13.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.11.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-tcp</artifactId>
-      <version>0.11.0</version>
+      <version>0.13.0</version>
     </dependency>
 
     <dependency>
@@ -156,6 +143,10 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
     </dependency>
 
     <dependency>
@@ -172,12 +163,22 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.11.0</version>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transport-tcp</artifactId>
+      <version>0.13.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-test-utils</artifactId>
+      <version>0.13.0</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>sdk-client</artifactId>
@@ -201,26 +202,34 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-language-java</artifactId>
-      <version>0.11.0</version>
-      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-opcua</artifactId>
-      <version>0.11.0</version>
-      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-opcua</artifactId>
-      <version>0.11.0</version>
+      <version>0.13.0</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.docker-java</groupId>
+      <artifactId>docker-java-api</artifactId>
+      <version>3.5.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <version>1.21.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>1.21.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.tools</groupId>
+      <artifactId>jib-core</artifactId>
+      <version>0.27.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -249,5 +258,57 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <profiles>
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.plc4x.plugins</groupId>
+            <artifactId>plc4x-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-driver</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>opcua</protocolName>
+                  <languageName>java</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>src/main/generated</outputDir>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-code-generation-language-java</artifactId>
+          <version>0.13.0</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+          <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-opcua</artifactId>
+          <version>0.13.0</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
 </project>

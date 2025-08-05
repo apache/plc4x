@@ -22,7 +22,6 @@ import net.bytebuddy.implementation.bind.annotation.*;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -44,6 +43,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -70,11 +70,11 @@ public class PlcEntityInterceptor {
     }
 
     /**
-     * Basic Intersector for all methods on the proxy object.
+     * Basic Interceptor for all methods on the proxy object.
      * It checks if the invoked method is a getter and if so, only retrieves the requested tag, forwarding to
      * the {@link #fetchAndSetValueForGetter(Object, Method, PlcConnectionManager, String, AliasRegistry, Map)} method.
      * <p>
-     * If the tag is no getter, then all tags are refreshed by calling {@link #refetchAllFields(Object, PlcConnectionManager, String, AliasRegistry, Map)}
+     * If the tag is no getter, then all tags are refreshed by calling {@link #readAllFields(Object, PlcConnectionManager, String, AliasRegistry, Map)}
      * and then, the method is invoked.
      *
      * @param proxy             Object to intercept
@@ -139,10 +139,11 @@ public class PlcEntityInterceptor {
         // Fetch all values then invoke method
         try {
             LOGGER.trace("Invoked method is no getter, refetch all tags and invoke method {} then", method.getName());
-            refetchAllFields(proxy, connectionManager, address, registry, lastFetched);
+            readAllFields(proxy, connectionManager, address, registry, lastFetched);
             Object call = callable.call();
             // We write back
-            writeAllFields(proxy, connectionManager, address, registry, lastWritten);
+            // cdutz: Disabled this, as it seemed to make no real sense to me, as we're writing back values that we just read without any chance of them being changed.
+            //writeAllFields(proxy, connectionManager, address, registry, lastWritten);
             return call;
         } catch (Exception e) {
             throw new OPMException("Unable to forward invocation " + method.getName() + " on connected PlcEntity", e);
@@ -183,7 +184,7 @@ public class PlcEntityInterceptor {
         // Fetch all values then invoke method
         try {
             LOGGER.trace("Invoked method is no getter, refetch all tags and invoke method {} then", method.getName());
-            refetchAllFields(proxy, connectionManager, address, registry, lastFetched);
+            readAllFields(proxy, connectionManager, address, registry, lastFetched);
             return callable.call();
         } catch (Exception e) {
             throw new OPMException("Unable to forward invocation " + method.getName() + " on connected PlcEntity", e);
@@ -191,19 +192,19 @@ public class PlcEntityInterceptor {
     }
 
     /**
-     * Renews all values of all tags that are annotated with {@link PlcEntity}.
+     * Reads all values of all tags that are annotated with {@link PlcEntity}.
      *
      * @param proxy         Object to refresh the tags on.
      * @param connectionManager Connection Manager to use
      * @param registry      AliasRegistry to use
-     * @param lastFetched
+     * @param lastFetched   instants when which property was last fetched
      * @throws OPMException on various errors.
      */
     @SuppressWarnings("squid:S1141") // Nested try blocks readability is okay, move to other method makes it imho worse
-    static void refetchAllFields(Object proxy, PlcConnectionManager connectionManager, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
+    static void readAllFields(Object proxy, PlcConnectionManager connectionManager, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
         // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
         Class<?> entityClass = proxy.getClass().getSuperclass();
-        LOGGER.trace("Refetching all tags on proxy object of class {}", entityClass);
+        LOGGER.trace("Re-fetching all tags on proxy object of class {}", entityClass);
         PlcEntity plcEntity = entityClass.getAnnotation(PlcEntity.class);
         if (plcEntity == null) {
             throw new OPMException("Non PlcEntity supplied");
@@ -232,7 +233,7 @@ public class PlcEntityInterceptor {
 
             PlcReadRequest request = requestBuilder.build();
 
-            LOGGER.trace("Request for refetch of {} was build and is {}", entityClass, request);
+            LOGGER.trace("Request for re-fetch of {} was build and is {}", entityClass, request);
 
             PlcReadResponse response = getPlcReadResponse(request);
 
@@ -319,10 +320,10 @@ public class PlcEntityInterceptor {
     }
 
     /**
-     * Checks if a tags needs to be refetched/rewritten, i.e., the cached values are too old.
+     * Checks if a tags needs to be re-fetched/re-written, i.e., the cached values are too old.
      */
     private static boolean needsToBeSynced(Map<String, Instant> lastSynced, Field field) {
-        Validate.notNull(field);
+        Objects.requireNonNull(field);
         long cacheDurationMillis = field.getAnnotation(PlcTag.class).cacheDurationMillis();
         if (cacheDurationMillis < 0) {
             return true;

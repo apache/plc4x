@@ -66,7 +66,7 @@ public class BACnetPriorityValueDouble extends BACnetPriorityValue implements Me
     writeBuffer.pushContext("BACnetPriorityValueDouble");
 
     // Simple Field (doubleValue)
-    writeSimpleField("doubleValue", doubleValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doubleValue", doubleValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueDouble");
   }
@@ -97,7 +97,7 @@ public class BACnetPriorityValueDouble extends BACnetPriorityValue implements Me
     BACnetApplicationTagDouble doubleValue =
         readSimpleField(
             "doubleValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDouble) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

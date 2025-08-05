@@ -63,9 +63,7 @@ public class TlvOrganizationSpecific extends LldpUnit implements Message {
 
     // Simple Field (organizationSpecificUnit)
     writeSimpleField(
-        "organizationSpecificUnit",
-        organizationSpecificUnit,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "organizationSpecificUnit", organizationSpecificUnit, writeComplex(writeBuffer));
 
     writeBuffer.popContext("TlvOrganizationSpecific");
   }
@@ -96,8 +94,7 @@ public class TlvOrganizationSpecific extends LldpUnit implements Message {
     TlvOrganizationSpecificUnit organizationSpecificUnit =
         readSimpleField(
             "organizationSpecificUnit",
-            new DataReaderComplexDefault<>(
-                () -> TlvOrganizationSpecificUnit.staticParse(readBuffer), readBuffer));
+            readComplex(() -> TlvOrganizationSpecificUnit.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("TlvOrganizationSpecific");
     // Create the instance

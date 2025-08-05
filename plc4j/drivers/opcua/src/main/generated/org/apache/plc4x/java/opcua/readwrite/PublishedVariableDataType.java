@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class PublishedVariableDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "14275";
+  public Integer getExtensionId() {
+    return (int) 14275;
   }
 
   // Properties.
@@ -50,7 +50,6 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
   protected final double deadbandValue;
   protected final PascalString indexRange;
   protected final Variant substituteValue;
-  protected final int noOfMetaDataProperties;
   protected final List<QualifiedName> metaDataProperties;
 
   public PublishedVariableDataType(
@@ -61,7 +60,6 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
       double deadbandValue,
       PascalString indexRange,
       Variant substituteValue,
-      int noOfMetaDataProperties,
       List<QualifiedName> metaDataProperties) {
     super();
     this.publishedVariable = publishedVariable;
@@ -71,7 +69,6 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     this.deadbandValue = deadbandValue;
     this.indexRange = indexRange;
     this.substituteValue = substituteValue;
-    this.noOfMetaDataProperties = noOfMetaDataProperties;
     this.metaDataProperties = metaDataProperties;
   }
 
@@ -103,10 +100,6 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     return substituteValue;
   }
 
-  public int getNoOfMetaDataProperties() {
-    return noOfMetaDataProperties;
-  }
-
   public List<QualifiedName> getMetaDataProperties() {
     return metaDataProperties;
   }
@@ -119,8 +112,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     writeBuffer.pushContext("PublishedVariableDataType");
 
     // Simple Field (publishedVariable)
-    writeSimpleField(
-        "publishedVariable", publishedVariable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("publishedVariable", publishedVariable, writeComplex(writeBuffer));
 
     // Simple Field (attributeId)
     writeSimpleField("attributeId", attributeId, writeUnsignedLong(writeBuffer, 32));
@@ -135,14 +127,16 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     writeSimpleField("deadbandValue", deadbandValue, writeDouble(writeBuffer, 64));
 
     // Simple Field (indexRange)
-    writeSimpleField("indexRange", indexRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("indexRange", indexRange, writeComplex(writeBuffer));
 
     // Simple Field (substituteValue)
-    writeSimpleField(
-        "substituteValue", substituteValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("substituteValue", substituteValue, writeComplex(writeBuffer));
 
-    // Simple Field (noOfMetaDataProperties)
-    writeSimpleField(
+    // Implicit Field (noOfMetaDataProperties) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfMetaDataProperties =
+        (int) ((((getMetaDataProperties()) == (null)) ? -(1) : COUNT(getMetaDataProperties())));
+    writeImplicitField(
         "noOfMetaDataProperties", noOfMetaDataProperties, writeSignedInt(writeBuffer, 32));
 
     // Array Field (metaDataProperties)
@@ -183,7 +177,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     // Simple field (substituteValue)
     lengthInBits += substituteValue.getLengthInBits();
 
-    // Simple field (noOfMetaDataProperties)
+    // Implicit Field (noOfMetaDataProperties)
     lengthInBits += 32;
 
     // Array field
@@ -199,15 +193,14 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("PublishedVariableDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId publishedVariable =
         readSimpleField(
-            "publishedVariable",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "publishedVariable", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     long attributeId = readSimpleField("attributeId", readUnsignedLong(readBuffer, 32));
 
@@ -220,21 +213,19 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
 
     PascalString indexRange =
         readSimpleField(
-            "indexRange",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "indexRange", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     Variant substituteValue =
         readSimpleField(
-            "substituteValue",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer));
+            "substituteValue", readComplex(() -> Variant.staticParse(readBuffer), readBuffer));
 
     int noOfMetaDataProperties =
-        readSimpleField("noOfMetaDataProperties", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfMetaDataProperties", readSignedInt(readBuffer, 32));
 
     List<QualifiedName> metaDataProperties =
         readCountArrayField(
             "metaDataProperties",
-            new DataReaderComplexDefault<>(() -> QualifiedName.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer),
             noOfMetaDataProperties);
 
     readBuffer.closeContext("PublishedVariableDataType");
@@ -247,7 +238,6 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
         deadbandValue,
         indexRange,
         substituteValue,
-        noOfMetaDataProperties,
         metaDataProperties);
   }
 
@@ -260,7 +250,6 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     private final double deadbandValue;
     private final PascalString indexRange;
     private final Variant substituteValue;
-    private final int noOfMetaDataProperties;
     private final List<QualifiedName> metaDataProperties;
 
     public PublishedVariableDataTypeBuilderImpl(
@@ -271,7 +260,6 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
         double deadbandValue,
         PascalString indexRange,
         Variant substituteValue,
-        int noOfMetaDataProperties,
         List<QualifiedName> metaDataProperties) {
       this.publishedVariable = publishedVariable;
       this.attributeId = attributeId;
@@ -280,7 +268,6 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
       this.deadbandValue = deadbandValue;
       this.indexRange = indexRange;
       this.substituteValue = substituteValue;
-      this.noOfMetaDataProperties = noOfMetaDataProperties;
       this.metaDataProperties = metaDataProperties;
     }
 
@@ -294,7 +281,6 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
               deadbandValue,
               indexRange,
               substituteValue,
-              noOfMetaDataProperties,
               metaDataProperties);
       return publishedVariableDataType;
     }
@@ -316,7 +302,6 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
         && (getDeadbandValue() == that.getDeadbandValue())
         && (getIndexRange() == that.getIndexRange())
         && (getSubstituteValue() == that.getSubstituteValue())
-        && (getNoOfMetaDataProperties() == that.getNoOfMetaDataProperties())
         && (getMetaDataProperties() == that.getMetaDataProperties())
         && super.equals(that)
         && true;
@@ -333,7 +318,6 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
         getDeadbandValue(),
         getIndexRange(),
         getSubstituteValue(),
-        getNoOfMetaDataProperties(),
         getMetaDataProperties());
   }
 

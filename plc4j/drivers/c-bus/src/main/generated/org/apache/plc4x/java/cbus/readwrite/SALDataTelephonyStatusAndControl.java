@@ -61,7 +61,7 @@ public class SALDataTelephonyStatusAndControl extends SALData implements Message
     writeBuffer.pushContext("SALDataTelephonyStatusAndControl");
 
     // Simple Field (telephonyData)
-    writeSimpleField("telephonyData", telephonyData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("telephonyData", telephonyData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataTelephonyStatusAndControl");
   }
@@ -91,9 +91,7 @@ public class SALDataTelephonyStatusAndControl extends SALData implements Message
 
     TelephonyData telephonyData =
         readSimpleField(
-            "telephonyData",
-            new DataReaderComplexDefault<>(
-                () -> TelephonyData.staticParse(readBuffer), readBuffer));
+            "telephonyData", readComplex(() -> TelephonyData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataTelephonyStatusAndControl");
     // Create the instance

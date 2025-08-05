@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BrowseDescription extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "516";
+  public Integer getExtensionId() {
+    return (int) 516;
   }
 
   // Properties.
@@ -98,19 +98,18 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
     writeBuffer.pushContext("BrowseDescription");
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Simple Field (browseDirection)
     writeSimpleEnumField(
         "browseDirection",
         "BrowseDirection",
         browseDirection,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BrowseDirection::getValue, BrowseDirection::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (referenceTypeId)
-    writeSimpleField(
-        "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceTypeId", referenceTypeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -163,27 +162,23 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("BrowseDescription");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
-        readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("nodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     BrowseDirection browseDirection =
         readEnumField(
             "browseDirection",
             "BrowseDirection",
-            new DataReaderEnumDefault<>(
-                BrowseDirection::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(BrowseDirection::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     NodeId referenceTypeId =
         readSimpleField(
-            "referenceTypeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "referenceTypeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);

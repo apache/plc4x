@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class PriorityMappingEntryType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "25222";
+  public Integer getExtensionId() {
+    return (int) 25222;
   }
 
   // Properties.
@@ -84,10 +84,10 @@ public class PriorityMappingEntryType extends ExtensionObjectDefinition implemen
     writeBuffer.pushContext("PriorityMappingEntryType");
 
     // Simple Field (mappingUri)
-    writeSimpleField("mappingUri", mappingUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("mappingUri", mappingUri, writeComplex(writeBuffer));
 
     // Simple Field (priorityLabel)
-    writeSimpleField("priorityLabel", priorityLabel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("priorityLabel", priorityLabel, writeComplex(writeBuffer));
 
     // Simple Field (priorityValue_PCP)
     writeSimpleField("priorityValue_PCP", priorityValue_PCP, writeUnsignedShort(writeBuffer, 8));
@@ -125,20 +125,18 @@ public class PriorityMappingEntryType extends ExtensionObjectDefinition implemen
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("PriorityMappingEntryType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString mappingUri =
         readSimpleField(
-            "mappingUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "mappingUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString priorityLabel =
         readSimpleField(
-            "priorityLabel",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "priorityLabel", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     short priorityValue_PCP =
         readSimpleField("priorityValue_PCP", readUnsignedShort(readBuffer, 8));

@@ -182,12 +182,6 @@ public class CBusOptions implements Message {
     return lengthInBits;
   }
 
-  public static CBusOptions staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static CBusOptions staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CBusOptions");
     PositionAware positionAware = readBuffer;

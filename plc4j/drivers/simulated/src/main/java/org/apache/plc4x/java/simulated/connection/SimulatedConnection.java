@@ -26,12 +26,17 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.simulated.tag.SimulatedTag;
 import org.apache.plc4x.java.simulated.tag.SimulatedTagHandler;
+import org.apache.plc4x.java.spi.ConversationContext;
+import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
+import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,8 +69,13 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     public SimulatedConnection(SimulatedDevice device) {
         super(true, true, true, true, false,
-            new SimulatedTagHandler(), new PlcValueHandler(), null, null);
+            new DefaultPlcValueHandler(), new SimulatedTagHandler(), null, null);
         this.device = device;
+    }
+
+    @Override
+    public PlcTagHandler getPlcTagHandler() {
+        return new SimulatedTagHandler();
     }
 
     @Override
@@ -91,15 +101,15 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        Map<String, ResponseItem<PlcValue>> tags = new HashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> tags = new HashMap<>();
         for (String tagName : readRequest.getTagNames()) {
             SimulatedTag tag = (SimulatedTag) readRequest.getTag(tagName);
             Optional<PlcValue> valueOptional = device.get(tag);
-            ResponseItem<PlcValue> tagPair;
+            PlcResponseItem<PlcValue> tagPair;
             boolean present = valueOptional.isPresent();
             tagPair = present
-                ? new ResponseItem<>(PlcResponseCode.OK, valueOptional.get())
-                : new ResponseItem<>(PlcResponseCode.NOT_FOUND, null);
+                ? new DefaultPlcResponseItem<>(PlcResponseCode.OK, valueOptional.get())
+                : new DefaultPlcResponseItem<>(PlcResponseCode.NOT_FOUND, null);
             tags.put(tagName, tagPair);
         }
         PlcReadResponse response = new DefaultPlcReadResponse(readRequest, tags);
@@ -110,10 +120,14 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         Map<String, PlcResponseCode> tags = new HashMap<>();
         for (String tagName : writeRequest.getTagNames()) {
-            SimulatedTag tag = (SimulatedTag) writeRequest.getTag(tagName);
-            PlcValue value = writeRequest.getPlcValue(tagName);
-            device.set(tag, value);
-            tags.put(tagName, PlcResponseCode.OK);
+            if(writeRequest.getTagResponseCode(tagName) == PlcResponseCode.OK) {
+                SimulatedTag tag = (SimulatedTag) writeRequest.getTag(tagName);
+                PlcValue value = writeRequest.getPlcValue(tagName);
+                device.set(tag, value);
+                tags.put(tagName, PlcResponseCode.OK);
+            } else {
+                tags.put(tagName, writeRequest.getTagResponseCode(tagName));
+            }
         }
         PlcWriteResponse response = new DefaultPlcWriteResponse(writeRequest, tags);
         return CompletableFuture.completedFuture(response);
@@ -133,7 +147,7 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         LOGGER.info("subscribing {}", subscriptionRequest);
-        Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+        Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
         subscriptionRequest.getTagNames().forEach(name -> {
             LOGGER.info("creating handle for tag name {}", name);
             PlcSubscriptionHandle handle = new DefaultPlcSubscriptionHandle(this);
@@ -152,7 +166,7 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
                     device.addEventSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionTag);
                     break;
             }
-            values.put(name, new ResponseItem<>(PlcResponseCode.OK, handle));
+            values.put(name, new DefaultPlcResponseItem<>(PlcResponseCode.OK, handle));
         });
 
         PlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
@@ -176,7 +190,7 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
             consumer.accept(
                 new DefaultPlcSubscriptionEvent(
                     Instant.now(),
-                    Collections.singletonMap(name, new ResponseItem<>(PlcResponseCode.OK, plcValue))
+                    Collections.singletonMap(name, new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue))
                 )
             );
         };

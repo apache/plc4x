@@ -39,7 +39,7 @@ class ModbusTagTest {
                                  int allowedMax,
                                  Class<? extends ModbusTag> expectedClass,
                                  int expectedAddressShift) {
-        // Ensure all tagpatterns compile to the right tag
+        // Ensure all tag patterns compile to the right tag
         for (int i = 1; i <= allowedMax; i++) {
             List<ModbusTag> tags = new ArrayList<>();
             for (String tagPattern : tagPatterns) {

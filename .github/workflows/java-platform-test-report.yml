@@ -23,18 +23,22 @@ on:
     workflows: [ 'Java Platform compatibility' ]
     types:
       - completed
+
+env:
+  DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+
 jobs:
   report:
     strategy:
       matrix:
-        java: [ 11, 17, 18 ]
+        java: [ 11, 17, 21 ]
         # TODO: only works on windows due to https://github.com/dorny/test-reporter/issues/249
         #os: [ ubuntu-latest, macos-latest, windows-latest ]
         os: [ windows-latest ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: dorny/test-reporter@v1
+      - uses: dorny/test-reporter@v2
         with:
           artifact: "java-test-report-${{ matrix.os }}-java-${{ matrix.java }}"
           name: "Java Tests (OS: ${{ matrix.os }}, Java: ${{ matrix.java }})"

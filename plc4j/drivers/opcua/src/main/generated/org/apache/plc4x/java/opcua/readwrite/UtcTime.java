@@ -63,11 +63,6 @@ public class UtcTime implements Message {
     return lengthInBits;
   }
 
-  public static UtcTime staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static UtcTime staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("UtcTime");
     PositionAware positionAware = readBuffer;

@@ -185,16 +185,13 @@ public class DiagnosticInfo implements Message {
     writeOptionalField("localizedText", localizedText, writeSignedInt(writeBuffer, 32));
 
     // Optional Field (additionalInfo) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "additionalInfo", additionalInfo, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("additionalInfo", additionalInfo, writeComplex(writeBuffer));
 
     // Optional Field (innerStatusCode) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "innerStatusCode", innerStatusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("innerStatusCode", innerStatusCode, writeComplex(writeBuffer));
 
     // Optional Field (innerDiagnosticInfo) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "innerDiagnosticInfo", innerDiagnosticInfo, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("innerDiagnosticInfo", innerDiagnosticInfo, writeComplex(writeBuffer));
 
     writeBuffer.popContext("DiagnosticInfo");
   }
@@ -272,12 +269,6 @@ public class DiagnosticInfo implements Message {
     return lengthInBits;
   }
 
-  public static DiagnosticInfo staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DiagnosticInfo staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DiagnosticInfo");
     PositionAware positionAware = readBuffer;
@@ -319,20 +310,19 @@ public class DiagnosticInfo implements Message {
     PascalString additionalInfo =
         readOptionalField(
             "additionalInfo",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             additionalInfoSpecified);
 
     StatusCode innerStatusCode =
         readOptionalField(
             "innerStatusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             innerStatusCodeSpecified);
 
     DiagnosticInfo innerDiagnosticInfo =
         readOptionalField(
             "innerDiagnosticInfo",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             innerDiagnosticInfoSpecified);
 
     readBuffer.closeContext("DiagnosticInfo");

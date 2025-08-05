@@ -28,8 +28,8 @@ complexTypeDefinition
 
 complexType
  : 'type' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList (fieldDefinition|batchSetDefinition)*
- | 'discriminatedType' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList (fieldDefinition|batchSetDefinition)+
- | 'enum' (type=dataType)? name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList enumValues=enumValueDefinition+
+ | 'discriminatedType' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList (fieldDefinition|batchSetDefinition)*
+ | 'enum' (type=dataType)? name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList enumValues=enumValueDefinition*
  | 'dataIo' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? (attributes=attributeList) dataIoTypeSwitch=dataIoDefinition
  ;
 
@@ -76,6 +76,10 @@ arrayField
  : 'array' type=typeReference name=idExpression loopType=ARRAY_LOOP_TYPE loopExpression=expression
  ;
 
+assertField
+ : 'assert' type=typeReference name=idExpression condition=expression
+ ;
+
 checksumField
  : 'checksum' type=dataType name=idExpression checksumExpression=expression
  ;
@@ -96,10 +100,6 @@ implicitField
  : 'implicit' type=dataType name=idExpression serializeExpression=expression
  ;
 
-assertField
- : 'assert' type=typeReference name=idExpression condition=expression
- ;
-
 manualArrayField
  : 'manualArray' type=typeReference name=idExpression loopType=ARRAY_LOOP_TYPE loopExpression=expression parseExpression=expression serializeExpression=expression lengthExpression=expression
  ;
@@ -113,7 +113,7 @@ optionalField
  ;
 
 paddingField
- : 'padding' type=dataType name=idExpression paddingValue=expression paddingCondition=expression
+ : 'padding' type=dataType name=idExpression paddingValue=expression timesPadding=expression
  ;
 
 reservedField

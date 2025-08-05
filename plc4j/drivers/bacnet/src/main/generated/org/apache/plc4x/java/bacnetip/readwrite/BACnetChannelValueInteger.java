@@ -60,7 +60,7 @@ public class BACnetChannelValueInteger extends BACnetChannelValue implements Mes
     writeBuffer.pushContext("BACnetChannelValueInteger");
 
     // Simple Field (integerValue)
-    writeSimpleField("integerValue", integerValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("integerValue", integerValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueInteger");
   }
@@ -91,7 +91,7 @@ public class BACnetChannelValueInteger extends BACnetChannelValue implements Mes
     BACnetApplicationTagSignedInteger integerValue =
         readSimpleField(
             "integerValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

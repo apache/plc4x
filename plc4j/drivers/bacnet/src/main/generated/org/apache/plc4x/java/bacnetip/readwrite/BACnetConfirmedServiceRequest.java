@@ -65,7 +65,7 @@ public abstract class BACnetConfirmedServiceRequest implements Message {
         "serviceChoice",
         "BACnetConfirmedServiceChoice",
         getServiceChoice(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetConfirmedServiceChoice::getValue,
             BACnetConfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -101,26 +101,6 @@ public abstract class BACnetConfirmedServiceRequest implements Message {
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequest staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Long serviceRequestLength;
-    if (args[0] instanceof Long) {
-      serviceRequestLength = (Long) args[0];
-    } else if (args[0] instanceof String) {
-      serviceRequestLength = Long.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Long or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, serviceRequestLength);
-  }
-
   public static BACnetConfirmedServiceRequest staticParse(
       ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequest");
@@ -128,10 +108,10 @@ public abstract class BACnetConfirmedServiceRequest implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConfirmedServiceChoice serviceChoice =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "serviceChoice",
-            new DataReaderEnumDefault<>(
-                BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "BACnetConfirmedServiceChoice",
+            readEnum(BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
     long serviceRequestPayloadLength =
         readVirtualField(
             "serviceRequestPayloadLength",

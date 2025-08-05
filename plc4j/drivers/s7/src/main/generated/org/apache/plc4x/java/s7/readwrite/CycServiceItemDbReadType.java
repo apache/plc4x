@@ -110,9 +110,7 @@ public class CycServiceItemDbReadType extends CycServiceItemType implements Mess
 
     List<SubItem> items =
         readCountArrayField(
-            "items",
-            new DataReaderComplexDefault<>(() -> SubItem.staticParse(readBuffer), readBuffer),
-            numberOfAreas);
+            "items", readComplex(() -> SubItem.staticParse(readBuffer), readBuffer), numberOfAreas);
 
     readBuffer.closeContext("CycServiceItemDbReadType");
     // Create the instance

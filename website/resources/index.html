@@ -1,0 +1,397 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Apache PLC4X</title>
+    <script src="./_/js/jquery.slim.min.js" type="text/javascript"></script>
+    <!--script src="./js/popper.min.js" type="javascript"></script-->
+    <script src="./_/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+    <!-- The tooling for adding images and links to Apache events -->
+    <script src="https://www.apachecon.com/event-images/snippet.js" type="text/javascript"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="./_/css/all.min.css" type="text/css"/>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="./_/css/bootstrap.min.css" type="text/css"/>
+    <!-- The PLC4X version of a bootstrap theme -->
+    <link rel="stylesheet" href="./css/themes/plc4x.css" type="text/css" id="pagestyle"/>
+    <link rel="stylesheet" href="./_/css/site.css">
+    <link rel="stylesheet" href="./_/css/header.css">
+    <link rel="stylesheet" href="./_/css/vars.css">
+    <link rel="stylesheet" href="./_/css/search.css">
+    <link rel="stylesheet" href="./_/css/all.min.css" type="text/css"/>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <meta http-equiv="Content-Language" content="en"/>
+
+</head>
+<body class="article home">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="./">
+          <img src="./plc4x/latest/_images/apache_plc4x_logo_small.png" alt="Apache PLC4X">
+      </a>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end justify-content-center">
+        <a class="navbar-item" href="./">Home</a>
+        <a class="navbar-item" href="./plc4x/latest/users">Users</a>
+        <a class="navbar-item" href="./plc4x/latest/developers">Developers</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="https://www.apache.org">Apache</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://www.apache.org">Apache Homepage</a>
+            <a class="navbar-item" href="https://www.apache.org/licenses/">License</a>
+            <a class="navbar-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a>
+            <a class="navbar-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a>
+            <a class="navbar-item" href="https://www.apache.org/security/">Security</a>
+            <a class="navbar-item" href="https://privacy.apache.org/policies/privacy-policy-public.html">Privacy</a>
+            <a class="navbar-item" href="https://www.apache.org/foundation/policies/conduct">Code of Conduct</a>
+            <a class="navbar-item" href="https://events.apache.org/">Upcoming Events</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="./plc4x/latest/users/download">Download</a>
+          </span>
+        </div>
+        <a class="acevent" data-format="wide"></a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="container-fluid">
+    <div class="row h-100">
+        <main role="main" class="ml-sm-auto px-4 w-100 h-100">
+            <div class="jumbotron jumbotron-fluid teaser-img">
+                <div class="row" style="align-items:center;z-index:2;position:relative;">
+                    <div class="col-12 col-lg-2"></div>
+                    <div class="col-12 col-lg-8" style="display:flex;justify-content: center">
+                        <div class="teaser-box">
+                            <div class="row margin-rl-0">
+                                <div class="col-md-12">
+                                    <div class="margin-rl-auto">
+                                        <img src="images/apache_plc4x_logo.png" alt="Apache PLC4X"
+                                             class="plc4x-logo center"/>
+                                    </div>
+                                    <h3 style="text-align:center;">
+                                        <div class="plc4x-headline" style="text-align:center;">The universal
+                                            protocol adapter for
+                                            Industrial IoT
+                                        </div>
+                                    </h3>
+                                    <div class="apache-teaser center text-center">PLC4X is a set of libraries
+                                        for
+                                        communicating with
+                                        industrial
+                                        programmable logic controllers (PLCs) using a variety of protocols but with a
+                                        shared API.
+                                    </div>
+                                    <div class="center text-center">
+                                        <a href="plc4x/latest/users/getting-started/index.html"
+                                           class="plc4x-button plc4x-button-large plc4x-button-primary text-center"><i
+                                            class="fas fa-rocket"></i> Get started
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-2"></div>
+                </div>
+            </div>
+
+            <section id="no-retrofit" class="section-highlight section-highlight-primary">
+                <div class="container text-center">
+                    <div class="row">
+                        <div class="col-lg-12 mx-auto">
+                            <i class="fas fa-plug fa-7x highlight-icon highlight-icon-primary"></i>
+                            <h2 class="section-highlight-text-primary">Connect your shopfloor assets without
+                                retrofit.</h2>
+                            <p class="lead c-white">In contrast to other approaches, Apache PLC4X lets you connect your
+                                industrial assets without needing to modify them.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="no-retrofit" class="section-highlight section-highlight-secondary mb-5">
+                <div class="container text-center">
+                    <div class="row">
+                        <div class="col-lg-12 mx-auto">
+                            <h2 class="section-highlight-text-secondary">Integrations.</h2>
+                            <p class="lead">PLC4X comes with many built-in integrations to further process your asset
+                                data. </p>
+                            <div id="integrationCarousel" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <div class="col-md-12 col-lg-4">
+                                            <div class="card h-100 p-5 justify-content-center"
+                                                 onclick="window.open('https://calcite.apache.org','_blank');"
+                                                 style="cursor:pointer;">
+                                                <div class="d-flex align-items-center justify-content-center h-100">
+                                                    <img src="images/integrations/apache_calcite_logo.svg"
+                                                         alt="Card image cap">
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title"><b>Apache Calcite</b></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="col-md-12 col-lg-4">
+                                            <div class="card h-100 p-5 justify-content-center"
+                                                 onclick="window.open('https://camel.apache.org','_blank');"
+                                                 style="cursor:pointer;">
+                                                <div class="d-flex align-items-center justify-content-center h-100">
+                                                    <img src="images/integrations/apache_camel_logo.png"
+                                                         alt="Card image cap">
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title"><b>Apache Camel</b></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="col-md-12 col-lg-4">
+                                            <div class="card h-100 p-5 justify-content-center"
+                                                 onclick="window.open('https://iotdb.apache.org','_blank');"
+                                                 style="cursor:pointer;">
+                                                <div class="d-flex align-items-center justify-content-center h-100">
+                                                    <img src="images/integrations/apache_iotdb_logo.png"
+                                                         alt="Card image cap">
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title"><b>Apache IoTDB</b></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="col-md-12 col-lg-4">
+                                            <div class="card h-100 p-5 justify-content-center"
+                                                 onclick="window.open('https://kafka.apache.org','_blank');"
+                                                 style="cursor:pointer;">
+                                                <div class="d-flex align-items-center justify-content-center h-100">
+                                                    <img src="images/integrations/apache_kafka_logo.png"
+                                                         alt="Card image cap">
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title"><b>Apache Kafka</b></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="col-md-12 col-lg-4">
+                                            <div class="card h-100 p-5 justify-content-center"
+                                                 onclick="window.open('https://nifi.apache.org','_blank');"
+                                                 style="cursor:pointer;">
+                                                <div class="d-flex align-items-center justify-content-center h-100">
+                                                    <img src="images/integrations/apache_nifi_logo.svg"
+                                                         alt="Card image cap">
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title"><b>Apache Nifi</b></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="col-md-12 col-lg-4">
+                                            <div class="card h-100 p-5 justify-content-center"
+                                                 onclick="window.open('https://streampipes.apache.org','_blank');"
+                                                 style="cursor:pointer;">
+                                                <div class="d-flex align-items-center justify-content-center h-100">
+                                                    <img src="images/integrations/apache_streampipes_logo.png"
+                                                         alt="Card image cap">
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title"><b>Apache StreamPipes</b></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="col-md-12 col-lg-4">
+                                            <div class="card h-100 p-5 justify-content-center"
+                                                 onclick="window.open('https://hop.apache.org','_blank');"
+                                                 style="cursor:pointer;">
+                                                <div class="d-flex align-items-center justify-content-center h-100">
+                                                    <img src="images/integrations/apache_hop_logo.png"
+                                                         alt="Card image cap">
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title"><b>Apache Hop</b></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="col-md-12 col-lg-4">
+                                            <div class="card h-100 p-5 justify-content-center"
+                                                 onclick="window.open('https://www.eclipse.org/ditto/','_blank');"
+                                                 style="cursor:pointer;">
+                                                <div class="d-flex align-items-center justify-content-center h-100">
+                                                    <img src="images/integrations/eclipse_ditto_logo.png"
+                                                         alt="Card image cap">
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title"><b>Eclipse Ditto</b></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="carousel-control-prev" type="button" data-bs-target="#integrationCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="carousel-control-next" type="button" data-bs-target="#integrationCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="secure" class="section-highlight section-highlight-primary">
+                <div class="container text-center">
+                    <div class="row">
+                        <div class="col-lg-12 mx-auto">
+                            <i class="fas fa-lock fa-7x highlight-icon highlight-icon-primary"></i>
+                            <h2 class="section-highlight-text-primary">Secure by design.</h2>
+                            <p class="lead c-white">Not only are PLC4X drivers implemented with security in mind, also
+                                our <b>passive-mode drivers</b> bring to you guaranteed side-effect-freeness without the
+                                need to pay for validated software.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="performant" class="section-highlight section-highlight-secondary">
+                <div class="container text-center">
+                    <div class="row">
+                        <div class="col-lg-12 mx-auto">
+                            <i class="fas fa-tachometer-alt fa-7x highlight-icon highlight-icon-secondary"></i>
+                            <h2 class="section-highlight-text-secondary">Get the performance you need.</h2>
+                            <p class="lead">Most approaches like OPC-UA currently don't deliver the performance needed
+                                for machine learning, deep learning and AI. PLC4X allows you to get the data volumes in
+                                the resolutions needed, without stressing out your industrial hardware.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="costs" class="section-highlight section-highlight-primary">
+                <div class="container text-center">
+                    <div class="row">
+                        <div class="col-lg-12 mx-auto">
+                            <i class="fas fa-smile fa-7x highlight-icon highlight-icon-primary"></i>
+                            <h2 class="section-highlight-text-primary">No license costs, no restrictive licenses.</h2>
+                            <p class="lead c-white">Being open source, PLC4X is <b>free of charge</b>. Start
+                                experimenting
+                                without worrying about license costs or shady license agreements. The Apache 2.0 is one
+                                of the worlds <b>most trusted and adopted</b> open source licenses out there.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="with-support" class="section-highlight section-highlight-secondary">
+                <div class="container text-center">
+                    <div class="row">
+                        <div class="col-lg-12 mx-auto">
+                            <i class="fas fa-info-circle fa-7x highlight-icon highlight-icon-secondary"></i>
+                            <h2 class="section-highlight-text-secondary">Get the <a
+                                href="plc4x/latest/users/commercial-support.html">commercial support</a> you need.</h2>
+                            <p class="lead">Just because you can download and use PLC4X for free doesn't mean that
+                                you're left on your own. Some of our community member's companies can also provide you
+                                with the <b><a href="plc4x/latest/users/commercial-support.html">commercial support</a></b> you
+                                need.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="pt-4 my-md-5 pt-md-5 w-100 border-top">
+            <div class="row justify-content-md-center" style="font-size: 13px">
+                <div class="col col-6 text-center">
+                    Copyright &#169; 2017&#x2013;2025 <a href="https://www.apache.org/">The Apache Software
+                    Foundation</a>.
+                    All rights reserved.<br/>
+                    Apache PLC4X, PLC4?, Apache, the Apache feather logo, and the Apache PLC4X project logo are either
+                    registered trademarks or trademarks of The Apache Software Foundation in the United States and other
+                    countries. All other marks mentioned may be trademarks or registered trademarks of their respective
+                    owners.
+                    <br/>
+                    <div style="text-align:center;">Home screen image taken from <a
+                        href="https://flic.kr/p/chEftd">Flickr</a>, "Tesla Robot Dance" by Steve Jurvetson, licensed
+                        under <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0 Generic</a>, image
+                        cropped
+                        and blur effect added.
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/_/js/jquery.slim.min.js"></script>
+<script src="/_/js/popper.min.js"></script>
+<script src="/_/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $('.carousel .carousel-item').each(function () {
+        var next = $(this).next();
+        if (!next.length) {
+            next = $(this).siblings(':first');
+        }
+        next.children(':first-child').clone().appendTo($(this));
+
+        for (let i = 0; i < 3; i++) {
+            next = next.next();
+            if (!next.length) {
+                next = $(this).siblings(':first');
+            }
+            next.children(':first-child').clone().appendTo($(this));
+        }
+    });
+</script>
+<script id="site-script" src="/_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="/_/js/vendor/highlight.js"></script>
+<script src="/_/js/vendor/lunr.js"></script>
+<script src="/_/js/search-ui.js" id="search-ui-script" data-site-root-path="../.." data-snippet-length="100" data-stylesheet="../../_/css/search.css"></script>
+<script async src="./search-index.js"></script>
+</body>
+</html>

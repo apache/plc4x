@@ -68,19 +68,19 @@ type connectionListener interface {
 }
 
 type connectionEvent interface {
-	getConnectionContainer() connectionContainer
+	getConnectionContainer() *connectionContainer
 }
 
 type connectionErrorEvent struct {
-	conn connectionContainer
+	conn *connectionContainer
 	err  error
 }
 
-func (c connectionErrorEvent) getConnectionContainer() connectionContainer {
+func (c *connectionErrorEvent) getConnectionContainer() *connectionContainer {
 	return c.conn
 }
 
-func (c connectionErrorEvent) getError() error {
+func (c *connectionErrorEvent) getError() error {
 	return c.err
 }
 

@@ -77,8 +77,7 @@ public class BACnetPropertyAccessResultAccessResultPropertyAccessError
     writeBuffer.pushContext("BACnetPropertyAccessResultAccessResultPropertyAccessError");
 
     // Simple Field (propertyAccessError)
-    writeSimpleField(
-        "propertyAccessError", propertyAccessError, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyAccessError", propertyAccessError, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyAccessResultAccessResultPropertyAccessError");
   }
@@ -114,8 +113,7 @@ public class BACnetPropertyAccessResultAccessResultPropertyAccessError
     ErrorEnclosed propertyAccessError =
         readSimpleField(
             "propertyAccessError",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (5)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (5)), readBuffer));
 
     readBuffer.closeContext("BACnetPropertyAccessResultAccessResultPropertyAccessError");
     // Create the instance

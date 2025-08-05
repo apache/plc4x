@@ -426,7 +426,7 @@ plc4c_return_code plc4c_spi_write_string(plc4c_spi_write_buffer* buf,
   }
   // Simply output the bytes to the buffer.
   for(int i = 0; (i < (num_bits / 8)); i++) {
-    plc4c_spi_write_unsigned_byte(buf, 8, (uint8_t*) *value);
+    plc4c_spi_write_unsigned_byte(buf, 8, *((uint8_t*) value));
     value++;
   }
   return OK;

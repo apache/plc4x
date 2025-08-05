@@ -58,7 +58,7 @@ public class BACnetScaleFloatScale extends BACnetScale implements Message {
     writeBuffer.pushContext("BACnetScaleFloatScale");
 
     // Simple Field (floatScale)
-    writeSimpleField("floatScale", floatScale, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("floatScale", floatScale, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetScaleFloatScale");
   }
@@ -89,7 +89,7 @@ public class BACnetScaleFloatScale extends BACnetScale implements Message {
     BACnetContextTagReal floatScale =
         readSimpleField(
             "floatScale",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

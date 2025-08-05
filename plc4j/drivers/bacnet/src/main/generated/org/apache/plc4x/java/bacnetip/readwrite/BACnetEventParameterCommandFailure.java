@@ -82,19 +82,17 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
     writeBuffer.pushContext("BACnetEventParameterCommandFailure");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (timeDelay)
-    writeSimpleField("timeDelay", timeDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeDelay", timeDelay, writeComplex(writeBuffer));
 
     // Simple Field (feedbackPropertyReference)
     writeSimpleField(
-        "feedbackPropertyReference",
-        feedbackPropertyReference,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "feedbackPropertyReference", feedbackPropertyReference, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterCommandFailure");
   }
@@ -134,13 +132,12 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (3)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (3)), readBuffer));
 
     BACnetContextTagUnsignedInteger timeDelay =
         readSimpleField(
             "timeDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -152,7 +149,7 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
     BACnetDeviceObjectPropertyReferenceEnclosed feedbackPropertyReference =
         readSimpleField(
             "feedbackPropertyReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (1)),
@@ -161,8 +158,7 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (3)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (3)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterCommandFailure");
     // Create the instance

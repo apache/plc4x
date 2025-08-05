@@ -23,12 +23,13 @@ import (
 	"context"
 	"time"
 
+	"github.com/pkg/errors"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/pkg/errors"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionRequestBuilder
+//go:generate go tool plc4xGenerator -type=DefaultPlcSubscriptionRequestBuilder
 type DefaultPlcSubscriptionRequestBuilder struct {
 	subscriber             spi.PlcSubscriber   `ignore:"true"`
 	tagHandler             spi.PlcTagHandler   `ignore:"true"`
@@ -126,7 +127,7 @@ func (d *DefaultPlcSubscriptionRequestBuilder) Build() (apiModel.PlcSubscription
 	return NewDefaultPlcSubscriptionRequest(d.subscriber, d.tagNames, d.tags, d.types, d.intervals, d.preRegisteredConsumers), nil
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionRequest
+//go:generate go tool plc4xGenerator -type=DefaultPlcSubscriptionRequest
 type DefaultPlcSubscriptionRequest struct {
 	*DefaultPlcTagRequest
 	types                  map[string]apiModel.PlcSubscriptionType

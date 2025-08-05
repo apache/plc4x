@@ -83,8 +83,7 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
     writeBuffer.pushContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired");
 
     // Simple Field (maintenanceRequired)
-    writeSimpleField(
-        "maintenanceRequired", maintenanceRequired, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maintenanceRequired", maintenanceRequired, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
     BACnetApplicationTagBoolean maintenanceRequired =
         readSimpleField(
             "maintenanceRequired",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -19,14 +19,14 @@
 package org.apache.plc4x.java.spi.optimizer;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagValueItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +48,8 @@ public class SingleTagOptimizer extends BaseOptimizer {
             PlcTag tag = readRequest.getTag(tagName);
             PlcReadRequest subRequest = new DefaultPlcReadRequest(
                 ((DefaultPlcReadRequest) readRequest).getReader(),
-                new LinkedHashMap<>(Collections.singletonMap(tagName, tag)));
+                // We are only expecting valid tagItems being passed in.
+                new LinkedHashMap<>(Collections.singletonMap(tagName, new DefaultPlcTagItem<>(tag))));
             subRequests.add(subRequest);
         }
         return subRequests;
@@ -65,7 +66,8 @@ public class SingleTagOptimizer extends BaseOptimizer {
             PlcValue value = writeRequest.getPlcValue(tagName);
             PlcWriteRequest subRequest = new DefaultPlcWriteRequest(
                 ((DefaultPlcWriteRequest) writeRequest).getWriter(),
-                new LinkedHashMap<>(Collections.singletonMap(tagName, new TagValueItem(tag, value))));
+                // We are only expecting valid tagValueItems being passed in.
+                new LinkedHashMap<>(Collections.singletonMap(tagName, new DefaultPlcTagValueItem<>(tag, value))));
             subRequests.add(subRequest);
         }
         return subRequests;

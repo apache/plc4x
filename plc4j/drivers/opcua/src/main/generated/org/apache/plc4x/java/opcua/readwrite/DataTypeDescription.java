@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DataTypeDescription extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "14527";
+  public Integer getExtensionId() {
+    return (int) 14527;
   }
 
   // Properties.
@@ -68,10 +68,10 @@ public class DataTypeDescription extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("DataTypeDescription");
 
     // Simple Field (dataTypeId)
-    writeSimpleField("dataTypeId", dataTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataTypeId", dataTypeId, writeComplex(writeBuffer));
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     writeBuffer.popContext("DataTypeDescription");
   }
@@ -97,21 +97,18 @@ public class DataTypeDescription extends ExtensionObjectDefinition implements Me
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DataTypeDescription");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId dataTypeId =
         readSimpleField(
-            "dataTypeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "dataTypeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     QualifiedName name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("DataTypeDescription");
     // Create the instance

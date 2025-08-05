@@ -82,7 +82,7 @@ public class BACnetConstructedDataEnable extends BACnetConstructedData implement
     writeBuffer.pushContext("BACnetConstructedDataEnable");
 
     // Simple Field (enable)
-    writeSimpleField("enable", enable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enable", enable, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataEnable extends BACnetConstructedData implement
     BACnetApplicationTagBoolean enable =
         readSimpleField(
             "enable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

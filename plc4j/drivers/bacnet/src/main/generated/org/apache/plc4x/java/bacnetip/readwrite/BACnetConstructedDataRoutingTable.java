@@ -118,8 +118,7 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
     List<BACnetRouterEntry> routingTable =
         readTerminatedArrayField(
             "routingTable",
-            new DataReaderComplexDefault<>(
-                () -> BACnetRouterEntry.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetRouterEntry.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

@@ -75,11 +75,10 @@ public class BACnetServiceAckGetEventInformation extends BACnetServiceAck implem
     writeBuffer.pushContext("BACnetServiceAckGetEventInformation");
 
     // Simple Field (listOfEventSummaries)
-    writeSimpleField(
-        "listOfEventSummaries", listOfEventSummaries, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfEventSummaries", listOfEventSummaries, writeComplex(writeBuffer));
 
     // Simple Field (moreEvents)
-    writeSimpleField("moreEvents", moreEvents, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("moreEvents", moreEvents, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckGetEventInformation");
   }
@@ -113,13 +112,13 @@ public class BACnetServiceAckGetEventInformation extends BACnetServiceAck implem
     BACnetEventSummariesList listOfEventSummaries =
         readSimpleField(
             "listOfEventSummaries",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetEventSummariesList.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetContextTagBoolean moreEvents =
         readSimpleField(
             "moreEvents",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

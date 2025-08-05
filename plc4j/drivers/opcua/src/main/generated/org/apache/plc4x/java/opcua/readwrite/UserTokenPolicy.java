@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class UserTokenPolicy extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "306";
+  public Integer getExtensionId() {
+    return (int) 306;
   }
 
   // Properties.
@@ -91,27 +91,24 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
     writeBuffer.pushContext("UserTokenPolicy");
 
     // Simple Field (policyId)
-    writeSimpleField("policyId", policyId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("policyId", policyId, writeComplex(writeBuffer));
 
     // Simple Field (tokenType)
     writeSimpleEnumField(
         "tokenType",
         "UserTokenType",
         tokenType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             UserTokenType::getValue, UserTokenType::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (issuedTokenType)
-    writeSimpleField(
-        "issuedTokenType", issuedTokenType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("issuedTokenType", issuedTokenType, writeComplex(writeBuffer));
 
     // Simple Field (issuerEndpointUrl)
-    writeSimpleField(
-        "issuerEndpointUrl", issuerEndpointUrl, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("issuerEndpointUrl", issuerEndpointUrl, writeComplex(writeBuffer));
 
     // Simple Field (securityPolicyUri)
-    writeSimpleField(
-        "securityPolicyUri", securityPolicyUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityPolicyUri", securityPolicyUri, writeComplex(writeBuffer));
 
     writeBuffer.popContext("UserTokenPolicy");
   }
@@ -146,37 +143,34 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("UserTokenPolicy");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString policyId =
         readSimpleField(
-            "policyId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "policyId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     UserTokenType tokenType =
         readEnumField(
             "tokenType",
             "UserTokenType",
-            new DataReaderEnumDefault<>(
-                UserTokenType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(UserTokenType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString issuedTokenType =
         readSimpleField(
-            "issuedTokenType",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "issuedTokenType", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString issuerEndpointUrl =
         readSimpleField(
             "issuerEndpointUrl",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString securityPolicyUri =
         readSimpleField(
             "securityPolicyUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("UserTokenPolicy");
     // Create the instance

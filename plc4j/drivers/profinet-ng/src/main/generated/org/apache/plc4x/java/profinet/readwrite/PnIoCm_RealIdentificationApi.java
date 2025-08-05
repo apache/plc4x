@@ -113,12 +113,6 @@ public class PnIoCm_RealIdentificationApi implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_RealIdentificationApi staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnIoCm_RealIdentificationApi staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_RealIdentificationApi");
@@ -141,7 +135,7 @@ public class PnIoCm_RealIdentificationApi implements Message {
     List<PnIoCm_RealIdentificationApi_Slot> slots =
         readCountArrayField(
             "slots",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> PnIoCm_RealIdentificationApi_Slot.staticParse(readBuffer), readBuffer),
             numSlots,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));

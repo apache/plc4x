@@ -69,7 +69,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric");
 
     // Simple Field (numericValue)
-    writeSimpleField("numericValue", numericValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("numericValue", numericValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric");
   }
@@ -101,7 +101,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
     BACnetContextTagUnsignedInteger numericValue =
         readSimpleField(
             "numericValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

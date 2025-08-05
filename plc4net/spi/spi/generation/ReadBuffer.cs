@@ -197,5 +197,10 @@ namespace org.apache.plc4net.spi.generation
             throw new NotImplementedException("This encoding is currently not supported");
         }
 
+        public byte[] ReadByteArray(String logicalName, int bitLength)
+        {
+            throw new NotImplementedException("This function is currently not supported");
+        }
+        
     }
 }

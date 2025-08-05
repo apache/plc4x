@@ -60,7 +60,7 @@ public class BACnetOptionalREALValue extends BACnetOptionalREAL implements Messa
     writeBuffer.pushContext("BACnetOptionalREALValue");
 
     // Simple Field (realValue)
-    writeSimpleField("realValue", realValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("realValue", realValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetOptionalREALValue");
   }
@@ -91,7 +91,7 @@ public class BACnetOptionalREALValue extends BACnetOptionalREAL implements Messa
     BACnetApplicationTagReal realValue =
         readSimpleField(
             "realValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

@@ -80,12 +80,6 @@ public abstract class TlvOrganizationSpecificUnit implements Message {
     return lengthInBits;
   }
 
-  public static TlvOrganizationSpecificUnit staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TlvOrganizationSpecificUnit staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TlvOrganizationSpecificUnit");

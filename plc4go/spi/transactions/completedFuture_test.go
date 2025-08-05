@@ -22,9 +22,10 @@ package transactions
 import (
 	"context"
 	"fmt"
+	"testing"
+
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func Test_completedFuture_AwaitCompletion(t *testing.T) {
@@ -101,9 +102,9 @@ func Test_completedFuture_String(t *testing.T) {
 				err: errors.New("asd"),
 			},
 			want: `
-╔═completedFuture/err═╗
-║         asd         ║
-╚═════════════════════╝`[1:],
+╔═completedFuture/err╗
+║        asd         ║
+╚════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

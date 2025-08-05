@@ -38,15 +38,15 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BrowsePath extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "545";
+  public Integer getExtensionId() {
+    return (int) 545;
   }
 
   // Properties.
   protected final NodeId startingNode;
-  protected final ExtensionObjectDefinition relativePath;
+  protected final RelativePath relativePath;
 
-  public BrowsePath(NodeId startingNode, ExtensionObjectDefinition relativePath) {
+  public BrowsePath(NodeId startingNode, RelativePath relativePath) {
     super();
     this.startingNode = startingNode;
     this.relativePath = relativePath;
@@ -56,7 +56,7 @@ public class BrowsePath extends ExtensionObjectDefinition implements Message {
     return startingNode;
   }
 
-  public ExtensionObjectDefinition getRelativePath() {
+  public RelativePath getRelativePath() {
     return relativePath;
   }
 
@@ -68,10 +68,10 @@ public class BrowsePath extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("BrowsePath");
 
     // Simple Field (startingNode)
-    writeSimpleField("startingNode", startingNode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("startingNode", startingNode, writeComplex(writeBuffer));
 
     // Simple Field (relativePath)
-    writeSimpleField("relativePath", relativePath, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("relativePath", relativePath, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BrowsePath");
   }
@@ -97,21 +97,20 @@ public class BrowsePath extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("BrowsePath");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId startingNode =
         readSimpleField(
-            "startingNode",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "startingNode", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
-    ExtensionObjectDefinition relativePath =
+    RelativePath relativePath =
         readSimpleField(
             "relativePath",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("542")),
+            readComplex(
+                () -> (RelativePath) ExtensionObjectDefinition.staticParse(readBuffer, (int) (542)),
                 readBuffer));
 
     readBuffer.closeContext("BrowsePath");
@@ -122,9 +121,9 @@ public class BrowsePath extends ExtensionObjectDefinition implements Message {
   public static class BrowsePathBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId startingNode;
-    private final ExtensionObjectDefinition relativePath;
+    private final RelativePath relativePath;
 
-    public BrowsePathBuilderImpl(NodeId startingNode, ExtensionObjectDefinition relativePath) {
+    public BrowsePathBuilderImpl(NodeId startingNode, RelativePath relativePath) {
       this.startingNode = startingNode;
       this.relativePath = relativePath;
     }

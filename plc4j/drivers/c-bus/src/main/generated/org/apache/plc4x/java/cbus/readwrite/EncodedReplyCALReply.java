@@ -65,7 +65,7 @@ public class EncodedReplyCALReply extends EncodedReply implements Message {
     writeBuffer.pushContext("EncodedReplyCALReply");
 
     // Simple Field (calReply)
-    writeSimpleField("calReply", calReply, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("calReply", calReply, writeComplex(writeBuffer));
 
     writeBuffer.popContext("EncodedReplyCALReply");
   }
@@ -97,7 +97,7 @@ public class EncodedReplyCALReply extends EncodedReply implements Message {
     CALReply calReply =
         readSimpleField(
             "calReply",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     CALReply.staticParse(
                         readBuffer, (CBusOptions) (cBusOptions), (RequestContext) (requestContext)),

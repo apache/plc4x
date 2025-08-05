@@ -57,7 +57,7 @@ public abstract class TlvOrgSpecificIeee8023Unit implements Message {
         "subType",
         "TlvIEEESubType",
         getSubType(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TlvIEEESubType::getValue, TlvIEEESubType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Switch field (Serialize the sub-type)
@@ -85,12 +85,6 @@ public abstract class TlvOrgSpecificIeee8023Unit implements Message {
     return lengthInBits;
   }
 
-  public static TlvOrgSpecificIeee8023Unit staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TlvOrgSpecificIeee8023Unit staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TlvOrgSpecificIeee8023Unit");
@@ -98,10 +92,10 @@ public abstract class TlvOrgSpecificIeee8023Unit implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TlvIEEESubType subType =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "subType",
-            new DataReaderEnumDefault<>(
-                TlvIEEESubType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "TlvIEEESubType",
+            readEnum(TlvIEEESubType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     TlvOrgSpecificIeee8023UnitBuilder builder = null;

@@ -43,7 +43,9 @@ A connection string would look like this in this case:
 ## GSD Device Profiles
 
 A Profinet device is described by a GSD file. 
+
 A GSD file is an XML file containing a description of the device.
+
 Only with this information can we provide browsing functionality, verify requests and reduce the amount of information passed to the driver to an absolute minimum.
 
 There are multiple coordinates needed to identify which resources a PN device offers.
@@ -53,11 +55,12 @@ The most important ones are the vendor-id and the device-id. This tuple uniquely
 When connecting to a remote device, we execute a PN-DCP Identification request is sent to the device. 
 This is the same type of request used in the Auto-Discovery of PLC4X to find PN devices. 
 The main difference in this case however is that we don't send it to the broadcast MAC address, but send it to the devices MAC address instead.
+
 In the response we can get the vendor-id and the device-id along with a number of additional information (IP settings, name of the device, type of device).
 With this information we then iterate over the GSD files in our "gsd directory" (Which defaults to "~/.gsd"). 
 As soon as we found an XML file with a matching pair of vendor-id and product-id we use that device profile for this connection.
 
-A PN device always had one fixed component, the so-called DAP (Device Access Point). 
+A PN device always has one fixed component, the so-called DAP (Device Access Point). 
 This is always located in "slot 0" and you can think of this as the IO component that provides the connection between the network and the devices, using the Profinet protocol.
 Most device profiles only have one DAP and in this case, we simply use that. 
 However, there are some devices where the manufacturer updated the device over time and didn't give the new device a new product id.
@@ -65,11 +68,11 @@ In this case, device profiles can contain a variety of DAPs.
 
 If we are connecting to such a device it is important to know which DAP the devices provides.
 
-Next to the DAP in Slot 0 come the actual devices. 
-In some devices they are integrated into the same housing, only logically having multiple slots.
-This is the case for my Advantec Adam modules belong to this category the same way my Siemens Simodode Pro V PN device does.
+After the DAP in Slot 0 come the actual devices slots. 
+In some devices these are integrated into the same housing, only logically having multiple slots.
+This is the case for my Advantec Adam modules also my Siemens Simodode Pro V PN device.
 
-Others however allow understanding this concept a bit better though. 
+Other types of devices however allow understanding this concept a bit better though. 
 So-called Bus-Couplers for example provide PN access to IO devices. 
 Here you have the bus-coupler in slot 0 (which is the left-most element) and then you add on IO modules by sliding them onto the right. 
 When adding a new module to the existing, the new module is always added to the right.
@@ -101,7 +104,8 @@ In case of a Wago bus-coupler for example this looks like this:
 
 You can see that the bus-coupler generally allows adding 250 devices. 
 Each entry in this list being one IO module Product Wago has to offer.
-"0606_0000" being a "Power Supply 24 V DC, max. 1.0 A; Ex i; diagnostics" and "0403_0000" being a "4-channel digital input; 24 V DC; 0.2 ms input filter; 2- to 3-conductor connection; high-side switching"
+- "0606_0000" being a "Power Supply 24 V DC, max. 1.0 A; Ex i; diagnostics" and 
+- "0403_0000" being a "4-channel digital input; 24 V DC; 0.2 ms input filter; 2- to 3-conductor connection; high-side switching"
 
 ## Auto-Configuring the connection 
 

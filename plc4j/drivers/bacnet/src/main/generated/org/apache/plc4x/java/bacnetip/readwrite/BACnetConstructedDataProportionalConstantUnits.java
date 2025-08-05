@@ -83,7 +83,7 @@ public class BACnetConstructedDataProportionalConstantUnits extends BACnetConstr
     writeBuffer.pushContext("BACnetConstructedDataProportionalConstantUnits");
 
     // Simple Field (units)
-    writeSimpleField("units", units, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("units", units, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetEngineeringUnitsTagged actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataProportionalConstantUnits extends BACnetConstr
     BACnetEngineeringUnitsTagged units =
         readSimpleField(
             "units",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEngineeringUnitsTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

@@ -100,7 +100,7 @@ public class BACnetConstructedDataExceptionSchedule extends BACnetConstructedDat
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (exceptionSchedule)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataExceptionSchedule extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,8 +162,7 @@ public class BACnetConstructedDataExceptionSchedule extends BACnetConstructedDat
     List<BACnetSpecialEvent> exceptionSchedule =
         readTerminatedArrayField(
             "exceptionSchedule",
-            new DataReaderComplexDefault<>(
-                () -> BACnetSpecialEvent.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetSpecialEvent.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

@@ -119,7 +119,7 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
     List<BACnetEventNotificationSubscription> subscribedRecipients =
         readTerminatedArrayField(
             "subscribedRecipients",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetEventNotificationSubscription.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)

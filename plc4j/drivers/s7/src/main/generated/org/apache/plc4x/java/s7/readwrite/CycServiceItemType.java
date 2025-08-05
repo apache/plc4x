@@ -112,12 +112,6 @@ public abstract class CycServiceItemType implements Message {
     return lengthInBits;
   }
 
-  public static CycServiceItemType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static CycServiceItemType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CycServiceItemType");
     PositionAware positionAware = readBuffer;

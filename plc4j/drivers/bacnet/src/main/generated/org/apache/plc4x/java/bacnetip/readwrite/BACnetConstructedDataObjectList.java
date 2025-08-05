@@ -99,7 +99,7 @@ public class BACnetConstructedDataObjectList extends BACnetConstructedData imple
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (objectList)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataObjectList extends BACnetConstructedData imple
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataObjectList extends BACnetConstructedData imple
     List<BACnetApplicationTagObjectIdentifier> objectList =
         readTerminatedArrayField(
             "objectList",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

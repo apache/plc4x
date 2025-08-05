@@ -82,7 +82,7 @@ public class BACnetConstructedDataCarDoorZone extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataCarDoorZone");
 
     // Simple Field (carDoorZone)
-    writeSimpleField("carDoorZone", carDoorZone, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("carDoorZone", carDoorZone, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataCarDoorZone extends BACnetConstructedData impl
     BACnetApplicationTagBoolean carDoorZone =
         readSimpleField(
             "carDoorZone",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

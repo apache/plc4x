@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "antora": "3.1.9"
+  },
+  "dependencies": {
+    "@antora/lunr-extension": "^1.0.0-alpha.8",
+    "asciidoctor-kroki": "0.15.4",
+    "target": "^0.0.2"
+  }
+}

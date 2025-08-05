@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AddNodesResult extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "485";
+  public Integer getExtensionId() {
+    return (int) 485;
   }
 
   // Properties.
@@ -68,10 +68,10 @@ public class AddNodesResult extends ExtensionObjectDefinition implements Message
     writeBuffer.pushContext("AddNodesResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (addedNodeId)
-    writeSimpleField("addedNodeId", addedNodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("addedNodeId", addedNodeId, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AddNodesResult");
   }
@@ -97,20 +97,18 @@ public class AddNodesResult extends ExtensionObjectDefinition implements Message
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("AddNodesResult");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     NodeId addedNodeId =
         readSimpleField(
-            "addedNodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "addedNodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AddNodesResult");
     // Create the instance

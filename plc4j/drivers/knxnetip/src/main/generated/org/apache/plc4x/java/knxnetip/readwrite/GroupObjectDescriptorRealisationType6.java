@@ -63,12 +63,6 @@ public class GroupObjectDescriptorRealisationType6 implements Message {
     return lengthInBits;
   }
 
-  public static GroupObjectDescriptorRealisationType6 staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static GroupObjectDescriptorRealisationType6 staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("GroupObjectDescriptorRealisationType6");

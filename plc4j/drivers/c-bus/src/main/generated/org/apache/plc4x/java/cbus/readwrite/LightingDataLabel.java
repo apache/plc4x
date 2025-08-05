@@ -84,15 +84,14 @@ public class LightingDataLabel extends LightingData implements Message {
     writeSimpleField("group", group, writeByte(writeBuffer, 8));
 
     // Simple Field (labelOptions)
-    writeSimpleField("labelOptions", labelOptions, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("labelOptions", labelOptions, writeComplex(writeBuffer));
 
     // Optional Field (language) (Can be skipped, if the value is null)
     writeOptionalEnumField(
         "language",
         "Language",
         language,
-        new DataWriterEnumDefault<>(
-            Language::getValue, Language::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Language::getValue, Language::name, writeUnsignedShort(writeBuffer, 8)),
         (getLabelOptions().getLabelType()) != (LightingLabelType.LOAD_DYNAMIC_ICON));
 
     // Array Field (data)
@@ -143,13 +142,12 @@ public class LightingDataLabel extends LightingData implements Message {
     LightingLabelOptions labelOptions =
         readSimpleField(
             "labelOptions",
-            new DataReaderComplexDefault<>(
-                () -> LightingLabelOptions.staticParse(readBuffer), readBuffer));
+            readComplex(() -> LightingLabelOptions.staticParse(readBuffer), readBuffer));
 
     Language language =
         readOptionalField(
             "language",
-            new DataReaderEnumDefault<>(Language::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Language::enumForValue, readUnsignedShort(readBuffer, 8)),
             (labelOptions.getLabelType()) != (LightingLabelType.LOAD_DYNAMIC_ICON));
 
     byte[] data =

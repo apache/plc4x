@@ -118,13 +118,13 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
         "application",
         "ApplicationIdContainer",
         application,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationIdContainer::getValue,
             ApplicationIdContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
 
     // Optional Field (salData) (Can be skipped, if the value is null)
-    writeOptionalField("salData", salData, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("salData", salData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("MonitoredSALShortFormBasicMode");
   }
@@ -186,13 +186,12 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
         readEnumField(
             "application",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     SALData salData =
         readOptionalField(
             "salData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     SALData.staticParse(
                         readBuffer, (ApplicationId) (application.getApplicationId())),

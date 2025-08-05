@@ -19,21 +19,28 @@
 package org.apache.plc4x.java.knxnetip;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
+import org.apache.plc4x.java.knxnetip.discovery.KnxNetIpPlcDiscoverer;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
+import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpPcapReplayTransportConfiguration;
+import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpRawSocketTransportConfiguration;
+import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpUdpTransportConfiguration;
 import org.apache.plc4x.java.knxnetip.context.KnxNetIpDriverContext;
 import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTag;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpMessage;
-import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTagHandler;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
+import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
 public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> {
@@ -51,8 +58,36 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> {
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "udp";
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+        return KnxNetIpConfiguration.class;
+    }
+
+    @Override
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "udp":
+                return Optional.of(KnxNetIpUdpTransportConfiguration.class);
+            case "pcap":
+                return Optional.of(KnxNetIpPcapReplayTransportConfiguration.class);
+            case "raw":
+                return Optional.of(KnxNetIpRawSocketTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("udp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Arrays.asList("udp", "pcap", "raw");
+    }
+
+    @Override
+    public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
+        return new DefaultPlcDiscoveryRequest.Builder(new KnxNetIpPlcDiscoverer());
     }
 
     @Override
@@ -76,23 +111,13 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
-        return KnxNetIpConfiguration.class;
+    protected boolean canDiscover() {
+        return true;
     }
 
     @Override
     protected BaseOptimizer getOptimizer() {
         return new SingleTagOptimizer();
-    }
-
-    @Override
-    protected PlcTagHandler getTagHandler() {
-        return new KnxNetIpTagHandler();
-    }
-
-    @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
     }
 
     @Override

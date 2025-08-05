@@ -99,7 +99,7 @@ public class BACnetConstructedDataDoorMembers extends BACnetConstructedData impl
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (doorMembers)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataDoorMembers extends BACnetConstructedData impl
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,8 +161,7 @@ public class BACnetConstructedDataDoorMembers extends BACnetConstructedData impl
     List<BACnetDeviceObjectReference> doorMembers =
         readTerminatedArrayField(
             "doorMembers",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

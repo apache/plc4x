@@ -83,10 +83,7 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
     writeBuffer.pushContext("BACnetConstructedDataDistributionKeyRevision");
 
     // Simple Field (distributionKeyRevision)
-    writeSimpleField(
-        "distributionKeyRevision",
-        distributionKeyRevision,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("distributionKeyRevision", distributionKeyRevision, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -128,7 +125,7 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
     BACnetApplicationTagUnsignedInteger distributionKeyRevision =
         readSimpleField(
             "distributionKeyRevision",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

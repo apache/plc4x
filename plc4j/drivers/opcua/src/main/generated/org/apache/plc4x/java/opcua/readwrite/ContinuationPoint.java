@@ -63,12 +63,6 @@ public class ContinuationPoint implements Message {
     return lengthInBits;
   }
 
-  public static ContinuationPoint staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ContinuationPoint staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ContinuationPoint");
     PositionAware positionAware = readBuffer;

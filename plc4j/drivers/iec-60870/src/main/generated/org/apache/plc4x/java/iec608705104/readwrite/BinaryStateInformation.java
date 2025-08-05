@@ -81,12 +81,6 @@ public class BinaryStateInformation implements Message {
     return lengthInBits;
   }
 
-  public static BinaryStateInformation staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BinaryStateInformation staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BinaryStateInformation");
     PositionAware positionAware = readBuffer;

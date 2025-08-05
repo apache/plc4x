@@ -148,12 +148,6 @@ public class VariableDataField implements Message {
     return lengthInBits;
   }
 
-  public static VariableDataField staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static VariableDataField staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("VariableDataField");
     PositionAware positionAware = readBuffer;

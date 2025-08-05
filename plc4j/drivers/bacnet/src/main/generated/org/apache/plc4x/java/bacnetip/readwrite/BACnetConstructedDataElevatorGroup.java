@@ -82,7 +82,7 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataElevatorGroup");
 
     // Simple Field (elevatorGroup)
-    writeSimpleField("elevatorGroup", elevatorGroup, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("elevatorGroup", elevatorGroup, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagObjectIdentifier actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
     BACnetApplicationTagObjectIdentifier elevatorGroup =
         readSimpleField(
             "elevatorGroup",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

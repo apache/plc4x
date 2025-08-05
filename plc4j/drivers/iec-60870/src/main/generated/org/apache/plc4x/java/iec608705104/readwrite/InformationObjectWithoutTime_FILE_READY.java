@@ -77,24 +77,15 @@ public class InformationObjectWithoutTime_FILE_READY extends InformationObjectWi
 
     // Simple Field (nof)
     writeSimpleField(
-        "nof",
-        nof,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "nof", nof, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (lof)
     writeSimpleField(
-        "lof",
-        lof,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "lof", lof, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (frq)
     writeSimpleField(
-        "frq",
-        frq,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "frq", frq, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_FILE_READY");
   }
@@ -132,20 +123,19 @@ public class InformationObjectWithoutTime_FILE_READY extends InformationObjectWi
     NameOfFile nof =
         readSimpleField(
             "nof",
-            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfFile.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     LengthOfFile lof =
         readSimpleField(
             "lof",
-            new DataReaderComplexDefault<>(() -> LengthOfFile.staticParse(readBuffer), readBuffer),
+            readComplex(() -> LengthOfFile.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     FileReadyQualifier frq =
         readSimpleField(
             "frq",
-            new DataReaderComplexDefault<>(
-                () -> FileReadyQualifier.staticParse(readBuffer), readBuffer),
+            readComplex(() -> FileReadyQualifier.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_FILE_READY");

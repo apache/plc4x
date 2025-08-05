@@ -85,7 +85,7 @@ public class LDataCon extends CEMI implements Message {
     writeComplexTypeArrayField("additionalInformation", additionalInformation, writeBuffer);
 
     // Simple Field (dataFrame)
-    writeSimpleField("dataFrame", dataFrame, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataFrame", dataFrame, writeComplex(writeBuffer));
 
     writeBuffer.popContext("LDataCon");
   }
@@ -129,14 +129,12 @@ public class LDataCon extends CEMI implements Message {
     List<CEMIAdditionalInformation> additionalInformation =
         readLengthArrayField(
             "additionalInformation",
-            new DataReaderComplexDefault<>(
-                () -> CEMIAdditionalInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> CEMIAdditionalInformation.staticParse(readBuffer), readBuffer),
             additionalInformationLength);
 
     LDataFrame dataFrame =
         readSimpleField(
-            "dataFrame",
-            new DataReaderComplexDefault<>(() -> LDataFrame.staticParse(readBuffer), readBuffer));
+            "dataFrame", readComplex(() -> LDataFrame.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("LDataCon");
     // Create the instance

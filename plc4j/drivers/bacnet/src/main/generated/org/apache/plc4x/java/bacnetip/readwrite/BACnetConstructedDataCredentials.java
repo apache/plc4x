@@ -118,8 +118,7 @@ public class BACnetConstructedDataCredentials extends BACnetConstructedData impl
     List<BACnetDeviceObjectReference> credentials =
         readTerminatedArrayField(
             "credentials",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

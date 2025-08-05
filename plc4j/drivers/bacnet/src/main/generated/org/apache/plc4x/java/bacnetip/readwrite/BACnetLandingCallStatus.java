@@ -70,13 +70,13 @@ public class BACnetLandingCallStatus implements Message {
     writeBuffer.pushContext("BACnetLandingCallStatus");
 
     // Simple Field (floorNumber)
-    writeSimpleField("floorNumber", floorNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("floorNumber", floorNumber, writeComplex(writeBuffer));
 
     // Simple Field (command)
-    writeSimpleField("command", command, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("command", command, writeComplex(writeBuffer));
 
     // Optional Field (floorText) (Can be skipped, if the value is null)
-    writeOptionalField("floorText", floorText, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("floorText", floorText, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLandingCallStatus");
   }
@@ -106,12 +106,6 @@ public class BACnetLandingCallStatus implements Message {
     return lengthInBits;
   }
 
-  public static BACnetLandingCallStatus staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetLandingCallStatus staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLandingCallStatus");
     PositionAware positionAware = readBuffer;
@@ -120,7 +114,7 @@ public class BACnetLandingCallStatus implements Message {
     BACnetContextTagUnsignedInteger floorNumber =
         readSimpleField(
             "floorNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -132,13 +126,12 @@ public class BACnetLandingCallStatus implements Message {
     BACnetLandingCallStatusCommand command =
         readSimpleField(
             "command",
-            new DataReaderComplexDefault<>(
-                () -> BACnetLandingCallStatusCommand.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetLandingCallStatusCommand.staticParse(readBuffer), readBuffer));
 
     BACnetContextTagCharacterString floorText =
         readOptionalField(
             "floorText",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(

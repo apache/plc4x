@@ -63,12 +63,6 @@ public class SemanticVersionString implements Message {
     return lengthInBits;
   }
 
-  public static SemanticVersionString staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SemanticVersionString staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SemanticVersionString");
     PositionAware positionAware = readBuffer;

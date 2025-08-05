@@ -60,8 +60,7 @@ public class BACnetChannelValueEnumerated extends BACnetChannelValue implements 
     writeBuffer.pushContext("BACnetChannelValueEnumerated");
 
     // Simple Field (enumeratedValue)
-    writeSimpleField(
-        "enumeratedValue", enumeratedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enumeratedValue", enumeratedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueEnumerated");
   }
@@ -92,7 +91,7 @@ public class BACnetChannelValueEnumerated extends BACnetChannelValue implements 
     BACnetApplicationTagEnumerated enumeratedValue =
         readSimpleField(
             "enumeratedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagEnumerated) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

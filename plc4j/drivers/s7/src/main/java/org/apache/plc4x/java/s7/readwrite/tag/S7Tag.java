@@ -24,9 +24,9 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.S7Address;
 import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
-import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.*;
@@ -36,6 +36,7 @@ import org.apache.plc4x.java.spi.utils.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,32 +44,26 @@ public class S7Tag implements PlcTag, Serializable {
 
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
 
     //blockNumber usually has its max hat around 64000 --> 5digits
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
 
     private static final Pattern DATA_BLOCK_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
-
-    private static final Pattern DATA_BLOCK_STRING_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?");
-
-    private static final Pattern DATA_BLOCK_STRING_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
 
     private static final Pattern PLC_PROXY_ADDRESS_PATTERN =
         Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}");
 
-    private static final String DATA_TYPE = "dataType";
-    private static final String STRING_LENGTH = "stringLength";
-    private static final String TRANSFER_SIZE_CODE = "transferSizeCode";
-    private static final String BLOCK_NUMBER = "blockNumber";
-    private static final String BYTE_OFFSET = "byteOffset";
-    private static final String BIT_OFFSET = "bitOffset";
-    private static final String NUM_ELEMENTS = "numElements";
-    private static final String MEMORY_AREA = "memoryArea";
+    protected static final String DATA_TYPE = "dataType";
+    protected static final String STRING_LENGTH = "stringLength";
+    protected static final String TRANSFER_SIZE_CODE = "transferSizeCode";
+    protected static final String BLOCK_NUMBER = "blockNumber";
+    protected static final String BYTE_OFFSET = "byteOffset";
+    protected static final String BIT_OFFSET = "bitOffset";
+    protected static final String NUM_ELEMENTS = "numElements";
+    protected static final String MEMORY_AREA = "memoryArea";
 
     private final TransportSize dataType;
     private final MemoryArea memoryArea;
@@ -77,15 +72,28 @@ public class S7Tag implements PlcTag, Serializable {
     private final byte bitOffset;
     private final int numElements;
 
-    protected S7Tag(TransportSize dataType, MemoryArea memoryArea,
+    public S7Tag(TransportSize dataType, MemoryArea memoryArea,
                     int blockNumber, int byteOffset,
                     byte bitOffset, int numElements) {
         this.dataType = dataType;
         this.memoryArea = memoryArea;
         this.blockNumber = blockNumber;
-        this.byteOffset = byteOffset;
-        this.bitOffset = bitOffset;
         this.numElements = numElements;
+        
+        //TODO: Should this address conversion be done in the mspec?
+        switch (dataType) {
+            case COUNTER: {
+                this.bitOffset = (byte) ((byteOffset) & 0x0007);
+                this.byteOffset = (byteOffset >> 3);
+                break;
+            }
+            default :{
+                this.byteOffset = byteOffset;
+                this.bitOffset = bitOffset;                
+            }
+            
+        }
+        
     }
 
     @Override
@@ -95,13 +103,25 @@ public class S7Tag implements PlcTag, Serializable {
 
     @Override
     public PlcValueType getPlcValueType() {
-        return PlcValueType.valueOf(dataType.name());
+        // Translate non-standard tag names.
+        switch (dataType.name()) {
+            case "S5TIME":
+                return PlcValueType.TIME;
+            case "LDT":
+                return PlcValueType.DATE_AND_LTIME;
+            case "DTL":
+                return PlcValueType.DATE_AND_LTIME;
+            case "COUNTER":
+                return PlcValueType.WORD;                
+            default:
+                return PlcValueType.valueOf(dataType.name());
+        }
     }
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if(numElements != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, numElements));
+        if (numElements != 1) {
+            return Collections.singletonList(new DefaultArrayInfo(0, numElements - 1));
         }
         return Collections.emptyList();
     }
@@ -135,60 +155,23 @@ public class S7Tag implements PlcTag, Serializable {
     }
 
     public static boolean matches(String tagString) {
-        return
-            DATA_BLOCK_STRING_ADDRESS_PATTERN.matcher(tagString).matches() ||
-                DATA_BLOCK_STRING_SHORT_PATTERN.matcher(tagString).matches() ||
-                DATA_BLOCK_ADDRESS_PATTERN.matcher(tagString).matches() ||
-                DATA_BLOCK_SHORT_PATTERN.matcher(tagString).matches() ||
-                PLC_PROXY_ADDRESS_PATTERN.matcher(tagString).matches() ||
-                ADDRESS_PATTERN.matcher(tagString).matches();
+        return DATA_BLOCK_ADDRESS_PATTERN.matcher(tagString).matches() ||
+            DATA_BLOCK_SHORT_PATTERN.matcher(tagString).matches() ||
+            PLC_PROXY_ADDRESS_PATTERN.matcher(tagString).matches() ||
+            ADDRESS_PATTERN.matcher(tagString).matches();
     }
 
     public static S7Tag of(String tagString) {
         Matcher matcher;
-        if ((matcher = DATA_BLOCK_STRING_ADDRESS_PATTERN.matcher(tagString)).matches()) {
-            TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
-            int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
-            MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-            int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
-            Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
-            int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
-            byte bitOffset = 0;
-            if (matcher.group(BIT_OFFSET) != null) {
-                bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
-            } else if (dataType == TransportSize.BOOL) {
-                throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
+        if ((matcher = DATA_BLOCK_ADDRESS_PATTERN.matcher(tagString)).matches()) {
+            String dataTypeName = matcher.group(DATA_TYPE);
+            if("RAW_BYTE_ARRAY".equals(dataTypeName)) {
+                dataTypeName = "BYTE";
             }
-            int numElements = 1;
-            if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
-            }
-
-            if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
-                throw new PlcInvalidTagException("Transfer size code '" + transferSizeCode +
-                    "' doesn't match specified data type '" + dataType.name() + "'");
-            }
-
-            return new S7StringTag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength);
-        } else if ((matcher = DATA_BLOCK_STRING_SHORT_PATTERN.matcher(tagString)).matches()) {
-            TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
-            int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
-            MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-            int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
-            int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
-            byte bitOffset = 0;
-            int numElements = 1;
-            if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
-            }
-
-            return new S7StringTag(dataType, memoryArea, blockNumber,
-                byteOffset, bitOffset, numElements, stringLength);
-        } else if ((matcher = DATA_BLOCK_ADDRESS_PATTERN.matcher(tagString)).matches()) {
-            TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
+            TransportSize dataType = TransportSize.valueOf(dataTypeName);
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
             Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
-            int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
+            int blockNumber = checkDataBlockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
             if (matcher.group(BIT_OFFSET) != null) {
@@ -208,9 +191,13 @@ public class S7Tag implements PlcTag, Serializable {
 
             return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
         } else if ((matcher = DATA_BLOCK_SHORT_PATTERN.matcher(tagString)).matches()) {
-            TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
+            String dataTypeName = matcher.group(DATA_TYPE);
+            if("RAW_BYTE_ARRAY".equals(dataTypeName)) {
+                dataTypeName = "BYTE";
+            }
+            TransportSize dataType = TransportSize.valueOf(dataTypeName);
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-            int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
+            int blockNumber = checkDataBlockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
             if (matcher.group(BIT_OFFSET) != null) {
@@ -275,15 +262,15 @@ public class S7Tag implements PlcTag, Serializable {
     }
 
     /**
-     * checks if DatablockNumber of S7Tag is in valid range
+     * checks if DataBlockNumber of S7Tag is in valid range
      *
-     * @param blockNumber given DatablockNumber
+     * @param blockNumber given DataBlockNumber
      * @return given blockNumber if Ok, throws PlcInvalidTagException otherwise
      */
-    private static int checkDatablockNumber(int blockNumber) {
-        //ToDo check the value or add reference - limit eventually depending on active S7 --> make a case selection
+    protected static int checkDataBlockNumber(int blockNumber) {
+        // TODO: check the value or add reference - limit eventually depending on active S7 --> make a case selection
         if (blockNumber > 64000 || blockNumber < 1) {
-            throw new PlcInvalidTagException("Datablock numbers larger than 64000 or smaller than 1 are not supported.");
+            throw new PlcInvalidTagException("DataBlock numbers larger than 64000 or smaller than 1 are not supported.");
         }
         return blockNumber;
     }
@@ -294,8 +281,8 @@ public class S7Tag implements PlcTag, Serializable {
      * @param byteOffset given byteOffset
      * @return given byteOffset if Ok, throws PlcInvalidTagException otherwise
      */
-    private static int checkByteOffset(int byteOffset) {
-        //ToDo check the value or add reference
+    protected static int checkByteOffset(int byteOffset) {
+        // TODO: check the value or add reference
         if (byteOffset > 2097151 || byteOffset < 0) {
             throw new PlcInvalidTagException("ByteOffset must be smaller than 2097151 and positive.");
         }
@@ -331,6 +318,18 @@ public class S7Tag implements PlcTag, Serializable {
             ", bitOffset=" + bitOffset +
             ", numElements=" + numElements +
             '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        S7Tag s7Tag = (S7Tag) o;
+        return blockNumber == s7Tag.blockNumber && byteOffset == s7Tag.byteOffset && bitOffset == s7Tag.bitOffset && numElements == s7Tag.numElements && dataType == s7Tag.dataType && memoryArea == s7Tag.memoryArea;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
     }
 
     @Override

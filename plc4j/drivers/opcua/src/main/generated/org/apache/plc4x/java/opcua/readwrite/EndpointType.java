@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class EndpointType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "15530";
+  public Integer getExtensionId() {
+    return (int) 15530;
   }
 
   // Properties.
@@ -84,25 +84,23 @@ public class EndpointType extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("EndpointType");
 
     // Simple Field (endpointUrl)
-    writeSimpleField("endpointUrl", endpointUrl, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("endpointUrl", endpointUrl, writeComplex(writeBuffer));
 
     // Simple Field (securityMode)
     writeSimpleEnumField(
         "securityMode",
         "MessageSecurityMode",
         securityMode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MessageSecurityMode::getValue,
             MessageSecurityMode::name,
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (securityPolicyUri)
-    writeSimpleField(
-        "securityPolicyUri", securityPolicyUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityPolicyUri", securityPolicyUri, writeComplex(writeBuffer));
 
     // Simple Field (transportProfileUri)
-    writeSimpleField(
-        "transportProfileUri", transportProfileUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportProfileUri", transportProfileUri, writeComplex(writeBuffer));
 
     writeBuffer.popContext("EndpointType");
   }
@@ -134,32 +132,30 @@ public class EndpointType extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("EndpointType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString endpointUrl =
         readSimpleField(
-            "endpointUrl",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "endpointUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     MessageSecurityMode securityMode =
         readEnumField(
             "securityMode",
             "MessageSecurityMode",
-            new DataReaderEnumDefault<>(
-                MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString securityPolicyUri =
         readSimpleField(
             "securityPolicyUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString transportProfileUri =
         readSimpleField(
             "transportProfileUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("EndpointType");
     // Create the instance

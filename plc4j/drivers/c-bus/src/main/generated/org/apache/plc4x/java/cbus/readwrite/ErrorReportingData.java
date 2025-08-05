@@ -68,7 +68,7 @@ public abstract class ErrorReportingData implements Message {
         "commandTypeContainer",
         "ErrorReportingCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ErrorReportingCommandTypeContainer::getValue,
             ErrorReportingCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -104,12 +104,6 @@ public abstract class ErrorReportingData implements Message {
     return lengthInBits;
   }
 
-  public static ErrorReportingData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ErrorReportingData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ErrorReportingData");
     PositionAware positionAware = readBuffer;
@@ -124,7 +118,7 @@ public abstract class ErrorReportingData implements Message {
         readEnumField(
             "commandTypeContainer",
             "ErrorReportingCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ErrorReportingCommandTypeContainer::enumForValue,
                 readUnsignedShort(readBuffer, 8)));
     ErrorReportingCommandType commandType =

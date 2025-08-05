@@ -78,7 +78,7 @@ public class TriggerControlLabelOptions implements Message {
         "labelFlavour",
         "TriggerControlLabelFlavour",
         labelFlavour,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TriggerControlLabelFlavour::getValue,
             TriggerControlLabelFlavour::name,
             writeUnsignedByte(writeBuffer, 2)));
@@ -100,7 +100,7 @@ public class TriggerControlLabelOptions implements Message {
         "labelType",
         "TriggerControlLabelType",
         labelType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TriggerControlLabelType::getValue,
             TriggerControlLabelType::name,
             writeUnsignedByte(writeBuffer, 2)));
@@ -146,12 +146,6 @@ public class TriggerControlLabelOptions implements Message {
     return lengthInBits;
   }
 
-  public static TriggerControlLabelOptions staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TriggerControlLabelOptions staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TriggerControlLabelOptions");
@@ -165,8 +159,7 @@ public class TriggerControlLabelOptions implements Message {
         readEnumField(
             "labelFlavour",
             "TriggerControlLabelFlavour",
-            new DataReaderEnumDefault<>(
-                TriggerControlLabelFlavour::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(TriggerControlLabelFlavour::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     Boolean reservedField1 =
         readReservedField("reserved", readBoolean(readBuffer), (boolean) false);
@@ -178,8 +171,7 @@ public class TriggerControlLabelOptions implements Message {
         readEnumField(
             "labelType",
             "TriggerControlLabelType",
-            new DataReaderEnumDefault<>(
-                TriggerControlLabelType::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(TriggerControlLabelType::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     Boolean reservedField3 =
         readReservedField("reserved", readBoolean(readBuffer), (boolean) false);

@@ -68,13 +68,11 @@ public class VTCloseError extends BACnetError implements Message {
     writeBuffer.pushContext("VTCloseError");
 
     // Simple Field (errorType)
-    writeSimpleField("errorType", errorType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorType", errorType, writeComplex(writeBuffer));
 
     // Optional Field (listOfVtSessionIdentifiers) (Can be skipped, if the value is null)
     writeOptionalField(
-        "listOfVtSessionIdentifiers",
-        listOfVtSessionIdentifiers,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "listOfVtSessionIdentifiers", listOfVtSessionIdentifiers, writeComplex(writeBuffer));
 
     writeBuffer.popContext("VTCloseError");
   }
@@ -110,13 +108,12 @@ public class VTCloseError extends BACnetError implements Message {
     ErrorEnclosed errorType =
         readSimpleField(
             "errorType",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     VTCloseErrorListOfVTSessionIdentifiers listOfVtSessionIdentifiers =
         readOptionalField(
             "listOfVtSessionIdentifiers",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> VTCloseErrorListOfVTSessionIdentifiers.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 

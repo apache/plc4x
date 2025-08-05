@@ -22,13 +22,15 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestNewUnitInfoQuery(t *testing.T) {

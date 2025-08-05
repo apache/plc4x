@@ -123,25 +123,18 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
     writeBuffer.writeVirtual("isUnitAddress", isUnitAddress);
 
     // Optional Field (unitAddress) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "unitAddress",
-        unitAddress,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getIsUnitAddress());
+    writeOptionalField("unitAddress", unitAddress, writeComplex(writeBuffer), getIsUnitAddress());
 
     // Optional Field (bridgeAddress) (Can be skipped, if the value is null)
     writeOptionalField(
-        "bridgeAddress",
-        bridgeAddress,
-        new DataWriterComplexDefault<>(writeBuffer),
-        !(getIsUnitAddress()));
+        "bridgeAddress", bridgeAddress, writeComplex(writeBuffer), !(getIsUnitAddress()));
 
     // Simple Field (application)
     writeSimpleEnumField(
         "application",
         "ApplicationIdContainer",
         application,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationIdContainer::getValue,
             ApplicationIdContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -151,13 +144,10 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
 
     // Optional Field (replyNetwork) (Can be skipped, if the value is null)
     writeOptionalField(
-        "replyNetwork",
-        replyNetwork,
-        new DataWriterComplexDefault<>(writeBuffer),
-        !(getIsUnitAddress()));
+        "replyNetwork", replyNetwork, writeComplex(writeBuffer), !(getIsUnitAddress()));
 
     // Optional Field (salData) (Can be skipped, if the value is null)
-    writeOptionalField("salData", salData, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("salData", salData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("MonitoredSALLongFormSmartMode");
   }
@@ -224,21 +214,20 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
     UnitAddress unitAddress =
         readOptionalField(
             "unitAddress",
-            new DataReaderComplexDefault<>(() -> UnitAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> UnitAddress.staticParse(readBuffer), readBuffer),
             isUnitAddress);
 
     BridgeAddress bridgeAddress =
         readOptionalField(
             "bridgeAddress",
-            new DataReaderComplexDefault<>(() -> BridgeAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BridgeAddress.staticParse(readBuffer), readBuffer),
             !(isUnitAddress));
 
     ApplicationIdContainer application =
         readEnumField(
             "application",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Byte reservedByte = readOptionalField("reservedByte", readByte(readBuffer, 8), isUnitAddress);
     // Validation
@@ -249,13 +238,13 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
     ReplyNetwork replyNetwork =
         readOptionalField(
             "replyNetwork",
-            new DataReaderComplexDefault<>(() -> ReplyNetwork.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ReplyNetwork.staticParse(readBuffer), readBuffer),
             !(isUnitAddress));
 
     SALData salData =
         readOptionalField(
             "salData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     SALData.staticParse(
                         readBuffer, (ApplicationId) (application.getApplicationId())),

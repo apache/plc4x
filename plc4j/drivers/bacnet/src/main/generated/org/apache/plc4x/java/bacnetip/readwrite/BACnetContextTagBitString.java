@@ -67,7 +67,7 @@ public class BACnetContextTagBitString extends BACnetContextTag implements Messa
     writeBuffer.pushContext("BACnetContextTagBitString");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetContextTagBitString");
   }
@@ -102,7 +102,7 @@ public class BACnetContextTagBitString extends BACnetContextTag implements Messa
     BACnetTagPayloadBitString payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadBitString.staticParse(
                         readBuffer, (long) (header.getActualLength())),

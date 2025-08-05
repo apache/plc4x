@@ -72,7 +72,7 @@ public class ParameterValueApplicationAddress2 extends ParameterValue implements
     writeBuffer.pushContext("ParameterValueApplicationAddress2");
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     // Array Field (data)
     writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
@@ -114,9 +114,7 @@ public class ParameterValueApplicationAddress2 extends ParameterValue implements
 
     ApplicationAddress2 value =
         readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(
-                () -> ApplicationAddress2.staticParse(readBuffer), readBuffer));
+            "value", readComplex(() -> ApplicationAddress2.staticParse(readBuffer), readBuffer));
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact((numBytes) - (1)));
 

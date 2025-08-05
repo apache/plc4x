@@ -23,5 +23,7 @@ package org.apache.plc4x.java.api.messages;
  * from a plc to the plc4x system.
  */
 public interface PlcResponse extends PlcMessage {
+
     PlcRequest getRequest();
+
 }

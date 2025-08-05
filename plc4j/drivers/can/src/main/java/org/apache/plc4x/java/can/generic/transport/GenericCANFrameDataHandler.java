@@ -24,6 +24,12 @@ import org.apache.plc4x.java.transport.can.CANFrameBuilder;
 import org.apache.plc4x.java.transport.can.CANTransport;
 import org.apache.plc4x.java.transport.can.FrameData;
 
+/**
+ * Generic CAN frame handler turn a wire level message @{@link FrameData} into a wrapper which
+ * does not have any specific other than node id and data.
+ *
+ * Because it is used by generic purpose driver it can not assume any semantics on message role.
+ */
 public class GenericCANFrameDataHandler implements CANTransport.FrameHandler<Message, GenericFrame> {
 
     private final Supplier<CANFrameBuilder<Message>> frameBuilder;

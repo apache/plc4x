@@ -61,7 +61,7 @@ public class PortSegment extends PathSegment implements Message {
     writeBuffer.pushContext("PortSegment");
 
     // Simple Field (segmentType)
-    writeSimpleField("segmentType", segmentType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("segmentType", segmentType, writeComplex(writeBuffer));
 
     writeBuffer.popContext("PortSegment");
   }
@@ -91,9 +91,7 @@ public class PortSegment extends PathSegment implements Message {
 
     PortSegmentType segmentType =
         readSimpleField(
-            "segmentType",
-            new DataReaderComplexDefault<>(
-                () -> PortSegmentType.staticParse(readBuffer), readBuffer));
+            "segmentType", readComplex(() -> PortSegmentType.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("PortSegment");
     // Create the instance

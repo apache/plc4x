@@ -229,7 +229,7 @@ public class DceRpc_Packet implements Message {
         "packetType",
         "DceRpc_PacketType",
         packetType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DceRpc_PacketType::getValue,
             DceRpc_PacketType::name,
             writeUnsignedShort(writeBuffer, 8)),
@@ -314,7 +314,7 @@ public class DceRpc_Packet implements Message {
         "integerEncoding",
         "IntegerEncoding",
         integerEncoding,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             IntegerEncoding::getValue, IntegerEncoding::name, writeUnsignedByte(writeBuffer, 4)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -323,7 +323,7 @@ public class DceRpc_Packet implements Message {
         "characterEncoding",
         "CharacterEncoding",
         characterEncoding,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             CharacterEncoding::getValue,
             CharacterEncoding::name,
             writeUnsignedByte(writeBuffer, 4)),
@@ -334,7 +334,7 @@ public class DceRpc_Packet implements Message {
         "floatingPointEncoding",
         "FloatingPointEncoding",
         floatingPointEncoding,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             FloatingPointEncoding::getValue,
             FloatingPointEncoding::name,
             writeUnsignedShort(writeBuffer, 8)),
@@ -358,7 +358,7 @@ public class DceRpc_Packet implements Message {
     writeSimpleField(
         "objectUuid",
         objectUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(
             (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                 ? ByteOrder.BIG_ENDIAN
@@ -368,7 +368,7 @@ public class DceRpc_Packet implements Message {
     writeSimpleField(
         "interfaceUuid",
         interfaceUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(
             (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                 ? ByteOrder.BIG_ENDIAN
@@ -378,7 +378,7 @@ public class DceRpc_Packet implements Message {
     writeSimpleField(
         "activityUuid",
         activityUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(
             (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                 ? ByteOrder.BIG_ENDIAN
@@ -419,7 +419,7 @@ public class DceRpc_Packet implements Message {
         "operation",
         "DceRpc_Operation",
         operation,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DceRpc_Operation::getValue, DceRpc_Operation::name, writeUnsignedInt(writeBuffer, 16)),
         WithOption.WithByteOrder(
             (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
@@ -489,7 +489,7 @@ public class DceRpc_Packet implements Message {
     writeSimpleField(
         "payload",
         payload,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(
             (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                 ? ByteOrder.BIG_ENDIAN
@@ -608,12 +608,6 @@ public class DceRpc_Packet implements Message {
     return lengthInBits;
   }
 
-  public static DceRpc_Packet staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DceRpc_Packet staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DceRpc_Packet");
     PositionAware positionAware = readBuffer;
@@ -630,8 +624,7 @@ public class DceRpc_Packet implements Message {
         readEnumField(
             "packetType",
             "DceRpc_PacketType",
-            new DataReaderEnumDefault<>(
-                DceRpc_PacketType::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(DceRpc_PacketType::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Boolean reservedField0 =
@@ -710,24 +703,21 @@ public class DceRpc_Packet implements Message {
         readEnumField(
             "integerEncoding",
             "IntegerEncoding",
-            new DataReaderEnumDefault<>(
-                IntegerEncoding::enumForValue, readUnsignedByte(readBuffer, 4)),
+            readEnum(IntegerEncoding::enumForValue, readUnsignedByte(readBuffer, 4)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     CharacterEncoding characterEncoding =
         readEnumField(
             "characterEncoding",
             "CharacterEncoding",
-            new DataReaderEnumDefault<>(
-                CharacterEncoding::enumForValue, readUnsignedByte(readBuffer, 4)),
+            readEnum(CharacterEncoding::enumForValue, readUnsignedByte(readBuffer, 4)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     FloatingPointEncoding floatingPointEncoding =
         readEnumField(
             "floatingPointEncoding",
             "FloatingPointEncoding",
-            new DataReaderEnumDefault<>(
-                FloatingPointEncoding::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(FloatingPointEncoding::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Short reservedField4 =
@@ -747,8 +737,7 @@ public class DceRpc_Packet implements Message {
     DceRpc_ObjectUuid objectUuid =
         readSimpleField(
             "objectUuid",
-            new DataReaderComplexDefault<>(
-                () -> DceRpc_ObjectUuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DceRpc_ObjectUuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(
                 (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                     ? ByteOrder.BIG_ENDIAN
@@ -757,8 +746,7 @@ public class DceRpc_Packet implements Message {
     DceRpc_InterfaceUuid interfaceUuid =
         readSimpleField(
             "interfaceUuid",
-            new DataReaderComplexDefault<>(
-                () -> DceRpc_InterfaceUuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DceRpc_InterfaceUuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(
                 (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                     ? ByteOrder.BIG_ENDIAN
@@ -767,8 +755,7 @@ public class DceRpc_Packet implements Message {
     DceRpc_ActivityUuid activityUuid =
         readSimpleField(
             "activityUuid",
-            new DataReaderComplexDefault<>(
-                () -> DceRpc_ActivityUuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DceRpc_ActivityUuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(
                 (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                     ? ByteOrder.BIG_ENDIAN
@@ -806,8 +793,7 @@ public class DceRpc_Packet implements Message {
         readEnumField(
             "operation",
             "DceRpc_Operation",
-            new DataReaderEnumDefault<>(
-                DceRpc_Operation::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(DceRpc_Operation::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(
                 (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                     ? ByteOrder.BIG_ENDIAN
@@ -871,7 +857,7 @@ public class DceRpc_Packet implements Message {
     PnIoCm_Packet payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> PnIoCm_Packet.staticParse(readBuffer, (DceRpc_PacketType) (packetType)),
                 readBuffer),
             WithOption.WithByteOrder(

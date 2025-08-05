@@ -80,23 +80,17 @@ public class InformationObjectWithSevenByteTime_BITSTRING_OF_32_BIT
 
     // Simple Field (bsi)
     writeSimpleField(
-        "bsi",
-        bsi,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "bsi", bsi, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (qds)
     writeSimpleField(
-        "qds",
-        qds,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qds", qds, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (cp56Time2a)
     writeSimpleField(
         "cp56Time2a",
         cp56Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithSevenByteTime_BITSTRING_OF_32_BIT");
@@ -136,22 +130,19 @@ public class InformationObjectWithSevenByteTime_BITSTRING_OF_32_BIT
     BinaryStateInformation bsi =
         readSimpleField(
             "bsi",
-            new DataReaderComplexDefault<>(
-                () -> BinaryStateInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BinaryStateInformation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualityDescriptor qds =
         readSimpleField(
             "qds",
-            new DataReaderComplexDefault<>(
-                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualityDescriptor.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     SevenOctetBinaryTime cp56Time2a =
         readSimpleField(
             "cp56Time2a",
-            new DataReaderComplexDefault<>(
-                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithSevenByteTime_BITSTRING_OF_32_BIT");

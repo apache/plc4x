@@ -21,15 +21,16 @@ package cbus
 
 import (
 	"context"
-	"github.com/rs/zerolog/log"
 	"testing"
 	"time"
+
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNewSubscriber(t *testing.T) {
@@ -163,7 +164,12 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 		{
 			name: "handle the MMI short",
 			args: args{
-				calReply: readWriteModel.NewCALReplyShort(1, nil, nil, nil),
+				calReply: readWriteModel.NewCALReplyShort(
+					1,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
+					nil,
+					nil,
+				),
 			},
 		},
 		{
@@ -181,7 +187,12 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 				},
 			},
 			args: args{
-				calReply: readWriteModel.NewCALReplyShort(1, nil, nil, nil),
+				calReply: readWriteModel.NewCALReplyShort(
+					1,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
+					nil,
+					nil,
+				),
 			},
 		},
 		{
@@ -189,12 +200,12 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 			args: args{
 				calReply: readWriteModel.NewCALReplyLong(
 					0,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
+					0,
 					readWriteModel.NewUnitAddress(0),
 					nil,
+					readWriteModel.NewSerialInterfaceAddress(0),
 					nil,
-					nil,
-					nil,
-					0,
 					nil,
 					nil,
 					nil,
@@ -205,10 +216,12 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 			name: "handle the MMI long bridge address",
 			args: args{
 				calReply: readWriteModel.NewCALReplyLong(
+					0,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
 					1,
 					readWriteModel.NewUnitAddress(0),
 					readWriteModel.NewBridgeAddress(1),
-					nil,
+					readWriteModel.NewSerialInterfaceAddress(0),
 					nil,
 					readWriteModel.NewReplyNetwork(
 						readWriteModel.NewNetworkRoute(
@@ -220,8 +233,6 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 						),
 						readWriteModel.NewUnitAddress(1),
 					),
-					0,
-					nil,
 					nil,
 					nil,
 				),
@@ -343,13 +354,13 @@ func TestSubscriber_offerMMI(t *testing.T) {
 			args: args{
 				unitAddressString: "u13",
 				calData: readWriteModel.NewCALDataStatus(
+					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+					nil,
 					readWriteModel.ApplicationIdContainer_LIGHTING_3A,
 					0,
 					[]readWriteModel.StatusByte{
 						readWriteModel.NewStatusByte(readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF, readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR),
 					},
-					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-					nil,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(
@@ -376,13 +387,13 @@ func TestSubscriber_offerMMI(t *testing.T) {
 			args: args{
 				unitAddressString: "u13",
 				calData: readWriteModel.NewCALDataStatus(
+					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+					nil,
 					readWriteModel.ApplicationIdContainer_LIGHTING_3A,
 					0,
 					[]readWriteModel.StatusByte{
 						readWriteModel.NewStatusByte(readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF, readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR),
 					},
-					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-					nil,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(
@@ -412,14 +423,14 @@ func TestSubscriber_offerMMI(t *testing.T) {
 			args: args{
 				unitAddressString: "u13",
 				calData: readWriteModel.NewCALDataStatusExtended(
+					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+					nil,
 					readWriteModel.StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE,
 					readWriteModel.ApplicationIdContainer_LIGHTING_3A,
 					0,
 					[]readWriteModel.StatusByte{
 						readWriteModel.NewStatusByte(readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF, readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR),
 					},
-					nil,
-					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 					nil,
 					nil,
 				),
@@ -447,6 +458,8 @@ func TestSubscriber_offerMMI(t *testing.T) {
 			args: args{
 				unitAddressString: "u13",
 				calData: readWriteModel.NewCALDataStatusExtended(
+					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+					nil,
 					readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE,
 					readWriteModel.ApplicationIdContainer_LIGHTING_3A,
 					0,
@@ -454,10 +467,12 @@ func TestSubscriber_offerMMI(t *testing.T) {
 					[]readWriteModel.LevelInformation{
 						readWriteModel.NewLevelInformationAbsent(13),
 						readWriteModel.NewLevelInformationCorrupted(1, 2, 3, 4, 5),
-						readWriteModel.NewLevelInformationNormal(readWriteModel.LevelInformationNibblePair_Value_0, readWriteModel.LevelInformationNibblePair_Value_2, 13),
+						readWriteModel.NewLevelInformationNormal(
+							13,
+							readWriteModel.LevelInformationNibblePair_Value_0,
+							readWriteModel.LevelInformationNibblePair_Value_2,
+						),
 					},
-					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-					nil,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(
@@ -521,7 +536,17 @@ func TestSubscriber_handleMonitoredSAL(t *testing.T) {
 				},
 			},
 			args: args{
-				sal: readWriteModel.NewMonitoredSALLongFormSmartMode(0, readWriteModel.NewUnitAddress(0), nil, readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74, nil, nil, nil, 0, nil),
+				sal: readWriteModel.NewMonitoredSALLongFormSmartMode(
+					0,
+					0,
+					readWriteModel.NewUnitAddress(0),
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					nil,
+					nil,
+					nil,
+					nil,
+				),
 			},
 		},
 	}
@@ -568,15 +593,15 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataLighting(
-						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
 						nil,
+						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -593,15 +618,15 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataAccessControl(
-						readWriteModel.NewAccessControlDataAccessPointClosed(readWriteModel.AccessControlCommandTypeContainer_AccessControlCommandAccessPointClosed, 0, 0),
 						nil,
+						readWriteModel.NewAccessControlDataAccessPointClosed(readWriteModel.AccessControlCommandTypeContainer_AccessControlCommandAccessPointClosed, 0, 0),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -618,15 +643,15 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataAirConditioning(
-						readWriteModel.NewAirConditioningDataRefresh(0, readWriteModel.AirConditioningCommandTypeContainer_AirConditioningCommandRefresh),
 						nil,
+						readWriteModel.NewAirConditioningDataRefresh(readWriteModel.AirConditioningCommandTypeContainer_AirConditioningCommandRefresh, 0),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -643,15 +668,15 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataAudioAndVideo(
-						readWriteModel.NewLightingDataOff(0, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
 						nil,
+						readWriteModel.NewLightingDataOff(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 0),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -668,18 +693,18 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataClockAndTimekeeping(
+						nil,
 						readWriteModel.NewClockAndTimekeepingDataRequestRefresh(
 							1,
 							0,
 						),
-						nil,
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -696,15 +721,15 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataEnableControl(
-						readWriteModel.NewEnableControlData(0, 0, 0),
 						nil,
+						readWriteModel.NewEnableControlData(0, 0, 0),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -721,12 +746,15 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataErrorReporting(
+						nil,
 						readWriteModel.NewErrorReportingDataGeneric(
+							1,
 							readWriteModel.NewErrorReportingSystemCategory(
 								readWriteModel.ErrorReportingSystemCategoryClass_INPUT_UNITS,
 								readWriteModel.NewErrorReportingSystemCategoryTypeInputUnits(
@@ -738,14 +766,11 @@ func TestSubscriber_offerSAL(t *testing.T) {
 							true,
 							true,
 							readWriteModel.ErrorReportingSeverity_ALL_OK,
-							1,
 							2,
 							3,
 							4,
 						),
-						nil,
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -762,12 +787,12 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataFreeUsage(nil),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -784,15 +809,15 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataHeating(
-						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
 						nil,
+						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -809,15 +834,15 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataHvacActuator(
-						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
 						nil,
+						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -834,15 +859,15 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataIrrigationControl(
-						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
 						nil,
+						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -859,15 +884,15 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataLighting(
-						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
 						nil,
+						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -884,23 +909,23 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataMeasurement(
+						nil,
 						readWriteModel.NewMeasurementDataChannelMeasurementData(
+							0,
 							0,
 							0,
 							readWriteModel.MeasurementUnits_ANGLE_DEGREES,
 							0,
 							0,
 							0,
-							0,
 						),
-						nil,
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -917,19 +942,19 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataMediaTransport(
+						nil,
 						readWriteModel.NewMediaTransportControlDataFastForward(
 							0,
 							0,
 							0,
 						),
-						nil,
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -946,19 +971,19 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataMetering(
+						nil,
 						readWriteModel.NewMeteringDataGasConsumption(
 							0,
 							0,
 							0,
 						),
-						nil,
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -975,18 +1000,18 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataPoolsSpasPondsFountainsControl(
+						nil,
 						readWriteModel.NewLightingDataOn(
 							0,
 							0,
 						),
-						nil,
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -1002,6 +1027,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			name: "offer sal tag short reserved",
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
 					0,
 					nil,
 					nil,
@@ -1010,7 +1036,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					readWriteModel.NewSALDataReserved(
 						nil,
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -1026,6 +1051,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			name: "offer sal tag short reserved",
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
 					0,
 					nil,
 					nil,
@@ -1034,7 +1060,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					readWriteModel.NewSALDataRoomControlSystem(
 						nil,
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -1051,18 +1076,18 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataSecurity(
+						nil,
 						readWriteModel.NewSecurityDataAlarmOn(
 							0,
 							0,
 						),
-						nil,
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -1079,19 +1104,19 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataTelephonyStatusAndControl(
-						readWriteModel.NewTelephonyDataDivert(
-							"1234",
-							0,
-							0,
-						),
 						nil,
+						readWriteModel.NewTelephonyDataDivert(
+							0,
+							0,
+							"1234",
+						),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -1108,19 +1133,19 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataTemperatureBroadcast(
+						nil,
 						readWriteModel.NewTemperatureBroadcastData(
 							0,
 							0,
 							0,
 						),
-						nil,
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -1137,6 +1162,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
@@ -1144,7 +1170,6 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					readWriteModel.NewSALDataTesting(
 						nil,
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -1161,19 +1186,19 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataTriggerControl(
+						nil,
 						readWriteModel.NewTriggerControlDataTriggerEvent(
 							0,
 							0,
 							0,
 						),
-						nil,
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -1190,18 +1215,18 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataVentilation(
+						nil,
 						readWriteModel.NewLightingDataOn(
 							0,
 							0,
 						),
-						nil,
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -1218,15 +1243,15 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataLighting(
-						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
 						nil,
+						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(
@@ -1253,15 +1278,15 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
 					0,
+					0,
 					nil,
 					nil,
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					readWriteModel.NewSALDataLighting(
-						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
 						nil,
+						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(
@@ -1291,16 +1316,16 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			args: args{
 				sal: readWriteModel.NewMonitoredSALLongFormSmartMode(
 					0,
+					0,
 					readWriteModel.NewUnitAddress(0),
 					nil,
 					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
 					nil,
 					nil,
 					readWriteModel.NewSALDataLighting(
-						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
 						nil,
+						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
@@ -1316,6 +1341,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 			name: "offer sal tag long bridged",
 			args: args{
 				sal: readWriteModel.NewMonitoredSALLongFormSmartMode(
+					0,
 					1,
 					nil,
 					readWriteModel.NewBridgeAddress(2),
@@ -1331,10 +1357,9 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						readWriteModel.NewUnitAddress(0),
 					),
 					readWriteModel.NewSALDataLighting(
-						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
 						nil,
+						readWriteModel.NewLightingDataOn(readWriteModel.LightingCommandTypeContainer_LightingCommandOn, 2),
 					),
-					0,
 					nil,
 				),
 				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),

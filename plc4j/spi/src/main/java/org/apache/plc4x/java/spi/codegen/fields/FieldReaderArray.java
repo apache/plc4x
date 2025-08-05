@@ -41,12 +41,17 @@ public class FieldReaderArray<T> implements FieldCommons {
         if (count > Integer.MAX_VALUE) {
             throw new ParseException("Array count of " + count + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
         }
+        if (count < 0) {
+            return null;
+        }
         // Ensure we have the render as list argument present
         readerArgs = ArrayUtils.add(readerArgs, WithReaderWriterArgs.WithRenderAsList(true));
         dataReader.pullContext(logicalName, readerArgs);
         int itemCount = Math.max(0, (int) count);
         List<T> result = new ArrayList<>(itemCount);
         for (int curItem = 0; curItem < itemCount; curItem++) {
+            // Make some variables available that would be otherwise challenging to forward.
+            ThreadLocalHelper.curItemThreadLocal.set(curItem);
             ThreadLocalHelper.lastItemThreadLocal.set(curItem == itemCount - 1);
             result.add(dataReader.read("", readerArgs));
         }

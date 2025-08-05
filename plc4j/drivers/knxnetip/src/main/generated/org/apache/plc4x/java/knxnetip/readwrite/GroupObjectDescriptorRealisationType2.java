@@ -137,15 +137,14 @@ public class GroupObjectDescriptorRealisationType2 implements Message {
         "priority",
         "CEMIPriority",
         priority,
-        new DataWriterEnumDefault<>(
-            CEMIPriority::getValue, CEMIPriority::name, writeUnsignedByte(writeBuffer, 2)));
+        writeEnum(CEMIPriority::getValue, CEMIPriority::name, writeUnsignedByte(writeBuffer, 2)));
 
     // Simple Field (valueType)
     writeSimpleEnumField(
         "valueType",
         "ComObjectValueType",
         valueType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ComObjectValueType::getValue,
             ComObjectValueType::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -194,12 +193,6 @@ public class GroupObjectDescriptorRealisationType2 implements Message {
     return lengthInBits;
   }
 
-  public static GroupObjectDescriptorRealisationType2 staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static GroupObjectDescriptorRealisationType2 staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("GroupObjectDescriptorRealisationType2");
@@ -225,15 +218,13 @@ public class GroupObjectDescriptorRealisationType2 implements Message {
         readEnumField(
             "priority",
             "CEMIPriority",
-            new DataReaderEnumDefault<>(
-                CEMIPriority::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(CEMIPriority::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     ComObjectValueType valueType =
         readEnumField(
             "valueType",
             "ComObjectValueType",
-            new DataReaderEnumDefault<>(
-                ComObjectValueType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ComObjectValueType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("GroupObjectDescriptorRealisationType2");
     // Create the instance

@@ -47,6 +47,7 @@ public class KnxSpecificationStoreUpdater {
 
     /**
      * Description of the KNX Foundation Webservice: http://onlinecatalog.knx.org/Download/help
+     *
      * @param args
      */
     public static void main(String[] args) {
@@ -136,7 +137,7 @@ public class KnxSpecificationStoreUpdater {
                     int applicationId = applicationIdentifier.getInt(2) << 8 | applicationIdentifier.getInt(3);
                     int applicationVersion = applicationIdentifier.getInt(4) & 0xFF;
 
-                    if(applicationId == 0 && applicationVersion == 0) {
+                    if (applicationId == 0 && applicationVersion == 0) {
                         System.out.println("SKIPPED");
                         continue;
                     }
@@ -148,7 +149,7 @@ public class KnxSpecificationStoreUpdater {
                     // Check If we've already got that file (There are no updates, just new versions)
                     File[] files = manufacturerDirectory.listFiles((dir, name) -> name.startsWith(productCode));
                     // If we've already got the file, skip loading it
-                    if(files.length > 0) {
+                    if (files.length > 0) {
                         System.out.println("SKIPPED");
                         continue;
                     }

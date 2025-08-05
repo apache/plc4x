@@ -83,7 +83,7 @@ public class BACnetConstructedDataOctetStringValuePresentValue extends BACnetCon
     writeBuffer.pushContext("BACnetConstructedDataOctetStringValuePresentValue");
 
     // Simple Field (presentValue)
-    writeSimpleField("presentValue", presentValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("presentValue", presentValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataOctetStringValuePresentValue extends BACnetCon
     BACnetApplicationTagOctetString presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

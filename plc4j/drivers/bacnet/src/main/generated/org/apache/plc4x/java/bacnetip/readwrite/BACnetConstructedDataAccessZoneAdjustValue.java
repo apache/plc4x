@@ -83,7 +83,7 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataAccessZoneAdjustValue");
 
     // Simple Field (adjustValue)
-    writeSimpleField("adjustValue", adjustValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("adjustValue", adjustValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
     BACnetApplicationTagSignedInteger adjustValue =
         readSimpleField(
             "adjustValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

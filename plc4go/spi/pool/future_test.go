@@ -22,10 +22,12 @@ package pool
 import (
 	"context"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
+	"sync"
 	"testing"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_future_AwaitCompletion(t *testing.T) {
@@ -35,21 +37,23 @@ func Test_future_AwaitCompletion(t *testing.T) {
 	tests := []struct {
 		name      string
 		args      args
-		completer func(*future)
+		completer func(*sync.WaitGroup, *future)
 		wantErr   assert.ErrorAssertionFunc
 	}{
 		{
 			name: "completes with error",
-			args: args{ctx: context.TODO()},
-			completer: func(f *future) {
+			args: args{ctx: t.Context()},
+			completer: func(wg *sync.WaitGroup, f *future) {
+				defer wg.Done()
 				f.Cancel(false, errors.New("Uh oh"))
 			},
 			wantErr: assert.Error,
 		},
 		{
 			name: "completes regular",
-			args: args{ctx: context.TODO()},
-			completer: func(f *future) {
+			args: args{ctx: t.Context()},
+			completer: func(wg *sync.WaitGroup, f *future) {
+				defer wg.Done()
 				time.Sleep(30 * time.Millisecond)
 				f.complete()
 			},
@@ -62,15 +66,17 @@ func Test_future_AwaitCompletion(t *testing.T) {
 				t.Cleanup(cancel)
 				return deadline
 			}()},
-			completer: func(f *future) {
+			completer: func(wg *sync.WaitGroup, f *future) {
+				defer wg.Done()
 				time.Sleep(300 * time.Millisecond)
 			},
 			wantErr: assert.Error,
 		},
 		{
 			name: "completes canceled without error",
-			args: args{ctx: context.TODO()},
-			completer: func(f *future) {
+			args: args{ctx: t.Context()},
+			completer: func(wg *sync.WaitGroup, f *future) {
+				defer wg.Done()
 				time.Sleep(300 * time.Millisecond)
 				f.Cancel(true, nil)
 			},
@@ -81,8 +87,9 @@ func Test_future_AwaitCompletion(t *testing.T) {
 		},
 		{
 			name: "completes canceled with particular error",
-			args: args{ctx: context.TODO()},
-			completer: func(f *future) {
+			args: args{ctx: t.Context()},
+			completer: func(wg *sync.WaitGroup, f *future) {
+				defer wg.Done()
 				time.Sleep(300 * time.Millisecond)
 				f.Cancel(true, errors.New("Uh oh"))
 			},
@@ -95,8 +102,11 @@ func Test_future_AwaitCompletion(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			f := &future{}
-			go tt.completer(f)
+			wg := sync.WaitGroup{}
+			wg.Add(1)
+			go tt.completer(&wg, f)
 			tt.wantErr(t, f.AwaitCompletion(tt.args.ctx), fmt.Sprintf("AwaitCompletion(%v)", tt.args.ctx))
+			wg.Wait()
 		})
 	}
 }

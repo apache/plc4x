@@ -51,7 +51,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
   protected final MacAddress cmInitiatorMacAddr;
   protected final DceRpc_ObjectUuid cmInitiatorObjectUuid;
   protected final boolean pullModuleAlarmAllowed;
-  protected final boolean nonLegacyStartupMode;
+  protected final boolean advancedStartupMode;
   protected final boolean combinedObjectContainerUsed;
   protected final boolean acknowledgeCompanionAr;
   protected final PnIoCm_CompanionArType companionArType;
@@ -76,7 +76,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
       MacAddress cmInitiatorMacAddr,
       DceRpc_ObjectUuid cmInitiatorObjectUuid,
       boolean pullModuleAlarmAllowed,
-      boolean nonLegacyStartupMode,
+      boolean advancedStartupMode,
       boolean combinedObjectContainerUsed,
       boolean acknowledgeCompanionAr,
       PnIoCm_CompanionArType companionArType,
@@ -96,7 +96,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     this.cmInitiatorMacAddr = cmInitiatorMacAddr;
     this.cmInitiatorObjectUuid = cmInitiatorObjectUuid;
     this.pullModuleAlarmAllowed = pullModuleAlarmAllowed;
-    this.nonLegacyStartupMode = nonLegacyStartupMode;
+    this.advancedStartupMode = advancedStartupMode;
     this.combinedObjectContainerUsed = combinedObjectContainerUsed;
     this.acknowledgeCompanionAr = acknowledgeCompanionAr;
     this.companionArType = companionArType;
@@ -141,8 +141,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     return pullModuleAlarmAllowed;
   }
 
-  public boolean getNonLegacyStartupMode() {
-    return nonLegacyStartupMode;
+  public boolean getAdvancedStartupMode() {
+    return advancedStartupMode;
   }
 
   public boolean getCombinedObjectContainerUsed() {
@@ -219,15 +219,14 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         "arType",
         "PnIoCm_ArType",
         arType,
-        new DataWriterEnumDefault<>(
-            PnIoCm_ArType::getValue, PnIoCm_ArType::name, writeUnsignedInt(writeBuffer, 16)),
+        writeEnum(PnIoCm_ArType::getValue, PnIoCm_ArType::name, writeUnsignedInt(writeBuffer, 16)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (arUuid)
     writeSimpleField(
         "arUuid",
         arUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (sessionKey)
@@ -241,14 +240,14 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     writeSimpleField(
         "cmInitiatorMacAddr",
         cmInitiatorMacAddr,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (cmInitiatorObjectUuid)
     writeSimpleField(
         "cmInitiatorObjectUuid",
         cmInitiatorObjectUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (pullModuleAlarmAllowed)
@@ -258,10 +257,10 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         writeBoolean(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    // Simple Field (nonLegacyStartupMode)
+    // Simple Field (advancedStartupMode)
     writeSimpleField(
-        "nonLegacyStartupMode",
-        nonLegacyStartupMode,
+        "advancedStartupMode",
+        advancedStartupMode,
         writeBoolean(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -291,7 +290,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         "companionArType",
         "PnIoCm_CompanionArType",
         companionArType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_CompanionArType::getValue,
             PnIoCm_CompanionArType::name,
             writeUnsignedByte(writeBuffer, 2)),
@@ -330,8 +329,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         "state",
         "PnIoCm_State",
         state,
-        new DataWriterEnumDefault<>(
-            PnIoCm_State::getValue, PnIoCm_State::name, writeUnsignedByte(writeBuffer, 3)),
+        writeEnum(PnIoCm_State::getValue, PnIoCm_State::name, writeUnsignedByte(writeBuffer, 3)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (cmInitiatorActivityTimeoutFactor)
@@ -405,7 +403,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     // Simple field (pullModuleAlarmAllowed)
     lengthInBits += 1;
 
-    // Simple field (nonLegacyStartupMode)
+    // Simple field (advancedStartupMode)
     lengthInBits += 1;
 
     // Simple field (combinedObjectContainerUsed)
@@ -478,14 +476,13 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         readEnumField(
             "arType",
             "PnIoCm_ArType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_ArType::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(PnIoCm_ArType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Uuid arUuid =
         readSimpleField(
             "arUuid",
-            new DataReaderComplexDefault<>(() -> Uuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Uuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int sessionKey =
@@ -497,14 +494,13 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     MacAddress cmInitiatorMacAddr =
         readSimpleField(
             "cmInitiatorMacAddr",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> MacAddress.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     DceRpc_ObjectUuid cmInitiatorObjectUuid =
         readSimpleField(
             "cmInitiatorObjectUuid",
-            new DataReaderComplexDefault<>(
-                () -> DceRpc_ObjectUuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DceRpc_ObjectUuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean pullModuleAlarmAllowed =
@@ -513,9 +509,9 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
             readBoolean(readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean nonLegacyStartupMode =
+    boolean advancedStartupMode =
         readSimpleField(
-            "nonLegacyStartupMode",
+            "advancedStartupMode",
             readBoolean(readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -542,8 +538,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         readEnumField(
             "companionArType",
             "PnIoCm_CompanionArType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_CompanionArType::enumForValue, readUnsignedByte(readBuffer, 2)),
+            readEnum(PnIoCm_CompanionArType::enumForValue, readUnsignedByte(readBuffer, 2)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean deviceAccess =
@@ -573,8 +568,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         readEnumField(
             "state",
             "PnIoCm_State",
-            new DataReaderEnumDefault<>(
-                PnIoCm_State::enumForValue, readUnsignedByte(readBuffer, 3)),
+            readEnum(PnIoCm_State::enumForValue, readUnsignedByte(readBuffer, 3)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int cmInitiatorActivityTimeoutFactor =
@@ -612,7 +606,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         cmInitiatorMacAddr,
         cmInitiatorObjectUuid,
         pullModuleAlarmAllowed,
-        nonLegacyStartupMode,
+        advancedStartupMode,
         combinedObjectContainerUsed,
         acknowledgeCompanionAr,
         companionArType,
@@ -636,7 +630,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     private final MacAddress cmInitiatorMacAddr;
     private final DceRpc_ObjectUuid cmInitiatorObjectUuid;
     private final boolean pullModuleAlarmAllowed;
-    private final boolean nonLegacyStartupMode;
+    private final boolean advancedStartupMode;
     private final boolean combinedObjectContainerUsed;
     private final boolean acknowledgeCompanionAr;
     private final PnIoCm_CompanionArType companionArType;
@@ -659,7 +653,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         MacAddress cmInitiatorMacAddr,
         DceRpc_ObjectUuid cmInitiatorObjectUuid,
         boolean pullModuleAlarmAllowed,
-        boolean nonLegacyStartupMode,
+        boolean advancedStartupMode,
         boolean combinedObjectContainerUsed,
         boolean acknowledgeCompanionAr,
         PnIoCm_CompanionArType companionArType,
@@ -680,7 +674,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
       this.cmInitiatorMacAddr = cmInitiatorMacAddr;
       this.cmInitiatorObjectUuid = cmInitiatorObjectUuid;
       this.pullModuleAlarmAllowed = pullModuleAlarmAllowed;
-      this.nonLegacyStartupMode = nonLegacyStartupMode;
+      this.advancedStartupMode = advancedStartupMode;
       this.combinedObjectContainerUsed = combinedObjectContainerUsed;
       this.acknowledgeCompanionAr = acknowledgeCompanionAr;
       this.companionArType = companionArType;
@@ -706,7 +700,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
               cmInitiatorMacAddr,
               cmInitiatorObjectUuid,
               pullModuleAlarmAllowed,
-              nonLegacyStartupMode,
+              advancedStartupMode,
               combinedObjectContainerUsed,
               acknowledgeCompanionAr,
               companionArType,
@@ -740,7 +734,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         && (getCmInitiatorMacAddr() == that.getCmInitiatorMacAddr())
         && (getCmInitiatorObjectUuid() == that.getCmInitiatorObjectUuid())
         && (getPullModuleAlarmAllowed() == that.getPullModuleAlarmAllowed())
-        && (getNonLegacyStartupMode() == that.getNonLegacyStartupMode())
+        && (getAdvancedStartupMode() == that.getAdvancedStartupMode())
         && (getCombinedObjectContainerUsed() == that.getCombinedObjectContainerUsed())
         && (getAcknowledgeCompanionAr() == that.getAcknowledgeCompanionAr())
         && (getCompanionArType() == that.getCompanionArType())
@@ -767,7 +761,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         getCmInitiatorMacAddr(),
         getCmInitiatorObjectUuid(),
         getPullModuleAlarmAllowed(),
-        getNonLegacyStartupMode(),
+        getAdvancedStartupMode(),
         getCombinedObjectContainerUsed(),
         getAcknowledgeCompanionAr(),
         getCompanionArType(),

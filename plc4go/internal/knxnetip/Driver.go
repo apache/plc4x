@@ -21,19 +21,23 @@ package knxnetip
 
 import (
 	"context"
-	"github.com/rs/zerolog"
 	"net/url"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Driver struct {
 	_default.DefaultDriver
+
+	discoverer *Discoverer
 
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
@@ -42,8 +46,9 @@ type Driver struct {
 func NewDriver(_options ...options.WithOption) *Driver {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &Driver{
-		log:      customLogger,
-		_options: _options,
+		discoverer: NewDiscoverer(_options...),
+		log:        customLogger,
+		_options:   _options,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "knxnet-ip", "KNXNet/IP", "udp", NewTagHandler())
 	return driver
@@ -92,5 +97,12 @@ func (d *Driver) SupportsDiscovery() bool {
 }
 
 func (d *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	return NewDiscoverer().Discover(ctx, callback, discoveryOptions...)
+	return d.discoverer.Discover(ctx, callback, discoveryOptions...)
+}
+
+func (d *Driver) Close() error {
+	defer utils.StopWarn(d.log)()
+	d.log.Trace().Msg("Closing driver")
+	d.log.Trace().Msg("Closing discoverer")
+	return d.discoverer.Close()
 }

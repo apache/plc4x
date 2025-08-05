@@ -59,7 +59,7 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
     writeBuffer.pushContext("BACnetEventParameterNone");
 
     // Simple Field (none)
-    writeSimpleField("none", none, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("none", none, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterNone");
   }
@@ -90,7 +90,7 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
     BACnetContextTagNull none =
         readSimpleField(
             "none",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagNull)
                         BACnetContextTag.staticParse(

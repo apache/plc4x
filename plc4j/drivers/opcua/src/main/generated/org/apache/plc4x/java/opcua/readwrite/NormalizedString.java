@@ -63,12 +63,6 @@ public class NormalizedString implements Message {
     return lengthInBits;
   }
 
-  public static NormalizedString staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static NormalizedString staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NormalizedString");
     PositionAware positionAware = readBuffer;

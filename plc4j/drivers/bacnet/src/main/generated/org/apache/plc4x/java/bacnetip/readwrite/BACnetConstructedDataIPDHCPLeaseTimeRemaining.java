@@ -84,9 +84,7 @@ public class BACnetConstructedDataIPDHCPLeaseTimeRemaining extends BACnetConstru
 
     // Simple Field (ipDhcpLeaseTimeRemaining)
     writeSimpleField(
-        "ipDhcpLeaseTimeRemaining",
-        ipDhcpLeaseTimeRemaining,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "ipDhcpLeaseTimeRemaining", ipDhcpLeaseTimeRemaining, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -128,7 +126,7 @@ public class BACnetConstructedDataIPDHCPLeaseTimeRemaining extends BACnetConstru
     BACnetApplicationTagUnsignedInteger ipDhcpLeaseTimeRemaining =
         readSimpleField(
             "ipDhcpLeaseTimeRemaining",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

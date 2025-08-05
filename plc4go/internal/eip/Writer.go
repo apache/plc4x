@@ -22,20 +22,21 @@ package eip
 import (
 	"context"
 	"encoding/binary"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"strings"
+	"sync"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
 )
 
 type Writer struct {
@@ -45,12 +46,14 @@ type Writer struct {
 	sessionHandle *uint32
 	senderContext *[]uint8
 
+	wg sync.WaitGroup // use to track spawned go routines
+
 	log zerolog.Logger
 }
 
-func NewWriter(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionHandle *uint32, senderContext *[]uint8, _options ...options.WithOption) Writer {
+func NewWriter(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionHandle *uint32, senderContext *[]uint8, _options ...options.WithOption) *Writer {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	return Writer{
+	return &Writer{
 		messageCodec:  messageCodec,
 		tm:            tm,
 		configuration: configuration,
@@ -60,10 +63,12 @@ func NewWriter(messageCodec spi.MessageCodec, tm transactions.RequestTransaction
 	}
 }
 
-func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
+func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	// TODO: handle context
 	result := make(chan apiModel.PlcWriteRequestResult, 1)
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -128,11 +133,11 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 					transaction.Submit(func(transaction transactions.RequestTransaction) {
 						// Send the  over the wire
 						if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
-							eipPacket := message.(readWriteModel.EipPacketExactly)
+							eipPacket := message.(readWriteModel.EipPacket)
 							if eipPacket == nil {
 								return false
 							}
-							cipRRData := eipPacket.(readWriteModel.CipRRDataExactly)
+							cipRRData := eipPacket.(readWriteModel.CipRRData)
 							if cipRRData == nil {
 								return false
 							}
@@ -221,18 +226,18 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 							ctx,
 							pkt,
 							func(message spi.Message) bool {
-							eipPacket := message.(readWriteModel.EipPacketExactly)
+							eipPacket := message.(readWriteModel.EipPacket)
 							if eipPacket == nil {
 								return false
 							}
-							cipRRData := eipPacket.(readWriteModel.CipRRDataExactly)
+							cipRRData := eipPacket.(readWriteModel.CipRRData)
 							if cipRRData == nil {
 								return false
 							}
 							if eipPacket.GetSessionHandle() != *m.sessionHandle {
 								return false
 							}
-							multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponseExactly)
+							multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponse)
 							if multipleServiceResponse == nil {
 								return false
 							}
@@ -313,15 +318,15 @@ func encodeValue(value apiValues.PlcValue, _type readWriteModel.CIPDataTypeCode,
 	return buffer.GetBytes(), nil
 }
 
-func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
+func (m *Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	switch response := response.(type) {
-	case readWriteModel.CipWriteResponseExactly: // only 1 tag
+	case readWriteModel.CipWriteResponse: // only 1 tag
 		cipReadResponse := response
 		tagName := writeRequest.GetTagNames()[0]
 		code := decodeResponseCode(cipReadResponse.GetStatus())
 		responseCodes[tagName] = code
-	case readWriteModel.MultipleServiceResponseExactly: //Multiple response
+	case readWriteModel.MultipleServiceResponse: //Multiple response
 		/*		multipleServiceResponse := response
 						nb := multipleServiceResponse.GetServiceNb()
 						arr := make([]readWriteModel.CipService, nb)

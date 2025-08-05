@@ -21,6 +21,7 @@ package simulated
 
 import (
 	"fmt"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
@@ -68,7 +69,7 @@ func (t simulatedTag) GetAddressString() string {
 }
 
 func (t simulatedTag) GetValueType() values.PlcValueType {
-	if plcValueType, ok := values.PlcValueByName(t.DataTypeSize.String()); ok {
+	if plcValueType, ok := values.PlcValueTypeByName(t.DataTypeSize.String()); ok {
 		return plcValueType
 	}
 	return values.NULL

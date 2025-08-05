@@ -83,7 +83,7 @@ public class BACnetConstructedDataPositiveIntegerValueDeadband extends BACnetCon
     writeBuffer.pushContext("BACnetConstructedDataPositiveIntegerValueDeadband");
 
     // Simple Field (deadband)
-    writeSimpleField("deadband", deadband, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deadband", deadband, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataPositiveIntegerValueDeadband extends BACnetCon
     BACnetApplicationTagUnsignedInteger deadband =
         readSimpleField(
             "deadband",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

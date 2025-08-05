@@ -21,15 +21,17 @@ package model
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	"sync"
+
 	"github.com/pkg/errors"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var _ apiModel.PlcUnsubscriptionRequestBuilder = &DefaultPlcUnsubscriptionRequestBuilder{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionRequestBuilder
+//go:generate go tool plc4xGenerator -type=DefaultPlcUnsubscriptionRequestBuilder
 type DefaultPlcUnsubscriptionRequestBuilder struct {
 	subscriptionHandles []apiModel.PlcSubscriptionHandle
 }
@@ -49,9 +51,11 @@ func (d *DefaultPlcUnsubscriptionRequestBuilder) Build() (apiModel.PlcUnsubscrip
 
 var _ apiModel.PlcUnsubscriptionRequest = &DefaultPlcUnsubscriptionRequest{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionRequest
+//go:generate go tool plc4xGenerator -type=DefaultPlcUnsubscriptionRequest
 type DefaultPlcUnsubscriptionRequest struct {
 	subscriptionHandles []apiModel.PlcSubscriptionHandle
+
+	wg sync.WaitGroup // use to track spawned go routines
 }
 
 func NewDefaultPlcUnsubscriptionRequest(subscriptionHandles []apiModel.PlcSubscriptionHandle) *DefaultPlcUnsubscriptionRequest {
@@ -66,7 +70,9 @@ func (d *DefaultPlcUnsubscriptionRequest) Execute() <-chan apiModel.PlcUnsubscri
 
 func (d *DefaultPlcUnsubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcUnsubscriptionRequestResult {
 	results := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
 		var collectedErrors []error
 		for _, handle := range d.subscriptionHandles {
 			select {
@@ -81,7 +87,7 @@ func (d *DefaultPlcUnsubscriptionRequest) ExecuteWithContext(ctx context.Context
 		}
 		var err error
 		if len(collectedErrors) > 0 {
-			err = utils.MultiError{MainError: errors.New("error unsubscribing from all"), Errors: collectedErrors}
+			err = &utils.MultiError{MainError: errors.New("error unsubscribing from all"), Errors: collectedErrors}
 		}
 		results <- NewDefaultPlcUnsubscriptionRequestResult(d, NewDefaultPlcUnsubscriptionResponse(d), err)
 	}()

@@ -33,7 +33,7 @@ import (
 func TestKNXNetIPDriver(t *testing.T) {
 	t.Skip("No test yet")
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
-		return readWriteModel.KnxNetIpMessageParseWithBuffer(context.Background(), readBufferByteBased)
+		return readWriteModel.KnxNetIpMessageParseWithBuffer[readWriteModel.KnxNetIpMessage](context.Background(), readBufferByteBased)
 	}
 	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
 	testutils.RunDriverTestsuite(

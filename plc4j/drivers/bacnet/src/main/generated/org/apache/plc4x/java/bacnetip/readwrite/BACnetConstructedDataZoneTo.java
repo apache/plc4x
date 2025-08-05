@@ -82,7 +82,7 @@ public class BACnetConstructedDataZoneTo extends BACnetConstructedData implement
     writeBuffer.pushContext("BACnetConstructedDataZoneTo");
 
     // Simple Field (zoneTo)
-    writeSimpleField("zoneTo", zoneTo, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneTo", zoneTo, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = getActualValue();
@@ -124,8 +124,7 @@ public class BACnetConstructedDataZoneTo extends BACnetConstructedData implement
     BACnetDeviceObjectReference zoneTo =
         readSimpleField(
             "zoneTo",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectReference actualValue =
         readVirtualField("actualValue", BACnetDeviceObjectReference.class, zoneTo);
 

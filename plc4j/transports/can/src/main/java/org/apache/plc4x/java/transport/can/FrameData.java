@@ -25,7 +25,7 @@ public interface FrameData {
 
     int getNodeId();
 
-    <T extends Message> T read(MessageInput<T> input, Object ... args);
+    <T extends Message> T read(MessageInput<T> input);
 
     int getDataLength();
     byte[] getData();

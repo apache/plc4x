@@ -57,7 +57,7 @@ func (m plcTag) GetAddressString() string {
 }
 
 func (m plcTag) GetValueType() apiValues.PlcValueType {
-	if plcValueType, ok := apiValues.PlcValueByName(m.GetType().String()); !ok {
+	if plcValueType, ok := apiValues.PlcValueTypeByName(m.GetType().String()); !ok {
 		return apiValues.NULL
 	} else {
 		return plcValueType
@@ -88,35 +88,35 @@ func (m plcTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("EipTag"); err != nil {
+func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {
+	if err := wb.PushContext("EipTag"); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("node", uint32(len([]rune(m.Tag))*8), "UTF-8", m.Tag); err != nil {
+	if err := wb.WriteString("node", uint32(len([]rune(m.Tag))*8), m.Tag); err != nil {
 		return err
 	}
 
 	if m.Type != 0 {
-		if err := writeBuffer.WriteString("type", uint32(len([]rune(m.Type.String()))*8), "UTF-8", m.Type.String()); err != nil {
+		if err := wb.WriteString("type", uint32(len([]rune(m.Type.String()))*8), m.Type.String()); err != nil {
 			return err
 		}
 	}
 
-	if err := writeBuffer.WriteUint16("elementNb", 16, m.ElementNb); err != nil {
+	if err := wb.WriteUint16("elementNb", 16, m.ElementNb); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.PopContext("EipTag"); err != nil {
+	if err := wb.PopContext("EipTag"); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (m plcTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

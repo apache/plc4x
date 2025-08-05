@@ -25,7 +25,7 @@ import (
 
 var _ apiModel.PlcDiscoveryItem = &DefaultPlcDiscoveryItem{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseResponse
+//go:generate go tool plc4xGenerator -type=DefaultPlcBrowseResponse
 type DefaultPlcBrowseResponse struct {
 	request      apiModel.PlcBrowseRequest
 	responseCode apiModel.PlcResponseCode `stringer:"true"`

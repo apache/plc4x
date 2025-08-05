@@ -207,7 +207,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
         "lowApplication",
         "ApplicationIdContainer",
         lowApplication,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationIdContainer::getValue,
             ApplicationIdContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -217,7 +217,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
         "highApplication",
         "ApplicationIdContainer",
         highApplication,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationIdContainer::getValue,
             ApplicationIdContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -390,15 +390,13 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
         readEnumField(
             "lowApplication",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     ApplicationIdContainer highApplication =
         readEnumField(
             "highApplication",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     byte area = readSimpleField("area", readByte(readBuffer, 8));
 

@@ -97,12 +97,6 @@ public class CauseOfInitialization implements Message {
     return lengthInBits;
   }
 
-  public static CauseOfInitialization staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static CauseOfInitialization staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CauseOfInitialization");
     PositionAware positionAware = readBuffer;

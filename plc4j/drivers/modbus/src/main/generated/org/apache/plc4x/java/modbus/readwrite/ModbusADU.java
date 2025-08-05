@@ -74,35 +74,6 @@ public abstract class ModbusADU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusADU staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 2)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 2, but got " + args.length);
-    }
-    DriverType driverType;
-    if (args[0] instanceof DriverType) {
-      driverType = (DriverType) args[0];
-    } else if (args[0] instanceof String) {
-      driverType = DriverType.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type DriverType or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    Boolean response;
-    if (args[1] instanceof Boolean) {
-      response = (Boolean) args[1];
-    } else if (args[1] instanceof String) {
-      response = Boolean.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type Boolean or a string which is parseable but was "
-              + args[1].getClass().getName());
-    }
-    return staticParse(readBuffer, driverType, response);
-  }
-
   public static ModbusADU staticParse(
       ReadBuffer readBuffer, DriverType driverType, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusADU");

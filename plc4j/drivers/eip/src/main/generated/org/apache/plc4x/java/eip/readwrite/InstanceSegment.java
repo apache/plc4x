@@ -115,12 +115,6 @@ public class InstanceSegment implements Message {
     return lengthInBits;
   }
 
-  public static InstanceSegment staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static InstanceSegment staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("InstanceSegment");
     PositionAware positionAware = readBuffer;

@@ -19,6 +19,8 @@
 package org.apache.plc4x.java.opcua.readwrite.utils;
 
 import java.nio.charset.StandardCharsets;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.opcua.readwrite.ExpandedNodeId;
 
 public class StaticHelper {
 
@@ -27,14 +29,18 @@ public class StaticHelper {
         if (stringValue == null) {
             return -1;
         }
-        int nBytes = stringValue.getBytes(StandardCharsets.UTF_8).length;
-        if (nBytes == 0) {
-            return -1;
-        }
-        return nBytes;
+        return stringValue.getBytes(StandardCharsets.UTF_8).length;
     }
 
     public static int pascalLengthToUtf8Length(int slength) {
         return Math.max(slength, 0);
+    }
+
+    public static int extensionId(ExpandedNodeId expandedNodeId) {
+        try {
+            return Integer.parseInt(expandedNodeId.getNodeId().getIdentifier());
+        } catch (NumberFormatException e) {
+            throw new PlcRuntimeException("Invalid node id, expected number, found " + expandedNodeId.getNodeId().getClass().getName());
+        }
     }
 }

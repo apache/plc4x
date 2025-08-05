@@ -83,8 +83,7 @@ public class BACnetConstructedDataNetworkNumberQuality extends BACnetConstructed
     writeBuffer.pushContext("BACnetConstructedDataNetworkNumberQuality");
 
     // Simple Field (networkNumberQuality)
-    writeSimpleField(
-        "networkNumberQuality", networkNumberQuality, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkNumberQuality", networkNumberQuality, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetNetworkNumberQualityTagged actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataNetworkNumberQuality extends BACnetConstructed
     BACnetNetworkNumberQualityTagged networkNumberQuality =
         readSimpleField(
             "networkNumberQuality",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNetworkNumberQualityTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

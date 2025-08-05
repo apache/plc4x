@@ -105,25 +105,6 @@ public abstract class Apdu implements Message {
     return lengthInBits;
   }
 
-  public static Apdu staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short dataLength;
-    if (args[0] instanceof Short) {
-      dataLength = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      dataLength = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, dataLength);
-  }
-
   public static Apdu staticParse(ReadBuffer readBuffer, Short dataLength) throws ParseException {
     readBuffer.pullContext("Apdu");
     PositionAware positionAware = readBuffer;

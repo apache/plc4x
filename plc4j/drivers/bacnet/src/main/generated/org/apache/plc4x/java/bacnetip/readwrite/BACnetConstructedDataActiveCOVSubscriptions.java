@@ -119,8 +119,7 @@ public class BACnetConstructedDataActiveCOVSubscriptions extends BACnetConstruct
     List<BACnetCOVSubscription> activeCOVSubscriptions =
         readTerminatedArrayField(
             "activeCOVSubscriptions",
-            new DataReaderComplexDefault<>(
-                () -> BACnetCOVSubscription.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetCOVSubscription.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DeleteNodesItem extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "384";
+  public Integer getExtensionId() {
+    return (int) 384;
   }
 
   // Properties.
@@ -68,7 +68,7 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
     writeBuffer.pushContext("DeleteNodesItem");
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -103,15 +103,13 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DeleteNodesItem");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
-        readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("nodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class NullExtension extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "0";
+  public Integer getExtensionId() {
+    return (int) 0;
   }
 
   public NullExtension() {
@@ -71,7 +71,7 @@ public class NullExtension extends ExtensionObjectDefinition implements Message 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("NullExtension");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

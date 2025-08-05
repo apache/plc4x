@@ -22,19 +22,20 @@ package bacnetip
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
+	"sync"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Reader struct {
@@ -44,6 +45,8 @@ type Reader struct {
 
 	maxSegmentsAccepted   readWriteModel.MaxSegmentsAccepted
 	maxApduLengthAccepted readWriteModel.MaxApduLengthAccepted
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
@@ -64,9 +67,11 @@ func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCod
 
 func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	// TODO: handle ctx
-	log.Trace().Msg("Reading")
+	m.log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult, 1)
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		if len(readRequest.GetTagNames()) == 0 {
 			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("at least one field required"))
 			return
@@ -136,38 +141,38 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 		transaction := m.tm.StartTransaction()
 		transaction.Submit(func(transaction transactions.RequestTransaction) {
 			// Send the  over the wire
-			log.Trace().Msg("Send ")
+			m.log.Trace().Msg("Send ")
 			if err := m.messageCodec.SendRequest(ctx, apdu, func(message spi.Message) bool {
-				bvlc, ok := message.(readWriteModel.BVLCExactly)
+				bvlc, ok := message.(readWriteModel.BVLC)
 				if !ok {
-					log.Debug().Type("bvlc", bvlc).Msg("Received strange type")
+					m.log.Debug().Type("bvlc", bvlc).Msg("Received strange type")
 					return false
 				}
 				var npdu readWriteModel.NPDU
 				if npduRetriever, ok := bvlc.(interface{ GetNpdu() readWriteModel.NPDU }); ok {
 					npdu = npduRetriever.GetNpdu()
 				} else {
-					log.Debug().Type("bvlc", bvlc).Msg("bvlc has no way to give a npdu")
+					m.log.Debug().Type("bvlc", bvlc).Msg("bvlc has no way to give a npdu")
 					return false
 				}
 				if npdu.GetControl().GetMessageTypeFieldPresent() {
 					return false
 				}
 				if invokeIdFromApdu, err := getInvokeIdFromApdu(npdu.GetApdu()); err != nil {
-					log.Debug().Err(err).Msg("Error getting invoke id")
+					m.log.Debug().Err(err).Msg("Error getting invoke id")
 					return false
 				} else {
 					return invokeIdFromApdu == invokeId
 				}
 			}, func(message spi.Message) error {
 				// Convert the response into an
-				log.Trace().Msg("convert response to ")
+				m.log.Trace().Msg("convert response to ")
 				apdu := message.(readWriteModel.BVLC).(interface{ GetNpdu() readWriteModel.NPDU }).GetNpdu().GetApdu()
 
 				// TODO: implement segment handling
 
 				// Convert the bacnet response into a PLC4X response
-				log.Trace().Msg("convert response to PLC4X response")
+				m.log.Trace().Msg("convert response to PLC4X response")
 				readResponse, err := m.ToPlc4xReadResponse(apdu, readRequest)
 
 				if err != nil {
@@ -285,11 +290,11 @@ func (m *Reader) ToPlc4xReadResponse(apdu readWriteModel.APDU, readRequest apiMo
 	}
 
 	switch serviceAck := complexAck.GetServiceAck().(type) {
-	case readWriteModel.BACnetServiceAckReadPropertyExactly:
+	case readWriteModel.BACnetServiceAckReadProperty:
 		// TODO: super lazy implementation for now
 		responseCodes[readRequest.GetTagNames()[0]] = apiModel.PlcResponseCode_OK
 		plcValues[readRequest.GetTagNames()[0]] = spiValues.NewPlcSTRING(serviceAck.GetValues().(fmt.Stringer).String())
-	case readWriteModel.BACnetServiceAckReadPropertyMultipleExactly:
+	case readWriteModel.BACnetServiceAckReadPropertyMultiple:
 
 		// way to know how to interpret the responses is by aligning them with the
 		// items from the request as this information is not returned by the PLC.
@@ -304,7 +309,7 @@ func (m *Reader) ToPlc4xReadResponse(apdu readWriteModel.APDU, readRequest apiMo
 	}
 
 	// Return the response
-	log.Trace().Msg("Returning the response")
+	m.log.Trace().Msg("Returning the response")
 	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 }
 

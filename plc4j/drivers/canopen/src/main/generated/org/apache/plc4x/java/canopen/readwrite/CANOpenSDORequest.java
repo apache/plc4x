@@ -72,13 +72,13 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
         "command",
         "SDORequestCommand",
         command,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             SDORequestCommand::getValue,
             SDORequestCommand::name,
             writeUnsignedByte(writeBuffer, 3)));
 
     // Simple Field (request)
-    writeSimpleField("request", request, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("request", request, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CANOpenSDORequest");
   }
@@ -113,13 +113,12 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
         readEnumField(
             "command",
             "SDORequestCommand",
-            new DataReaderEnumDefault<>(
-                SDORequestCommand::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(SDORequestCommand::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     SDORequest request =
         readSimpleField(
             "request",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> SDORequest.staticParse(readBuffer, (SDORequestCommand) (command)),
                 readBuffer));
 

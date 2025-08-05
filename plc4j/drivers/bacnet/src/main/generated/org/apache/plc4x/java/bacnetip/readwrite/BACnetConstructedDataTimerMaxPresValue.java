@@ -83,7 +83,7 @@ public class BACnetConstructedDataTimerMaxPresValue extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataTimerMaxPresValue");
 
     // Simple Field (maxPresValue)
-    writeSimpleField("maxPresValue", maxPresValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxPresValue", maxPresValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataTimerMaxPresValue extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger maxPresValue =
         readSimpleField(
             "maxPresValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

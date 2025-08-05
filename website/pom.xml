@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4x-parent</artifactId>
+    <version>0.13.0</version>
+  </parent>
+
+  <artifactId>plc4x-website</artifactId>
+
+  <name>PLC4X Website</name>
+  <description />
+
+  <properties>
+    <project.build.outputTimestamp>2025-08-02T13:58:13Z</project.build.outputTimestamp>
+    <bootstrap.version>5.3.3</bootstrap.version>
+    <popper.version>2.8.0</popper.version>
+    <jquery.version>3.7.1</jquery.version>
+    <fontawesome.version>6.5.2</fontawesome.version>
+  </properties>
+
+  <build>
+    <plugins>
+      <!--
+        Download Bootstrap and Fontawesome.
+      -->
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>get-bootstrap</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://github.com/twbs/bootstrap/releases/download/v${bootstrap.version}/bootstrap-${bootstrap.version}-dist.zip</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/dependency/bootstrap</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-popper</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://github.com/popperjs/popper.js/archive/v${popper.version}.zip</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/dependency/popper</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-fontawesome</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://use.fontawesome.com/releases/v${fontawesome.version}/fontawesome-free-${fontawesome.version}-web.zip</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/dependency/fontawesome</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-source-hbs</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/dependency/antora</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+            <execution>
+                <phase>pre-site</phase>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+                <configuration>
+                    <target>
+                        <delete failonerror="false">
+                            <fileset dir="${project.build.directory}/supplemental/partials" includes="header-content.hbs" />
+                        </delete>
+                    </target>
+                </configuration>
+            </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>get-jquery</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars</groupId>
+                  <artifactId>jquery</artifactId>
+                  <version>${jquery.version}</version>
+                  <type>jar</type>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}/dependency/jquery</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+        Copy stuff from the downloaded bootstrap and fontawesome packages and hereby
+        assemble a local distribution customized to our needs.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-site-resources-external</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/supplemental</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/dependency/bootstrap/bootstrap-${bootstrap.version}-dist</directory>
+                  <includes>
+                    <include>css/*</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>${project.build.directory}/dependency/bootstrap/bootstrap-${bootstrap.version}-dist</directory>
+                  <includes>
+                    <include>js/*</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>
+                    ${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web
+                  </directory>
+                  <includes>
+                    <include>css/all.min.css</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>
+                    ${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web/webfonts
+                  </directory>
+                  <targetPath>fonts</targetPath>
+                </resource>
+                <resource>
+                  <directory>
+                    ${project.build.directory}/dependency/jquery/META-INF/resources/webjars/jquery/${jquery.version}
+                  </directory>
+                  <targetPath>js</targetPath>
+                </resource>
+                <resource>
+                  <directory>
+                    ${project.build.directory}/dependency/popper/popper-core-${popper.version}/dist/umd
+                  </directory>
+                  <targetPath>js</targetPath>
+                </resource>
+                <resource>
+                  <directory>
+                    ${project.build.directory}/dependency/antora/partials
+                  </directory>
+                  <targetPath>partials</targetPath>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-site-resources</id>
+            <!-- Only execute this for the parent module -->
+            <phase>pre-site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/supplemental</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/supplemental</directory>
+                  <filtering>false</filtering>
+                  <targetPath>${project.build.directory}/supplemental</targetPath>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resources-dir</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site</outputDirectory>
+              <resources>
+                <!-- Copy the resources for the test-suites -->
+                <resource>
+                  <directory>${project.basedir}/resources</directory>
+                  <targetPath>${project.build.directory}/site</targetPath>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-schemas</id>
+            <!-- Only execute this for the parent module -->
+            <phase>pre-site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site</outputDirectory>
+              <resources>
+                <!-- Copy the resources for the test-suites -->
+                <resource>
+                  <directory>${project.basedir}/../plc4j/utils/test-utils/src/main/resources/schemas</directory>
+                  <targetPath>${project.build.directory}/site/schemas</targetPath>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-all-site-resources</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
+            <phase>site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${pom.basedir}/../target/site</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/site</directory>
+                  <filtering>false</filtering>
+                  <targetPath>${pom.basedir}/../target/site</targetPath>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+        <!--configuration>
+          <delimiters>
+            <delimiter>@</delimiter>
+          </delimiters>
+          <useDefaultDelimiters>false</useDefaultDelimiters>
+        </configuration-->
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>git-apply-patch-header</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>git</executable>
+              <arguments>
+                <argument>apply</argument>
+                <argument>-p0</argument>
+                <argument>patches/header-content.patch</argument>
+                <argument>--directory=target</argument>
+                <argument>--ignore-whitespace</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
+      <!--
+        The bootstrap uses "fonts" as directory for locating fonts and fontawesome uses "webfonts".
+        This plugin updates the css to also use "fonts".
+      -->
+      <plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+        <version>1.5.3</version>
+        <executions>
+          <execution>
+            <id>streamline-font-urls</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/supplemental/css/all.min.css</file>
+              <replacements>
+                <replacement>
+                  <token>../webfonts/</token>
+                  <value>../fonts/</value>
+                </replacement>
+              </replacements>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.15.1</version>
+
+        <executions>
+          <execution>
+            <id>install node and npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <phase>pre-site</phase>
+          </execution>
+          <execution>
+            <id>npm install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+
+            <!-- optional: default phase is "generate-resources" -->
+            <phase>pre-site</phase>
+
+            <configuration>
+              <!-- optional: The default argument is actually
+              "install", so unless you need to run some other npm command,
+              you can remove this whole <configuration> section.
+              -->
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate website</id>
+            <goals>
+              <goal>npx</goal>
+            </goals>
+
+            <phase>pre-site</phase>
+
+            <configuration>
+              <arguments>antora ../antora-playbook.yml</arguments>
+            </configuration>
+          </execution>
+
+        </executions>
+        <configuration>
+          <nodeVersion>v16.16.0</nodeVersion>
+          <workingDirectory>${pom.basedir}/target</workingDirectory>
+          <installDirectory>${pom.basedir}/target</installDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+            <filesets>
+                <fileset>
+                    <directory>node_modules</directory>
+                    <includes>
+                        <include>**</include>
+                    </includes>
+                    <followSymlinks>false</followSymlinks>
+                </fileset>
+            </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
+      <version>0.13.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>

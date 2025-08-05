@@ -91,23 +91,22 @@ public class BACnetLightingCommand implements Message {
     writeBuffer.pushContext("BACnetLightingCommand");
 
     // Simple Field (lightningOperation)
-    writeSimpleField(
-        "lightningOperation", lightningOperation, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lightningOperation", lightningOperation, writeComplex(writeBuffer));
 
     // Optional Field (targetLevel) (Can be skipped, if the value is null)
-    writeOptionalField("targetLevel", targetLevel, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("targetLevel", targetLevel, writeComplex(writeBuffer));
 
     // Optional Field (rampRate) (Can be skipped, if the value is null)
-    writeOptionalField("rampRate", rampRate, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("rampRate", rampRate, writeComplex(writeBuffer));
 
     // Optional Field (stepIncrement) (Can be skipped, if the value is null)
-    writeOptionalField("stepIncrement", stepIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("stepIncrement", stepIncrement, writeComplex(writeBuffer));
 
     // Optional Field (fadeTime) (Can be skipped, if the value is null)
-    writeOptionalField("fadeTime", fadeTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("fadeTime", fadeTime, writeComplex(writeBuffer));
 
     // Optional Field (priority) (Can be skipped, if the value is null)
-    writeOptionalField("priority", priority, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("priority", priority, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLightingCommand");
   }
@@ -154,12 +153,6 @@ public class BACnetLightingCommand implements Message {
     return lengthInBits;
   }
 
-  public static BACnetLightingCommand staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetLightingCommand staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLightingCommand");
     PositionAware positionAware = readBuffer;
@@ -168,7 +161,7 @@ public class BACnetLightingCommand implements Message {
     BACnetLightingOperationTagged lightningOperation =
         readSimpleField(
             "lightningOperation",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLightingOperationTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -177,7 +170,7 @@ public class BACnetLightingCommand implements Message {
     BACnetContextTagReal targetLevel =
         readOptionalField(
             "targetLevel",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -187,7 +180,7 @@ public class BACnetLightingCommand implements Message {
     BACnetContextTagReal rampRate =
         readOptionalField(
             "rampRate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -197,7 +190,7 @@ public class BACnetLightingCommand implements Message {
     BACnetContextTagReal stepIncrement =
         readOptionalField(
             "stepIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -207,7 +200,7 @@ public class BACnetLightingCommand implements Message {
     BACnetContextTagUnsignedInteger fadeTime =
         readOptionalField(
             "fadeTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -219,7 +212,7 @@ public class BACnetLightingCommand implements Message {
     BACnetContextTagUnsignedInteger priority =
         readOptionalField(
             "priority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

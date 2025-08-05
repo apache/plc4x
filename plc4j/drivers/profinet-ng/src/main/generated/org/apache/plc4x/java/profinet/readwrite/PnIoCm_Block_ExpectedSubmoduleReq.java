@@ -182,7 +182,7 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
     List<PnIoCm_ExpectedSubmoduleBlockReqApi> apis =
         readCountArrayField(
             "apis",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> PnIoCm_ExpectedSubmoduleBlockReqApi.staticParse(readBuffer), readBuffer),
             numberOfApis,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));

@@ -163,17 +163,14 @@ public class APDUComplexAck extends APDU implements Message {
 
     // Optional Field (serviceAck) (Can be skipped, if the value is null)
     writeOptionalField(
-        "serviceAck",
-        serviceAck,
-        new DataWriterComplexDefault<>(writeBuffer),
-        !(getSegmentedMessage()));
+        "serviceAck", serviceAck, writeComplex(writeBuffer), !(getSegmentedMessage()));
 
     // Optional Field (segmentServiceChoice) (Can be skipped, if the value is null)
     writeOptionalEnumField(
         "segmentServiceChoice",
         "BACnetConfirmedServiceChoice",
         segmentServiceChoice,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetConfirmedServiceChoice::getValue,
             BACnetConfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)),
@@ -269,7 +266,7 @@ public class APDUComplexAck extends APDU implements Message {
     BACnetServiceAck serviceAck =
         readOptionalField(
             "serviceAck",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetServiceAck.staticParse(
                         readBuffer, (long) ((apduLength) - (apduHeaderReduction))),
@@ -283,8 +280,7 @@ public class APDUComplexAck extends APDU implements Message {
     BACnetConfirmedServiceChoice segmentServiceChoice =
         readOptionalField(
             "segmentServiceChoice",
-            new DataReaderEnumDefault<>(
-                BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)),
             (segmentedMessage) && ((sequenceNumber) != (0)));
     int segmentReduction =
         readVirtualField(

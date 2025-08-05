@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class WriteValue extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "670";
+  public Integer getExtensionId() {
+    return (int) 670;
   }
 
   // Properties.
@@ -80,16 +80,16 @@ public class WriteValue extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("WriteValue");
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Simple Field (attributeId)
     writeSimpleField("attributeId", attributeId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (indexRange)
-    writeSimpleField("indexRange", indexRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("indexRange", indexRange, writeComplex(writeBuffer));
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("WriteValue");
   }
@@ -121,27 +121,22 @@ public class WriteValue extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("WriteValue");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
-        readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("nodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     long attributeId = readSimpleField("attributeId", readUnsignedLong(readBuffer, 32));
 
     PascalString indexRange =
         readSimpleField(
-            "indexRange",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "indexRange", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     DataValue value =
-        readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(() -> DataValue.staticParse(readBuffer), readBuffer));
+        readSimpleField("value", readComplex(() -> DataValue.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("WriteValue");
     // Create the instance

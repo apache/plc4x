@@ -22,7 +22,9 @@ import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.value.PlcValue;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -52,14 +54,17 @@ public interface PlcConnection extends AutoCloseable {
     void close() throws Exception;
 
     /**
-     * Parse a tagAddress for the given connection type.
+     * Parses a string representation of a tag address into a {@link PlcTag} object.
+     * <p>
+     * This method safely attempts to convert the given tag address string into a PlcTag, returning an
+     * {@link Optional} that is empty if the parsing fails.
      *
-     * @throws PlcRuntimeException If the string cannot be parsed
+     * @param tagAddress The string representation of the tag address to parse.
+     * @return An optional holding the parsed PLC tag if successful, otherwise an empty optional.
      */
-    @Deprecated
-    default PlcTag parseTagAddress(String tagAddress) throws PlcInvalidTagException {
-        throw new PlcRuntimeException("Parse method is not implemented for this connection / driver");
-    }
+    Optional<PlcTag> parseTagAddress(String tagAddress);
+
+    Optional<PlcValue> parseTagValue(PlcTag tag, Object... values);
 
     /**
      * Provides connection metadata.

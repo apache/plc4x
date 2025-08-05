@@ -84,9 +84,7 @@ public class BACnetConstructedDataOccupancyLowerLimitEnforced extends BACnetCons
 
     // Simple Field (occupancyLowerLimitEnforced)
     writeSimpleField(
-        "occupancyLowerLimitEnforced",
-        occupancyLowerLimitEnforced,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "occupancyLowerLimitEnforced", occupancyLowerLimitEnforced, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -128,7 +126,7 @@ public class BACnetConstructedDataOccupancyLowerLimitEnforced extends BACnetCons
     BACnetApplicationTagBoolean occupancyLowerLimitEnforced =
         readSimpleField(
             "occupancyLowerLimitEnforced",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -121,8 +121,7 @@ public class VariantByteString extends Variant implements Message {
     List<ByteStringArray> value =
         readCountArrayField(
             "value",
-            new DataReaderComplexDefault<>(
-                () -> ByteStringArray.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ByteStringArray.staticParse(readBuffer), readBuffer),
             (((arrayLength) == (null)) ? 1 : arrayLength));
 
     readBuffer.closeContext("VariantByteString");

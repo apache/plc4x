@@ -65,10 +65,7 @@ public class InformationObjectWithoutTime_END_OF_INITIALISATION extends Informat
 
     // Simple Field (coi)
     writeSimpleField(
-        "coi",
-        coi,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "coi", coi, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_END_OF_INITIALISATION");
   }
@@ -100,8 +97,7 @@ public class InformationObjectWithoutTime_END_OF_INITIALISATION extends Informat
     CauseOfInitialization coi =
         readSimpleField(
             "coi",
-            new DataReaderComplexDefault<>(
-                () -> CauseOfInitialization.staticParse(readBuffer), readBuffer),
+            readComplex(() -> CauseOfInitialization.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_END_OF_INITIALISATION");

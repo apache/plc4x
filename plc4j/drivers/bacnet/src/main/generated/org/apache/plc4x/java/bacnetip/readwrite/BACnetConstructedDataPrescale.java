@@ -82,7 +82,7 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
     writeBuffer.pushContext("BACnetConstructedDataPrescale");
 
     // Simple Field (prescale)
-    writeSimpleField("prescale", prescale, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("prescale", prescale, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetPrescale actualValue = getActualValue();
@@ -123,9 +123,7 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
 
     BACnetPrescale prescale =
         readSimpleField(
-            "prescale",
-            new DataReaderComplexDefault<>(
-                () -> BACnetPrescale.staticParse(readBuffer), readBuffer));
+            "prescale", readComplex(() -> BACnetPrescale.staticParse(readBuffer), readBuffer));
     BACnetPrescale actualValue = readVirtualField("actualValue", BACnetPrescale.class, prescale);
 
     readBuffer.closeContext("BACnetConstructedDataPrescale");

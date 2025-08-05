@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class GenericAttributeValue extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "17608";
+  public Integer getExtensionId() {
+    return (int) 17608;
   }
 
   // Properties.
@@ -71,7 +71,7 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
     writeSimpleField("attributeId", attributeId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("GenericAttributeValue");
   }
@@ -97,7 +97,7 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("GenericAttributeValue");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -105,9 +105,7 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
     long attributeId = readSimpleField("attributeId", readUnsignedLong(readBuffer, 32));
 
     Variant value =
-        readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer));
+        readSimpleField("value", readComplex(() -> Variant.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("GenericAttributeValue");
     // Create the instance

@@ -83,7 +83,7 @@ public class BACnetConstructedDataIntegerValuePresentValue extends BACnetConstru
     writeBuffer.pushContext("BACnetConstructedDataIntegerValuePresentValue");
 
     // Simple Field (presentValue)
-    writeSimpleField("presentValue", presentValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("presentValue", presentValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataIntegerValuePresentValue extends BACnetConstru
     BACnetApplicationTagSignedInteger presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -32,7 +32,7 @@ func NewDefaultPlcConnectionConnectResult(connection plc4go.PlcConnection, err e
 	}
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=defaultPlcConnectionConnectResult
+//go:generate go tool plc4xGenerator -type=defaultPlcConnectionConnectResult
 type defaultPlcConnectionConnectResult struct {
 	connection plc4go.PlcConnection
 	err        error

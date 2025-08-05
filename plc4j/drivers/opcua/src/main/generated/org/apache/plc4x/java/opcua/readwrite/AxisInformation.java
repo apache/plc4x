@@ -38,39 +38,36 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AxisInformation extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "12081";
+  public Integer getExtensionId() {
+    return (int) 12081;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition engineeringUnits;
-  protected final ExtensionObjectDefinition eURange;
+  protected final EUInformation engineeringUnits;
+  protected final Range eURange;
   protected final LocalizedText title;
   protected final AxisScaleEnumeration axisScaleType;
-  protected final int noOfAxisSteps;
   protected final List<Double> axisSteps;
 
   public AxisInformation(
-      ExtensionObjectDefinition engineeringUnits,
-      ExtensionObjectDefinition eURange,
+      EUInformation engineeringUnits,
+      Range eURange,
       LocalizedText title,
       AxisScaleEnumeration axisScaleType,
-      int noOfAxisSteps,
       List<Double> axisSteps) {
     super();
     this.engineeringUnits = engineeringUnits;
     this.eURange = eURange;
     this.title = title;
     this.axisScaleType = axisScaleType;
-    this.noOfAxisSteps = noOfAxisSteps;
     this.axisSteps = axisSteps;
   }
 
-  public ExtensionObjectDefinition getEngineeringUnits() {
+  public EUInformation getEngineeringUnits() {
     return engineeringUnits;
   }
 
-  public ExtensionObjectDefinition getEURange() {
+  public Range getEURange() {
     return eURange;
   }
 
@@ -80,10 +77,6 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
 
   public AxisScaleEnumeration getAxisScaleType() {
     return axisScaleType;
-  }
-
-  public int getNoOfAxisSteps() {
-    return noOfAxisSteps;
   }
 
   public List<Double> getAxisSteps() {
@@ -98,27 +91,28 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
     writeBuffer.pushContext("AxisInformation");
 
     // Simple Field (engineeringUnits)
-    writeSimpleField(
-        "engineeringUnits", engineeringUnits, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("engineeringUnits", engineeringUnits, writeComplex(writeBuffer));
 
     // Simple Field (eURange)
-    writeSimpleField("eURange", eURange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eURange", eURange, writeComplex(writeBuffer));
 
     // Simple Field (title)
-    writeSimpleField("title", title, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("title", title, writeComplex(writeBuffer));
 
     // Simple Field (axisScaleType)
     writeSimpleEnumField(
         "axisScaleType",
         "AxisScaleEnumeration",
         axisScaleType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AxisScaleEnumeration::getValue,
             AxisScaleEnumeration::name,
             writeUnsignedLong(writeBuffer, 32)));
 
-    // Simple Field (noOfAxisSteps)
-    writeSimpleField("noOfAxisSteps", noOfAxisSteps, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfAxisSteps) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfAxisSteps = (int) ((((getAxisSteps()) == (null)) ? -(1) : COUNT(getAxisSteps())));
+    writeImplicitField("noOfAxisSteps", noOfAxisSteps, writeSignedInt(writeBuffer, 32));
 
     // Array Field (axisSteps)
     writeSimpleTypeArrayField("axisSteps", axisSteps, writeDouble(writeBuffer, 64));
@@ -149,7 +143,7 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
     // Simple field (axisScaleType)
     lengthInBits += 32;
 
-    // Simple field (noOfAxisSteps)
+    // Implicit Field (noOfAxisSteps)
     lengthInBits += 32;
 
     // Array field
@@ -161,39 +155,37 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("AxisInformation");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition engineeringUnits =
+    EUInformation engineeringUnits =
         readSimpleField(
             "engineeringUnits",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("889")),
+            readComplex(
+                () ->
+                    (EUInformation) ExtensionObjectDefinition.staticParse(readBuffer, (int) (889)),
                 readBuffer));
 
-    ExtensionObjectDefinition eURange =
+    Range eURange =
         readSimpleField(
             "eURange",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("886")),
+            readComplex(
+                () -> (Range) ExtensionObjectDefinition.staticParse(readBuffer, (int) (886)),
                 readBuffer));
 
     LocalizedText title =
         readSimpleField(
-            "title",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "title", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     AxisScaleEnumeration axisScaleType =
         readEnumField(
             "axisScaleType",
             "AxisScaleEnumeration",
-            new DataReaderEnumDefault<>(
-                AxisScaleEnumeration::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(AxisScaleEnumeration::enumForValue, readUnsignedLong(readBuffer, 32)));
 
-    int noOfAxisSteps = readSimpleField("noOfAxisSteps", readSignedInt(readBuffer, 32));
+    int noOfAxisSteps = readImplicitField("noOfAxisSteps", readSignedInt(readBuffer, 32));
 
     List<Double> axisSteps =
         readCountArrayField("axisSteps", readDouble(readBuffer, 64), noOfAxisSteps);
@@ -201,37 +193,33 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
     readBuffer.closeContext("AxisInformation");
     // Create the instance
     return new AxisInformationBuilderImpl(
-        engineeringUnits, eURange, title, axisScaleType, noOfAxisSteps, axisSteps);
+        engineeringUnits, eURange, title, axisScaleType, axisSteps);
   }
 
   public static class AxisInformationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition engineeringUnits;
-    private final ExtensionObjectDefinition eURange;
+    private final EUInformation engineeringUnits;
+    private final Range eURange;
     private final LocalizedText title;
     private final AxisScaleEnumeration axisScaleType;
-    private final int noOfAxisSteps;
     private final List<Double> axisSteps;
 
     public AxisInformationBuilderImpl(
-        ExtensionObjectDefinition engineeringUnits,
-        ExtensionObjectDefinition eURange,
+        EUInformation engineeringUnits,
+        Range eURange,
         LocalizedText title,
         AxisScaleEnumeration axisScaleType,
-        int noOfAxisSteps,
         List<Double> axisSteps) {
       this.engineeringUnits = engineeringUnits;
       this.eURange = eURange;
       this.title = title;
       this.axisScaleType = axisScaleType;
-      this.noOfAxisSteps = noOfAxisSteps;
       this.axisSteps = axisSteps;
     }
 
     public AxisInformation build() {
       AxisInformation axisInformation =
-          new AxisInformation(
-              engineeringUnits, eURange, title, axisScaleType, noOfAxisSteps, axisSteps);
+          new AxisInformation(engineeringUnits, eURange, title, axisScaleType, axisSteps);
       return axisInformation;
     }
   }
@@ -249,7 +237,6 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
         && (getEURange() == that.getEURange())
         && (getTitle() == that.getTitle())
         && (getAxisScaleType() == that.getAxisScaleType())
-        && (getNoOfAxisSteps() == that.getNoOfAxisSteps())
         && (getAxisSteps() == that.getAxisSteps())
         && super.equals(that)
         && true;
@@ -263,7 +250,6 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
         getEURange(),
         getTitle(),
         getAxisScaleType(),
-        getNoOfAxisSteps(),
         getAxisSteps());
   }
 

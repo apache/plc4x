@@ -120,8 +120,7 @@ public class BACnetConstructedDataBBMDBroadcastDistributionTable extends BACnetC
     List<BACnetBDTEntry> bbmdBroadcastDistributionTable =
         readTerminatedArrayField(
             "bbmdBroadcastDistributionTable",
-            new DataReaderComplexDefault<>(
-                () -> BACnetBDTEntry.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetBDTEntry.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

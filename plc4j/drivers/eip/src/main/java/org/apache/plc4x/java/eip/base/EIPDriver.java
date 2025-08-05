@@ -20,21 +20,26 @@ package org.apache.plc4x.java.eip.base;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
+import org.apache.plc4x.java.eip.base.discovery.EipPlcDiscoverer;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
+import org.apache.plc4x.java.eip.base.configuration.EipTcpTransportConfiguration;
 import org.apache.plc4x.java.eip.base.tag.EipTag;
 import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
-import org.apache.plc4x.java.eip.base.tag.EipTagHandler;
 import org.apache.plc4x.java.eip.readwrite.EipPacket;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.*;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
+import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.transport.Transport;
 
-import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
-
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
@@ -61,18 +66,32 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return EIPConfiguration.class;
     }
 
     @Override
-    protected PlcTagHandler getTagHandler() {
-        return new EipTagHandler();
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(EipTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new org.apache.plc4x.java.spi.values.PlcValueHandler();
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
+    }
+
+    @Override
+    public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
+        return new DefaultPlcDiscoveryRequest.Builder(new EipPlcDiscoverer());
     }
 
     /**
@@ -82,11 +101,6 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     @Override
     protected boolean awaitDisconnectComplete() {
         return true;
-    }
-
-    @Override
-    protected String getDefaultTransport() {
-        return "tcp";
     }
 
     @Override
@@ -100,11 +114,15 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
+    protected boolean canDiscover() {
+        return true;
+    }
+
+    @Override
     protected ProtocolStackConfigurer<EipPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(EipPacket.class, EipPacket::staticParse)
+        return SingleProtocolStackConfigurer.builder(EipPacket.class, io -> EipPacket.staticParse(io, true))
             .withProtocol(EipProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .withParserArgs(true)
             .withCorruptPacketRemover(CorruptPackageCleaner.class)
             .byteOrder(this.configuration.getByteOrder())
             .build();
@@ -120,7 +138,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         }
         final String protocolCode = matcher.group("protocolCode");
         final String transportCode = (matcher.group("transportCode") != null) ?
-            matcher.group("transportCode") : getDefaultTransport();
+            matcher.group("transportCode") : getDefaultTransportCode().get();
         final String transportConfig = matcher.group("transportConfig");
         final String paramString = matcher.group("paramString");
 
@@ -132,13 +150,13 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         }
 
         // Create the configuration object.
-        this.configuration = (EIPConfiguration) new ConfigurationFactory().createConfiguration(
-            getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
+        configuration = (EIPConfiguration) new ConfigurationFactory().createConfiguration(
+            getConfigurationClass(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
 
-        // Try to find a transport in order to create a communication channel.
+        // Try to find transport in order to create a communication channel.
         Transport transport = null;
         ServiceLoader<Transport> transportLoader = ServiceLoader.load(
             Transport.class, Thread.currentThread().getContextClassLoader());
@@ -191,7 +209,6 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
 
         return new DefaultNettyPlcConnection(
             canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
-            getTagHandler(),
             getValueHandler(),
             configuration,
             channelFactory,

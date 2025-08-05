@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ReferenceDescriptionDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "32661";
+  public Integer getExtensionId() {
+    return (int) 32661;
   }
 
   // Properties.
@@ -81,10 +81,10 @@ public class ReferenceDescriptionDataType extends ExtensionObjectDefinition impl
     writeBuffer.pushContext("ReferenceDescriptionDataType");
 
     // Simple Field (sourceNode)
-    writeSimpleField("sourceNode", sourceNode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sourceNode", sourceNode, writeComplex(writeBuffer));
 
     // Simple Field (referenceType)
-    writeSimpleField("referenceType", referenceType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceType", referenceType, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -93,7 +93,7 @@ public class ReferenceDescriptionDataType extends ExtensionObjectDefinition impl
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
 
     // Simple Field (targetNode)
-    writeSimpleField("targetNode", targetNode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetNode", targetNode, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ReferenceDescriptionDataType");
   }
@@ -128,20 +128,18 @@ public class ReferenceDescriptionDataType extends ExtensionObjectDefinition impl
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ReferenceDescriptionDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sourceNode =
         readSimpleField(
-            "sourceNode",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "sourceNode", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     NodeId referenceType =
         readSimpleField(
-            "referenceType",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "referenceType", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -150,9 +148,7 @@ public class ReferenceDescriptionDataType extends ExtensionObjectDefinition impl
 
     ExpandedNodeId targetNode =
         readSimpleField(
-            "targetNode",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "targetNode", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ReferenceDescriptionDataType");
     // Create the instance

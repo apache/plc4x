@@ -31,3 +31,7 @@ updates:
   directory: plc4go
   schedule:
     interval: daily
+- package-ecosystem: pip
+  directory: plc4py
+  schedule:
+    interval: daily

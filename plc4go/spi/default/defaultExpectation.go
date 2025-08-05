@@ -24,9 +24,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/spi"
-
 	"github.com/google/uuid"
+
+	"github.com/apache/plc4x/plc4go/spi"
 )
 
 type defaultExpectation struct {

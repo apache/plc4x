@@ -82,7 +82,7 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataPassbackMode");
 
     // Simple Field (passbackMode)
-    writeSimpleField("passbackMode", passbackMode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("passbackMode", passbackMode, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetAccessPassbackModeTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
     BACnetAccessPassbackModeTagged passbackMode =
         readSimpleField(
             "passbackMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessPassbackModeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

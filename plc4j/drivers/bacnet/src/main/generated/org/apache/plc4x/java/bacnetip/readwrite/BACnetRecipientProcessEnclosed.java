@@ -75,14 +75,13 @@ public class BACnetRecipientProcessEnclosed implements Message {
     writeBuffer.pushContext("BACnetRecipientProcessEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (recipientProcess)
-    writeSimpleField(
-        "recipientProcess", recipientProcess, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("recipientProcess", recipientProcess, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetRecipientProcessEnclosed");
   }
@@ -110,26 +109,6 @@ public class BACnetRecipientProcessEnclosed implements Message {
     return lengthInBits;
   }
 
-  public static BACnetRecipientProcessEnclosed staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber);
-  }
-
   public static BACnetRecipientProcessEnclosed staticParse(ReadBuffer readBuffer, Short tagNumber)
       throws ParseException {
     readBuffer.pullContext("BACnetRecipientProcessEnclosed");
@@ -139,19 +118,18 @@ public class BACnetRecipientProcessEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetRecipientProcess recipientProcess =
         readSimpleField(
             "recipientProcess",
-            new DataReaderComplexDefault<>(
-                () -> BACnetRecipientProcess.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetRecipientProcess.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetRecipientProcessEnclosed");

@@ -21,12 +21,15 @@ package _default
 
 import (
 	"context"
+	"runtime/debug"
+	"sync"
+
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
-	"runtime/debug"
 )
 
 // DefaultBrowserRequirements adds required methods to Browser that are needed when using DefaultBrowser
@@ -56,6 +59,8 @@ func NewDefaultBrowser(defaultBrowserRequirements DefaultBrowserRequirements, _o
 type defaultBrowser struct {
 	DefaultBrowserRequirements
 
+	wg sync.WaitGroup // use to track spawned go routines
+
 	log zerolog.Logger
 }
 
@@ -73,7 +78,9 @@ func (m *defaultBrowser) Browse(ctx context.Context, browseRequest apiModel.PlcB
 
 func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
 	result := make(chan apiModel.PlcBrowseRequestResult, 1)
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().

@@ -77,12 +77,6 @@ public class TwoByteNodeId implements Message {
     return lengthInBits;
   }
 
-  public static TwoByteNodeId staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TwoByteNodeId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TwoByteNodeId");
     PositionAware positionAware = readBuffer;

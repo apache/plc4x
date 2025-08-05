@@ -82,8 +82,7 @@ public class BACnetConstructedDataBlinkWarnEnable extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataBlinkWarnEnable");
 
     // Simple Field (blinkWarnEnable)
-    writeSimpleField(
-        "blinkWarnEnable", blinkWarnEnable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("blinkWarnEnable", blinkWarnEnable, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -125,7 +124,7 @@ public class BACnetConstructedDataBlinkWarnEnable extends BACnetConstructedData 
     BACnetApplicationTagBoolean blinkWarnEnable =
         readSimpleField(
             "blinkWarnEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -83,13 +83,13 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
         "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfCovReferences)
     writeComplexTypeArrayField("listOfCovReferences", listOfCovReferences, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext(
         "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences");
@@ -125,27 +125,6 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
 
   public static
   BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
-      staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber);
-  }
-
-  public static
-  BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
       staticParse(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext(
         "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences");
@@ -155,7 +134,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<
@@ -163,7 +142,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
         listOfCovReferences =
             readTerminatedArrayField(
                 "listOfCovReferences",
-                new DataReaderComplexDefault<>(
+                readComplex(
                     () ->
                         BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry
                             .staticParse(readBuffer),
@@ -176,7 +155,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext(

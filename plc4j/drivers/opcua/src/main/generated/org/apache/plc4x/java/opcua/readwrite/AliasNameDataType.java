@@ -38,29 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AliasNameDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "23470";
+  public Integer getExtensionId() {
+    return (int) 23470;
   }
 
   // Properties.
   protected final QualifiedName aliasName;
-  protected final int noOfReferencedNodes;
   protected final List<ExpandedNodeId> referencedNodes;
 
-  public AliasNameDataType(
-      QualifiedName aliasName, int noOfReferencedNodes, List<ExpandedNodeId> referencedNodes) {
+  public AliasNameDataType(QualifiedName aliasName, List<ExpandedNodeId> referencedNodes) {
     super();
     this.aliasName = aliasName;
-    this.noOfReferencedNodes = noOfReferencedNodes;
     this.referencedNodes = referencedNodes;
   }
 
   public QualifiedName getAliasName() {
     return aliasName;
-  }
-
-  public int getNoOfReferencedNodes() {
-    return noOfReferencedNodes;
   }
 
   public List<ExpandedNodeId> getReferencedNodes() {
@@ -75,10 +68,13 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
     writeBuffer.pushContext("AliasNameDataType");
 
     // Simple Field (aliasName)
-    writeSimpleField("aliasName", aliasName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("aliasName", aliasName, writeComplex(writeBuffer));
 
-    // Simple Field (noOfReferencedNodes)
-    writeSimpleField("noOfReferencedNodes", noOfReferencedNodes, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfReferencedNodes) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfReferencedNodes =
+        (int) ((((getReferencedNodes()) == (null)) ? -(1) : COUNT(getReferencedNodes())));
+    writeImplicitField("noOfReferencedNodes", noOfReferencedNodes, writeSignedInt(writeBuffer, 32));
 
     // Array Field (referencedNodes)
     writeComplexTypeArrayField("referencedNodes", referencedNodes, writeBuffer);
@@ -100,7 +96,7 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
     // Simple field (aliasName)
     lengthInBits += aliasName.getLengthInBits();
 
-    // Simple field (noOfReferencedNodes)
+    // Implicit Field (noOfReferencedNodes)
     lengthInBits += 32;
 
     // Array field
@@ -116,47 +112,42 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("AliasNameDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     QualifiedName aliasName =
         readSimpleField(
-            "aliasName",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "aliasName", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
-    int noOfReferencedNodes = readSimpleField("noOfReferencedNodes", readSignedInt(readBuffer, 32));
+    int noOfReferencedNodes =
+        readImplicitField("noOfReferencedNodes", readSignedInt(readBuffer, 32));
 
     List<ExpandedNodeId> referencedNodes =
         readCountArrayField(
             "referencedNodes",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer),
             noOfReferencedNodes);
 
     readBuffer.closeContext("AliasNameDataType");
     // Create the instance
-    return new AliasNameDataTypeBuilderImpl(aliasName, noOfReferencedNodes, referencedNodes);
+    return new AliasNameDataTypeBuilderImpl(aliasName, referencedNodes);
   }
 
   public static class AliasNameDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final QualifiedName aliasName;
-    private final int noOfReferencedNodes;
     private final List<ExpandedNodeId> referencedNodes;
 
     public AliasNameDataTypeBuilderImpl(
-        QualifiedName aliasName, int noOfReferencedNodes, List<ExpandedNodeId> referencedNodes) {
+        QualifiedName aliasName, List<ExpandedNodeId> referencedNodes) {
       this.aliasName = aliasName;
-      this.noOfReferencedNodes = noOfReferencedNodes;
       this.referencedNodes = referencedNodes;
     }
 
     public AliasNameDataType build() {
-      AliasNameDataType aliasNameDataType =
-          new AliasNameDataType(aliasName, noOfReferencedNodes, referencedNodes);
+      AliasNameDataType aliasNameDataType = new AliasNameDataType(aliasName, referencedNodes);
       return aliasNameDataType;
     }
   }
@@ -171,7 +162,6 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
     }
     AliasNameDataType that = (AliasNameDataType) o;
     return (getAliasName() == that.getAliasName())
-        && (getNoOfReferencedNodes() == that.getNoOfReferencedNodes())
         && (getReferencedNodes() == that.getReferencedNodes())
         && super.equals(that)
         && true;
@@ -179,8 +169,7 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getAliasName(), getNoOfReferencedNodes(), getReferencedNodes());
+    return Objects.hash(super.hashCode(), getAliasName(), getReferencedNodes());
   }
 
   @Override

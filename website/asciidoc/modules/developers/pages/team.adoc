@@ -1,0 +1,93 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../images/
+:icons: font
+
+= Team
+
+
+
+Sorted by first name:
+
+[width="100%",cols="2,4,1,1",options="header"]
+|===
+|Name |Bio | |
+| *Ben Hutcheson*
+
+Software Developer, Control Systems Engineer
+
+Isar Aerospace
+
+Altötting, Germany |Experienced as an Electrical Engineer, Control Systems Engineer and Software Developer. Enjoys developing systems which overlap in all three of these fields. | a| image::team/hutcheb.png[hutcheb, 240, 320]
+| *César García*
+
+CEOS Automatización, C.A.
+
+Pto. La Cruz, Anzoátegui, Venezuela |Electrical engineer, dedicated to process automation and control. Specialized in Siemens S5, S7, PCS7 architecture for the Oil&Gas industry and Braumat for the food and beverage industry. Applying open source technologies to create added value for users, such as Kannel, Apache Http Server, Apache Karaf, Apache Hop, Apache IoTDB and the meeting point of all of them Apache PLC4X where I have been able to collaborate as a PMC. | a| image::team/glcj.jpg[glcj, 240, 320]
+| *Christofer Dutz*
+
+IoT Consultant
+
+Timecho Europe GmbH
+
+Frankfurt |Likes to swim outside the mainstream. He is really passionate about walking new paths. His first email to an Apache list on file was to the Cocoon project back in the year 2000. His direct involvement started in 2012 when he was elected to become an Apache Flex committer. Since then he became involved with a lot of Apache-internal groups and committees and was elected to become a Member of the Apache Software Foundation in 2015 and recently has taken up the role of mentoring several IoT podlings in the Apache Incubator. | a|image::team/cdutz.png[cdutz, 200, 200]
+| *Julian Feinauer*
+
+Founder / CEO
+
+pragmatic minds GmbH /
+pragmatic industries GmbH
+
+Kirchheim unter Teck |Has studied mathematics in Stuttgart. Besides his interest in open source software and big data, he focuses on the analysis of time series and traces from testing or manufacturing. PLC4X was the first project where he was offered a position as (P)PMC but he is also engaged in other Apache projects like Edgent and IotDB. | a|image::team/jfeinauer.jpg[jfeinauer, 240, 320]
+| *Łukasz Dywicki*
+
+Coding CEO / Consultant
+
+ConnectorIO sp. z o.o. /
+Code-House (self employed)
+
+Warsaw | He started working with Apache Software Foundation projects in 2007 - at the time when the first incubation version of Apache CXF was out. Since then he took active part and contributed to Apache projects related to software integration such as Apache Karaf, Apache ActiveMQ and Apache Camel. He is an Open Source and OSGi enthusiast, passionate about connecting things, physical ones too. | a|image::team/ldywicki.jpg[ldywicki, 240, 304]
+| *Lukas Ott*
+
+Domain Architect
+
+Pharmaceutical Industry
+
+Copenhagen | He started working with Apache Software Foundation projects in 2013 - at that time in the context of Semantic Technologies with an archived project called Apache Stanbol. Since then he took an interested in several different Apache projects like Apache ActiveMQ, Apache Spark, Apache Storm, Apache Cassandra. He is an Open Source and Pythonista, passionate about connecting people, processes and machines. Main focus is community over code and linking different communities together | a|image::team/lott.jpg[lott, 240, 304]
+| *Matthias Milan Strljic*
+
+Research assistant
+
+ISW;
+University of Stuttgart
+
+Stuttgart |Research assistant and software engineer at the Institute for control engineering of machine tools and manufacturing units (ISW) of the university of stuttgart, research in the fields of automation technology + smart services + cloud manufacturing, my favourites are woodwork + knife sharpening + cigars, member of the PMC of PLC4X| a| image::team/mstrljic.jpg[mstrljic, 150, 150]
+| *Sebastian Rühl*
+
+Software Developer
+
+Mapped
+
+Frankfurt |Software engineer, member of the PMC of PLC4X| a| image::team/sruehl.jpg[sruehl, 240, 320]
+| *Tim Mitsch*
+
+Engineer
+
+pragmatic industries GmbH
+
+Nürtingen |Electrical engineer (HW, SW and interface-stuff) from passion and very new to Apache projects. The more he is involved in open-source the more he likes it, focusing on PLC4X at first. | a|image::team/tmitsch.png[tmitsch, 240, 263]
+|===

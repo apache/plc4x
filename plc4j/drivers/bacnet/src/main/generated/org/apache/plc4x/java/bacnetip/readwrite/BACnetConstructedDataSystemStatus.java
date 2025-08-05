@@ -82,7 +82,7 @@ public class BACnetConstructedDataSystemStatus extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataSystemStatus");
 
     // Simple Field (systemStatus)
-    writeSimpleField("systemStatus", systemStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("systemStatus", systemStatus, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDeviceStatusTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataSystemStatus extends BACnetConstructedData imp
     BACnetDeviceStatusTagged systemStatus =
         readSimpleField(
             "systemStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceStatusTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

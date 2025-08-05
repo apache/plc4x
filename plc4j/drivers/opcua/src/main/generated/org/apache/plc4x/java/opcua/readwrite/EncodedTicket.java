@@ -63,12 +63,6 @@ public class EncodedTicket implements Message {
     return lengthInBits;
   }
 
-  public static EncodedTicket staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static EncodedTicket staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("EncodedTicket");
     PositionAware positionAware = readBuffer;

@@ -98,7 +98,7 @@ func (k GroupAddress3LevelPlcTag) IsPatternTag() bool {
 }
 
 func (k GroupAddress3LevelPlcTag) matches(knxGroupAddress driverModel.KnxGroupAddress) bool {
-	level3KnxGroupAddress, ok := knxGroupAddress.(driverModel.KnxGroupAddress3LevelExactly)
+	level3KnxGroupAddress, ok := knxGroupAddress.(driverModel.KnxGroupAddress3Level)
 	if !ok {
 		return false
 	}
@@ -167,7 +167,7 @@ func (k GroupAddress2LevelPlcTag) IsPatternTag() bool {
 }
 
 func (k GroupAddress2LevelPlcTag) matches(knxGroupAddress driverModel.KnxGroupAddress) bool {
-	level2KnxGroupAddress, ok := knxGroupAddress.(driverModel.KnxGroupAddress2LevelExactly)
+	level2KnxGroupAddress, ok := knxGroupAddress.(driverModel.KnxGroupAddress2Level)
 	if !ok {
 		return false
 	}

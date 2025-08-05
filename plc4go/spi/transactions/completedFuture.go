@@ -23,7 +23,7 @@ import (
 	"context"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=completedFuture
+//go:generate go tool plc4xGenerator -type=completedFuture
 type completedFuture struct {
 	err error
 }

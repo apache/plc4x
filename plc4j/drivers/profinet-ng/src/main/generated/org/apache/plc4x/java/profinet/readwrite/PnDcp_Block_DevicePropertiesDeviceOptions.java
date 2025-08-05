@@ -128,8 +128,7 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
     List<PnDcp_SupportedDeviceOption> supportedOptions =
         readLengthArrayField(
             "supportedOptions",
-            new DataReaderComplexDefault<>(
-                () -> PnDcp_SupportedDeviceOption.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnDcp_SupportedDeviceOption.staticParse(readBuffer), readBuffer),
             (blockLength) - (2),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

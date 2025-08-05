@@ -27,7 +27,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=SecureChannelTransactionManager
+//go:generate go tool plc4xGenerator -type=SecureChannelTransactionManager
 type SecureChannelTransactionManager struct {
 	transactionIdentifierGenerator atomic.Int32
 	requestIdentifierGenerator     atomic.Int32
@@ -36,7 +36,7 @@ type SecureChannelTransactionManager struct {
 
 	lock sync.Mutex
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewSecureChannelTransactionManager(log zerolog.Logger) *SecureChannelTransactionManager {

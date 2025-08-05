@@ -62,10 +62,10 @@ public class BACnetPrescale implements Message {
     writeBuffer.pushContext("BACnetPrescale");
 
     // Simple Field (multiplier)
-    writeSimpleField("multiplier", multiplier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("multiplier", multiplier, writeComplex(writeBuffer));
 
     // Simple Field (moduloDivide)
-    writeSimpleField("moduloDivide", moduloDivide, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("moduloDivide", moduloDivide, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPrescale");
   }
@@ -90,12 +90,6 @@ public class BACnetPrescale implements Message {
     return lengthInBits;
   }
 
-  public static BACnetPrescale staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetPrescale staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetPrescale");
     PositionAware positionAware = readBuffer;
@@ -104,7 +98,7 @@ public class BACnetPrescale implements Message {
     BACnetContextTagUnsignedInteger multiplier =
         readSimpleField(
             "multiplier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -116,7 +110,7 @@ public class BACnetPrescale implements Message {
     BACnetContextTagUnsignedInteger moduloDivide =
         readSimpleField(
             "moduloDivide",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

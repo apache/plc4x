@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BuildInfo extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "340";
+  public Integer getExtensionId() {
+    return (int) 340;
   }
 
   // Properties.
@@ -98,21 +98,19 @@ public class BuildInfo extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("BuildInfo");
 
     // Simple Field (productUri)
-    writeSimpleField("productUri", productUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("productUri", productUri, writeComplex(writeBuffer));
 
     // Simple Field (manufacturerName)
-    writeSimpleField(
-        "manufacturerName", manufacturerName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("manufacturerName", manufacturerName, writeComplex(writeBuffer));
 
     // Simple Field (productName)
-    writeSimpleField("productName", productName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("productName", productName, writeComplex(writeBuffer));
 
     // Simple Field (softwareVersion)
-    writeSimpleField(
-        "softwareVersion", softwareVersion, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("softwareVersion", softwareVersion, writeComplex(writeBuffer));
 
     // Simple Field (buildNumber)
-    writeSimpleField("buildNumber", buildNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("buildNumber", buildNumber, writeComplex(writeBuffer));
 
     // Simple Field (buildDate)
     writeSimpleField("buildDate", buildDate, writeSignedLong(writeBuffer, 64));
@@ -153,35 +151,31 @@ public class BuildInfo extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("BuildInfo");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString productUri =
         readSimpleField(
-            "productUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "productUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString manufacturerName =
         readSimpleField(
             "manufacturerName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString productName =
         readSimpleField(
-            "productName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "productName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString softwareVersion =
         readSimpleField(
-            "softwareVersion",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "softwareVersion", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString buildNumber =
         readSimpleField(
-            "buildNumber",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "buildNumber", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     long buildDate = readSimpleField("buildDate", readSignedLong(readBuffer, 64));
 

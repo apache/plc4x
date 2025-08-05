@@ -100,7 +100,7 @@ public class BACnetConstructedDataAssignedLandingCalls extends BACnetConstructed
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (assignedLandingCalls)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataAssignedLandingCalls extends BACnetConstructed
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,8 +162,7 @@ public class BACnetConstructedDataAssignedLandingCalls extends BACnetConstructed
     List<BACnetAssignedLandingCalls> assignedLandingCalls =
         readTerminatedArrayField(
             "assignedLandingCalls",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAssignedLandingCalls.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetAssignedLandingCalls.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

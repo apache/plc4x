@@ -82,7 +82,7 @@ public class BACnetConstructedDataNetworkType extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataNetworkType");
 
     // Simple Field (networkType)
-    writeSimpleField("networkType", networkType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkType", networkType, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetNetworkTypeTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataNetworkType extends BACnetConstructedData impl
     BACnetNetworkTypeTagged networkType =
         readSimpleField(
             "networkType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNetworkTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

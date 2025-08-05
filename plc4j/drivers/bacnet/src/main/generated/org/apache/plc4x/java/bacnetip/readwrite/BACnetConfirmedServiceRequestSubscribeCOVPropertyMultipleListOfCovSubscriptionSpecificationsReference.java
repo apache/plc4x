@@ -74,14 +74,13 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
         "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference");
 
     // Simple Field (monitoredProperty)
-    writeSimpleField(
-        "monitoredProperty", monitoredProperty, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("monitoredProperty", monitoredProperty, writeComplex(writeBuffer));
 
     // Optional Field (covIncrement) (Can be skipped, if the value is null)
-    writeOptionalField("covIncrement", covIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("covIncrement", covIncrement, writeComplex(writeBuffer));
 
     // Simple Field (timestamped)
-    writeSimpleField("timestamped", timestamped, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timestamped", timestamped, writeComplex(writeBuffer));
 
     writeBuffer.popContext(
         "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference");
@@ -115,13 +114,6 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
 
   public static
   BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference
-      staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
-  public static
-  BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference
       staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext(
         "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference");
@@ -131,14 +123,14 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
     BACnetPropertyReferenceEnclosed monitoredProperty =
         readSimpleField(
             "monitoredProperty",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 
     BACnetContextTagReal covIncrement =
         readOptionalField(
             "covIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -148,7 +140,7 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
     BACnetContextTagBoolean timestamped =
         readSimpleField(
             "timestamped",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

@@ -19,10 +19,10 @@
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -35,10 +35,14 @@ public interface PlcSubscriptionTagRequest extends PlcRequest {
 
     LinkedHashSet<String> getTagNames();
 
+    PlcResponseCode getTagResponseCode(String tagName);
+
     PlcSubscriptionTag getTag(String name);
 
     List<PlcSubscriptionTag> getTags();
 
-    Map<String, List<Consumer<PlcSubscriptionEvent>>> getPreRegisteredConsumers();
+    Consumer<PlcSubscriptionEvent> getConsumer();
+
+    Consumer<PlcSubscriptionEvent> getTagConsumer(String name);
 
 }

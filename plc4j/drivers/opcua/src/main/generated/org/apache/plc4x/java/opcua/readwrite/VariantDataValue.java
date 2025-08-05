@@ -121,7 +121,7 @@ public class VariantDataValue extends Variant implements Message {
     List<DataValue> value =
         readCountArrayField(
             "value",
-            new DataReaderComplexDefault<>(() -> DataValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DataValue.staticParse(readBuffer), readBuffer),
             (((arrayLength) == (null)) ? 1 : arrayLength));
 
     readBuffer.closeContext("VariantDataValue");

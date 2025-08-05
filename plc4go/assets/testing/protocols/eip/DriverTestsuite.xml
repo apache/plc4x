@@ -28,7 +28,7 @@
   <driver-name>eip</driver-name>
   <driver-parameters>
     <parameter>
-      <name>bigEndian</name>
+      <name>big-endian</name>
       <value>false</value>
     </parameter>
   </driver-parameters>
@@ -398,11 +398,15 @@
               <PlcTagRequest>
                 <tags isList="true">
                   <hurz>
-                    <EipTag>
-                      <node dataType="string" bitLength="40" encoding="UTF-8">%rate</node>
-                      <type dataType="string" bitLength="32" encoding="UTF-8">DINT</type>
-                      <elementNb dataType="uint" bitLength="16">1</elementNb>
-                    </EipTag>
+                    <PlcTagItem>
+                      <tag>
+                        <EipTag>
+                          <node dataType="string" bitLength="40" encoding="UTF-8">%rate</node>
+                          <type dataType="string" bitLength="32" encoding="UTF-8">DINT</type>
+                          <elementNb dataType="uint" bitLength="16">1</elementNb>
+                        </EipTag>
+                      </tag>
+                    </PlcTagItem>
                   </hurz>
                 </tags>
               </PlcTagRequest>
@@ -410,12 +414,12 @@
           </request>
           <values isList="true">
             <hurz>
-              <ResponseItem>
+              <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcDINT dataType="int" bitLength="32">369229824</PlcDINT>
                 </value>
-              </ResponseItem>
+              </PlcResponseItem>
             </hurz>
           </values>
         </PlcReadResponse>

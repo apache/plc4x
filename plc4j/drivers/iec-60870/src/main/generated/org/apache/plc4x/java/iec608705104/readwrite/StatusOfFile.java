@@ -63,12 +63,6 @@ public class StatusOfFile implements Message {
     return lengthInBits;
   }
 
-  public static StatusOfFile staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static StatusOfFile staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("StatusOfFile");
     PositionAware positionAware = readBuffer;

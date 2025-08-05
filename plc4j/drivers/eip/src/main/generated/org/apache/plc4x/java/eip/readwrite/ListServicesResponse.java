@@ -116,9 +116,7 @@ public class ListServicesResponse extends EipPacket implements Message {
 
     List<TypeId> typeIds =
         readCountArrayField(
-            "typeIds",
-            new DataReaderComplexDefault<>(() -> TypeId.staticParse(readBuffer), readBuffer),
-            typeIdCount);
+            "typeIds", readComplex(() -> TypeId.staticParse(readBuffer), readBuffer), typeIdCount);
 
     readBuffer.closeContext("ListServicesResponse");
     // Create the instance

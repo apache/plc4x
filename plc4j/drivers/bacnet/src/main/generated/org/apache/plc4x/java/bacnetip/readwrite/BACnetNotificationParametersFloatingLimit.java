@@ -107,24 +107,22 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
     writeBuffer.pushContext("BACnetNotificationParametersFloatingLimit");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (referenceValue)
-    writeSimpleField("referenceValue", referenceValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceValue", referenceValue, writeComplex(writeBuffer));
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Simple Field (setPointValue)
-    writeSimpleField("setPointValue", setPointValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("setPointValue", setPointValue, writeComplex(writeBuffer));
 
     // Simple Field (errorLimit)
-    writeSimpleField("errorLimit", errorLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorLimit", errorLimit, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersFloatingLimit");
   }
@@ -174,14 +172,14 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetContextTagReal referenceValue =
         readSimpleField(
             "referenceValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -191,7 +189,7 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -200,7 +198,7 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
     BACnetContextTagReal setPointValue =
         readSimpleField(
             "setPointValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -210,7 +208,7 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
     BACnetContextTagReal errorLimit =
         readSimpleField(
             "errorLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -220,7 +218,7 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

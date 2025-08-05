@@ -19,7 +19,6 @@
 
 package org.apache.plc4x.java.profinet.device;
 
-import org.apache.plc4x.java.profinet.config.ProfinetDevices;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.generation.*;
@@ -64,30 +63,36 @@ public class ProfinetChannel {
     public void startListener() {
         for (Map.Entry<MacAddress, PcapHandle> entry : openHandles.entrySet()) {
             PcapHandle handle = entry.getValue();
-
-            Thread thread = new Thread(
-                new ProfinetRunnable(handle,
-                    message -> {
-                        PacketListener listener = createListener();
-                        try {
-                            handle.loop(-1, listener);
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                        } catch (PcapNativeException | NotOpenException e) {
-                            logger.error("Got error handling raw socket", e);
-                        }
-                        return null;
-                    }));
+            MacAddress macAddress = entry.getKey();
+            ProfinetRunnable packetHandler = new ProfinetRunnable(handle,
+                message -> {
+                    PacketListener listener = createListener(macAddress);
+                    try {
+                        handle.loop(-1, listener);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    } catch (PcapNativeException | NotOpenException e) {
+                        logger.error("Got error handling raw socket", e);
+                    }
+                    return null;
+                });
+            Thread thread = new Thread(packetHandler);
             thread.start();
         }
     }
-    public PacketListener createListener() {
+    public PacketListener createListener(MacAddress localMacAddress) {
         PacketListener listener =
             packet -> {
                 // EthernetPacket is the highest level of abstraction we can be expecting.
                 // Everything inside this we will have to decode ourselves.
                 if (packet instanceof EthernetPacket) {
                     EthernetPacket ethernetPacket = (EthernetPacket) packet;
+
+                    // Check if the packet is an outgoing packet (src != our owm MAC address)
+                    if(Arrays.equals(((EthernetPacket.EthernetHeader) packet.getHeader()).getSrcAddr().getAddress(), localMacAddress.getAddress())) {
+                        return;
+                    }
+
                     boolean isPnPacket = false;
                     // I have observed sometimes the ethernet packets being wrapped inside a VLAN
                     // Packet, in this case we simply unpack the content.
@@ -138,9 +143,9 @@ public class ProfinetChannel {
                                     }
                                     else if (pdu.getFrameId() == PnDcp_FrameId.RT_CLASS_1) {
                                         for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
-                                            if (device.getValue().getDeviceContext().getMacAddress() == null) {
+                                            /*if (device.getValue().getDeviceContext().getMacAddress() == null) {
                                                 logger.info("Hurz");
-                                            } else if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
+                                            } else*/ if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
                                                 PnDcp_Pdu_RealTimeCyclic cyclicPdu = (PnDcp_Pdu_RealTimeCyclic) pdu;
                                                 device.getValue().handleRealTimeResponse(cyclicPdu);
                                             }

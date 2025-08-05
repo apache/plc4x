@@ -83,10 +83,7 @@ public class BACnetConstructedDataDaylightSavingsStatus extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataDaylightSavingsStatus");
 
     // Simple Field (daylightSavingsStatus)
-    writeSimpleField(
-        "daylightSavingsStatus",
-        daylightSavingsStatus,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("daylightSavingsStatus", daylightSavingsStatus, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -128,7 +125,7 @@ public class BACnetConstructedDataDaylightSavingsStatus extends BACnetConstructe
     BACnetApplicationTagBoolean daylightSavingsStatus =
         readSimpleField(
             "daylightSavingsStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

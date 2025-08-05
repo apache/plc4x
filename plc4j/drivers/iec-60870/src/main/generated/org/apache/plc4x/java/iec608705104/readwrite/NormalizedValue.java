@@ -81,12 +81,6 @@ public class NormalizedValue implements Message {
     return lengthInBits;
   }
 
-  public static NormalizedValue staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static NormalizedValue staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NormalizedValue");
     PositionAware positionAware = readBuffer;

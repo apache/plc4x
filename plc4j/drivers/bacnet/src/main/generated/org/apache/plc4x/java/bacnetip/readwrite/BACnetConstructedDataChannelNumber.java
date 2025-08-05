@@ -82,7 +82,7 @@ public class BACnetConstructedDataChannelNumber extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataChannelNumber");
 
     // Simple Field (channelNumber)
-    writeSimpleField("channelNumber", channelNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("channelNumber", channelNumber, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataChannelNumber extends BACnetConstructedData im
     BACnetApplicationTagUnsignedInteger channelNumber =
         readSimpleField(
             "channelNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

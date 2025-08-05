@@ -23,9 +23,10 @@ import (
 	"container/list"
 	"context"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"math/big"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewWriteBufferBoxBased(t *testing.T) {
@@ -49,40 +50,6 @@ func TestNewWriteBufferBoxBased(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equalf(t, tt.want, NewWriteBufferBoxBased(), "NewWriteBufferBoxBased()")
-		})
-	}
-}
-
-func TestNewWriteBufferBoxBasedWithOptions(t *testing.T) {
-	type args struct {
-		mergeSingleBoxes bool
-		omitEmptyBoxes   bool
-	}
-	tests := []struct {
-		name string
-		args args
-		want WriteBufferBoxBased
-	}{
-		{
-			name: "create it",
-			args: args{
-				mergeSingleBoxes: true,
-				omitEmptyBoxes:   true,
-			},
-			want: &boxedWriteBuffer{
-				List:                list.New(),
-				desiredWidth:        120,
-				currentWidth:        118,
-				mergeSingleBoxes:    true,
-				omitEmptyBoxes:      true,
-				asciiBoxWriter:      AsciiBoxWriterDefault,
-				asciiBoxWriterLight: AsciiBoxWriterLight,
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewWriteBufferBoxBasedWithOptions(tt.args.mergeSingleBoxes, tt.args.omitEmptyBoxes), "NewWriteBufferBoxBasedWithOptions(%v, %v)", tt.args.mergeSingleBoxes, tt.args.omitEmptyBoxes)
 		})
 	}
 }
@@ -889,7 +856,6 @@ func Test_boxedWriteBuffer_WriteString(t *testing.T) {
 	type args struct {
 		logicalName string
 		bitLength   uint32
-		in2         string
 		value       string
 		writerArgs  []WithWriterArgs
 	}
@@ -921,7 +887,7 @@ func Test_boxedWriteBuffer_WriteString(t *testing.T) {
 				asciiBoxWriterLight: tt.fields.asciiBoxWriterLight,
 				pos:                 tt.fields.pos,
 			}
-			tt.wantErr(t, b.WriteString(tt.args.logicalName, tt.args.bitLength, tt.args.in2, tt.args.value, tt.args.writerArgs...), fmt.Sprintf("WriteString(%v, %v, %v, %v, %v)", tt.args.logicalName, tt.args.bitLength, tt.args.in2, tt.args.value, tt.args.writerArgs))
+			tt.wantErr(t, b.WriteString(tt.args.logicalName, tt.args.bitLength, tt.args.value, tt.args.writerArgs...), fmt.Sprintf("WriteString(%v, %v, %v, %v)", tt.args.logicalName, tt.args.bitLength, tt.args.value, tt.args.writerArgs))
 		})
 	}
 }

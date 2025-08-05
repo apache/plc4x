@@ -97,9 +97,7 @@ public class SecurityDataStatusReport2 extends SecurityData implements Message {
 
     List<ZoneStatus> zoneStatus =
         readCountArrayField(
-            "zoneStatus",
-            new DataReaderComplexDefault<>(() -> ZoneStatus.staticParse(readBuffer), readBuffer),
-            48);
+            "zoneStatus", readComplex(() -> ZoneStatus.staticParse(readBuffer), readBuffer), 48);
 
     readBuffer.closeContext("SecurityDataStatusReport2");
     // Create the instance

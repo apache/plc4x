@@ -83,8 +83,7 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataDatabaseRevision");
 
     // Simple Field (databaseRevision)
-    writeSimpleField(
-        "databaseRevision", databaseRevision, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("databaseRevision", databaseRevision, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger databaseRevision =
         readSimpleField(
             "databaseRevision",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -67,10 +67,7 @@ public class BACnetTimerStateChangeValueObjectidentifier extends BACnetTimerStat
     writeBuffer.pushContext("BACnetTimerStateChangeValueObjectidentifier");
 
     // Simple Field (objectidentifierValue)
-    writeSimpleField(
-        "objectidentifierValue",
-        objectidentifierValue,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectidentifierValue", objectidentifierValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimerStateChangeValueObjectidentifier");
   }
@@ -101,7 +98,7 @@ public class BACnetTimerStateChangeValueObjectidentifier extends BACnetTimerStat
     BACnetApplicationTagObjectIdentifier objectidentifierValue =
         readSimpleField(
             "objectidentifierValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -82,7 +82,7 @@ public class BACnetConstructedDataLowLimit extends BACnetConstructedData impleme
     writeBuffer.pushContext("BACnetConstructedDataLowLimit");
 
     // Simple Field (lowLimit)
-    writeSimpleField("lowLimit", lowLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lowLimit", lowLimit, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataLowLimit extends BACnetConstructedData impleme
     BACnetApplicationTagReal lowLimit =
         readSimpleField(
             "lowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

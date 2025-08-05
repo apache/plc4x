@@ -22,22 +22,21 @@ package bacnetip
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"sync"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/rs/zerolog/log"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 )
 
 type Connection struct {
@@ -49,6 +48,8 @@ type Connection struct {
 
 	connectionId string
 	tracer       tracer.Tracer
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
@@ -90,14 +91,18 @@ func (c *Connection) GetTracer() tracer.Tracer {
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+	c.wg.Add(1)
 	go func() {
+		defer c.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		connectionConnectResult := <-c.DefaultConnection.ConnectWithContext(ctx)
+		c.wg.Add(1)
 		go func() {
+			defer c.wg.Done()
 			defer func() {
 				if err := recover(); err != nil {
 					ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -117,13 +122,12 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 func (c *Connection) passToDefaultIncomingMessageChannel() {
 	incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
 	timeout := time.NewTimer(20 * time.Millisecond)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case message := <-incomingMessageChannel:
 		// TODO: implement mapping to subscribers
-		log.Info().Stringer("message", message).Msg("Received")
+		c.log.Info().Stringer("message", message).Msg("Received")
 	case <-timeout.C:
-		log.Info().Msg("Message was not handled")
+		c.log.Info().Msg("Message was not handled")
 	}
 }
 

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BrowsePathTarget extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "548";
+  public Integer getExtensionId() {
+    return (int) 548;
   }
 
   // Properties.
@@ -68,7 +68,7 @@ public class BrowsePathTarget extends ExtensionObjectDefinition implements Messa
     writeBuffer.pushContext("BrowsePathTarget");
 
     // Simple Field (targetId)
-    writeSimpleField("targetId", targetId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetId", targetId, writeComplex(writeBuffer));
 
     // Simple Field (remainingPathIndex)
     writeSimpleField("remainingPathIndex", remainingPathIndex, writeUnsignedLong(writeBuffer, 32));
@@ -97,16 +97,14 @@ public class BrowsePathTarget extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("BrowsePathTarget");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExpandedNodeId targetId =
         readSimpleField(
-            "targetId",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "targetId", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     long remainingPathIndex =
         readSimpleField("remainingPathIndex", readUnsignedLong(readBuffer, 32));

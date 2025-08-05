@@ -83,7 +83,7 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
     writeBuffer.pushContext("BACnetConstructedDataLightingOutputTrackingValue");
 
     // Simple Field (trackingValue)
-    writeSimpleField("trackingValue", trackingValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("trackingValue", trackingValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
     BACnetApplicationTagReal trackingValue =
         readSimpleField(
             "trackingValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

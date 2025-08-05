@@ -83,10 +83,7 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
     writeBuffer.pushContext("BACnetConstructedDataControlledVariableValue");
 
     // Simple Field (controlledVariableValue)
-    writeSimpleField(
-        "controlledVariableValue",
-        controlledVariableValue,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("controlledVariableValue", controlledVariableValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -128,7 +125,7 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
     BACnetApplicationTagReal controlledVariableValue =
         readSimpleField(
             "controlledVariableValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

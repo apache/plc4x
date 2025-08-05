@@ -78,36 +78,6 @@ public abstract class IdentifyReplyCommand implements Message {
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommand staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 2)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 2, but got " + args.length);
-    }
-    Attribute attribute;
-    if (args[0] instanceof Attribute) {
-      attribute = (Attribute) args[0];
-    } else if (args[0] instanceof String) {
-      attribute = Attribute.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Attribute or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    Byte numBytes;
-    if (args[1] instanceof Byte) {
-      numBytes = (Byte) args[1];
-    } else if (args[1] instanceof String) {
-      numBytes = Byte.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type Byte or a string which is parseable but was "
-              + args[1].getClass().getName());
-    }
-    return staticParse(readBuffer, attribute, numBytes);
-  }
-
   public static IdentifyReplyCommand staticParse(
       ReadBuffer readBuffer, Attribute attribute, Byte numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommand");

@@ -105,11 +105,6 @@ public class Plc4xTag implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xTag staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Plc4xTag staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Plc4xTag");
     PositionAware positionAware = readBuffer;

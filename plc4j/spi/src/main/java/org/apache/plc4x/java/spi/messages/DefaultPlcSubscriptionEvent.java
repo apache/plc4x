@@ -18,10 +18,13 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import java.util.Collections;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.metadata.Metadata;
+import org.apache.plc4x.java.spi.metadata.DefaultMetadata;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -32,8 +35,14 @@ public class DefaultPlcSubscriptionEvent extends DefaultPlcReadResponse implemen
     public final Instant timestamp;
 
     public DefaultPlcSubscriptionEvent(Instant timestamp,
-                                       Map<String, ResponseItem<PlcValue>> tags) {
-        super(null, tags);
+        Map<String, PlcResponseItem<PlcValue>> tags) {
+        this(timestamp, tags, Collections.emptyMap());
+    }
+
+    public DefaultPlcSubscriptionEvent(Instant timestamp,
+                                       Map<String, PlcResponseItem<PlcValue>> tags,
+                                       Map<String, Metadata> metadata) {
+        super(null, tags, metadata);
         this.timestamp = timestamp;
     }
 

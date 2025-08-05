@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RedundantServerDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "855";
+  public Integer getExtensionId() {
+    return (int) 855;
   }
 
   // Properties.
@@ -75,7 +75,7 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
     writeBuffer.pushContext("RedundantServerDataType");
 
     // Simple Field (serverId)
-    writeSimpleField("serverId", serverId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverId", serverId, writeComplex(writeBuffer));
 
     // Simple Field (serviceLevel)
     writeSimpleField("serviceLevel", serviceLevel, writeUnsignedShort(writeBuffer, 8));
@@ -85,8 +85,7 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
         "serverState",
         "ServerState",
         serverState,
-        new DataWriterEnumDefault<>(
-            ServerState::getValue, ServerState::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(ServerState::getValue, ServerState::name, writeUnsignedLong(writeBuffer, 32)));
 
     writeBuffer.popContext("RedundantServerDataType");
   }
@@ -115,15 +114,14 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RedundantServerDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString serverId =
         readSimpleField(
-            "serverId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "serverId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     short serviceLevel = readSimpleField("serviceLevel", readUnsignedShort(readBuffer, 8));
 
@@ -131,8 +129,7 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
         readEnumField(
             "serverState",
             "ServerState",
-            new DataReaderEnumDefault<>(
-                ServerState::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ServerState::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     readBuffer.closeContext("RedundantServerDataType");
     // Create the instance

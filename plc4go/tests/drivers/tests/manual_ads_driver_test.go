@@ -23,13 +23,13 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestManualAds(t *testing.T) {

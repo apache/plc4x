@@ -21,39 +21,40 @@ package utils
 
 import (
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"reflect"
+
+	"github.com/rs/zerolog/log"
 )
 
 // BoxedDump dumps a 56+2 char wide hex string
-func BoxedDump(name string, data []byte) AsciiBox {
-	return AsciiBoxWriterDefault.BoxString(name, DumpFixedWidth(data, DefaultWidth), DefaultWidth+boxLineOverheat)
-}
-
-// BoxedDumpFixedWidth dumps a hex into a beautiful box
-func BoxedDumpFixedWidth(name string, data []byte, charWidth int) AsciiBox {
+func BoxedDump(data []byte, options ...func(*BoxOptions)) AsciiBox {
+	var opts BoxOptions
+	opts.BoxSet = DefaultBoxSet()
+	for _, opt := range options {
+		opt(&opts)
+	}
+	if opts.CharWidth <= 0 {
+		opts.CharWidth = DefaultWidth + boxLineOverheat
+	}
 	// we substract the 2 lines at the side
-	dumpWidth := charWidth - 1 - 1
-	return AsciiBoxWriterDefault.BoxString(name, DumpFixedWidth(data, dumpWidth), charWidth)
+	dumpWidth := opts.CharWidth - 1 - 1
+	return AsciiBoxWriterDefault.BoxString(DumpFixedWidth(data, dumpWidth), WithAsciiBoxOptions(opts))
 }
 
 // BoxedDumpAnything dumps anything as hex into a beautiful box
-func BoxedDumpAnything(name string, anything any) AsciiBox {
-	return AsciiBoxWriterDefault.BoxString(name, DumpAnything(anything), 0)
-}
-
-// BoxedDumpAnythingFixedWidth dumps anything as hex into a beautiful box with a given width
-func BoxedDumpAnythingFixedWidth(name string, anything any, charWidth int) AsciiBox {
-	return AsciiBoxWriterDefault.BoxString(name, DumpAnythingFixedWidth(anything, charWidth), 0)
+func BoxedDumpAnything(anything any, options ...func(*BoxOptions)) AsciiBox {
+	return AsciiBoxWriterDefault.BoxString(DumpAnything(anything, options...), options...)
 }
 
 // DumpAnything dumps anything as hex
-func DumpAnything(anything any) string {
-	return DumpAnythingFixedWidth(anything, DefaultWidth)
-}
-
-// DumpAnythingFixedWidth dumps anything as hex
-func DumpAnythingFixedWidth(anything any, charWidth int) string {
+func DumpAnything(anything any, options ...func(*BoxOptions)) string {
+	var opts BoxOptions
+	for _, opt := range options {
+		opt(&opts)
+	}
+	if opts.CharWidth <= 0 {
+		opts.CharWidth = DefaultWidth
+	}
 	convertedBytes, err := toBytes(anything)
 	if err != nil {
 		if DebugHex {
@@ -61,32 +62,35 @@ func DumpAnythingFixedWidth(anything any, charWidth int) string {
 		}
 		return "<undumpable>"
 	}
-	return DumpFixedWidth(convertedBytes, charWidth)
+	return DumpFixedWidth(convertedBytes, opts.CharWidth)
 }
 
-func BoxAnything(name string, anything any, charWidth int) AsciiBox {
+func BoxAnything(anything any, options ...func(*BoxOptions)) AsciiBox {
+	var opts BoxOptions
+	for _, opt := range options {
+		opt(&opts)
+	}
 	switch anything.(type) {
 	case nil:
 		return AsciiBox{asciiBoxWriter: AsciiBoxWriterDefault.(*asciiBoxWriter)}
 	case AsciiBoxer:
-		// A box usually has its own name
-		return anything.(AsciiBoxer).Box(name, charWidth)
+		return anything.(AsciiBoxer).Box(options...)
 	case bool:
 		asInt := 0
 		if anything.(bool) {
 			asInt = 1
 		}
-		return AsciiBoxWriterDefault.BoxString(name, fmt.Sprintf("b%d %t", asInt, anything), 0)
+		return AsciiBoxWriterDefault.BoxString(fmt.Sprintf("b%d %t", asInt, anything), options...)
 	case uint, uint8, uint16, uint32, uint64, int, int8, int16, int32, int64, float32, float64:
 		hexDigits := reflect.TypeOf(anything).Bits() / 4
-		return AsciiBoxWriterDefault.BoxString(name, fmt.Sprintf("%#0*x %d", hexDigits, anything, anything), 0)
+		return AsciiBoxWriterDefault.BoxString(fmt.Sprintf("%#0*x %d", hexDigits, anything, anything), options...)
 	case []byte:
 		//return AsciiBox{DumpFixedWidth(anything.([]byte), charWidth), AsciiBoxWriterDefault.(*asciiBoxWriter), AsciiBoxWriterDefault.(*asciiBoxWriter).compressBoxSet()}
-		return AsciiBoxWriterDefault.BoxString(name, DumpFixedWidth(anything.([]byte), charWidth), charWidth)
+		return AsciiBoxWriterDefault.BoxString(DumpFixedWidth(anything.([]byte), opts.CharWidth), options...)
 	case string:
-		return AsciiBoxWriterDefault.BoxString(name, anything.(string), charWidth)
+		return AsciiBoxWriterDefault.BoxString(anything.(string), options...)
 	case fmt.Stringer:
-		return AsciiBoxWriterDefault.BoxString(name, anything.(fmt.Stringer).String(), 0)
+		return AsciiBoxWriterDefault.BoxString(anything.(fmt.Stringer).String(), options...)
 	default:
 		valueOf := reflect.ValueOf(anything)
 		switch valueOf.Kind() {
@@ -94,13 +98,13 @@ func BoxAnything(name string, anything any, charWidth int) AsciiBox {
 			boxes := make([]AsciiBox, valueOf.Len())
 			for i := 0; i < valueOf.Len(); i++ {
 				index := valueOf.Index(i)
-				boxes[i] = BoxAnything("", index.Interface(), charWidth-2)
+				boxes[i] = BoxAnything(index.Interface(), WithAsciiBoxCharWidth(opts.CharWidth-2))
 			}
-			return AsciiBoxWriterDefault.BoxBox(name, AsciiBoxWriterDefault.AlignBoxes(boxes, charWidth), 0)
+			return AsciiBoxWriterDefault.BoxBox(AsciiBoxWriterDefault.AlignBoxes(boxes, opts.CharWidth), options...)
 		case reflect.Ptr, reflect.Uintptr:
-			return BoxAnything(name, valueOf.Elem().Interface(), charWidth)
+			return BoxAnything(valueOf.Elem().Interface(), options...)
 		default:
-			return AsciiBoxWriterDefault.BoxString(name, fmt.Sprintf("%v", anything), charWidth)
+			return AsciiBoxWriterDefault.BoxString(fmt.Sprintf("%v", anything), options...)
 		}
 	}
 }

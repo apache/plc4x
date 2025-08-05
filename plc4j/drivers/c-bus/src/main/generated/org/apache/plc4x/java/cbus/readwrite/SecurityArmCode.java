@@ -127,12 +127,6 @@ public class SecurityArmCode implements Message {
     return lengthInBits;
   }
 
-  public static SecurityArmCode staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SecurityArmCode staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SecurityArmCode");
     PositionAware positionAware = readBuffer;

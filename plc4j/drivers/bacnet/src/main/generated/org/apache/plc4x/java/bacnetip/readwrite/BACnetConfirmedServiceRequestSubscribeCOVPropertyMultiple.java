@@ -103,28 +103,23 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
 
     // Simple Field (subscriberProcessIdentifier)
     writeSimpleField(
-        "subscriberProcessIdentifier",
-        subscriberProcessIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "subscriberProcessIdentifier", subscriberProcessIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (issueConfirmedNotifications) (Can be skipped, if the value is null)
     writeOptionalField(
-        "issueConfirmedNotifications",
-        issueConfirmedNotifications,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "issueConfirmedNotifications", issueConfirmedNotifications, writeComplex(writeBuffer));
 
     // Optional Field (lifetime) (Can be skipped, if the value is null)
-    writeOptionalField("lifetime", lifetime, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("lifetime", lifetime, writeComplex(writeBuffer));
 
     // Optional Field (maxNotificationDelay) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "maxNotificationDelay", maxNotificationDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("maxNotificationDelay", maxNotificationDelay, writeComplex(writeBuffer));
 
     // Simple Field (listOfCovSubscriptionSpecifications)
     writeSimpleField(
         "listOfCovSubscriptionSpecifications",
         listOfCovSubscriptionSpecifications,
-        new DataWriterComplexDefault<>(writeBuffer));
+        writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple");
   }
@@ -174,7 +169,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
     BACnetContextTagUnsignedInteger subscriberProcessIdentifier =
         readSimpleField(
             "subscriberProcessIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -186,7 +181,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
     BACnetContextTagBoolean issueConfirmedNotifications =
         readOptionalField(
             "issueConfirmedNotifications",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(
@@ -196,7 +191,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
     BACnetContextTagUnsignedInteger lifetime =
         readOptionalField(
             "lifetime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -208,7 +203,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
     BACnetContextTagUnsignedInteger maxNotificationDelay =
         readOptionalField(
             "maxNotificationDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -221,7 +216,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
         listOfCovSubscriptionSpecifications =
             readSimpleField(
                 "listOfCovSubscriptionSpecifications",
-                new DataReaderComplexDefault<>(
+                readComplex(
                     () ->
                         BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
                             .staticParse(readBuffer, (short) (4)),

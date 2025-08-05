@@ -108,8 +108,7 @@ public class AlarmMessageAckObjectPushType implements Message {
         "syntaxId",
         "SyntaxIdType",
         syntaxId,
-        new DataWriterEnumDefault<>(
-            SyntaxIdType::getValue, SyntaxIdType::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(SyntaxIdType::getValue, SyntaxIdType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (numberOfValues)
     writeSimpleField("numberOfValues", numberOfValues, writeUnsignedShort(writeBuffer, 8));
@@ -118,10 +117,10 @@ public class AlarmMessageAckObjectPushType implements Message {
     writeSimpleField("eventId", eventId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (ackStateGoing)
-    writeSimpleField("ackStateGoing", ackStateGoing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackStateGoing", ackStateGoing, writeComplex(writeBuffer));
 
     // Simple Field (ackStateComing)
-    writeSimpleField("ackStateComing", ackStateComing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackStateComing", ackStateComing, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AlarmMessageAckObjectPushType");
   }
@@ -161,12 +160,6 @@ public class AlarmMessageAckObjectPushType implements Message {
     return lengthInBits;
   }
 
-  public static AlarmMessageAckObjectPushType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AlarmMessageAckObjectPushType staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AlarmMessageAckObjectPushType");
@@ -185,8 +178,7 @@ public class AlarmMessageAckObjectPushType implements Message {
         readEnumField(
             "syntaxId",
             "SyntaxIdType",
-            new DataReaderEnumDefault<>(
-                SyntaxIdType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(SyntaxIdType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     short numberOfValues = readSimpleField("numberOfValues", readUnsignedShort(readBuffer, 8));
 
@@ -194,13 +186,11 @@ public class AlarmMessageAckObjectPushType implements Message {
 
     State ackStateGoing =
         readSimpleField(
-            "ackStateGoing",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+            "ackStateGoing", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     State ackStateComing =
         readSimpleField(
-            "ackStateComing",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+            "ackStateComing", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AlarmMessageAckObjectPushType");
     // Create the instance

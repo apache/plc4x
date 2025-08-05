@@ -63,11 +63,6 @@ public class Checksum implements Message {
     return lengthInBits;
   }
 
-  public static Checksum staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Checksum staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Checksum");
     PositionAware positionAware = readBuffer;

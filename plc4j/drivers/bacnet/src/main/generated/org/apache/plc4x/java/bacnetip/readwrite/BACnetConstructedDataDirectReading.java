@@ -82,7 +82,7 @@ public class BACnetConstructedDataDirectReading extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataDirectReading");
 
     // Simple Field (directReading)
-    writeSimpleField("directReading", directReading, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("directReading", directReading, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataDirectReading extends BACnetConstructedData im
     BACnetApplicationTagReal directReading =
         readSimpleField(
             "directReading",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

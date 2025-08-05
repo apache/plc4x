@@ -63,12 +63,6 @@ public class LastSectionOrSegmentQualifier implements Message {
     return lengthInBits;
   }
 
-  public static LastSectionOrSegmentQualifier staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static LastSectionOrSegmentQualifier staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("LastSectionOrSegmentQualifier");

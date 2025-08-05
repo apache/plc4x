@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class MonitoringParameters extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "742";
+  public Integer getExtensionId() {
+    return (int) 742;
   }
 
   // Properties.
@@ -97,7 +97,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
     writeSimpleField("samplingInterval", samplingInterval, writeDouble(writeBuffer, 64));
 
     // Simple Field (filter)
-    writeSimpleField("filter", filter, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("filter", filter, writeComplex(writeBuffer));
 
     // Simple Field (queueSize)
     writeSimpleField("queueSize", queueSize, writeUnsignedLong(writeBuffer, 32));
@@ -144,7 +144,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("MonitoringParameters");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -156,7 +156,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
     ExtensionObject filter =
         readSimpleField(
             "filter",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     long queueSize = readSimpleField("queueSize", readUnsignedLong(readBuffer, 32));

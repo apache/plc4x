@@ -41,9 +41,9 @@ public class SerialChannelOptions {
         ChannelOption.valueOf(Integer.class, "STOP_BITS");
 
     /**
-     * Option to configure the number of parity bits.
+     * Option to configure the type of parity being used.
      */
-    public static final ChannelOption<Integer> PARITY_BITS =
-        ChannelOption.valueOf(Integer.class, "PARITY_BITS");
+    public static final ChannelOption<SerialChannelOptionsParity> PARITY =
+        ChannelOption.valueOf(SerialChannelOptionsParity.class, "PARITY");
 
 }

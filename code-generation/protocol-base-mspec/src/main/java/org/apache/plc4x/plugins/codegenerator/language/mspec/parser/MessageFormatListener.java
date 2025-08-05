@@ -104,7 +104,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         // Make the new Map the top of the stack.
         batchSetAttributes.push(curBatchSetAttributes);
 
-        if (ctx.enumValues != null) {
+        if ("enum".equals(ctx.getChild(0).getText())) {
             List<EnumValue> enumContext = new LinkedList<>();
             enumContexts.push(enumContext);
         } else {
@@ -123,7 +123,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
         final Map<String, Term> attributes = batchSetAttributes.peek();
         // Handle enum types.
-        if (ctx.enumValues != null) {
+        if ("enum".equals(ctx.getChild(0).getText())) {
             SimpleTypeReference type = (ctx.type != null) ? getSimpleTypeReference(ctx.type) : null;
             List<EnumValue> enumValues = getEnumValues();
             if (type == null) {
@@ -426,8 +426,8 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         Term paddingValue = getExpressionTerm(ctx.paddingValue);
-        Term paddingCondition = getExpressionTerm(ctx.paddingCondition);
-        Field field = new DefaultPaddingField(getAttributes(ctx), type, name, paddingValue, paddingCondition);
+        Term timesPadding = getExpressionTerm(ctx.timesPadding);
+        Field field = new DefaultPaddingField(getAttributes(ctx), type, name, paddingValue, timesPadding);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }

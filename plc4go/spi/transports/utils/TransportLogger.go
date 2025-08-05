@@ -20,8 +20,11 @@
 package utils
 
 import (
-	"github.com/rs/zerolog"
 	"io"
+
+	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type TransportLogger struct {
@@ -64,5 +67,6 @@ func (t *TransportLogger) Write(p []byte) (int, error) {
 }
 
 func (t *TransportLogger) Close() error {
+	defer utils.StopWarn(t.log)()
 	return t.source.Close()
 }

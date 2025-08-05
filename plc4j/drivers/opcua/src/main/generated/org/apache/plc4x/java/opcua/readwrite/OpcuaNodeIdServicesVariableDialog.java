@@ -25,20 +25,7 @@ import java.util.Map;
 
 public enum OpcuaNodeIdServicesVariableDialog {
   DialogConditionType_Prompt((int) 2831L),
-  DialogConditionType_EventId((int) 4188L),
-  DialogConditionType_EventType((int) 4189L),
-  DialogConditionType_SourceNode((int) 4190L),
-  DialogConditionType_SourceName((int) 4191L),
-  DialogConditionType_Time((int) 4192L),
-  DialogConditionType_ReceiveTime((int) 4193L),
-  DialogConditionType_LocalTime((int) 4194L),
-  DialogConditionType_Message((int) 4195L),
-  DialogConditionType_Severity((int) 4196L),
-  DialogConditionType_Retain((int) 4197L),
-  DialogConditionType_ConditionRefresh_InputArguments((int) 4199L),
   DialogResponseMethodType_InputArguments((int) 9032L),
-  DialogConditionType_ConditionName((int) 9033L),
-  DialogConditionType_BranchId((int) 9034L),
   DialogConditionType_EnabledState((int) 9035L),
   DialogConditionType_EnabledState_Id((int) 9036L),
   DialogConditionType_EnabledState_Name((int) 9037L),
@@ -48,14 +35,6 @@ public enum OpcuaNodeIdServicesVariableDialog {
   DialogConditionType_EnabledState_EffectiveTransitionTime((int) 9041L),
   DialogConditionType_EnabledState_TrueState((int) 9042L),
   DialogConditionType_EnabledState_FalseState((int) 9043L),
-  DialogConditionType_Quality((int) 9044L),
-  DialogConditionType_Quality_SourceTimestamp((int) 9045L),
-  DialogConditionType_LastSeverity((int) 9046L),
-  DialogConditionType_LastSeverity_SourceTimestamp((int) 9047L),
-  DialogConditionType_Comment((int) 9048L),
-  DialogConditionType_Comment_SourceTimestamp((int) 9049L),
-  DialogConditionType_ClientUserId((int) 9050L),
-  DialogConditionType_AddComment_InputArguments((int) 9054L),
   DialogConditionType_DialogState((int) 9055L),
   DialogConditionType_DialogState_Id((int) 9056L),
   DialogConditionType_DialogState_Name((int) 9057L),
@@ -71,14 +50,8 @@ public enum OpcuaNodeIdServicesVariableDialog {
   DialogConditionType_CancelResponse((int) 9067L),
   DialogConditionType_LastResponse((int) 9068L),
   DialogConditionType_Respond_InputArguments((int) 9070L),
-  DialogConditionType_ConditionClassId((int) 11114L),
-  DialogConditionType_ConditionClassName((int) 11115L),
-  DialogConditionType_ConditionRefresh2_InputArguments((int) 12917L),
-  DialogConditionType_ConditionSubClassId((int) 16365L),
-  DialogConditionType_ConditionSubClassName((int) 16366L),
   DialogConditionType_Respond2_InputArguments((int) 24313L),
-  DialogResponse2MethodType_InputArguments((int) 24315L),
-  DialogConditionType_SupportsFilteredRetain((int) 32061L);
+  DialogResponse2MethodType_InputArguments((int) 24315L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableDialog> map;
 
   static {

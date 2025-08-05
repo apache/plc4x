@@ -156,12 +156,6 @@ public class QualityDescriptor implements Message {
     return lengthInBits;
   }
 
-  public static QualityDescriptor staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static QualityDescriptor staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("QualityDescriptor");
     PositionAware positionAware = readBuffer;

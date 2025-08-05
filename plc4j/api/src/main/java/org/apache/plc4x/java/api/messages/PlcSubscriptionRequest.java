@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcTag;
 
 import java.time.Duration;
@@ -36,6 +35,14 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionTagRequest {
         PlcSubscriptionRequest build();
 
         /**
+         * Define the consumer that will be receiving subscription events for all tags of this request.
+         *
+         * @param consumer Consumer
+         * @return builder.
+         */
+        PlcSubscriptionRequest.Builder setConsumer(Consumer<PlcSubscriptionEvent> consumer);
+
+        /**
          * Adds a new tag to the to be constructed request which should be polled cyclically.
          *
          * @param name            alias of the tag.
@@ -49,11 +56,33 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionTagRequest {
          * Adds a new tag to the to be constructed request which should be polled cyclically.
          *
          * @param name            alias of the tag.
+         * @param tagAddress      tag address string for accessing the tag.
+         * @param pollingInterval interval, in which the tag should be polled.
+         * @param consumer        consumer for receiving update events for a given tag only.
+         * @return builder.
+         */
+        PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval, Consumer<PlcSubscriptionEvent> consumer);
+
+        /**
+         * Adds a new tag to the to be constructed request which should be polled cyclically.
+         *
+         * @param name            alias of the tag.
          * @param tag           tag instance for accessing the tag.
          * @param pollingInterval interval, in which the tag should be polled.
          * @return builder.
          */
         PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval);
+
+        /**
+         * Adds a new tag to the to be constructed request which should be polled cyclically.
+         *
+         * @param name            alias of the tag.
+         * @param tag             tag instance for accessing the tag.
+         * @param pollingInterval interval, in which the tag should be polled.
+         * @param consumer        consumer for receiving update events for a given tag only.
+         * @return builder.
+         */
+        PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval, Consumer<PlcSubscriptionEvent> consumer);
 
         /**
          * Adds a new tag to the to be constructed request which should be updated as soon as
@@ -69,11 +98,33 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionTagRequest {
          * Adds a new tag to the to be constructed request which should be updated as soon as
          * a value changes in the PLC.
          *
+         * @param name       alias of the tag.
+         * @param tagAddress tag address string for accessing the tag.
+         * @param consumer   consumer for receiving update events for a given tag only.
+         * @return builder.
+         */
+        PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer);
+
+        /**
+         * Adds a new tag to the to be constructed request which should be updated as soon as
+         * a value changes in the PLC.
+         *
          * @param name alias of the tag.
          * @param tag  tag instance for accessing the tag.
          * @return builder.
          */
         PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag);
+
+        /**
+         * Adds a new tag to the to be constructed request which should be updated as soon as
+         * a value changes in the PLC.
+         *
+         * @param name     alias of the tag.
+         * @param tag      tag instance for accessing the tag.
+         * @param consumer consumer for receiving update events for a given tag only.
+         * @return builder.
+         */
+        PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer);
 
         /**
          * Adds a new subscription to the to be constructed request which should be updated
@@ -93,6 +144,19 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionTagRequest {
          * <p>
          * REMARK: We will have to see if this signature is correct as soon as we start using this type of subscription.
          *
+         * @param name       alias of the tag.
+         * @param tagAddress tag address string for accessing the tag.
+         * @param consumer   consumer for receiving update events for a given tag only.
+         * @return builder.
+         */
+        PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer);
+
+        /**
+         * Adds a new subscription to the to be constructed request which should be updated
+         * as soon as an event occurs.
+         * <p>
+         * REMARK: We will have to see if this signature is correct as soon as we start using this type of subscription.
+         *
          * @param name alias of the tag.
          * @param tag  tag instance for accessing the tag.
          * @return builder.
@@ -100,16 +164,17 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionTagRequest {
         PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag);
 
         /**
-         * Convenience method which attaches the {@link Consumer<PlcSubscriptionEvent>} directly to the handles once the
-         * requests succeeds.
-         * Note: opposed to register on the {@link org.apache.plc4x.java.api.model.PlcSubscriptionHandle} directly you
-         * won't retrieve a {@link PlcConsumerRegistration} which is useful to cancel registrations.
+         * Adds a new subscription to the to be constructed request which should be updated
+         * as soon as an event occurs.
+         * <p>
+         * REMARK: We will have to see if this signature is correct as soon as we start using this type of subscription.
          *
-         * @param name                  alias of the tag.
-         * @param preRegisteredConsumer {@link Consumer<PlcSubscriptionEvent>} to be attached
+         * @param name     alias of the tag.
+         * @param tag      tag instance for accessing the tag.
+         * @param consumer consumer for receiving update events for a given tag only.
          * @return builder.
          */
-        PlcSubscriptionRequest.Builder addPreRegisteredConsumer(String name, Consumer<PlcSubscriptionEvent> preRegisteredConsumer);
+        PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer);
 
     }
 

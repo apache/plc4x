@@ -74,27 +74,6 @@ public abstract class SDOResponse implements Message {
     return lengthInBits;
   }
 
-  public static SDOResponse staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    SDOResponseCommand command;
-    if (args[0] instanceof SDOResponseCommand) {
-      command = (SDOResponseCommand) args[0];
-    } else if (args[0] instanceof String) {
-      command = SDOResponseCommand.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type SDOResponseCommand or a string which is parseable but"
-              + " was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, command);
-  }
-
   public static SDOResponse staticParse(ReadBuffer readBuffer, SDOResponseCommand command)
       throws ParseException {
     readBuffer.pullContext("SDOResponse");

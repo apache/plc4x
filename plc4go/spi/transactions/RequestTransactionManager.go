@@ -22,19 +22,23 @@ package transactions
 import (
 	"container/list"
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/pool"
 	"io"
+	"os"
+	"os/signal"
 	"runtime"
+	"slices"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
-
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var sharedExecutorInstance pool.Executor // shared instance
@@ -47,9 +51,13 @@ func init() {
 		config.WithCustomLogger(zerolog.Nop()),
 	)
 	sharedExecutorInstance.Start()
-	runtime.SetFinalizer(sharedExecutorInstance, func(sharedExecutorInstance pool.Executor) {
+	go func() {
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+
+		<-c
 		sharedExecutorInstance.Stop()
-	})
+	}()
 }
 
 type RequestTransactionRunnable func(RequestTransaction)
@@ -104,7 +112,7 @@ type withCustomExecutor struct {
 	executor pool.Executor
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=requestTransactionManager
+//go:generate go tool plc4xGenerator -type=requestTransactionManager
 type requestTransactionManager struct {
 	runningRequests     []*requestTransaction
 	runningRequestMutex sync.RWMutex
@@ -123,7 +131,7 @@ type requestTransactionManager struct {
 
 	traceTransactionManagerTransactions bool // flag set to true if it should trace transactions
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 //
@@ -216,20 +224,18 @@ func (r *requestTransactionManager) endRequest(transaction *requestTransaction) 
 	r.runningRequestMutex.Lock()
 	transaction.log.Debug().Msg("Trying to find a existing transaction")
 	found := false
-	index := -1
-	for i, runningRequest := range r.runningRequests {
+	r.runningRequests = slices.DeleteFunc(r.runningRequests, func(runningRequest *requestTransaction) bool {
 		if runningRequest.transactionId == transaction.transactionId {
 			transaction.log.Debug().Msg("Found a existing transaction")
 			found = true
-			index = i
-			break
+			return true
 		}
-	}
+		return false
+	})
 	if !found {
 		return errors.New("Unknown Transaction or Transaction already finished!")
 	}
 	transaction.log.Debug().Msg("Removing the existing transaction transaction")
-	r.runningRequests = append(r.runningRequests[:index], r.runningRequests[index+1:]...)
 	r.runningRequestMutex.Unlock()
 	// Process the workLog, a slot should be free now
 	transaction.log.Debug().Msg("Processing the workLog")
@@ -238,6 +244,7 @@ func (r *requestTransactionManager) endRequest(transaction *requestTransaction) 
 }
 
 func (r *requestTransactionManager) Close() error {
+	defer utils.StopWarn(r.log)()
 	return r.CloseGraceful(0)
 }
 
@@ -246,7 +253,6 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	r.shutdown.Store(true)
 	if timeout > 0 {
 		timer := time.NewTimer(timeout)
-		defer utils.CleanupTimer(timer)
 	gracefulLoop:
 		for {
 			r.runningRequestMutex.RLock()

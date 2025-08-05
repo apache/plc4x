@@ -38,18 +38,16 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RegisteredServer extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "434";
+  public Integer getExtensionId() {
+    return (int) 434;
   }
 
   // Properties.
   protected final PascalString serverUri;
   protected final PascalString productUri;
-  protected final int noOfServerNames;
   protected final List<LocalizedText> serverNames;
   protected final ApplicationType serverType;
   protected final PascalString gatewayServerUri;
-  protected final int noOfDiscoveryUrls;
   protected final List<PascalString> discoveryUrls;
   protected final PascalString semaphoreFilePath;
   protected final boolean isOnline;
@@ -57,22 +55,18 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
   public RegisteredServer(
       PascalString serverUri,
       PascalString productUri,
-      int noOfServerNames,
       List<LocalizedText> serverNames,
       ApplicationType serverType,
       PascalString gatewayServerUri,
-      int noOfDiscoveryUrls,
       List<PascalString> discoveryUrls,
       PascalString semaphoreFilePath,
       boolean isOnline) {
     super();
     this.serverUri = serverUri;
     this.productUri = productUri;
-    this.noOfServerNames = noOfServerNames;
     this.serverNames = serverNames;
     this.serverType = serverType;
     this.gatewayServerUri = gatewayServerUri;
-    this.noOfDiscoveryUrls = noOfDiscoveryUrls;
     this.discoveryUrls = discoveryUrls;
     this.semaphoreFilePath = semaphoreFilePath;
     this.isOnline = isOnline;
@@ -86,10 +80,6 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     return productUri;
   }
 
-  public int getNoOfServerNames() {
-    return noOfServerNames;
-  }
-
   public List<LocalizedText> getServerNames() {
     return serverNames;
   }
@@ -100,10 +90,6 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
 
   public PascalString getGatewayServerUri() {
     return gatewayServerUri;
-  }
-
-  public int getNoOfDiscoveryUrls() {
-    return noOfDiscoveryUrls;
   }
 
   public List<PascalString> getDiscoveryUrls() {
@@ -126,13 +112,15 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     writeBuffer.pushContext("RegisteredServer");
 
     // Simple Field (serverUri)
-    writeSimpleField("serverUri", serverUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverUri", serverUri, writeComplex(writeBuffer));
 
     // Simple Field (productUri)
-    writeSimpleField("productUri", productUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("productUri", productUri, writeComplex(writeBuffer));
 
-    // Simple Field (noOfServerNames)
-    writeSimpleField("noOfServerNames", noOfServerNames, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfServerNames) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfServerNames = (int) ((((getServerNames()) == (null)) ? -(1) : COUNT(getServerNames())));
+    writeImplicitField("noOfServerNames", noOfServerNames, writeSignedInt(writeBuffer, 32));
 
     // Array Field (serverNames)
     writeComplexTypeArrayField("serverNames", serverNames, writeBuffer);
@@ -142,22 +130,23 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
         "serverType",
         "ApplicationType",
         serverType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationType::getValue, ApplicationType::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (gatewayServerUri)
-    writeSimpleField(
-        "gatewayServerUri", gatewayServerUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("gatewayServerUri", gatewayServerUri, writeComplex(writeBuffer));
 
-    // Simple Field (noOfDiscoveryUrls)
-    writeSimpleField("noOfDiscoveryUrls", noOfDiscoveryUrls, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfDiscoveryUrls) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfDiscoveryUrls =
+        (int) ((((getDiscoveryUrls()) == (null)) ? -(1) : COUNT(getDiscoveryUrls())));
+    writeImplicitField("noOfDiscoveryUrls", noOfDiscoveryUrls, writeSignedInt(writeBuffer, 32));
 
     // Array Field (discoveryUrls)
     writeComplexTypeArrayField("discoveryUrls", discoveryUrls, writeBuffer);
 
     // Simple Field (semaphoreFilePath)
-    writeSimpleField(
-        "semaphoreFilePath", semaphoreFilePath, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("semaphoreFilePath", semaphoreFilePath, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -185,7 +174,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     // Simple field (productUri)
     lengthInBits += productUri.getLengthInBits();
 
-    // Simple field (noOfServerNames)
+    // Implicit Field (noOfServerNames)
     lengthInBits += 32;
 
     // Array field
@@ -203,7 +192,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     // Simple field (gatewayServerUri)
     lengthInBits += gatewayServerUri.getLengthInBits();
 
-    // Simple field (noOfDiscoveryUrls)
+    // Implicit Field (noOfDiscoveryUrls)
     lengthInBits += 32;
 
     // Array field
@@ -228,53 +217,50 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RegisteredServer");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString serverUri =
         readSimpleField(
-            "serverUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "serverUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString productUri =
         readSimpleField(
-            "productUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "productUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    int noOfServerNames = readSimpleField("noOfServerNames", readSignedInt(readBuffer, 32));
+    int noOfServerNames = readImplicitField("noOfServerNames", readSignedInt(readBuffer, 32));
 
     List<LocalizedText> serverNames =
         readCountArrayField(
             "serverNames",
-            new DataReaderComplexDefault<>(() -> LocalizedText.staticParse(readBuffer), readBuffer),
+            readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer),
             noOfServerNames);
 
     ApplicationType serverType =
         readEnumField(
             "serverType",
             "ApplicationType",
-            new DataReaderEnumDefault<>(
-                ApplicationType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ApplicationType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString gatewayServerUri =
         readSimpleField(
             "gatewayServerUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    int noOfDiscoveryUrls = readSimpleField("noOfDiscoveryUrls", readSignedInt(readBuffer, 32));
+    int noOfDiscoveryUrls = readImplicitField("noOfDiscoveryUrls", readSignedInt(readBuffer, 32));
 
     List<PascalString> discoveryUrls =
         readCountArrayField(
             "discoveryUrls",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfDiscoveryUrls);
 
     PascalString semaphoreFilePath =
         readSimpleField(
             "semaphoreFilePath",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -286,11 +272,9 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     return new RegisteredServerBuilderImpl(
         serverUri,
         productUri,
-        noOfServerNames,
         serverNames,
         serverType,
         gatewayServerUri,
-        noOfDiscoveryUrls,
         discoveryUrls,
         semaphoreFilePath,
         isOnline);
@@ -300,11 +284,9 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString serverUri;
     private final PascalString productUri;
-    private final int noOfServerNames;
     private final List<LocalizedText> serverNames;
     private final ApplicationType serverType;
     private final PascalString gatewayServerUri;
-    private final int noOfDiscoveryUrls;
     private final List<PascalString> discoveryUrls;
     private final PascalString semaphoreFilePath;
     private final boolean isOnline;
@@ -312,21 +294,17 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     public RegisteredServerBuilderImpl(
         PascalString serverUri,
         PascalString productUri,
-        int noOfServerNames,
         List<LocalizedText> serverNames,
         ApplicationType serverType,
         PascalString gatewayServerUri,
-        int noOfDiscoveryUrls,
         List<PascalString> discoveryUrls,
         PascalString semaphoreFilePath,
         boolean isOnline) {
       this.serverUri = serverUri;
       this.productUri = productUri;
-      this.noOfServerNames = noOfServerNames;
       this.serverNames = serverNames;
       this.serverType = serverType;
       this.gatewayServerUri = gatewayServerUri;
-      this.noOfDiscoveryUrls = noOfDiscoveryUrls;
       this.discoveryUrls = discoveryUrls;
       this.semaphoreFilePath = semaphoreFilePath;
       this.isOnline = isOnline;
@@ -337,11 +315,9 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
           new RegisteredServer(
               serverUri,
               productUri,
-              noOfServerNames,
               serverNames,
               serverType,
               gatewayServerUri,
-              noOfDiscoveryUrls,
               discoveryUrls,
               semaphoreFilePath,
               isOnline);
@@ -360,11 +336,9 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     RegisteredServer that = (RegisteredServer) o;
     return (getServerUri() == that.getServerUri())
         && (getProductUri() == that.getProductUri())
-        && (getNoOfServerNames() == that.getNoOfServerNames())
         && (getServerNames() == that.getServerNames())
         && (getServerType() == that.getServerType())
         && (getGatewayServerUri() == that.getGatewayServerUri())
-        && (getNoOfDiscoveryUrls() == that.getNoOfDiscoveryUrls())
         && (getDiscoveryUrls() == that.getDiscoveryUrls())
         && (getSemaphoreFilePath() == that.getSemaphoreFilePath())
         && (getIsOnline() == that.getIsOnline())
@@ -378,11 +352,9 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
         super.hashCode(),
         getServerUri(),
         getProductUri(),
-        getNoOfServerNames(),
         getServerNames(),
         getServerType(),
         getGatewayServerUri(),
-        getNoOfDiscoveryUrls(),
         getDiscoveryUrls(),
         getSemaphoreFilePath(),
         getIsOnline());

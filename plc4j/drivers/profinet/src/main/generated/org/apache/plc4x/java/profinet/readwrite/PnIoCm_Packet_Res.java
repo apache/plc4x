@@ -214,7 +214,7 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
     List<PnIoCm_Block> blocks =
         readLengthArrayField(
             "blocks",
-            new DataReaderComplexDefault<>(() -> PnIoCm_Block.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnIoCm_Block.staticParse(readBuffer), readBuffer),
             argsLength);
 
     readBuffer.closeContext("PnIoCm_Packet_Res");

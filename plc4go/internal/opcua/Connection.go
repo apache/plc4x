@@ -22,7 +22,11 @@ package opcua
 import (
 	"context"
 	"runtime/debug"
+	"sync"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -31,12 +35,9 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Connection
+//go:generate go tool plc4xGenerator -type=Connection
 type Connection struct {
 	_default.DefaultConnection
 	messageCodec *MessageCodec
@@ -48,12 +49,14 @@ type Connection struct {
 	channel *SecureChannel
 
 	connectEvent      chan struct{}
-	connectTimeout    time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
+	connectTimeout    time.Duration // TODO: do we need to have that in general, where to get that from
 	disconnectEvent   chan struct{}
-	disconnectTimeout time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
+	disconnectTimeout time.Duration // TODO: do we need to have that in general, where to get that from
 
 	connectionId string
 	tracer       tracer.Tracer
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log      zerolog.Logger       `ignore:"true"`
 	_options []options.WithOption `ignore:"true"` // Used to pass them downstream
@@ -110,7 +113,9 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+	c.wg.Add(1)
 	go func() {
+		defer c.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				c.fireConnectionError(errors.Errorf("panic-ed %v. Stack:\n%s", err, debug.Stack()), ch)
@@ -147,7 +152,9 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 
 func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	results := make(chan plc4go.PlcConnectionCloseResult, 1)
+	c.wg.Add(1)
 	go func() {
+		defer c.wg.Done()
 		result := <-c.DefaultConnection.Close()
 		c.channel.onDisconnect(context.Background(), c)
 		disconnectTimeout := time.NewTimer(c.disconnectTimeout)

@@ -70,13 +70,13 @@ public class BACnetLogRecord implements Message {
     writeBuffer.pushContext("BACnetLogRecord");
 
     // Simple Field (timestamp)
-    writeSimpleField("timestamp", timestamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timestamp", timestamp, writeComplex(writeBuffer));
 
     // Simple Field (logDatum)
-    writeSimpleField("logDatum", logDatum, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("logDatum", logDatum, writeComplex(writeBuffer));
 
     // Optional Field (statusFlags) (Can be skipped, if the value is null)
-    writeOptionalField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogRecord");
   }
@@ -106,12 +106,6 @@ public class BACnetLogRecord implements Message {
     return lengthInBits;
   }
 
-  public static BACnetLogRecord staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetLogRecord staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogRecord");
     PositionAware positionAware = readBuffer;
@@ -120,19 +114,19 @@ public class BACnetLogRecord implements Message {
     BACnetDateTimeEnclosed timestamp =
         readSimpleField(
             "timestamp",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetLogRecordLogDatum logDatum =
         readSimpleField(
             "logDatum",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetLogRecordLogDatum.staticParse(readBuffer, (short) (1)), readBuffer));
 
     BACnetStatusFlagsTagged statusFlags =
         readOptionalField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),

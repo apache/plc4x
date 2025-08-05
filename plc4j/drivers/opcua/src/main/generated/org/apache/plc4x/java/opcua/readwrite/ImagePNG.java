@@ -63,11 +63,6 @@ public class ImagePNG implements Message {
     return lengthInBits;
   }
 
-  public static ImagePNG staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ImagePNG staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ImagePNG");
     PositionAware positionAware = readBuffer;

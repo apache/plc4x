@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class HistoryReadValueId extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "637";
+  public Integer getExtensionId() {
+    return (int) 637;
   }
 
   // Properties.
@@ -84,17 +84,16 @@ public class HistoryReadValueId extends ExtensionObjectDefinition implements Mes
     writeBuffer.pushContext("HistoryReadValueId");
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Simple Field (indexRange)
-    writeSimpleField("indexRange", indexRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("indexRange", indexRange, writeComplex(writeBuffer));
 
     // Simple Field (dataEncoding)
-    writeSimpleField("dataEncoding", dataEncoding, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataEncoding", dataEncoding, writeComplex(writeBuffer));
 
     // Simple Field (continuationPoint)
-    writeSimpleField(
-        "continuationPoint", continuationPoint, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("continuationPoint", continuationPoint, writeComplex(writeBuffer));
 
     writeBuffer.popContext("HistoryReadValueId");
   }
@@ -126,32 +125,26 @@ public class HistoryReadValueId extends ExtensionObjectDefinition implements Mes
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("HistoryReadValueId");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
-        readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("nodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     PascalString indexRange =
         readSimpleField(
-            "indexRange",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "indexRange", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     QualifiedName dataEncoding =
         readSimpleField(
-            "dataEncoding",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "dataEncoding", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
     PascalByteString continuationPoint =
         readSimpleField(
             "continuationPoint",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("HistoryReadValueId");
     // Create the instance

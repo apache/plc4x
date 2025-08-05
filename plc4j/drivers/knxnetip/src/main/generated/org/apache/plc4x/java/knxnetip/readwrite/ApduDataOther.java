@@ -61,7 +61,7 @@ public class ApduDataOther extends ApduData implements Message {
     writeBuffer.pushContext("ApduDataOther");
 
     // Simple Field (extendedApdu)
-    writeSimpleField("extendedApdu", extendedApdu, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("extendedApdu", extendedApdu, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ApduDataOther");
   }
@@ -92,7 +92,7 @@ public class ApduDataOther extends ApduData implements Message {
     ApduDataExt extendedApdu =
         readSimpleField(
             "extendedApdu",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ApduDataExt.staticParse(readBuffer, (short) (dataLength)), readBuffer));
 
     readBuffer.closeContext("ApduDataOther");

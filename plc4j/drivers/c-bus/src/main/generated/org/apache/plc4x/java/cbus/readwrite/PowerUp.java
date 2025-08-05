@@ -87,11 +87,6 @@ public class PowerUp implements Message {
     return lengthInBits;
   }
 
-  public static PowerUp staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PowerUp staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PowerUp");
     PositionAware positionAware = readBuffer;

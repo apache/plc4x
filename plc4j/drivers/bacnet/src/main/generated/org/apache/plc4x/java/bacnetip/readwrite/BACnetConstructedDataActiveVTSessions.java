@@ -119,8 +119,7 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
     List<BACnetVTSession> activeVTSession =
         readTerminatedArrayField(
             "activeVTSession",
-            new DataReaderComplexDefault<>(
-                () -> BACnetVTSession.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetVTSession.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

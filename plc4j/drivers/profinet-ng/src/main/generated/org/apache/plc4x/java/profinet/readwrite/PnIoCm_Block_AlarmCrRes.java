@@ -117,7 +117,7 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
         "alarmType",
         "PnIoCm_AlarmCrType",
         alarmType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_AlarmCrType::getValue,
             PnIoCm_AlarmCrType::name,
             writeUnsignedInt(writeBuffer, 16)),
@@ -200,8 +200,7 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
         readEnumField(
             "alarmType",
             "PnIoCm_AlarmCrType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_AlarmCrType::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(PnIoCm_AlarmCrType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int localAlarmReference =

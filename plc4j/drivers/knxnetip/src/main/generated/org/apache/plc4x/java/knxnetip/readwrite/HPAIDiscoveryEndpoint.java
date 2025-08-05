@@ -76,13 +76,13 @@ public class HPAIDiscoveryEndpoint implements Message {
         "hostProtocolCode",
         "HostProtocolCode",
         hostProtocolCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HostProtocolCode::getValue,
             HostProtocolCode::name,
             writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (ipAddress)
-    writeSimpleField("ipAddress", ipAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipAddress", ipAddress, writeComplex(writeBuffer));
 
     // Simple Field (ipPort)
     writeSimpleField("ipPort", ipPort, writeUnsignedInt(writeBuffer, 16));
@@ -116,12 +116,6 @@ public class HPAIDiscoveryEndpoint implements Message {
     return lengthInBits;
   }
 
-  public static HPAIDiscoveryEndpoint staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static HPAIDiscoveryEndpoint staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HPAIDiscoveryEndpoint");
     PositionAware positionAware = readBuffer;
@@ -133,13 +127,11 @@ public class HPAIDiscoveryEndpoint implements Message {
         readEnumField(
             "hostProtocolCode",
             "HostProtocolCode",
-            new DataReaderEnumDefault<>(
-                HostProtocolCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HostProtocolCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     IPAddress ipAddress =
         readSimpleField(
-            "ipAddress",
-            new DataReaderComplexDefault<>(() -> IPAddress.staticParse(readBuffer), readBuffer));
+            "ipAddress", readComplex(() -> IPAddress.staticParse(readBuffer), readBuffer));
 
     int ipPort = readSimpleField("ipPort", readUnsignedInt(readBuffer, 16));
 

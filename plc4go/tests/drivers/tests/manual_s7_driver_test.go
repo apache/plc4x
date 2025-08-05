@@ -22,13 +22,13 @@ package tests
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/apache/plc4x/plc4go/internal/s7"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestManualS7Driver(t *testing.T) {

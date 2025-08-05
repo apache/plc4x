@@ -18,24 +18,25 @@
  */
 package org.apache.plc4x.java.s7.readwrite.tag;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class S7SzlTag implements PlcTag {
-    
-   //SZL_ID=0xYYYY;INDEX=0xZZZZ
+
+    //SZL_ID=0xYYYY;INDEX=0xZZZZ
     private static final Pattern SSL_ADDRESS_PATTERN =
-        Pattern.compile("^SZL_ID=(?<szlId>16#[0-9a-fA-F]{4});INDEX=(?<index>16#[0-9a-fA-F]{4})");  
-    
+        Pattern.compile("^SZL_ID=(?<szlId>16#[0-9a-fA-F]{4});INDEX=(?<index>16#[0-9a-fA-F]{4})");
+
     private static final String GROUP_NAME_SZL_ID = "szlId";
     private static final String GROUP_NAME_INDEX = "index";
-    
+
     private final int szlId;
     private final int index;
 
@@ -66,21 +67,21 @@ public class S7SzlTag implements PlcTag {
     public int getIndex() {
         return index;
     }
-          
+
     public static boolean matches(String tagString) {
         return SSL_ADDRESS_PATTERN.matcher(tagString).matches();
-    }   
-    
+    }
+
     public static S7SzlTag of(String tagString) {
         Matcher matcher = SSL_ADDRESS_PATTERN.matcher(tagString);
-        if (matcher.matches()){
+        if (matcher.matches()) {
             String strSxlId = matcher.group(GROUP_NAME_SZL_ID);
             String strIndex = matcher.group(GROUP_NAME_INDEX);
             strSxlId = strSxlId.replaceAll("16#", "");
             strIndex = strIndex.replaceAll("16#", "");
-            return new S7SzlTag(Integer.parseInt(strSxlId, 16),Integer.parseInt(strIndex, 16));
-        }  
+            return new S7SzlTag(Integer.parseInt(strSxlId, 16), Integer.parseInt(strIndex, 16));
+        }
         throw new PlcInvalidTagException("Unable to parse address: " + tagString);
-    }       
+    }
 
 }

@@ -83,8 +83,7 @@ public class BACnetConstructedDataNotificationClass extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataNotificationClass");
 
     // Simple Field (notificationClass)
-    writeSimpleField(
-        "notificationClass", notificationClass, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("notificationClass", notificationClass, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataNotificationClass extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger notificationClass =
         readSimpleField(
             "notificationClass",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

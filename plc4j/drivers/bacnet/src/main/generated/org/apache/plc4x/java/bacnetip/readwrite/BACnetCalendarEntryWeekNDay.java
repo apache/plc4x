@@ -60,7 +60,7 @@ public class BACnetCalendarEntryWeekNDay extends BACnetCalendarEntry implements 
     writeBuffer.pushContext("BACnetCalendarEntryWeekNDay");
 
     // Simple Field (weekNDay)
-    writeSimpleField("weekNDay", weekNDay, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("weekNDay", weekNDay, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetCalendarEntryWeekNDay");
   }
@@ -91,7 +91,7 @@ public class BACnetCalendarEntryWeekNDay extends BACnetCalendarEntry implements 
     BACnetWeekNDayTagged weekNDay =
         readSimpleField(
             "weekNDay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetWeekNDayTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),

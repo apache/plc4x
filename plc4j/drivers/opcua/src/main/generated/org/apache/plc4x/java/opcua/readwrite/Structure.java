@@ -63,11 +63,6 @@ public class Structure implements Message {
     return lengthInBits;
   }
 
-  public static Structure staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Structure staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Structure");
     PositionAware positionAware = readBuffer;

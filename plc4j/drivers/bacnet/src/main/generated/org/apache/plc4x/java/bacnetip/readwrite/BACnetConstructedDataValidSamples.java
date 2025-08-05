@@ -82,7 +82,7 @@ public class BACnetConstructedDataValidSamples extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataValidSamples");
 
     // Simple Field (validSamples)
-    writeSimpleField("validSamples", validSamples, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("validSamples", validSamples, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataValidSamples extends BACnetConstructedData imp
     BACnetApplicationTagUnsignedInteger validSamples =
         readSimpleField(
             "validSamples",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

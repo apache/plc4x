@@ -28,12 +28,14 @@ import java.math.BigInteger;
 
 public class PlcLREAL extends PlcIECValue<Double> {
 
-    private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
-    static final Double minValue = -Double.MAX_VALUE;
-    static final Double maxValue = Double.MAX_VALUE;
+    private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %f - %f for a %s Value";
+    public static final Double MIN_VALUE = -Double.MAX_VALUE;
+    public static final Double MAX_VALUE = Double.MAX_VALUE;
 
     public static PlcLREAL of(Object value) {
-        if (value instanceof Boolean) {
+        if (value instanceof PlcLREAL) {
+            return (PlcLREAL) value;
+        } else if (value instanceof Boolean) {
             return new PlcLREAL((Boolean) value);
         } else if (value instanceof Byte) {
             return new PlcLREAL((Byte) value);
@@ -52,7 +54,7 @@ public class PlcLREAL extends PlcIECValue<Double> {
         } else if (value instanceof BigDecimal) {
             return new PlcLREAL((BigDecimal) value);
         } else {
-            return new PlcLREAL((String) value);
+            return new PlcLREAL(value.toString());
         }
     }
 
@@ -76,6 +78,11 @@ public class PlcLREAL extends PlcIECValue<Double> {
         this.isNullable = false;
     }
 
+    public PlcLREAL(Long value) {
+        this.value = value.doubleValue();
+        this.isNullable = false;
+    }
+
     public PlcLREAL(Float value) {
         this.value = value.doubleValue();
         this.isNullable = false;
@@ -88,16 +95,16 @@ public class PlcLREAL extends PlcIECValue<Double> {
 
     public PlcLREAL(BigInteger value) {
         BigDecimal val = new BigDecimal(value);
-        if ((val.compareTo(BigDecimal.valueOf(minValue)) < 0) || (val.compareTo(BigDecimal.valueOf(maxValue)) > 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((val.compareTo(BigDecimal.valueOf(MIN_VALUE)) < 0) || (val.compareTo(BigDecimal.valueOf(MAX_VALUE)) > 0)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = val.doubleValue();
         this.isNullable = true;
     }
 
     public PlcLREAL(BigDecimal value) {
-        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((value.compareTo(BigDecimal.valueOf(MIN_VALUE)) < 0) || (value.compareTo(BigDecimal.valueOf(MAX_VALUE)) > 0)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = value.doubleValue();
         this.isNullable = true;
@@ -108,7 +115,7 @@ public class PlcLREAL extends PlcIECValue<Double> {
             this.value = Double.parseDouble(value.trim());
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
     }
 
@@ -227,6 +234,11 @@ public class PlcLREAL extends PlcIECValue<Double> {
         return Double.toString(value);
     }
 
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
+    
     public byte[] getBytes() {
         long longBits = Double.doubleToRawLongBits(value);
         return new byte[]{

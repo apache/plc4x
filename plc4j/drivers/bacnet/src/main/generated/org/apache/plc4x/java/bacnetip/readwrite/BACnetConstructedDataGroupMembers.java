@@ -99,7 +99,7 @@ public class BACnetConstructedDataGroupMembers extends BACnetConstructedData imp
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (groupMembers)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataGroupMembers extends BACnetConstructedData imp
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataGroupMembers extends BACnetConstructedData imp
     List<BACnetApplicationTagObjectIdentifier> groupMembers =
         readTerminatedArrayField(
             "groupMembers",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

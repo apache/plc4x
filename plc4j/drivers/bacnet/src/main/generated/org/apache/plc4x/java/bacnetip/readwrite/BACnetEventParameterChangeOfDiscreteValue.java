@@ -76,13 +76,13 @@ public class BACnetEventParameterChangeOfDiscreteValue extends BACnetEventParame
     writeBuffer.pushContext("BACnetEventParameterChangeOfDiscreteValue");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (timeDelay)
-    writeSimpleField("timeDelay", timeDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeDelay", timeDelay, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterChangeOfDiscreteValue");
   }
@@ -119,13 +119,12 @@ public class BACnetEventParameterChangeOfDiscreteValue extends BACnetEventParame
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (21)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (21)), readBuffer));
 
     BACnetContextTagUnsignedInteger timeDelay =
         readSimpleField(
             "timeDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -137,8 +136,7 @@ public class BACnetEventParameterChangeOfDiscreteValue extends BACnetEventParame
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (21)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (21)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterChangeOfDiscreteValue");
     // Create the instance

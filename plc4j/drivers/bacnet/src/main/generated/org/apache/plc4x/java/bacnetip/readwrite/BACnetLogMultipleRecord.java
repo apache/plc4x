@@ -61,10 +61,10 @@ public class BACnetLogMultipleRecord implements Message {
     writeBuffer.pushContext("BACnetLogMultipleRecord");
 
     // Simple Field (timestamp)
-    writeSimpleField("timestamp", timestamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timestamp", timestamp, writeComplex(writeBuffer));
 
     // Simple Field (logData)
-    writeSimpleField("logData", logData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("logData", logData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogMultipleRecord");
   }
@@ -89,12 +89,6 @@ public class BACnetLogMultipleRecord implements Message {
     return lengthInBits;
   }
 
-  public static BACnetLogMultipleRecord staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetLogMultipleRecord staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogMultipleRecord");
     PositionAware positionAware = readBuffer;
@@ -103,14 +97,13 @@ public class BACnetLogMultipleRecord implements Message {
     BACnetDateTimeEnclosed timestamp =
         readSimpleField(
             "timestamp",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetLogData logData =
         readSimpleField(
             "logData",
-            new DataReaderComplexDefault<>(
-                () -> BACnetLogData.staticParse(readBuffer, (short) (1)), readBuffer));
+            readComplex(() -> BACnetLogData.staticParse(readBuffer, (short) (1)), readBuffer));
 
     readBuffer.closeContext("BACnetLogMultipleRecord");
     // Create the instance

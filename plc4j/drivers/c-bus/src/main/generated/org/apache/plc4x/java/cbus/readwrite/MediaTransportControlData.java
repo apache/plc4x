@@ -75,7 +75,7 @@ public abstract class MediaTransportControlData implements Message {
         "commandTypeContainer",
         "MediaTransportControlCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MediaTransportControlCommandTypeContainer::getValue,
             MediaTransportControlCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -117,12 +117,6 @@ public abstract class MediaTransportControlData implements Message {
     return lengthInBits;
   }
 
-  public static MediaTransportControlData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static MediaTransportControlData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlData");
     PositionAware positionAware = readBuffer;
@@ -137,7 +131,7 @@ public abstract class MediaTransportControlData implements Message {
         readEnumField(
             "commandTypeContainer",
             "MediaTransportControlCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 MediaTransportControlCommandTypeContainer::enumForValue,
                 readUnsignedShort(readBuffer, 8)));
     MediaTransportControlCommandType commandType =

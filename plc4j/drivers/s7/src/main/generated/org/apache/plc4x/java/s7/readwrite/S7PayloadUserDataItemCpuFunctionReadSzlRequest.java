@@ -82,7 +82,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest");
 
     // Simple Field (szlId)
-    writeSimpleField("szlId", szlId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("szlId", szlId, writeComplex(writeBuffer));
 
     // Simple Field (szlIndex)
     writeSimpleField("szlIndex", szlIndex, writeUnsignedInt(writeBuffer, 16));
@@ -118,9 +118,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SzlId szlId =
-        readSimpleField(
-            "szlId",
-            new DataReaderComplexDefault<>(() -> SzlId.staticParse(readBuffer), readBuffer));
+        readSimpleField("szlId", readComplex(() -> SzlId.staticParse(readBuffer), readBuffer));
 
     int szlIndex = readSimpleField("szlIndex", readUnsignedInt(readBuffer, 16));
 

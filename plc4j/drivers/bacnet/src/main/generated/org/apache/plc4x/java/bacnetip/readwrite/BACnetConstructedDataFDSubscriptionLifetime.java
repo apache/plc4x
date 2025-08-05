@@ -83,10 +83,7 @@ public class BACnetConstructedDataFDSubscriptionLifetime extends BACnetConstruct
     writeBuffer.pushContext("BACnetConstructedDataFDSubscriptionLifetime");
 
     // Simple Field (fdSubscriptionLifetime)
-    writeSimpleField(
-        "fdSubscriptionLifetime",
-        fdSubscriptionLifetime,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fdSubscriptionLifetime", fdSubscriptionLifetime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -128,7 +125,7 @@ public class BACnetConstructedDataFDSubscriptionLifetime extends BACnetConstruct
     BACnetApplicationTagUnsignedInteger fdSubscriptionLifetime =
         readSimpleField(
             "fdSubscriptionLifetime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -61,10 +61,10 @@ public class BACnetNameValue implements Message {
     writeBuffer.pushContext("BACnetNameValue");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Optional Field (value) (Can be skipped, if the value is null)
-    writeOptionalField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNameValue");
   }
@@ -91,12 +91,6 @@ public class BACnetNameValue implements Message {
     return lengthInBits;
   }
 
-  public static BACnetNameValue staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetNameValue staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetNameValue");
     PositionAware positionAware = readBuffer;
@@ -105,7 +99,7 @@ public class BACnetNameValue implements Message {
     BACnetContextTagCharacterString name =
         readSimpleField(
             "name",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(
@@ -117,7 +111,7 @@ public class BACnetNameValue implements Message {
     BACnetConstructedData value =
         readOptionalField(
             "value",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

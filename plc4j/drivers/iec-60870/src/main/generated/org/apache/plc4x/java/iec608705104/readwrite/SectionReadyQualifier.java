@@ -63,12 +63,6 @@ public class SectionReadyQualifier implements Message {
     return lengthInBits;
   }
 
-  public static SectionReadyQualifier staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SectionReadyQualifier staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SectionReadyQualifier");
     PositionAware positionAware = readBuffer;

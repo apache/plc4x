@@ -27,7 +27,9 @@ public enum OpcuaNodeIdServicesVariableAlias {
   AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_InputArguments((int) 23460L),
   AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments((int) 23461L),
   AliasNameCategoryType_FindAlias_InputArguments((int) 23463L),
-  AliasNameCategoryType_FindAlias_OutputArguments((int) 23464L);
+  AliasNameCategoryType_FindAlias_OutputArguments((int) 23464L),
+  AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange((int) 32849L),
+  AliasNameCategoryType_LastChange((int) 32850L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableAlias> map;
 
   static {

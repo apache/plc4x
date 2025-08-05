@@ -127,12 +127,6 @@ public class SzlDataTreeItem implements Message {
     return lengthInBits;
   }
 
-  public static SzlDataTreeItem staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SzlDataTreeItem staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SzlDataTreeItem");
     PositionAware positionAware = readBuffer;

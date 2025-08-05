@@ -70,8 +70,7 @@ public class CALDataIdentify extends CALData implements Message {
         "attribute",
         "Attribute",
         attribute,
-        new DataWriterEnumDefault<>(
-            Attribute::getValue, Attribute::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(Attribute::getValue, Attribute::name, writeUnsignedShort(writeBuffer, 8)));
 
     writeBuffer.popContext("CALDataIdentify");
   }
@@ -103,7 +102,7 @@ public class CALDataIdentify extends CALData implements Message {
         readEnumField(
             "attribute",
             "Attribute",
-            new DataReaderEnumDefault<>(Attribute::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Attribute::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("CALDataIdentify");
     // Create the instance

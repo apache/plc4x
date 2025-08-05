@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class TransactionErrorType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "32287";
+  public Integer getExtensionId() {
+    return (int) 32287;
   }
 
   // Properties.
@@ -74,13 +74,13 @@ public class TransactionErrorType extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("TransactionErrorType");
 
     // Simple Field (targetId)
-    writeSimpleField("targetId", targetId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetId", targetId, writeComplex(writeBuffer));
 
     // Simple Field (error)
-    writeSimpleField("error", error, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("error", error, writeComplex(writeBuffer));
 
     // Simple Field (message)
-    writeSimpleField("message", message, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("message", message, writeComplex(writeBuffer));
 
     writeBuffer.popContext("TransactionErrorType");
   }
@@ -109,26 +109,20 @@ public class TransactionErrorType extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("TransactionErrorType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId targetId =
-        readSimpleField(
-            "targetId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("targetId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     StatusCode error =
-        readSimpleField(
-            "error",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+        readSimpleField("error", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     LocalizedText message =
         readSimpleField(
-            "message",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "message", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("TransactionErrorType");
     // Create the instance

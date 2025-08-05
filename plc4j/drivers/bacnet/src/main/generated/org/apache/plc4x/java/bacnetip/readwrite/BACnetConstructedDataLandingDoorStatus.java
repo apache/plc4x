@@ -100,7 +100,7 @@ public class BACnetConstructedDataLandingDoorStatus extends BACnetConstructedDat
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (landingDoorStatus)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataLandingDoorStatus extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,8 +162,7 @@ public class BACnetConstructedDataLandingDoorStatus extends BACnetConstructedDat
     List<BACnetLandingDoorStatus> landingDoorStatus =
         readTerminatedArrayField(
             "landingDoorStatus",
-            new DataReaderComplexDefault<>(
-                () -> BACnetLandingDoorStatus.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetLandingDoorStatus.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

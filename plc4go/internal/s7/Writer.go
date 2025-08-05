@@ -21,19 +21,20 @@ package s7
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
 	"runtime/debug"
+	"sync"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 )
 
 type Writer struct {
@@ -41,12 +42,14 @@ type Writer struct {
 	messageCodec  spi.MessageCodec
 	tm            transactions.RequestTransactionManager
 
+	wg sync.WaitGroup // use to track spawned go routines
+
 	log zerolog.Logger
 }
 
-func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) Writer {
+func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Writer {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	return Writer{
+	return &Writer{
 		tpduGenerator: tpduGenerator,
 		messageCodec:  messageCodec,
 		tm:            tm,
@@ -54,10 +57,12 @@ func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm t
 	}
 }
 
-func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
+func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	// TODO: handle context
 	result := make(chan apiModel.PlcWriteRequestResult, 1)
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -95,10 +100,10 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 		// TODO: why do we use a uint16 above and the cotp a uint8?
 		tpktPacket := readWriteModel.NewTPKTPacket(
 			readWriteModel.NewCOTPPacketData(
-				true,
-				uint8(tpduId),
 				nil,
 				s7MessageRequest,
+				true,
+				uint8(tpduId),
 				0,
 			),
 		)
@@ -108,11 +113,11 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 		transaction.Submit(func(transaction transactions.RequestTransaction) {
 			// Send the  over the wire
 			if err := m.messageCodec.SendRequest(ctx, tpktPacket, func(message spi.Message) bool {
-				tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 				if !ok {
 					return false
 				}
-				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
 				if !ok {
 					return false
 				}
@@ -160,7 +165,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 	return result
 }
 
-func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
+func (m *Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
 	var errorClass uint8
 	var errorCode uint8
 	switch messageResponseData := response.(type) {
@@ -236,7 +241,7 @@ func serializePlcValue(tag apiModel.PlcTag, plcValue apiValues.PlcValue) (readWr
 	if s7StringTag, ok := tag.(*PlcStringTag); ok {
 		stringLength = s7StringTag.stringLength
 	}
-	data, err := readWriteModel.DataItemSerialize(plcValue, s7Tag.GetDataType().DataProtocolId(), int32(stringLength))
+	data, err := readWriteModel.DataItemSerialize(plcValue, s7Tag.GetDataType().DataProtocolId(), 0 /*TODO: port s7DriverContext.getControllerType()*/, int32(stringLength))
 	if err != nil {
 		return nil, errors.Wrapf(err, "Error serializing tag item of type: '%v'", s7Tag.GetDataType())
 	}

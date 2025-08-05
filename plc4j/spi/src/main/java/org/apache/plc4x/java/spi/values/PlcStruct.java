@@ -94,7 +94,7 @@ public class PlcStruct extends PlcValueAdapter {
                 throw new PlcRuntimeException("Error serializing. List item doesn't implement XmlSerializable");
             }
             ((Serializable) tagValue).serialize(writeBuffer);
-            writeBuffer.pushContext(tagName);
+            writeBuffer.popContext(tagName);
         }
         writeBuffer.popContext("PlcStruct");
     }

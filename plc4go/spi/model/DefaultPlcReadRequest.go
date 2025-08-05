@@ -22,17 +22,19 @@ package model
 import (
 	"context"
 	"runtime/debug"
+	"sync"
 	"time"
+
+	"github.com/pkg/errors"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
-	"github.com/pkg/errors"
 )
 
 var _ apiModel.PlcReadRequestBuilder = &DefaultPlcReadRequestBuilder{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequestBuilder
+//go:generate go tool plc4xGenerator -type=DefaultPlcReadRequestBuilder
 type DefaultPlcReadRequestBuilder struct {
 	reader                 spi.PlcReader     `ignore:"true"`
 	tagHandler             spi.PlcTagHandler `ignore:"true"`
@@ -87,11 +89,13 @@ func (d *DefaultPlcReadRequestBuilder) Build() (apiModel.PlcReadRequest, error) 
 
 var _ apiModel.PlcReadRequest = &DefaultPlcReadRequest{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequest
+//go:generate go tool plc4xGenerator -type=DefaultPlcReadRequest
 type DefaultPlcReadRequest struct {
 	*DefaultPlcTagRequest
 	reader                 spi.PlcReader                       `ignore:"true"`
 	readRequestInterceptor interceptors.ReadRequestInterceptor `ignore:"true"`
+
+	wg sync.WaitGroup // use to track spawned go routines
 }
 
 func NewDefaultPlcReadRequest(
@@ -146,7 +150,9 @@ func (d *DefaultPlcReadRequest) ExecuteWithContextAndInterceptor(ctx context.Con
 
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
 	resultChannel := make(chan apiModel.PlcReadRequestResult, 1)
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				resultChannel <- NewDefaultPlcReadRequestResult(d, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))

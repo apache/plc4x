@@ -119,7 +119,7 @@ public class BACnetConstructedDataListOfObjectPropertyReferences extends BACnetC
     List<BACnetDeviceObjectPropertyReference> references =
         readTerminatedArrayField(
             "references",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectPropertyReference.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)

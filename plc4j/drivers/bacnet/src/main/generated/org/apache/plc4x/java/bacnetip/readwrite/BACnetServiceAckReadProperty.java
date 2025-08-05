@@ -89,18 +89,16 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
     writeBuffer.pushContext("BACnetServiceAckReadProperty");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (arrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField("arrayIndex", arrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("arrayIndex", arrayIndex, writeComplex(writeBuffer));
 
     // Optional Field (values) (Can be skipped, if the value is null)
-    writeOptionalField("values", values, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("values", values, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckReadProperty");
   }
@@ -144,7 +142,7 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -156,7 +154,7 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -165,7 +163,7 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
     BACnetContextTagUnsignedInteger arrayIndex =
         readOptionalField(
             "arrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -177,7 +175,7 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
     BACnetConstructedData values =
         readOptionalField(
             "values",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

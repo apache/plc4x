@@ -1,0 +1,157 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+= Linux
+
+
+
+As tracking down issues which result from missing or outdated third party tools such as compilers are always hard do diagnose, we have extended the build of PLC4X with a `prerequisiteCheck` that automatically checks if required tools are installed and if a required minimum version is available.
+
+If any of the prerequisites are not met, the build fails with an error message that will help finding out what's wrong.
+
+The number of checks is highly dependent on which profiles are enabled.
+So for example the availability and version of the C compiler is only checked if the `with-c` profile is enabled.
+
+If the check is reporting any issues, please feel free to follow the corresponding steps in this guide to install the tools.
+
+== Git
+
+Checking:
+
+ git --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt install git
+
+Yum based systems:
+
+ sudo yum install git
+
+== Java
+
+Checking:
+
+ java --version
+
+If you get successful output indicating at least Java 11, you don't need to do anything.
+
+Apt based systems:
+
+ sudo apt install openjdk-21-jdk
+
+== Optional and other language support
+
+Git an Java should be all you need for building the Java part of PLC4X.
+
+=== LibPCAP (For raw-ethernet support)
+
+Apt-based systems:
+
+ sudo apt install libpcap-dev
+
+Yum based systems:
+
+ sudo yum install libpcap-devel
+
+Using libpcap usually requires root privileges, however the java process can be granted permission to do so by executing the following command.
+
+ sudo setcap cap_net_raw,cap_net_admin=eip /path/to/java
+
+`/path/to/java` however needs to be a real file and not a symlink.
+So on my Ubuntu 22.04 system, where I installed java as described above the command is as follows:
+
+ sudo setcap cap_net_raw,cap_net_admin=eip /usr/lib/jvm/java-21-openjdk-arm64/bin/java
+
+Sometimes I had to set the uid to execute the java executable with the permissions of the owner (root) ... however this is quite suboptimal solution.
+
+ sudo chmod 4755 /path/to/java
+
+=== gcc (For PLC4C)
+
+NOTE: It seems that when running Linux on `aarch64` (Apple's Silicon Chips), that there are issues ... we're working on that. Feel free to watch https://github.com/apache/plc4x/issues/1582 on updates to this.
+
+Checking:
+
+ gcc --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt install gcc
+
+Yum based systems:
+
+ sudo yum install gcc
+
+=== dotnet (For PLC4Net)
+
+Checking:
+
+ dotnet --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Microsoft has documented what is needed to install `.Net SDK` https://dotnet.microsoft.com/en-us/download[here]
+
+For Ubuntu this would be:
+
+ wget -q https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+ sudo dpkg -i packages-microsoft-prod.deb
+ sudo apt install apt-transport-https
+ sudo apt update
+ sudo apt install dotnet-sdk-6.0
+
+For other distributions, please select the distribution in the drop-down menu and follow the instructions there.
+
+If, when checking the version again after installing, you are getting an error:
+
+ A fatal error occurred. The folder [/usr/share/dotnet/host/fxr] does not exist
+
+Then please have a look at this Stackoverflow post (the accepted solution) https://stackoverflow.com/questions/73753672/a-fatal-error-occurred-the-folder-usr-share-dotnet-host-fxr-does-not-exist
+
+=== python (For PLC4Py)
+
+Checking:
+
+ python3 --version
+
+If you get a version of 3.7 or higher reported, you probably don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt install python3
+
+Yum based systems:
+
+ yum intall python3
+
+=== Python venv (For PLC4Py)
+
+Checking:
+
+ python3 -Im ensurepip
+
+If you are getting anything else than a: `No module named ensurepip`, you're ok.
+It seems that this manually needs to be installed on some systems.
+
+Apt-based systems:
+
+ sudo apt install python3-venv

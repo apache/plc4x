@@ -347,3 +347,4 @@ MigrationBackup/
 /api/bin/
 /spi/bin/
 /drivers/knxnetip/bin/
+/.idea/

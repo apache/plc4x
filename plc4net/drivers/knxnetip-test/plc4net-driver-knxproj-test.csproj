@@ -29,6 +29,7 @@
     <Title>PLC4Net: Driver: KNXNet/IP: Test</Title>
     <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     <PackageVersion>0.8.0-SNAPSHOT</PackageVersion>
+    <LangVersion>11.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

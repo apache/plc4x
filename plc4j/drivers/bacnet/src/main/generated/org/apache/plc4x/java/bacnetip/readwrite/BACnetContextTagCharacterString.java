@@ -71,7 +71,7 @@ public class BACnetContextTagCharacterString extends BACnetContextTag implements
     writeBuffer.pushContext("BACnetContextTagCharacterString");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     String value = getValue();
@@ -112,7 +112,7 @@ public class BACnetContextTagCharacterString extends BACnetContextTag implements
     BACnetTagPayloadCharacterString payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadCharacterString.staticParse(
                         readBuffer, (long) (header.getActualLength())),

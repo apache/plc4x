@@ -25,23 +25,10 @@ import java.util.Map;
 
 public enum OpcuaNodeIdServicesVariableMulti {
   MultiStateDiscreteType_EnumStrings((int) 2377L),
-  MultiStateDiscreteType_Definition((int) 3780L),
-  MultiStateDiscreteType_ValuePrecision((int) 3781L),
-  MultiStateValueDiscreteType_Definition((int) 11239L),
-  MultiStateValueDiscreteType_ValuePrecision((int) 11240L),
   MultiStateValueDiscreteType_EnumValues((int) 11241L),
   MultiStateValueDiscreteType_ValueAsText((int) 11461L),
-  MultiStateDictionaryEntryDiscreteBaseType_Definition((int) 19078L),
-  MultiStateDictionaryEntryDiscreteBaseType_ValuePrecision((int) 19079L),
-  MultiStateDictionaryEntryDiscreteBaseType_EnumValues((int) 19080L),
-  MultiStateDictionaryEntryDiscreteBaseType_ValueAsText((int) 19081L),
   MultiStateDictionaryEntryDiscreteBaseType_EnumDictionaryEntries((int) 19082L),
   MultiStateDictionaryEntryDiscreteBaseType_ValueAsDictionaryEntries((int) 19083L),
-  MultiStateDictionaryEntryDiscreteType_Definition((int) 19085L),
-  MultiStateDictionaryEntryDiscreteType_ValuePrecision((int) 19086L),
-  MultiStateDictionaryEntryDiscreteType_EnumValues((int) 19087L),
-  MultiStateDictionaryEntryDiscreteType_ValueAsText((int) 19088L),
-  MultiStateDictionaryEntryDiscreteType_EnumDictionaryEntries((int) 19089L),
   MultiStateDictionaryEntryDiscreteType_ValueAsDictionaryEntries((int) 19090L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableMulti> map;
 

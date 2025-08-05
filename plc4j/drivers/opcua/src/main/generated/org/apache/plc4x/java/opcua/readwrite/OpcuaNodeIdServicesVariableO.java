@@ -50,7 +50,8 @@ public enum OpcuaNodeIdServicesVariableO {
   OPCUANamespaceMetadata_DefaultAccessRestrictions((int) 16136L),
   OPCUANamespaceMetadata_NamespaceFile_MaxByteStringLength((int) 24243L),
   OPCUANamespaceMetadata_NamespaceFile_LastModifiedTime((int) 25199L),
-  OPCUANamespaceMetadata_ConfigurationVersion((int) 25266L);
+  OPCUANamespaceMetadata_ConfigurationVersion((int) 25266L),
+  OPCUANamespaceMetadata_ModelVersion((int) 32408L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableO> map;
 
   static {

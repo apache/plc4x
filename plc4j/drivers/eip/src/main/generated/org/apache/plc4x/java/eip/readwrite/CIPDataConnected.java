@@ -89,12 +89,6 @@ public class CIPDataConnected implements Message {
     return lengthInBits;
   }
 
-  public static CIPDataConnected staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static CIPDataConnected staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CIPDataConnected");
     PositionAware positionAware = readBuffer;

@@ -20,11 +20,13 @@
 package model
 
 import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestCalculateChecksum(t *testing.T) {
@@ -498,7 +500,7 @@ func TestReadCALData(t *testing.T) {
 			args: args{
 				readBuffer: utils.NewReadBufferByteBased([]byte("2101")),
 			},
-			want: NewCALDataIdentify(Attribute_Type, CALCommandTypeContainer_CALCommandIdentify, nil, nil),
+			want: NewCALDataIdentify(CALCommandTypeContainer_CALCommandIdentify, nil, Attribute_Type, nil),
 		},
 	}
 	for _, tt := range tests {
@@ -540,26 +542,26 @@ func TestReadCBusCommand(t *testing.T) {
 				readBuffer: utils.NewReadBufferByteBased([]byte("46310900A400410600")),
 			},
 			want: NewCBusCommandPointToPoint(
-				NewCBusPointToPointCommandIndirect(
-					NewBridgeAddress(49),
-					NewNetworkRoute(NewNetworkProtocolControlInformation(1, 1), nil),
-					NewUnitAddress(0),
-					12553,
-					NewCALDataWrite(
-						Parameter_UNKNOWN_01,
-						65,
-						NewParameterValueRaw([]byte{6, 00}, 2),
-						CALCommandTypeContainer_CALCommandWrite_4Bytes,
-						nil,
-						nil,
-					),
-					nil,
-				),
 				NewCBusHeader(
 					PriorityClass_Class3,
 					false,
 					0,
 					DestinationAddressType_PointToPoint,
+				),
+				NewCBusPointToPointCommandIndirect(
+					12553,
+					NewCALDataWrite(
+						CALCommandTypeContainer_CALCommandWrite_4Bytes,
+						nil,
+						Parameter_UNKNOWN_01,
+						65,
+						NewParameterValueRaw([]byte{6, 00}, 2),
+						nil,
+					),
+					NewBridgeAddress(49),
+					NewNetworkRoute(NewNetworkProtocolControlInformation(1, 1), nil),
+					NewUnitAddress(0),
+					nil,
 				),
 				nil,
 			),
@@ -664,7 +666,7 @@ func TestWriteCBusCommand(t *testing.T) {
 			name: "write something",
 			args: args{
 				writeBuffer: utils.NewWriteBufferBoxBased(),
-				cbusCommand: NewCBusCommandDeviceManagement(0, 0, NewCBusHeader(0, false, 0, 0), nil),
+				cbusCommand: NewCBusCommandDeviceManagement(NewCBusHeader(0, false, 0, 0), 0, 0, nil),
 			},
 		},
 	}
@@ -692,6 +694,7 @@ func TestWriteEncodedReply(t *testing.T) {
 			args: args{
 				writeBuffer: utils.NewWriteBufferBoxBased(),
 				encodedReply: NewEncodedReplyCALReply(
+					0,
 					NewCALReplyShort(
 						0,
 						NewCALDataReset(
@@ -702,7 +705,6 @@ func TestWriteEncodedReply(t *testing.T) {
 						nil,
 						NewRequestContext(false),
 					),
-					0,
 					nil,
 					NewRequestContext(false),
 				),

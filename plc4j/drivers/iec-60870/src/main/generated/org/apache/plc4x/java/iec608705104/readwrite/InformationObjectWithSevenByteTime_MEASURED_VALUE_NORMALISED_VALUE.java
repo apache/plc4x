@@ -77,23 +77,17 @@ public class InformationObjectWithSevenByteTime_MEASURED_VALUE_NORMALISED_VALUE
 
     // Simple Field (nva)
     writeSimpleField(
-        "nva",
-        nva,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "nva", nva, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (qds)
     writeSimpleField(
-        "qds",
-        qds,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qds", qds, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (cp56Time2a)
     writeSimpleField(
         "cp56Time2a",
         cp56Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithSevenByteTime_MEASURED_VALUE_NORMALISED_VALUE");
@@ -133,22 +127,19 @@ public class InformationObjectWithSevenByteTime_MEASURED_VALUE_NORMALISED_VALUE
     NormalizedValue nva =
         readSimpleField(
             "nva",
-            new DataReaderComplexDefault<>(
-                () -> NormalizedValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NormalizedValue.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualityDescriptor qds =
         readSimpleField(
             "qds",
-            new DataReaderComplexDefault<>(
-                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualityDescriptor.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     SevenOctetBinaryTime cp56Time2a =
         readSimpleField(
             "cp56Time2a",
-            new DataReaderComplexDefault<>(
-                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithSevenByteTime_MEASURED_VALUE_NORMALISED_VALUE");

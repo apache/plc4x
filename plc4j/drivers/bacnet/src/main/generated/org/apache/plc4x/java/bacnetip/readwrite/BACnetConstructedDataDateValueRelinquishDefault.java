@@ -83,8 +83,7 @@ public class BACnetConstructedDataDateValueRelinquishDefault extends BACnetConst
     writeBuffer.pushContext("BACnetConstructedDataDateValueRelinquishDefault");
 
     // Simple Field (relinquishDefault)
-    writeSimpleField(
-        "relinquishDefault", relinquishDefault, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("relinquishDefault", relinquishDefault, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagDate actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataDateValueRelinquishDefault extends BACnetConst
     BACnetApplicationTagDate relinquishDefault =
         readSimpleField(
             "relinquishDefault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDate) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagDate actualValue =

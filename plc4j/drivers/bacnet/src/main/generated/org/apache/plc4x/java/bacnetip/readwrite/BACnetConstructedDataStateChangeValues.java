@@ -100,7 +100,7 @@ public class BACnetConstructedDataStateChangeValues extends BACnetConstructedDat
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (stateChangeValues)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataStateChangeValues extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,7 +162,7 @@ public class BACnetConstructedDataStateChangeValues extends BACnetConstructedDat
     List<BACnetTimerStateChangeValue> stateChangeValues =
         readTerminatedArrayField(
             "stateChangeValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTimerStateChangeValue.staticParse(
                         readBuffer, (BACnetObjectType) (objectTypeArgument)),

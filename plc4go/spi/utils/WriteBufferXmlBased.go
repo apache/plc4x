@@ -21,6 +21,7 @@ package utils
 
 import (
 	"context"
+	"encoding/binary"
 	"encoding/xml"
 	"fmt"
 	"math/big"
@@ -74,11 +75,20 @@ type xmlWriteBuffer struct {
 	pos           uint
 }
 
+var _ WriteBuffer = (*xmlWriteBuffer)(nil)
+
 //
 // Internal section
 //
 ///////////////////////////////////////
 ///////////////////////////////////////
+
+func (*xmlWriteBuffer) GetByteOrder() binary.ByteOrder {
+	return binary.BigEndian
+}
+
+func (*xmlWriteBuffer) SetByteOrder(_ binary.ByteOrder) {
+}
 
 func (x *xmlWriteBuffer) PushContext(logicalName string, writerArgs ...WithWriterArgs) error {
 	// Pre-emptive flush to avoid overflow when for a long time no context gets popped
@@ -188,9 +198,9 @@ var printableRange = &unicode.RangeTable{
 	},
 }
 
-func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint32, encoding string, value string, writerArgs ...WithWriterArgs) error {
+func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint32, value string, writerArgs ...WithWriterArgs) error {
 	attr := x.generateAttr(rwStringKey, uint(bitLength), writerArgs...)
-	attr = append(attr, xml.Attr{Name: xml.Name{Local: rwEncodingKey}, Value: encoding})
+	attr = append(attr, xml.Attr{Name: xml.Name{Local: rwEncodingKey}, Value: x.ExtractEncoding(UpcastWriterArgs(writerArgs...)...)})
 	cleanedUpString := strings.TrimFunc(value, func(r rune) bool {
 		return !unicode.In(r, printableRange)
 	})

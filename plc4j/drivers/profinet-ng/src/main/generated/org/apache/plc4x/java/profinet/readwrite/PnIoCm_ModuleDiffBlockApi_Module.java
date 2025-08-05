@@ -95,7 +95,7 @@ public class PnIoCm_ModuleDiffBlockApi_Module implements Message {
         "moduleState",
         "PnIoCm_ModuleState",
         moduleState,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_ModuleState::getValue,
             PnIoCm_ModuleState::name,
             writeUnsignedInt(writeBuffer, 16)),
@@ -152,12 +152,6 @@ public class PnIoCm_ModuleDiffBlockApi_Module implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_ModuleDiffBlockApi_Module staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnIoCm_ModuleDiffBlockApi_Module staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_ModuleDiffBlockApi_Module");
@@ -180,8 +174,7 @@ public class PnIoCm_ModuleDiffBlockApi_Module implements Message {
         readEnumField(
             "moduleState",
             "PnIoCm_ModuleState",
-            new DataReaderEnumDefault<>(
-                PnIoCm_ModuleState::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(PnIoCm_ModuleState::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int numSubmodules =
@@ -193,7 +186,7 @@ public class PnIoCm_ModuleDiffBlockApi_Module implements Message {
     List<PnIoCm_ModuleDiffBlockApi_Submodule> submodules =
         readCountArrayField(
             "submodules",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> PnIoCm_ModuleDiffBlockApi_Submodule.staticParse(readBuffer), readBuffer),
             numSubmodules,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));

@@ -82,7 +82,7 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataTraceFlag");
 
     // Simple Field (traceFlag)
-    writeSimpleField("traceFlag", traceFlag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("traceFlag", traceFlag, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
     BACnetApplicationTagBoolean traceFlag =
         readSimpleField(
             "traceFlag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

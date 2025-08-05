@@ -1,0 +1,74 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+--- "dependency//antora//partials//header-content.hbs"
++++ "supplemental//partials//header-content.hbs"
+@@ -1,7 +1,9 @@
+ <header class="header">
+   <nav class="navbar">
+     <div class="navbar-brand">
+-      <a class="navbar-item" href="{{{or site.url siteRootPath}}}">{{site.title}}</a>
++      <a class="navbar-item" href="{{{or site.url siteRootPath}}}">
++          <img src="{{{or site.url siteRootPath}}}/plc4x/{{page.version}}/_images/apache_plc4x_logo_small.png" alt="Apache PLC4X">
++      </a>
+       {{#if env.SITE_SEARCH_PROVIDER}}
+       <div class="navbar-item search hide-for-print">
+         <div id="search-field" class="field">
+@@ -16,29 +37,29 @@
+       </button>
+     </div>
+     <div id="topbar-nav" class="navbar-menu">
+-      <div class="navbar-end">
+-        <a class="navbar-item" href="#">Home</a>
++      <div class="navbar-end justify-content-center">
++        <a class="navbar-item" href="{{{or site.url siteRootPath}}}/">Home</a>
++        <a class="navbar-item" href="{{{or site.url siteRootPath}}}/plc4x/{{page.version}}/users">Users</a>
++        <a class="navbar-item" href="{{{or site.url siteRootPath}}}/plc4x/{{page.version}}/developers">Developers</a>
+         <div class="navbar-item has-dropdown is-hoverable">
+-          <a class="navbar-link" href="#">Products</a>
++          <a class="navbar-link" href="https://www.apache.org">Apache</a>
+           <div class="navbar-dropdown">
+-            <a class="navbar-item" href="#">Product A</a>
+-            <a class="navbar-item" href="#">Product B</a>
+-            <a class="navbar-item" href="#">Product C</a>
+-          </div>
+-        </div>
+-        <div class="navbar-item has-dropdown is-hoverable">
+-          <a class="navbar-link" href="#">Services</a>
+-          <div class="navbar-dropdown">
+-            <a class="navbar-item" href="#">Service A</a>
+-            <a class="navbar-item" href="#">Service B</a>
+-            <a class="navbar-item" href="#">Service C</a>
++            <a class="navbar-item" href="https://www.apache.org">Apache Homepage</a>
++            <a class="navbar-item" href="https://www.apache.org/licenses/">License</a>
++            <a class="navbar-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a>
++            <a class="navbar-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a>
++            <a class="navbar-item" href="https://www.apache.org/security/">Security</a>
++            <a class="navbar-item" href="https://privacy.apache.org/policies/privacy-policy-public.html">Privacy</a>
++            <a class="navbar-item" href="https://www.apache.org/foundation/policies/conduct">Code of Conduct</a>
++            <a class="navbar-item" href="https://events.apache.org/">Upcoming Events</a>
+           </div>
+         </div>
+         <div class="navbar-item">
+           <span class="control">
+-            <a class="button is-primary" href="#">Download</a>
++            <a class="button is-primary" href="{{{or site.url siteRootPath}}}/plc4x/{{page.version}}/users/download">Download</a>
+           </span>
+         </div>
++        <a class="acevent" data-format="wide"></a>
+       </div>
+     </div>
+   </nav>

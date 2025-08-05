@@ -120,8 +120,7 @@ public class BACnetConstructedDataRestartNotificationRecipients extends BACnetCo
     List<BACnetRecipient> restartNotificationRecipients =
         readTerminatedArrayField(
             "restartNotificationRecipients",
-            new DataReaderComplexDefault<>(
-                () -> BACnetRecipient.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetRecipient.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

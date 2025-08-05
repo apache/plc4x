@@ -26,12 +26,12 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/pkg/errors"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
 )
 
 const NONE = int32(-1)
@@ -122,7 +122,7 @@ func (m DirectPlcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	if err := writeBuffer.WriteUint32("indexOffset", 32, m.IndexOffset); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteString("adsDatatypeName", uint32(len([]rune(m.ValueType.String()))*8), "UTF-8", m.ValueType.String()); err != nil {
+	if err := writeBuffer.WriteString("adsDatatypeName", uint32(len([]rune(m.ValueType.String()))*8), m.ValueType.String()); err != nil {
 		return err
 	}
 	if (m.ValueType == apiValues.STRING || m.ValueType == apiValues.WSTRING) && (m.StringLength != NONE) {
@@ -160,11 +160,11 @@ func (m DirectPlcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m DirectPlcTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
 
 func (m DirectPlcTag) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
@@ -218,7 +218,7 @@ func (m SymbolicPlcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		return err
 	}
 
-	if err := writeBuffer.WriteString("symbolicAddress", uint32(len([]rune(m.SymbolicAddress))*8), "UTF-8", m.SymbolicAddress); err != nil {
+	if err := writeBuffer.WriteString("symbolicAddress", uint32(len([]rune(m.SymbolicAddress))*8), m.SymbolicAddress); err != nil {
 		return err
 	}
 	if len(m.ArrayInfo) > 0 {

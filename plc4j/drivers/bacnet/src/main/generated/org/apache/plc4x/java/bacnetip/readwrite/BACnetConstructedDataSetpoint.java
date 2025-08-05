@@ -82,7 +82,7 @@ public class BACnetConstructedDataSetpoint extends BACnetConstructedData impleme
     writeBuffer.pushContext("BACnetConstructedDataSetpoint");
 
     // Simple Field (setpoint)
-    writeSimpleField("setpoint", setpoint, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("setpoint", setpoint, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataSetpoint extends BACnetConstructedData impleme
     BACnetApplicationTagReal setpoint =
         readSimpleField(
             "setpoint",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

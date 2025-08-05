@@ -69,7 +69,7 @@ public class BACnetEventParameterChangeOfValueCivCriteriaBitmask
     writeBuffer.pushContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask");
 
     // Simple Field (bitmask)
-    writeSimpleField("bitmask", bitmask, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bitmask", bitmask, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask");
   }
@@ -101,7 +101,7 @@ public class BACnetEventParameterChangeOfValueCivCriteriaBitmask
     BACnetContextTagBitString bitmask =
         readSimpleField(
             "bitmask",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBitString)
                         BACnetContextTag.staticParse(

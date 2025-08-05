@@ -89,6 +89,10 @@ public class FieldReaderFactory {
         return new FieldReaderDiscriminator<T>().readDiscriminatorField(logicalName, dataReader, readerArgs);
     }
 
+    public static <T> T readDiscriminatorEnumField(String logicalName, String innerName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderDiscriminatorEnum<T>().readDiscriminatorEnumField(logicalName, innerName, dataReader, readerArgs);
+    }
+
     public static <T> T readEnumField(String logicalName, String innerName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         return new FieldReaderEnum<T>().readEnumField(logicalName, innerName, dataReader, readerArgs);
     }

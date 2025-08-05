@@ -63,12 +63,6 @@ public class SessionAuthenticationToken implements Message {
     return lengthInBits;
   }
 
-  public static SessionAuthenticationToken staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SessionAuthenticationToken staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SessionAuthenticationToken");

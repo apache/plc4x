@@ -17,3 +17,4 @@
 # under the License.
 #
 org.apache.plc4x.protocol.s7.S7Protocol
+org.apache.plc4x.protocol.s7.S7DiscoveryProtocol

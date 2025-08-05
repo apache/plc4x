@@ -150,3 +150,7 @@ plc4c_return_code plc4c_s7_read_write_int_to_s7msec(plc4c_spi_write_buffer* writ
   return 0;
 }
 
+uint8_t plc4c_s7_read_write_parse_siemens_year(plc4c_spi_read_buffer* io) {
+  return 0;
+}
+

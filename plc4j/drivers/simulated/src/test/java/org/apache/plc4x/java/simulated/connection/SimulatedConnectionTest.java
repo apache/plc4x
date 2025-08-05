@@ -163,7 +163,7 @@ class SimulatedConnectionTest implements WithAssertions {
                 .addTagAddress("state", "STATE/state:STRING", "initialstate")
                 .addTagAddress("event", "STATE/event:STRING", "initialevent")
                 .build();
-            SUT.write(plcWriteRequest).get(1, TimeUnit.SECONDS);
+            PlcWriteResponse plcWriteResponse = SUT.write(plcWriteRequest).get(1, TimeUnit.SECONDS);
             // Note: as we don't have a subscription yet, no callback will be executed
 
             LOGGER.trace("subscribe");
@@ -232,18 +232,18 @@ class SimulatedConnectionTest implements WithAssertions {
         }
 
         @Test
-        void canRead() {
-            assertThat(SUT.canRead()).isTrue();
+        void isReadSupported() {
+            assertThat(SUT.isReadSupported()).isTrue();
         }
 
         @Test
-        void canWrite() {
-            assertThat(SUT.canWrite()).isTrue();
+        void isWriteSupported() {
+            assertThat(SUT.isWriteSupported()).isTrue();
         }
 
         @Test
-        void canSubscribe() {
-            assertThat(SUT.canSubscribe()).isTrue();
+        void isSubscribeSupported() {
+            assertThat(SUT.isSubscribeSupported()).isTrue();
         }
 
         @Test

@@ -83,8 +83,7 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
     writeBuffer.pushContext("BACnetConstructedDataObjectPropertyReference");
 
     // Simple Field (propertyReference)
-    writeSimpleField(
-        "propertyReference", propertyReference, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyReference", propertyReference, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDeviceObjectPropertyReference actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
     BACnetDeviceObjectPropertyReference propertyReference =
         readSimpleField(
             "propertyReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectPropertyReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectPropertyReference actualValue =
         readVirtualField(

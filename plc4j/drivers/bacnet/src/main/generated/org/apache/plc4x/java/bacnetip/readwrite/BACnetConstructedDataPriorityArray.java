@@ -82,7 +82,7 @@ public class BACnetConstructedDataPriorityArray extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataPriorityArray");
 
     // Simple Field (priorityArray)
-    writeSimpleField("priorityArray", priorityArray, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("priorityArray", priorityArray, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetPriorityArray actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataPriorityArray extends BACnetConstructedData im
     BACnetPriorityArray priorityArray =
         readSimpleField(
             "priorityArray",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPriorityArray.staticParse(
                         readBuffer,

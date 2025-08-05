@@ -62,10 +62,7 @@ public class SALDataClockAndTimekeeping extends SALData implements Message {
     writeBuffer.pushContext("SALDataClockAndTimekeeping");
 
     // Simple Field (clockAndTimekeepingData)
-    writeSimpleField(
-        "clockAndTimekeepingData",
-        clockAndTimekeepingData,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clockAndTimekeepingData", clockAndTimekeepingData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataClockAndTimekeeping");
   }
@@ -96,8 +93,7 @@ public class SALDataClockAndTimekeeping extends SALData implements Message {
     ClockAndTimekeepingData clockAndTimekeepingData =
         readSimpleField(
             "clockAndTimekeepingData",
-            new DataReaderComplexDefault<>(
-                () -> ClockAndTimekeepingData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ClockAndTimekeepingData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataClockAndTimekeeping");
     // Create the instance

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DataSetWriterMessageDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "15607";
+  public Integer getExtensionId() {
+    return (int) 15607;
   }
 
   public DataSetWriterMessageDataType() {
@@ -71,7 +71,7 @@ public class DataSetWriterMessageDataType extends ExtensionObjectDefinition impl
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DataSetWriterMessageDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

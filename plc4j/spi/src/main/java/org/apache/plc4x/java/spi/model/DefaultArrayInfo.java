@@ -32,7 +32,7 @@ public class DefaultArrayInfo implements ArrayInfo {
 
     @Override
     public int getSize() {
-        return upperBound - lowerBound;
+        return 1 + (upperBound - lowerBound);
     }
 
     @Override

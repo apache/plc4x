@@ -21,6 +21,7 @@ package spi
 
 import (
 	"fmt"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 

@@ -115,12 +115,6 @@ public class DceRpc_ActivityUuid implements Message {
     return lengthInBits;
   }
 
-  public static DceRpc_ActivityUuid staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DceRpc_ActivityUuid staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DceRpc_ActivityUuid");
     PositionAware positionAware = readBuffer;

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class PubSubGroupDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "15611";
+  public Integer getExtensionId() {
+    return (int) 15611;
   }
 
   // Properties.
@@ -47,31 +47,25 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
   protected final boolean enabled;
   protected final MessageSecurityMode securityMode;
   protected final PascalString securityGroupId;
-  protected final int noOfSecurityKeyServices;
-  protected final List<ExtensionObjectDefinition> securityKeyServices;
+  protected final List<EndpointDescription> securityKeyServices;
   protected final long maxNetworkMessageSize;
-  protected final int noOfGroupProperties;
-  protected final List<ExtensionObjectDefinition> groupProperties;
+  protected final List<KeyValuePair> groupProperties;
 
   public PubSubGroupDataType(
       PascalString name,
       boolean enabled,
       MessageSecurityMode securityMode,
       PascalString securityGroupId,
-      int noOfSecurityKeyServices,
-      List<ExtensionObjectDefinition> securityKeyServices,
+      List<EndpointDescription> securityKeyServices,
       long maxNetworkMessageSize,
-      int noOfGroupProperties,
-      List<ExtensionObjectDefinition> groupProperties) {
+      List<KeyValuePair> groupProperties) {
     super();
     this.name = name;
     this.enabled = enabled;
     this.securityMode = securityMode;
     this.securityGroupId = securityGroupId;
-    this.noOfSecurityKeyServices = noOfSecurityKeyServices;
     this.securityKeyServices = securityKeyServices;
     this.maxNetworkMessageSize = maxNetworkMessageSize;
-    this.noOfGroupProperties = noOfGroupProperties;
     this.groupProperties = groupProperties;
   }
 
@@ -91,11 +85,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     return securityGroupId;
   }
 
-  public int getNoOfSecurityKeyServices() {
-    return noOfSecurityKeyServices;
-  }
-
-  public List<ExtensionObjectDefinition> getSecurityKeyServices() {
+  public List<EndpointDescription> getSecurityKeyServices() {
     return securityKeyServices;
   }
 
@@ -103,11 +93,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     return maxNetworkMessageSize;
   }
 
-  public int getNoOfGroupProperties() {
-    return noOfGroupProperties;
-  }
-
-  public List<ExtensionObjectDefinition> getGroupProperties() {
+  public List<KeyValuePair> getGroupProperties() {
     return groupProperties;
   }
 
@@ -119,7 +105,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("PubSubGroupDataType");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -132,17 +118,19 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
         "securityMode",
         "MessageSecurityMode",
         securityMode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MessageSecurityMode::getValue,
             MessageSecurityMode::name,
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (securityGroupId)
-    writeSimpleField(
-        "securityGroupId", securityGroupId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityGroupId", securityGroupId, writeComplex(writeBuffer));
 
-    // Simple Field (noOfSecurityKeyServices)
-    writeSimpleField(
+    // Implicit Field (noOfSecurityKeyServices) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfSecurityKeyServices =
+        (int) ((((getSecurityKeyServices()) == (null)) ? -(1) : COUNT(getSecurityKeyServices())));
+    writeImplicitField(
         "noOfSecurityKeyServices", noOfSecurityKeyServices, writeSignedInt(writeBuffer, 32));
 
     // Array Field (securityKeyServices)
@@ -152,8 +140,11 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     writeSimpleField(
         "maxNetworkMessageSize", maxNetworkMessageSize, writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (noOfGroupProperties)
-    writeSimpleField("noOfGroupProperties", noOfGroupProperties, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfGroupProperties) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfGroupProperties =
+        (int) ((((getGroupProperties()) == (null)) ? -(1) : COUNT(getGroupProperties())));
+    writeImplicitField("noOfGroupProperties", noOfGroupProperties, writeSignedInt(writeBuffer, 32));
 
     // Array Field (groupProperties)
     writeComplexTypeArrayField("groupProperties", groupProperties, writeBuffer);
@@ -187,13 +178,13 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     // Simple field (securityGroupId)
     lengthInBits += securityGroupId.getLengthInBits();
 
-    // Simple field (noOfSecurityKeyServices)
+    // Implicit Field (noOfSecurityKeyServices)
     lengthInBits += 32;
 
     // Array field
     if (securityKeyServices != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : securityKeyServices) {
+      for (EndpointDescription element : securityKeyServices) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= securityKeyServices.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -202,13 +193,13 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     // Simple field (maxNetworkMessageSize)
     lengthInBits += 32;
 
-    // Simple field (noOfGroupProperties)
+    // Implicit Field (noOfGroupProperties)
     lengthInBits += 32;
 
     // Array field
     if (groupProperties != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : groupProperties) {
+      for (KeyValuePair element : groupProperties) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= groupProperties.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -218,15 +209,14 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("PubSubGroupDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -237,35 +227,37 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
         readEnumField(
             "securityMode",
             "MessageSecurityMode",
-            new DataReaderEnumDefault<>(
-                MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString securityGroupId =
         readSimpleField(
-            "securityGroupId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "securityGroupId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfSecurityKeyServices =
-        readSimpleField("noOfSecurityKeyServices", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfSecurityKeyServices", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> securityKeyServices =
+    List<EndpointDescription> securityKeyServices =
         readCountArrayField(
             "securityKeyServices",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("314")),
+            readComplex(
+                () ->
+                    (EndpointDescription)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (314)),
                 readBuffer),
             noOfSecurityKeyServices);
 
     long maxNetworkMessageSize =
         readSimpleField("maxNetworkMessageSize", readUnsignedLong(readBuffer, 32));
 
-    int noOfGroupProperties = readSimpleField("noOfGroupProperties", readSignedInt(readBuffer, 32));
+    int noOfGroupProperties =
+        readImplicitField("noOfGroupProperties", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> groupProperties =
+    List<KeyValuePair> groupProperties =
         readCountArrayField(
             "groupProperties",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
+            readComplex(
+                () ->
+                    (KeyValuePair) ExtensionObjectDefinition.staticParse(readBuffer, (int) (14535)),
                 readBuffer),
             noOfGroupProperties);
 
@@ -276,10 +268,8 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
         enabled,
         securityMode,
         securityGroupId,
-        noOfSecurityKeyServices,
         securityKeyServices,
         maxNetworkMessageSize,
-        noOfGroupProperties,
         groupProperties);
   }
 
@@ -289,30 +279,24 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     private final boolean enabled;
     private final MessageSecurityMode securityMode;
     private final PascalString securityGroupId;
-    private final int noOfSecurityKeyServices;
-    private final List<ExtensionObjectDefinition> securityKeyServices;
+    private final List<EndpointDescription> securityKeyServices;
     private final long maxNetworkMessageSize;
-    private final int noOfGroupProperties;
-    private final List<ExtensionObjectDefinition> groupProperties;
+    private final List<KeyValuePair> groupProperties;
 
     public PubSubGroupDataTypeBuilderImpl(
         PascalString name,
         boolean enabled,
         MessageSecurityMode securityMode,
         PascalString securityGroupId,
-        int noOfSecurityKeyServices,
-        List<ExtensionObjectDefinition> securityKeyServices,
+        List<EndpointDescription> securityKeyServices,
         long maxNetworkMessageSize,
-        int noOfGroupProperties,
-        List<ExtensionObjectDefinition> groupProperties) {
+        List<KeyValuePair> groupProperties) {
       this.name = name;
       this.enabled = enabled;
       this.securityMode = securityMode;
       this.securityGroupId = securityGroupId;
-      this.noOfSecurityKeyServices = noOfSecurityKeyServices;
       this.securityKeyServices = securityKeyServices;
       this.maxNetworkMessageSize = maxNetworkMessageSize;
-      this.noOfGroupProperties = noOfGroupProperties;
       this.groupProperties = groupProperties;
     }
 
@@ -323,10 +307,8 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
               enabled,
               securityMode,
               securityGroupId,
-              noOfSecurityKeyServices,
               securityKeyServices,
               maxNetworkMessageSize,
-              noOfGroupProperties,
               groupProperties);
       return pubSubGroupDataType;
     }
@@ -345,10 +327,8 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
         && (getEnabled() == that.getEnabled())
         && (getSecurityMode() == that.getSecurityMode())
         && (getSecurityGroupId() == that.getSecurityGroupId())
-        && (getNoOfSecurityKeyServices() == that.getNoOfSecurityKeyServices())
         && (getSecurityKeyServices() == that.getSecurityKeyServices())
         && (getMaxNetworkMessageSize() == that.getMaxNetworkMessageSize())
-        && (getNoOfGroupProperties() == that.getNoOfGroupProperties())
         && (getGroupProperties() == that.getGroupProperties())
         && super.equals(that)
         && true;
@@ -362,10 +342,8 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
         getEnabled(),
         getSecurityMode(),
         getSecurityGroupId(),
-        getNoOfSecurityKeyServices(),
         getSecurityKeyServices(),
         getMaxNetworkMessageSize(),
-        getNoOfGroupProperties(),
         getGroupProperties());
   }
 

@@ -23,15 +23,15 @@ import (
 	"context"
 	"encoding/binary"
 	"runtime/debug"
-	"strconv"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 type Reader struct {
@@ -72,7 +72,7 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 		REQUEST_TIMEOUT_LONG,
 		NULL_EXTENSION_OBJECT,
 	)
-	readValueArray := make([]readWriteModel.ExtensionObjectDefinition, len(readRequest.GetTagNames()))
+	readValueArray := make([]readWriteModel.ReadValueId, len(readRequest.GetTagNames()))
 	for i, tagName := range readRequest.GetTagNames() {
 		tag := readRequest.GetTag(tagName).(Tag)
 
@@ -93,45 +93,35 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 		requestHeader,
 		0.0,
 		readWriteModel.TimestampsToReturn_timestampsToReturnNeither,
-		int32(len(readValueArray)),
 		readValueArray)
 
-	identifier, err := strconv.ParseUint(opcuaReadRequest.GetIdentifier(), 10, 16)
-	if err != nil {
-		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "error parsing identifier"))
-		return
-	}
-
+	identifier := opcuaReadRequest.GetExtensionId()
 	expandedNodeId := readWriteModel.NewExpandedNodeId(false, //Namespace Uri Specified
 		false, //Server Index Specified
 		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
 		nil,
 		nil)
 
-	extObject := readWriteModel.NewExtensionObject(
-		expandedNodeId,
-		nil,
-		opcuaReadRequest,
-		false)
+	extObject := readWriteModel.NewExtensiblePayload(nil, readWriteModel.NewRootExtensionObject(expandedNodeId, opcuaReadRequest, identifier), 0)
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err = extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "Unable to serialise the ReadRequest"))
 		return
 	}
 
 	consumer := func(opcuaResponse []byte) {
-		reply, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+		reply, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
 			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "Unable to read the reply"))
 			return
 		}
 		extensionObjectDefinition := reply.GetBody()
-		if _readResponse, ok := extensionObjectDefinition.(readWriteModel.ReadResponseExactly); ok {
+		if _readResponse, ok := extensionObjectDefinition.(readWriteModel.ReadResponse); ok {
 			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, spiModel.NewDefaultPlcReadResponse(readResponse(m.log, readRequest, readRequest.GetTagNames(), _readResponse.GetResults())), nil)
 			return
 		} else {
-			if serviceFault, ok := extensionObjectDefinition.(readWriteModel.ServiceFaultExactly); ok {
+			if serviceFault, ok := extensionObjectDefinition.(readWriteModel.ServiceFault); ok {
 				header := serviceFault.GetResponseHeader()
 				m.log.Error().Stringer("header", header).Msg("Read request ended up with ServiceFault")
 			} else {

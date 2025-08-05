@@ -66,7 +66,7 @@ public class UnConnectedDataItem extends TypeId implements Message {
     writeImplicitField("packetSize", packetSize, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (service)
-    writeSimpleField("service", service, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("service", service, writeComplex(writeBuffer));
 
     writeBuffer.popContext("UnConnectedDataItem");
   }
@@ -102,7 +102,7 @@ public class UnConnectedDataItem extends TypeId implements Message {
     CipService service =
         readSimpleField(
             "service",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CipService.staticParse(readBuffer, (boolean) (false), (int) (packetSize)),
                 readBuffer));
 

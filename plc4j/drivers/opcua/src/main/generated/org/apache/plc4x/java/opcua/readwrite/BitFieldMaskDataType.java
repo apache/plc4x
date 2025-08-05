@@ -63,12 +63,6 @@ public class BitFieldMaskDataType implements Message {
     return lengthInBits;
   }
 
-  public static BitFieldMaskDataType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BitFieldMaskDataType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BitFieldMaskDataType");
     PositionAware positionAware = readBuffer;

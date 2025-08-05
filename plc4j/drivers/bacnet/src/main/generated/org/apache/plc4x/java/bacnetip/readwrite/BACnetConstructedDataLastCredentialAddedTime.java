@@ -83,10 +83,7 @@ public class BACnetConstructedDataLastCredentialAddedTime extends BACnetConstruc
     writeBuffer.pushContext("BACnetConstructedDataLastCredentialAddedTime");
 
     // Simple Field (lastCredentialAddedTime)
-    writeSimpleField(
-        "lastCredentialAddedTime",
-        lastCredentialAddedTime,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lastCredentialAddedTime", lastCredentialAddedTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDateTime actualValue = getActualValue();
@@ -128,8 +125,7 @@ public class BACnetConstructedDataLastCredentialAddedTime extends BACnetConstruc
     BACnetDateTime lastCredentialAddedTime =
         readSimpleField(
             "lastCredentialAddedTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue =
         readVirtualField("actualValue", BACnetDateTime.class, lastCredentialAddedTime);
 

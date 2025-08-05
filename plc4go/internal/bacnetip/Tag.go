@@ -140,7 +140,7 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return err
 	}
 
-	if err := writeBuffer.WriteString("objectId", uint32(len([]rune(m.ObjectId.String()))*8), "UTF-8", m.ObjectId.String()); err != nil {
+	if err := writeBuffer.WriteString("objectId", uint32(len([]rune(m.ObjectId.String()))*8), m.ObjectId.String()); err != nil {
 		return err
 	}
 
@@ -148,7 +148,7 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return err
 	}
 	for _, p := range m.Properties {
-		if err := writeBuffer.WriteString("property", uint32(len([]rune(p.String()))*8), "UTF-8", p.String()); err != nil {
+		if err := writeBuffer.WriteString("property", uint32(len([]rune(p.String()))*8), p.String()); err != nil {
 			return err
 		}
 	}
@@ -163,9 +163,9 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 }
 
 func (m plcTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

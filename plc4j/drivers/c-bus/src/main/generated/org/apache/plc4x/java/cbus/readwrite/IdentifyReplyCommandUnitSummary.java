@@ -169,12 +169,6 @@ public class IdentifyReplyCommandUnitSummary implements Message {
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandUnitSummary staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static IdentifyReplyCommandUnitSummary staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandUnitSummary");

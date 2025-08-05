@@ -142,7 +142,8 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
     @Override
     public BigInteger readUnsignedBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
-        throw new PlcRuntimeException("not implemented yet");
+        String bigIntString = decode(logicalName, rwUintKey, bitLength);
+        return new BigInteger(bigIntString);
     }
 
     @Override

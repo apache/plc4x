@@ -31,7 +31,9 @@ public enum OpcuaNodeIdServicesVariableCreate {
   CreateFileMethodType_InputArguments((int) 13346L),
   CreateFileMethodType_OutputArguments((int) 13347L),
   CreateCredentialMethodType_InputArguments((int) 15253L),
-  CreateCredentialMethodType_OutputArguments((int) 17495L);
+  CreateCredentialMethodType_OutputArguments((int) 17495L),
+  CreateSelfSignedCertificateMethodType_InputArguments((int) 19328L),
+  CreateSelfSignedCertificateMethodType_OutputArguments((int) 19329L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableCreate> map;
 
   static {

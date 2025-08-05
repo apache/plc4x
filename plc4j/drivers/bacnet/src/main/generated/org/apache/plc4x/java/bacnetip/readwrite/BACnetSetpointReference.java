@@ -55,8 +55,7 @@ public class BACnetSetpointReference implements Message {
     writeBuffer.pushContext("BACnetSetpointReference");
 
     // Optional Field (setPointReference) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "setPointReference", setPointReference, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("setPointReference", setPointReference, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetSetpointReference");
   }
@@ -80,12 +79,6 @@ public class BACnetSetpointReference implements Message {
     return lengthInBits;
   }
 
-  public static BACnetSetpointReference staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetSetpointReference staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetSetpointReference");
     PositionAware positionAware = readBuffer;
@@ -94,7 +87,7 @@ public class BACnetSetpointReference implements Message {
     BACnetObjectPropertyReferenceEnclosed setPointReference =
         readOptionalField(
             "setPointReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 

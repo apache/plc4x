@@ -60,7 +60,7 @@ public class BACnetPropertyStatesBinaryValue extends BACnetPropertyStates implem
     writeBuffer.pushContext("BACnetPropertyStatesBinaryValue");
 
     // Simple Field (binaryValue)
-    writeSimpleField("binaryValue", binaryValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("binaryValue", binaryValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesBinaryValue");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesBinaryValue extends BACnetPropertyStates implem
     BACnetBinaryPVTagged binaryValue =
         readSimpleField(
             "binaryValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBinaryPVTagged.staticParse(
                         readBuffer,

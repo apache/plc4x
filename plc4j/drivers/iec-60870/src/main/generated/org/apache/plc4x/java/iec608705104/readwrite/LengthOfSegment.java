@@ -63,12 +63,6 @@ public class LengthOfSegment implements Message {
     return lengthInBits;
   }
 
-  public static LengthOfSegment staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static LengthOfSegment staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("LengthOfSegment");
     PositionAware positionAware = readBuffer;

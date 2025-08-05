@@ -21,15 +21,18 @@ package org.apache.plc4x.java.mock.connection;
 import org.apache.commons.lang3.Validate;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.mock.tag.MockTagHandler;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
+import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -45,6 +49,8 @@ import java.util.stream.Collectors;
 public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcSubscriber, PlcBrowser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MockConnection.class);
+
+    private PlcValueHandler valueHandler;
 
     private final PlcAuthentication authentication;
 
@@ -58,9 +64,22 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
         return device;
     }
 
+    private final MockTagHandler mockTagHandler = new MockTagHandler();
     public void setDevice(MockDevice device) {
         LOGGER.info("Set Mock Device on Mock Connection {} with device {}", this, device);
+        this.valueHandler = new DefaultPlcValueHandler();
         this.device = device;
+    }
+
+    @Override
+    public Optional<PlcValue> parseTagValue(PlcTag tag, Object... values) {
+        PlcValue plcValue;
+        try {
+            plcValue = valueHandler.newPlcValue(tag, values);
+        } catch (Exception e) {
+            throw new PlcRuntimeException("Error parsing tag value " + tag, e);
+        }
+        return Optional.of(plcValue);
     }
 
     @Override
@@ -88,22 +107,22 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
     public PlcConnectionMetadata getMetadata() {
         return new PlcConnectionMetadata() {
             @Override
-            public boolean canRead() {
+            public boolean isReadSupported() {
                 return true;
             }
 
             @Override
-            public boolean canWrite() {
+            public boolean isWriteSupported() {
                 return true;
             }
 
             @Override
-            public boolean canSubscribe() {
+            public boolean isSubscribeSupported() {
                 return true;
             }
 
             @Override
-            public boolean canBrowse() {
+            public boolean isBrowseSupported() {
                 return true;
             }
         };
@@ -111,7 +130,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
 
     @Override
     public PlcBrowseRequest.Builder browseRequestBuilder() {
-        return new DefaultPlcBrowseRequest.Builder(this, new MockTagHandler());
+        return new DefaultPlcBrowseRequest.Builder(this, mockTagHandler);
     }
 
     @Override
@@ -134,7 +153,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(this, new MockTagHandler());
+        return new DefaultPlcReadRequest.Builder(this, mockTagHandler);
     }
 
     @Override
@@ -142,7 +161,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
         return CompletableFuture.supplyAsync(() -> {
             Validate.notNull(device, "No device is set in the mock connection!");
             LOGGER.debug("Sending read request to MockDevice");
-            Map<String, ResponseItem<PlcValue>> response = readRequest.getTagNames().stream()
+            Map<String, PlcResponseItem<PlcValue>> response = readRequest.getTagNames().stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
                         name -> device.read(readRequest.getTag(name).getAddressString())
@@ -172,7 +191,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
         return CompletableFuture.supplyAsync(() -> {
             Validate.notNull(device, "No device is set in the mock connection!");
             LOGGER.debug("Sending subsribe request to MockDevice");
-            Map<String, ResponseItem<PlcSubscriptionHandle>> response = subscriptionRequest.getTagNames().stream()
+            Map<String, PlcResponseItem<PlcSubscriptionHandle>> response = subscriptionRequest.getTagNames().stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
                         name -> device.subscribe(subscriptionRequest.getTag(name).getAddressString())
@@ -204,12 +223,12 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, new MockTagHandler(), new PlcValueHandler());
+        return new DefaultPlcWriteRequest.Builder(this, mockTagHandler, new DefaultPlcValueHandler());
     }
 
     @Override
     public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        return new DefaultPlcSubscriptionRequest.Builder(this, new MockTagHandler());
+        return new DefaultPlcSubscriptionRequest.Builder(this, mockTagHandler);
     }
 
     @Override
@@ -221,4 +240,15 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
         return authentication;
     }
 
+    @Override
+    public Optional<PlcTag> parseTagAddress(String tagAddress) {
+        PlcTag plcTag;
+        try {
+            plcTag = mockTagHandler.parseTag(tagAddress);
+        } catch (Exception e) {
+            LOGGER.error("Error parsing tag address {}", tagAddress);
+            return Optional.empty();
+        }
+        return Optional.ofNullable(plcTag);
+    }
 }

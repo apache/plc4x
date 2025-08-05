@@ -75,13 +75,13 @@ public class BACnetNameValueCollection implements Message {
     writeBuffer.pushContext("BACnetNameValueCollection");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (members)
     writeComplexTypeArrayField("members", members, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNameValueCollection");
   }
@@ -113,26 +113,6 @@ public class BACnetNameValueCollection implements Message {
     return lengthInBits;
   }
 
-  public static BACnetNameValueCollection staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber);
-  }
-
   public static BACnetNameValueCollection staticParse(ReadBuffer readBuffer, Short tagNumber)
       throws ParseException {
     readBuffer.pullContext("BACnetNameValueCollection");
@@ -142,14 +122,13 @@ public class BACnetNameValueCollection implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetNameValue> members =
         readTerminatedArrayField(
             "members",
-            new DataReaderComplexDefault<>(
-                () -> BACnetNameValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetNameValue.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper
@@ -158,7 +137,7 @@ public class BACnetNameValueCollection implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetNameValueCollection");

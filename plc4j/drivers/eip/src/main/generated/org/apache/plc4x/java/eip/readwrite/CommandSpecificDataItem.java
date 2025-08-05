@@ -80,12 +80,6 @@ public abstract class CommandSpecificDataItem implements Message {
     return lengthInBits;
   }
 
-  public static CommandSpecificDataItem staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static CommandSpecificDataItem staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CommandSpecificDataItem");
     PositionAware positionAware = readBuffer;

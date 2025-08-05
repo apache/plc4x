@@ -65,7 +65,7 @@ public class GenericCANTag implements PlcTag {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if(arraySize != 1) {
+        if(arraySize > 1) {
             return Collections.singletonList(new DefaultArrayInfo(0, arraySize));
         }
         return Collections.emptyList();

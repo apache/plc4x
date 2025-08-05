@@ -38,25 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AlarmMessageAckPushType implements Message {
 
   // Properties.
-  protected final DateAndTime TimeStamp;
+  protected final DateAndTime timeStamp;
   protected final short functionId;
   protected final short numberOfObjects;
   protected final List<AlarmMessageAckObjectPushType> messageObjects;
 
   public AlarmMessageAckPushType(
-      DateAndTime TimeStamp,
+      DateAndTime timeStamp,
       short functionId,
       short numberOfObjects,
       List<AlarmMessageAckObjectPushType> messageObjects) {
     super();
-    this.TimeStamp = TimeStamp;
+    this.timeStamp = timeStamp;
     this.functionId = functionId;
     this.numberOfObjects = numberOfObjects;
     this.messageObjects = messageObjects;
   }
 
   public DateAndTime getTimeStamp() {
-    return TimeStamp;
+    return timeStamp;
   }
 
   public short getFunctionId() {
@@ -76,8 +76,8 @@ public class AlarmMessageAckPushType implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("AlarmMessageAckPushType");
 
-    // Simple Field (TimeStamp)
-    writeSimpleField("TimeStamp", TimeStamp, new DataWriterComplexDefault<>(writeBuffer));
+    // Simple Field (timeStamp)
+    writeSimpleField("timeStamp", timeStamp, writeComplex(writeBuffer));
 
     // Simple Field (functionId)
     writeSimpleField("functionId", functionId, writeUnsignedShort(writeBuffer, 8));
@@ -102,8 +102,8 @@ public class AlarmMessageAckPushType implements Message {
     AlarmMessageAckPushType _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (TimeStamp)
-    lengthInBits += TimeStamp.getLengthInBits();
+    // Simple field (timeStamp)
+    lengthInBits += timeStamp.getLengthInBits();
 
     // Simple field (functionId)
     lengthInBits += 8;
@@ -123,21 +123,14 @@ public class AlarmMessageAckPushType implements Message {
     return lengthInBits;
   }
 
-  public static AlarmMessageAckPushType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AlarmMessageAckPushType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AlarmMessageAckPushType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    DateAndTime TimeStamp =
+    DateAndTime timeStamp =
         readSimpleField(
-            "TimeStamp",
-            new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
+            "timeStamp", readComplex(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     short functionId = readSimpleField("functionId", readUnsignedShort(readBuffer, 8));
 
@@ -146,15 +139,14 @@ public class AlarmMessageAckPushType implements Message {
     List<AlarmMessageAckObjectPushType> messageObjects =
         readCountArrayField(
             "messageObjects",
-            new DataReaderComplexDefault<>(
-                () -> AlarmMessageAckObjectPushType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AlarmMessageAckObjectPushType.staticParse(readBuffer), readBuffer),
             numberOfObjects);
 
     readBuffer.closeContext("AlarmMessageAckPushType");
     // Create the instance
     AlarmMessageAckPushType _alarmMessageAckPushType;
     _alarmMessageAckPushType =
-        new AlarmMessageAckPushType(TimeStamp, functionId, numberOfObjects, messageObjects);
+        new AlarmMessageAckPushType(timeStamp, functionId, numberOfObjects, messageObjects);
     return _alarmMessageAckPushType;
   }
 

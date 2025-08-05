@@ -71,18 +71,17 @@ public class Confirmation implements Message {
     writeBuffer.pushContext("Confirmation");
 
     // Simple Field (alpha)
-    writeSimpleField("alpha", alpha, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("alpha", alpha, writeComplex(writeBuffer));
 
     // Optional Field (secondAlpha) (Can be skipped, if the value is null)
-    writeOptionalField("secondAlpha", secondAlpha, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("secondAlpha", secondAlpha, writeComplex(writeBuffer));
 
     // Simple Field (confirmationType)
     writeSimpleEnumField(
         "confirmationType",
         "ConfirmationType",
         confirmationType,
-        new DataWriterEnumDefault<>(
-            ConfirmationType::getValue, ConfirmationType::name, writeByte(writeBuffer, 8)));
+        writeEnum(ConfirmationType::getValue, ConfirmationType::name, writeByte(writeBuffer, 8)));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isSuccess = getIsSuccess();
@@ -118,32 +117,23 @@ public class Confirmation implements Message {
     return lengthInBits;
   }
 
-  public static Confirmation staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Confirmation staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Confirmation");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Alpha alpha =
-        readSimpleField(
-            "alpha",
-            new DataReaderComplexDefault<>(() -> Alpha.staticParse(readBuffer), readBuffer));
+        readSimpleField("alpha", readComplex(() -> Alpha.staticParse(readBuffer), readBuffer));
 
     Alpha secondAlpha =
         readOptionalField(
-            "secondAlpha",
-            new DataReaderComplexDefault<>(() -> Alpha.staticParse(readBuffer), readBuffer));
+            "secondAlpha", readComplex(() -> Alpha.staticParse(readBuffer), readBuffer));
 
     ConfirmationType confirmationType =
         readEnumField(
             "confirmationType",
             "ConfirmationType",
-            new DataReaderEnumDefault<>(ConfirmationType::enumForValue, readByte(readBuffer, 8)));
+            readEnum(ConfirmationType::enumForValue, readByte(readBuffer, 8)));
     boolean isSuccess =
         readVirtualField(
             "isSuccess",

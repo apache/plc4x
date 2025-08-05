@@ -21,13 +21,15 @@ package tcp
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
-	"github.com/rs/zerolog/log"
-	"github.com/stretchr/testify/assert"
 	"net"
 	"net/url"
 	"testing"
+
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 )
 
 func TestNewTransport(t *testing.T) {

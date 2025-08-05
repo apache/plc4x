@@ -29,11 +29,13 @@ import java.math.BigInteger;
 public class PlcDINT extends PlcIECValue<Integer> {
 
     private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
-    static final Integer minValue = Integer.MIN_VALUE;
-    static final Integer maxValue = Integer.MAX_VALUE;
+    public static final Integer MIN_VALUE = Integer.MIN_VALUE;
+    public static final Integer MAX_VALUE = Integer.MAX_VALUE;
 
     public static PlcDINT of(Object value) {
-        if (value instanceof Boolean) {
+        if (value instanceof PlcDINT) {
+            return (PlcDINT) value;
+        } else if (value instanceof Boolean) {
             return new PlcDINT((Boolean) value);
         } else if (value instanceof Byte) {
             return new PlcDINT((Byte) value);
@@ -52,7 +54,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
         } else if (value instanceof BigDecimal) {
             return new PlcDINT((BigDecimal) value);
         } else {
-            return new PlcDINT((String) value);
+            return new PlcDINT(value.toString());
         }
     }
 
@@ -77,40 +79,40 @@ public class PlcDINT extends PlcIECValue<Integer> {
     }
 
     public PlcDINT(Long value) {
-        if (value < minValue || value > maxValue) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if (value < MIN_VALUE || value > MAX_VALUE) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();
         this.isNullable = false;
     }
 
     public PlcDINT(Float value) {
-        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((value < MIN_VALUE) || (value > MAX_VALUE)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();
         this.isNullable = false;
     }
 
     public PlcDINT(Double value) {
-        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((value < MIN_VALUE) || (value > MAX_VALUE)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();
         this.isNullable = false;
     }
 
     public PlcDINT(BigInteger value) {
-        if ((value.compareTo(BigInteger.valueOf(minValue)) < 0) || (value.compareTo(BigInteger.valueOf(maxValue)) > 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((value.compareTo(BigInteger.valueOf(MIN_VALUE)) < 0) || (value.compareTo(BigInteger.valueOf(MAX_VALUE)) > 0)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();
         this.isNullable = true;
     }
 
     public PlcDINT(BigDecimal value) {
-        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((value.compareTo(BigDecimal.valueOf(MIN_VALUE)) < 0) || (value.compareTo(BigDecimal.valueOf(MAX_VALUE)) > 0)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();
         this.isNullable = true;
@@ -121,7 +123,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
             this.value = Integer.parseInt(value.trim());
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()), e);
         }
     }
 
@@ -240,6 +242,11 @@ public class PlcDINT extends PlcIECValue<Integer> {
         return Integer.toString(value);
     }
 
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
+    
     public byte[] getBytes() {
         return new byte[]{
             (byte) ((value >> 24) & 0xff),

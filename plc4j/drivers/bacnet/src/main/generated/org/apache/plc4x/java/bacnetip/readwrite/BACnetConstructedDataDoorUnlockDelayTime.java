@@ -83,8 +83,7 @@ public class BACnetConstructedDataDoorUnlockDelayTime extends BACnetConstructedD
     writeBuffer.pushContext("BACnetConstructedDataDoorUnlockDelayTime");
 
     // Simple Field (doorUnlockDelayTime)
-    writeSimpleField(
-        "doorUnlockDelayTime", doorUnlockDelayTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doorUnlockDelayTime", doorUnlockDelayTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataDoorUnlockDelayTime extends BACnetConstructedD
     BACnetApplicationTagUnsignedInteger doorUnlockDelayTime =
         readSimpleField(
             "doorUnlockDelayTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

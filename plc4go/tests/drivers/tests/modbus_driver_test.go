@@ -32,7 +32,7 @@ import (
 
 func TestModbusDriver(t *testing.T) {
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
-		return readWriteModel.ModbusTcpADUParseWithBuffer(context.Background(), readBufferByteBased, readWriteModel.DriverType_MODBUS_TCP, false)
+		return readWriteModel.ModbusADUParseWithBuffer[readWriteModel.ModbusTcpADU](context.Background(), readBufferByteBased, readWriteModel.DriverType_MODBUS_TCP, false)
 	}
 	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
 	testutils.RunDriverTestsuite(

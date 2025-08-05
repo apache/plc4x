@@ -82,7 +82,7 @@ public class BACnetConstructedDataCOVPeriod extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataCOVPeriod");
 
     // Simple Field (covPeriod)
-    writeSimpleField("covPeriod", covPeriod, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("covPeriod", covPeriod, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataCOVPeriod extends BACnetConstructedData implem
     BACnetApplicationTagUnsignedInteger covPeriod =
         readSimpleField(
             "covPeriod",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

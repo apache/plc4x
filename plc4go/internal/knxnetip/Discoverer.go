@@ -23,8 +23,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/pool"
-	"github.com/rs/zerolog"
 	"net"
 	"net/url"
 	"runtime/debug"
@@ -32,12 +30,17 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Discoverer struct {
@@ -45,6 +48,8 @@ type Discoverer struct {
 	transportInstanceCreationQueue      pool.Executor
 	deviceScanningWorkItemId            atomic.Int32
 	deviceScanningQueue                 pool.Executor
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
@@ -85,7 +90,13 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	deviceNames := options.FilterDiscoveryOptionsDeviceName(discoveryOptions)
 	if len(deviceNames) > 0 {
 		for _, curInterface := range allInterfaces {
+			if err := ctx.Err(); err != nil {
+				return err
+			}
 			for _, deviceNameOption := range deviceNames {
+				if err := ctx.Err(); err != nil {
+					return err
+				}
 				if curInterface.Name == deviceNameOption.GetDeviceName() {
 					interfaces = append(interfaces, curInterface)
 					break
@@ -100,6 +111,9 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	wg := &sync.WaitGroup{}
 	// Iterate over all network devices of this system.
 	for _, netInterface := range interfaces {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		addrs, err := netInterface.Addrs()
 		if err != nil {
 			return err
@@ -119,6 +133,10 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 			// For KNX we're only interested in IPv4 addresses, as it doesn't
 			// seem to work with IPv6.
 			for _, addr := range addrs {
+				if err := ctx.Err(); err != nil {
+					d.log.Debug().Err(err).Msg("done")
+					return
+				}
 				var ipv4Addr net.IP
 				switch addr.(type) {
 				// If the device is configured to communicate with a subnet
@@ -140,13 +158,17 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 			}
 		}(netInterface)
 	}
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
 		wg.Wait()
 		d.log.Trace().Msg("Closing transport instance channel")
 		close(transportInstances)
 	}()
 
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				d.log.Error().
@@ -156,7 +178,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 			}
 		}()
 		for transportInstance := range transportInstances {
-			d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*udp.TransportInstance), callback))
+			if transportInstance == nil {
+				d.log.Trace().Msg("channel closed")
+				break
+			}
+			d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(ctx, transportInstance.(*udp.TransportInstance), callback))
 		}
 	}()
 	return nil
@@ -184,7 +210,7 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 	}
 }
 
-func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) pool.Runnable {
+func (d *Discoverer) createDeviceScanDispatcher(ctx context.Context, udpTransportInstance *udp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) pool.Runnable {
 	return func() {
 		d.log.Debug().Stringer("udpTransportInstance", udpTransportInstance).Msg("Scanning")
 		// Create a codec for sending and receiving messages.
@@ -194,7 +220,7 @@ func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.Transp
 			append(d._options, options.WithCustomLogger(d.log))...,
 		)
 		// Explicitly start the worker
-		if err := codec.ConnectWithContext(context.TODO()); err != nil {
+		if err := codec.ConnectWithContext(ctx); err != nil {
 			d.log.Error().Err(err).Msg("Error connecting")
 			return
 		}
@@ -216,6 +242,10 @@ func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.Transp
 		timeout := time.NewTimer(1 * time.Second)
 		timeout.Stop()
 		for start := time.Now(); time.Since(start) < time.Second*5; {
+			if err := ctx.Err(); err != nil {
+				d.log.Debug().Err(err).Msg("done")
+				return
+			}
 			timeout.Reset(1 * time.Second)
 			select {
 			case message := <-codec.GetDefaultIncomingMessageChannel():
@@ -253,4 +283,21 @@ func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.Transp
 			}
 		}
 	}
+}
+
+func (d *Discoverer) Close() error {
+	defer utils.StopWarn(d.log)()
+	d.log.Trace().Msg("Closing discoverer")
+	finalErr := new(utils.MultiError)
+	d.log.Trace().Msg("Closing transport instance creation queue")
+	if err := d.transportInstanceCreationQueue.Close(); err != nil {
+		finalErr.Append(errors.Wrap(err, "failed to close transport instance creation queue"))
+	}
+	d.log.Trace().Msg("Closing device scanning queue")
+	if err := d.deviceScanningQueue.Close(); err != nil {
+		finalErr.Append(errors.Wrap(err, "error closing device scanning queue"))
+	}
+	d.log.Trace().Msg("waiting for wait group")
+	d.wg.Wait()
+	return finalErr.ToErrorIfAny()
 }

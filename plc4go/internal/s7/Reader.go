@@ -21,26 +21,29 @@ package s7
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
 	"runtime/debug"
+	"sync"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/pkg/errors"
 )
 
 type Reader struct {
 	tpduGenerator *TpduGenerator
 	messageCodec  spi.MessageCodec
 	tm            transactions.RequestTransactionManager
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	passLogToModel bool
 	log            zerolog.Logger
@@ -62,7 +65,9 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 	// TODO: handle ctx
 	m.log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult, 1)
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -96,16 +101,17 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 
 		request := s7MessageRequest
 		// Create a new Request with correct tpuId (is not known before)
-		s7MessageRequest = readWriteModel.NewS7MessageRequest(tpduId, request.Parameter, request.Payload)
+		s7MessageRequest = readWriteModel.NewS7MessageRequest(tpduId, request.GetParameter(), request.GetPayload())
 
 		// Assemble the finished paket
 		m.log.Trace().Msg("Assemble paket")
 		// TODO: why do we use a uint16 above and the cotp a uint8?
 		tpktPacket := readWriteModel.NewTPKTPacket(
-			readWriteModel.NewCOTPPacketData(true,
-				uint8(tpduId),
+			readWriteModel.NewCOTPPacketData(
 				nil,
 				s7MessageRequest,
+				true,
+				uint8(tpduId),
 				0,
 			),
 		)
@@ -116,11 +122,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			// Send the  over the wire
 			m.log.Trace().Msg("Send ")
 			if err := m.messageCodec.SendRequest(ctx, tpktPacket, func(message spi.Message) bool {
-				tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 				if !ok {
 					return false
 				}
-				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
 				if !ok {
 					return false
 				}
@@ -239,8 +245,8 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 		m.log.Trace().Msg("decode data")
 		responseCodes[tagName] = responseCode
 		if responseCode == apiModel.PlcResponseCode_OK {
-			ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-			plcValue, err := readWriteModel.DataItemParse(ctxForModel, payloadItem.GetData(), tag.GetDataType().DataProtocolId(), int32(tag.GetNumElements()))
+			ctxForModel := options.GetLoggerContextForModel(context.Background(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+			plcValue, err := parsePlcValue(ctxForModel, tag, payloadItem.GetData())
 			if err != nil {
 				return nil, errors.Wrap(err, "Error parsing data item")
 			}
@@ -293,6 +299,11 @@ func encodeS7Address(tag apiModel.PlcTag) (readWriteModel.S7Address, error) {
 		s7Tag.GetByteOffset(),
 		s7Tag.GetBitOffset(),
 	), nil
+}
+
+func parsePlcValue(ctx context.Context, tag PlcTag, data []byte) (apiValues.PlcValue, error) {
+	// TODO: port over
+	panic("not implemented yet")
 }
 
 // Helper to convert the return codes returned from the S7 into one of our standard

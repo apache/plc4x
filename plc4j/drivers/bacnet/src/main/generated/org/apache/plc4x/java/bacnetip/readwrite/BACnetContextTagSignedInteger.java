@@ -74,7 +74,7 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
     writeBuffer.pushContext("BACnetContextTagSignedInteger");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BigInteger actualValue = getActualValue();
@@ -115,7 +115,7 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
     BACnetTagPayloadSignedInteger payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadSignedInteger.staticParse(
                         readBuffer, (long) (header.getActualLength())),

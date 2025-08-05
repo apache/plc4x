@@ -62,11 +62,10 @@ public class BACnetAssignedAccessRights implements Message {
     writeBuffer.pushContext("BACnetAssignedAccessRights");
 
     // Simple Field (assignedAccessRights)
-    writeSimpleField(
-        "assignedAccessRights", assignedAccessRights, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("assignedAccessRights", assignedAccessRights, writeComplex(writeBuffer));
 
     // Simple Field (enable)
-    writeSimpleField("enable", enable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enable", enable, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAssignedAccessRights");
   }
@@ -91,12 +90,6 @@ public class BACnetAssignedAccessRights implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAssignedAccessRights staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAssignedAccessRights staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetAssignedAccessRights");
@@ -106,14 +99,14 @@ public class BACnetAssignedAccessRights implements Message {
     BACnetDeviceObjectReferenceEnclosed assignedAccessRights =
         readSimpleField(
             "assignedAccessRights",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 
     BACnetContextTagBoolean enable =
         readSimpleField(
             "enable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

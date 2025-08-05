@@ -64,6 +64,10 @@ public class NodeIdString extends NodeIdTypeDefinition implements Message {
     return String.valueOf(getId().getStringValue());
   }
 
+  public short getNamespace() {
+    return (short) (getNamespaceIndex());
+  }
+
   @Override
   protected void serializeNodeIdTypeDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
@@ -75,11 +79,15 @@ public class NodeIdString extends NodeIdTypeDefinition implements Message {
     writeSimpleField("namespaceIndex", namespaceIndex, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (id)
-    writeSimpleField("id", id, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("id", id, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     String identifier = getIdentifier();
     writeBuffer.writeVirtual("identifier", identifier);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    short namespace = getNamespace();
+    writeBuffer.writeVirtual("namespace", namespace);
 
     writeBuffer.popContext("NodeIdString");
   }
@@ -103,6 +111,8 @@ public class NodeIdString extends NodeIdTypeDefinition implements Message {
 
     // A virtual field doesn't have any in- or output.
 
+    // A virtual field doesn't have any in- or output.
+
     return lengthInBits;
   }
 
@@ -115,10 +125,9 @@ public class NodeIdString extends NodeIdTypeDefinition implements Message {
     int namespaceIndex = readSimpleField("namespaceIndex", readUnsignedInt(readBuffer, 16));
 
     PascalString id =
-        readSimpleField(
-            "id",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+        readSimpleField("id", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
     String identifier = readVirtualField("identifier", String.class, id.getStringValue());
+    short namespace = readVirtualField("namespace", short.class, namespaceIndex);
 
     readBuffer.closeContext("NodeIdString");
     // Create the instance

@@ -32,8 +32,8 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate stringer -type StatusRequestType
-//go:generate go run ../../tools/plc4xlicenser/gen.go -type=StatusRequestType
+//go:generate go tool stringer -type StatusRequestType
+//go:generate go tool plc4xLicencer -type=StatusRequestType
 type StatusRequestType uint8
 
 const (
@@ -333,49 +333,49 @@ func (s statusTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (s statusTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(s.tagType.GetName()); err != nil {
+func (s statusTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {
+	if err := wb.PushContext(s.tagType.GetName()); err != nil {
 		return err
 	}
 
 	if len(s.bridgeAddresses) > 0 {
-		if err := writeBuffer.PushContext("bridgeAddresses"); err != nil {
+		if err := wb.PushContext("bridgeAddresses"); err != nil {
 			return err
 		}
 		for _, address := range s.bridgeAddresses {
-			if err := address.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+			if err := address.SerializeWithWriteBuffer(ctx, wb); err != nil {
 				return err
 			}
 		}
-		if err := writeBuffer.PopContext("bridgeAddresses"); err != nil {
+		if err := wb.PopContext("bridgeAddresses"); err != nil {
 			return err
 		}
 	}
 
-	if err := writeBuffer.WriteUint8("statusRequestType", 8, uint8(s.statusRequestType), utils.WithAdditionalStringRepresentation(s.statusRequestType.String())); err != nil {
+	if err := wb.WriteUint8("statusRequestType", 8, uint8(s.statusRequestType), utils.WithAdditionalStringRepresentation(s.statusRequestType.String())); err != nil {
 		return err
 	}
 	if s.startingGroupAddressLabel != nil {
-		if err := writeBuffer.WriteUint8("startingGroupAddressLabel", 8, *s.startingGroupAddressLabel); err != nil {
+		if err := wb.WriteUint8("startingGroupAddressLabel", 8, *s.startingGroupAddressLabel); err != nil {
 			return err
 		}
 	}
-	if err := writeBuffer.WriteUint8("application", 8, uint8(s.application), utils.WithAdditionalStringRepresentation(s.application.String())); err != nil {
+	if err := wb.WriteUint8("application", 8, uint8(s.application), utils.WithAdditionalStringRepresentation(s.application.String())); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.PopContext(s.tagType.GetName()); err != nil {
+	if err := wb.PopContext(s.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (s statusTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), s); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), s); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
 
 func (c calTag) GetBridgeAddresses() []readWriteModel.BridgeAddress {
@@ -394,32 +394,32 @@ func (c calTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (c calTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+func (c calTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {
 	if len(c.bridgeAddresses) > 0 {
-		if err := writeBuffer.PushContext("bridgeAddresses"); err != nil {
+		if err := wb.PushContext("bridgeAddresses"); err != nil {
 			return err
 		}
 		for _, address := range c.bridgeAddresses {
-			if err := address.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+			if err := address.SerializeWithWriteBuffer(ctx, wb); err != nil {
 				return err
 			}
 		}
-		if err := writeBuffer.PopContext("bridgeAddresses"); err != nil {
+		if err := wb.PopContext("bridgeAddresses"); err != nil {
 			return err
 		}
 	}
 	if unitAddress := c.unitAddress; unitAddress != nil {
-		return c.unitAddress.SerializeWithWriteBuffer(ctx, writeBuffer)
+		return c.unitAddress.SerializeWithWriteBuffer(ctx, wb)
 	}
 	return nil
 }
 
 func (c calTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), c); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), c); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
 
 func (c calRecallTag) GetParameter() readWriteModel.Parameter {
@@ -462,35 +462,35 @@ func (c calRecallTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (c calRecallTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(c.tagType.GetName()); err != nil {
+func (c calRecallTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {
+	if err := wb.PushContext(c.tagType.GetName()); err != nil {
 		return err
 	}
 
-	if err := c.calTag.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := c.calTag.SerializeWithWriteBuffer(ctx, wb); err != nil {
 		return err
 	}
 
-	if err := c.parameter.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := c.parameter.SerializeWithWriteBuffer(ctx, wb); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteUint8("count", 8, c.count); err != nil {
+	if err := wb.WriteUint8("count", 8, c.count); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.PopContext(c.tagType.GetName()); err != nil {
+	if err := wb.PopContext(c.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (c calRecallTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), c); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), c); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
 
 func (c calIdentifyTag) GetAttribute() readWriteModel.Attribute {
@@ -529,31 +529,31 @@ func (c calIdentifyTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (c calIdentifyTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(c.tagType.GetName()); err != nil {
+func (c calIdentifyTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {
+	if err := wb.PushContext(c.tagType.GetName()); err != nil {
 		return err
 	}
 
-	if err := c.calTag.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := c.calTag.SerializeWithWriteBuffer(ctx, wb); err != nil {
 		return err
 	}
 
-	if err := c.attribute.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := c.attribute.SerializeWithWriteBuffer(ctx, wb); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.PopContext(c.tagType.GetName()); err != nil {
+	if err := wb.PopContext(c.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (c calIdentifyTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), c); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), c); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
 
 func (c calGetStatusTag) GetParameter() readWriteModel.Parameter {
@@ -596,35 +596,35 @@ func (c calGetStatusTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (c calGetStatusTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(c.tagType.GetName()); err != nil {
+func (c calGetStatusTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {
+	if err := wb.PushContext(c.tagType.GetName()); err != nil {
 		return err
 	}
 
-	if err := c.calTag.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := c.calTag.SerializeWithWriteBuffer(ctx, wb); err != nil {
 		return err
 	}
 
-	if err := c.parameter.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := c.parameter.SerializeWithWriteBuffer(ctx, wb); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteUint8("count", 8, c.count); err != nil {
+	if err := wb.WriteUint8("count", 8, c.count); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.PopContext(c.tagType.GetName()); err != nil {
+	if err := wb.PopContext(c.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (c calGetStatusTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), c); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), c); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
 
 func (s salTag) GetBridgeAddresses() []readWriteModel.BridgeAddress {
@@ -671,45 +671,45 @@ func (s salTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (s salTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(s.tagType.GetName()); err != nil {
+func (s salTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {
+	if err := wb.PushContext(s.tagType.GetName()); err != nil {
 		return err
 	}
 
 	if len(s.bridgeAddresses) > 0 {
-		if err := writeBuffer.PushContext("bridgeAddresses"); err != nil {
+		if err := wb.PushContext("bridgeAddresses"); err != nil {
 			return err
 		}
 		for _, address := range s.bridgeAddresses {
-			if err := address.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+			if err := address.SerializeWithWriteBuffer(ctx, wb); err != nil {
 				return err
 			}
 		}
-		if err := writeBuffer.PopContext("bridgeAddresses"); err != nil {
+		if err := wb.PopContext("bridgeAddresses"); err != nil {
 			return err
 		}
 	}
 
-	if err := s.application.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := s.application.SerializeWithWriteBuffer(ctx, wb); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("salCommand", uint32(len(s.salCommand)*8), "UTF-8", s.salCommand); err != nil {
+	if err := wb.WriteString("salCommand", uint32(len(s.salCommand)*8), s.salCommand); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.PopContext(s.tagType.GetName()); err != nil {
+	if err := wb.PopContext(s.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (s salTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), s); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), s); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
 
 func (s salMonitorTag) GetAddressString() string {
@@ -760,34 +760,34 @@ func (s salMonitorTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (s salMonitorTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(s.tagType.GetName()); err != nil {
+func (s salMonitorTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {
+	if err := wb.PushContext(s.tagType.GetName()); err != nil {
 		return err
 	}
 
 	if unitAddress := s.unitAddress; unitAddress != nil {
-		if err := unitAddress.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+		if err := unitAddress.SerializeWithWriteBuffer(ctx, wb); err != nil {
 			return err
 		}
 	}
 	if application := s.application; application != nil {
-		if err := application.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+		if err := application.SerializeWithWriteBuffer(ctx, wb); err != nil {
 			return err
 		}
 	}
 
-	if err := writeBuffer.PopContext(s.tagType.GetName()); err != nil {
+	if err := wb.PopContext(s.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (s salMonitorTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), s); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), s); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
 
 func (m mmiMonitorTag) GetAddressString() string {
@@ -838,32 +838,32 @@ func (m mmiMonitorTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m mmiMonitorTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(m.tagType.GetName()); err != nil {
+func (m mmiMonitorTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {
+	if err := wb.PushContext(m.tagType.GetName()); err != nil {
 		return err
 	}
 
 	if unitAddress := m.unitAddress; unitAddress != nil {
-		if err := unitAddress.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+		if err := unitAddress.SerializeWithWriteBuffer(ctx, wb); err != nil {
 			return err
 		}
 	}
 	if application := m.application; application != nil {
-		if err := application.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+		if err := application.SerializeWithWriteBuffer(ctx, wb); err != nil {
 			return err
 		}
 	}
 
-	if err := writeBuffer.PopContext(m.tagType.GetName()); err != nil {
+	if err := wb.PopContext(m.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (m mmiMonitorTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

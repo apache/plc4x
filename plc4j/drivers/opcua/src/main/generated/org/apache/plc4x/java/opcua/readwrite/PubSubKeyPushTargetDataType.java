@@ -38,58 +38,45 @@ import org.apache.plc4x.java.spi.generation.*;
 public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "25272";
+  public Integer getExtensionId() {
+    return (int) 25272;
   }
 
   // Properties.
   protected final PascalString applicationUri;
-  protected final int noOfPushTargetFolder;
   protected final List<PascalString> pushTargetFolder;
   protected final PascalString endpointUrl;
   protected final PascalString securityPolicyUri;
-  protected final ExtensionObjectDefinition userTokenType;
+  protected final UserTokenPolicy userTokenType;
   protected final int requestedKeyCount;
   protected final double retryInterval;
-  protected final int noOfPushTargetProperties;
-  protected final List<ExtensionObjectDefinition> pushTargetProperties;
-  protected final int noOfSecurityGroups;
+  protected final List<KeyValuePair> pushTargetProperties;
   protected final List<PascalString> securityGroups;
 
   public PubSubKeyPushTargetDataType(
       PascalString applicationUri,
-      int noOfPushTargetFolder,
       List<PascalString> pushTargetFolder,
       PascalString endpointUrl,
       PascalString securityPolicyUri,
-      ExtensionObjectDefinition userTokenType,
+      UserTokenPolicy userTokenType,
       int requestedKeyCount,
       double retryInterval,
-      int noOfPushTargetProperties,
-      List<ExtensionObjectDefinition> pushTargetProperties,
-      int noOfSecurityGroups,
+      List<KeyValuePair> pushTargetProperties,
       List<PascalString> securityGroups) {
     super();
     this.applicationUri = applicationUri;
-    this.noOfPushTargetFolder = noOfPushTargetFolder;
     this.pushTargetFolder = pushTargetFolder;
     this.endpointUrl = endpointUrl;
     this.securityPolicyUri = securityPolicyUri;
     this.userTokenType = userTokenType;
     this.requestedKeyCount = requestedKeyCount;
     this.retryInterval = retryInterval;
-    this.noOfPushTargetProperties = noOfPushTargetProperties;
     this.pushTargetProperties = pushTargetProperties;
-    this.noOfSecurityGroups = noOfSecurityGroups;
     this.securityGroups = securityGroups;
   }
 
   public PascalString getApplicationUri() {
     return applicationUri;
-  }
-
-  public int getNoOfPushTargetFolder() {
-    return noOfPushTargetFolder;
   }
 
   public List<PascalString> getPushTargetFolder() {
@@ -104,7 +91,7 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
     return securityPolicyUri;
   }
 
-  public ExtensionObjectDefinition getUserTokenType() {
+  public UserTokenPolicy getUserTokenType() {
     return userTokenType;
   }
 
@@ -116,16 +103,8 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
     return retryInterval;
   }
 
-  public int getNoOfPushTargetProperties() {
-    return noOfPushTargetProperties;
-  }
-
-  public List<ExtensionObjectDefinition> getPushTargetProperties() {
+  public List<KeyValuePair> getPushTargetProperties() {
     return pushTargetProperties;
-  }
-
-  public int getNoOfSecurityGroups() {
-    return noOfSecurityGroups;
   }
 
   public List<PascalString> getSecurityGroups() {
@@ -140,23 +119,26 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
     writeBuffer.pushContext("PubSubKeyPushTargetDataType");
 
     // Simple Field (applicationUri)
-    writeSimpleField("applicationUri", applicationUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("applicationUri", applicationUri, writeComplex(writeBuffer));
 
-    // Simple Field (noOfPushTargetFolder)
-    writeSimpleField("noOfPushTargetFolder", noOfPushTargetFolder, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfPushTargetFolder) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfPushTargetFolder =
+        (int) ((((getPushTargetFolder()) == (null)) ? -(1) : COUNT(getPushTargetFolder())));
+    writeImplicitField(
+        "noOfPushTargetFolder", noOfPushTargetFolder, writeSignedInt(writeBuffer, 32));
 
     // Array Field (pushTargetFolder)
     writeComplexTypeArrayField("pushTargetFolder", pushTargetFolder, writeBuffer);
 
     // Simple Field (endpointUrl)
-    writeSimpleField("endpointUrl", endpointUrl, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("endpointUrl", endpointUrl, writeComplex(writeBuffer));
 
     // Simple Field (securityPolicyUri)
-    writeSimpleField(
-        "securityPolicyUri", securityPolicyUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityPolicyUri", securityPolicyUri, writeComplex(writeBuffer));
 
     // Simple Field (userTokenType)
-    writeSimpleField("userTokenType", userTokenType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userTokenType", userTokenType, writeComplex(writeBuffer));
 
     // Simple Field (requestedKeyCount)
     writeSimpleField("requestedKeyCount", requestedKeyCount, writeUnsignedInt(writeBuffer, 16));
@@ -164,15 +146,21 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
     // Simple Field (retryInterval)
     writeSimpleField("retryInterval", retryInterval, writeDouble(writeBuffer, 64));
 
-    // Simple Field (noOfPushTargetProperties)
-    writeSimpleField(
+    // Implicit Field (noOfPushTargetProperties) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfPushTargetProperties =
+        (int) ((((getPushTargetProperties()) == (null)) ? -(1) : COUNT(getPushTargetProperties())));
+    writeImplicitField(
         "noOfPushTargetProperties", noOfPushTargetProperties, writeSignedInt(writeBuffer, 32));
 
     // Array Field (pushTargetProperties)
     writeComplexTypeArrayField("pushTargetProperties", pushTargetProperties, writeBuffer);
 
-    // Simple Field (noOfSecurityGroups)
-    writeSimpleField("noOfSecurityGroups", noOfSecurityGroups, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfSecurityGroups) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfSecurityGroups =
+        (int) ((((getSecurityGroups()) == (null)) ? -(1) : COUNT(getSecurityGroups())));
+    writeImplicitField("noOfSecurityGroups", noOfSecurityGroups, writeSignedInt(writeBuffer, 32));
 
     // Array Field (securityGroups)
     writeComplexTypeArrayField("securityGroups", securityGroups, writeBuffer);
@@ -194,7 +182,7 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
     // Simple field (applicationUri)
     lengthInBits += applicationUri.getLengthInBits();
 
-    // Simple field (noOfPushTargetFolder)
+    // Implicit Field (noOfPushTargetFolder)
     lengthInBits += 32;
 
     // Array field
@@ -221,19 +209,19 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
     // Simple field (retryInterval)
     lengthInBits += 64;
 
-    // Simple field (noOfPushTargetProperties)
+    // Implicit Field (noOfPushTargetProperties)
     lengthInBits += 32;
 
     // Array field
     if (pushTargetProperties != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : pushTargetProperties) {
+      for (KeyValuePair element : pushTargetProperties) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= pushTargetProperties.size());
         lengthInBits += element.getLengthInBits();
       }
     }
 
-    // Simple field (noOfSecurityGroups)
+    // Implicit Field (noOfSecurityGroups)
     lengthInBits += 32;
 
     // Array field
@@ -249,40 +237,40 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("PubSubKeyPushTargetDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString applicationUri =
         readSimpleField(
-            "applicationUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "applicationUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfPushTargetFolder =
-        readSimpleField("noOfPushTargetFolder", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfPushTargetFolder", readSignedInt(readBuffer, 32));
 
     List<PascalString> pushTargetFolder =
         readCountArrayField(
             "pushTargetFolder",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfPushTargetFolder);
 
     PascalString endpointUrl =
         readSimpleField(
-            "endpointUrl",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "endpointUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString securityPolicyUri =
         readSimpleField(
             "securityPolicyUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    ExtensionObjectDefinition userTokenType =
+    UserTokenPolicy userTokenType =
         readSimpleField(
             "userTokenType",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("306")),
+            readComplex(
+                () ->
+                    (UserTokenPolicy)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (306)),
                 readBuffer));
 
     int requestedKeyCount = readSimpleField("requestedKeyCount", readUnsignedInt(readBuffer, 16));
@@ -290,80 +278,69 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
     double retryInterval = readSimpleField("retryInterval", readDouble(readBuffer, 64));
 
     int noOfPushTargetProperties =
-        readSimpleField("noOfPushTargetProperties", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfPushTargetProperties", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> pushTargetProperties =
+    List<KeyValuePair> pushTargetProperties =
         readCountArrayField(
             "pushTargetProperties",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
+            readComplex(
+                () ->
+                    (KeyValuePair) ExtensionObjectDefinition.staticParse(readBuffer, (int) (14535)),
                 readBuffer),
             noOfPushTargetProperties);
 
-    int noOfSecurityGroups = readSimpleField("noOfSecurityGroups", readSignedInt(readBuffer, 32));
+    int noOfSecurityGroups = readImplicitField("noOfSecurityGroups", readSignedInt(readBuffer, 32));
 
     List<PascalString> securityGroups =
         readCountArrayField(
             "securityGroups",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfSecurityGroups);
 
     readBuffer.closeContext("PubSubKeyPushTargetDataType");
     // Create the instance
     return new PubSubKeyPushTargetDataTypeBuilderImpl(
         applicationUri,
-        noOfPushTargetFolder,
         pushTargetFolder,
         endpointUrl,
         securityPolicyUri,
         userTokenType,
         requestedKeyCount,
         retryInterval,
-        noOfPushTargetProperties,
         pushTargetProperties,
-        noOfSecurityGroups,
         securityGroups);
   }
 
   public static class PubSubKeyPushTargetDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString applicationUri;
-    private final int noOfPushTargetFolder;
     private final List<PascalString> pushTargetFolder;
     private final PascalString endpointUrl;
     private final PascalString securityPolicyUri;
-    private final ExtensionObjectDefinition userTokenType;
+    private final UserTokenPolicy userTokenType;
     private final int requestedKeyCount;
     private final double retryInterval;
-    private final int noOfPushTargetProperties;
-    private final List<ExtensionObjectDefinition> pushTargetProperties;
-    private final int noOfSecurityGroups;
+    private final List<KeyValuePair> pushTargetProperties;
     private final List<PascalString> securityGroups;
 
     public PubSubKeyPushTargetDataTypeBuilderImpl(
         PascalString applicationUri,
-        int noOfPushTargetFolder,
         List<PascalString> pushTargetFolder,
         PascalString endpointUrl,
         PascalString securityPolicyUri,
-        ExtensionObjectDefinition userTokenType,
+        UserTokenPolicy userTokenType,
         int requestedKeyCount,
         double retryInterval,
-        int noOfPushTargetProperties,
-        List<ExtensionObjectDefinition> pushTargetProperties,
-        int noOfSecurityGroups,
+        List<KeyValuePair> pushTargetProperties,
         List<PascalString> securityGroups) {
       this.applicationUri = applicationUri;
-      this.noOfPushTargetFolder = noOfPushTargetFolder;
       this.pushTargetFolder = pushTargetFolder;
       this.endpointUrl = endpointUrl;
       this.securityPolicyUri = securityPolicyUri;
       this.userTokenType = userTokenType;
       this.requestedKeyCount = requestedKeyCount;
       this.retryInterval = retryInterval;
-      this.noOfPushTargetProperties = noOfPushTargetProperties;
       this.pushTargetProperties = pushTargetProperties;
-      this.noOfSecurityGroups = noOfSecurityGroups;
       this.securityGroups = securityGroups;
     }
 
@@ -371,16 +348,13 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
       PubSubKeyPushTargetDataType pubSubKeyPushTargetDataType =
           new PubSubKeyPushTargetDataType(
               applicationUri,
-              noOfPushTargetFolder,
               pushTargetFolder,
               endpointUrl,
               securityPolicyUri,
               userTokenType,
               requestedKeyCount,
               retryInterval,
-              noOfPushTargetProperties,
               pushTargetProperties,
-              noOfSecurityGroups,
               securityGroups);
       return pubSubKeyPushTargetDataType;
     }
@@ -396,16 +370,13 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
     }
     PubSubKeyPushTargetDataType that = (PubSubKeyPushTargetDataType) o;
     return (getApplicationUri() == that.getApplicationUri())
-        && (getNoOfPushTargetFolder() == that.getNoOfPushTargetFolder())
         && (getPushTargetFolder() == that.getPushTargetFolder())
         && (getEndpointUrl() == that.getEndpointUrl())
         && (getSecurityPolicyUri() == that.getSecurityPolicyUri())
         && (getUserTokenType() == that.getUserTokenType())
         && (getRequestedKeyCount() == that.getRequestedKeyCount())
         && (getRetryInterval() == that.getRetryInterval())
-        && (getNoOfPushTargetProperties() == that.getNoOfPushTargetProperties())
         && (getPushTargetProperties() == that.getPushTargetProperties())
-        && (getNoOfSecurityGroups() == that.getNoOfSecurityGroups())
         && (getSecurityGroups() == that.getSecurityGroups())
         && super.equals(that)
         && true;
@@ -416,16 +387,13 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
     return Objects.hash(
         super.hashCode(),
         getApplicationUri(),
-        getNoOfPushTargetFolder(),
         getPushTargetFolder(),
         getEndpointUrl(),
         getSecurityPolicyUri(),
         getUserTokenType(),
         getRequestedKeyCount(),
         getRetryInterval(),
-        getNoOfPushTargetProperties(),
         getPushTargetProperties(),
-        getNoOfSecurityGroups(),
         getSecurityGroups());
   }
 

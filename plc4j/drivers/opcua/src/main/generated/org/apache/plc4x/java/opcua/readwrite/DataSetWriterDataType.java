@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DataSetWriterDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "15599";
+  public Integer getExtensionId() {
+    return (int) 15599;
   }
 
   // Properties.
@@ -49,8 +49,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
   protected final DataSetFieldContentMask dataSetFieldContentMask;
   protected final long keyFrameCount;
   protected final PascalString dataSetName;
-  protected final int noOfDataSetWriterProperties;
-  protected final List<ExtensionObjectDefinition> dataSetWriterProperties;
+  protected final List<KeyValuePair> dataSetWriterProperties;
   protected final ExtensionObject transportSettings;
   protected final ExtensionObject messageSettings;
 
@@ -61,8 +60,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
       DataSetFieldContentMask dataSetFieldContentMask,
       long keyFrameCount,
       PascalString dataSetName,
-      int noOfDataSetWriterProperties,
-      List<ExtensionObjectDefinition> dataSetWriterProperties,
+      List<KeyValuePair> dataSetWriterProperties,
       ExtensionObject transportSettings,
       ExtensionObject messageSettings) {
     super();
@@ -72,7 +70,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     this.dataSetFieldContentMask = dataSetFieldContentMask;
     this.keyFrameCount = keyFrameCount;
     this.dataSetName = dataSetName;
-    this.noOfDataSetWriterProperties = noOfDataSetWriterProperties;
     this.dataSetWriterProperties = dataSetWriterProperties;
     this.transportSettings = transportSettings;
     this.messageSettings = messageSettings;
@@ -102,11 +99,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     return dataSetName;
   }
 
-  public int getNoOfDataSetWriterProperties() {
-    return noOfDataSetWriterProperties;
-  }
-
-  public List<ExtensionObjectDefinition> getDataSetWriterProperties() {
+  public List<KeyValuePair> getDataSetWriterProperties() {
     return dataSetWriterProperties;
   }
 
@@ -126,7 +119,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     writeBuffer.pushContext("DataSetWriterDataType");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -142,7 +135,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         "dataSetFieldContentMask",
         "DataSetFieldContentMask",
         dataSetFieldContentMask,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataSetFieldContentMask::getValue,
             DataSetFieldContentMask::name,
             writeUnsignedLong(writeBuffer, 32)));
@@ -151,10 +144,16 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     writeSimpleField("keyFrameCount", keyFrameCount, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (dataSetName)
-    writeSimpleField("dataSetName", dataSetName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataSetName", dataSetName, writeComplex(writeBuffer));
 
-    // Simple Field (noOfDataSetWriterProperties)
-    writeSimpleField(
+    // Implicit Field (noOfDataSetWriterProperties) (Used for parsing, but its value is not stored
+    // as it's implicitly given by the objects content)
+    int noOfDataSetWriterProperties =
+        (int)
+            ((((getDataSetWriterProperties()) == (null))
+                ? -(1)
+                : COUNT(getDataSetWriterProperties())));
+    writeImplicitField(
         "noOfDataSetWriterProperties",
         noOfDataSetWriterProperties,
         writeSignedInt(writeBuffer, 32));
@@ -163,12 +162,10 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     writeComplexTypeArrayField("dataSetWriterProperties", dataSetWriterProperties, writeBuffer);
 
     // Simple Field (transportSettings)
-    writeSimpleField(
-        "transportSettings", transportSettings, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportSettings", transportSettings, writeComplex(writeBuffer));
 
     // Simple Field (messageSettings)
-    writeSimpleField(
-        "messageSettings", messageSettings, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("messageSettings", messageSettings, writeComplex(writeBuffer));
 
     writeBuffer.popContext("DataSetWriterDataType");
   }
@@ -205,13 +202,13 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     // Simple field (dataSetName)
     lengthInBits += dataSetName.getLengthInBits();
 
-    // Simple field (noOfDataSetWriterProperties)
+    // Implicit Field (noOfDataSetWriterProperties)
     lengthInBits += 32;
 
     // Array field
     if (dataSetWriterProperties != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : dataSetWriterProperties) {
+      for (KeyValuePair element : dataSetWriterProperties) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataSetWriterProperties.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -227,15 +224,14 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DataSetWriterDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -248,37 +244,36 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         readEnumField(
             "dataSetFieldContentMask",
             "DataSetFieldContentMask",
-            new DataReaderEnumDefault<>(
-                DataSetFieldContentMask::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(DataSetFieldContentMask::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     long keyFrameCount = readSimpleField("keyFrameCount", readUnsignedLong(readBuffer, 32));
 
     PascalString dataSetName =
         readSimpleField(
-            "dataSetName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "dataSetName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfDataSetWriterProperties =
-        readSimpleField("noOfDataSetWriterProperties", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfDataSetWriterProperties", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> dataSetWriterProperties =
+    List<KeyValuePair> dataSetWriterProperties =
         readCountArrayField(
             "dataSetWriterProperties",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
+            readComplex(
+                () ->
+                    (KeyValuePair) ExtensionObjectDefinition.staticParse(readBuffer, (int) (14535)),
                 readBuffer),
             noOfDataSetWriterProperties);
 
     ExtensionObject transportSettings =
         readSimpleField(
             "transportSettings",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     ExtensionObject messageSettings =
         readSimpleField(
             "messageSettings",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     readBuffer.closeContext("DataSetWriterDataType");
@@ -290,7 +285,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         dataSetFieldContentMask,
         keyFrameCount,
         dataSetName,
-        noOfDataSetWriterProperties,
         dataSetWriterProperties,
         transportSettings,
         messageSettings);
@@ -304,8 +298,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     private final DataSetFieldContentMask dataSetFieldContentMask;
     private final long keyFrameCount;
     private final PascalString dataSetName;
-    private final int noOfDataSetWriterProperties;
-    private final List<ExtensionObjectDefinition> dataSetWriterProperties;
+    private final List<KeyValuePair> dataSetWriterProperties;
     private final ExtensionObject transportSettings;
     private final ExtensionObject messageSettings;
 
@@ -316,8 +309,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         DataSetFieldContentMask dataSetFieldContentMask,
         long keyFrameCount,
         PascalString dataSetName,
-        int noOfDataSetWriterProperties,
-        List<ExtensionObjectDefinition> dataSetWriterProperties,
+        List<KeyValuePair> dataSetWriterProperties,
         ExtensionObject transportSettings,
         ExtensionObject messageSettings) {
       this.name = name;
@@ -326,7 +318,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
       this.dataSetFieldContentMask = dataSetFieldContentMask;
       this.keyFrameCount = keyFrameCount;
       this.dataSetName = dataSetName;
-      this.noOfDataSetWriterProperties = noOfDataSetWriterProperties;
       this.dataSetWriterProperties = dataSetWriterProperties;
       this.transportSettings = transportSettings;
       this.messageSettings = messageSettings;
@@ -341,7 +332,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
               dataSetFieldContentMask,
               keyFrameCount,
               dataSetName,
-              noOfDataSetWriterProperties,
               dataSetWriterProperties,
               transportSettings,
               messageSettings);
@@ -364,7 +354,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         && (getDataSetFieldContentMask() == that.getDataSetFieldContentMask())
         && (getKeyFrameCount() == that.getKeyFrameCount())
         && (getDataSetName() == that.getDataSetName())
-        && (getNoOfDataSetWriterProperties() == that.getNoOfDataSetWriterProperties())
         && (getDataSetWriterProperties() == that.getDataSetWriterProperties())
         && (getTransportSettings() == that.getTransportSettings())
         && (getMessageSettings() == that.getMessageSettings())
@@ -382,7 +371,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         getDataSetFieldContentMask(),
         getKeyFrameCount(),
         getDataSetName(),
-        getNoOfDataSetWriterProperties(),
         getDataSetWriterProperties(),
         getTransportSettings(),
         getMessageSettings());

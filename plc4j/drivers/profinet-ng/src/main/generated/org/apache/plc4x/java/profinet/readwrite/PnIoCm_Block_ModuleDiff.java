@@ -180,8 +180,7 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
     List<PnIoCm_ModuleDiffBlockApi> apis =
         readCountArrayField(
             "apis",
-            new DataReaderComplexDefault<>(
-                () -> PnIoCm_ModuleDiffBlockApi.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnIoCm_ModuleDiffBlockApi.staticParse(readBuffer), readBuffer),
             numApis,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

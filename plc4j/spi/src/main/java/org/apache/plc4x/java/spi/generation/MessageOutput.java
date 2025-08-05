@@ -20,6 +20,6 @@ package org.apache.plc4x.java.spi.generation;
 
 public interface MessageOutput<SERIALIZER_TYPE> {
 
-    WriteBufferByteBased serialize(SERIALIZER_TYPE value, Object... args) throws SerializationException;
+    WriteBufferByteBased serialize(SERIALIZER_TYPE value) throws SerializationException;
 
 }

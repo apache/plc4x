@@ -69,6 +69,7 @@ public enum OpcuaNodeIdServicesReferenceType {
   HasEffectUnsuppressed((int) 17985L),
   HasWriterGroup((int) 18804L),
   HasReaderGroup((int) 18805L),
+  HasLogHierarchy((int) 19371L),
   AliasFor((int) 23469L),
   IsDeprecated((int) 23562L),
   HasStructuredComponent((int) 24136L),
@@ -90,6 +91,11 @@ public enum OpcuaNodeIdServicesReferenceType {
   IsExecutingOn((int) 25265L),
   HasPushedSecurityGroup((int) 25345L),
   AlarmSuppressionGroupMember((int) 32059L),
+  HasKeyValueDescription((int) 32407L),
+  HasEngineeringUnitDetails((int) 32558L),
+  HasQuantity((int) 32559L),
+  HasCurrentData((int) 32633L),
+  HasCurrentEvent((int) 32634L),
   HasReferenceDescription((int) 32679L);
   private static final Map<Integer, OpcuaNodeIdServicesReferenceType> map;
 

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CurrencyUnitType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "23500";
+  public Integer getExtensionId() {
+    return (int) 23500;
   }
 
   // Properties.
@@ -87,10 +87,10 @@ public class CurrencyUnitType extends ExtensionObjectDefinition implements Messa
     writeSimpleField("exponent", exponent, writeSignedByte(writeBuffer, 8));
 
     // Simple Field (alphabeticCode)
-    writeSimpleField("alphabeticCode", alphabeticCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("alphabeticCode", alphabeticCode, writeComplex(writeBuffer));
 
     // Simple Field (currency)
-    writeSimpleField("currency", currency, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("currency", currency, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CurrencyUnitType");
   }
@@ -122,7 +122,7 @@ public class CurrencyUnitType extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CurrencyUnitType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -133,14 +133,11 @@ public class CurrencyUnitType extends ExtensionObjectDefinition implements Messa
 
     PascalString alphabeticCode =
         readSimpleField(
-            "alphabeticCode",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "alphabeticCode", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     LocalizedText currency =
         readSimpleField(
-            "currency",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "currency", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("CurrencyUnitType");
     // Create the instance

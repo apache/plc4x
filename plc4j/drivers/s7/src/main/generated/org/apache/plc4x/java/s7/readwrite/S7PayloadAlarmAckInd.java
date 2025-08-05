@@ -74,7 +74,7 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
     writeBuffer.pushContext("S7PayloadAlarmAckInd");
 
     // Simple Field (alarmMessage)
-    writeSimpleField("alarmMessage", alarmMessage, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("alarmMessage", alarmMessage, writeComplex(writeBuffer));
 
     writeBuffer.popContext("S7PayloadAlarmAckInd");
   }
@@ -106,8 +106,7 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
     AlarmMessageAckPushType alarmMessage =
         readSimpleField(
             "alarmMessage",
-            new DataReaderComplexDefault<>(
-                () -> AlarmMessageAckPushType.staticParse(readBuffer), readBuffer));
+            readComplex(() -> AlarmMessageAckPushType.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("S7PayloadAlarmAckInd");
     // Create the instance

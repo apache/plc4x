@@ -20,14 +20,15 @@
 package cbus
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"reflect"
+
+	"github.com/pkg/errors"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-	"github.com/pkg/errors"
 )
 
 type ValueHandler struct {
@@ -358,6 +359,8 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value any) (apiValues.Plc
 			default:
 				return nil, errors.Errorf("No support for %s", tmpSalTag.application)
 			}
+		default:
+			// TODO: log at least
 		}
 	}
 	return m.DefaultValueHandler.NewPlcValue(tag, value)

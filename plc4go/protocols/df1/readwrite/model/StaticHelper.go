@@ -21,8 +21,10 @@ package model
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/snksoft/crc"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var table *crc.Table
@@ -32,42 +34,50 @@ func init() {
 	table = crc.NewTable(&crc.Parameters{Width: 16, Polynomial: 0x8005, Init: 0x0000, ReflectIn: true, ReflectOut: true, FinalXor: 0x0000})
 }
 
-func CrcCheck(ctx context.Context, destinationAddress uint8, sourceAddress uint8, command DF1Command) (uint16, error) {
-	df1Crc := table.InitCrc()
-	df1Crc = table.UpdateCrc(df1Crc, []byte{destinationAddress, sourceAddress})
-	bytes, err := command.Serialize()
-	if err != nil {
-		return 0, err
+func CrcCheck(ctx context.Context, destinationAddress uint8, sourceAddress uint8, command DF1Command) func() (uint16, error) {
+	return func() (uint16, error) {
+		df1Crc := table.InitCrc()
+		df1Crc = table.UpdateCrc(df1Crc, []byte{destinationAddress, sourceAddress})
+		bytes, err := command.Serialize()
+		if err != nil {
+			return 0, err
+		}
+		df1Crc = table.UpdateCrc(df1Crc, bytes)
+		df1Crc = table.UpdateCrc(df1Crc, []byte{0x03})
+		return table.CRC16(df1Crc), nil
 	}
-	df1Crc = table.UpdateCrc(df1Crc, bytes)
-	df1Crc = table.UpdateCrc(df1Crc, []byte{0x03})
-	return table.CRC16(df1Crc), nil
 }
 
-func DataTerminate(ctx context.Context, io utils.ReadBuffer) bool {
-	rbbb := io.(utils.ReadBufferByteBased)
-	// The byte sequence 0x10 followed by 0x03 indicates the end of the message,
-	// so if we would read this, we abort the loop and stop reading data.
-	return rbbb.PeekByte(0) == 0x10 && rbbb.PeekByte(1) == 0x03
-}
-
-func ReadData(ctx context.Context, io utils.ReadBuffer) uint8 {
-	rbbb := io.(utils.ReadBufferByteBased)
-	// If we read a 0x10, this has to be followed by another 0x10, which is how
-	// this value is escaped in DF1, so if we encounter two 0x10, we simply ignore the first.
-	if rbbb.PeekByte(0) == 0x10 && rbbb.PeekByte(1) == 0x10 {
-		_, _ = io.ReadUint8("", 8)
+func DataTerminate(ctx context.Context, io utils.ReadBuffer) func([]byte) bool {
+	return func([]byte) bool {
+		rbbb := io.(utils.ReadBufferByteBased)
+		// The byte sequence 0x10 followed by 0x03 indicates the end of the message,
+		// so if we would read this, we abort the loop and stop reading data.
+		return rbbb.PeekByte(0) == 0x10 && rbbb.PeekByte(1) == 0x03
 	}
-	data, _ := io.ReadUint8("", 8)
-	return data
 }
 
-func WriteData(ctx context.Context, io utils.WriteBuffer, element uint8) {
+func ReadData(ctx context.Context, io utils.ReadBuffer) func(context.Context) (uint8, error) {
+	return func(context.Context) (uint8, error) {
+		rbbb := io.(utils.ReadBufferByteBased)
+		// If we read a 0x10, this has to be followed by another 0x10, which is how
+		// this value is escaped in DF1, so if we encounter two 0x10, we simply ignore the first.
+		if rbbb.PeekByte(0) == 0x10 && rbbb.PeekByte(1) == 0x10 {
+			_, _ = io.ReadUint8("", 8)
+		}
+		data, _ := io.ReadUint8("", 8)
+		return data, nil
+	}
+}
+
+func WriteData(ctx context.Context, io utils.WriteBuffer, element byte) error {
 	if element == 0x10 {
 		// If a value is 0x10, this has to be duplicated in order to be escaped.
-		_ = io.WriteUint8("", 8, element)
+		if err := io.WriteUint8("", 8, element); err != nil {
+			return err
+		}
 	}
-	_ = io.WriteUint8("", 8, element)
+	return io.WriteUint8("", 8, element)
 }
 
 func DataLength(ctx context.Context, data []byte) uint16 {

@@ -82,7 +82,7 @@ public class BACnetConstructedDataLowerDeck extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataLowerDeck");
 
     // Simple Field (lowerDeck)
-    writeSimpleField("lowerDeck", lowerDeck, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lowerDeck", lowerDeck, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagObjectIdentifier actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataLowerDeck extends BACnetConstructedData implem
     BACnetApplicationTagObjectIdentifier lowerDeck =
         readSimpleField(
             "lowerDeck",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

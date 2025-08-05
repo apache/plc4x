@@ -82,7 +82,7 @@ public class BACnetConstructedDataEgressActive extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataEgressActive");
 
     // Simple Field (egressActive)
-    writeSimpleField("egressActive", egressActive, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("egressActive", egressActive, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataEgressActive extends BACnetConstructedData imp
     BACnetApplicationTagBoolean egressActive =
         readSimpleField(
             "egressActive",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -38,13 +38,13 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CreateSessionRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "461";
+  public Integer getExtensionId() {
+    return (int) 461;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final ExtensionObjectDefinition clientDescription;
+  protected final RequestHeader requestHeader;
+  protected final ApplicationDescription clientDescription;
   protected final PascalString serverUri;
   protected final PascalString endpointUrl;
   protected final PascalString sessionName;
@@ -54,8 +54,8 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
   protected final long maxResponseMessageSize;
 
   public CreateSessionRequest(
-      ExtensionObjectDefinition requestHeader,
-      ExtensionObjectDefinition clientDescription,
+      RequestHeader requestHeader,
+      ApplicationDescription clientDescription,
       PascalString serverUri,
       PascalString endpointUrl,
       PascalString sessionName,
@@ -75,11 +75,11 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
     this.maxResponseMessageSize = maxResponseMessageSize;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public ExtensionObjectDefinition getClientDescription() {
+  public ApplicationDescription getClientDescription() {
     return clientDescription;
   }
 
@@ -119,27 +119,25 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("CreateSessionRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (clientDescription)
-    writeSimpleField(
-        "clientDescription", clientDescription, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientDescription", clientDescription, writeComplex(writeBuffer));
 
     // Simple Field (serverUri)
-    writeSimpleField("serverUri", serverUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverUri", serverUri, writeComplex(writeBuffer));
 
     // Simple Field (endpointUrl)
-    writeSimpleField("endpointUrl", endpointUrl, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("endpointUrl", endpointUrl, writeComplex(writeBuffer));
 
     // Simple Field (sessionName)
-    writeSimpleField("sessionName", sessionName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sessionName", sessionName, writeComplex(writeBuffer));
 
     // Simple Field (clientNonce)
-    writeSimpleField("clientNonce", clientNonce, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientNonce", clientNonce, writeComplex(writeBuffer));
 
     // Simple Field (clientCertificate)
-    writeSimpleField(
-        "clientCertificate", clientCertificate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientCertificate", clientCertificate, writeComplex(writeBuffer));
 
     // Simple Field (requestedSessionTimeout)
     writeSimpleField(
@@ -194,51 +192,48 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CreateSessionRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+            readComplex(
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    ExtensionObjectDefinition clientDescription =
+    ApplicationDescription clientDescription =
         readSimpleField(
             "clientDescription",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("310")),
+            readComplex(
+                () ->
+                    (ApplicationDescription)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (310)),
                 readBuffer));
 
     PascalString serverUri =
         readSimpleField(
-            "serverUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "serverUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString endpointUrl =
         readSimpleField(
-            "endpointUrl",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "endpointUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString sessionName =
         readSimpleField(
-            "sessionName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "sessionName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalByteString clientNonce =
         readSimpleField(
-            "clientNonce",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "clientNonce", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalByteString clientCertificate =
         readSimpleField(
             "clientCertificate",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     double requestedSessionTimeout =
         readSimpleField("requestedSessionTimeout", readDouble(readBuffer, 64));
@@ -262,8 +257,8 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
 
   public static class CreateSessionRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final ExtensionObjectDefinition clientDescription;
+    private final RequestHeader requestHeader;
+    private final ApplicationDescription clientDescription;
     private final PascalString serverUri;
     private final PascalString endpointUrl;
     private final PascalString sessionName;
@@ -273,8 +268,8 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
     private final long maxResponseMessageSize;
 
     public CreateSessionRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        ExtensionObjectDefinition clientDescription,
+        RequestHeader requestHeader,
+        ApplicationDescription clientDescription,
         PascalString serverUri,
         PascalString endpointUrl,
         PascalString sessionName,

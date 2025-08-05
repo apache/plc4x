@@ -1,0 +1,3494 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+ -->
+<test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
+                       byteOrder="BIG_ENDIAN">
+
+  <name>Modbus All Types</name>
+
+  <protocolName>modbus</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
+  <driver-name>modbus-tcp</driver-name>
+  <driver-parameters>
+    <parameter>
+      <name>default-payload-byte-order</name>
+      <value>LITTLE_ENDIAN</value>
+    </parameter>
+  </driver-parameters>
+
+  <testcase>
+    <name>Single element read request: holding-register:1:BOOL</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:1:BOOL</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send Modbus Read Request">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive Modbus Read Response">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">5</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0x0100</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">0</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>Single element write request: holding-register:1:BOOL</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:1:BOOL</address>
+              <value>true</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="Send Modbus Write Request">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">9</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0x0100</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive Modbus Write Response">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">0</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>10 Query: Trans: 3; Unit: 1, Func: 3: Read Holding Registers</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:2:BYTE</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">1</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">5</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0x2a00</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">1</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">BYTE</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBYTE dataType="int" bitLength="8">42</PlcBYTE>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>13 Query: Trans: 4; Unit: 1, Func: 16: Write Multiple Registers</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:2:BYTE</address>
+              <value>42</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">9</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">1</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0x2a00</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">1</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">1</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">BYTE</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcBYTE dataType="int" bitLength="8">42</PlcBYTE>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>16 Query: Trans: 5; Unit: 1, Func: 3: Read Holding Registers</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:3:WORD</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">2</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">5</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0xb8a5</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">2</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">WORD</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcWORD dataType="int" bitLength="16">42424</PlcWORD>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>19 Query: Trans: 6; Unit: 1, Func: 16: Write Multiple Registers</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:3:WORD</address>
+              <value>42424</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">9</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">2</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0xb8a5</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">2</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">2</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">WORD</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcWORD dataType="int" bitLength="16">42424</PlcWORD>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>22 Query: Trans: 7; Unit: 1, Func: 3: Read Holding Registers</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:4:DWORD</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">3</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">7</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">4</byteCount>
+                  <value dataType="byte" bitLength="32">0xb888defc</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">3</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="40" encoding="UTF-8">DWORD</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcDWORD dataType="int" bitLength="32">4242442424</PlcDWORD>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>25 Query: Trans: 8; Unit: 1, Func: 16: Write Multiple Registers</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:4:DWORD</address>
+              <value>4242442424</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">11</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">3</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                  <byteCount dataType="uint" bitLength="8">4</byteCount>
+                  <value dataType="byte" bitLength="32">0xb888defc</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">3</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">3</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="40" encoding="UTF-8">DWORD</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcDWORD dataType="int" bitLength="32">4242442424</PlcDWORD>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>28 Query: Trans: 9; Unit: 1, Func: 3: Read Holding Registers</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:10:SINT</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">9</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">5</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0xd600</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">9</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">SINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcSINT dataType="int" bitLength="8">-42</PlcSINT>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>31 Query: Trans: 10; Unit: 1, Func: 16: Write Multiple Registers</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:10:SINT</address>
+              <value>-42</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">9</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">9</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0xd600</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">9</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">9</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">SINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcSINT dataType="int" bitLength="8">-42</PlcSINT>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>34 Query: Trans: 11; Unit: 1, Func: 3: Read Holding Registers</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:11:USINT</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">10</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">5</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0x2a00</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">10</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="40" encoding="UTF-8">USINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUSINT dataType="int" bitLength="8">42</PlcUSINT>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>37 Query: Trans: 12; Unit: 1, Func: 16: Write Multiple Registers</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:11:USINT</address>
+              <value>42</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">9</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">10</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0x2a00</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">10</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">10</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="40" encoding="UTF-8">USINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcUSINT dataType="int" bitLength="8">42</PlcUSINT>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>40 Query: Trans: 13; Unit: 1, Func: 3: Read Holding Registers</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:12:INT</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">11</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">5</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0x88f6</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">11</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="24" encoding="UTF-8">INT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcINT dataType="int" bitLength="16">-2424</PlcINT>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>43 Query: Trans: 14; Unit: 1, Func: 16: Write Multiple Registers</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:12:INT</address>
+              <value>-2424</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">9</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">11</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0x88f6</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">11</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">11</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="24" encoding="UTF-8">INT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcINT dataType="int" bitLength="16">-2424</PlcINT>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>46 Query: Trans: 15; Unit: 1, Func: 3: Read Holding Registers</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:13:UINT</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">12</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">5</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0xb8a5</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">12</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">UINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUINT dataType="int" bitLength="16">42424</PlcUINT>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>49 Query: Trans: 16; Unit: 1, Func: 16: Write Multiple Registers</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:13:UINT</address>
+              <value>42424</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">9</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">12</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                  <byteCount dataType="uint" bitLength="8">2</byteCount>
+                  <value dataType="byte" bitLength="16">0xb8a5</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">12</startingAddress>
+                  <quantity dataType="uint" bitLength="16">1</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">12</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">UINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcUINT dataType="int" bitLength="16">42424</PlcUINT>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>52 Query: Trans: 17; Unit: 1, Func: 3: Read Holding Registers</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:14:DINT</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">13</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">7</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">4</byteCount>
+                  <value dataType="byte" bitLength="32">0x489f8cf1</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">13</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">DINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcDINT dataType="int" bitLength="32">-242442424</PlcDINT>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>55 Query: Trans: 18; Unit: 1, Func: 16: Write Multiple Registers</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:14:DINT</address>
+              <value>-242442424</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">11</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">13</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                  <byteCount dataType="uint" bitLength="8">4</byteCount>
+                  <value dataType="byte" bitLength="32">0x489f8cf1</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">13</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">13</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">DINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcDINT dataType="int" bitLength="32">-242442424</PlcDINT>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>58 Query: Trans: 19; Unit: 1, Func: 3: Read Holding Registers</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:16:UDINT</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">15</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">7</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">4</byteCount>
+                  <value dataType="byte" bitLength="32">0xb888defc</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">15</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="40" encoding="UTF-8">UDINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUDINT dataType="int" bitLength="32">4242442424</PlcUDINT>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>61 Query: Trans: 20; Unit: 1, Func: 16: Write Multiple Registers</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:16:UDINT</address>
+              <value>4242442424</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">11</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">15</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                  <byteCount dataType="uint" bitLength="8">4</byteCount>
+                  <value dataType="byte" bitLength="32">0xb888defc</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">15</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">15</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="40" encoding="UTF-8">UDINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcUDINT dataType="int" bitLength="32">4242442424</PlcUDINT>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>64 Query: Trans: 21; Unit: 1, Func: 3: Read Holding Registers</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:18:LINT</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">17</startingAddress>
+                  <quantity dataType="uint" bitLength="16">4</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">11</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">8</byteCount>
+                  <value dataType="byte" bitLength="64">0x4eb6fbb217d11fc5</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">17</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">LINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcLINT dataType="int" bitLength="64">-4242442424242424242</PlcLINT>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>67 Query: Trans: 22; Unit: 1, Func: 16: Write Multiple Registers</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:18:LINT</address>
+              <value>-4242442424242424242</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">15</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">17</startingAddress>
+                  <quantity dataType="uint" bitLength="16">4</quantity>
+                  <byteCount dataType="uint" bitLength="8">8</byteCount>
+                  <value dataType="byte" bitLength="64">0x4eb6fbb217d11fc5</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">17</startingAddress>
+                  <quantity dataType="uint" bitLength="16">4</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">17</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">LINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcLINT dataType="int" bitLength="64">-4242442424242424242</PlcLINT>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>70 Query: Trans: 23; Unit: 1, Func: 3: Read Holding Registers</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:22:ULINT</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">21</startingAddress>
+                  <quantity dataType="uint" bitLength="16">4</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">11</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">8</byteCount>
+                  <value dataType="byte" bitLength="64">0xb249044de82ee03a</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">21</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="40" encoding="UTF-8">ULINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcULINT dataType="int" bitLength="64">4242442424242424242</PlcULINT>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>73 Query: Trans: 24; Unit: 1, Func: 16: Write Multiple Registers</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:22:ULINT</address>
+              <value>4242442424242424242</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">15</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">21</startingAddress>
+                  <quantity dataType="uint" bitLength="16">4</quantity>
+                  <byteCount dataType="uint" bitLength="8">8</byteCount>
+                  <value dataType="byte" bitLength="64">0xb249044de82ee03a</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">21</startingAddress>
+                  <quantity dataType="uint" bitLength="16">4</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">21</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="40" encoding="UTF-8">ULINT</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcULINT dataType="int" bitLength="64">4242442424242424242</PlcULINT>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>76 Query: Trans: 25; Unit: 1, Func: 3: Read Holding Registers</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:26:REAL</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">25</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">7</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">4</byteCount>
+                  <value dataType="byte" bitLength="32">0xdc0f4940</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">25</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcREAL dataType="float" bitLength="32">3.1415929794311523</PlcREAL>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>79 Query: Trans: 26; Unit: 1, Func: 16: Write Multiple Registers</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:26:REAL</address>
+              <value>3.141593</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">11</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">25</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                  <byteCount dataType="uint" bitLength="8">4</byteCount>
+                  <value dataType="byte" bitLength="32">0xdc0f4940</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">25</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">25</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcREAL dataType="float" bitLength="32">3.1415929794311523</PlcREAL>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>82 Query: Trans: 27; Unit: 1, Func: 3: Read Holding Registers</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>hurz</name>
+              <address>holding-register:28:LREAL</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">27</startingAddress>
+                  <quantity dataType="uint" bitLength="16">4</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">11</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">8</byteCount>
+                  <value dataType="byte" bitLength="64">0xcf5f148b0abf0540</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">27</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="40" encoding="UTF-8">LREAL</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </PlcTagItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcLREAL dataType="float" bitLength="64">2.71828182846</PlcLREAL>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>85 Query: Trans: 28; Unit: 1, Func: 16: Write Multiple Registers</name>
+    <steps>
+      <api-request name="Receive Write Request from application">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>hurz</name>
+              <address>holding-register:28:LREAL</address>
+              <value>2.71828182846</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">15</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">27</startingAddress>
+                  <quantity dataType="uint" bitLength="16">4</quantity>
+                  <byteCount dataType="uint" bitLength="8">8</byteCount>
+                  <value dataType="byte" bitLength="64">0xcf5f148b0abf0540</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">27</startingAddress>
+                  <quantity dataType="uint" bitLength="16">4</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <PlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">27</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="40" encoding="UTF-8">LREAL</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcLREAL dataType="float" bitLength="64">2.71828182846</PlcLREAL>
+                      </value>
+                    </PlcTagValueItem>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <!--testcase>
+    <name>88 Query: Trans: 29; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>001d000000060103001b0004</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">29</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">27</startingAddress>
+                <quantity dataType="uint" bitLength="16">4</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>89 Response: Trans: 29; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>001d0000000b0103084005bf0a8b145fcf</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">29</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">11</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">8</byteCount>
+                <value dataType="byte" bitLength="64">0x4005bf0a8b145fcf</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>91 Query: Trans: 30; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>001e00000006010300090001</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">30</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">9</startingAddress>
+                <quantity dataType="uint" bitLength="16">1</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>92 Response: Trans: 30; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>001e0000000501030200d6</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">30</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">5</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">2</byteCount>
+                <value dataType="byte" bitLength="16">0x00d6</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>94 Query: Trans: 31; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>001f00000006010300000001</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">31</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                <quantity dataType="uint" bitLength="16">1</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>95 Response: Trans: 31; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>001f000000050103020001</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">31</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">5</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">2</byteCount>
+                <value dataType="byte" bitLength="16">0x0001</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>97 Query: Trans: 32; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002000000006010300150004</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">32</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">21</startingAddress>
+                <quantity dataType="uint" bitLength="16">4</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>98 Response: Trans: 32; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>00200000000b0103083ae02ee84d0449b2</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">32</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">11</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">8</byteCount>
+                <value dataType="byte" bitLength="64">0x3ae02ee84d0449b2</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>100 Query: Trans: 33; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>0021000000060103000a0001</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">33</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">10</startingAddress>
+                <quantity dataType="uint" bitLength="16">1</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>101 Response: Trans: 33; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002100000005010302002a</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">33</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">5</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">2</byteCount>
+                <value dataType="byte" bitLength="16">0x002a</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>103 Query: Trans: 34; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>0022000000060103000b0001</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">34</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">11</startingAddress>
+                <quantity dataType="uint" bitLength="16">1</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>104 Response: Trans: 34; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002200000005010302f688</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">34</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">5</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">2</byteCount>
+                <value dataType="byte" bitLength="16">0xf688</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>106 Query: Trans: 35; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>0023000000060103000f0002</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">35</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">15</startingAddress>
+                <quantity dataType="uint" bitLength="16">2</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>107 Response: Trans: 35; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002300000007010304fcde88b8</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">35</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">7</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">4</byteCount>
+                <value dataType="byte" bitLength="32">0xfcde88b8</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>109 Query: Trans: 36; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002400000006010300010001</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">36</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">1</startingAddress>
+                <quantity dataType="uint" bitLength="16">1</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>110 Response: Trans: 36; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002400000005010302002a</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">36</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">5</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">2</byteCount>
+                <value dataType="byte" bitLength="16">0x002a</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>112 Query: Trans: 37; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002500000006010300110004</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">37</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">17</startingAddress>
+                <quantity dataType="uint" bitLength="16">4</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>113 Response: Trans: 37; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>00250000000b010308c51fd117b2fbb64e</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">37</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">11</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">8</byteCount>
+                <value dataType="byte" bitLength="64">0xc51fd117b2fbb64e</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>115 Query: Trans: 38; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002600000006010300190002</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">38</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">25</startingAddress>
+                <quantity dataType="uint" bitLength="16">2</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>116 Response: Trans: 38; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>00260000000701030440490fdc</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">38</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">7</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">4</byteCount>
+                <value dataType="byte" bitLength="32">0x40490fdc</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>118 Query: Trans: 39; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>0027000000060103000c0001</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">39</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">12</startingAddress>
+                <quantity dataType="uint" bitLength="16">1</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>119 Response: Trans: 39; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002700000005010302a5b8</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">39</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">5</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">2</byteCount>
+                <value dataType="byte" bitLength="16">0xa5b8</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>121 Query: Trans: 40; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>0028000000060103000d0002</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">40</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">13</startingAddress>
+                <quantity dataType="uint" bitLength="16">2</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>122 Response: Trans: 40; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002800000007010304f18c9f48</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">40</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">7</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">4</byteCount>
+                <value dataType="byte" bitLength="32">0xf18c9f48</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>124 Query: Trans: 41; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002900000006010300020001</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">41</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">2</startingAddress>
+                <quantity dataType="uint" bitLength="16">1</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>125 Response: Trans: 41; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002900000005010302a5b8</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">41</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">5</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">2</byteCount>
+                <value dataType="byte" bitLength="16">0xa5b8</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>127 Query: Trans: 42; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002a00000006010300030002</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">42</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">3</startingAddress>
+                <quantity dataType="uint" bitLength="16">2</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>128 Response: Trans: 42; Unit: 1, Func: 3: Read Holding Registers</name>
+    <raw>002a00000007010304fcde88b8</raw>
+    <root-type>ModbusADU</root-type>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">42</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">7</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">4</byteCount>
+                <value dataType="byte" bitLength="32">0xfcde88b8</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase-->
+
+</test:driver-testsuite>

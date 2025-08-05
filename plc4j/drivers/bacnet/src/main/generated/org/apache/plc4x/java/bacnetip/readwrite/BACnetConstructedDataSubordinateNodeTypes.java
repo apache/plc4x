@@ -100,7 +100,7 @@ public class BACnetConstructedDataSubordinateNodeTypes extends BACnetConstructed
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (subordinateNodeTypes)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataSubordinateNodeTypes extends BACnetConstructed
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,7 +162,7 @@ public class BACnetConstructedDataSubordinateNodeTypes extends BACnetConstructed
     List<BACnetNodeTypeTagged> subordinateNodeTypes =
         readTerminatedArrayField(
             "subordinateNodeTypes",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNodeTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

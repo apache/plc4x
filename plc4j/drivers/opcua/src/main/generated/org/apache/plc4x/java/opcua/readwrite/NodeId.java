@@ -49,10 +49,6 @@ public class NodeId implements Message {
     return nodeId;
   }
 
-  public String getId() {
-    return String.valueOf(getNodeId().getIdentifier());
-  }
-
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -62,11 +58,7 @@ public class NodeId implements Message {
     writeReservedField("reserved", (byte) 0x00, writeSignedByte(writeBuffer, 2));
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
-
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
-    String id = getId();
-    writeBuffer.writeVirtual("id", id);
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     writeBuffer.popContext("NodeId");
   }
@@ -88,14 +80,7 @@ public class NodeId implements Message {
     // Simple field (nodeId)
     lengthInBits += nodeId.getLengthInBits();
 
-    // A virtual field doesn't have any in- or output.
-
     return lengthInBits;
-  }
-
-  public static NodeId staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
   }
 
   public static NodeId staticParse(ReadBuffer readBuffer) throws ParseException {
@@ -107,10 +92,7 @@ public class NodeId implements Message {
 
     NodeIdTypeDefinition nodeId =
         readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(
-                () -> NodeIdTypeDefinition.staticParse(readBuffer), readBuffer));
-    String id = readVirtualField("id", String.class, nodeId.getIdentifier());
+            "nodeId", readComplex(() -> NodeIdTypeDefinition.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("NodeId");
     // Create the instance

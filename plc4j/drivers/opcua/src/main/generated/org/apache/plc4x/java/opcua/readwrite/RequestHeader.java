@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RequestHeader extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "391";
+  public Integer getExtensionId() {
+    return (int) 391;
   }
 
   // Properties.
@@ -105,8 +105,7 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("RequestHeader");
 
     // Simple Field (authenticationToken)
-    writeSimpleField(
-        "authenticationToken", authenticationToken, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("authenticationToken", authenticationToken, writeComplex(writeBuffer));
 
     // Simple Field (timestamp)
     writeSimpleField("timestamp", timestamp, writeSignedLong(writeBuffer, 64));
@@ -118,14 +117,13 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
     writeSimpleField("returnDiagnostics", returnDiagnostics, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (auditEntryId)
-    writeSimpleField("auditEntryId", auditEntryId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("auditEntryId", auditEntryId, writeComplex(writeBuffer));
 
     // Simple Field (timeoutHint)
     writeSimpleField("timeoutHint", timeoutHint, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (additionalHeader)
-    writeSimpleField(
-        "additionalHeader", additionalHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("additionalHeader", additionalHeader, writeComplex(writeBuffer));
 
     writeBuffer.popContext("RequestHeader");
   }
@@ -166,15 +164,14 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RequestHeader");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId authenticationToken =
         readSimpleField(
-            "authenticationToken",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "authenticationToken", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     long timestamp = readSimpleField("timestamp", readSignedLong(readBuffer, 64));
 
@@ -184,15 +181,14 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
 
     PascalString auditEntryId =
         readSimpleField(
-            "auditEntryId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "auditEntryId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     long timeoutHint = readSimpleField("timeoutHint", readUnsignedLong(readBuffer, 32));
 
     ExtensionObject additionalHeader =
         readSimpleField(
             "additionalHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     readBuffer.closeContext("RequestHeader");

@@ -63,12 +63,6 @@ public class BACnetWeekNDay implements Message {
     return lengthInBits;
   }
 
-  public static BACnetWeekNDay staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetWeekNDay staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetWeekNDay");
     PositionAware positionAware = readBuffer;

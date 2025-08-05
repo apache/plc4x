@@ -77,12 +77,6 @@ public class StatusCode implements Message {
     return lengthInBits;
   }
 
-  public static StatusCode staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static StatusCode staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("StatusCode");
     PositionAware positionAware = readBuffer;

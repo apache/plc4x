@@ -83,10 +83,7 @@ public class BACnetConstructedDataDoorExtendedPulseTime extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataDoorExtendedPulseTime");
 
     // Simple Field (doorExtendedPulseTime)
-    writeSimpleField(
-        "doorExtendedPulseTime",
-        doorExtendedPulseTime,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doorExtendedPulseTime", doorExtendedPulseTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -128,7 +125,7 @@ public class BACnetConstructedDataDoorExtendedPulseTime extends BACnetConstructe
     BACnetApplicationTagUnsignedInteger doorExtendedPulseTime =
         readSimpleField(
             "doorExtendedPulseTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

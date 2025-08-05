@@ -83,8 +83,7 @@ public class BACnetConstructedDataObjectIdentifier extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataObjectIdentifier");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagObjectIdentifier actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataObjectIdentifier extends BACnetConstructedData
     BACnetApplicationTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

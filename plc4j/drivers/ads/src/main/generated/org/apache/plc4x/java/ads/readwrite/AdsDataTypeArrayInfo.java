@@ -107,12 +107,6 @@ public class AdsDataTypeArrayInfo implements Message {
     return lengthInBits;
   }
 
-  public static AdsDataTypeArrayInfo staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AdsDataTypeArrayInfo staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AdsDataTypeArrayInfo");
     PositionAware positionAware = readBuffer;

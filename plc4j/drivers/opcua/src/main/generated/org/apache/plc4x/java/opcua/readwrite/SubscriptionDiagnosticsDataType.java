@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "876";
+  public Integer getExtensionId() {
+    return (int) 876;
   }
 
   // Properties.
@@ -73,7 +73,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
   protected final long disabledMonitoredItemCount;
   protected final long monitoringQueueOverflowCount;
   protected final long nextSequenceNumber;
-  protected final long eventQueueOverFlowCount;
+  protected final long eventQueueOverflowCount;
 
   public SubscriptionDiagnosticsDataType(
       NodeId sessionId,
@@ -106,7 +106,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
       long disabledMonitoredItemCount,
       long monitoringQueueOverflowCount,
       long nextSequenceNumber,
-      long eventQueueOverFlowCount) {
+      long eventQueueOverflowCount) {
     super();
     this.sessionId = sessionId;
     this.subscriptionId = subscriptionId;
@@ -138,7 +138,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     this.disabledMonitoredItemCount = disabledMonitoredItemCount;
     this.monitoringQueueOverflowCount = monitoringQueueOverflowCount;
     this.nextSequenceNumber = nextSequenceNumber;
-    this.eventQueueOverFlowCount = eventQueueOverFlowCount;
+    this.eventQueueOverflowCount = eventQueueOverflowCount;
   }
 
   public NodeId getSessionId() {
@@ -261,8 +261,8 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     return nextSequenceNumber;
   }
 
-  public long getEventQueueOverFlowCount() {
-    return eventQueueOverFlowCount;
+  public long getEventQueueOverflowCount() {
+    return eventQueueOverflowCount;
   }
 
   @Override
@@ -273,7 +273,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     writeBuffer.pushContext("SubscriptionDiagnosticsDataType");
 
     // Simple Field (sessionId)
-    writeSimpleField("sessionId", sessionId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sessionId", sessionId, writeComplex(writeBuffer));
 
     // Simple Field (subscriptionId)
     writeSimpleField("subscriptionId", subscriptionId, writeUnsignedLong(writeBuffer, 32));
@@ -398,9 +398,9 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     // Simple Field (nextSequenceNumber)
     writeSimpleField("nextSequenceNumber", nextSequenceNumber, writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (eventQueueOverFlowCount)
+    // Simple Field (eventQueueOverflowCount)
     writeSimpleField(
-        "eventQueueOverFlowCount", eventQueueOverFlowCount, writeUnsignedLong(writeBuffer, 32));
+        "eventQueueOverflowCount", eventQueueOverflowCount, writeUnsignedLong(writeBuffer, 32));
 
     writeBuffer.popContext("SubscriptionDiagnosticsDataType");
   }
@@ -509,22 +509,20 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     // Simple field (nextSequenceNumber)
     lengthInBits += 32;
 
-    // Simple field (eventQueueOverFlowCount)
+    // Simple field (eventQueueOverflowCount)
     lengthInBits += 32;
 
     return lengthInBits;
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SubscriptionDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sessionId =
-        readSimpleField(
-            "sessionId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("sessionId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     long subscriptionId = readSimpleField("subscriptionId", readUnsignedLong(readBuffer, 32));
 
@@ -607,8 +605,8 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     long nextSequenceNumber =
         readSimpleField("nextSequenceNumber", readUnsignedLong(readBuffer, 32));
 
-    long eventQueueOverFlowCount =
-        readSimpleField("eventQueueOverFlowCount", readUnsignedLong(readBuffer, 32));
+    long eventQueueOverflowCount =
+        readSimpleField("eventQueueOverflowCount", readUnsignedLong(readBuffer, 32));
 
     readBuffer.closeContext("SubscriptionDiagnosticsDataType");
     // Create the instance
@@ -643,7 +641,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
         disabledMonitoredItemCount,
         monitoringQueueOverflowCount,
         nextSequenceNumber,
-        eventQueueOverFlowCount);
+        eventQueueOverflowCount);
   }
 
   public static class SubscriptionDiagnosticsDataTypeBuilderImpl
@@ -678,7 +676,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     private final long disabledMonitoredItemCount;
     private final long monitoringQueueOverflowCount;
     private final long nextSequenceNumber;
-    private final long eventQueueOverFlowCount;
+    private final long eventQueueOverflowCount;
 
     public SubscriptionDiagnosticsDataTypeBuilderImpl(
         NodeId sessionId,
@@ -711,7 +709,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
         long disabledMonitoredItemCount,
         long monitoringQueueOverflowCount,
         long nextSequenceNumber,
-        long eventQueueOverFlowCount) {
+        long eventQueueOverflowCount) {
       this.sessionId = sessionId;
       this.subscriptionId = subscriptionId;
       this.priority = priority;
@@ -742,7 +740,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
       this.disabledMonitoredItemCount = disabledMonitoredItemCount;
       this.monitoringQueueOverflowCount = monitoringQueueOverflowCount;
       this.nextSequenceNumber = nextSequenceNumber;
-      this.eventQueueOverFlowCount = eventQueueOverFlowCount;
+      this.eventQueueOverflowCount = eventQueueOverflowCount;
     }
 
     public SubscriptionDiagnosticsDataType build() {
@@ -778,7 +776,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
               disabledMonitoredItemCount,
               monitoringQueueOverflowCount,
               nextSequenceNumber,
-              eventQueueOverFlowCount);
+              eventQueueOverflowCount);
       return subscriptionDiagnosticsDataType;
     }
   }
@@ -822,7 +820,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
         && (getDisabledMonitoredItemCount() == that.getDisabledMonitoredItemCount())
         && (getMonitoringQueueOverflowCount() == that.getMonitoringQueueOverflowCount())
         && (getNextSequenceNumber() == that.getNextSequenceNumber())
-        && (getEventQueueOverFlowCount() == that.getEventQueueOverFlowCount())
+        && (getEventQueueOverflowCount() == that.getEventQueueOverflowCount())
         && super.equals(that)
         && true;
   }
@@ -861,7 +859,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
         getDisabledMonitoredItemCount(),
         getMonitoringQueueOverflowCount(),
         getNextSequenceNumber(),
-        getEventQueueOverFlowCount());
+        getEventQueueOverflowCount());
   }
 
   @Override

@@ -70,21 +70,21 @@ public class Ethernet_Frame implements Message {
     writeSimpleField(
         "destination",
         destination,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (source)
     writeSimpleField(
         "source",
         source,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (payload)
     writeSimpleField(
         "payload",
         payload,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("Ethernet_Frame");
@@ -113,12 +113,6 @@ public class Ethernet_Frame implements Message {
     return lengthInBits;
   }
 
-  public static Ethernet_Frame staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Ethernet_Frame staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Ethernet_Frame");
     PositionAware positionAware = readBuffer;
@@ -127,20 +121,19 @@ public class Ethernet_Frame implements Message {
     MacAddress destination =
         readSimpleField(
             "destination",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> MacAddress.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     MacAddress source =
         readSimpleField(
             "source",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> MacAddress.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Ethernet_FramePayload payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
-                () -> Ethernet_FramePayload.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Ethernet_FramePayload.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("Ethernet_Frame");

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SignedSoftwareCertificate extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "346";
+  public Integer getExtensionId() {
+    return (int) 346;
   }
 
   // Properties.
@@ -68,11 +68,10 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
     writeBuffer.pushContext("SignedSoftwareCertificate");
 
     // Simple Field (certificateData)
-    writeSimpleField(
-        "certificateData", certificateData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("certificateData", certificateData, writeComplex(writeBuffer));
 
     // Simple Field (signature)
-    writeSimpleField("signature", signature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("signature", signature, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SignedSoftwareCertificate");
   }
@@ -98,7 +97,7 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SignedSoftwareCertificate");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -106,14 +105,11 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
     PascalByteString certificateData =
         readSimpleField(
             "certificateData",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalByteString signature =
         readSimpleField(
-            "signature",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "signature", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SignedSoftwareCertificate");
     // Create the instance

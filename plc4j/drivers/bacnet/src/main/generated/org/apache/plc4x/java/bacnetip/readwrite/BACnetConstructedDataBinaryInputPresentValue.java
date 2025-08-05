@@ -83,7 +83,7 @@ public class BACnetConstructedDataBinaryInputPresentValue extends BACnetConstruc
     writeBuffer.pushContext("BACnetConstructedDataBinaryInputPresentValue");
 
     // Simple Field (presentValue)
-    writeSimpleField("presentValue", presentValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("presentValue", presentValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetBinaryPVTagged actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataBinaryInputPresentValue extends BACnetConstruc
     BACnetBinaryPVTagged presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBinaryPVTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

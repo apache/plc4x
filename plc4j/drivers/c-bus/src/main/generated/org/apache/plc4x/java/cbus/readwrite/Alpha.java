@@ -77,11 +77,6 @@ public class Alpha implements Message {
     return lengthInBits;
   }
 
-  public static Alpha staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Alpha staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Alpha");
     PositionAware positionAware = readBuffer;

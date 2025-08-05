@@ -85,17 +85,17 @@ public class AirConditioningDataZoneHumidity extends AirConditioningData impleme
     writeSimpleField("zoneGroup", zoneGroup, writeByte(writeBuffer, 8));
 
     // Simple Field (zoneList)
-    writeSimpleField("zoneList", zoneList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneList", zoneList, writeComplex(writeBuffer));
 
     // Simple Field (humidity)
-    writeSimpleField("humidity", humidity, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("humidity", humidity, writeComplex(writeBuffer));
 
     // Simple Field (sensorStatus)
     writeSimpleEnumField(
         "sensorStatus",
         "HVACSensorStatus",
         sensorStatus,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HVACSensorStatus::getValue,
             HVACSensorStatus::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -139,20 +139,17 @@ public class AirConditioningDataZoneHumidity extends AirConditioningData impleme
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     HVACHumidity humidity =
         readSimpleField(
-            "humidity",
-            new DataReaderComplexDefault<>(() -> HVACHumidity.staticParse(readBuffer), readBuffer));
+            "humidity", readComplex(() -> HVACHumidity.staticParse(readBuffer), readBuffer));
 
     HVACSensorStatus sensorStatus =
         readEnumField(
             "sensorStatus",
             "HVACSensorStatus",
-            new DataReaderEnumDefault<>(
-                HVACSensorStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HVACSensorStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("AirConditioningDataZoneHumidity");
     // Create the instance

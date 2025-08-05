@@ -1,0 +1,200 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../images/
+
+= Contributing
+
+== Forms of contribution
+
+There are multiple forms in which you can become involved with the PLC4X project.
+
+These usually are, but are not limited to:
+
+- Submitting Pull Requests
+- Filing Bug-Reports
+- Active communication on our mailing lists
+- Promoting the project (articles, blog posts, talks at conferences)
+- Documentation
+
+We are a very friendly bunch and don't be afraid to step forward.
+
+== Commits
+
+We make use of https://www.conventionalcommits.org/en/v1.0.0/[conventional commits].
+As plc4x is a monolithic polyglot repository we usually define the scope as `...(plc4[language shortcut here]/subcomponent)`
+(e.g. a new feature in Bacnet in the Golang part would have a message of `feat(plc4go/bacnet): cool new feature for...`).
+
+== Pull-Requests
+
+The simplest way to submit code changes, is via a GitHub pull-request.
+
+In order to do this first create a GitHub account and sign into you account.
+
+After that's done, please to to our https://github.com/apache/plc4x[GitHub site] and create a so-called `Fork`.
+
+image::contributing-github-fork.png[]
+
+What happens now, is that GitHub creates a full copy of the PLC4X repo in your account. Only you can commit to this.
+
+Now ideally you check-out your cloned repository:
+
+    git clone https://github.com/{your-user-id}/plc4x.git
+
+Now you have a copy of PLC4X on your computer and you can change whatever you want and as it's your copy, you can even commit these changes without any danger of breaking things.
+
+As soon as you're finished with your changes and want us to have a look, it's time to create a so-called `Pull-Request`.
+
+You do that by going to your forked repository page on GitHub.
+
+Every forked repository has an additional button called "New Pull Request":
+
+image::contributing-github-create-pull-request.png[]
+
+If you click on this, we will receive a notification on your changes and can review them.
+We also can discuss your changes and have you perfect your pull request before we accept and merge it into PLC4X.
+
+=== Keeping your fork up to date
+
+As we are continuously working on PLC4X and you created a copy of our repo, this will become out-of-date pretty soon.
+
+In order get the changes we introduced in the official repo you have to tell git about that.
+
+You do this locally by adding a new so-called `remote`.
+Per default the remote you cloned from is called `origin`.
+
+Usually you will call the second remote `upstream` but in general you can call it whatever you like.
+
+Add the remote on the commandline (or your git gui of choice):
+
+    git remote add upstream https://github.com/apache/plc4x.git
+
+If you list all your remotes, with the following command:
+
+    git remote -v
+
+It should output something like this:
+
+    origin    https://github.com/{your-user-id}/plc4x.git (fetch)
+    origin    https://github.com/{your-user-id}/plc4x.git (push)
+    upstream    https://github.com/apache/plc4x.git (fetch)
+    upstream    https://github.com/apache/plc4x.git (push)
+
+If that's so, you're fine to continue, if not ... well you could ask for assistance on our dev-list.
+
+In order to get all changes of our upstream-repository, just execute the following command:
+
+    git pull upstream
+
+This will get all changed from upstream and merge them locally. In order to update your GitHub version, you have to push things back to `origin`.
+You can do this by executing the following command:
+
+    git push
+
+(If no remote is provided, git will use `origin` per default)
+
+=== Bug Reports
+
+We use https://github.com/apache/plc4x/issues[GitHub Issues] as our Bug & Issue Tracker.
+
+Feel free to submit `feature requests`, `bug reports`, `patches`, `comment on issues`, ...
+
+== Documentation
+
+As our documentation and website are generated as a side-product of our build, contributing to this technically the same as contributing to the code.
+
+All our content is written in Asciidoctor and is located in `src/site/asciidoc` directories.
+For a reference of the Asciidoctor syntax please have a look at the https://asciidoctor.org/docs/user-manual/#introduction-to-asciidoctor[Asciidoctor documentation].
+
+== Branching model
+
+The PLC4X project uses the following branching model.
+
+The same model is used for a wide variety of other projects, so it should be pretty straight forward.
+
+- `release` contains the latest released state.
+- Development is performed on the `develop` branch.
+- Features are developed in Feature-Branches with a prefix `feature/`
+- Each minor release has a corresponding release branch `rel/{current-last-released-version}`
+- A release branch is spawned from `develop` only
+- Bugfix releases don't have a dedicated release branch, they are just performed on the corresponding minor versions release branch
+
+// Use http://www.webgraphviz.com/ for online editiing this ...
+[graphviz, plc4x-branching-model, png]
+----
+digraph g{
+    rankdir="LR";
+    pad=0.5;
+    nodesep=0.6;
+    ranksep=0.5;
+    forcelabels=true;
+
+    node [fixedsize=true,
+        shape=circle, style=empty, color="#909090", height=0.5
+        fontcolor="deepskyblue", font="Arial bold", fontsize="14pt" ];
+    edge [color="#909090", penwidth=3];
+
+    node  [group="release"];
+    m1    [label="release", width=0.9];
+    m2   [label="0.2.0", width=0.9];
+    m3   [label="0.2.1", width=0.9];
+    m4   [label="", shape=circle, color="#b0b0b0"];
+    m1 -> m2 -> m3
+    m3 -> m4 [color="#b0b0b0", style=dashed];
+
+    node  [group="rel/0.1", Ylabel="hurz"];
+    r11   [label="rel/0.1", width=2, shape=box];
+    r12   [label="0.1.0-SNAPSHOT", width=2, shape=box];
+    r13   [label="0.1.0", width=0.9];
+    r14   [label="0.1.1-SNAPSHOT", width=2, shape=box];
+    r15   [label="", shape=circle, color="#b0b0b0"];
+    r11 -> r12 -> r13 -> r14;
+    r14 -> r15 [color="#b0b0b0", style=dashed];
+    r13 -> m1
+
+    node  [group="rel/0.2", Ylabel="hurz"];
+    r21   [label="rel/0.2", width=2, shape=box];
+    r22   [label="0.2.0-SNAPSHOT", width=2, shape=box];
+    r23   [label="0.2.0", width=0.9];
+    r24   [label="0.2.1-SNAPSHOT", width=2, shape=box];
+    r25   [label="0.2.1", width=0.9];
+    r26   [label="0.2.2-SNAPSHOT", width=2, shape=box];
+    r27   [label="", shape=circle, color="#b0b0b0"];
+    r21 -> r22 -> r23 -> r24 -> r25 -> r26;
+    r26 -> r27 [color="#b0b0b0", style=dashed];
+    r23 -> m2
+    r25 -> m3
+
+    node  [group="develop"];
+    d1    [label="develop", width=2, shape=box];
+    d2    [label="0.1.0-SNAPSHOT", width=2, shape=box];
+    d3    [label="0.1.0-SNAPSHOT", width=2, shape=box];
+    d4    [label="0.2.0-SNAPSHOT", width=2, shape=box];
+    d5    [label="0.2.0-SNAPSHOT", width=2, shape=box];
+    d6    [label="0.2.0-SNAPSHOT", width=2, shape=box];
+    d7    [label="0.3.0-SNAPSHOT", width=2, shape=box];
+    d8    [label="0.3.0-SNAPSHOT", width=2, shape=box];
+    d9    [label="0.3.0-SNAPSHOT", width=2, shape=box];
+    d10    [label="", shape=circle, color="#b0b0b0"];
+    d1 -> d2 -> d3 -> d4 -> d5 -> d6 -> d7 -> d8 -> d9;
+    d9 -> d10 [color="#b0b0b0", style=dashed];
+
+    d3 -> r11
+    d6 -> r21
+}
+----
+
+

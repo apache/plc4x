@@ -71,7 +71,7 @@ public class BACnetContextTagDouble extends BACnetContextTag implements Message 
     writeBuffer.pushContext("BACnetContextTagDouble");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     double actualValue = getActualValue();
@@ -109,8 +109,7 @@ public class BACnetContextTagDouble extends BACnetContextTag implements Message 
     BACnetTagPayloadDouble payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagPayloadDouble.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagPayloadDouble.staticParse(readBuffer), readBuffer));
     double actualValue = readVirtualField("actualValue", double.class, payload.getValue());
 
     readBuffer.closeContext("BACnetContextTagDouble");

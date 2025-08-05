@@ -82,7 +82,7 @@ public class BACnetConstructedDataBitMask extends BACnetConstructedData implemen
     writeBuffer.pushContext("BACnetConstructedDataBitMask");
 
     // Simple Field (bitString)
-    writeSimpleField("bitString", bitString, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bitString", bitString, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBitString actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataBitMask extends BACnetConstructedData implemen
     BACnetApplicationTagBitString bitString =
         readSimpleField(
             "bitString",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBitString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBitString actualValue =

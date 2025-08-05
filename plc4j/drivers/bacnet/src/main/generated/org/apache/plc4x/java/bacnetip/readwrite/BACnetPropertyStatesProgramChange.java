@@ -40,16 +40,16 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
   // Accessors for discriminator values.
 
   // Properties.
-  protected final BACnetProgramStateTagged programState;
+  protected final BACnetProgramRequestTagged programChange;
 
   public BACnetPropertyStatesProgramChange(
-      BACnetTagHeader peekedTagHeader, BACnetProgramStateTagged programState) {
+      BACnetTagHeader peekedTagHeader, BACnetProgramRequestTagged programChange) {
     super(peekedTagHeader);
-    this.programState = programState;
+    this.programChange = programChange;
   }
 
-  public BACnetProgramStateTagged getProgramState() {
-    return programState;
+  public BACnetProgramRequestTagged getProgramChange() {
+    return programChange;
   }
 
   @Override
@@ -59,8 +59,8 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("BACnetPropertyStatesProgramChange");
 
-    // Simple Field (programState)
-    writeSimpleField("programState", programState, new DataWriterComplexDefault<>(writeBuffer));
+    // Simple Field (programChange)
+    writeSimpleField("programChange", programChange, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesProgramChange");
   }
@@ -76,8 +76,8 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
     BACnetPropertyStatesProgramChange _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (programState)
-    lengthInBits += programState.getLengthInBits();
+    // Simple field (programChange)
+    lengthInBits += programChange.getLengthInBits();
 
     return lengthInBits;
   }
@@ -88,12 +88,12 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    BACnetProgramStateTagged programState =
+    BACnetProgramRequestTagged programChange =
         readSimpleField(
-            "programState",
-            new DataReaderComplexDefault<>(
+            "programChange",
+            readComplex(
                 () ->
-                    BACnetProgramStateTagged.staticParse(
+                    BACnetProgramRequestTagged.staticParse(
                         readBuffer,
                         (short) (peekedTagNumber),
                         (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -101,20 +101,20 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesProgramChange");
     // Create the instance
-    return new BACnetPropertyStatesProgramChangeBuilderImpl(programState);
+    return new BACnetPropertyStatesProgramChangeBuilderImpl(programChange);
   }
 
   public static class BACnetPropertyStatesProgramChangeBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
-    private final BACnetProgramStateTagged programState;
+    private final BACnetProgramRequestTagged programChange;
 
-    public BACnetPropertyStatesProgramChangeBuilderImpl(BACnetProgramStateTagged programState) {
-      this.programState = programState;
+    public BACnetPropertyStatesProgramChangeBuilderImpl(BACnetProgramRequestTagged programChange) {
+      this.programChange = programChange;
     }
 
     public BACnetPropertyStatesProgramChange build(BACnetTagHeader peekedTagHeader) {
       BACnetPropertyStatesProgramChange bACnetPropertyStatesProgramChange =
-          new BACnetPropertyStatesProgramChange(peekedTagHeader, programState);
+          new BACnetPropertyStatesProgramChange(peekedTagHeader, programChange);
       return bACnetPropertyStatesProgramChange;
     }
   }
@@ -128,12 +128,12 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
       return false;
     }
     BACnetPropertyStatesProgramChange that = (BACnetPropertyStatesProgramChange) o;
-    return (getProgramState() == that.getProgramState()) && super.equals(that) && true;
+    return (getProgramChange() == that.getProgramChange()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getProgramState());
+    return Objects.hash(super.hashCode(), getProgramChange());
   }
 
   @Override

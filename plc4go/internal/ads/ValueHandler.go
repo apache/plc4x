@@ -21,17 +21,17 @@ package ads
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"reflect"
 	"strconv"
+
+	"github.com/pkg/errors"
 
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/pkg/errors"
 )
 
 type ValueHandler struct {

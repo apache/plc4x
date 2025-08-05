@@ -38,73 +38,45 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SetTriggeringResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "778";
+  public Integer getExtensionId() {
+    return (int) 778;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
-  protected final int noOfAddResults;
+  protected final ResponseHeader responseHeader;
   protected final List<StatusCode> addResults;
-  protected final int noOfAddDiagnosticInfos;
   protected final List<DiagnosticInfo> addDiagnosticInfos;
-  protected final int noOfRemoveResults;
   protected final List<StatusCode> removeResults;
-  protected final int noOfRemoveDiagnosticInfos;
   protected final List<DiagnosticInfo> removeDiagnosticInfos;
 
   public SetTriggeringResponse(
-      ExtensionObjectDefinition responseHeader,
-      int noOfAddResults,
+      ResponseHeader responseHeader,
       List<StatusCode> addResults,
-      int noOfAddDiagnosticInfos,
       List<DiagnosticInfo> addDiagnosticInfos,
-      int noOfRemoveResults,
       List<StatusCode> removeResults,
-      int noOfRemoveDiagnosticInfos,
       List<DiagnosticInfo> removeDiagnosticInfos) {
     super();
     this.responseHeader = responseHeader;
-    this.noOfAddResults = noOfAddResults;
     this.addResults = addResults;
-    this.noOfAddDiagnosticInfos = noOfAddDiagnosticInfos;
     this.addDiagnosticInfos = addDiagnosticInfos;
-    this.noOfRemoveResults = noOfRemoveResults;
     this.removeResults = removeResults;
-    this.noOfRemoveDiagnosticInfos = noOfRemoveDiagnosticInfos;
     this.removeDiagnosticInfos = removeDiagnosticInfos;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
-  }
-
-  public int getNoOfAddResults() {
-    return noOfAddResults;
   }
 
   public List<StatusCode> getAddResults() {
     return addResults;
   }
 
-  public int getNoOfAddDiagnosticInfos() {
-    return noOfAddDiagnosticInfos;
-  }
-
   public List<DiagnosticInfo> getAddDiagnosticInfos() {
     return addDiagnosticInfos;
   }
 
-  public int getNoOfRemoveResults() {
-    return noOfRemoveResults;
-  }
-
   public List<StatusCode> getRemoveResults() {
     return removeResults;
-  }
-
-  public int getNoOfRemoveDiagnosticInfos() {
-    return noOfRemoveDiagnosticInfos;
   }
 
   public List<DiagnosticInfo> getRemoveDiagnosticInfos() {
@@ -119,29 +91,41 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     writeBuffer.pushContext("SetTriggeringResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfAddResults)
-    writeSimpleField("noOfAddResults", noOfAddResults, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfAddResults) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfAddResults = (int) ((((getAddResults()) == (null)) ? -(1) : COUNT(getAddResults())));
+    writeImplicitField("noOfAddResults", noOfAddResults, writeSignedInt(writeBuffer, 32));
 
     // Array Field (addResults)
     writeComplexTypeArrayField("addResults", addResults, writeBuffer);
 
-    // Simple Field (noOfAddDiagnosticInfos)
-    writeSimpleField(
+    // Implicit Field (noOfAddDiagnosticInfos) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfAddDiagnosticInfos =
+        (int) ((((getAddDiagnosticInfos()) == (null)) ? -(1) : COUNT(getAddDiagnosticInfos())));
+    writeImplicitField(
         "noOfAddDiagnosticInfos", noOfAddDiagnosticInfos, writeSignedInt(writeBuffer, 32));
 
     // Array Field (addDiagnosticInfos)
     writeComplexTypeArrayField("addDiagnosticInfos", addDiagnosticInfos, writeBuffer);
 
-    // Simple Field (noOfRemoveResults)
-    writeSimpleField("noOfRemoveResults", noOfRemoveResults, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfRemoveResults) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfRemoveResults =
+        (int) ((((getRemoveResults()) == (null)) ? -(1) : COUNT(getRemoveResults())));
+    writeImplicitField("noOfRemoveResults", noOfRemoveResults, writeSignedInt(writeBuffer, 32));
 
     // Array Field (removeResults)
     writeComplexTypeArrayField("removeResults", removeResults, writeBuffer);
 
-    // Simple Field (noOfRemoveDiagnosticInfos)
-    writeSimpleField(
+    // Implicit Field (noOfRemoveDiagnosticInfos) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfRemoveDiagnosticInfos =
+        (int)
+            ((((getRemoveDiagnosticInfos()) == (null)) ? -(1) : COUNT(getRemoveDiagnosticInfos())));
+    writeImplicitField(
         "noOfRemoveDiagnosticInfos", noOfRemoveDiagnosticInfos, writeSignedInt(writeBuffer, 32));
 
     // Array Field (removeDiagnosticInfos)
@@ -164,7 +148,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
 
-    // Simple field (noOfAddResults)
+    // Implicit Field (noOfAddResults)
     lengthInBits += 32;
 
     // Array field
@@ -176,7 +160,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
       }
     }
 
-    // Simple field (noOfAddDiagnosticInfos)
+    // Implicit Field (noOfAddDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -188,7 +172,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
       }
     }
 
-    // Simple field (noOfRemoveResults)
+    // Implicit Field (noOfRemoveResults)
     lengthInBits += 32;
 
     // Array field
@@ -200,7 +184,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
       }
     }
 
-    // Simple field (noOfRemoveDiagnosticInfos)
+    // Implicit Field (noOfRemoveDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -216,113 +200,84 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SetTriggeringResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+            readComplex(
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
-    int noOfAddResults = readSimpleField("noOfAddResults", readSignedInt(readBuffer, 32));
+    int noOfAddResults = readImplicitField("noOfAddResults", readSignedInt(readBuffer, 32));
 
     List<StatusCode> addResults =
         readCountArrayField(
             "addResults",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfAddResults);
 
     int noOfAddDiagnosticInfos =
-        readSimpleField("noOfAddDiagnosticInfos", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfAddDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> addDiagnosticInfos =
         readCountArrayField(
             "addDiagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfAddDiagnosticInfos);
 
-    int noOfRemoveResults = readSimpleField("noOfRemoveResults", readSignedInt(readBuffer, 32));
+    int noOfRemoveResults = readImplicitField("noOfRemoveResults", readSignedInt(readBuffer, 32));
 
     List<StatusCode> removeResults =
         readCountArrayField(
             "removeResults",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfRemoveResults);
 
     int noOfRemoveDiagnosticInfos =
-        readSimpleField("noOfRemoveDiagnosticInfos", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfRemoveDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> removeDiagnosticInfos =
         readCountArrayField(
             "removeDiagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfRemoveDiagnosticInfos);
 
     readBuffer.closeContext("SetTriggeringResponse");
     // Create the instance
     return new SetTriggeringResponseBuilderImpl(
-        responseHeader,
-        noOfAddResults,
-        addResults,
-        noOfAddDiagnosticInfos,
-        addDiagnosticInfos,
-        noOfRemoveResults,
-        removeResults,
-        noOfRemoveDiagnosticInfos,
-        removeDiagnosticInfos);
+        responseHeader, addResults, addDiagnosticInfos, removeResults, removeDiagnosticInfos);
   }
 
   public static class SetTriggeringResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
-    private final int noOfAddResults;
+    private final ResponseHeader responseHeader;
     private final List<StatusCode> addResults;
-    private final int noOfAddDiagnosticInfos;
     private final List<DiagnosticInfo> addDiagnosticInfos;
-    private final int noOfRemoveResults;
     private final List<StatusCode> removeResults;
-    private final int noOfRemoveDiagnosticInfos;
     private final List<DiagnosticInfo> removeDiagnosticInfos;
 
     public SetTriggeringResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
-        int noOfAddResults,
+        ResponseHeader responseHeader,
         List<StatusCode> addResults,
-        int noOfAddDiagnosticInfos,
         List<DiagnosticInfo> addDiagnosticInfos,
-        int noOfRemoveResults,
         List<StatusCode> removeResults,
-        int noOfRemoveDiagnosticInfos,
         List<DiagnosticInfo> removeDiagnosticInfos) {
       this.responseHeader = responseHeader;
-      this.noOfAddResults = noOfAddResults;
       this.addResults = addResults;
-      this.noOfAddDiagnosticInfos = noOfAddDiagnosticInfos;
       this.addDiagnosticInfos = addDiagnosticInfos;
-      this.noOfRemoveResults = noOfRemoveResults;
       this.removeResults = removeResults;
-      this.noOfRemoveDiagnosticInfos = noOfRemoveDiagnosticInfos;
       this.removeDiagnosticInfos = removeDiagnosticInfos;
     }
 
     public SetTriggeringResponse build() {
       SetTriggeringResponse setTriggeringResponse =
           new SetTriggeringResponse(
-              responseHeader,
-              noOfAddResults,
-              addResults,
-              noOfAddDiagnosticInfos,
-              addDiagnosticInfos,
-              noOfRemoveResults,
-              removeResults,
-              noOfRemoveDiagnosticInfos,
-              removeDiagnosticInfos);
+              responseHeader, addResults, addDiagnosticInfos, removeResults, removeDiagnosticInfos);
       return setTriggeringResponse;
     }
   }
@@ -337,13 +292,9 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     }
     SetTriggeringResponse that = (SetTriggeringResponse) o;
     return (getResponseHeader() == that.getResponseHeader())
-        && (getNoOfAddResults() == that.getNoOfAddResults())
         && (getAddResults() == that.getAddResults())
-        && (getNoOfAddDiagnosticInfos() == that.getNoOfAddDiagnosticInfos())
         && (getAddDiagnosticInfos() == that.getAddDiagnosticInfos())
-        && (getNoOfRemoveResults() == that.getNoOfRemoveResults())
         && (getRemoveResults() == that.getRemoveResults())
-        && (getNoOfRemoveDiagnosticInfos() == that.getNoOfRemoveDiagnosticInfos())
         && (getRemoveDiagnosticInfos() == that.getRemoveDiagnosticInfos())
         && super.equals(that)
         && true;
@@ -354,13 +305,9 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     return Objects.hash(
         super.hashCode(),
         getResponseHeader(),
-        getNoOfAddResults(),
         getAddResults(),
-        getNoOfAddDiagnosticInfos(),
         getAddDiagnosticInfos(),
-        getNoOfRemoveResults(),
         getRemoveResults(),
-        getNoOfRemoveDiagnosticInfos(),
         getRemoveDiagnosticInfos());
   }
 

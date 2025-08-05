@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ReferenceDescription extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "520";
+  public Integer getExtensionId() {
+    return (int) 520;
   }
 
   // Properties.
@@ -105,8 +105,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("ReferenceDescription");
 
     // Simple Field (referenceTypeId)
-    writeSimpleField(
-        "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceTypeId", referenceTypeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -115,24 +114,23 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Simple Field (browseName)
-    writeSimpleField("browseName", browseName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("browseName", browseName, writeComplex(writeBuffer));
 
     // Simple Field (displayName)
-    writeSimpleField("displayName", displayName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("displayName", displayName, writeComplex(writeBuffer));
 
     // Simple Field (nodeClass)
     writeSimpleEnumField(
         "nodeClass",
         "NodeClass",
         nodeClass,
-        new DataWriterEnumDefault<>(
-            NodeClass::getValue, NodeClass::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(NodeClass::getValue, NodeClass::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (typeDefinition)
-    writeSimpleField("typeDefinition", typeDefinition, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("typeDefinition", typeDefinition, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ReferenceDescription");
   }
@@ -176,15 +174,14 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ReferenceDescription");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId referenceTypeId =
         readSimpleField(
-            "referenceTypeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "referenceTypeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -193,33 +190,26 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
 
     ExpandedNodeId nodeId =
         readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "nodeId", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     QualifiedName browseName =
         readSimpleField(
-            "browseName",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "browseName", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
     LocalizedText displayName =
         readSimpleField(
-            "displayName",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "displayName", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     NodeClass nodeClass =
         readEnumField(
             "nodeClass",
             "NodeClass",
-            new DataReaderEnumDefault<>(NodeClass::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(NodeClass::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     ExpandedNodeId typeDefinition =
         readSimpleField(
             "typeDefinition",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ReferenceDescription");
     // Create the instance

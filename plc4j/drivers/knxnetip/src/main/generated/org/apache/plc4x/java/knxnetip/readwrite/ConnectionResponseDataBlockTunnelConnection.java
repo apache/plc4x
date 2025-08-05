@@ -63,7 +63,7 @@ public class ConnectionResponseDataBlockTunnelConnection extends ConnectionRespo
     writeBuffer.pushContext("ConnectionResponseDataBlockTunnelConnection");
 
     // Simple Field (knxAddress)
-    writeSimpleField("knxAddress", knxAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("knxAddress", knxAddress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ConnectionResponseDataBlockTunnelConnection");
   }
@@ -93,8 +93,7 @@ public class ConnectionResponseDataBlockTunnelConnection extends ConnectionRespo
 
     KnxAddress knxAddress =
         readSimpleField(
-            "knxAddress",
-            new DataReaderComplexDefault<>(() -> KnxAddress.staticParse(readBuffer), readBuffer));
+            "knxAddress", readComplex(() -> KnxAddress.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ConnectionResponseDataBlockTunnelConnection");
     // Create the instance

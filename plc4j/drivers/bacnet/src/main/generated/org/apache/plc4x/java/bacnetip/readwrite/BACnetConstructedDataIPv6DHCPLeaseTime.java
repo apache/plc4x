@@ -83,8 +83,7 @@ public class BACnetConstructedDataIPv6DHCPLeaseTime extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataIPv6DHCPLeaseTime");
 
     // Simple Field (ipv6DhcpLeaseTime)
-    writeSimpleField(
-        "ipv6DhcpLeaseTime", ipv6DhcpLeaseTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipv6DhcpLeaseTime", ipv6DhcpLeaseTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataIPv6DHCPLeaseTime extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger ipv6DhcpLeaseTime =
         readSimpleField(
             "ipv6DhcpLeaseTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

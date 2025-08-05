@@ -93,18 +93,16 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValue");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (newValue)
-    writeSimpleField("newValue", newValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("newValue", newValue, writeComplex(writeBuffer));
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfDiscreteValue");
   }
@@ -148,14 +146,14 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetNotificationParametersChangeOfDiscreteValueNewValue newValue =
         readSimpleField(
             "newValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNotificationParametersChangeOfDiscreteValueNewValue.staticParse(
                         readBuffer, (short) (0)),
@@ -164,7 +162,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -173,7 +171,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.transport.tcp;
 
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
@@ -75,7 +76,16 @@ public class TcpTransport implements Transport, HasConfiguration<TcpTransportCon
         SocketAddress address = new InetSocketAddress((ip == null) ? hostname : ip, port);
 
         // Initialize the channel factory with the default socket address we want to connect to.
-        return new TcpChannelFactory(address);
+        TcpChannelFactory tcpChannelFactory = new TcpChannelFactory(address);
+        if(configuration != null) {
+            tcpChannelFactory.setConfiguration(configuration);
+        }
+        return tcpChannelFactory;
+    }
+
+    @Override
+    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
+        return DefaultTcpTransportConfiguration.class;
     }
 
 }

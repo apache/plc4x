@@ -82,7 +82,7 @@ public class BACnetConstructedDataStatusFlags extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataStatusFlags");
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetStatusFlagsTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataStatusFlags extends BACnetConstructedData impl
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

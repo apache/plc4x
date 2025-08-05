@@ -20,9 +20,10 @@
 package utils
 
 import (
-	"github.com/stretchr/testify/assert"
 	"regexp"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetSubgroupMatches(t *testing.T) {

@@ -66,7 +66,7 @@ public class BACnetPriorityValueNull extends BACnetPriorityValue implements Mess
     writeBuffer.pushContext("BACnetPriorityValueNull");
 
     // Simple Field (nullValue)
-    writeSimpleField("nullValue", nullValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nullValue", nullValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueNull");
   }
@@ -97,7 +97,7 @@ public class BACnetPriorityValueNull extends BACnetPriorityValue implements Mess
     BACnetApplicationTagNull nullValue =
         readSimpleField(
             "nullValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagNull) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

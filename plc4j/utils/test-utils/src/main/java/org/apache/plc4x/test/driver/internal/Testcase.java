@@ -94,7 +94,7 @@ public class Testcase implements LocationAware {
             }
             LOGGER.info("Finished setup steps");
         }
-        LOGGER.info("Running test steps");
+        LOGGER.info("Running test steps " + plcConnection.isConnected());
         for (TestStep step : steps) {
             step.execute(plcConnection, embeddedChannel, byteOrder);
         }

@@ -49,28 +49,8 @@ public enum OpcuaNodeIdServicesVariableRole {
   RoleType_RemoveApplication_InputArguments((int) 16179L),
   RoleType_AddEndpoint_InputArguments((int) 16181L),
   RoleType_RemoveEndpoint_InputArguments((int) 16183L),
-  RoleMappingRuleChangedAuditEventType_EventId((int) 17642L),
-  RoleMappingRuleChangedAuditEventType_EventType((int) 17643L),
-  RoleMappingRuleChangedAuditEventType_SourceNode((int) 17644L),
-  RoleMappingRuleChangedAuditEventType_SourceName((int) 17645L),
-  RoleMappingRuleChangedAuditEventType_Time((int) 17646L),
-  RoleMappingRuleChangedAuditEventType_ReceiveTime((int) 17647L),
-  RoleMappingRuleChangedAuditEventType_LocalTime((int) 17648L),
-  RoleMappingRuleChangedAuditEventType_Message((int) 17649L),
-  RoleMappingRuleChangedAuditEventType_Severity((int) 17650L),
-  RoleMappingRuleChangedAuditEventType_ActionTimeStamp((int) 17651L),
-  RoleMappingRuleChangedAuditEventType_Status((int) 17652L),
-  RoleMappingRuleChangedAuditEventType_ServerId((int) 17653L),
-  RoleMappingRuleChangedAuditEventType_ClientAuditEntryId((int) 17654L),
-  RoleMappingRuleChangedAuditEventType_ClientUserId((int) 17655L),
-  RoleMappingRuleChangedAuditEventType_MethodId((int) 17656L),
-  RoleMappingRuleChangedAuditEventType_InputArguments((int) 17657L),
   RoleSetType_RoleName_Placeholder_CustomConfiguration((int) 24138L),
-  RoleType_CustomConfiguration((int) 24139L),
-  RoleMappingRuleChangedAuditEventType_ConditionClassId((int) 31927L),
-  RoleMappingRuleChangedAuditEventType_ConditionClassName((int) 31928L),
-  RoleMappingRuleChangedAuditEventType_ConditionSubClassId((int) 31929L),
-  RoleMappingRuleChangedAuditEventType_ConditionSubClassName((int) 31930L);
+  RoleType_CustomConfiguration((int) 24139L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableRole> map;
 
   static {

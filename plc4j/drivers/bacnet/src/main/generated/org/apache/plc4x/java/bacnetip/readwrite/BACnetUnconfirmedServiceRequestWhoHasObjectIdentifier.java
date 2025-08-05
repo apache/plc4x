@@ -61,8 +61,7 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier");
   }
@@ -94,7 +93,7 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(

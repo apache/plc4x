@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.cbus.readwrite.CBusCommand;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
@@ -49,6 +50,16 @@ public class CBusProtocolLogic extends Plc4xProtocolBase<CBusCommand> {
     }
 
     @Override
+    public PlcTagHandler getTagHandler() {
+        return null;
+    }
+
+    @Override
+    public void close(ConversationContext<CBusCommand> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void onConnect(ConversationContext<CBusCommand> context) {
 
     }
@@ -65,10 +76,6 @@ public class CBusProtocolLogic extends Plc4xProtocolBase<CBusCommand> {
      */
     @Override
     protected void decode(ConversationContext<CBusCommand> context, CBusCommand msg) throws Exception {
-    }
-
-    @Override
-    public void close(ConversationContext<CBusCommand> context) {
     }
 
 }

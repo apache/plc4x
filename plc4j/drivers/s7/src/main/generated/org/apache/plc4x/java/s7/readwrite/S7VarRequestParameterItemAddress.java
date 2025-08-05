@@ -67,7 +67,7 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
     writeImplicitField("itemLength", itemLength, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (address)
-    writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("address", address, writeComplex(writeBuffer));
 
     writeBuffer.popContext("S7VarRequestParameterItemAddress");
   }
@@ -102,8 +102,7 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
 
     S7Address address =
         readSimpleField(
-            "address",
-            new DataReaderComplexDefault<>(() -> S7Address.staticParse(readBuffer), readBuffer));
+            "address", readComplex(() -> S7Address.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("S7VarRequestParameterItemAddress");
     // Create the instance

@@ -82,7 +82,7 @@ public class BACnetConstructedDataIsUTC extends BACnetConstructedData implements
     writeBuffer.pushContext("BACnetConstructedDataIsUTC");
 
     // Simple Field (isUtc)
-    writeSimpleField("isUtc", isUtc, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("isUtc", isUtc, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataIsUTC extends BACnetConstructedData implements
     BACnetApplicationTagBoolean isUtc =
         readSimpleField(
             "isUtc",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

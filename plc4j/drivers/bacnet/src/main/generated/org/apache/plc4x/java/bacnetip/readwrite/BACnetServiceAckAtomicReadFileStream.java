@@ -71,11 +71,10 @@ public class BACnetServiceAckAtomicReadFileStream
     writeBuffer.pushContext("BACnetServiceAckAtomicReadFileStream");
 
     // Simple Field (fileStartPosition)
-    writeSimpleField(
-        "fileStartPosition", fileStartPosition, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileStartPosition", fileStartPosition, writeComplex(writeBuffer));
 
     // Simple Field (fileData)
-    writeSimpleField("fileData", fileData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileData", fileData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckAtomicReadFileStream");
   }
@@ -110,7 +109,7 @@ public class BACnetServiceAckAtomicReadFileStream
     BACnetApplicationTagSignedInteger fileStartPosition =
         readSimpleField(
             "fileStartPosition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -119,7 +118,7 @@ public class BACnetServiceAckAtomicReadFileStream
     BACnetApplicationTagOctetString fileData =
         readSimpleField(
             "fileData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

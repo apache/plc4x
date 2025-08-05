@@ -82,7 +82,7 @@ public class BACnetConstructedDataReadOnly extends BACnetConstructedData impleme
     writeBuffer.pushContext("BACnetConstructedDataReadOnly");
 
     // Simple Field (readOnly)
-    writeSimpleField("readOnly", readOnly, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("readOnly", readOnly, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataReadOnly extends BACnetConstructedData impleme
     BACnetApplicationTagBoolean readOnly =
         readSimpleField(
             "readOnly",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

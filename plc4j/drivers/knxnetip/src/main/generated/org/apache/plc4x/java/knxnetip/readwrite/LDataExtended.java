@@ -115,7 +115,7 @@ public class LDataExtended extends LDataFrame implements Message {
     writeSimpleField("extendedFrameFormat", extendedFrameFormat, writeUnsignedByte(writeBuffer, 4));
 
     // Simple Field (sourceAddress)
-    writeSimpleField("sourceAddress", sourceAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sourceAddress", sourceAddress, writeComplex(writeBuffer));
 
     // Array Field (destinationAddress)
     writeByteArrayField("destinationAddress", destinationAddress, writeByteArray(writeBuffer, 8));
@@ -126,7 +126,7 @@ public class LDataExtended extends LDataFrame implements Message {
     writeImplicitField("dataLength", dataLength, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (apdu)
-    writeSimpleField("apdu", apdu, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("apdu", apdu, writeComplex(writeBuffer));
 
     writeBuffer.popContext("LDataExtended");
   }
@@ -183,8 +183,7 @@ public class LDataExtended extends LDataFrame implements Message {
 
     KnxAddress sourceAddress =
         readSimpleField(
-            "sourceAddress",
-            new DataReaderComplexDefault<>(() -> KnxAddress.staticParse(readBuffer), readBuffer));
+            "sourceAddress", readComplex(() -> KnxAddress.staticParse(readBuffer), readBuffer));
 
     byte[] destinationAddress = readBuffer.readByteArray("destinationAddress", Math.toIntExact(2));
 
@@ -193,8 +192,7 @@ public class LDataExtended extends LDataFrame implements Message {
     Apdu apdu =
         readSimpleField(
             "apdu",
-            new DataReaderComplexDefault<>(
-                () -> Apdu.staticParse(readBuffer, (short) (dataLength)), readBuffer));
+            readComplex(() -> Apdu.staticParse(readBuffer, (short) (dataLength)), readBuffer));
 
     readBuffer.closeContext("LDataExtended");
     // Create the instance

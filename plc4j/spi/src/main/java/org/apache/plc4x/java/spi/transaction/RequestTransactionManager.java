@@ -20,7 +20,6 @@ package org.apache.plc4x.java.spi.transaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import java.util.Objects;
 import java.util.Queue;
@@ -89,7 +88,7 @@ public class RequestTransactionManager {
         this.numberOfConcurrentRequests = numberOfConcurrentRequests;
 
         // As we might have increased the number, try to send some more requests.
-        processWorklog();
+        processWorkLog();
     }
     
     /*
@@ -102,19 +101,18 @@ public class RequestTransactionManager {
     public void submit(Consumer<RequestTransaction> context) {
         RequestTransaction transaction = startRequest();
         context.accept(transaction);
-        // this.submit(transaction);
     }
 
     void submit(RequestTransaction handle) {
         assert handle.operation != null;
-        // Add this Request with this handle i the Worklog
-        // Put Transaction into Worklog
+        // Add this Request with this handle i the work-log
+        // Put Transaction into work-log
         workLog.add(handle);
-        // Try to Process the Worklog
-        processWorklog();
+        // Try to Process the work-log
+        processWorkLog();
     }
 
-    private void processWorklog() {
+    private void processWorkLog() {
         while (runningRequests.size() < getNumberOfConcurrentRequests() && !workLog.isEmpty()) {
             RequestTransaction next = workLog.poll();
             if (next != null) {
@@ -124,7 +122,6 @@ public class RequestTransactionManager {
             }
         }
     }
-
 
     public RequestTransaction startRequest() {
         return new RequestTransaction(this, transactionId.getAndIncrement());
@@ -146,8 +143,8 @@ public class RequestTransactionManager {
             throw new IllegalArgumentException("Unknown Transaction or Transaction already finished!");
         }
         runningRequests.remove(transaction);
-        // Process the worklog, a slot should be free now
-        processWorklog();
+        // Process the work-log, a slot should be free now
+        processWorkLog();
     }
 
     public static class RequestTransaction {
@@ -155,7 +152,7 @@ public class RequestTransactionManager {
         private final RequestTransactionManager parent;
         private final int transactionId;
 
-        /** The iniital operation to perform to kick off the request */
+        /** The initial operation to perform to kick off the request */
         private Runnable operation;
         private Future<?> completionFuture;
 
@@ -227,8 +224,8 @@ public class RequestTransactionManager {
                 logger.trace("Start execution of transaction {}", transactionId);
                 delegate.run();
                 logger.trace("Completed execution of transaction {}", transactionId);
-            }  catch (Exception ex) {
-                logger.info(ex.getMessage());
+            }  catch (Exception e) {
+                logger.info("Got an error executing transaction", e);
             }
         }
     }

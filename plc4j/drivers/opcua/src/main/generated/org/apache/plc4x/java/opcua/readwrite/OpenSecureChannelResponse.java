@@ -38,20 +38,20 @@ import org.apache.plc4x.java.spi.generation.*;
 public class OpenSecureChannelResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "449";
+  public Integer getExtensionId() {
+    return (int) 449;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
+  protected final ResponseHeader responseHeader;
   protected final long serverProtocolVersion;
-  protected final ExtensionObjectDefinition securityToken;
+  protected final ChannelSecurityToken securityToken;
   protected final PascalByteString serverNonce;
 
   public OpenSecureChannelResponse(
-      ExtensionObjectDefinition responseHeader,
+      ResponseHeader responseHeader,
       long serverProtocolVersion,
-      ExtensionObjectDefinition securityToken,
+      ChannelSecurityToken securityToken,
       PascalByteString serverNonce) {
     super();
     this.responseHeader = responseHeader;
@@ -60,7 +60,7 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
     this.serverNonce = serverNonce;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
@@ -68,7 +68,7 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
     return serverProtocolVersion;
   }
 
-  public ExtensionObjectDefinition getSecurityToken() {
+  public ChannelSecurityToken getSecurityToken() {
     return securityToken;
   }
 
@@ -84,17 +84,17 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
     writeBuffer.pushContext("OpenSecureChannelResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (serverProtocolVersion)
     writeSimpleField(
         "serverProtocolVersion", serverProtocolVersion, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (securityToken)
-    writeSimpleField("securityToken", securityToken, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityToken", securityToken, writeComplex(writeBuffer));
 
     // Simple Field (serverNonce)
-    writeSimpleField("serverNonce", serverNonce, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverNonce", serverNonce, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpenSecureChannelResponse");
   }
@@ -126,33 +126,34 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("OpenSecureChannelResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+            readComplex(
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     long serverProtocolVersion =
         readSimpleField("serverProtocolVersion", readUnsignedLong(readBuffer, 32));
 
-    ExtensionObjectDefinition securityToken =
+    ChannelSecurityToken securityToken =
         readSimpleField(
             "securityToken",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("443")),
+            readComplex(
+                () ->
+                    (ChannelSecurityToken)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (443)),
                 readBuffer));
 
     PascalByteString serverNonce =
         readSimpleField(
-            "serverNonce",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "serverNonce", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OpenSecureChannelResponse");
     // Create the instance
@@ -162,15 +163,15 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
 
   public static class OpenSecureChannelResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
+    private final ResponseHeader responseHeader;
     private final long serverProtocolVersion;
-    private final ExtensionObjectDefinition securityToken;
+    private final ChannelSecurityToken securityToken;
     private final PascalByteString serverNonce;
 
     public OpenSecureChannelResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
+        ResponseHeader responseHeader,
         long serverProtocolVersion,
-        ExtensionObjectDefinition securityToken,
+        ChannelSecurityToken securityToken,
         PascalByteString serverNonce) {
       this.responseHeader = responseHeader;
       this.serverProtocolVersion = serverProtocolVersion;

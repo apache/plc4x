@@ -1,0 +1,87 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+* xref:index.adoc[]
+** xref:download.adoc[]
+** xref:adopters.adoc[Adopters]
+** xref:issues.adoc[]
+** xref:commercial-support.adoc[Commercial Support]
+
+** xref:getting-started/index.adoc[]
+*** xref:getting-started/plc4c.adoc[]
+*** xref:getting-started/plc4cs.adoc[]
+*** xref:getting-started/plc4go.adoc[]
+*** xref:getting-started/plc4j.adoc[]
+*** xref:getting-started/plc4py.adoc[]
+*** xref:getting-started/using-snapshots.adoc[]
+*** xref:getting-started/general-concepts.adoc[]
+*** xref:getting-started/virtual-modbus.adoc[Virtual Modbus]
+*** xref:getting-started/opcua-client-certificate.adoc[]
+
+** xref:blogs-videos-and-slides.adoc[]
+
+** xref:protocols/index.adoc[Protocols]
+*** xref:protocols/ab-eth.adoc[]
+*** xref:protocols/ads.adoc[]
+*** xref:protocols/bacnet.adoc[]
+*** xref:protocols/c-bus.adoc[]
+*** xref:protocols/canopen.adoc[]
+*** xref:protocols/ctrlx.adoc[]
+*** xref:protocols/deltav.adoc[]
+*** xref:protocols/df1.adoc[]
+*** xref:protocols/eip.adoc[]
+*** xref:protocols/firmata.adoc[]
+*** xref:protocols/genericcan.adoc[]
+*** xref:protocols/iec-60870.adoc[]
+*** xref:protocols/knxnetip.adoc[]
+*** xref:protocols/logix.adoc[]
+*** xref:protocols/modbus.adoc[]
+*** xref:protocols/opcua.adoc[]
+*** xref:protocols/open-protocol.adoc[]
+*** xref:protocols/plc4x.adoc[]
+*** xref:protocols/profinet.adoc[]
+*** xref:protocols/s7.adoc[]
+*** xref:protocols/s7-light.adoc[]
+*** xref:protocols/simulated.adoc[]
+*** xref:protocols/umas.adoc[]
+
+** xref:transports/index.adoc[]
+*** xref:transports/tcp.adoc[]
+*** xref:transports/udp.adoc[]
+*** xref:transports/serial.adoc[]
+*** xref:transports/socketcan.adoc[]
+*** xref:transports/raw-socket.adoc[]
+*** xref:transports/pcap-replay.adoc[]
+
+** xref:integrations/index.adoc[]
+*** xref:integrations/apache-calcite.adoc[]
+*** xref:integrations/apache-camel.adoc[]
+*** xref:integrations/apache-iotdb.adoc[]
+*** xref:integrations/apache-kafka.adoc[]
+*** xref:integrations/apache-nifi.adoc[]
+*** xref:integrations/apache-streampipes.adoc[]
+*** xref:integrations/eclipse-ditto.adoc[]
+*** xref:integrations/eclipse-milo.adoc[]
+
+** xref:tools/index.adoc[]
+*** xref:tools/capture-replay.adoc[]
+*** xref:tools/connection-cache.adoc[]
+*** xref:tools/opm.adoc[]
+*** xref:tools/scraper.adoc[]
+*** xref:tools/testing.adoc[]
+
+** xref:industry40.adoc[]
+** xref:security.adoc[]

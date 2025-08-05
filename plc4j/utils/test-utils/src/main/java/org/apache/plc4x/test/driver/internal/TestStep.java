@@ -67,7 +67,10 @@ public class TestStep implements LocationAware {
     public static TestStep parseTestStep(Element curElement, Synchronizer synchronizer, DriverTestsuiteConfiguration driverTestsuiteConfiguration) throws DriverTestsuiteException {
         final String elementName = curElement.getName();
         final StepType stepType = StepType.valueOf(elementName.toUpperCase().replace("-", "_"));
-        final String stepName = curElement.attributeValue(new QName("name"));
+        String stepName = curElement.attributeValue(new QName("name"));
+        if((stepName == null) && curElement instanceof LocationAwareElement) {
+            stepName = ((LocationAwareElement) curElement).getLocation().toString();
+        }
         Element parserArgumentsNode = null;
         Element definitionNode = null;
         for (Element element : curElement.elements()) {

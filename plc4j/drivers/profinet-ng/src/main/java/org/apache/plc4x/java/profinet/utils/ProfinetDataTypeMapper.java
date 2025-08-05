@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -71,9 +71,20 @@ public class ProfinetDataTypeMapper {
                     break;
                 case "OctetString":
                     if(dataItem.isUseAsBits()) {
-                        return new DataTypeInformation(PlcValueType.List, dataItem.getLength() * 8);
+                        switch (dataItem.getLength()) {
+                            case 1:
+                                return new DataTypeInformation(PlcValueType.BYTE, 1);
+                            case 2:
+                                return new DataTypeInformation(PlcValueType.WORD, 1);
+                            case 4:
+                                return new DataTypeInformation(PlcValueType.DWORD, 1);
+                            case 8:
+                                return new DataTypeInformation(PlcValueType.LWORD, 1);
+                            default:
+                                return new DataTypeInformation(PlcValueType.BYTE, dataItem.getLength());
+                        }
                     } else {
-                        return new DataTypeInformation(PlcValueType.List, dataItem.getLength());
+                        return new DataTypeInformation(PlcValueType.BYTE, dataItem.getLength());
                     }
                 case "Unsigned8+Unsigned8":
                 case "Float32+Unsigned8":

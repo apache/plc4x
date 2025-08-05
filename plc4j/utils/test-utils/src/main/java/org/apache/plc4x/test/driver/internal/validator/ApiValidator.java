@@ -19,6 +19,8 @@
 package org.apache.plc4x.test.driver.internal.validator;
 
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
+import org.apache.plc4x.test.driver.xmlunit.SkipAttributeFilter;
+import org.apache.plc4x.test.driver.xmlunit.SkipDifferenceEvaluator;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,12 +28,15 @@ import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
 
 public class ApiValidator {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiValidator.class);
 
     public static void validateApiMessage(Element referenceXml, String apiMessage) throws DriverTestsuiteException {
         final String referenceXmlString = referenceXml.asXML();
         final Diff diff = DiffBuilder.compare(referenceXmlString)
             .withTest(apiMessage).checkForSimilar().ignoreComments().ignoreWhitespace()
+            .withDifferenceEvaluator(new SkipDifferenceEvaluator())
+            .withAttributeFilter(new SkipAttributeFilter())
             .build();
         if (diff.hasDifferences()) {
             LOGGER.warn("got\n{}", apiMessage);

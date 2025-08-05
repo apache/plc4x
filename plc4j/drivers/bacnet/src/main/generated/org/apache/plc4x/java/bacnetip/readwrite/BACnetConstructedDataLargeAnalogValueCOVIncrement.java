@@ -83,7 +83,7 @@ public class BACnetConstructedDataLargeAnalogValueCOVIncrement extends BACnetCon
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueCOVIncrement");
 
     // Simple Field (covIncrement)
-    writeSimpleField("covIncrement", covIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("covIncrement", covIncrement, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagDouble actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataLargeAnalogValueCOVIncrement extends BACnetCon
     BACnetApplicationTagDouble covIncrement =
         readSimpleField(
             "covIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDouble) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagDouble actualValue =

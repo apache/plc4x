@@ -74,7 +74,7 @@ public class AmsTCPPacket implements Message {
     writeSimpleField(
         "userdata",
         userdata,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("AmsTCPPacket");
@@ -103,12 +103,6 @@ public class AmsTCPPacket implements Message {
     return lengthInBits;
   }
 
-  public static AmsTCPPacket staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AmsTCPPacket staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AmsTCPPacket");
     PositionAware positionAware = readBuffer;
@@ -130,7 +124,7 @@ public class AmsTCPPacket implements Message {
     AmsPacket userdata =
         readSimpleField(
             "userdata",
-            new DataReaderComplexDefault<>(() -> AmsPacket.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AmsPacket.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("AmsTCPPacket");

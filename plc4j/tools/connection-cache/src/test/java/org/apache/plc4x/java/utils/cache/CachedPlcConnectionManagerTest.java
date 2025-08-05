@@ -22,12 +22,16 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.utils.cache.exceptions.PlcConnectionManagerClosedException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 
 public class CachedPlcConnectionManagerTest {
 
@@ -174,6 +178,135 @@ public class CachedPlcConnectionManagerTest {
 
         // Check getConnection was called on the mockConnectionManager instance exactly once.
         Mockito.verify(mockConnectionManager, Mockito.times(1)).getConnection("test");
+    }
+
+    @Test
+    @Disabled("This test fails quite regularly when run on github actions")
+    public void testClosingConnectionCache() throws Exception {
+        PlcConnection mockConnection = Mockito.mock(PlcConnection.class);
+        PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
+        Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(mockConnection);
+
+        CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxLeaseTime(Duration.ofMillis(3000)).build();
+
+        // Have multiple leases borrowed.
+        // The first should get the lease directly but will hang on to it for some time.
+        CompletableFuture<Void> firstFuture = new CompletableFuture<>();
+        Thread thread = new Thread(() -> {
+            try {
+                PlcConnection connection = connectionManager.getConnection("test");
+                Thread.sleep(1000L);
+                connection.close();
+                firstFuture.completeExceptionally(new Exception("First connection should have failed"));
+            } catch (InterruptedException e) {
+                // The thread will be blocking longer than the test execution, so we're sending an interrupt
+                // and this is the way we find out we got it.
+                firstFuture.completeExceptionally(e);
+            } catch (Exception e) {
+                firstFuture.completeExceptionally(e);
+            }
+        });
+        thread.start();
+
+        // Give the thread some time to start up.
+        Thread.sleep(100L);
+
+        // The second will wait in the queue.
+        CompletableFuture<Void> secondFuture = new CompletableFuture<>();
+        new Thread(() -> {
+            try {
+                connectionManager.getConnection("test");
+                secondFuture.completeExceptionally(new Exception("Second connection should have failed"));
+            } catch (PlcConnectionException e) {
+                // This getConnection() call was waiting in line in order to get the connection
+                // when the cache was closed, so we expect this to fail and to contain a reference to the closed
+                // connection manager.
+                secondFuture.completeExceptionally(e);
+            }
+        }).start();
+
+        // Give the thread some time to start up.
+        Thread.sleep(100L);
+
+        // Check that only one connection has been requested from the PlcConnectionManager.
+        Mockito.verify(mockConnectionManager, Mockito.times(1)).getConnection("test");
+        // Check that the connection borrowed from the Mocked ConnectionManager has not been closed yet.
+        Mockito.verify(mockConnection, Mockito.times(0)).close();
+
+        // Close the connection manager.
+        connectionManager.close();
+
+        // Interrupt the first thread, that is just wasting our time waiting.
+        thread.interrupt();
+
+        // Borrowing after the connectionManager is closed, should result in exceptions.
+        try {
+            connectionManager.getConnection("test");
+            Assertions.fail("This should have failed");
+        } catch (PlcConnectionException e) {
+            if(!(e instanceof PlcConnectionManagerClosedException)) {
+                e.printStackTrace();
+                Assertions.fail("Expected PlcConnectionManagerClosedException");
+            }
+        }
+
+        // Check that the connection borrowed from the Mocked ConnectionManager has been closed.
+        Mockito.verify(mockConnection, Mockito.times(1)).close();
+
+        try {
+            firstFuture.get();
+            Assertions.fail("This should have failed");
+        }
+        catch (Exception e) {
+            // In the case of the first thread, the thread was stuck waiting in the one-second pause
+            // when we intentionally interrupted it after closing the cache. So we expect to see that
+            // interrupt exception here.
+            if(!(e instanceof ExecutionException)) {
+                e.printStackTrace();
+                Assertions.fail("Expected ExecutionException");
+            }
+            if(!(e.getCause() instanceof InterruptedException)) {
+                e.printStackTrace();
+                Assertions.fail("Expected InterruptedException");
+            }
+        }
+
+        try {
+            secondFuture.get();
+            Assertions.fail("This should have failed");
+        } catch (Exception e) {
+            // In this case the process was waiting for getting the connection thread 1 was hogging.
+            // When closing the cache, all waiting connection requests were instantly finished with
+            // an exception.
+            if(!(e instanceof ExecutionException)) {
+                e.printStackTrace();
+                Assertions.fail("Expected ExecutionException");
+            }
+            if(!(e.getCause() instanceof PlcConnectionException)) {
+                e.printStackTrace();
+                Assertions.fail("Expected PlcConnectionException");
+            }
+            if(!(e.getCause().getCause().getCause() instanceof PlcConnectionManagerClosedException)) {
+                e.printStackTrace();
+                Assertions.fail("Expected PlcConnectionManagerClosedException");
+            }
+        }
+    }
+
+    @Test
+    public void testCloseAfterIdleTime() throws Exception {
+        PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
+        Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(Mockito.mock(PlcConnection.class));
+        CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxWaitTime(Duration.ofMillis(50)).withMaxIdleTime(Duration.ofMillis(10)).build();
+
+        // Get a connection and directly return it.
+        PlcConnection connection = connectionManager.getConnection("test");
+        connection.close();
+
+        // Wait for longer than the max idle time.
+        Thread.sleep(200);
+
+        Assertions.assertEquals(0, connectionManager.getCachedConnections().size());
     }
 
 }

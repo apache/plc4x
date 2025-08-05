@@ -60,7 +60,7 @@ public class BACnetChannelValueUnsigned extends BACnetChannelValue implements Me
     writeBuffer.pushContext("BACnetChannelValueUnsigned");
 
     // Simple Field (unsignedValue)
-    writeSimpleField("unsignedValue", unsignedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unsignedValue", unsignedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueUnsigned");
   }
@@ -91,7 +91,7 @@ public class BACnetChannelValueUnsigned extends BACnetChannelValue implements Me
     BACnetApplicationTagUnsignedInteger unsignedValue =
         readSimpleField(
             "unsignedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -28,6 +28,7 @@ import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -80,8 +81,8 @@ public class DefaultPlcBrowseRequest implements PlcBrowseRequest, Serializable {
         private final LinkedHashMap<String, Supplier<PlcQuery>> queries;
 
         public Builder(PlcBrowser browser, PlcTagHandler tagHandler) {
-            this.browser = browser;
-            this.tagHandler = tagHandler;
+            this.browser = Objects.requireNonNull(browser);
+            this.tagHandler = Objects.requireNonNull(tagHandler);
             queries = new LinkedHashMap<>();
         }
 

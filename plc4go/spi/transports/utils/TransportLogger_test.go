@@ -23,10 +23,10 @@ import (
 	"io"
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestNewTransportLogger(t *testing.T) {

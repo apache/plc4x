@@ -90,16 +90,16 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestWriteGroup");
 
     // Simple Field (groupNumber)
-    writeSimpleField("groupNumber", groupNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("groupNumber", groupNumber, writeComplex(writeBuffer));
 
     // Simple Field (writePriority)
-    writeSimpleField("writePriority", writePriority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("writePriority", writePriority, writeComplex(writeBuffer));
 
     // Simple Field (changeList)
-    writeSimpleField("changeList", changeList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("changeList", changeList, writeComplex(writeBuffer));
 
     // Optional Field (inhibitDelay) (Can be skipped, if the value is null)
-    writeOptionalField("inhibitDelay", inhibitDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("inhibitDelay", inhibitDelay, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetUnconfirmedServiceRequestWriteGroup");
   }
@@ -142,7 +142,7 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
     BACnetContextTagUnsignedInteger groupNumber =
         readSimpleField(
             "groupNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -154,7 +154,7 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
     BACnetContextTagUnsignedInteger writePriority =
         readSimpleField(
             "writePriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -166,14 +166,14 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
     BACnetGroupChannelValueList changeList =
         readSimpleField(
             "changeList",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetGroupChannelValueList.staticParse(readBuffer, (short) (2)),
                 readBuffer));
 
     BACnetContextTagUnsignedInteger inhibitDelay =
         readOptionalField(
             "inhibitDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

@@ -27,9 +27,10 @@ import io.vavr.control.Either;
 
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.TimeoutManager.CompletionCallback;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.internal.DefaultConversationContext;
 import org.apache.plc4x.java.spi.internal.DefaultExpectRequestContext;
@@ -74,7 +75,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         this.protocolBase = protocol;
         this.authentication = authentication;
         this.timeoutManager = timeoutManager;
-        this.protocolBase.setContext(new ConversationContext<T>() {
+        this.protocolBase.setConversationContext(new ConversationContext<T>() {
 
             @Override
             public PlcAuthentication getAuthentication() {
@@ -93,7 +94,16 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
             @Override
             public void sendToWire(T msg) {
-                pipeline.writeAndFlush(msg);
+                // Under heavy load, we were sometimes getting "Failed to mark a promise as success because it has succeeded already" errors.
+                // See: https://github.com/apache/plc4x/issues/2043
+                try {
+                    pipeline.writeAndFlush(msg);//.syncUninterruptibly();
+                } catch (Throwable t) {
+                    logger.error("Error sending message", t);
+                    if(logger.isDebugEnabled()) {
+                        logger.debug("Message: {}", msg);
+                    }
+                }
             }
 
             @Override
@@ -107,18 +117,18 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             }
 
             @Override
-            public void fireDiscovered(Configuration c) {
+            public void fireDiscovered(PlcConnectionConfiguration c) {
                 pipeline.fireUserEventTriggered(DiscoveredEvent.class);
             }
 
             @Override
             public SendRequestContext<T> sendRequest(T packet) {
-                return new DefaultSendRequestContext<>(Plc4xNettyWrapper.this::registerHandler, packet, this);
+                return new DefaultSendRequestContext<>(null, Plc4xNettyWrapper.this::registerHandler, packet, this);
             }
 
             @Override
             public ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout) {
-                return new DefaultExpectRequestContext<>(Plc4xNettyWrapper.this::registerHandler, clazz, timeout, this);
+                return new DefaultExpectRequestContext<>(null, Plc4xNettyWrapper.this::registerHandler, clazz, timeout, this);
             }
 
         });
@@ -137,8 +147,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     }
 
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, T t, List<Object> list) throws Exception {
-        logger.trace("Decoding {}", t);
+    protected void decode(ChannelHandlerContext channelHandlerContext, T payload, List<Object> list) throws Exception {
+        logger.trace("Decoding {}", payload);
         // Just iterate the list to find a suitable  Handler
 
         registrations:
@@ -152,37 +162,51 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 continue;
             }
             // Timeout?
-            logger.trace("Checking handler {} for Object of type {}", registration, t.getClass().getSimpleName());
-            if (registration.getExpectClazz().isInstance(t)) {
+            if (registration.isDone()) {
+                logger.debug("Removing {} as it's already done. Timed out?", registration);
+                iter.remove();
+                continue;
+            }
+            logger.trace("Checking handler {} for Object of type {}", registration, payload.getClass().getSimpleName());
+            if (registration.getExpectClazz().isInstance(payload)) {
                 logger.trace("Handler {} has right expected type {}, checking condition", registration, registration.getExpectClazz().getSimpleName());
-                // Check all Commands / Functions
-                Deque<Either<Function<?, ?>, Predicate<?>>> commands = registration.getCommands();
-                Object instance = t;
-                for (Either<Function<?, ?>, Predicate<?>> either : commands) {
-                    if (either.isLeft()) {
-                        Function unwrap = either.getLeft();
-                        instance = unwrap.apply(instance);
-                    } else {
-                        Predicate predicate = either.get();
-                        if (!predicate.test(instance)) {
-                            // We do not match -> cannot handle
-                            logger.trace("Registration {} with predicate {} does not match object {} (currently wrapped to {})", registration, predicate,
-                                t.getClass().getSimpleName(), instance.getClass().getSimpleName());
-                            continue registrations;
+                Object message = payload;
+                try {
+                    // Check all Commands / Functions
+                    Deque<Either<Function<?, ?>, Predicate<?>>> commands = registration.getCommands();
+                    for (Either<Function<?, ?>, Predicate<?>> either : commands) {
+                        if (either.isLeft()) {
+                            Function unwrap = either.getLeft();
+                            message = unwrap.apply(message);
+                        } else {
+                            Predicate predicate = either.get();
+                            if (!predicate.test(message)) {
+                                // We do not match -> cannot handle
+                                logger.trace("Registration {} with predicate {} does not match object {} (currently wrapped to {})", registration, predicate,
+                                    payload.getClass().getSimpleName(), message.getClass().getSimpleName());
+                                continue registrations;
+                            }
                         }
                     }
+                    logger.trace("Handler {} accepts element {}, calling handle method", registration, payload);
+                    this.registeredHandlers.remove(registration);
+                    Consumer handler = registration.getPacketConsumer();
+                    handler.accept(message);
+                    // Confirm that it was handled!
+                    registration.confirmHandled();
+                } catch (Exception e) {
+                    logger.trace("Failure while processing payload {} with handler {}", message, registration, e);
+                    BiConsumer biConsumer = registration.getErrorConsumer();
+                    if(biConsumer != null) {
+                        biConsumer.accept(message, e);
+                    }
+                    registration.confirmError();
                 }
-                logger.trace("Handler {} accepts element {}, calling handle method", registration, t);
-                this.registeredHandlers.remove(registration);
-                Consumer handler = registration.getPacketConsumer();
-                handler.accept(instance);
-                // Confirm that it was handled!
-                registration.confirmHandled();
                 return;
             }
         }
-        logger.trace("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), t);
-        protocolBase.decode(new DefaultConversationContext<>(this::registerHandler, channelHandlerContext, authentication, passive), t);
+        logger.trace("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), payload);
+        protocolBase.decode(new DefaultConversationContext<>(this::registerHandler, channelHandlerContext, authentication, passive), payload);
     }
 
     @Override
@@ -205,7 +229,6 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
     /**
      * Performs registration of packet handler and makes sure that its timeout will be handled properly.
-     *
      * Since timeouts are controlled by {@link TimeoutManager} there is a need to decorate handler
      * operations so both sides know what's going on.
      *
@@ -226,11 +249,15 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         });
         // wrap handler, so we can catch packet consumer call and inform completion callback.
         HandlerRegistration registration = new HandlerRegistration(
+            handler.getName(),
             handler.getCommands(),
             handler.getExpectClazz(),
             completionCallback.andThen(handler.getPacketConsumer()),
             handler.getOnTimeoutConsumer(),
             handler.getErrorConsumer(),
+            handler::confirmHandled,
+            handler::confirmError,
+            handler::cancel,
             handler.getTimeout()
         );
         deferred.set(registration);
@@ -238,12 +265,14 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     }
 
     private Consumer<TimeoutException> onTimeout(AtomicReference<HandlerRegistration> reference, Consumer<TimeoutException> onTimeoutConsumer) {
-        return new Consumer<TimeoutException>() {
-            @Override
-            public void accept(TimeoutException e) {
-                registeredHandlers.remove(reference.get());
-                onTimeoutConsumer.accept(e);
+        return timeoutException -> {
+            final HandlerRegistration registration = reference.get();
+            registeredHandlers.remove(registration);
+            // Only call the timeout handler, if there is one.
+            if(onTimeoutConsumer != null) {
+                onTimeoutConsumer.accept(timeoutException);
             }
+            registration.confirmError();
         };
     }
 

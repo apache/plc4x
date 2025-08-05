@@ -20,13 +20,14 @@ package org.apache.plc4x.java.spi;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 
 import java.util.concurrent.CompletableFuture;
 
 public abstract class Plc4xProtocolBase<T> {
 
-    protected ConversationContext<T> context;
+    protected ConversationContext<T> conversationContext;
 
     protected DriverContext driverContext;
 
@@ -38,8 +39,12 @@ public abstract class Plc4xProtocolBase<T> {
         return driverContext;
     }
 
-    public void setContext(ConversationContext<T> context) {
-        this.context = context;
+    public void setConversationContext(ConversationContext<T> conversationContext) {
+        this.conversationContext = conversationContext;
+    }
+
+    public ConversationContext<T> getConversationContext() {
+        return conversationContext;
     }
 
     public void onConnect(ConversationContext<T> context) {
@@ -54,10 +59,10 @@ public abstract class Plc4xProtocolBase<T> {
         // Intentionally do nothing here
     }
 
+    public abstract PlcTagHandler getTagHandler();
+
     /**
-     * TODO document me
-     * <p>
-     * Can be used for non requested incoming messages
+     * Default callback, called if an incoming message can't be correlated with an expected response.
      *
      * @param context
      * @param msg

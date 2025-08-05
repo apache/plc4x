@@ -26,14 +26,14 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/pkg/errors"
+
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
 )
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
@@ -43,7 +43,9 @@ func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 func (m *Connection) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	m.log.Trace().Msg("Writing")
 	result := make(chan apiModel.PlcWriteRequestResult, 1)
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -104,7 +106,9 @@ func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcW
 	}
 	data := io.GetBytes()
 
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -298,7 +302,7 @@ func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntr
 		if valueType == apiValues.NULL {
 			return errors.New(fmt.Sprintf("error converting %s into plc4x plc-value type", dataType.GetDataTypeName()))
 		}
-		adsValueType, ok := driverModel.PlcValueTypeByName(valueType.String())
+		adsValueType, ok := apiValues.PlcValueTypeByName(valueType.String())
 		if !ok {
 			return errors.New(fmt.Sprintf("error converting plc4x plc-value type %s into ads plc-value type", valueType.String()))
 		}

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RolePermissionType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "98";
+  public Integer getExtensionId() {
+    return (int) 98;
   }
 
   // Properties.
@@ -68,14 +68,14 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
     writeBuffer.pushContext("RolePermissionType");
 
     // Simple Field (roleId)
-    writeSimpleField("roleId", roleId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("roleId", roleId, writeComplex(writeBuffer));
 
     // Simple Field (permissions)
     writeSimpleEnumField(
         "permissions",
         "PermissionType",
         permissions,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PermissionType::getValue, PermissionType::name, writeUnsignedLong(writeBuffer, 32)));
 
     writeBuffer.popContext("RolePermissionType");
@@ -102,22 +102,19 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RolePermissionType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId roleId =
-        readSimpleField(
-            "roleId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("roleId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     PermissionType permissions =
         readEnumField(
             "permissions",
             "PermissionType",
-            new DataReaderEnumDefault<>(
-                PermissionType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(PermissionType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     readBuffer.closeContext("RolePermissionType");
     // Create the instance

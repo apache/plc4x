@@ -41,8 +41,9 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
     private static final Logger LOGGER = LoggerFactory.getLogger(FreemarkerLanguageOutput.class);
 
     @Override
-    public void generate(File outputDir, String version, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types,
-                         Map<String, String> options)
+    public void generate(File outputDir, String version, String languageName, String protocolName, String outputFlavor,
+                         Map<String, TypeDefinition> types,
+                         Map<String, Object> options)
         throws GenerationException {
 
         // Configure the Freemarker template engine
@@ -155,7 +156,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             // Extract the output path from the first line of the generated content
             String outputFileName = input.readLine();
             // If there is no outputFileName, this file should be skipped.
-            if (outputFileName == null) {
+            if ((outputFileName == null) || outputFileName.isEmpty()) {
                 return;
             }
             File outputFile = new File(outputDir, outputFileName);
@@ -211,7 +212,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
         return Collections.emptyList();
     }
 
-    protected abstract FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-                                                                  Map<String, String> options);
+    protected abstract FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName,
+                                                                  Map<String, TypeDefinition> types, Map<String, Object> options);
 
 }

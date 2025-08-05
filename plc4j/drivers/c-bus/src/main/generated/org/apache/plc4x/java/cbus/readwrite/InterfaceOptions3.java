@@ -155,12 +155,6 @@ public class InterfaceOptions3 implements Message {
     return lengthInBits;
   }
 
-  public static InterfaceOptions3 staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static InterfaceOptions3 staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("InterfaceOptions3");
     PositionAware positionAware = readBuffer;

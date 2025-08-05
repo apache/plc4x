@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ResponseHeader extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "394";
+  public Integer getExtensionId() {
+    return (int) 394;
   }
 
   // Properties.
@@ -47,7 +47,6 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
   protected final long requestHandle;
   protected final StatusCode serviceResult;
   protected final DiagnosticInfo serviceDiagnostics;
-  protected final int noOfStringTable;
   protected final List<PascalString> stringTable;
   protected final ExtensionObject additionalHeader;
 
@@ -56,7 +55,6 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
       long requestHandle,
       StatusCode serviceResult,
       DiagnosticInfo serviceDiagnostics,
-      int noOfStringTable,
       List<PascalString> stringTable,
       ExtensionObject additionalHeader) {
     super();
@@ -64,7 +62,6 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
     this.requestHandle = requestHandle;
     this.serviceResult = serviceResult;
     this.serviceDiagnostics = serviceDiagnostics;
-    this.noOfStringTable = noOfStringTable;
     this.stringTable = stringTable;
     this.additionalHeader = additionalHeader;
   }
@@ -83,10 +80,6 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
 
   public DiagnosticInfo getServiceDiagnostics() {
     return serviceDiagnostics;
-  }
-
-  public int getNoOfStringTable() {
-    return noOfStringTable;
   }
 
   public List<PascalString> getStringTable() {
@@ -111,21 +104,21 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
     writeSimpleField("requestHandle", requestHandle, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (serviceResult)
-    writeSimpleField("serviceResult", serviceResult, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serviceResult", serviceResult, writeComplex(writeBuffer));
 
     // Simple Field (serviceDiagnostics)
-    writeSimpleField(
-        "serviceDiagnostics", serviceDiagnostics, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serviceDiagnostics", serviceDiagnostics, writeComplex(writeBuffer));
 
-    // Simple Field (noOfStringTable)
-    writeSimpleField("noOfStringTable", noOfStringTable, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfStringTable) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfStringTable = (int) ((((getStringTable()) == (null)) ? -(1) : COUNT(getStringTable())));
+    writeImplicitField("noOfStringTable", noOfStringTable, writeSignedInt(writeBuffer, 32));
 
     // Array Field (stringTable)
     writeComplexTypeArrayField("stringTable", stringTable, writeBuffer);
 
     // Simple Field (additionalHeader)
-    writeSimpleField(
-        "additionalHeader", additionalHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("additionalHeader", additionalHeader, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ResponseHeader");
   }
@@ -153,7 +146,7 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
     // Simple field (serviceDiagnostics)
     lengthInBits += serviceDiagnostics.getLengthInBits();
 
-    // Simple field (noOfStringTable)
+    // Implicit Field (noOfStringTable)
     lengthInBits += 32;
 
     // Array field
@@ -172,7 +165,7 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ResponseHeader");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -183,39 +176,31 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
 
     StatusCode serviceResult =
         readSimpleField(
-            "serviceResult",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "serviceResult", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     DiagnosticInfo serviceDiagnostics =
         readSimpleField(
             "serviceDiagnostics",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer));
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer));
 
-    int noOfStringTable = readSimpleField("noOfStringTable", readSignedInt(readBuffer, 32));
+    int noOfStringTable = readImplicitField("noOfStringTable", readSignedInt(readBuffer, 32));
 
     List<PascalString> stringTable =
         readCountArrayField(
             "stringTable",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfStringTable);
 
     ExtensionObject additionalHeader =
         readSimpleField(
             "additionalHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     readBuffer.closeContext("ResponseHeader");
     // Create the instance
     return new ResponseHeaderBuilderImpl(
-        timestamp,
-        requestHandle,
-        serviceResult,
-        serviceDiagnostics,
-        noOfStringTable,
-        stringTable,
-        additionalHeader);
+        timestamp, requestHandle, serviceResult, serviceDiagnostics, stringTable, additionalHeader);
   }
 
   public static class ResponseHeaderBuilderImpl
@@ -224,7 +209,6 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
     private final long requestHandle;
     private final StatusCode serviceResult;
     private final DiagnosticInfo serviceDiagnostics;
-    private final int noOfStringTable;
     private final List<PascalString> stringTable;
     private final ExtensionObject additionalHeader;
 
@@ -233,14 +217,12 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
         long requestHandle,
         StatusCode serviceResult,
         DiagnosticInfo serviceDiagnostics,
-        int noOfStringTable,
         List<PascalString> stringTable,
         ExtensionObject additionalHeader) {
       this.timestamp = timestamp;
       this.requestHandle = requestHandle;
       this.serviceResult = serviceResult;
       this.serviceDiagnostics = serviceDiagnostics;
-      this.noOfStringTable = noOfStringTable;
       this.stringTable = stringTable;
       this.additionalHeader = additionalHeader;
     }
@@ -252,7 +234,6 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
               requestHandle,
               serviceResult,
               serviceDiagnostics,
-              noOfStringTable,
               stringTable,
               additionalHeader);
       return responseHeader;
@@ -272,7 +253,6 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
         && (getRequestHandle() == that.getRequestHandle())
         && (getServiceResult() == that.getServiceResult())
         && (getServiceDiagnostics() == that.getServiceDiagnostics())
-        && (getNoOfStringTable() == that.getNoOfStringTable())
         && (getStringTable() == that.getStringTable())
         && (getAdditionalHeader() == that.getAdditionalHeader())
         && super.equals(that)
@@ -287,7 +267,6 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
         getRequestHandle(),
         getServiceResult(),
         getServiceDiagnostics(),
-        getNoOfStringTable(),
         getStringTable(),
         getAdditionalHeader());
   }

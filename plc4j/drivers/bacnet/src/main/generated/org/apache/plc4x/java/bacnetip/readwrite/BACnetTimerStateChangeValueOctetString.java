@@ -67,8 +67,7 @@ public class BACnetTimerStateChangeValueOctetString extends BACnetTimerStateChan
     writeBuffer.pushContext("BACnetTimerStateChangeValueOctetString");
 
     // Simple Field (octetStringValue)
-    writeSimpleField(
-        "octetStringValue", octetStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("octetStringValue", octetStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimerStateChangeValueOctetString");
   }
@@ -99,7 +98,7 @@ public class BACnetTimerStateChangeValueOctetString extends BACnetTimerStateChan
     BACnetApplicationTagOctetString octetStringValue =
         readSimpleField(
             "octetStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

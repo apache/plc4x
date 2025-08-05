@@ -69,8 +69,7 @@ public class BACnetLogRecordLogDatumEnumeratedValue extends BACnetLogRecordLogDa
     writeBuffer.pushContext("BACnetLogRecordLogDatumEnumeratedValue");
 
     // Simple Field (enumeratedValue)
-    writeSimpleField(
-        "enumeratedValue", enumeratedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enumeratedValue", enumeratedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogRecordLogDatumEnumeratedValue");
   }
@@ -101,7 +100,7 @@ public class BACnetLogRecordLogDatumEnumeratedValue extends BACnetLogRecordLogDa
     BACnetContextTagEnumerated enumeratedValue =
         readSimpleField(
             "enumeratedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagEnumerated)
                         BACnetContextTag.staticParse(

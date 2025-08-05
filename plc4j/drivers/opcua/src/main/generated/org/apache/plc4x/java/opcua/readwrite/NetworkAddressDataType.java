@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class NetworkAddressDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "15504";
+  public Integer getExtensionId() {
+    return (int) 15504;
   }
 
   // Properties.
@@ -62,8 +62,7 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("NetworkAddressDataType");
 
     // Simple Field (networkInterface)
-    writeSimpleField(
-        "networkInterface", networkInterface, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkInterface", networkInterface, writeComplex(writeBuffer));
 
     writeBuffer.popContext("NetworkAddressDataType");
   }
@@ -86,7 +85,7 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("NetworkAddressDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -94,7 +93,7 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
     PascalString networkInterface =
         readSimpleField(
             "networkInterface",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("NetworkAddressDataType");
     // Create the instance

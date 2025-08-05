@@ -83,7 +83,7 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
     writeBuffer.pushContext("BACnetConstructedDataCredentialDataInputUpdateTime");
 
     // Simple Field (updateTime)
-    writeSimpleField("updateTime", updateTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("updateTime", updateTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetTimeStamp actualValue = getActualValue();
@@ -124,9 +124,7 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
 
     BACnetTimeStamp updateTime =
         readSimpleField(
-            "updateTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
+            "updateTime", readComplex(() -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
     BACnetTimeStamp actualValue =
         readVirtualField("actualValue", BACnetTimeStamp.class, updateTime);
 

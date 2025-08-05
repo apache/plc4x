@@ -22,14 +22,15 @@ package model
 import (
 	"context"
 
+	"github.com/pkg/errors"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/pkg/errors"
 )
 
 var _ apiModel.PlcBrowseRequestBuilder = &DefaultPlcBrowseRequestBuilder{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseRequestBuilder
+//go:generate go tool plc4xGenerator -type=DefaultPlcBrowseRequestBuilder
 type DefaultPlcBrowseRequestBuilder struct {
 	tagHandler spi.PlcTagHandler `ignore:"true"`
 	browser    spi.PlcBrowser    `ignore:"true"`
@@ -66,7 +67,7 @@ func (d *DefaultPlcBrowseRequestBuilder) Build() (apiModel.PlcBrowseRequest, err
 
 var _ apiModel.PlcBrowseRequest = &DefaultPlcBrowseRequest{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseRequest
+//go:generate go tool plc4xGenerator -type=DefaultPlcBrowseRequest
 type DefaultPlcBrowseRequest struct {
 	browser    spi.PlcBrowser
 	queryNames []string

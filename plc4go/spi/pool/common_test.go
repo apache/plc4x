@@ -21,9 +21,10 @@ package pool
 
 import (
 	"context"
-	"github.com/rs/zerolog"
 	"os"
 	"testing"
+
+	"github.com/rs/zerolog"
 )
 
 // Note: those functions are duplicated here because of import cycle issues

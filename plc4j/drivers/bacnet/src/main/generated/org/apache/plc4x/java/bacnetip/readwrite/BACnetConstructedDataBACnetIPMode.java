@@ -82,7 +82,7 @@ public class BACnetConstructedDataBACnetIPMode extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPMode");
 
     // Simple Field (bacnetIpMode)
-    writeSimpleField("bacnetIpMode", bacnetIpMode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bacnetIpMode", bacnetIpMode, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetIPModeTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataBACnetIPMode extends BACnetConstructedData imp
     BACnetIPModeTagged bacnetIpMode =
         readSimpleField(
             "bacnetIpMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetIPModeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

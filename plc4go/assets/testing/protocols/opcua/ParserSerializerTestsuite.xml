@@ -1,0 +1,2102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+  byteOrder="LITTLE_ENDIAN">
+
+  <name>OPCUA</name>
+
+  <protocolName>opcua</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
+  <testcase>
+    <name>OPC UA Node Id</name>
+    <raw>01004101</raw>
+    <root-type>ExpandedNodeId</root-type>
+    <xml>
+      <ExpandedNodeId>
+        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+        <nodeId>
+          <NodeIdTypeDefinition>
+            <nodeType>
+              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+            </nodeType>
+            <NodeIdFourByte>
+              <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+              <id dataType="uint" bitLength="16">321</id>
+            </NodeIdFourByte>
+          </NodeIdTypeDefinition>
+        </nodeId>
+      </ExpandedNodeId>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>OPC UA Extension Object Encoding Mask</name>
+    <raw>01</raw>
+    <root-type>ExtensionObjectEncodingMask</root-type>
+    <xml>
+      <ExtensionObjectEncodingMask>
+        <reserved dataType="int" bitLength="5">0</reserved>
+        <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+        <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+        <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+      </ExtensionObjectEncodingMask>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>OPC UA Anonymous Identity Token</name>
+    <raw>09000000616e6f6e796d6f7573</raw>
+    <root-type>ExtensionObjectDefinition</root-type>
+    <parser-arguments>
+      <extensionId>321</extensionId>
+    </parser-arguments>
+    <xml>
+      <ExtensionObjectDefinition>
+        <AnonymousIdentityToken>
+          <policyId>
+            <PascalString>
+              <sLength dataType="int" bitLength="32">9</sLength>
+              <stringValue dataType="string" bitLength="72" encoding="UTF-8">anonymous</stringValue>
+            </PascalString>
+          </policyId>
+        </AnonymousIdentityToken>
+      </ExtensionObjectDefinition>
+    </xml>
+  </testcase>
+
+
+  <testcase>
+    <name>OPC UA Extension Object Anonymous Identity Token</name>
+    <raw>01004101010d00000009000000616e6f6e796d6f7573</raw>
+    <root-type>ExtensionObject</root-type>
+    <parser-arguments>
+      <includeEncodingMask>true</includeEncodingMask>
+    </parser-arguments>
+    <xml>
+      <ExtensionObject>
+        <typeId>
+          <ExpandedNodeId>
+            <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+            <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+            <nodeId>
+              <NodeIdTypeDefinition>
+                <nodeType>
+                  <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                </nodeType>
+                <NodeIdFourByte>
+                  <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                  <id dataType="uint" bitLength="16">321</id>
+                </NodeIdFourByte>
+              </NodeIdTypeDefinition>
+            </nodeId>
+          </ExpandedNodeId>
+        </typeId>
+        <ExtensionObjectWithMask>
+          <encodingMask>
+            <ExtensionObjectEncodingMask>
+              <reserved dataType="int" bitLength="5">0</reserved>
+              <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+              <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+              <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+            </ExtensionObjectEncodingMask>
+          </encodingMask>
+          <BinaryExtensionObjectWithMask>
+            <bodyLength dataType="int" bitLength="32">13</bodyLength>
+            <body>
+              <ExtensionObjectDefinition>
+                <AnonymousIdentityToken>
+                  <policyId>
+                    <PascalString>
+                      <sLength dataType="int" bitLength="32">9</sLength>
+                      <stringValue dataType="string" bitLength="72" encoding="UTF-8">anonymous</stringValue>
+                    </PascalString>
+                  </policyId>
+                </AnonymousIdentityToken>
+              </ExtensionObjectDefinition>
+            </body>
+          </BinaryExtensionObjectWithMask>
+        </ExtensionObjectWithMask>
+      </ExtensionObject>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>OPC UA Activate Session request</name>
+    <raw>0500002000000084428062123302a3e7470f91899aa477deeab6ba1d83368c8a8e1a5bfffefa6de065de8f04edda010200000000000000ffffffff30750000000000ffffffffffffffff000000000000000001004101010d00000009000000616e6f6e796d6f7573ffffffffffffffff</raw>
+    <root-type>ExtensionObjectDefinition</root-type>
+    <parser-arguments>
+      <extensionId>467</extensionId>
+    </parser-arguments>
+    <xml>
+      <ExtensionObjectDefinition>
+        <ActivateSessionRequest>
+          <requestHeader>
+            <ExtensionObjectDefinition>
+              <RequestHeader>
+                <authenticationToken>
+                  <NodeId>
+                    <reserved dataType="int" bitLength="2">0</reserved>
+                    <nodeId>
+                      <NodeIdTypeDefinition>
+                        <nodeType>
+                          <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeByteString">5</NodeIdType>
+                        </nodeType>
+                        <NodeIdByteString>
+                          <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                          <id>
+                            <PascalByteString>
+                              <stringLength dataType="int" bitLength="32">32</stringLength>
+                              <stringValue dataType="byte" bitLength="256">0x84428062123302a3e7470f91899aa477deeab6ba1d83368c8a8e1a5bfffefa6d</stringValue>
+                            </PascalByteString>
+                          </id>
+                        </NodeIdByteString>
+                      </NodeIdTypeDefinition>
+                    </nodeId>
+                  </NodeId>
+                </authenticationToken>
+                <timestamp dataType="int" bitLength="64">133679742810220000</timestamp>
+                <requestHandle dataType="uint" bitLength="32">2</requestHandle>
+                <returnDiagnostics dataType="uint" bitLength="32">0</returnDiagnostics>
+                <auditEntryId>
+                  <PascalString>
+                    <sLength dataType="int" bitLength="32">-1</sLength>
+                  </PascalString>
+                </auditEntryId>
+                <timeoutHint dataType="uint" bitLength="32">30000</timeoutHint>
+                <additionalHeader>
+                  <ExtensionObject>
+                    <typeId>
+                      <ExpandedNodeId>
+                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                        <nodeId>
+                          <NodeIdTypeDefinition>
+                            <nodeType>
+                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                            </nodeType>
+                            <NodeIdTwoByte>
+                              <id dataType="uint" bitLength="8">0</id>
+                            </NodeIdTwoByte>
+                          </NodeIdTypeDefinition>
+                        </nodeId>
+                      </ExpandedNodeId>
+                    </typeId>
+                    <ExtensionObjectWithMask>
+                      <encodingMask>
+                        <ExtensionObjectEncodingMask>
+                          <reserved dataType="int" bitLength="5">0</reserved>
+                          <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                          <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                          <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                        </ExtensionObjectEncodingMask>
+                      </encodingMask>
+                      <NullExtensionObjectWithMask>
+                      </NullExtensionObjectWithMask>
+                    </ExtensionObjectWithMask>
+                  </ExtensionObject>
+                </additionalHeader>
+              </RequestHeader>
+            </ExtensionObjectDefinition>
+          </requestHeader>
+          <clientSignature>
+            <ExtensionObjectDefinition>
+              <SignatureData>
+                <algorithm>
+                  <PascalString>
+                    <sLength dataType="int" bitLength="32">-1</sLength>
+                  </PascalString>
+                </algorithm>
+                <signature>
+                  <PascalByteString>
+                    <stringLength dataType="int" bitLength="32">-1</stringLength>
+                    <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                  </PascalByteString>
+                </signature>
+              </SignatureData>
+            </ExtensionObjectDefinition>
+          </clientSignature>
+          <noOfClientSoftwareCertificates dataType="int" bitLength="32">0</noOfClientSoftwareCertificates>
+          <clientSoftwareCertificates isList="true">
+          </clientSoftwareCertificates>
+          <noOfLocaleIds dataType="int" bitLength="32">0</noOfLocaleIds>
+          <localeIds isList="true">
+          </localeIds>
+          <userIdentityToken>
+            <ExtensionObject>
+              <typeId>
+                <ExpandedNodeId>
+                  <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                  <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                  <nodeId>
+                    <NodeIdTypeDefinition>
+                      <nodeType>
+                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                      </nodeType>
+                      <NodeIdFourByte>
+                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                        <id dataType="uint" bitLength="16">321</id>
+                      </NodeIdFourByte>
+                    </NodeIdTypeDefinition>
+                  </nodeId>
+                </ExpandedNodeId>
+              </typeId>
+              <ExtensionObjectWithMask>
+                <encodingMask>
+                  <ExtensionObjectEncodingMask>
+                    <reserved dataType="int" bitLength="5">0</reserved>
+                    <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                    <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                    <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+                  </ExtensionObjectEncodingMask>
+                </encodingMask>
+                <BinaryExtensionObjectWithMask>
+                  <bodyLength dataType="int" bitLength="32">13</bodyLength>
+                  <body>
+                    <ExtensionObjectDefinition>
+                      <AnonymousIdentityToken>
+                        <policyId>
+                          <PascalString>
+                            <sLength dataType="int" bitLength="32">9</sLength>
+                            <stringValue dataType="string" bitLength="72" encoding="UTF-8">anonymous</stringValue>
+                          </PascalString>
+                        </policyId>
+                      </AnonymousIdentityToken>
+                    </ExtensionObjectDefinition>
+                  </body>
+                </BinaryExtensionObjectWithMask>
+              </ExtensionObjectWithMask>
+            </ExtensionObject>
+          </userIdentityToken>
+          <userTokenSignature>
+            <ExtensionObjectDefinition>
+              <SignatureData>
+                <algorithm>
+                  <PascalString>
+                    <sLength dataType="int" bitLength="32">-1</sLength>
+                  </PascalString>
+                </algorithm>
+                <signature>
+                  <PascalByteString>
+                    <stringLength dataType="int" bitLength="32">-1</stringLength>
+                    <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                  </PascalByteString>
+                </signature>
+              </SignatureData>
+            </ExtensionObjectDefinition>
+          </userTokenSignature>
+        </ActivateSessionRequest>
+      </ExtensionObjectDefinition>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>OPC UA Publish Response Payload (data change)</name>
+    <raw>20427b9004edda01350000000000000000ffffffff000000010000000100000001000000000100000020427b9004edda010100000001002b03012200000001000000010000000d0620000000f0cc098e04edda017089e98f04edda01000000000000000000000000</raw>
+    <root-type>ExtensionObjectDefinition</root-type>
+    <parser-arguments>
+      <extensionId>829</extensionId>
+    </parser-arguments>
+    <xml>
+      <ExtensionObjectDefinition>
+        <PublishResponse>
+          <responseHeader>
+            <ExtensionObjectDefinition>
+              <ResponseHeader>
+                <timestamp dataType="int" bitLength="64">133679742820500000</timestamp>
+                <requestHandle dataType="uint" bitLength="32">53</requestHandle>
+                <serviceResult>
+                  <StatusCode>
+                    <statusCode dataType="uint" bitLength="32">0</statusCode>
+                  </StatusCode>
+                </serviceResult>
+                <serviceDiagnostics>
+                  <DiagnosticInfo>
+                    <reserved dataType="bit" bitLength="1">false</reserved>
+                    <innerDiagnosticInfoSpecified dataType="bit" bitLength="1">false</innerDiagnosticInfoSpecified>
+                    <innerStatusCodeSpecified dataType="bit" bitLength="1">false</innerStatusCodeSpecified>
+                    <additionalInfoSpecified dataType="bit" bitLength="1">false</additionalInfoSpecified>
+                    <localeSpecified dataType="bit" bitLength="1">false</localeSpecified>
+                    <localizedTextSpecified dataType="bit" bitLength="1">false</localizedTextSpecified>
+                    <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                    <symbolicIdSpecified dataType="bit" bitLength="1">false</symbolicIdSpecified>
+                  </DiagnosticInfo>
+                </serviceDiagnostics>
+                <noOfStringTable dataType="int" bitLength="32">-1</noOfStringTable>
+                <additionalHeader>
+                  <ExtensionObject>
+                    <typeId>
+                      <ExpandedNodeId>
+                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                        <nodeId>
+                          <NodeIdTypeDefinition>
+                            <nodeType>
+                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                            </nodeType>
+                            <NodeIdTwoByte>
+                              <id dataType="uint" bitLength="8">0</id>
+                            </NodeIdTwoByte>
+                          </NodeIdTypeDefinition>
+                        </nodeId>
+                      </ExpandedNodeId>
+                    </typeId>
+                    <ExtensionObjectWithMask>
+                      <encodingMask>
+                        <ExtensionObjectEncodingMask>
+                          <reserved dataType="int" bitLength="5">0</reserved>
+                          <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                          <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                          <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                        </ExtensionObjectEncodingMask>
+                      </encodingMask>
+                      <NullExtensionObjectWithMask>
+                      </NullExtensionObjectWithMask>
+                    </ExtensionObjectWithMask>
+                  </ExtensionObject>
+                </additionalHeader>
+              </ResponseHeader>
+            </ExtensionObjectDefinition>
+          </responseHeader>
+          <subscriptionId dataType="uint" bitLength="32">1</subscriptionId>
+          <noOfAvailableSequenceNumbers dataType="int" bitLength="32">1</noOfAvailableSequenceNumbers>
+          <availableSequenceNumbers isList="true">
+            <value dataType="uint" bitLength="32">1</value>
+          </availableSequenceNumbers>
+          <reserved dataType="uint" bitLength="7">0</reserved>
+          <moreNotifications dataType="bit" bitLength="1">false</moreNotifications>
+          <notificationMessage>
+            <ExtensionObjectDefinition>
+              <NotificationMessage>
+                <sequenceNumber dataType="uint" bitLength="32">1</sequenceNumber>
+                <publishTime dataType="int" bitLength="64">133679742820500000</publishTime>
+                <noOfNotificationData dataType="int" bitLength="32">1</noOfNotificationData>
+                <notificationData isList="true">
+                  <ExtensionObject>
+                    <typeId>
+                      <ExpandedNodeId>
+                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                        <nodeId>
+                          <NodeIdTypeDefinition>
+                            <nodeType>
+                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                            </nodeType>
+                            <NodeIdFourByte>
+                              <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                              <id dataType="uint" bitLength="16">811</id>
+                            </NodeIdFourByte>
+                          </NodeIdTypeDefinition>
+                        </nodeId>
+                      </ExpandedNodeId>
+                    </typeId>
+                    <ExtensionObjectWithMask>
+                      <encodingMask>
+                        <ExtensionObjectEncodingMask>
+                          <reserved dataType="int" bitLength="5">0</reserved>
+                          <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                          <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                          <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+                        </ExtensionObjectEncodingMask>
+                      </encodingMask>
+                      <BinaryExtensionObjectWithMask>
+                        <bodyLength dataType="int" bitLength="32">34</bodyLength>
+                        <body>
+                          <ExtensionObjectDefinition>
+                            <DataChangeNotification>
+                              <noOfMonitoredItems dataType="int" bitLength="32">1</noOfMonitoredItems>
+                              <monitoredItems isList="true">
+                                <ExtensionObjectDefinition>
+                                  <MonitoredItemNotification>
+                                    <clientHandle dataType="uint" bitLength="32">1</clientHandle>
+                                    <value>
+                                      <DataValue>
+                                        <reserved dataType="uint" bitLength="2">0</reserved>
+                                        <serverPicosecondsSpecified dataType="bit" bitLength="1">false</serverPicosecondsSpecified>
+                                        <sourcePicosecondsSpecified dataType="bit" bitLength="1">false</sourcePicosecondsSpecified>
+                                        <serverTimestampSpecified dataType="bit" bitLength="1">true</serverTimestampSpecified>
+                                        <sourceTimestampSpecified dataType="bit" bitLength="1">true</sourceTimestampSpecified>
+                                        <statusCodeSpecified dataType="bit" bitLength="1">false</statusCodeSpecified>
+                                        <valueSpecified dataType="bit" bitLength="1">true</valueSpecified>
+                                        <value>
+                                          <Variant>
+                                            <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                            <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                            <VariantType dataType="uint" bitLength="6">6</VariantType>
+                                            <VariantInt32>
+                                              <value isList="true">
+                                                <value dataType="int" bitLength="32">32</value>
+                                              </value>
+                                            </VariantInt32>
+                                            <arrayDimensions isList="true">
+                                            </arrayDimensions>
+                                          </Variant>
+                                        </value>
+                                        <sourceTimestamp dataType="int" bitLength="64">133679742779510000</sourceTimestamp>
+                                        <serverTimestamp dataType="int" bitLength="64">133679742810950000</serverTimestamp>
+                                      </DataValue>
+                                    </value>
+                                  </MonitoredItemNotification>
+                                </ExtensionObjectDefinition>
+                              </monitoredItems>
+                              <noOfDiagnosticInfos dataType="int" bitLength="32">0</noOfDiagnosticInfos>
+                              <diagnosticInfos isList="true">
+                              </diagnosticInfos>
+                            </DataChangeNotification>
+                          </ExtensionObjectDefinition>
+                        </body>
+                      </BinaryExtensionObjectWithMask>
+                    </ExtensionObjectWithMask>
+                  </ExtensionObject>
+                </notificationData>
+              </NotificationMessage>
+            </ExtensionObjectDefinition>
+          </notificationMessage>
+          <noOfResults dataType="int" bitLength="32">0</noOfResults>
+          <results isList="true">
+          </results>
+          <noOfDiagnosticInfos dataType="int" bitLength="32">0</noOfDiagnosticInfos>
+          <diagnosticInfos isList="true">
+          </diagnosticInfos>
+        </PublishResponse>
+      </ExtensionObjectDefinition>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>OPC UA Publish Response Payload (event notification)</name>
+    <raw>a07f7459ddf3da016c0200000000000000ffffffff0000000300000001000000010000000001000000a07f7459ddf3da010100000001009403012301000003000000050000000b0000000000000f08000000000000000000001a0c06000000536572766572050100110100cd081503000000000d000000526566726573682053746172740d5040e158ddf3da01110100e30a110000050000000b00000001000100000f10000000000000000000001700000000000000120c070000004d794c6576656c05f40111030600070000004d794c6576656c1503000000000e0000004c6576656c2065786365656465640d20110558ddf3da011101000a25110306000d0000004d794c6576656c2e416c61726d050000000b0000000000000f08000000000000000000001b0c06000000536572766572050100110100cd081503000000000b0000005265667265736820456e640d6067e158ddf3da01110100e40a1100000100000000002880ffffffff</raw>
+    <root-type>ExtensionObjectDefinition</root-type>
+    <parser-arguments>
+      <extensionId>829</extensionId>
+    </parser-arguments>
+    <xml>
+      <ExtensionObjectDefinition>
+        <PublishResponse>
+          <responseHeader>
+            <ExtensionObjectDefinition>
+              <ResponseHeader>
+                <timestamp dataType="int" bitLength="64">133687270974980000</timestamp>
+                <requestHandle dataType="uint" bitLength="32">620</requestHandle>
+                <serviceResult>
+                  <StatusCode>
+                    <statusCode dataType="uint" bitLength="32">0</statusCode>
+                  </StatusCode>
+                </serviceResult>
+                <serviceDiagnostics>
+                  <DiagnosticInfo>
+                    <reserved dataType="bit" bitLength="1">false</reserved>
+                    <innerDiagnosticInfoSpecified dataType="bit" bitLength="1">false</innerDiagnosticInfoSpecified>
+                    <innerStatusCodeSpecified dataType="bit" bitLength="1">false</innerStatusCodeSpecified>
+                    <additionalInfoSpecified dataType="bit" bitLength="1">false</additionalInfoSpecified>
+                    <localeSpecified dataType="bit" bitLength="1">false</localeSpecified>
+                    <localizedTextSpecified dataType="bit" bitLength="1">false</localizedTextSpecified>
+                    <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                    <symbolicIdSpecified dataType="bit" bitLength="1">false</symbolicIdSpecified>
+                  </DiagnosticInfo>
+                </serviceDiagnostics>
+                <noOfStringTable dataType="int" bitLength="32">-1</noOfStringTable>
+                <additionalHeader>
+                  <ExtensionObject>
+                    <typeId>
+                      <ExpandedNodeId>
+                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                        <nodeId>
+                          <NodeIdTypeDefinition>
+                            <nodeType>
+                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                            </nodeType>
+                            <NodeIdTwoByte>
+                              <id dataType="uint" bitLength="8">0</id>
+                            </NodeIdTwoByte>
+                          </NodeIdTypeDefinition>
+                        </nodeId>
+                      </ExpandedNodeId>
+                    </typeId>
+                    <ExtensionObjectWithMask>
+                      <encodingMask>
+                        <ExtensionObjectEncodingMask>
+                          <reserved dataType="int" bitLength="5">0</reserved>
+                          <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                          <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                          <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                        </ExtensionObjectEncodingMask>
+                      </encodingMask>
+                      <NullExtensionObjectWithMask>
+                      </NullExtensionObjectWithMask>
+                    </ExtensionObjectWithMask>
+                  </ExtensionObject>
+                </additionalHeader>
+              </ResponseHeader>
+            </ExtensionObjectDefinition>
+          </responseHeader>
+          <subscriptionId dataType="uint" bitLength="32">3</subscriptionId>
+          <noOfAvailableSequenceNumbers dataType="int" bitLength="32">1</noOfAvailableSequenceNumbers>
+          <availableSequenceNumbers isList="true">
+            <value dataType="uint" bitLength="32">1</value>
+          </availableSequenceNumbers>
+          <reserved dataType="uint" bitLength="7">0</reserved>
+          <moreNotifications dataType="bit" bitLength="1">false</moreNotifications>
+          <notificationMessage>
+            <ExtensionObjectDefinition>
+              <NotificationMessage>
+                <sequenceNumber dataType="uint" bitLength="32">1</sequenceNumber>
+                <publishTime dataType="int" bitLength="64">133687270974980000</publishTime>
+                <noOfNotificationData dataType="int" bitLength="32">1</noOfNotificationData>
+                <notificationData isList="true">
+                  <ExtensionObject>
+                    <typeId>
+                      <ExpandedNodeId>
+                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                        <nodeId>
+                          <NodeIdTypeDefinition>
+                            <nodeType>
+                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                            </nodeType>
+                            <NodeIdFourByte>
+                              <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                              <id dataType="uint" bitLength="16">916</id>
+                            </NodeIdFourByte>
+                          </NodeIdTypeDefinition>
+                        </nodeId>
+                      </ExpandedNodeId>
+                    </typeId>
+                    <ExtensionObjectWithMask>
+                      <encodingMask>
+                        <ExtensionObjectEncodingMask>
+                          <reserved dataType="int" bitLength="5">0</reserved>
+                          <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                          <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                          <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+                        </ExtensionObjectEncodingMask>
+                      </encodingMask>
+                      <BinaryExtensionObjectWithMask>
+                        <bodyLength dataType="int" bitLength="32">291</bodyLength>
+                        <body>
+                          <ExtensionObjectDefinition>
+                            <EventNotificationList>
+                              <noOfEvents dataType="int" bitLength="32">3</noOfEvents>
+                              <events isList="true">
+                                <ExtensionObjectDefinition>
+                                  <EventFieldList>
+                                    <clientHandle dataType="uint" bitLength="32">5</clientHandle>
+                                    <noOfEventFields dataType="int" bitLength="32">11</noOfEventFields>
+                                    <eventFields isList="true">
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">0</VariantType>
+                                        <VariantNull>
+                                        </VariantNull>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">0</VariantType>
+                                        <VariantNull>
+                                        </VariantNull>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">0</VariantType>
+                                        <VariantNull>
+                                        </VariantNull>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">15</VariantType>
+                                        <VariantByteString>
+                                          <value isList="true">
+                                            <ByteStringArray>
+                                              <arrayLength dataType="int" bitLength="32">8</arrayLength>
+                                              <value isList="true">
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">26</value>
+                                              </value>
+                                            </ByteStringArray>
+                                          </value>
+                                        </VariantByteString>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">12</VariantType>
+                                        <VariantString>
+                                          <value isList="true">
+                                            <PascalString>
+                                              <sLength dataType="int" bitLength="32">6</sLength>
+                                              <stringValue dataType="string" bitLength="48" encoding="UTF-8">Server</stringValue>
+                                            </PascalString>
+                                          </value>
+                                        </VariantString>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">5</VariantType>
+                                        <VariantUInt16>
+                                          <value isList="true">
+                                            <value dataType="uint" bitLength="16">1</value>
+                                          </value>
+                                        </VariantUInt16>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">17</VariantType>
+                                        <VariantNodeId>
+                                          <value isList="true">
+                                            <NodeId>
+                                              <reserved dataType="int" bitLength="2">0</reserved>
+                                              <nodeId>
+                                                <NodeIdTypeDefinition>
+                                                  <nodeType>
+                                                    <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                                  </nodeType>
+                                                  <NodeIdFourByte>
+                                                    <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                                    <id dataType="uint" bitLength="16">2253</id>
+                                                  </NodeIdFourByte>
+                                                </NodeIdTypeDefinition>
+                                              </nodeId>
+                                            </NodeId>
+                                          </value>
+                                        </VariantNodeId>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">21</VariantType>
+                                        <VariantLocalizedText>
+                                          <value isList="true">
+                                            <LocalizedText>
+                                              <reserved dataType="uint" bitLength="6">0</reserved>
+                                              <textSpecified dataType="bit" bitLength="1">true</textSpecified>
+                                              <localeSpecified dataType="bit" bitLength="1">true</localeSpecified>
+                                              <locale>
+                                                <PascalString>
+                                                  <sLength dataType="int" bitLength="32">0</sLength>
+                                                  <stringValue dataType="string" bitLength="0" encoding="UTF-8"></stringValue>
+                                                </PascalString>
+                                              </locale>
+                                              <text>
+                                                <PascalString>
+                                                  <sLength dataType="int" bitLength="32">13</sLength>
+                                                  <stringValue dataType="string" bitLength="104" encoding="UTF-8">Refresh Start</stringValue>
+                                                </PascalString>
+                                              </text>
+                                            </LocalizedText>
+                                          </value>
+                                        </VariantLocalizedText>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">13</VariantType>
+                                        <VariantDateTime>
+                                          <value isList="true">
+                                            <value dataType="int" bitLength="64">133687270965330000</value>
+                                          </value>
+                                        </VariantDateTime>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">17</VariantType>
+                                        <VariantNodeId>
+                                          <value isList="true">
+                                            <NodeId>
+                                              <reserved dataType="int" bitLength="2">0</reserved>
+                                              <nodeId>
+                                                <NodeIdTypeDefinition>
+                                                  <nodeType>
+                                                    <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                                  </nodeType>
+                                                  <NodeIdFourByte>
+                                                    <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                                    <id dataType="uint" bitLength="16">2787</id>
+                                                  </NodeIdFourByte>
+                                                </NodeIdTypeDefinition>
+                                              </nodeId>
+                                            </NodeId>
+                                          </value>
+                                        </VariantNodeId>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">17</VariantType>
+                                        <VariantNodeId>
+                                          <value isList="true">
+                                            <NodeId>
+                                              <reserved dataType="int" bitLength="2">0</reserved>
+                                              <nodeId>
+                                                <NodeIdTypeDefinition>
+                                                  <nodeType>
+                                                    <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                                  </nodeType>
+                                                  <NodeIdTwoByte>
+                                                    <id dataType="uint" bitLength="8">0</id>
+                                                  </NodeIdTwoByte>
+                                                </NodeIdTypeDefinition>
+                                              </nodeId>
+                                            </NodeId>
+                                          </value>
+                                        </VariantNodeId>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                    </eventFields>
+                                  </EventFieldList>
+                                </ExtensionObjectDefinition>
+                                <ExtensionObjectDefinition>
+                                  <EventFieldList>
+                                    <clientHandle dataType="uint" bitLength="32">5</clientHandle>
+                                    <noOfEventFields dataType="int" bitLength="32">11</noOfEventFields>
+                                    <eventFields isList="true">
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">1</VariantType>
+                                        <VariantBoolean>
+                                          <value dataType="byte" bitLength="8">0x00</value>
+                                        </VariantBoolean>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">1</VariantType>
+                                        <VariantBoolean>
+                                          <value dataType="byte" bitLength="8">0x00</value>
+                                        </VariantBoolean>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">0</VariantType>
+                                        <VariantNull>
+                                        </VariantNull>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">15</VariantType>
+                                        <VariantByteString>
+                                          <value isList="true">
+                                            <ByteStringArray>
+                                              <arrayLength dataType="int" bitLength="32">16</arrayLength>
+                                              <value isList="true">
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">23</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">18</value>
+                                              </value>
+                                            </ByteStringArray>
+                                          </value>
+                                        </VariantByteString>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">12</VariantType>
+                                        <VariantString>
+                                          <value isList="true">
+                                            <PascalString>
+                                              <sLength dataType="int" bitLength="32">7</sLength>
+                                              <stringValue dataType="string" bitLength="56" encoding="UTF-8">MyLevel</stringValue>
+                                            </PascalString>
+                                          </value>
+                                        </VariantString>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">5</VariantType>
+                                        <VariantUInt16>
+                                          <value isList="true">
+                                            <value dataType="uint" bitLength="16">500</value>
+                                          </value>
+                                        </VariantUInt16>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">17</VariantType>
+                                        <VariantNodeId>
+                                          <value isList="true">
+                                            <NodeId>
+                                              <reserved dataType="int" bitLength="2">0</reserved>
+                                              <nodeId>
+                                                <NodeIdTypeDefinition>
+                                                  <nodeType>
+                                                    <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeString">3</NodeIdType>
+                                                  </nodeType>
+                                                  <NodeIdString>
+                                                    <namespaceIndex dataType="uint" bitLength="16">6</namespaceIndex>
+                                                    <id>
+                                                      <PascalString>
+                                                        <sLength dataType="int" bitLength="32">7</sLength>
+                                                        <stringValue dataType="string" bitLength="56" encoding="UTF-8">MyLevel</stringValue>
+                                                      </PascalString>
+                                                    </id>
+                                                  </NodeIdString>
+                                                </NodeIdTypeDefinition>
+                                              </nodeId>
+                                            </NodeId>
+                                          </value>
+                                        </VariantNodeId>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">21</VariantType>
+                                        <VariantLocalizedText>
+                                          <value isList="true">
+                                            <LocalizedText>
+                                              <reserved dataType="uint" bitLength="6">0</reserved>
+                                              <textSpecified dataType="bit" bitLength="1">true</textSpecified>
+                                              <localeSpecified dataType="bit" bitLength="1">true</localeSpecified>
+                                              <locale>
+                                                <PascalString>
+                                                  <sLength dataType="int" bitLength="32">0</sLength>
+                                                  <stringValue dataType="string" bitLength="0" encoding="UTF-8"></stringValue>
+                                                </PascalString>
+                                              </locale>
+                                              <text>
+                                                <PascalString>
+                                                  <sLength dataType="int" bitLength="32">14</sLength>
+                                                  <stringValue dataType="string" bitLength="112" encoding="UTF-8">Level exceeded</stringValue>
+                                                </PascalString>
+                                              </text>
+                                            </LocalizedText>
+                                          </value>
+                                        </VariantLocalizedText>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">13</VariantType>
+                                        <VariantDateTime>
+                                          <value isList="true">
+                                            <value dataType="int" bitLength="64">133687270950900000</value>
+                                          </value>
+                                        </VariantDateTime>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">17</VariantType>
+                                        <VariantNodeId>
+                                          <value isList="true">
+                                            <NodeId>
+                                              <reserved dataType="int" bitLength="2">0</reserved>
+                                              <nodeId>
+                                                <NodeIdTypeDefinition>
+                                                  <nodeType>
+                                                    <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                                  </nodeType>
+                                                  <NodeIdFourByte>
+                                                    <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                                    <id dataType="uint" bitLength="16">9482</id>
+                                                  </NodeIdFourByte>
+                                                </NodeIdTypeDefinition>
+                                              </nodeId>
+                                            </NodeId>
+                                          </value>
+                                        </VariantNodeId>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">17</VariantType>
+                                        <VariantNodeId>
+                                          <value isList="true">
+                                            <NodeId>
+                                              <reserved dataType="int" bitLength="2">0</reserved>
+                                              <nodeId>
+                                                <NodeIdTypeDefinition>
+                                                  <nodeType>
+                                                    <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeString">3</NodeIdType>
+                                                  </nodeType>
+                                                  <NodeIdString>
+                                                    <namespaceIndex dataType="uint" bitLength="16">6</namespaceIndex>
+                                                    <id>
+                                                      <PascalString>
+                                                        <sLength dataType="int" bitLength="32">13</sLength>
+                                                        <stringValue dataType="string" bitLength="104" encoding="UTF-8">MyLevel.Alarm</stringValue>
+                                                      </PascalString>
+                                                    </id>
+                                                  </NodeIdString>
+                                                </NodeIdTypeDefinition>
+                                              </nodeId>
+                                            </NodeId>
+                                          </value>
+                                        </VariantNodeId>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                    </eventFields>
+                                  </EventFieldList>
+                                </ExtensionObjectDefinition>
+                                <ExtensionObjectDefinition>
+                                  <EventFieldList>
+                                    <clientHandle dataType="uint" bitLength="32">5</clientHandle>
+                                    <noOfEventFields dataType="int" bitLength="32">11</noOfEventFields>
+                                    <eventFields isList="true">
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">0</VariantType>
+                                        <VariantNull>
+                                        </VariantNull>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">0</VariantType>
+                                        <VariantNull>
+                                        </VariantNull>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">0</VariantType>
+                                        <VariantNull>
+                                        </VariantNull>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">15</VariantType>
+                                        <VariantByteString>
+                                          <value isList="true">
+                                            <ByteStringArray>
+                                              <arrayLength dataType="int" bitLength="32">8</arrayLength>
+                                              <value isList="true">
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">0</value>
+                                                <value dataType="uint" bitLength="8">27</value>
+                                              </value>
+                                            </ByteStringArray>
+                                          </value>
+                                        </VariantByteString>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">12</VariantType>
+                                        <VariantString>
+                                          <value isList="true">
+                                            <PascalString>
+                                              <sLength dataType="int" bitLength="32">6</sLength>
+                                              <stringValue dataType="string" bitLength="48" encoding="UTF-8">Server</stringValue>
+                                            </PascalString>
+                                          </value>
+                                        </VariantString>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">5</VariantType>
+                                        <VariantUInt16>
+                                          <value isList="true">
+                                            <value dataType="uint" bitLength="16">1</value>
+                                          </value>
+                                        </VariantUInt16>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">17</VariantType>
+                                        <VariantNodeId>
+                                          <value isList="true">
+                                            <NodeId>
+                                              <reserved dataType="int" bitLength="2">0</reserved>
+                                              <nodeId>
+                                                <NodeIdTypeDefinition>
+                                                  <nodeType>
+                                                    <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                                  </nodeType>
+                                                  <NodeIdFourByte>
+                                                    <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                                    <id dataType="uint" bitLength="16">2253</id>
+                                                  </NodeIdFourByte>
+                                                </NodeIdTypeDefinition>
+                                              </nodeId>
+                                            </NodeId>
+                                          </value>
+                                        </VariantNodeId>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">21</VariantType>
+                                        <VariantLocalizedText>
+                                          <value isList="true">
+                                            <LocalizedText>
+                                              <reserved dataType="uint" bitLength="6">0</reserved>
+                                              <textSpecified dataType="bit" bitLength="1">true</textSpecified>
+                                              <localeSpecified dataType="bit" bitLength="1">true</localeSpecified>
+                                              <locale>
+                                                <PascalString>
+                                                  <sLength dataType="int" bitLength="32">0</sLength>
+                                                  <stringValue dataType="string" bitLength="0" encoding="UTF-8"></stringValue>
+                                                </PascalString>
+                                              </locale>
+                                              <text>
+                                                <PascalString>
+                                                  <sLength dataType="int" bitLength="32">11</sLength>
+                                                  <stringValue dataType="string" bitLength="88" encoding="UTF-8">Refresh End</stringValue>
+                                                </PascalString>
+                                              </text>
+                                            </LocalizedText>
+                                          </value>
+                                        </VariantLocalizedText>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">13</VariantType>
+                                        <VariantDateTime>
+                                          <value isList="true">
+                                            <value dataType="int" bitLength="64">133687270965340000</value>
+                                          </value>
+                                        </VariantDateTime>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">17</VariantType>
+                                        <VariantNodeId>
+                                          <value isList="true">
+                                            <NodeId>
+                                              <reserved dataType="int" bitLength="2">0</reserved>
+                                              <nodeId>
+                                                <NodeIdTypeDefinition>
+                                                  <nodeType>
+                                                    <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                                  </nodeType>
+                                                  <NodeIdFourByte>
+                                                    <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                                    <id dataType="uint" bitLength="16">2788</id>
+                                                  </NodeIdFourByte>
+                                                </NodeIdTypeDefinition>
+                                              </nodeId>
+                                            </NodeId>
+                                          </value>
+                                        </VariantNodeId>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">17</VariantType>
+                                        <VariantNodeId>
+                                          <value isList="true">
+                                            <NodeId>
+                                              <reserved dataType="int" bitLength="2">0</reserved>
+                                              <nodeId>
+                                                <NodeIdTypeDefinition>
+                                                  <nodeType>
+                                                    <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                                  </nodeType>
+                                                  <NodeIdTwoByte>
+                                                    <id dataType="uint" bitLength="8">0</id>
+                                                  </NodeIdTwoByte>
+                                                </NodeIdTypeDefinition>
+                                              </nodeId>
+                                            </NodeId>
+                                          </value>
+                                        </VariantNodeId>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                    </eventFields>
+                                  </EventFieldList>
+                                </ExtensionObjectDefinition>
+                              </events>
+                            </EventNotificationList>
+                          </ExtensionObjectDefinition>
+                        </body>
+                      </BinaryExtensionObjectWithMask>
+                    </ExtensionObjectWithMask>
+                  </ExtensionObject>
+                </notificationData>
+              </NotificationMessage>
+            </ExtensionObjectDefinition>
+          </notificationMessage>
+          <noOfResults dataType="int" bitLength="32">1</noOfResults>
+          <results isList="true">
+            <StatusCode>
+              <statusCode dataType="uint" bitLength="32">2150105088</statusCode>
+            </StatusCode>
+          </results>
+          <noOfDiagnosticInfos dataType="int" bitLength="32">-1</noOfDiagnosticInfos>
+        </PublishResponse>
+      </ExtensionObjectDefinition>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>OPC UA Notification Message</name>
+    <raw>010000008084ff018fedda010100000001002b03012200000001000000010000000d062000000000222ffb8eedda0120d592008fedda0100000000</raw>
+    <root-type>ExtensionObjectDefinition</root-type>
+    <parser-arguments>
+      <extensionId>805</extensionId>
+    </parser-arguments>
+    <xml>
+      <ExtensionObjectDefinition>
+        <NotificationMessage>
+          <sequenceNumber dataType="uint" bitLength="32">1</sequenceNumber>
+          <publishTime dataType="int" bitLength="64">133680337430480000</publishTime>
+          <noOfNotificationData dataType="int" bitLength="32">1</noOfNotificationData>
+          <notificationData isList="true">
+            <ExtensionObject>
+              <typeId>
+                <ExpandedNodeId>
+                  <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                  <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                  <nodeId>
+                    <NodeIdTypeDefinition>
+                      <nodeType>
+                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                      </nodeType>
+                      <NodeIdFourByte>
+                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                        <id dataType="uint" bitLength="16">811</id>
+                      </NodeIdFourByte>
+                    </NodeIdTypeDefinition>
+                  </nodeId>
+                </ExpandedNodeId>
+              </typeId>
+              <ExtensionObjectWithMask>
+                <encodingMask>
+                  <ExtensionObjectEncodingMask>
+                    <reserved dataType="int" bitLength="5">0</reserved>
+                    <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                    <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                    <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+                  </ExtensionObjectEncodingMask>
+                </encodingMask>
+                <BinaryExtensionObjectWithMask>
+                  <bodyLength dataType="int" bitLength="32">34</bodyLength>
+                  <body>
+                    <ExtensionObjectDefinition>
+                      <DataChangeNotification>
+                        <noOfMonitoredItems dataType="int" bitLength="32">1</noOfMonitoredItems>
+                        <monitoredItems isList="true">
+                          <ExtensionObjectDefinition>
+                            <MonitoredItemNotification>
+                              <clientHandle dataType="uint" bitLength="32">1</clientHandle>
+                              <value>
+                                <DataValue>
+                                  <reserved dataType="uint" bitLength="2">0</reserved>
+                                  <serverPicosecondsSpecified dataType="bit" bitLength="1">false</serverPicosecondsSpecified>
+                                  <sourcePicosecondsSpecified dataType="bit" bitLength="1">false</sourcePicosecondsSpecified>
+                                  <serverTimestampSpecified dataType="bit" bitLength="1">true</serverTimestampSpecified>
+                                  <sourceTimestampSpecified dataType="bit" bitLength="1">true</sourceTimestampSpecified>
+                                  <statusCodeSpecified dataType="bit" bitLength="1">false</statusCodeSpecified>
+                                  <valueSpecified dataType="bit" bitLength="1">true</valueSpecified>
+                                  <value>
+                                    <Variant>
+                                      <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                      <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                      <VariantType dataType="uint" bitLength="6">6</VariantType>
+                                      <VariantInt32>
+                                        <value isList="true">
+                                          <value dataType="int" bitLength="32">32</value>
+                                        </value>
+                                      </VariantInt32>
+                                      <arrayDimensions isList="true">
+                                      </arrayDimensions>
+                                    </Variant>
+                                  </value>
+                                  <sourceTimestamp dataType="int" bitLength="64">133680337316160000</sourceTimestamp>
+                                  <serverTimestamp dataType="int" bitLength="64">133680337406580000</serverTimestamp>
+                                </DataValue>
+                              </value>
+                            </MonitoredItemNotification>
+                          </ExtensionObjectDefinition>
+                        </monitoredItems>
+                        <noOfDiagnosticInfos dataType="int" bitLength="32">0</noOfDiagnosticInfos>
+                        <diagnosticInfos isList="true">
+                        </diagnosticInfos>
+                      </DataChangeNotification>
+                    </ExtensionObjectDefinition>
+                  </body>
+                </BinaryExtensionObjectWithMask>
+              </ExtensionObjectWithMask>
+            </ExtensionObject>
+          </notificationData>
+        </NotificationMessage>
+      </ExtensionObjectDefinition>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>OPC UA Extension Object</name>
+    <raw>01002b03012200000001000000010000000d062000000000222ffb8eedda0120d592008fedda0100000000</raw>
+    <root-type>ExtensionObject</root-type>
+    <parser-arguments>
+      <includeEncodingMask>true</includeEncodingMask>
+    </parser-arguments>
+    <xml>
+      <ExtensionObject>
+        <typeId>
+          <ExpandedNodeId>
+            <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+            <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+            <nodeId>
+              <NodeIdTypeDefinition>
+                <nodeType>
+                  <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                </nodeType>
+                <NodeIdFourByte>
+                  <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                  <id dataType="uint" bitLength="16">811</id>
+                </NodeIdFourByte>
+              </NodeIdTypeDefinition>
+            </nodeId>
+          </ExpandedNodeId>
+        </typeId>
+        <ExtensionObjectWithMask>
+          <encodingMask>
+            <ExtensionObjectEncodingMask>
+              <reserved dataType="int" bitLength="5">0</reserved>
+              <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+              <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+              <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+            </ExtensionObjectEncodingMask>
+          </encodingMask>
+          <BinaryExtensionObjectWithMask>
+            <bodyLength dataType="int" bitLength="32">34</bodyLength>
+            <body>
+              <ExtensionObjectDefinition>
+                <DataChangeNotification>
+                  <noOfMonitoredItems dataType="int" bitLength="32">1</noOfMonitoredItems>
+                  <monitoredItems isList="true">
+                    <ExtensionObjectDefinition>
+                      <MonitoredItemNotification>
+                        <clientHandle dataType="uint" bitLength="32">1</clientHandle>
+                        <value>
+                          <DataValue>
+                            <reserved dataType="uint" bitLength="2">0</reserved>
+                            <serverPicosecondsSpecified dataType="bit" bitLength="1">false</serverPicosecondsSpecified>
+                            <sourcePicosecondsSpecified dataType="bit" bitLength="1">false</sourcePicosecondsSpecified>
+                            <serverTimestampSpecified dataType="bit" bitLength="1">true</serverTimestampSpecified>
+                            <sourceTimestampSpecified dataType="bit" bitLength="1">true</sourceTimestampSpecified>
+                            <statusCodeSpecified dataType="bit" bitLength="1">false</statusCodeSpecified>
+                            <valueSpecified dataType="bit" bitLength="1">true</valueSpecified>
+                            <value>
+                              <Variant>
+                                <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                <VariantType dataType="uint" bitLength="6">6</VariantType>
+                                <VariantInt32>
+                                  <value isList="true">
+                                    <value dataType="int" bitLength="32">32</value>
+                                  </value>
+                                </VariantInt32>
+                                <arrayDimensions isList="true">
+                                </arrayDimensions>
+                              </Variant>
+                            </value>
+                            <sourceTimestamp dataType="int" bitLength="64">133680337316160000</sourceTimestamp>
+                            <serverTimestamp dataType="int" bitLength="64">133680337406580000</serverTimestamp>
+                          </DataValue>
+                        </value>
+                      </MonitoredItemNotification>
+                    </ExtensionObjectDefinition>
+                  </monitoredItems>
+                  <noOfDiagnosticInfos dataType="int" bitLength="32">0</noOfDiagnosticInfos>
+                  <diagnosticInfos isList="true">
+                  </diagnosticInfos>
+                </DataChangeNotification>
+              </ExtensionObjectDefinition>
+            </body>
+          </BinaryExtensionObjectWithMask>
+        </ExtensionObjectWithMask>
+      </ExtensionObject>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>OPC UA Monitored Item Notification</name>
+    <raw>010000000d062000000000222ffb8eedda0120d592008fedda01</raw>
+    <root-type>ExtensionObjectDefinition</root-type>
+    <parser-arguments>
+      <extensionId>808</extensionId>
+    </parser-arguments>
+    <xml>
+      <ExtensionObjectDefinition>
+        <MonitoredItemNotification>
+          <clientHandle dataType="uint" bitLength="32">1</clientHandle>
+          <value>
+            <DataValue>
+              <reserved dataType="uint" bitLength="2">0</reserved>
+              <serverPicosecondsSpecified dataType="bit" bitLength="1">false</serverPicosecondsSpecified>
+              <sourcePicosecondsSpecified dataType="bit" bitLength="1">false</sourcePicosecondsSpecified>
+              <serverTimestampSpecified dataType="bit" bitLength="1">true</serverTimestampSpecified>
+              <sourceTimestampSpecified dataType="bit" bitLength="1">true</sourceTimestampSpecified>
+              <statusCodeSpecified dataType="bit" bitLength="1">false</statusCodeSpecified>
+              <valueSpecified dataType="bit" bitLength="1">true</valueSpecified>
+              <value>
+                <Variant>
+                  <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                  <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                  <VariantType dataType="uint" bitLength="6">6</VariantType>
+                  <VariantInt32>
+                    <value isList="true">
+                      <value dataType="int" bitLength="32">32</value>
+                    </value>
+                  </VariantInt32>
+                  <arrayDimensions isList="true">
+                  </arrayDimensions>
+                </Variant>
+              </value>
+              <sourceTimestamp dataType="int" bitLength="64">133680337316160000</sourceTimestamp>
+              <serverTimestamp dataType="int" bitLength="64">133680337406580000</serverTimestamp>
+            </DataValue>
+          </value>
+        </MonitoredItemNotification>
+      </ExtensionObjectDefinition>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>OPC UA Monitoring Parameters</name>
+    <raw>0500000000000000000000000100d70201910100000b0000000100f9070200000000000b000000416374697665537461746500000200000049640d000000ffffffff0100f9070200000000000a00000041636b6564537461746500000200000049640d000000ffffffff0100f9070200000000000e000000436f6e6669726d6564537461746500000200000049640d000000ffffffff0100f907010000000000070000004576656e7449640d000000ffffffff0100f9070100000000000a000000536f757263654e616d650d000000ffffffff0100f9070100000000000800000053657665726974790d000000ffffffff0100f9070100000000000a000000536f757263654e6f64650d000000ffffffff0100f907010000000000070000004d6573736167650d000000ffffffff0100f9070100000000000400000054696d650d000000ffffffff0100f907010000000000090000004576656e74547970650d000000ffffffff0100de0a0000000001000000ffffffff020000000700000001000000010052020104000000010000000e000000010000000100550201050000001101005508ffffffff00</raw>
+    <root-type>ExtensionObjectDefinition</root-type>
+    <parser-arguments>
+      <extensionId>742</extensionId>
+    </parser-arguments>
+    <xml>
+      <ExtensionObjectDefinition>
+        <MonitoringParameters>
+          <clientHandle dataType="uint" bitLength="32">5</clientHandle>
+          <samplingInterval dataType="float" bitLength="64">0.0</samplingInterval>
+          <filter>
+            <ExtensionObject>
+              <typeId>
+                <ExpandedNodeId>
+                  <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                  <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                  <nodeId>
+                    <NodeIdTypeDefinition>
+                      <nodeType>
+                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                      </nodeType>
+                      <NodeIdFourByte>
+                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                        <id dataType="uint" bitLength="16">727</id>
+                      </NodeIdFourByte>
+                    </NodeIdTypeDefinition>
+                  </nodeId>
+                </ExpandedNodeId>
+              </typeId>
+              <ExtensionObjectWithMask>
+                <encodingMask>
+                  <ExtensionObjectEncodingMask>
+                    <reserved dataType="int" bitLength="5">0</reserved>
+                    <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                    <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                    <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+                  </ExtensionObjectEncodingMask>
+                </encodingMask>
+                <BinaryExtensionObjectWithMask>
+                  <bodyLength dataType="int" bitLength="32">401</bodyLength>
+                  <body>
+                    <ExtensionObjectDefinition>
+                      <EventFilter>
+                        <noOfSelectClauses dataType="int" bitLength="32">11</noOfSelectClauses>
+                        <selectClauses isList="true">
+                          <ExtensionObjectDefinition>
+                            <SimpleAttributeOperand>
+                              <typeDefinitionId>
+                                <NodeId>
+                                  <reserved dataType="int" bitLength="2">0</reserved>
+                                  <nodeId>
+                                    <NodeIdTypeDefinition>
+                                      <nodeType>
+                                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                      </nodeType>
+                                      <NodeIdFourByte>
+                                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                        <id dataType="uint" bitLength="16">2041</id>
+                                      </NodeIdFourByte>
+                                    </NodeIdTypeDefinition>
+                                  </nodeId>
+                                </NodeId>
+                              </typeDefinitionId>
+                              <noOfBrowsePath dataType="int" bitLength="32">2</noOfBrowsePath>
+                              <browsePath isList="true">
+                                <QualifiedName>
+                                  <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                  <name>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">11</sLength>
+                                      <stringValue dataType="string" bitLength="88" encoding="UTF-8">ActiveState</stringValue>
+                                    </PascalString>
+                                  </name>
+                                </QualifiedName>
+                                <QualifiedName>
+                                  <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                  <name>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">2</sLength>
+                                      <stringValue dataType="string" bitLength="16" encoding="UTF-8">Id</stringValue>
+                                    </PascalString>
+                                  </name>
+                                </QualifiedName>
+                              </browsePath>
+                              <attributeId dataType="uint" bitLength="32">13</attributeId>
+                              <indexRange>
+                                <PascalString>
+                                  <sLength dataType="int" bitLength="32">-1</sLength>
+                                </PascalString>
+                              </indexRange>
+                            </SimpleAttributeOperand>
+                          </ExtensionObjectDefinition>
+                          <ExtensionObjectDefinition>
+                            <SimpleAttributeOperand>
+                              <typeDefinitionId>
+                                <NodeId>
+                                  <reserved dataType="int" bitLength="2">0</reserved>
+                                  <nodeId>
+                                    <NodeIdTypeDefinition>
+                                      <nodeType>
+                                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                      </nodeType>
+                                      <NodeIdFourByte>
+                                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                        <id dataType="uint" bitLength="16">2041</id>
+                                      </NodeIdFourByte>
+                                    </NodeIdTypeDefinition>
+                                  </nodeId>
+                                </NodeId>
+                              </typeDefinitionId>
+                              <noOfBrowsePath dataType="int" bitLength="32">2</noOfBrowsePath>
+                              <browsePath isList="true">
+                                <QualifiedName>
+                                  <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                  <name>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">10</sLength>
+                                      <stringValue dataType="string" bitLength="80" encoding="UTF-8">AckedState</stringValue>
+                                    </PascalString>
+                                  </name>
+                                </QualifiedName>
+                                <QualifiedName>
+                                  <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                  <name>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">2</sLength>
+                                      <stringValue dataType="string" bitLength="16" encoding="UTF-8">Id</stringValue>
+                                    </PascalString>
+                                  </name>
+                                </QualifiedName>
+                              </browsePath>
+                              <attributeId dataType="uint" bitLength="32">13</attributeId>
+                              <indexRange>
+                                <PascalString>
+                                  <sLength dataType="int" bitLength="32">-1</sLength>
+                                </PascalString>
+                              </indexRange>
+                            </SimpleAttributeOperand>
+                          </ExtensionObjectDefinition>
+                          <ExtensionObjectDefinition>
+                            <SimpleAttributeOperand>
+                              <typeDefinitionId>
+                                <NodeId>
+                                  <reserved dataType="int" bitLength="2">0</reserved>
+                                  <nodeId>
+                                    <NodeIdTypeDefinition>
+                                      <nodeType>
+                                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                      </nodeType>
+                                      <NodeIdFourByte>
+                                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                        <id dataType="uint" bitLength="16">2041</id>
+                                      </NodeIdFourByte>
+                                    </NodeIdTypeDefinition>
+                                  </nodeId>
+                                </NodeId>
+                              </typeDefinitionId>
+                              <noOfBrowsePath dataType="int" bitLength="32">2</noOfBrowsePath>
+                              <browsePath isList="true">
+                                <QualifiedName>
+                                  <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                  <name>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">14</sLength>
+                                      <stringValue dataType="string" bitLength="112" encoding="UTF-8">ConfirmedState</stringValue>
+                                    </PascalString>
+                                  </name>
+                                </QualifiedName>
+                                <QualifiedName>
+                                  <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                  <name>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">2</sLength>
+                                      <stringValue dataType="string" bitLength="16" encoding="UTF-8">Id</stringValue>
+                                    </PascalString>
+                                  </name>
+                                </QualifiedName>
+                              </browsePath>
+                              <attributeId dataType="uint" bitLength="32">13</attributeId>
+                              <indexRange>
+                                <PascalString>
+                                  <sLength dataType="int" bitLength="32">-1</sLength>
+                                </PascalString>
+                              </indexRange>
+                            </SimpleAttributeOperand>
+                          </ExtensionObjectDefinition>
+                          <ExtensionObjectDefinition>
+                            <SimpleAttributeOperand>
+                              <typeDefinitionId>
+                                <NodeId>
+                                  <reserved dataType="int" bitLength="2">0</reserved>
+                                  <nodeId>
+                                    <NodeIdTypeDefinition>
+                                      <nodeType>
+                                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                      </nodeType>
+                                      <NodeIdFourByte>
+                                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                        <id dataType="uint" bitLength="16">2041</id>
+                                      </NodeIdFourByte>
+                                    </NodeIdTypeDefinition>
+                                  </nodeId>
+                                </NodeId>
+                              </typeDefinitionId>
+                              <noOfBrowsePath dataType="int" bitLength="32">1</noOfBrowsePath>
+                              <browsePath isList="true">
+                                <QualifiedName>
+                                  <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                  <name>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">7</sLength>
+                                      <stringValue dataType="string" bitLength="56" encoding="UTF-8">EventId</stringValue>
+                                    </PascalString>
+                                  </name>
+                                </QualifiedName>
+                              </browsePath>
+                              <attributeId dataType="uint" bitLength="32">13</attributeId>
+                              <indexRange>
+                                <PascalString>
+                                  <sLength dataType="int" bitLength="32">-1</sLength>
+                                </PascalString>
+                              </indexRange>
+                            </SimpleAttributeOperand>
+                          </ExtensionObjectDefinition>
+                          <ExtensionObjectDefinition>
+                            <SimpleAttributeOperand>
+                              <typeDefinitionId>
+                                <NodeId>
+                                  <reserved dataType="int" bitLength="2">0</reserved>
+                                  <nodeId>
+                                    <NodeIdTypeDefinition>
+                                      <nodeType>
+                                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                      </nodeType>
+                                      <NodeIdFourByte>
+                                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                        <id dataType="uint" bitLength="16">2041</id>
+                                      </NodeIdFourByte>
+                                    </NodeIdTypeDefinition>
+                                  </nodeId>
+                                </NodeId>
+                              </typeDefinitionId>
+                              <noOfBrowsePath dataType="int" bitLength="32">1</noOfBrowsePath>
+                              <browsePath isList="true">
+                                <QualifiedName>
+                                  <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                  <name>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">10</sLength>
+                                      <stringValue dataType="string" bitLength="80" encoding="UTF-8">SourceName</stringValue>
+                                    </PascalString>
+                                  </name>
+                                </QualifiedName>
+                              </browsePath>
+                              <attributeId dataType="uint" bitLength="32">13</attributeId>
+                              <indexRange>
+                                <PascalString>
+                                  <sLength dataType="int" bitLength="32">-1</sLength>
+                                </PascalString>
+                              </indexRange>
+                            </SimpleAttributeOperand>
+                          </ExtensionObjectDefinition>
+                          <ExtensionObjectDefinition>
+                            <SimpleAttributeOperand>
+                              <typeDefinitionId>
+                                <NodeId>
+                                  <reserved dataType="int" bitLength="2">0</reserved>
+                                  <nodeId>
+                                    <NodeIdTypeDefinition>
+                                      <nodeType>
+                                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                      </nodeType>
+                                      <NodeIdFourByte>
+                                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                        <id dataType="uint" bitLength="16">2041</id>
+                                      </NodeIdFourByte>
+                                    </NodeIdTypeDefinition>
+                                  </nodeId>
+                                </NodeId>
+                              </typeDefinitionId>
+                              <noOfBrowsePath dataType="int" bitLength="32">1</noOfBrowsePath>
+                              <browsePath isList="true">
+                                <QualifiedName>
+                                  <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                  <name>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">8</sLength>
+                                      <stringValue dataType="string" bitLength="64" encoding="UTF-8">Severity</stringValue>
+                                    </PascalString>
+                                  </name>
+                                </QualifiedName>
+                              </browsePath>
+                              <attributeId dataType="uint" bitLength="32">13</attributeId>
+                              <indexRange>
+                                <PascalString>
+                                  <sLength dataType="int" bitLength="32">-1</sLength>
+                                </PascalString>
+                              </indexRange>
+                            </SimpleAttributeOperand>
+                          </ExtensionObjectDefinition>
+                          <ExtensionObjectDefinition>
+                            <SimpleAttributeOperand>
+                              <typeDefinitionId>
+                                <NodeId>
+                                  <reserved dataType="int" bitLength="2">0</reserved>
+                                  <nodeId>
+                                    <NodeIdTypeDefinition>
+                                      <nodeType>
+                                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                      </nodeType>
+                                      <NodeIdFourByte>
+                                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                        <id dataType="uint" bitLength="16">2041</id>
+                                      </NodeIdFourByte>
+                                    </NodeIdTypeDefinition>
+                                  </nodeId>
+                                </NodeId>
+                              </typeDefinitionId>
+                              <noOfBrowsePath dataType="int" bitLength="32">1</noOfBrowsePath>
+                              <browsePath isList="true">
+                                <QualifiedName>
+                                  <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                  <name>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">10</sLength>
+                                      <stringValue dataType="string" bitLength="80" encoding="UTF-8">SourceNode</stringValue>
+                                    </PascalString>
+                                  </name>
+                                </QualifiedName>
+                              </browsePath>
+                              <attributeId dataType="uint" bitLength="32">13</attributeId>
+                              <indexRange>
+                                <PascalString>
+                                  <sLength dataType="int" bitLength="32">-1</sLength>
+                                </PascalString>
+                              </indexRange>
+                            </SimpleAttributeOperand>
+                          </ExtensionObjectDefinition>
+                          <ExtensionObjectDefinition>
+                            <SimpleAttributeOperand>
+                              <typeDefinitionId>
+                                <NodeId>
+                                  <reserved dataType="int" bitLength="2">0</reserved>
+                                  <nodeId>
+                                    <NodeIdTypeDefinition>
+                                      <nodeType>
+                                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                      </nodeType>
+                                      <NodeIdFourByte>
+                                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                        <id dataType="uint" bitLength="16">2041</id>
+                                      </NodeIdFourByte>
+                                    </NodeIdTypeDefinition>
+                                  </nodeId>
+                                </NodeId>
+                              </typeDefinitionId>
+                              <noOfBrowsePath dataType="int" bitLength="32">1</noOfBrowsePath>
+                              <browsePath isList="true">
+                                <QualifiedName>
+                                  <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                  <name>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">7</sLength>
+                                      <stringValue dataType="string" bitLength="56" encoding="UTF-8">Message</stringValue>
+                                    </PascalString>
+                                  </name>
+                                </QualifiedName>
+                              </browsePath>
+                              <attributeId dataType="uint" bitLength="32">13</attributeId>
+                              <indexRange>
+                                <PascalString>
+                                  <sLength dataType="int" bitLength="32">-1</sLength>
+                                </PascalString>
+                              </indexRange>
+                            </SimpleAttributeOperand>
+                          </ExtensionObjectDefinition>
+                          <ExtensionObjectDefinition>
+                            <SimpleAttributeOperand>
+                              <typeDefinitionId>
+                                <NodeId>
+                                  <reserved dataType="int" bitLength="2">0</reserved>
+                                  <nodeId>
+                                    <NodeIdTypeDefinition>
+                                      <nodeType>
+                                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                      </nodeType>
+                                      <NodeIdFourByte>
+                                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                        <id dataType="uint" bitLength="16">2041</id>
+                                      </NodeIdFourByte>
+                                    </NodeIdTypeDefinition>
+                                  </nodeId>
+                                </NodeId>
+                              </typeDefinitionId>
+                              <noOfBrowsePath dataType="int" bitLength="32">1</noOfBrowsePath>
+                              <browsePath isList="true">
+                                <QualifiedName>
+                                  <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                  <name>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">4</sLength>
+                                      <stringValue dataType="string" bitLength="32" encoding="UTF-8">Time</stringValue>
+                                    </PascalString>
+                                  </name>
+                                </QualifiedName>
+                              </browsePath>
+                              <attributeId dataType="uint" bitLength="32">13</attributeId>
+                              <indexRange>
+                                <PascalString>
+                                  <sLength dataType="int" bitLength="32">-1</sLength>
+                                </PascalString>
+                              </indexRange>
+                            </SimpleAttributeOperand>
+                          </ExtensionObjectDefinition>
+                          <ExtensionObjectDefinition>
+                            <SimpleAttributeOperand>
+                              <typeDefinitionId>
+                                <NodeId>
+                                  <reserved dataType="int" bitLength="2">0</reserved>
+                                  <nodeId>
+                                    <NodeIdTypeDefinition>
+                                      <nodeType>
+                                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                      </nodeType>
+                                      <NodeIdFourByte>
+                                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                        <id dataType="uint" bitLength="16">2041</id>
+                                      </NodeIdFourByte>
+                                    </NodeIdTypeDefinition>
+                                  </nodeId>
+                                </NodeId>
+                              </typeDefinitionId>
+                              <noOfBrowsePath dataType="int" bitLength="32">1</noOfBrowsePath>
+                              <browsePath isList="true">
+                                <QualifiedName>
+                                  <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                  <name>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">9</sLength>
+                                      <stringValue dataType="string" bitLength="72" encoding="UTF-8">EventType</stringValue>
+                                    </PascalString>
+                                  </name>
+                                </QualifiedName>
+                              </browsePath>
+                              <attributeId dataType="uint" bitLength="32">13</attributeId>
+                              <indexRange>
+                                <PascalString>
+                                  <sLength dataType="int" bitLength="32">-1</sLength>
+                                </PascalString>
+                              </indexRange>
+                            </SimpleAttributeOperand>
+                          </ExtensionObjectDefinition>
+                          <ExtensionObjectDefinition>
+                            <SimpleAttributeOperand>
+                              <typeDefinitionId>
+                                <NodeId>
+                                  <reserved dataType="int" bitLength="2">0</reserved>
+                                  <nodeId>
+                                    <NodeIdTypeDefinition>
+                                      <nodeType>
+                                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                      </nodeType>
+                                      <NodeIdFourByte>
+                                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                        <id dataType="uint" bitLength="16">2782</id>
+                                      </NodeIdFourByte>
+                                    </NodeIdTypeDefinition>
+                                  </nodeId>
+                                </NodeId>
+                              </typeDefinitionId>
+                              <noOfBrowsePath dataType="int" bitLength="32">0</noOfBrowsePath>
+                              <browsePath isList="true">
+                              </browsePath>
+                              <attributeId dataType="uint" bitLength="32">1</attributeId>
+                              <indexRange>
+                                <PascalString>
+                                  <sLength dataType="int" bitLength="32">-1</sLength>
+                                </PascalString>
+                              </indexRange>
+                            </SimpleAttributeOperand>
+                          </ExtensionObjectDefinition>
+                        </selectClauses>
+                        <whereClause>
+                          <ExtensionObjectDefinition>
+                            <ContentFilter>
+                              <noOfElements dataType="int" bitLength="32">2</noOfElements>
+                              <elements isList="true">
+                                <ExtensionObjectDefinition>
+                                  <ContentFilterElement>
+                                    <filterOperator>
+                                      <FilterOperator dataType="uint" bitLength="32" stringRepresentation="filterOperatorNot">7</FilterOperator>
+                                    </filterOperator>
+                                    <noOfFilterOperands dataType="int" bitLength="32">1</noOfFilterOperands>
+                                    <filterOperands isList="true">
+                                      <ExtensionObject>
+                                        <typeId>
+                                          <ExpandedNodeId>
+                                            <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                            <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                                            <nodeId>
+                                              <NodeIdTypeDefinition>
+                                                <nodeType>
+                                                  <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                                </nodeType>
+                                                <NodeIdFourByte>
+                                                  <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                                  <id dataType="uint" bitLength="16">594</id>
+                                                </NodeIdFourByte>
+                                              </NodeIdTypeDefinition>
+                                            </nodeId>
+                                          </ExpandedNodeId>
+                                        </typeId>
+                                        <ExtensionObjectWithMask>
+                                          <encodingMask>
+                                            <ExtensionObjectEncodingMask>
+                                              <reserved dataType="int" bitLength="5">0</reserved>
+                                              <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                                              <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                                              <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+                                            </ExtensionObjectEncodingMask>
+                                          </encodingMask>
+                                          <BinaryExtensionObjectWithMask>
+                                            <bodyLength dataType="int" bitLength="32">4</bodyLength>
+                                            <body>
+                                              <ExtensionObjectDefinition>
+                                                <ElementOperand>
+                                                  <index dataType="uint" bitLength="32">1</index>
+                                                </ElementOperand>
+                                              </ExtensionObjectDefinition>
+                                            </body>
+                                          </BinaryExtensionObjectWithMask>
+                                        </ExtensionObjectWithMask>
+                                      </ExtensionObject>
+                                    </filterOperands>
+                                  </ContentFilterElement>
+                                </ExtensionObjectDefinition>
+                                <ExtensionObjectDefinition>
+                                  <ContentFilterElement>
+                                    <filterOperator>
+                                      <FilterOperator dataType="uint" bitLength="32" stringRepresentation="filterOperatorOfType">14</FilterOperator>
+                                    </filterOperator>
+                                    <noOfFilterOperands dataType="int" bitLength="32">1</noOfFilterOperands>
+                                    <filterOperands isList="true">
+                                      <ExtensionObject>
+                                        <typeId>
+                                          <ExpandedNodeId>
+                                            <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                            <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                                            <nodeId>
+                                              <NodeIdTypeDefinition>
+                                                <nodeType>
+                                                  <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                                </nodeType>
+                                                <NodeIdFourByte>
+                                                  <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                                  <id dataType="uint" bitLength="16">597</id>
+                                                </NodeIdFourByte>
+                                              </NodeIdTypeDefinition>
+                                            </nodeId>
+                                          </ExpandedNodeId>
+                                        </typeId>
+                                        <ExtensionObjectWithMask>
+                                          <encodingMask>
+                                            <ExtensionObjectEncodingMask>
+                                              <reserved dataType="int" bitLength="5">0</reserved>
+                                              <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                                              <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                                              <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+                                            </ExtensionObjectEncodingMask>
+                                          </encodingMask>
+                                          <BinaryExtensionObjectWithMask>
+                                            <bodyLength dataType="int" bitLength="32">5</bodyLength>
+                                            <body>
+                                              <ExtensionObjectDefinition>
+                                                <LiteralOperand>
+                                                  <value>
+                                                    <Variant>
+                                                      <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                                      <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                                      <VariantType dataType="uint" bitLength="6">17</VariantType>
+                                                      <VariantNodeId>
+                                                        <value isList="true">
+                                                          <NodeId>
+                                                            <reserved dataType="int" bitLength="2">0</reserved>
+                                                            <nodeId>
+                                                              <NodeIdTypeDefinition>
+                                                                <nodeType>
+                                                                  <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                                                </nodeType>
+                                                                <NodeIdFourByte>
+                                                                  <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                                                  <id dataType="uint" bitLength="16">2133</id>
+                                                                </NodeIdFourByte>
+                                                              </NodeIdTypeDefinition>
+                                                            </nodeId>
+                                                          </NodeId>
+                                                        </value>
+                                                      </VariantNodeId>
+                                                      <arrayDimensions isList="true">
+                                                      </arrayDimensions>
+                                                    </Variant>
+                                                  </value>
+                                                </LiteralOperand>
+                                              </ExtensionObjectDefinition>
+                                            </body>
+                                          </BinaryExtensionObjectWithMask>
+                                        </ExtensionObjectWithMask>
+                                      </ExtensionObject>
+                                    </filterOperands>
+                                  </ContentFilterElement>
+                                </ExtensionObjectDefinition>
+                              </elements>
+                            </ContentFilter>
+                          </ExtensionObjectDefinition>
+                        </whereClause>
+                      </EventFilter>
+                    </ExtensionObjectDefinition>
+                  </body>
+                </BinaryExtensionObjectWithMask>
+              </ExtensionObjectWithMask>
+            </ExtensionObject>
+          </filter>
+          <queueSize dataType="uint" bitLength="32">4294967295</queueSize>
+          <reserved dataType="uint" bitLength="7">0</reserved>
+          <discardOldest dataType="bit" bitLength="1">false</discardOldest>
+        </MonitoringParameters>
+      </ExtensionObjectDefinition>
+    </xml>
+  </testcase>
+
+</test:testsuite>

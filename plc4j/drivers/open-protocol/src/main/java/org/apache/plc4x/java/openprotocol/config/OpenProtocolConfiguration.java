@@ -18,16 +18,9 @@
  */
 package org.apache.plc4x.java.openprotocol.config;
 
-import org.apache.plc4x.java.openprotocol.readwrite.Constants;
-import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 
-public class OpenProtocolConfiguration implements Configuration, TcpTransportConfiguration {
-
-    @Override
-    public int getDefaultPort() {
-        return Constants.TCPDEFAULTPORT;
-    }
+public class OpenProtocolConfiguration implements PlcConnectionConfiguration {
 
     @Override
     public String toString() {

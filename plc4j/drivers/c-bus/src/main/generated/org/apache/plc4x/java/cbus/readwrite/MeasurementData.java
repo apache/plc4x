@@ -68,7 +68,7 @@ public abstract class MeasurementData implements Message {
         "commandTypeContainer",
         "MeasurementCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MeasurementCommandTypeContainer::getValue,
             MeasurementCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -104,12 +104,6 @@ public abstract class MeasurementData implements Message {
     return lengthInBits;
   }
 
-  public static MeasurementData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static MeasurementData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MeasurementData");
     PositionAware positionAware = readBuffer;
@@ -124,7 +118,7 @@ public abstract class MeasurementData implements Message {
         readEnumField(
             "commandTypeContainer",
             "MeasurementCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 MeasurementCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     MeasurementCommandType commandType =
         readVirtualField(

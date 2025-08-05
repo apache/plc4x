@@ -103,8 +103,7 @@ public class S7PayloadUserDataItemCyclicServicesSubscribeRequest extends S7Paylo
         "timeBase",
         "TimeBase",
         timeBase,
-        new DataWriterEnumDefault<>(
-            TimeBase::getValue, TimeBase::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(TimeBase::getValue, TimeBase::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (timeFactor)
     writeSimpleField("timeFactor", timeFactor, writeUnsignedShort(writeBuffer, 8));
@@ -160,15 +159,14 @@ public class S7PayloadUserDataItemCyclicServicesSubscribeRequest extends S7Paylo
         readEnumField(
             "timeBase",
             "TimeBase",
-            new DataReaderEnumDefault<>(TimeBase::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(TimeBase::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     short timeFactor = readSimpleField("timeFactor", readUnsignedShort(readBuffer, 8));
 
     List<CycServiceItemType> item =
         readCountArrayField(
             "item",
-            new DataReaderComplexDefault<>(
-                () -> CycServiceItemType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> CycServiceItemType.staticParse(readBuffer), readBuffer),
             itemsCount);
 
     readBuffer.closeContext("S7PayloadUserDataItemCyclicServicesSubscribeRequest");

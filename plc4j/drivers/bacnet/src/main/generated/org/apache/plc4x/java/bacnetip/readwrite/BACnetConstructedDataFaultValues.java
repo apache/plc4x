@@ -99,7 +99,7 @@ public class BACnetConstructedDataFaultValues extends BACnetConstructedData impl
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (faultValues)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataFaultValues extends BACnetConstructedData impl
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataFaultValues extends BACnetConstructedData impl
     List<BACnetLifeSafetyStateTagged> faultValues =
         readTerminatedArrayField(
             "faultValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

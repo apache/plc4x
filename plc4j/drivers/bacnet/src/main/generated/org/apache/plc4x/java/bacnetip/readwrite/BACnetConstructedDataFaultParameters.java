@@ -82,8 +82,7 @@ public class BACnetConstructedDataFaultParameters extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataFaultParameters");
 
     // Simple Field (faultParameters)
-    writeSimpleField(
-        "faultParameters", faultParameters, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("faultParameters", faultParameters, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetFaultParameter actualValue = getActualValue();
@@ -125,8 +124,7 @@ public class BACnetConstructedDataFaultParameters extends BACnetConstructedData 
     BACnetFaultParameter faultParameters =
         readSimpleField(
             "faultParameters",
-            new DataReaderComplexDefault<>(
-                () -> BACnetFaultParameter.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetFaultParameter.staticParse(readBuffer), readBuffer));
     BACnetFaultParameter actualValue =
         readVirtualField("actualValue", BACnetFaultParameter.class, faultParameters);
 

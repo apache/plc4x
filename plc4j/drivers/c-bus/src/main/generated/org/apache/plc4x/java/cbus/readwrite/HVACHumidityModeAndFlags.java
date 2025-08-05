@@ -173,7 +173,7 @@ public class HVACHumidityModeAndFlags implements Message {
         "mode",
         "HVACHumidityModeAndFlagsMode",
         mode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HVACHumidityModeAndFlagsMode::getValue,
             HVACHumidityModeAndFlagsMode::name,
             writeUnsignedByte(writeBuffer, 3)));
@@ -229,12 +229,6 @@ public class HVACHumidityModeAndFlags implements Message {
     return lengthInBits;
   }
 
-  public static HVACHumidityModeAndFlags staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static HVACHumidityModeAndFlags staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HVACHumidityModeAndFlags");
     PositionAware positionAware = readBuffer;
@@ -264,8 +258,7 @@ public class HVACHumidityModeAndFlags implements Message {
         readEnumField(
             "mode",
             "HVACHumidityModeAndFlagsMode",
-            new DataReaderEnumDefault<>(
-                HVACHumidityModeAndFlagsMode::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(HVACHumidityModeAndFlagsMode::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     readBuffer.closeContext("HVACHumidityModeAndFlags");
     // Create the instance

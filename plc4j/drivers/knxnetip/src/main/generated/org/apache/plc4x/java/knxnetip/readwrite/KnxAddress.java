@@ -101,12 +101,6 @@ public class KnxAddress implements Message {
     return lengthInBits;
   }
 
-  public static KnxAddress staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static KnxAddress staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("KnxAddress");
     PositionAware positionAware = readBuffer;

@@ -33,6 +33,9 @@ import org.apache.plc4x.java.cbus.readwrite.CBusOptions;
 import org.apache.plc4x.java.cbus.readwrite.RequestContext;
 import org.apache.plc4x.java.spi.connection.GeneratedProtocolMessageCodec;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
+import org.apache.plc4x.java.spi.generation.MessageInput;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.simulator.PlcSimulatorConfig;
 import org.apache.plc4x.simulator.exceptions.SimulatorException;
 import org.apache.plc4x.simulator.model.Context;
@@ -40,6 +43,10 @@ import org.apache.plc4x.simulator.server.ServerModule;
 import org.apache.plc4x.simulator.server.cbus.protocol.CBusServerAdapter;
 
 public class CBusServerModule implements ServerModule {
+
+    public static final MessageInput<CBusMessage> MESSAGE_INPUT = io ->
+        CBusMessage.staticParse(io, false, new RequestContext(false),
+            new CBusOptions(false, false, false, false, false, false, false, false, false));
 
     private EventLoopGroup loopGroup;
     private EventLoopGroup workerGroup;
@@ -79,8 +86,7 @@ public class CBusServerModule implements ServerModule {
                     public void initChannel(SocketChannel channel) {
                         ChannelPipeline pipeline = channel.pipeline();
                         pipeline.addLast(new GeneratedProtocolMessageCodec<>(CBusMessage.class,
-                            CBusMessage::staticParse, ByteOrder.BIG_ENDIAN,
-                            new Object[]{false, new RequestContext(false), new CBusOptions(false, false, false, false, false, false, false, false, false)},
+                            MESSAGE_INPUT, ByteOrder.BIG_ENDIAN,
                             new CBusDriver.ByteLengthEstimator(),
                             new CBusDriver.CorruptPackageCleaner()));
                         pipeline.addLast(new CBusServerAdapter(context));

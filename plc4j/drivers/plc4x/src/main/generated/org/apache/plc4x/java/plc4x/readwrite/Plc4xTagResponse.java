@@ -61,14 +61,14 @@ public class Plc4xTagResponse implements Message {
     writeBuffer.pushContext("Plc4xTagResponse");
 
     // Simple Field (tag)
-    writeSimpleField("tag", tag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("tag", tag, writeComplex(writeBuffer));
 
     // Simple Field (responseCode)
     writeSimpleEnumField(
         "responseCode",
         "Plc4xResponseCode",
         responseCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             Plc4xResponseCode::getValue,
             Plc4xResponseCode::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -96,28 +96,19 @@ public class Plc4xTagResponse implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xTagResponse staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Plc4xTagResponse staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Plc4xTagResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Plc4xTag tag =
-        readSimpleField(
-            "tag",
-            new DataReaderComplexDefault<>(() -> Plc4xTag.staticParse(readBuffer), readBuffer));
+        readSimpleField("tag", readComplex(() -> Plc4xTag.staticParse(readBuffer), readBuffer));
 
     Plc4xResponseCode responseCode =
         readEnumField(
             "responseCode",
             "Plc4xResponseCode",
-            new DataReaderEnumDefault<>(
-                Plc4xResponseCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Plc4xResponseCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("Plc4xTagResponse");
     // Create the instance

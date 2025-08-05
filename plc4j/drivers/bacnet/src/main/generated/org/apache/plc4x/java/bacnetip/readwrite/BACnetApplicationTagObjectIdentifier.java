@@ -68,7 +68,7 @@ public class BACnetApplicationTagObjectIdentifier extends BACnetApplicationTag i
     writeBuffer.pushContext("BACnetApplicationTagObjectIdentifier");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetObjectType objectType = getObjectType();
@@ -111,7 +111,7 @@ public class BACnetApplicationTagObjectIdentifier extends BACnetApplicationTag i
     BACnetTagPayloadObjectIdentifier payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetTagPayloadObjectIdentifier.staticParse(readBuffer), readBuffer));
     BACnetObjectType objectType =
         readVirtualField("objectType", BACnetObjectType.class, payload.getObjectType());

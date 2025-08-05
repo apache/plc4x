@@ -100,7 +100,7 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (shedLevelDescriptions)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,7 +162,7 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
     List<BACnetApplicationTagCharacterString> shedLevelDescriptions =
         readTerminatedArrayField(
             "shedLevelDescriptions",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

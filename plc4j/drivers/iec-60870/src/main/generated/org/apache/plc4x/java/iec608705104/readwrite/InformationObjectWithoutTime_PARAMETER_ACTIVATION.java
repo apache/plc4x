@@ -65,10 +65,7 @@ public class InformationObjectWithoutTime_PARAMETER_ACTIVATION extends Informati
 
     // Simple Field (qpa)
     writeSimpleField(
-        "qpa",
-        qpa,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qpa", qpa, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_PARAMETER_ACTIVATION");
   }
@@ -100,8 +97,7 @@ public class InformationObjectWithoutTime_PARAMETER_ACTIVATION extends Informati
     QualifierOfParameterActivation qpa =
         readSimpleField(
             "qpa",
-            new DataReaderComplexDefault<>(
-                () -> QualifierOfParameterActivation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifierOfParameterActivation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_PARAMETER_ACTIVATION");

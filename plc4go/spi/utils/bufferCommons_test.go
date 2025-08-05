@@ -21,8 +21,9 @@ package utils
 
 import (
 	"container/list"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestBufferCommons_ExtractAdditionalStringRepresentation(t *testing.T) {

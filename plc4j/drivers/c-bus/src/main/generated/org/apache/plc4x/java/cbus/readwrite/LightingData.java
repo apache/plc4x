@@ -68,7 +68,7 @@ public abstract class LightingData implements Message {
         "commandTypeContainer",
         "LightingCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             LightingCommandTypeContainer::getValue,
             LightingCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -104,12 +104,6 @@ public abstract class LightingData implements Message {
     return lengthInBits;
   }
 
-  public static LightingData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static LightingData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("LightingData");
     PositionAware positionAware = readBuffer;
@@ -124,8 +118,7 @@ public abstract class LightingData implements Message {
         readEnumField(
             "commandTypeContainer",
             "LightingCommandTypeContainer",
-            new DataReaderEnumDefault<>(
-                LightingCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(LightingCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     LightingCommandType commandType =
         readVirtualField(
             "commandType", LightingCommandType.class, commandTypeContainer.getCommandType());

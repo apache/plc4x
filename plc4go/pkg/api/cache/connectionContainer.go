@@ -20,12 +20,16 @@
 package cache
 
 import (
+	"context"
 	"fmt"
-	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
-	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"sync"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/viney-shih/go-lock"
+
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 )
 
 type connectionContainer struct {
@@ -42,6 +46,8 @@ type connectionContainer struct {
 	queue []chan plc4go.PlcConnectionConnectResult
 	// Listeners for connection events.
 	listeners []connectionListener
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
@@ -60,15 +66,20 @@ func newConnectionContainer(log zerolog.Logger, driverManager plc4go.PlcDriverMa
 	}
 }
 
-func (c *connectionContainer) connect() {
+func (c *connectionContainer) connect(ctx context.Context) {
 	c.log.Debug().Str("connectionString", c.connectionString).Msg("Connecting new cached connection ...")
 	// Initialize the new connection.
 	connectionResultChan := c.driverManager.GetConnection(c.connectionString)
 
 	// Allow us to finish this function and return the lock quickly
 	// Wait for the connection to be established.
-	// TODO: Add some timeout handling.
-	connectionResult := <-connectionResultChan
+	var connectionResult plc4go.PlcConnectionConnectResult
+	select {
+	case connectionResult = <-connectionResultChan:
+	case <-ctx.Done():
+		c.log.Err(ctx.Err()).Msg("context canceled")
+		return
+	}
 
 	// Get the lock.
 	c.lock.Lock()
@@ -82,8 +93,8 @@ func (c *connectionContainer) connect() {
 			Msg("Error connecting new cached connection.")
 		// Tell the connection cache that the connection is no longer available.
 		if c.listeners != nil {
-			event := connectionErrorEvent{
-				conn: *c,
+			event := &connectionErrorEvent{
+				conn: c,
 				err:  err,
 			}
 			for _, listener := range c.listeners {
@@ -104,7 +115,7 @@ func (c *connectionContainer) connect() {
 	c.log.Debug().Str("connectionString", c.connectionString).Msg("Successfully connected new cached connection.")
 	// Inject the real connection into the container.
 	if connection, ok := connectionResult.GetConnection().(tracedPlcConnection); !ok {
-		panic("Return connection doesn'c implement the cache.tracedPlcConnection interface")
+		panic("Return connection doesn't implement the cache.tracedPlcConnection interface")
 	} else {
 		c.connection = connection
 	}
@@ -151,7 +162,9 @@ func (c *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
 		// is definitely eagerly waiting for input.
 		c.log.Debug().Str("connectionString", c.connectionString).
 			Msg("Got lease instantly as connection was idle.")
+		c.wg.Add(1)
 		go func() {
+			defer c.wg.Done()
 			ch <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
 		}()
 	case StateInUse, StateInitialized:
@@ -167,7 +180,7 @@ func (c *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
 	return ch
 }
 
-func (c *connectionContainer) returnConnection(newState cachedPlcConnectionState) error {
+func (c *connectionContainer) returnConnection(ctx context.Context, newState cachedPlcConnectionState) error {
 	// Intentionally not locking anything, as there are two cases, where the connection is returned:
 	// 1) The connection failed to get established (No connection has a lock anyway)
 	// 2) The connection is returned, then the one returning it already has a lock on it.
@@ -179,7 +192,7 @@ func (c *connectionContainer) returnConnection(newState cachedPlcConnectionState
 			Str("connectionString", c.connectionString).
 			Stringer("newState", newState).
 			Msg("Client returned a connection, reconnecting.")
-		c.connect()
+		c.connect(ctx)
 	default:
 		c.log.Debug().Str("connectionString", c.connectionString).Msg("Client returned valid connection.")
 	}
@@ -200,7 +213,9 @@ func (c *connectionContainer) returnConnection(newState cachedPlcConnectionState
 		// Send asynchronously as the receiver might have given up waiting,
 		// and we don'c want anything to block here. 1ms should be enough for
 		// the calling process to reach the blocking read.
+		c.wg.Add(1)
 		go func() {
+			defer c.wg.Done()
 			// In this case we don'c need to check for blocks
 			// as the getConnection function of the connection cache
 			// is definitely eagerly waiting for input.

@@ -29,11 +29,13 @@ import java.math.BigInteger;
 public class PlcREAL extends PlcIECValue<Float> {
 
     private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %f - %f for a %s Value";
-    static final Float minValue = -Float.MAX_VALUE;
-    static final Float maxValue = Float.MAX_VALUE;
+    public static final Float MIN_VALUE = -Float.MAX_VALUE;
+    public static final Float MAX_VALUE = Float.MAX_VALUE;
 
     public static PlcREAL of(Object value) {
-        if (value instanceof Boolean) {
+        if (value instanceof PlcREAL) {
+            return (PlcREAL) value;
+        } else if (value instanceof Boolean) {
             return new PlcREAL((Boolean) value);
         } else if (value instanceof Byte) {
             return new PlcREAL((Byte) value);
@@ -52,7 +54,7 @@ public class PlcREAL extends PlcIECValue<Float> {
         } else if (value instanceof BigDecimal) {
             return new PlcREAL((BigDecimal) value);
         } else {
-            return new PlcREAL((String) value);
+            return new PlcREAL(value.toString());
         }
     }
 
@@ -76,14 +78,19 @@ public class PlcREAL extends PlcIECValue<Float> {
         this.isNullable = false;
     }
 
+    public PlcREAL(Long value) {
+        this.value = value.floatValue();
+        this.isNullable = false;
+    }
+
     public PlcREAL(Float value) {
         this.value = value;
         this.isNullable = false;
     }
 
     public PlcREAL(Double value) {
-        if ((value < minValue) || (value > maxValue)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((value < MIN_VALUE) || (value > MAX_VALUE)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = value.floatValue();
         this.isNullable = false;
@@ -91,16 +98,16 @@ public class PlcREAL extends PlcIECValue<Float> {
 
     public PlcREAL(BigInteger value) {
         BigDecimal val = new BigDecimal(value);
-        if ((val.compareTo(BigDecimal.valueOf(minValue)) < 0) || (val.compareTo(BigDecimal.valueOf(maxValue)) > 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((val.compareTo(BigDecimal.valueOf(MIN_VALUE)) < 0) || (val.compareTo(BigDecimal.valueOf(MAX_VALUE)) > 0)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = val.floatValue();
         this.isNullable = true;
     }
 
     public PlcREAL(BigDecimal value) {
-        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((value.compareTo(BigDecimal.valueOf(MIN_VALUE)) < 0) || (value.compareTo(BigDecimal.valueOf(MAX_VALUE)) > 0)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = value.floatValue();
         this.isNullable = true;
@@ -111,7 +118,7 @@ public class PlcREAL extends PlcIECValue<Float> {
             this.value = Float.parseFloat(value.trim());
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()), e);
         }
     }
 
@@ -229,6 +236,11 @@ public class PlcREAL extends PlcIECValue<Float> {
     public String toString() {
         return Float.toString(value);
     }
+    
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
 
     public byte[] getBytes() {
         int intBits = Float.floatToIntBits(value);

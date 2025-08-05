@@ -61,7 +61,7 @@ public class LogicalSegment extends PathSegment implements Message {
     writeBuffer.pushContext("LogicalSegment");
 
     // Simple Field (segmentType)
-    writeSimpleField("segmentType", segmentType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("segmentType", segmentType, writeComplex(writeBuffer));
 
     writeBuffer.popContext("LogicalSegment");
   }
@@ -92,8 +92,7 @@ public class LogicalSegment extends PathSegment implements Message {
     LogicalSegmentType segmentType =
         readSimpleField(
             "segmentType",
-            new DataReaderComplexDefault<>(
-                () -> LogicalSegmentType.staticParse(readBuffer), readBuffer));
+            readComplex(() -> LogicalSegmentType.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("LogicalSegment");
     // Create the instance

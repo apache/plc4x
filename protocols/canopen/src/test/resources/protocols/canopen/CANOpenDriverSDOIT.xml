@@ -199,12 +199,12 @@
           </PlcReadRequest>
           <values isList="true">
             <expeditedSdo>
-              <ResponseItem>
+              <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcUDINT dataType="int" bitLength="32">1717859169</PlcUDINT>
                 </value>
-              </ResponseItem>
+              </PlcResponseItem>
             </expeditedSdo>
           </values>
         </PlcReadResponse>
@@ -328,12 +328,12 @@
           </PlcReadRequest>
           <values isList="true">
             <expeditedShort>
-              <ResponseItem>
+              <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcUSINT dataType="int" bitLength="8">97</PlcUSINT>
                 </value>
-              </ResponseItem>
+              </PlcResponseItem>
             </expeditedShort>
           </values>
         </PlcReadResponse>
@@ -504,12 +504,12 @@
           </PlcReadRequest>
           <values isList="true">
             <expeditedSdoCustomAnswer>
-              <ResponseItem>
+              <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcUDINT dataType="int" bitLength="32">1717859169</PlcUDINT>
                 </value>
-              </ResponseItem>
+              </PlcResponseItem>
             </expeditedSdoCustomAnswer>
           </values>
         </PlcReadResponse>
@@ -835,7 +835,7 @@
           </PlcReadRequest>
           <values isList="true">
             <segmentedSdo>
-              <ResponseItem>
+              <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcList>
@@ -849,7 +849,7 @@
                     <PlcSINT dataType="byte" bitLength="8">0x66</PlcSINT>
                   </PlcList>
                 </value>
-              </ResponseItem>
+              </PlcResponseItem>
             </segmentedSdo>
           </values>
         </PlcReadResponse>
@@ -965,12 +965,12 @@
           </PlcReadRequest>
           <values isList="true">
             <TheFailingTag>
-              <ResponseItem>
+              <PlcResponseItem>
                 <code dataType="string" bitLength="96" encoding="UTF-8">REMOTE_ERROR</code>
                 <value>
                   <PlcLINT dataType="int" bitLength="64">84082688</PlcLINT>
                 </value>
-              </ResponseItem>
+              </PlcResponseItem>
             </TheFailingTag>
           </values>
         </PlcReadResponse>

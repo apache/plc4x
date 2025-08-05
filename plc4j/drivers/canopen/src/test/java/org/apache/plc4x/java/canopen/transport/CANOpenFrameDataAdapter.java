@@ -43,7 +43,7 @@ public class CANOpenFrameDataAdapter implements Function<CANOpenFrame, FrameData
             }
 
             @Override
-            public <T extends Message> T read(MessageInput<T> input, Object... args) {
+            public <T extends Message> T read(MessageInput<T> input) {
                 return (T) frame.getPayload();
             }
 

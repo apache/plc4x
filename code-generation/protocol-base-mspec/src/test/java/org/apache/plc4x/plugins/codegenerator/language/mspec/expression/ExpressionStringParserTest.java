@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-class ExpressionStringParserTest {
+public class ExpressionStringParserTest {
 
     final ExpressionStringParser SUT = new ExpressionStringParser((typeRefName, setTypeDefinition) -> {}, "hurz");
 

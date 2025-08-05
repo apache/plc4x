@@ -66,8 +66,7 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
     writeBuffer.pushContext("BACnetPriorityValueConstructedValue");
 
     // Simple Field (constructedValue)
-    writeSimpleField(
-        "constructedValue", constructedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("constructedValue", constructedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueConstructedValue");
   }
@@ -98,7 +97,7 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
     BACnetConstructedData constructedValue =
         readSimpleField(
             "constructedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

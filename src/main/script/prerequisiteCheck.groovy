@@ -202,8 +202,8 @@ def checkGit() {
 // Remark: We're using venv, which was introduced with python 3.3,
 // that's why this is the baseline for python.
 def checkPython() {
-    def python = project.properties['python.exe.bin']
-    println "Using python executable:   " + python + "        OK"
+    String python = project.properties['python.exe.bin']
+    println "Using python executable:   " + python.padRight(14) + " OK"
     print "Detecting Python version:  "
     try {
         def process = (python + " --version").execute()
@@ -309,21 +309,20 @@ def checkLibPcap(String minVersion, String os, String arch) {
             // On my M1 Mac I found the libs in: "/opt/homebrew/Cellar/libpcap/1.10.1/lib"
             if (new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
                 System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
+                println("Found library: Be sure to run your application with '-Djna.library.path=/opt/homebrew/Cellar/libpcap/1.10.1/lib'")
+            } else if (new File("/usr/local/Cellar/libpcap/1.10.5/lib").exists()) {
+                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.5/lib");
+                println("Found library: Be sure to run your application with '-Djna.library.path=/opt/homebrew/Cellar/libpcap/1.10.5/lib'")
             } else if (new File("/opt/homebrew/opt/libpcap/lib").exists()) {
                 System.getProperties().setProperty("jna.library.path", "/opt/homebrew/opt/libpcap/lib");
+                println("Found library: Be sure to run your application with '-Djna.library.path=/opt/homebrew/opt/libpcap/lib'")
             }
-            // java.lang.UnsatisfiedLinkError: Can't load library: /Users/christoferdutz/Library/Caches/JNA/temp/jna877652535357666533.tmp
         }
-        // TODO: For some reason this check doesn't work on my M1 mac ... I get unsattisfiedlinkerror from the JNA library.
-        if (arch != "aarch64") {
-            output = org.pcap4j.core.Pcaps.libVersion()
-            String version = output - ~/^libpcap version /
-            def result = checkVersionAtLeast(version, minVersion)
-            if (!result) {
-                //allConditionsMet = false
-            }
-        } else {
-            println "               SKIPPED (on aarch64)"
+        output = org.pcap4j.core.Pcaps.libVersion()
+        String version = output - ~/^libpcap version /
+        def result = checkVersionAtLeast(version, minVersion)
+        if (!result) {
+            allConditionsMet = false
         }
     } catch (Error e) {
         output = ""
@@ -376,9 +375,8 @@ def cEnabled = false
 def dotnetEnabled = false
 def goEnabled = false
 // Java is always enabled ...
-def javaEnabled = true
+def javaEnabled = false
 def pythonEnabled = false
-def sandboxEnabled = false
 def apacheReleaseEnabled = false
 def activeProfiles = session.request.activeProfiles
 for (def activeProfile : activeProfiles) {
@@ -388,10 +386,10 @@ for (def activeProfile : activeProfiles) {
         dotnetEnabled = true
     } else if (activeProfile == "with-go") {
         goEnabled = true
+    } else if (activeProfile == "with-java") {
+        javaEnabled = true
     } else if (activeProfile == "with-python") {
         pythonEnabled = true
-    } else if (activeProfile == "with-sandbox") {
-        sandboxEnabled = true
     } else if (activeProfile == "apache-release") {
         apacheReleaseEnabled = true
     }

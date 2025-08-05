@@ -75,13 +75,13 @@ public class BACnetEventParameterChangeOfCharacterStringListOfAlarmValues implem
     writeBuffer.pushContext("BACnetEventParameterChangeOfCharacterStringListOfAlarmValues");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfAlarmValues)
     writeComplexTypeArrayField("listOfAlarmValues", listOfAlarmValues, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterChangeOfCharacterStringListOfAlarmValues");
   }
@@ -114,26 +114,6 @@ public class BACnetEventParameterChangeOfCharacterStringListOfAlarmValues implem
   }
 
   public static BACnetEventParameterChangeOfCharacterStringListOfAlarmValues staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber);
-  }
-
-  public static BACnetEventParameterChangeOfCharacterStringListOfAlarmValues staticParse(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfCharacterStringListOfAlarmValues");
     PositionAware positionAware = readBuffer;
@@ -142,13 +122,13 @@ public class BACnetEventParameterChangeOfCharacterStringListOfAlarmValues implem
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetApplicationTagCharacterString> listOfAlarmValues =
         readTerminatedArrayField(
             "listOfAlarmValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +141,7 @@ public class BACnetEventParameterChangeOfCharacterStringListOfAlarmValues implem
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterChangeOfCharacterStringListOfAlarmValues");

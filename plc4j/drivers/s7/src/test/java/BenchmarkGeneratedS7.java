@@ -49,7 +49,7 @@ public class BenchmarkGeneratedS7 {
         for(int i = 0; i < numRunsSerialize; i++) {
             WriteBufferByteBased wBuf = new WriteBufferByteBased(packet.getLengthInBytes());
             packet.serialize(wBuf);
-            oData = wBuf.getData();
+            oData = wBuf.getBytes();
         }
         long endSerializing = System.currentTimeMillis();
 

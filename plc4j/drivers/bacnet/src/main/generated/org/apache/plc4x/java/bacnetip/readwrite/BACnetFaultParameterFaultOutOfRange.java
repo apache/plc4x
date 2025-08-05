@@ -82,16 +82,16 @@ public class BACnetFaultParameterFaultOutOfRange extends BACnetFaultParameter im
     writeBuffer.pushContext("BACnetFaultParameterFaultOutOfRange");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (minNormalValue)
-    writeSimpleField("minNormalValue", minNormalValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("minNormalValue", minNormalValue, writeComplex(writeBuffer));
 
     // Simple Field (maxNormalValue)
-    writeSimpleField("maxNormalValue", maxNormalValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxNormalValue", maxNormalValue, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultOutOfRange");
   }
@@ -131,13 +131,12 @@ public class BACnetFaultParameterFaultOutOfRange extends BACnetFaultParameter im
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (6)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (6)), readBuffer));
 
     BACnetFaultParameterFaultOutOfRangeMinNormalValue minNormalValue =
         readSimpleField(
             "minNormalValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetFaultParameterFaultOutOfRangeMinNormalValue.staticParse(
                         readBuffer, (short) (0)),
@@ -146,7 +145,7 @@ public class BACnetFaultParameterFaultOutOfRange extends BACnetFaultParameter im
     BACnetFaultParameterFaultOutOfRangeMaxNormalValue maxNormalValue =
         readSimpleField(
             "maxNormalValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetFaultParameterFaultOutOfRangeMaxNormalValue.staticParse(
                         readBuffer, (short) (0)),
@@ -155,8 +154,7 @@ public class BACnetFaultParameterFaultOutOfRange extends BACnetFaultParameter im
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (6)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (6)), readBuffer));
 
     readBuffer.closeContext("BACnetFaultParameterFaultOutOfRange");
     // Create the instance

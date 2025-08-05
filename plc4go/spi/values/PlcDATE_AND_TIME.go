@@ -93,6 +93,10 @@ func (m PlcDATE_AND_TIME) GetNanoseconds() uint32 {
 	return uint32(m.value.Nanosecond())
 }
 
+func (m PlcDATE_AND_TIME) GetMillisecondsOfSecond() uint64 {
+	return uint64(time.Duration(m.GetNanoseconds()).Milliseconds())
+}
+
 func (m PlcDATE_AND_TIME) IsDateTime() bool {
 	return true
 }
@@ -118,7 +122,7 @@ func (m PlcDATE_AND_TIME) Serialize() ([]byte, error) {
 }
 
 func (m PlcDATE_AND_TIME) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcDATE_AND_TIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+	return writeBuffer.WriteString("PlcDATE_AND_TIME", uint32(len([]rune(m.GetString()))*8), m.GetString())
 }
 
 func (m PlcDATE_AND_TIME) String() string {

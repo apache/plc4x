@@ -128,8 +128,7 @@ public class S7PayloadUserDataItemCyclicServicesPush extends S7PayloadUserDataIt
     List<AssociatedValueType> items =
         readCountArrayField(
             "items",
-            new DataReaderComplexDefault<>(
-                () -> AssociatedValueType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AssociatedValueType.staticParse(readBuffer), readBuffer),
             itemsCount);
 
     readBuffer.closeContext("S7PayloadUserDataItemCyclicServicesPush");

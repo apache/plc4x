@@ -100,7 +100,7 @@ public class BACnetConstructedDataValueSourceArray extends BACnetConstructedData
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (vtClassesSupported)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataValueSourceArray extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,8 +162,7 @@ public class BACnetConstructedDataValueSourceArray extends BACnetConstructedData
     List<BACnetValueSource> vtClassesSupported =
         readTerminatedArrayField(
             "vtClassesSupported",
-            new DataReaderComplexDefault<>(
-                () -> BACnetValueSource.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetValueSource.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

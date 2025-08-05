@@ -21,24 +21,28 @@ package knxnetip
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
+	"runtime/debug"
+	"sync"
+	"time"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"runtime/debug"
-	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Subscriber
+//go:generate go tool plc4xGenerator -type=Subscriber
 type Subscriber struct {
 	connection *Connection
 	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	passLogToModel bool
 	log            zerolog.Logger       `ignore:"true"`
@@ -60,7 +64,9 @@ func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subs
 func (s *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
 	// TODO: handle context
 	result := make(chan apiModel.PlcSubscriptionRequestResult, 1)
+	s.wg.Add(1)
 	go func() {
+		defer s.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -111,7 +117,7 @@ func (s *Subscriber) handleValueChange(ctx context.Context, destinationAddress [
 	// Decode the group-address according to the settings in the driver
 	// Group addresses can be 1, 2 or 3 levels (3 being the default)
 	ctxForModel := options.GetLoggerContextForModel(ctx, s.log, options.WithPassLoggerToModel(s.passLogToModel))
-	groupAddress, err := driverModel.KnxGroupAddressParse(ctxForModel, destinationAddress, s.connection.getGroupAddressNumLevels())
+	groupAddress, err := driverModel.KnxGroupAddressParse[driverModel.KnxGroupAddress](ctxForModel, destinationAddress, s.connection.getGroupAddressNumLevels())
 	if err != nil {
 		return
 	}

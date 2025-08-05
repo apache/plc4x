@@ -63,11 +63,10 @@ public class BACnetAuthenticationPolicyListEntry implements Message {
     writeBuffer.pushContext("BACnetAuthenticationPolicyListEntry");
 
     // Simple Field (credentialDataInput)
-    writeSimpleField(
-        "credentialDataInput", credentialDataInput, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("credentialDataInput", credentialDataInput, writeComplex(writeBuffer));
 
     // Simple Field (index)
-    writeSimpleField("index", index, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("index", index, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAuthenticationPolicyListEntry");
   }
@@ -92,12 +91,6 @@ public class BACnetAuthenticationPolicyListEntry implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAuthenticationPolicyListEntry staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAuthenticationPolicyListEntry staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetAuthenticationPolicyListEntry");
@@ -107,14 +100,14 @@ public class BACnetAuthenticationPolicyListEntry implements Message {
     BACnetDeviceObjectReferenceEnclosed credentialDataInput =
         readSimpleField(
             "credentialDataInput",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 
     BACnetContextTagUnsignedInteger index =
         readSimpleField(
             "index",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

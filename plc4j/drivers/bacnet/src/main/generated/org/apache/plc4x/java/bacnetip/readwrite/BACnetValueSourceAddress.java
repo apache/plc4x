@@ -59,7 +59,7 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
     writeBuffer.pushContext("BACnetValueSourceAddress");
 
     // Simple Field (address)
-    writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("address", address, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetValueSourceAddress");
   }
@@ -90,7 +90,7 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
     BACnetAddressEnclosed address =
         readSimpleField(
             "address",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetAddressEnclosed.staticParse(readBuffer, (short) (2)), readBuffer));
 
     readBuffer.closeContext("BACnetValueSourceAddress");

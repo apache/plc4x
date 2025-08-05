@@ -90,7 +90,7 @@ public class GetAttributeAllResponse extends CipService implements Message {
     writeSimpleField("extStatus", extStatus, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (attributes) (Can be skipped, if the value is null)
-    writeOptionalField("attributes", attributes, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("attributes", attributes, writeComplex(writeBuffer));
 
     writeBuffer.popContext("GetAttributeAllResponse");
   }
@@ -139,7 +139,7 @@ public class GetAttributeAllResponse extends CipService implements Message {
     CIPAttributes attributes =
         readOptionalField(
             "attributes",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CIPAttributes.staticParse(readBuffer, (int) ((serviceLen) - (4))),
                 readBuffer),
             (((serviceLen) - (4))) > (0));

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class EphemeralKeyType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "17550";
+  public Integer getExtensionId() {
+    return (int) 17550;
   }
 
   // Properties.
@@ -68,10 +68,10 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
     writeBuffer.pushContext("EphemeralKeyType");
 
     // Simple Field (publicKey)
-    writeSimpleField("publicKey", publicKey, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("publicKey", publicKey, writeComplex(writeBuffer));
 
     // Simple Field (signature)
-    writeSimpleField("signature", signature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("signature", signature, writeComplex(writeBuffer));
 
     writeBuffer.popContext("EphemeralKeyType");
   }
@@ -97,22 +97,18 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("EphemeralKeyType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalByteString publicKey =
         readSimpleField(
-            "publicKey",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "publicKey", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalByteString signature =
         readSimpleField(
-            "signature",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "signature", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("EphemeralKeyType");
     // Create the instance

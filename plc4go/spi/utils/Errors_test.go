@@ -20,10 +20,11 @@
 package utils
 
 import (
-	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMultiError_Error(t *testing.T) {

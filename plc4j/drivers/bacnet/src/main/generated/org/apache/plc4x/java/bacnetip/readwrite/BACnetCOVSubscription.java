@@ -84,25 +84,21 @@ public class BACnetCOVSubscription implements Message {
     writeBuffer.pushContext("BACnetCOVSubscription");
 
     // Simple Field (recipient)
-    writeSimpleField("recipient", recipient, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("recipient", recipient, writeComplex(writeBuffer));
 
     // Simple Field (monitoredPropertyReference)
     writeSimpleField(
-        "monitoredPropertyReference",
-        monitoredPropertyReference,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "monitoredPropertyReference", monitoredPropertyReference, writeComplex(writeBuffer));
 
     // Simple Field (issueConfirmedNotifications)
     writeSimpleField(
-        "issueConfirmedNotifications",
-        issueConfirmedNotifications,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "issueConfirmedNotifications", issueConfirmedNotifications, writeComplex(writeBuffer));
 
     // Simple Field (timeRemaining)
-    writeSimpleField("timeRemaining", timeRemaining, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeRemaining", timeRemaining, writeComplex(writeBuffer));
 
     // Optional Field (covIncrement) (Can be skipped, if the value is null)
-    writeOptionalField("covIncrement", covIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("covIncrement", covIncrement, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetCOVSubscription");
   }
@@ -138,12 +134,6 @@ public class BACnetCOVSubscription implements Message {
     return lengthInBits;
   }
 
-  public static BACnetCOVSubscription staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetCOVSubscription staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCOVSubscription");
     PositionAware positionAware = readBuffer;
@@ -152,21 +142,21 @@ public class BACnetCOVSubscription implements Message {
     BACnetRecipientProcessEnclosed recipient =
         readSimpleField(
             "recipient",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetRecipientProcessEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 
     BACnetObjectPropertyReferenceEnclosed monitoredPropertyReference =
         readSimpleField(
             "monitoredPropertyReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 
     BACnetContextTagBoolean issueConfirmedNotifications =
         readSimpleField(
             "issueConfirmedNotifications",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(
@@ -176,7 +166,7 @@ public class BACnetCOVSubscription implements Message {
     BACnetContextTagUnsignedInteger timeRemaining =
         readSimpleField(
             "timeRemaining",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -188,7 +178,7 @@ public class BACnetCOVSubscription implements Message {
     BACnetContextTagReal covIncrement =
         readOptionalField(
             "covIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

@@ -63,9 +63,7 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
 
     // Simple Field (accessCredentialDisableReason)
     writeSimpleField(
-        "accessCredentialDisableReason",
-        accessCredentialDisableReason,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "accessCredentialDisableReason", accessCredentialDisableReason, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesAccessCredentialDisableReason");
   }
@@ -96,7 +94,7 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
     BACnetAccessCredentialDisableReasonTagged accessCredentialDisableReason =
         readSimpleField(
             "accessCredentialDisableReason",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessCredentialDisableReasonTagged.staticParse(
                         readBuffer,

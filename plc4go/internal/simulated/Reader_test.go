@@ -20,11 +20,10 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/apache/plc4x/plc4go/internal/s7"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -32,7 +31,8 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	simulatedReadWriteModel "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
@@ -167,7 +167,6 @@ func TestReader_Read(t *testing.T) {
 			timeBeforeReadRequest := time.Now()
 			readResponseChannel := r.Read(testutils.TestContext(t), readRequest)
 			timeout := time.NewTimer(3 * time.Second)
-			defer utils.CleanupTimer(timeout)
 			select {
 			case readResponse := <-readResponseChannel:
 				timeAfterReadRequest := time.Now()

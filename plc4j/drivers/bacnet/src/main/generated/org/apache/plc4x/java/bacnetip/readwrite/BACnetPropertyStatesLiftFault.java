@@ -60,7 +60,7 @@ public class BACnetPropertyStatesLiftFault extends BACnetPropertyStates implemen
     writeBuffer.pushContext("BACnetPropertyStatesLiftFault");
 
     // Simple Field (liftFault)
-    writeSimpleField("liftFault", liftFault, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("liftFault", liftFault, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesLiftFault");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesLiftFault extends BACnetPropertyStates implemen
     BACnetLiftFaultTagged liftFault =
         readSimpleField(
             "liftFault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftFaultTagged.staticParse(
                         readBuffer,

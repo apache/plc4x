@@ -18,12 +18,36 @@
  */
 package org.apache.plc4x.java.transport.virtualcan;
 
+import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.*;
+import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
+
 import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.spi.codegen.WithOption;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.Message;
+import org.apache.plc4x.java.spi.generation.MessageInput;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 public class VirtualCANFrame implements Message {
+
+    public final static MessageInput<VirtualCANFrame> PARSER = new MessageInput<VirtualCANFrame>() {
+
+        @Override
+        public VirtualCANFrame parse(ReadBuffer io) throws ParseException {
+            WithOption withOption = WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN);
+
+            short length = io.readUnsignedShort("length", 8, withOption);
+            int nodeId = io.readInt("nodeId", 32, withOption);
+            byte[] data = io.readByteArray("data", length, withOption);
+
+            return new VirtualCANFrame(nodeId, data);
+        }
+    };
+
     private final int nodeId;
     private final byte[] data;
 
@@ -42,19 +66,22 @@ public class VirtualCANFrame implements Message {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.writeUnsignedShort("length", 8, (short) data.length);
-        writeBuffer.writeUnsignedInt("nodeId", 32, nodeId);
-        writeBuffer.writeByteArray("data", data);
+        WithOption withOption = WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN);
+
+        writeSimpleField("length", (short) data.length, writeUnsignedShort(writeBuffer, 8), withOption);
+        writeSimpleField("nodeId", nodeId, writeSignedInt(writeBuffer, 32), withOption);
+        writeByteArrayField("data", data, writeByteArray(writeBuffer, 8), withOption);
     }
+
 
     @Override
     public int getLengthInBytes() {
-        return 0;
+        return 1 + 4 + data.length;
     }
 
     @Override
     public int getLengthInBits() {
-        return 0;
+        return getLengthInBytes() * 8;
     }
 
     public String toString() {

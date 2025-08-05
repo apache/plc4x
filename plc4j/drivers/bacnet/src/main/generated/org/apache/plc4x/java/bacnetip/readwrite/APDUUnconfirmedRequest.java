@@ -74,7 +74,7 @@ public class APDUUnconfirmedRequest extends APDU implements Message {
         writeUnsignedByte(writeBuffer, 4));
 
     // Simple Field (serviceRequest)
-    writeSimpleField("serviceRequest", serviceRequest, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serviceRequest", serviceRequest, writeComplex(writeBuffer));
 
     writeBuffer.popContext("APDUUnconfirmedRequest");
   }
@@ -110,7 +110,7 @@ public class APDUUnconfirmedRequest extends APDU implements Message {
     BACnetUnconfirmedServiceRequest serviceRequest =
         readSimpleField(
             "serviceRequest",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetUnconfirmedServiceRequest.staticParse(
                         readBuffer, (int) ((apduLength) - (1))),

@@ -27,12 +27,13 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type TransportInstance struct {
@@ -108,7 +109,9 @@ func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
 	}
 
 	// TODO: Start a worker that uses m.udpConn.ReadFromUDP() to fill a buffer
-	/*go func() {
+	/*m.wg.Add(1)
+	go func() {
+		defer m.wg.Done()
 	    buf := make([]byte, 1024)
 	    for {
 	        rsize, raddr, err := m.udpConn.ReadFromUDP(buf)
@@ -125,6 +128,7 @@ func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
 }
 
 func (m *TransportInstance) Close() error {
+	defer utils.StopWarn(m.log)()
 	m.stateChangeMutex.Lock()
 	defer m.stateChangeMutex.Unlock()
 	if !m.connected.Load() {

@@ -20,16 +20,16 @@
 package simulated
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestConnection_Connect(t *testing.T) {
@@ -125,7 +125,6 @@ func TestConnection_Connect(t *testing.T) {
 			timeBeforeConnect := time.Now()
 			connectionChan := c.Connect()
 			timeout := time.NewTimer(3 * time.Second)
-			defer utils.CleanupTimer(timeout)
 			select {
 			case connectResult := <-connectionChan:
 				timeAfterConnect := time.Now()
@@ -242,7 +241,6 @@ func TestConnection_Close(t *testing.T) {
 			timeBeforeClose := time.Now()
 			closeChan := c.Close()
 			timeout := time.NewTimer(3 * time.Second)
-			defer utils.CleanupTimer(timeout)
 			select {
 			case closeResult := <-closeChan:
 				timeAfterClose := time.Now()
@@ -337,7 +335,6 @@ func TestConnection_BlockingClose(t *testing.T) {
 				return ch
 			}
 			timeout := time.NewTimer(3 * time.Second)
-			defer utils.CleanupTimer(timeout)
 			select {
 			case <-executor():
 				timeAfterClose := time.Now()
@@ -508,7 +505,6 @@ func TestConnection_Ping(t *testing.T) {
 			timeBeforePing := time.Now()
 			pingChan := c.Ping()
 			timeout := time.NewTimer(3 * time.Second)
-			defer utils.CleanupTimer(timeout)
 			select {
 			case pingResult := <-pingChan:
 				timeAfterPing := time.Now()

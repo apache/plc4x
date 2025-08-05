@@ -35,6 +35,8 @@ public enum OpcuaNodeIdServicesVariableGet {
   GetSecurityGroupMethodType_OutputArguments((int) 15451L),
   GetEncryptingKeyMethodType_InputArguments((int) 17532L),
   GetEncryptingKeyMethodType_OutputArguments((int) 17533L),
+  GetRecordsMethodType_InputArguments((int) 19359L),
+  GetRecordsMethodType_OutputArguments((int) 19360L),
   GetConnectionMethodType_InputArguments((int) 23727L),
   GetConnectionMethodType_OutputArguments((int) 23728L),
   GetWriterGroupMethodType_InputArguments((int) 23746L),

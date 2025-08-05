@@ -165,12 +165,6 @@ public class LogicAssignment implements Message {
     return lengthInBits;
   }
 
-  public static LogicAssignment staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static LogicAssignment staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("LogicAssignment");
     PositionAware positionAware = readBuffer;

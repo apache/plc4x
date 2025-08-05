@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,7 +22,7 @@ package org.apache.plc4x.java.iec608705104.readwrite.messages;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 
 import java.time.Instant;
 import java.util.Map;
@@ -30,7 +30,7 @@ import java.util.Map;
 public class Iec608705104PlcSubscriptionEvent extends DefaultPlcSubscriptionEvent {
 
     private final Map<String, PlcTag> tags;
-    public Iec608705104PlcSubscriptionEvent(Instant timestamp, Map<String, PlcTag> tags, Map<String, ResponseItem<PlcValue>> values) {
+    public Iec608705104PlcSubscriptionEvent(Instant timestamp, Map<String, PlcTag> tags, Map<String, PlcResponseItem<PlcValue>> values) {
         super(timestamp, values);
         this.tags = tags;
     }

@@ -74,27 +74,6 @@ public abstract class BACnetError implements Message {
     return lengthInBits;
   }
 
-  public static BACnetError staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    BACnetConfirmedServiceChoice errorChoice;
-    if (args[0] instanceof BACnetConfirmedServiceChoice) {
-      errorChoice = (BACnetConfirmedServiceChoice) args[0];
-    } else if (args[0] instanceof String) {
-      errorChoice = BACnetConfirmedServiceChoice.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type BACnetConfirmedServiceChoice or a string which is"
-              + " parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, errorChoice);
-  }
-
   public static BACnetError staticParse(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("BACnetError");

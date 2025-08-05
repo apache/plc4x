@@ -82,13 +82,13 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
     writeBuffer.pushContext("SecurityDataStatusReport1");
 
     // Simple Field (armCodeType)
-    writeSimpleField("armCodeType", armCodeType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("armCodeType", armCodeType, writeComplex(writeBuffer));
 
     // Simple Field (tamperStatus)
-    writeSimpleField("tamperStatus", tamperStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("tamperStatus", tamperStatus, writeComplex(writeBuffer));
 
     // Simple Field (panicStatus)
-    writeSimpleField("panicStatus", panicStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("panicStatus", panicStatus, writeComplex(writeBuffer));
 
     // Array Field (zoneStatus)
     writeComplexTypeArrayField("zoneStatus", zoneStatus, writeBuffer);
@@ -136,25 +136,19 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
 
     SecurityArmCode armCodeType =
         readSimpleField(
-            "armCodeType",
-            new DataReaderComplexDefault<>(
-                () -> SecurityArmCode.staticParse(readBuffer), readBuffer));
+            "armCodeType", readComplex(() -> SecurityArmCode.staticParse(readBuffer), readBuffer));
 
     TamperStatus tamperStatus =
         readSimpleField(
-            "tamperStatus",
-            new DataReaderComplexDefault<>(() -> TamperStatus.staticParse(readBuffer), readBuffer));
+            "tamperStatus", readComplex(() -> TamperStatus.staticParse(readBuffer), readBuffer));
 
     PanicStatus panicStatus =
         readSimpleField(
-            "panicStatus",
-            new DataReaderComplexDefault<>(() -> PanicStatus.staticParse(readBuffer), readBuffer));
+            "panicStatus", readComplex(() -> PanicStatus.staticParse(readBuffer), readBuffer));
 
     List<ZoneStatus> zoneStatus =
         readCountArrayField(
-            "zoneStatus",
-            new DataReaderComplexDefault<>(() -> ZoneStatus.staticParse(readBuffer), readBuffer),
-            32);
+            "zoneStatus", readComplex(() -> ZoneStatus.staticParse(readBuffer), readBuffer), 32);
 
     readBuffer.closeContext("SecurityDataStatusReport1");
     // Create the instance

@@ -88,7 +88,7 @@ public abstract class BACnetNotificationParametersChangeOfDiscreteValueNewValue 
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValue");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     short peekedTagNumber = getPeekedTagNumber();
@@ -102,7 +102,7 @@ public abstract class BACnetNotificationParametersChangeOfDiscreteValueNewValue 
     serializeBACnetNotificationParametersChangeOfDiscreteValueNewValueChild(writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfDiscreteValueNewValue");
   }
@@ -134,26 +134,6 @@ public abstract class BACnetNotificationParametersChangeOfDiscreteValueNewValue 
   }
 
   public static BACnetNotificationParametersChangeOfDiscreteValueNewValue staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber);
-  }
-
-  public static BACnetNotificationParametersChangeOfDiscreteValueNewValue staticParse(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValue");
     PositionAware positionAware = readBuffer;
@@ -162,14 +142,13 @@ public abstract class BACnetNotificationParametersChangeOfDiscreteValueNewValue 
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
     boolean peekedIsContextTag =
@@ -262,7 +241,7 @@ public abstract class BACnetNotificationParametersChangeOfDiscreteValueNewValue 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValue");

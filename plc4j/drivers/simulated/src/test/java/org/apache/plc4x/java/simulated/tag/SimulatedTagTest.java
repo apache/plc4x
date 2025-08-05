@@ -20,7 +20,6 @@ package org.apache.plc4x.java.simulated.tag;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
-import org.apache.plc4x.java.simulated.tag.SimulatedTag;
 import org.apache.plc4x.java.simulated.types.SimulatedTagType;
 import org.junit.jupiter.api.Test;
 

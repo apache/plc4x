@@ -121,7 +121,7 @@ public class VariantStatusCode extends Variant implements Message {
     List<StatusCode> value =
         readCountArrayField(
             "value",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             (((arrayLength) == (null)) ? 1 : arrayLength));
 
     readBuffer.closeContext("VariantStatusCode");

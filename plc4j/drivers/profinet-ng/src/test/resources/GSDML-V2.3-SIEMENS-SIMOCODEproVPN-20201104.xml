@@ -1,0 +1,873 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<ISO15745Profile xmlns="http://www.profibus.com/GSDML/2003/11/DeviceProfile" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.profibus.com/GSDML/2003/11/DeviceProfile ..\xsd\GSDML-DeviceProfile-V2.3.xsd">
+	<ProfileHeader>
+		<ProfileIdentification>PROFINET Device Profile</ProfileIdentification>
+		<ProfileRevision>1.00</ProfileRevision>
+		<ProfileName>Device Profile for PROFINET Devices</ProfileName>
+		<ProfileSource>PROFIBUS Nutzerorganisation e. V. (PNO)</ProfileSource>
+		<ProfileClassID>Device</ProfileClassID>
+		<ISO15745Reference>
+			<ISO15745Part>4</ISO15745Part>
+			<ISO15745Edition>1</ISO15745Edition>
+			<ProfileTechnology>GSDML</ProfileTechnology>
+		</ISO15745Reference>
+	</ProfileHeader>
+	<ProfileBody>
+		<DeviceIdentity DeviceID="0x0904" VendorID="0x002A">
+			<!--InfoText TextId="Modular distributed I/O device" /-->
+			<InfoText TextId="TOK_DevIdent_InfoText" />
+			<VendorName Value="SIEMENS" />
+		</DeviceIdentity>
+		<DeviceFunction>
+			<Family MainFamily="Switching Devices" ProductFamily="Motor Management System" />
+		</DeviceFunction>
+		<ApplicationProcess>
+			<DeviceAccessPointList>
+				<DeviceAccessPointItem ID="DAP 1" FixedInSlots="0" PhysicalSlots="0..2" MinDeviceInterval="32" ModuleIdentNumber="0x0000010" DNS_CompatibleName="SIMOCODEproVPN2" ImplementationType="ERTEC200" ExtendedAddressAssignmentSupported="true" ObjectUUID_LocalIndex="1" SharedDeviceSupported="true" DeviceAccessSupported="true" LLDP_NoD_Supported="true" ResetToFactoryModes ="2" RequiredSchemaVersion="V2.25" MaxSupportedRecordSize="8192" ParameterizationSpeedupSupported="false" MultipleWriteSupported="true" NameOfStationNotTransferable="true" PNIO_Version="V2.3"><!-- TBD: Set PNIO_Version to the PROFINET IO version that this device is based on -->
+					<ModuleInfo>
+						<Name TextId="Name 3UF7 011-1A*00-0" />
+						<InfoText TextId="TOK_ModInfo_InfoTextId_DAP1" />
+						<VendorName Value="SIEMENS" />
+						<OrderNumber Value="3UF7 011-1A*00-0" />
+						<HardwareRelease Value="14" />
+						<SoftwareRelease Value="V2.1.2" />
+					</ModuleInfo>
+					<SubslotList>
+						<SubslotItem TextId="PDEV_X1" SubslotNumber="32768" />
+						<SubslotItem TextId="PDEV_X1_P1" SubslotNumber="32769" />
+						<SubslotItem TextId="PDEV_X1_P2" SubslotNumber="32770" />
+					</SubslotList>
+					<IOConfigData MaxInputLength="256" MaxOutputLength="256" />
+					<UseableModules>
+						<ModuleItemRef AllowedInSlots="1" ModuleItemTarget="1" />
+						<ModuleItemRef AllowedInSlots="1" ModuleItemTarget="2" />
+						<ModuleItemRef AllowedInSlots="1" ModuleItemTarget="3" />
+						<ModuleItemRef AllowedInSlots="2" ModuleItemTarget="4" />
+					</UseableModules>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="DAP 1" SubmoduleIdentNumber="0x0001" Writeable_IM_Records="1 2 3">
+							<IOData IOCS_Length="1" IOPS_Length="1" />
+							<ModuleInfo>
+								<Name TextId="empty" />
+								<InfoText TextId="empty" />
+							</ModuleInfo>
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+					<!-- Port Einstellungen, Parameter -->
+					<SystemDefinedSubmoduleList>
+						<InterfaceSubmoduleItem ID="IDS_1I" TextId="Interface PN" SubslotNumber="32768" SupportedMibs="MIB2" PTP_BoundarySupported="true" DCP_BoundarySupported="true" DCP_HelloSupported="false"  SupportedProtocols="SNMP;LLDP" SupportedRT_Classes="RT_CLASS_1;RT_CLASS_3" SubmoduleIdentNumber="0x0002" NetworkComponentDiagnosisSupported="true" >
+							<RT_Class3Properties ForwardingMode="Absolute" MaxBridgeDelay="2920" MaxNumberIR_FrameData="128" StartupMode="Legacy;Advanced" />
+							<SynchronisationMode T_PLL_MAX="1000" SupportedRole="SyncSlave" MaxLocalJitter="50" SupportedSyncProtocols="PTCP" />
+							<ApplicationRelations StartupMode="Legacy;Advanced" NumberOfAR="2" NumberOfAdditionalInputCR="0" NumberOfAdditionalMulticastProviderCR="0" NumberOfAdditionalOutputCR="0" NumberOfMulticastConsumerCR="0" PullModuleAlarmSupported="true" >
+								<TimingProperties SendClock="8 16 32 64 128" ReductionRatio="1 2 4 8 16 32 64 128 256 512" />
+								<RT_Class3TimingProperties SendClock="8 16 32 64 128" ReductionRatio="1 2 4 8 16" />
+							</ApplicationRelations>
+							<MediaRedundancy SupportedRole="Client" />
+						</InterfaceSubmoduleItem>
+						<PortSubmoduleItem ID="IDS_1P1" TextId="TOK_DAP_PDEV_PORT1_SUBMODULE" MAUTypes="16" SubslotNumber="32769" SubmoduleIdentNumber="0x0003" MaxPortRxDelay="302" MaxPortTxDelay="108" CheckMAUTypeSupported="true" PortDeactivationSupported="true" LinkStateDiagnosisCapability="Up+Down" SupportsRingportConfig="false" IsDefaultRingport="true" />
+						<PortSubmoduleItem ID="IDS_1P2" TextId="TOK_DAP_PDEV_PORT2_SUBMODULE" MAUTypes="16" SubslotNumber="32770" SubmoduleIdentNumber="0x0003" MaxPortRxDelay="302" MaxPortTxDelay="108" CheckMAUTypeSupported="true" PortDeactivationSupported="true" LinkStateDiagnosisCapability="Up+Down" SupportsRingportConfig="false" IsDefaultRingport="true" />
+					</SystemDefinedSubmoduleList>
+					<Graphics>
+						<GraphicItemRef Type="DeviceSymbol" GraphicItemTarget="1" />
+					</Graphics>
+					<SystemRedundancy DeviceType="S2" MaxSwitchOverTime="30" RT_InputOnBackupAR_Supported="false" NumberOfAR_Sets="1" />
+				</DeviceAccessPointItem>
+				<DeviceAccessPointItem ID="DAP_3UF7_GP" FixedInSlots="0" PhysicalSlots="0..2" MinDeviceInterval="32" ModuleIdentNumber="0x0000010" DNS_CompatibleName="SIMOCODEproVPN2" ImplementationType="ERTEC200" ExtendedAddressAssignmentSupported="true" ObjectUUID_LocalIndex="1" SharedDeviceSupported="true" DeviceAccessSupported="true" LLDP_NoD_Supported="true" ResetToFactoryModes ="2" RequiredSchemaVersion="V2.25" MaxSupportedRecordSize="8192" ParameterizationSpeedupSupported="false" MultipleWriteSupported="true" NameOfStationNotTransferable="true" PNIO_Version="V2.3"><!-- TBD: Set PNIO_Version to the PROFINET IO version that this device is based on -->
+					<ModuleInfo>
+						<Name TextId="TID_NAME_3UF7_GP" />
+						<InfoText TextId="TID_INFO_3UF7_GP" />
+						<VendorName Value="SIEMENS" />
+						<OrderNumber Value="3UF7 011-1A*00-1" />
+						<HardwareRelease Value="14" />
+						<SoftwareRelease Value="V2.1.2" />
+					</ModuleInfo>
+					<SubslotList>
+						<SubslotItem TextId="PDEV_X1" SubslotNumber="32768" />
+						<SubslotItem TextId="PDEV_X1_P1" SubslotNumber="32769" />
+						<SubslotItem TextId="PDEV_X1_P2" SubslotNumber="32770" />
+					</SubslotList>
+					<IOConfigData MaxInputLength="256" MaxOutputLength="256" />
+					<UseableModules>
+						<ModuleItemRef AllowedInSlots="1" ModuleItemTarget="1" />
+						<ModuleItemRef AllowedInSlots="1" ModuleItemTarget="2" />
+						<ModuleItemRef AllowedInSlots="1" ModuleItemTarget="3" />
+					</UseableModules>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="DAP_3UF7_GP" SubmoduleIdentNumber="0x0001" Writeable_IM_Records="1 2 3">
+							<IOData IOCS_Length="1" IOPS_Length="1" />
+							<ModuleInfo>
+								<Name TextId="empty" />
+								<InfoText TextId="empty" />
+							</ModuleInfo>
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+					<!-- Port Einstellungen, Parameter -->
+					<SystemDefinedSubmoduleList>
+						<InterfaceSubmoduleItem ID="IDS_1I_3UF7_GP" TextId="Interface PN" SubslotNumber="32768" SupportedMibs="MIB2" PTP_BoundarySupported="true" DCP_BoundarySupported="true" DCP_HelloSupported="false"  SupportedProtocols="SNMP;LLDP" SupportedRT_Classes="RT_CLASS_1;RT_CLASS_3" SubmoduleIdentNumber="0x0002" NetworkComponentDiagnosisSupported="true" >
+							<RT_Class3Properties ForwardingMode="Absolute" MaxBridgeDelay="2920" MaxNumberIR_FrameData="128" StartupMode="Legacy;Advanced" />
+							<SynchronisationMode T_PLL_MAX="1000" SupportedRole="SyncSlave" MaxLocalJitter="50" SupportedSyncProtocols="PTCP" />
+							<ApplicationRelations StartupMode="Legacy;Advanced" NumberOfAR="2" NumberOfAdditionalInputCR="0" NumberOfAdditionalMulticastProviderCR="0" NumberOfAdditionalOutputCR="0" NumberOfMulticastConsumerCR="0" PullModuleAlarmSupported="true" >
+								<TimingProperties SendClock="8 16 32 64 128" ReductionRatio="1 2 4 8 16 32 64 128 256 512" />
+								<RT_Class3TimingProperties SendClock="8 16 32 64 128" ReductionRatio="1 2 4 8 16" />
+							</ApplicationRelations>
+							<MediaRedundancy SupportedRole="Client" />
+						</InterfaceSubmoduleItem>
+						<PortSubmoduleItem ID="IDS_1P1_3UF7_GP" TextId="TOK_DAP_PDEV_PORT1_SUBMODULE" MAUTypes="16" SubslotNumber="32769" SubmoduleIdentNumber="0x0003" MaxPortRxDelay="302" MaxPortTxDelay="108" CheckMAUTypeSupported="true" PortDeactivationSupported="true" LinkStateDiagnosisCapability="Up+Down" SupportsRingportConfig="false" IsDefaultRingport="true" />
+						<PortSubmoduleItem ID="IDS_1P2_3UF7_GP" TextId="TOK_DAP_PDEV_PORT2_SUBMODULE" MAUTypes="16" SubslotNumber="32770" SubmoduleIdentNumber="0x0003" MaxPortRxDelay="302" MaxPortTxDelay="108" CheckMAUTypeSupported="true" PortDeactivationSupported="true" LinkStateDiagnosisCapability="Up+Down" SupportsRingportConfig="false" IsDefaultRingport="true" />
+					</SystemDefinedSubmoduleList>
+					<Graphics>
+						<GraphicItemRef Type="DeviceSymbol" GraphicItemTarget="1" />
+					</Graphics>
+					<SystemRedundancy DeviceType="S2" MaxSwitchOverTime="30" RT_InputOnBackupAR_Supported="false" NumberOfAR_Sets="1" />
+				</DeviceAccessPointItem>
+				<DeviceAccessPointItem ID="DAP_3UF7_GP2" FixedInSlots="0" PhysicalSlots="0..2" MinDeviceInterval="32" ModuleIdentNumber="0x0000010" DNS_CompatibleName="SIMOCODEproVPN2" ImplementationType="ERTEC200" ExtendedAddressAssignmentSupported="true" ObjectUUID_LocalIndex="1" SharedDeviceSupported="true" DeviceAccessSupported="true" LLDP_NoD_Supported="true" ResetToFactoryModes ="2" RequiredSchemaVersion="V2.25" MaxSupportedRecordSize="8192" ParameterizationSpeedupSupported="false" MultipleWriteSupported="true" NameOfStationNotTransferable="true" PNIO_Version="V2.3"><!-- TBD: Set PNIO_Version to the PROFINET IO version that this device is based on -->
+					<ModuleInfo>
+						<Name TextId="TID_NAME_3UF7_GP" />
+						<InfoText TextId="TID_INFO_3UF7_GP" />
+						<VendorName Value="SIEMENS" />
+						<OrderNumber Value="3UF7 011-1A*00-2" />
+						<HardwareRelease Value="14" />
+						<SoftwareRelease Value="V2.1.2" />
+					</ModuleInfo>
+					<SubslotList>
+						<SubslotItem TextId="PDEV_X1" SubslotNumber="32768" />
+						<SubslotItem TextId="PDEV_X1_P1" SubslotNumber="32769" />
+					</SubslotList>
+					<IOConfigData MaxInputLength="256" MaxOutputLength="256" />
+					<UseableModules>
+						<ModuleItemRef AllowedInSlots="1" ModuleItemTarget="1" />
+						<ModuleItemRef AllowedInSlots="1" ModuleItemTarget="2" />
+						<ModuleItemRef AllowedInSlots="1" ModuleItemTarget="3" />
+					</UseableModules>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="DAP_3UF7_GP2" SubmoduleIdentNumber="0x0001" Writeable_IM_Records="1 2 3">
+							<IOData IOCS_Length="1" IOPS_Length="1" />
+							<ModuleInfo>
+								<Name TextId="empty" />
+								<InfoText TextId="empty" />
+							</ModuleInfo>
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+					<!-- Port Einstellungen, Parameter -->
+					<SystemDefinedSubmoduleList>
+						<InterfaceSubmoduleItem ID="IDS_1I_3UF7_GP2" TextId="Interface PN" SubslotNumber="32768" SupportedMibs="MIB2" PTP_BoundarySupported="true" DCP_BoundarySupported="true" DCP_HelloSupported="false"  SupportedProtocols="SNMP;LLDP" SupportedRT_Classes="RT_CLASS_1;RT_CLASS_3" SubmoduleIdentNumber="0x0002" NetworkComponentDiagnosisSupported="true" >
+							<RT_Class3Properties ForwardingMode="Absolute" MaxBridgeDelay="2920" MaxNumberIR_FrameData="128" StartupMode="Legacy;Advanced" />
+							<SynchronisationMode T_PLL_MAX="1000" SupportedRole="SyncSlave" MaxLocalJitter="50" SupportedSyncProtocols="PTCP" />
+							<ApplicationRelations StartupMode="Legacy;Advanced" NumberOfAR="2" NumberOfAdditionalInputCR="0" NumberOfAdditionalMulticastProviderCR="0" NumberOfAdditionalOutputCR="0" NumberOfMulticastConsumerCR="0" PullModuleAlarmSupported="true" >
+								<TimingProperties SendClock="8 16 32 64 128" ReductionRatio="1 2 4 8 16 32 64 128 256 512" />
+								<RT_Class3TimingProperties SendClock="8 16 32 64 128" ReductionRatio="1 2 4 8 16" />
+							</ApplicationRelations>
+							<MediaRedundancy SupportedRole="Client" />
+						</InterfaceSubmoduleItem>
+						<PortSubmoduleItem ID="IDS_1P1_3UF7_GP2" TextId="TOK_DAP_PDEV_PORT1_SUBMODULE" MAUTypes="16" SubslotNumber="32769" SubmoduleIdentNumber="0x0003" MaxPortRxDelay="302" MaxPortTxDelay="108" CheckMAUTypeSupported="true" PortDeactivationSupported="true" LinkStateDiagnosisCapability="Up+Down" SupportsRingportConfig="false" IsDefaultRingport="true" />
+					</SystemDefinedSubmoduleList>
+					<Graphics>
+						<GraphicItemRef Type="DeviceSymbol" GraphicItemTarget="1" />
+					</Graphics>
+					<SystemRedundancy DeviceType="S2" MaxSwitchOverTime="30" RT_InputOnBackupAR_Supported="false" NumberOfAR_Sets="1" />
+				</DeviceAccessPointItem>
+			</DeviceAccessPointList>
+			<ModuleList>
+				<ModuleItem ID="1" ModuleIdentNumber="0x00000020">
+					<ModuleInfo>
+						<Name TextId="Name Basic Type 1" />
+						<InfoText TextId="Infotext 3UF7 011-1A*00-0" />
+					</ModuleInfo>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="1" SubmoduleIdentNumber="0x00000010">
+							<IOData IOCS_Length="1" IOPS_Length="1">
+								<Input>
+									<DataItem Length="10" TextId="Inputs" DataType="OctetString" UseAsBits="true" />
+								</Input>
+								<Output>
+									<DataItem Length="4" TextId="Outputs" DataType="OctetString" UseAsBits="true" />
+								</Output>
+							</IOData>
+							<ModuleInfo>
+								<Name TextId="empty" />
+								<InfoText TextId="empty" />
+							</ModuleInfo>
+							<PROFIenergy />
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+				</ModuleItem>
+				<ModuleItem ID="2" ModuleIdentNumber="0x00000021">
+					<ModuleInfo>
+						<Name TextId="Name Basic Type 2" />
+						<InfoText TextId="Infotext 3UF7 011-1A*00-0" />
+					</ModuleInfo>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="2" SubmoduleIdentNumber="0x00000010" FixedInSubslots="1">
+							<IOData IOCS_Length="1" IOPS_Length="1">
+								<Input>
+									<DataItem Length="4" TextId="Inputs" DataType="OctetString" UseAsBits="true" />
+								</Input>
+								<Output>
+									<DataItem Length="2" TextId="Outputs" DataType="OctetString" UseAsBits="true" />
+								</Output>
+							</IOData>
+							<ModuleInfo>
+								<Name TextId="empty" />
+								<InfoText TextId="empty" />
+							</ModuleInfo>
+							<PROFIenergy />
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+				</ModuleItem>
+				<ModuleItem ID="3" ModuleIdentNumber="0x00000022">
+					<ModuleInfo>
+						<Name TextId="Name Basic Type 3" />
+						<InfoText TextId="Infotext 3UF7 011-1A*00-0" />
+					</ModuleInfo>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="3" SubmoduleIdentNumber="0x00000010" FixedInSubslots="1">
+							<IOData IOCS_Length="1" IOPS_Length="1">
+								<Input>
+									<DataItem Length="20" TextId="Inputs" DataType="OctetString" UseAsBits="true" />
+								</Input>
+								<Output>
+									<DataItem Length="6" TextId="Outputs" DataType="OctetString" UseAsBits="true" />
+								</Output>
+							</IOData>
+							<ModuleInfo>
+								<Name TextId="empty" />
+								<InfoText TextId="empty" />
+							</ModuleInfo>
+							<PROFIenergy />
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+				</ModuleItem>
+				<ModuleItem ID="4" ModuleIdentNumber="0x00000030" RequiredSchemaVersion="V2.0">
+					<ModuleInfo>
+						<Name TextId="Name Profisafe" />
+						<InfoText TextId="Infotext 3UF7 011-1A*00-0" />
+					</ModuleInfo>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="4" PROFIsafeSupported="true" SubmoduleIdentNumber="0x00000010" API="0">
+							<IOData F_IO_StructureDescCRC="7139" F_IO_StructureDescVersion="1">
+								<Input Consistency="All items consistency">
+									<DataItem DataType="F_MessageTrailer4Byte" TextId="Safety" />
+								</Input>
+								<Output Consistency="All items consistency">
+									<DataItem DataType="Unsigned8" UseAsBits="true" TextId="Outputs" />
+									<DataItem DataType="F_MessageTrailer4Byte" TextId="Safety" />
+								</Output>
+							</IOData>
+							<RecordDataList>
+								<F_ParameterRecordDataItem F_ParamDescCRC="46397" Index="164" TransferSequence="1">
+									<F_Check_iPar DefaultValue="NoCheck" Visible="false" Changeable="false" AllowedValues="Check NoCheck" />
+									<F_SIL DefaultValue="SIL3" Visible="true" Changeable="false" AllowedValues="SIL3" />
+									<F_CRC_Length DefaultValue="3-Byte-CRC" Visible="true" Changeable="false" AllowedValues="3-Byte-CRC" />
+									<F_Block_ID DefaultValue="0" Visible="true" Changeable="false" AllowedValues="0..7" />
+									<F_Par_Version DefaultValue="1" Visible="true" Changeable="false" AllowedValues="1" />
+									<F_Source_Add DefaultValue="1" Visible="true" Changeable="true" AllowedValues="1..65534" />
+									<F_Dest_Add DefaultValue="1" Visible="true" Changeable="true" AllowedValues="1..1022" />
+									<F_WD_Time DefaultValue="250" Visible="true" Changeable="true" AllowedValues="250..65535" />
+									<F_Par_CRC DefaultValue="46035" Visible="true" Changeable="true" AllowedValues="0..65535" />
+								</F_ParameterRecordDataItem>
+							</RecordDataList>
+							<ModuleInfo>
+								<Name TextId="empty" />
+								<InfoText TextId="empty" />
+							</ModuleInfo>
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+				</ModuleItem>
+			</ModuleList>
+			<!-- Diagnose-Texte -->
+			<ChannelDiagList>
+				<ChannelDiagItem ErrorType="16">
+					<Name TextId="Parameter assignment error" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="17">
+					<Name TextId="Sensor or load voltage missing" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="18">
+					<Name TextId="Fuse defective" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="19">
+					<Name TextId="Slot not addressable" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="20">
+					<Name TextId="Ground error" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="21">
+					<Name TextId="Reference channel error" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="22">
+					<Name TextId="Process interrupt lost" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="23">
+					<Name TextId="Warning" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="24">
+					<Name TextId="Shutoff" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="25">
+					<Name TextId="Fail-safe shutoff" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="26">
+					<Name TextId="external error" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="27">
+					<Name TextId="ambiguous error" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="29">
+					<Name TextId="hand drive" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="31">
+					<Name TextId="temporary error" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4105">
+					<Name TextId="Test position" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4145">
+					<Name TextId="Emergency start executed" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4146">
+					<Name TextId="Cooling down period active" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4128">
+					<Name TextId="Pre-Warning overloaded" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4129">
+					<Name TextId="Unbalance" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4130">
+					<Name TextId="Overload" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4131">
+					<Name TextId="Overload and loss of phase" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4135">
+					<Name TextId="Internal earth fault" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4136">
+					<Name TextId="External earth fault" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4132">
+					<Name TextId="Thermistor Trip Level" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4133">
+					<Name TextId="Thermistor Short Circuit" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4134">
+					<Name TextId="Thermistor Open Circuit" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4139">
+					<Name TextId="TM1 Warning Level T&gt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4140">
+					<Name TextId="TM1 Sensor Fault" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4141">
+					<Name TextId="TM1 Out of Range" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4137">
+					<Name TextId="EM Open Circuit" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4138">
+					<Name TextId="EM Short Circuit" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4160">
+					<Name TextId="Warning Level I&gt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4161">
+					<Name TextId="Warning Level I&lt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4162">
+					<Name TextId="Warning Level P&gt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4163">
+					<Name TextId="Warning Level P&lt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4165">
+					<Name TextId="Warning Level Cos-Phi&lt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4167">
+					<Name TextId="Warning Level U&lt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4168">
+					<Name TextId="AM1 Warning Level 0/4-20mA&gt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4169">
+					<Name TextId="AM1 Warning Level 0/4-20mA&lt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4172">
+					<Name TextId="Stalled Rotor" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4182">
+					<Name TextId="No Start Possible" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4183">
+					<Name TextId="Number of Starts &gt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4184">
+					<Name TextId="Just One Start Possible" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4185">
+					<Name TextId="Motor Operating Hours &gt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4186">
+					<Name TextId="Motor Stop Time &gt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4208">
+					<Name TextId="External Fault 1" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4209">
+					<Name TextId="External Fault 2" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4210">
+					<Name TextId="External Fault 3" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4211">
+					<Name TextId="External Fault 4" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4212">
+					<Name TextId="External Fault 5" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4213">
+					<Name TextId="External Fault 6" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4173">
+					<Name TextId="Dry-run Pump" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4174">
+					<Name TextId="Dry-run-protection Error" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4187">
+					<Name TextId="AM1 Open Circuit" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4189">
+					<Name TextId="Safety-oriented Tripping" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4190">
+					<Name TextId="Test Required" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4191">
+					<Name TextId="Feedback Circuit" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4192">
+					<Name TextId="Simultaneity" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4096">
+					<Name TextId="Execution On-Command" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4097">
+					<Name TextId="Execution Stop-Command" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4098">
+					<Name TextId="Feedbacl On" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4099">
+					<Name TextId="Feedback Off" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4100">
+					<Name TextId="Stalled Positioner" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4101">
+					<Name TextId="Double 0" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4102">
+					<Name TextId="Double 1" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4103">
+					<Name TextId="End Position" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4104">
+					<Name TextId="Antivalence" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4106">
+					<Name TextId="Test Position Feedback (TPF)" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4107">
+					<Name TextId="Power Failure (OVU)" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4108">
+					<Name TextId="Operational Protection Off (OPO)" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4188">
+					<Name TextId="Analog Module 2 Open Circuit" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4170">
+					<Name TextId="AM2 Warning Level 0/4-20mA&gt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4171">
+					<Name TextId="AM2 Warning Level 0/4-20mA&lt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4143">
+					<Name TextId="TM2 - Sensor Fault" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4144">
+					<Name TextId="TM2 - Out of Range" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4142">
+					<Name TextId="TM2 - Warning Level T&gt;" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4193">
+					<Name TextId="Wiring" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4194">
+					<Name TextId="Cross Circuit" />
+				</ChannelDiagItem>
+				<ChannelDiagItem ErrorType="4181">
+					<Name TextId="Test Shutdown" />
+				</ChannelDiagItem>
+			</ChannelDiagList>
+			<GraphicsList>
+				<GraphicItem ID="1" GraphicFile="GSDML-002A-0904-3UF7-PN" />
+			</GraphicsList>
+			<CategoryList>
+				<CategoryItem ID="Gsd" TextId="Gsd" />
+			</CategoryList>
+			<ExternalTextList>
+				<PrimaryLanguage>
+					<!--Familienbeschreibung-->
+					<Text TextId="TOK_DevIdent_InfoText" Value="Motor Management Sytem SIMOCODE pro V PN" />
+					<Text Value="Distributed Motor Management Sytem PROFINET IO" TextId="Modular distributed I/O device" />
+					<Text TextId="Gsd" Value="GSD" />
+					<Text TextId="Safety" Value="Safety" />
+					<!--PDEV-->
+					<Text Value="Port 1" TextId="TOK_DAP_PDEV_PORT1_SUBMODULE" />
+					<Text Value="Port 2" TextId="TOK_DAP_PDEV_PORT2_SUBMODULE" />
+					<Text Value="X1" TextId="PDEV_X1" />
+					<Text Value="X1 P1" TextId="PDEV_X1_P1" />
+					<Text Value="X1 P2" TextId="PDEV_X1_P2" />
+					<!--Baugruppeneinteilung-->
+					<!--Interfacesubmodulitem Beschriftung-->
+					<Text Value="PN-IO" TextId="Interface PN" />
+					<!--Digitale Eingabemodule-->
+					<Text Value="SIMOCODE pro V PN" TextId="TOK_ModInfo_InfoTextId_DAP1" />
+					<Text Value="SIMOCODE pro V PN" TextId="Name 3UF7 011-1A*00-0" />
+					<Text Value="SIMOCODE pro V PN GP" TextId="TID_INFO_3UF7_GP" />
+					<Text Value="SIMOCODE pro V PN GP" TextId="TID_NAME_3UF7_GP" />
+					<Text Value="PROFIsafe" TextId="Name Profisafe" />
+					<Text Value="Basic Type 1" TextId="Name Basic Type 1" />
+					<Text Value="Basic Type 2" TextId="Name Basic Type 2" />
+					<Text Value="Basic Type 3" TextId="Name Basic Type 3" />
+					<Text Value="SIRIUS motor management and control device SIMOCODE pro V PN, PROFINET IO, 0.30A...820A, expandable using expansion modules and failsafe modules" TextId="Infotext 3UF7 011-1A*00-0" />
+					<!-- allgemeine Bezeichner -->
+					<Text Value="Outputs" TextId="Outputs" />
+					<Text Value="Inputs" TextId="Inputs" />
+					<Text Value="" TextId="empty" />
+					<!--Diagnosetexte-->
+					<Text TextId="Parameter assignment error" Value="Parameter assignment error" />
+					<Text TextId="Sensor or load voltage missing" Value="Sensor or load voltage missing" />
+					<Text TextId="Fuse defective" Value="Fuse defective" />
+					<Text TextId="Slot not addressable" Value="Slot not addressable" />
+					<Text TextId="Ground error" Value="Ground error" />
+					<Text TextId="Reference channel error" Value="Reference channel error" />
+					<Text TextId="Process interrupt lost" Value="Process interrupt lost" />
+					<Text TextId="Warning" Value="Actuator warning" />
+					<Text TextId="Shutoff" Value="Actuator shutoff" />
+					<Text TextId="Fail-safe shutoff" Value="Fail-safe shutoff" />
+					<Text TextId="external error" Value="External error" />
+					<Text TextId="ambiguous error" Value="Ambiguous error" />
+					<Text TextId="hand drive" Value="Error 1 in actuator/sensor" />
+					<Text TextId="temporary error" Value="Channel temporarily not available" />
+					<Text TextId="Test position" Value="Test position" />
+					<Text TextId="Emergency start executed" Value="Emergency start executed" />
+					<Text TextId="Cooling down period active" Value="Cooling down period active" />
+					<Text TextId="Pre-Warning overloaded" Value="Pre-Warning overloaded" />
+					<Text TextId="Unbalance" Value="Unbalance" />
+					<Text TextId="Overload" Value="Overload" />
+					<Text TextId="Overload and loss of phase" Value="Overload and loss of phase" />
+					<Text TextId="Internal earth fault" Value="Internal earth fault" />
+					<Text TextId="External earth fault" Value="External earth fault" />
+					<Text TextId="Thermistor Trip Level" Value="Thermistor Trip Level" />
+					<Text TextId="Thermistor Short Circuit" Value="Thermistor Short Circuit" />
+					<Text TextId="Thermistor Open Circuit" Value="Thermistor Open Circuit" />
+					<Text TextId="TM1 Warning Level T&gt;" Value="TM1 Level T&gt;" />
+					<Text TextId="TM1 Sensor Fault" Value="TM1 Sensor Fault" />
+					<Text TextId="TM1 Out of Range" Value="TM1 Out of Range" />
+					<Text TextId="EM Open Circuit" Value="EM Open Circuit" />
+					<Text TextId="EM Short Circuit" Value="EM Short Circuit" />
+					<Text TextId="Warning Level I&gt;" Value="Level I&gt;" />
+					<Text TextId="Warning Level I&lt;" Value="Level I&lt;" />
+					<Text TextId="Warning Level P&gt;" Value="Level P&gt;" />
+					<Text TextId="Warning Level P&lt;" Value="Level P&lt;" />
+					<Text TextId="Warning Level Cos-Phi&lt;" Value="Level Cos-Phi&lt;" />
+					<Text TextId="Warning Level U&lt;" Value="Level U&lt;" />
+					<Text TextId="AM1 Warning Level 0/4-20mA&gt;" Value="AM1 Level 0/4-20mA&gt;" />
+					<Text TextId="AM1 Warning Level 0/4-20mA&lt;" Value="AM1 Level 0/4-20mA&lt;" />
+					<Text TextId="Stalled Rotor" Value="Stalled Rotor" />
+					<Text TextId="No Start Possible" Value="No Start Possible" />
+					<Text TextId="Number of Starts &gt;" Value="Number of Starts &gt;" />
+					<Text TextId="Just One Start Possible" Value="Just One Start Possible" />
+					<Text TextId="Motor Operating Hours &gt;" Value="Motor Operating Hours &gt;" />
+					<Text TextId="Motor Stop Time &gt;" Value="Motor Stop Time &gt;" />
+					<Text TextId="External Fault 1" Value="External Fault 1" />
+					<Text TextId="External Fault 2" Value="External Fault 2" />
+					<Text TextId="External Fault 3" Value="External Fault 3" />
+					<Text TextId="External Fault 4" Value="External Fault 4" />
+					<Text TextId="External Fault 5" Value="External Fault 5" />
+					<Text TextId="External Fault 6" Value="External Fault 6" />
+					<Text TextId="Dry-run Pump" Value="Dry-run Pump" />
+					<Text TextId="Dry-run-protection Error" Value="Dry-run-protection Error" />
+					<Text TextId="AM1 Open Circuit" Value="AM1 Open Circuit" />
+					<Text TextId="Safety-oriented Tripping" Value="Safety-oriented Tripping" />
+					<Text TextId="Test Required" Value="Test Required" />
+					<Text TextId="Feedback Circuit" Value="Feedback Circuit" />
+					<Text TextId="Simultaneity" Value="Simultaneity" />
+					<Text TextId="Execution On-Command" Value="Execution On-Command" />
+					<Text TextId="Execution Stop-Command" Value="Execution Stop-Command" />
+					<Text TextId="Feedbacl On" Value="Feedback On" />
+					<Text TextId="Feedback Off" Value="Feedback Off" />
+					<Text TextId="Stalled Positioner" Value="Stalled Positioner" />
+					<Text TextId="Double 0" Value="Double 0" />
+					<Text TextId="Double 1" Value="Double 1" />
+					<Text TextId="End Position" Value="End Position" />
+					<Text TextId="Antivalence" Value="Antivalence" />
+					<Text TextId="Test Position Feedback (TPF)" Value="Test Position Feedback (TPF)" />
+					<Text TextId="Power Failure (OVU)" Value="Power Failure (OVU)" />
+					<Text TextId="Operational Protection Off (OPO)" Value="Operational Protection Off (OPO)" />
+					<Text TextId="Analog Module 2 Open Circuit" Value="Analog Module 2 Open Circuit" />
+					<Text TextId="AM2 Warning Level 0/4-20mA&gt;" Value="AM2 Level 0/4-20mA&gt;" />
+					<Text TextId="AM2 Warning Level 0/4-20mA&lt;" Value="AM2 Level 0/4-20mA&lt;" />
+					<Text TextId="TM2 - Sensor Fault" Value="TM2 Sensor Fault" />
+					<Text TextId="TM2 - Out of Range" Value="TM2 Out of Range" />
+					<Text TextId="TM2 - Warning Level T&gt;" Value="TM2 Level T&gt;" />
+					<Text TextId="Wiring" Value="Wiring" />
+					<Text TextId="Cross Circuit" Value="Cross Circuit" />
+					<Text TextId="Test Shutdown" Value="Test Shutdown" />
+				</PrimaryLanguage>
+				<Language xml:lang="de">
+					<!--Familienbeschreibung-->
+					<Text TextId="TOK_DevIdent_InfoText" Value="Motor Management Sytem SIMOCODE pro V PN" />
+					<Text Value="Dezentrales Motormanagement System PROFINET IO" TextId="Modular distributed I/O device" />
+					<Text TextId="Gsd" Value="GSD" />
+					<Text TextId="Safety" Value="Safety" />
+					<!--PDEV-->
+					<Text Value="Port 1" TextId="TOK_DAP_PDEV_PORT1_SUBMODULE" />
+					<Text Value="Port 2" TextId="TOK_DAP_PDEV_PORT2_SUBMODULE" />
+					<Text Value="X1" TextId="PDEV_X1" />
+					<Text Value="X1 P1" TextId="PDEV_X1_P1" />
+					<Text Value="X1 P2" TextId="PDEV_X1_P2" />
+					<!--Interfacesubmodulitem Beschriftung-->
+					<Text Value="PN-IO" TextId="Interface PN" />
+					<!--Digitale Eingabemodule-->
+					<Text Value="SIMOCODE pro V PN" TextId="TOK_ModInfo_InfoTextId_DAP1" />
+					<Text Value="SIMOCODE pro V PN" TextId="Name 3UF7 011-1A*00-0" />
+					<Text Value="SIMOCODE pro V PN GP" TextId="TID_INFO_3UF7_GP" />
+					<Text Value="SIMOCODE pro V PN GP" TextId="TID_NAME_3UF7_GP" />
+					<Text Value="PROFIsafe" TextId="Name Profisafe" />
+					<Text Value="Basistyp 1" TextId="Name Basic Type 1" />
+					<Text Value="Basistyp 2" TextId="Name Basic Type 2" />
+					<Text Value="Basistyp 3" TextId="Name Basic Type 3" />
+					<Text Value="SIRIUS Motormanagement- und Steuergeraet SIMOCODE pro V PN, PROFINET IO, 0,30A...820A, erweiterbar mit Erweiterungsmodulen und fehlersicheren Modulen" TextId="Infotext 3UF7 011-1A*00-0" />
+					<!-- allgemeine Bezeichner -->
+					<Text Value="Ausgaenge" TextId="Outputs" />
+					<Text Value="Eingaenge" TextId="Inputs" />
+					<Text Value="" TextId="empty" />
+					<!--Diagnosetexte-->
+					<Text TextId="Parameter assignment error" Value="Parametrierfehler" />
+					<Text TextId="Sensor or load voltage missing" Value="Geber- oder Lastspannung fehlt" />
+					<Text TextId="Fuse defective" Value="Sicherung defekt" />
+					<Text TextId="Slot not addressable" Value="Slot nicht adressierbar" />
+					<Text TextId="Ground error" Value="Massefehler " />
+					<Text TextId="Reference channel error" Value="Referenzkanalfehler" />
+					<Text TextId="Process interrupt lost" Value="Prozessalarm verloren" />
+					<Text TextId="Warning" Value="Aktorwarnung" />
+					<Text TextId="Shutoff" Value="Aktorabschaltung" />
+					<Text TextId="Fail-safe shutoff" Value="Sicherheitsgerichtete Abschaltung" />
+					<Text TextId="external error" Value="Externer Fehler" />
+					<Text TextId="ambiguous error" Value="Unklarer Fehler" />
+					<Text TextId="hand drive" Value="Fehler 1 in Aktor/Sensor" />
+					<Text TextId="temporary error" Value="Kanal temporaer nicht verfuegbar" />
+					<Text TextId="Test position" Value="Testposition" />
+					<Text TextId="Emergency start executed" Value="Notstart ausgeführt" />
+					<Text TextId="Cooling down period active" Value="Abkühlzeit läuft" />
+					<Text TextId="Pre-Warning overloaded" Value="Vorwarnung Überlast" />
+					<Text TextId="Unbalance" Value="Unsymmetrie" />
+					<Text TextId="Overload" Value="Überlast" />
+					<Text TextId="Overload and loss of phase" Value="Überlast und Phasenausfall" />
+					<Text TextId="Internal earth fault" Value="Interner Erdschluss" />
+					<Text TextId="External earth fault" Value="Externer Erdschluss" />
+					<Text TextId="Thermistor Trip Level" Value="Thermistor Auslöseschwelle" />
+					<Text TextId="Thermistor Short Circuit" Value="Thermistor Kurzschluss" />
+					<Text TextId="Thermistor Open Circuit" Value="Thermistor Drahtbruch" />
+					<Text TextId="TM1 Warning Level T&gt;" Value="TM1 Schwelle T&gt;" />
+					<Text TextId="TM1 Sensor Fault" Value="TM1 Sensorfehler" />
+					<Text TextId="TM1 Out of Range" Value="TM1 Out of Range" />
+					<Text TextId="EM Open Circuit" Value="EM Drahtbruch" />
+					<Text TextId="EM Short Circuit" Value="EM Kurzschluss" />
+					<Text TextId="Warning Level I&gt;" Value="Schwelle I&gt;" />
+					<Text TextId="Warning Level I&lt;" Value="Schwelle I&lt;" />
+					<Text TextId="Warning Level P&gt;" Value="Schwelle P&gt;" />
+					<Text TextId="Warning Level P&lt;" Value="Schwelle P&lt;" />
+					<Text TextId="Warning Level Cos-Phi&lt;" Value="Schwelle Cos-Phi&lt;" />
+					<Text TextId="Warning Level U&lt;" Value="Schwelle U&lt;" />
+					<Text TextId="AM1 Warning Level 0/4-20mA&gt;" Value="AM1 Schwelle 0/4-20mA&gt;" />
+					<Text TextId="AM1 Warning Level 0/4-20mA&lt;" Value="AM1 Schwelle 0/4-20mA&lt;" />
+					<Text TextId="Stalled Rotor" Value="Blockierung" />
+					<Text TextId="No Start Possible" Value="Kein Start zulässig" />
+					<Text TextId="Number of Starts &gt;" Value="Startzahl&gt;" />
+					<Text TextId="Just One Start Possible" Value="Noch ein Start zulässig" />
+					<Text TextId="Motor Operating Hours &gt;" Value="Betriebsstunden Motor&gt;" />
+					<Text TextId="Motor Stop Time &gt;" Value="Stillstandzeit&gt;" />
+					<Text TextId="External Fault 1" Value="Externer Fehler 1" />
+					<Text TextId="External Fault 2" Value="Externer Fehler 2" />
+					<Text TextId="External Fault 3" Value="Externer Fehler 3" />
+					<Text TextId="External Fault 4" Value="Externer Fehler 4" />
+					<Text TextId="External Fault 5" Value="Externer Fehler 5" />
+					<Text TextId="External Fault 6" Value="Externer Fehler 6" />
+					<Text TextId="Dry-run Pump" Value="Trockenlauf Pumpe" />
+					<Text TextId="Dry-run-protection Error" Value="Trockenlaufschutz Fehler" />
+					<Text TextId="AM1 Open Circuit" Value="AM1 Drahtbruch" />
+					<Text TextId="Safety-oriented Tripping" Value="Sicherheitsgerichtete Abschaltung" />
+					<Text TextId="Test Required" Value="Testbedarf" />
+					<Text TextId="Feedback Circuit" Value="Rückführkreis" />
+					<Text TextId="Simultaneity" Value="Gleichzeitigkeit" />
+					<Text TextId="Execution On-Command" Value="Ausführung Ein-Befehl" />
+					<Text TextId="Execution Stop-Command" Value="Ausführung Aus-Befehl" />
+					<Text TextId="Feedbacl On" Value="Rückmeldung (RM) Ein" />
+					<Text TextId="Feedback Off" Value="Rückmeldung (RM) Aus" />
+					<Text TextId="Stalled Positioner" Value="Blockierung Schieber" />
+					<Text TextId="Double 0" Value="Doppel 0" />
+					<Text TextId="Double 1" Value="Doppel 1" />
+					<Text TextId="End Position" Value="Endlage" />
+					<Text TextId="Antivalence" Value="Antivalenz" />
+					<Text TextId="Test Position Feedback (TPF)" Value="Rückmeldung Testposition" />
+					<Text TextId="Power Failure (OVU)" Value="Netzausfall (USA)" />
+					<Text TextId="Operational Protection Off (OPO)" Value="Betrieb Schutz Aus (BSA)" />
+					<Text TextId="Analog Module 2 Open Circuit" Value="AM2 Drahtbruch" />
+					<Text TextId="AM2 Warning Level 0/4-20mA&gt;" Value="AM2 Schwelle 0/4-20mA&gt;" />
+					<Text TextId="AM2 Warning Level 0/4-20mA&lt;" Value="AM2 Schwelle 0/4-20mA&lt;" />
+					<Text TextId="TM2 - Sensor Fault" Value="TM2 Sensorfehler" />
+					<Text TextId="TM2 - Out of Range" Value="TM2 Out of range" />
+					<Text TextId="TM2 - Warning Level T&gt;" Value="TM2 Schwelle T&gt;" />
+					<Text TextId="Wiring" Value="Verdrahtung" />
+					<Text TextId="Cross Circuit" Value="Querschluss" />
+					<Text TextId="Test Shutdown" Value="Testabschaltung" />
+				</Language>
+				<Language xml:lang="fr">
+					<!--Familienbeschreibung-->
+					<Text TextId="TOK_DevIdent_InfoText" Value="Motor Management Sytem SIMOCODE pro V PN" />
+					<Text Value="Démarreurs de moteur décentralisée PROFINET IO" TextId="Modular distributed I/O device" />
+					<Text TextId="Gsd" Value="GSD" />
+					<Text TextId="Safety" Value="Safety" />
+					<!--PDEV-->
+					<Text Value="Port 1" TextId="TOK_DAP_PDEV_PORT1_SUBMODULE" />
+					<Text Value="Port 2" TextId="TOK_DAP_PDEV_PORT2_SUBMODULE" />
+					<Text Value="X1" TextId="PDEV_X1" />
+					<Text Value="X1 P1" TextId="PDEV_X1_P1" />
+					<Text Value="X1 P2" TextId="PDEV_X1_P2" />
+					<!--Interfacesubmodulitem Beschriftung-->
+					<Text Value="PN-IO" TextId="Interface PN" />
+					<!--Digitale Eingabemodule-->
+					<Text Value="SIMOCODE pro V PN" TextId="TOK_ModInfo_InfoTextId_DAP1" />
+					<Text Value="SIMOCODE pro V PN" TextId="Name 3UF7 011-1A*00-0" />
+					<Text Value="SIMOCODE pro V PN GP" TextId="TID_INFO_3UF7_GP" />
+					<Text Value="SIMOCODE pro V PN GP" TextId="TID_NAME_3UF7_GP" />
+					<Text Value="PROFIsafe" TextId="Name Profisafe" />
+					<Text Value="Type base 1" TextId="Name Basic Type 1" />
+					<Text Value="Type base 2" TextId="Name Basic Type 2" />
+					<Text Value="Type base 3" TextId="Name Basic Type 3" />
+					<Text Value="Dispositif de gestion et de commande de moteurs SIRIUS SIMOCODE pro V PN, PROFINET IO, 0,30 A a 820 A, extension possible avec modules d extension et modules de securite" TextId="Infotext 3UF7 011-1A*00-0" />
+					<!-- allgemeine Bezeichner -->
+					<Text Value="Sorties" TextId="Outputs" />
+					<Text Value="Entrées" TextId="Inputs" />
+					<Text Value="" TextId="empty" />
+					<!--Diagnosetexte-->
+					<Text TextId="Parameter assignment error" Value="Erreur de paramétrage" />
+					<Text TextId="Sensor or load voltage missing" Value="Absence de tension capteur ou de charge" />
+					<Text TextId="Fuse defective" Value="Fusible défectueux" />
+					<Text TextId="Slot not addressable" Value="Emplacement non adressable" />
+					<Text TextId="Ground error" Value="Erreur de masse" />
+					<Text TextId="Reference channel error" Value="Erreur sur voie de référence" />
+					<Text TextId="Process interrupt lost" Value="Alarme de process perdue" />
+					<Text TextId="Warning" Value="Avertissement actionneur" />
+					<Text TextId="Shutoff" Value="Arrêt actionneur" />
+					<Text TextId="Fail-safe shutoff" Value="Arrêt de sécurité" />
+					<Text TextId="external error" Value="Erreur externe" />
+					<Text TextId="ambiguous error" Value="Erreur non définie" />
+					<Text TextId="hand drive" Value="Erreur 1 dans l'actionneur/capteur" />
+					<Text TextId="temporary error" Value="Voie temporairement non disponible" />
+					<Text TextId="Test position" Value="Position de test (RMT)" />
+					<Text TextId="Emergency start executed" Value="Demarrage secours execute" />
+					<Text TextId="Cooling down period active" Value="Tps refroidiss. en cours" />
+					<Text TextId="Pre-Warning overloaded" Value="Prealerte Uela" />
+					<Text TextId="Unbalance" Value="Asymetrie" />
+					<Text TextId="Overload" Value="Surcharge" />
+					<Text TextId="Overload and loss of phase" Value="Surch et coupe phase" />
+					<Text TextId="Internal earth fault" Value="Defaut a la terre int." />
+					<Text TextId="External earth fault" Value="Defaut a la terre ext." />
+					<Text TextId="Thermistor Trip Level" Value="Therm. seuil declench." />
+					<Text TextId="Thermistor Short Circuit" Value="Thermist. court-circuit" />
+					<Text TextId="Thermistor Open Circuit" Value="Thermist. rupture cable" />
+					<Text TextId="TM1 Warning Level T&gt;" Value="TM1 seuil T&gt;" />
+					<Text TextId="TM1 Sensor Fault" Value="TM1 erreur capteur" />
+					<Text TextId="TM1 Out of Range" Value="TM1 Out of Range" />
+					<Text TextId="EM Open Circuit" Value="EM rupture cable" />
+					<Text TextId="EM Short Circuit" Value="EM court-circuit" />
+					<Text TextId="Warning Level I&gt;" Value="Seuil I&gt;" />
+					<Text TextId="Warning Level I&lt;" Value="Seuil I&lt;" />
+					<Text TextId="Warning Level P&gt;" Value="Seuil P&gt;" />
+					<Text TextId="Warning Level P&lt;" Value="Seuil P&lt;" />
+					<Text TextId="Warning Level Cos-Phi&lt;" Value="Seuil Cos-phi&lt;" />
+					<Text TextId="Warning Level U&lt;" Value="Seuil U&lt;" />
+					<Text TextId="AM1 Warning Level 0/4-20mA&gt;" Value="AM1 seuil 0/4-20mA&gt;" />
+					<Text TextId="AM1 Warning Level 0/4-20mA&lt;" Value="AM1 seuil 0/4-20mA&lt;" />
+					<Text TextId="Stalled Rotor" Value="Blocage" />
+					<Text TextId="No Start Possible" Value="Pas de demarrage adm." />
+					<Text TextId="Number of Starts &gt;" Value="Nombre demarrages &gt;" />
+					<Text TextId="Just One Start Possible" Value="Encore un dem. adm." />
+					<Text TextId="Motor Operating Hours &gt;" Value="Heures service moteur&gt;" />
+					<Text TextId="Motor Stop Time &gt;" Value="Temps d´arret &gt;" />
+					<Text TextId="External Fault 1" Value="Erreur externe 1" />
+					<Text TextId="External Fault 2" Value="Erreur externe 2" />
+					<Text TextId="External Fault 3" Value="Erreur externe 3" />
+					<Text TextId="External Fault 4" Value="Erreur externe 4" />
+					<Text TextId="External Fault 5" Value="Erreur externe 5" />
+					<Text TextId="External Fault 6" Value="Erreur externe 6" />
+					<Text TextId="Dry-run Pump" Value="Marche à sec pompe" />
+					<Text TextId="Dry-run-protection Error" Value="Erreur protection anti-marche à sec" />
+					<Text TextId="AM1 Open Circuit" Value="AM1 rupture cable" />
+					<Text TextId="Safety-oriented Tripping" Value="Securite coupure" />
+					<Text TextId="Test Required" Value="Dem. test" />
+					<Text TextId="Feedback Circuit" Value="Circ. retroact." />
+					<Text TextId="Simultaneity" Value="Simultaneite" />
+					<Text TextId="Execution On-Command" Value="Execution ordre marche" />
+					<Text TextId="Execution Stop-Command" Value="Execution ordre arret" />
+					<Text TextId="Feedbacl On" Value="Sign. ret. (RM) Marche" />
+					<Text TextId="Feedback Off" Value="Sign. retour (RM) Arret" />
+					<Text TextId="Stalled Positioner" Value="Bloc. commutat. curseur" />
+					<Text TextId="Double 0" Value="Double 0 " />
+					<Text TextId="Double 1" Value="Double 1" />
+					<Text TextId="End Position" Value="Position finale" />
+					<Text TextId="Antivalence" Value="Antivalence" />
+					<Text TextId="Test Position Feedback (TPF)" Value="Sig. ret. Pos. test" />
+					<Text TextId="Power Failure (OVU)" Value="Coupure courant (USA)" />
+					<Text TextId="Operational Protection Off (OPO)" Value="Serv.Protect.Arret(BSA)" />
+					<Text TextId="Analog Module 2 Open Circuit" Value="AM2 rupture cable" />
+					<Text TextId="AM2 Warning Level 0/4-20mA&gt;" Value="AM2 seuil 0/4-20mA&gt;" />
+					<Text TextId="AM2 Warning Level 0/4-20mA&lt;" Value="AM2 seuil 0/4-20mA&lt;" />
+					<Text TextId="TM2 - Sensor Fault" Value="TM2 erreur capteur" />
+					<Text TextId="TM2 - Out of Range" Value="TM2 Out of Range" />
+					<Text TextId="TM2 - Warning Level T&gt;" Value="TM2 seuil T&gt;" />
+					<Text TextId="Wiring" Value="Erreur-cablage" />
+					<Text TextId="Cross Circuit" Value="Claquage" />
+					<Text TextId="Test Shutdown" Value="Arret de test" />
+				</Language>
+			</ExternalTextList>
+		</ApplicationProcess>
+	</ProfileBody>
+</ISO15745Profile>

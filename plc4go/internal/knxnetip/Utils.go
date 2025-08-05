@@ -23,9 +23,9 @@ import (
 	"context"
 	"strconv"
 
-	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-
 	"github.com/pkg/errors"
+
+	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 )
 
 func NumericGroupAddressToString(numericAddress uint16, groupAddress GroupAddressTag) (string, error) {
@@ -99,7 +99,7 @@ func Uint16ToKnxGroupAddress(ctxForModel context.Context, data uint16, numLevels
 	rawData := make([]uint8, 2)
 	rawData[0] = uint8(data >> 8)
 	rawData[1] = uint8(data & 0xFF)
-	knxGroupAddress, err := driverModel.KnxGroupAddressParse(ctxForModel, rawData, numLevels)
+	knxGroupAddress, err := driverModel.KnxGroupAddressParse[driverModel.KnxGroupAddress](ctxForModel, rawData, numLevels)
 	if err != nil {
 		return nil
 	}

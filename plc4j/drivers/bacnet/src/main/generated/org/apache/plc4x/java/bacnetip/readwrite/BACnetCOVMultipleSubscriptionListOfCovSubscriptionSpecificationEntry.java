@@ -69,13 +69,10 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
 
     // Simple Field (monitoredObjectIdentifier)
     writeSimpleField(
-        "monitoredObjectIdentifier",
-        monitoredObjectIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "monitoredObjectIdentifier", monitoredObjectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (listOfCovReferences)
-    writeSimpleField(
-        "listOfCovReferences", listOfCovReferences, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfCovReferences", listOfCovReferences, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry");
   }
@@ -101,12 +98,6 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
   }
 
   public static BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
-  public static BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry staticParse(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry");
     PositionAware positionAware = readBuffer;
@@ -115,7 +106,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
     BACnetContextTagObjectIdentifier monitoredObjectIdentifier =
         readSimpleField(
             "monitoredObjectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -128,7 +119,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
         listOfCovReferences =
             readSimpleField(
                 "listOfCovReferences",
-                new DataReaderComplexDefault<>(
+                readComplex(
                     () ->
                         BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
                             .staticParse(readBuffer, (short) (1)),

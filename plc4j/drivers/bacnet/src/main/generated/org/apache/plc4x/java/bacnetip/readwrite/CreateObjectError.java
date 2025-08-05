@@ -68,13 +68,11 @@ public class CreateObjectError extends BACnetError implements Message {
     writeBuffer.pushContext("CreateObjectError");
 
     // Simple Field (errorType)
-    writeSimpleField("errorType", errorType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorType", errorType, writeComplex(writeBuffer));
 
     // Simple Field (firstFailedElementNumber)
     writeSimpleField(
-        "firstFailedElementNumber",
-        firstFailedElementNumber,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "firstFailedElementNumber", firstFailedElementNumber, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CreateObjectError");
   }
@@ -108,13 +106,12 @@ public class CreateObjectError extends BACnetError implements Message {
     ErrorEnclosed errorType =
         readSimpleField(
             "errorType",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetContextTagUnsignedInteger firstFailedElementNumber =
         readSimpleField(
             "firstFailedElementNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

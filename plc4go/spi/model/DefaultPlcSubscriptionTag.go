@@ -20,19 +20,19 @@
 package model
 
 import (
-	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 var _ apiModel.PlcSubscriptionTag = &DefaultPlcSubscriptionTag{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionTag
+//go:generate go tool plc4xGenerator -type=DefaultPlcSubscriptionTag
 type DefaultPlcSubscriptionTag struct {
 	plcTag              apiModel.PlcTag              `stringer:"true"`
 	plcSubscriptionType apiModel.PlcSubscriptionType `stringer:"true"`
-	duration            time.Duration                `stringer:"true"`
+	duration            time.Duration
 }
 
 func NewDefaultPlcSubscriptionTag(plcSubscriptionType apiModel.PlcSubscriptionType, plcTag apiModel.PlcTag, duration time.Duration) *DefaultPlcSubscriptionTag {

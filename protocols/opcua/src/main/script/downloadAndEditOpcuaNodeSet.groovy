@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -96,7 +96,7 @@ download("https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/Opc.Ua.T
 download("https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/StatusCode.csv", "StatusCode.csv")
 download("https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/Opc.Ua.NodeSet2.Services.xml", "Opc.Ua.NodeSet2.Services.xml")
 download("https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/NodeIds.csv", "Opc.Ua.NodeIds.Services.csv")
-
+download("https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/AttributeIds.csv", "AttributeIds.csv")
 
 def servicesFile = new File(project.getBasedir(), "target/downloads/Opc.Ua.NodeIds.Services.csv")
 def servicesFileTmp = new File(project.getBasedir(), "target/downloads/Opc.Ua.NodeIds.Services.csv.tmp")
@@ -119,3 +119,23 @@ log.info("overwriting services file {}", servicesFile)
 Files.copy(servicesFileTmp.toPath(), servicesFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
 
 servicesFileTmp.delete()
+
+def typesFile = new File(project.getBasedir(), "target/downloads/Opc.Ua.Types.bsd")
+def typesFileTmp = new File(project.getBasedir(), "target/downloads/Opc.Ua.Types.bsd.tmp")
+
+typesFileTmp.withWriter { writer ->
+    typesFile.withReader { reader ->
+        while ((line = reader.readLine()) != null) {
+            String line = line
+            if (line.contains("    <opc:Field Name=\"Time\" TypeName=\"opc:DateTime\" />")) { // TODO: bit dirty hack, improve
+                line = "    <opc:Field Name=\"EventTime\" TypeName=\"opc:DateTime\" />"
+            }
+            writer.write("$line\n")
+        }
+    }
+}
+
+log.info("overwriting types file {}", typesFile)
+Files.copy(typesFileTmp.toPath(), typesFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+
+typesFileTmp.delete()

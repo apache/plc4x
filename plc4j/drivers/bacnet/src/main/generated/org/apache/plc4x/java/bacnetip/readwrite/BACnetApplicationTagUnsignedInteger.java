@@ -67,7 +67,7 @@ public class BACnetApplicationTagUnsignedInteger extends BACnetApplicationTag im
     writeBuffer.pushContext("BACnetApplicationTagUnsignedInteger");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BigInteger actualValue = getActualValue();
@@ -104,7 +104,7 @@ public class BACnetApplicationTagUnsignedInteger extends BACnetApplicationTag im
     BACnetTagPayloadUnsignedInteger payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadUnsignedInteger.staticParse(
                         readBuffer, (long) (header.getActualLength())),

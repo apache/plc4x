@@ -82,14 +82,13 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
     writeBuffer.pushContext("BACnetServiceAckVTData");
 
     // Simple Field (vtSessionIdentifier)
-    writeSimpleField(
-        "vtSessionIdentifier", vtSessionIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vtSessionIdentifier", vtSessionIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (vtNewData)
-    writeSimpleField("vtNewData", vtNewData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vtNewData", vtNewData, writeComplex(writeBuffer));
 
     // Simple Field (vtDataFlag)
-    writeSimpleField("vtDataFlag", vtDataFlag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vtDataFlag", vtDataFlag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckVTData");
   }
@@ -126,7 +125,7 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
     BACnetApplicationTagUnsignedInteger vtSessionIdentifier =
         readSimpleField(
             "vtSessionIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -135,7 +134,7 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
     BACnetApplicationTagOctetString vtNewData =
         readSimpleField(
             "vtNewData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
@@ -143,7 +142,7 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
     BACnetApplicationTagUnsignedInteger vtDataFlag =
         readSimpleField(
             "vtDataFlag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

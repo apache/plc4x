@@ -83,8 +83,7 @@ public class BACnetConstructedDataIPv6PrefixLength extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataIPv6PrefixLength");
 
     // Simple Field (ipv6PrefixLength)
-    writeSimpleField(
-        "ipv6PrefixLength", ipv6PrefixLength, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipv6PrefixLength", ipv6PrefixLength, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataIPv6PrefixLength extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger ipv6PrefixLength =
         readSimpleField(
             "ipv6PrefixLength",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

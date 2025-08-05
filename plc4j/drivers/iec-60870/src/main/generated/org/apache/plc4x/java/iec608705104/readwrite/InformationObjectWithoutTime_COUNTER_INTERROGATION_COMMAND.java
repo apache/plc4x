@@ -65,10 +65,7 @@ public class InformationObjectWithoutTime_COUNTER_INTERROGATION_COMMAND
 
     // Simple Field (qcc)
     writeSimpleField(
-        "qcc",
-        qcc,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qcc", qcc, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_COUNTER_INTERROGATION_COMMAND");
   }
@@ -100,7 +97,7 @@ public class InformationObjectWithoutTime_COUNTER_INTERROGATION_COMMAND
     QualifierOfCounterInterrogationCommand qcc =
         readSimpleField(
             "qcc",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> QualifierOfCounterInterrogationCommand.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 

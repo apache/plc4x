@@ -82,7 +82,7 @@ public class BACnetConstructedDataVendorName extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataVendorName");
 
     // Simple Field (vendorName)
-    writeSimpleField("vendorName", vendorName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vendorName", vendorName, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataVendorName extends BACnetConstructedData imple
     BACnetApplicationTagCharacterString vendorName =
         readSimpleField(
             "vendorName",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

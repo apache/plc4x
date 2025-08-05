@@ -100,11 +100,19 @@
     [simple   NPDUControl control                                                                                 ]
     [optional uint 16     destinationNetworkAddress   'control.destinationSpecified'                              ]
     [optional uint 8      destinationLength           'control.destinationSpecified'                              ]
+    // TODO: check if we don't treat a optional as optional when the condition meets
+    [validation    '(control.destinationSpecified && destinationNetworkAddress != null && destinationLength != null)
+                 || (!control.destinationSpecified && destinationNetworkAddress == null && destinationLength == null)'
+                    "inconsistent control"                                                                        ]
     [array    uint 8      destinationAddress count    'control.destinationSpecified ? destinationLength : 0'      ]
                                                         // (destinationNetworkAddress(16bit) + destinationLength(8bit) + destinationLength)?
     [virtual  uint 16     destinationLengthAddon      'control.destinationSpecified ? (3 + destinationLength) : 0'  ]
     [optional uint 16     sourceNetworkAddress        'control.sourceSpecified'                                   ]
     [optional uint 8      sourceLength                'control.sourceSpecified'                                   ]
+    // TODO: check if we don't treat a optional as optional when the condition meets
+    [validation    '(control.sourceSpecified && sourceNetworkAddress != null && sourceLength != null)
+                 || (!control.sourceSpecified && sourceNetworkAddress == null && sourceLength == null)'
+                    "inconsistent control"                                                                        ]
     [array    uint 8      sourceAddress count         'control.sourceSpecified ? sourceLength : 0'                ]
                                                         // (sourceNetworkAddress(16bit) + sourceLength(8bit) + sourceLength)?
     [virtual  uint 16     sourceLengthAddon           'control.sourceSpecified ? (3 + sourceLength) : 0'            ]
@@ -145,8 +153,8 @@
             [simple   uint 16     destinationNetworkAddress   ]
             [simple   uint 8      performanceIndex            ]
         ]
-        ['0x03' *RejectRouterToNetwork
-            [simple   NLMRejectRouterToNetworkRejectReason
+        ['0x03' *RejectMessageToNetwork
+            [simple   NLMRejectMessageToNetworkRejectReason
                                     rejectReason              ]
             [simple   uint 16     destinationNetworkAddress   ]
         ]
@@ -156,15 +164,15 @@
         ['0x05' *RouterAvailableToNetwork
             [array    uint 16     destinationNetworkAddresses length 'apduLength - 1']
         ]
-        ['0x06' *InitalizeRoutingTable
+        ['0x06' *InitializeRoutingTable
             [simple   uint 8      numberOfPorts               ]
-            [array    NLMInitalizeRoutingTablePortMapping
+            [array    NLMInitializeRoutingTablePortMapping
                                     portMappings
                         count 'numberOfPorts'                 ]
         ]
-        ['0x07' *InitalizeRoutingTableAck
+        ['0x07' *InitializeRoutingTableAck
             [simple   uint 8      numberOfPorts               ]
-            [array    NLMInitalizeRoutingTablePortMapping
+            [array    NLMInitializeRoutingTablePortMapping
                                     portMappings
                         count 'numberOfPorts'                 ]
         ]
@@ -250,7 +258,7 @@
     ]
 ]
 
-[type NLMInitalizeRoutingTablePortMapping
+[type NLMInitializeRoutingTablePortMapping
     [simple   uint 16     destinationNetworkAddress       ]
     [simple   uint 8      portId                          ]
     [simple   uint 8      portInfoLength                  ]
@@ -2088,7 +2096,7 @@
             [simple   BACnetProgramRequestTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                                 programChange                   ]
         ]
-        ['5'  *ProgramChange(uint 8 peekedTagNumber)
+        ['5'  *ProgramState(uint 8 peekedTagNumber)
             [simple   BACnetProgramStateTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                                 programState                    ]
         ]
@@ -2112,7 +2120,7 @@
             [simple   BACnetEngineeringUnitsTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                                 units                           ]
         ]
-        ['11'  *ExtendedValue(uint 8 peekedTagNumber)
+        ['11'  *UnsignedValue(uint 8 peekedTagNumber)
             [simple   BACnetContextTagUnsignedInteger('peekedTagNumber', 'BACnetDataType.UNSIGNED_INTEGER')
                                 unsignedValue                   ]
         ]
@@ -5258,10 +5266,6 @@
         [*, 'TRACE_FLAG', '1'                           *TraceFlag
             [simple   BACnetApplicationTagBoolean                               traceFlag                               ]
             [virtual  BACnetApplicationTagBoolean                               actualValue 'traceFlag'                 ]
-        ]
-        ['LIGHTING_OUTPUT','TRACKING_VALUE', '4'        *LightingOutputTrackingValue
-            [simple   BACnetApplicationTagReal                                  trackingValue                           ]
-            [virtual  BACnetApplicationTagReal                                  actualValue 'trackingValue'             ]
         ]
         ['LIGHTING_OUTPUT','TRACKING_VALUE', '4'        *LightingOutputTrackingValue
             [simple   BACnetApplicationTagReal                                  trackingValue                           ]

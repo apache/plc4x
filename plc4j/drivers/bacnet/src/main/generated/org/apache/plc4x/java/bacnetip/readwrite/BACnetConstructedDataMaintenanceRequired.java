@@ -83,8 +83,7 @@ public class BACnetConstructedDataMaintenanceRequired extends BACnetConstructedD
     writeBuffer.pushContext("BACnetConstructedDataMaintenanceRequired");
 
     // Simple Field (maintenanceRequired)
-    writeSimpleField(
-        "maintenanceRequired", maintenanceRequired, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maintenanceRequired", maintenanceRequired, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetMaintenanceTagged actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataMaintenanceRequired extends BACnetConstructedD
     BACnetMaintenanceTagged maintenanceRequired =
         readSimpleField(
             "maintenanceRequired",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetMaintenanceTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

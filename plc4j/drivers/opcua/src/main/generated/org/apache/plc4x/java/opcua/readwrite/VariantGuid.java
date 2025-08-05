@@ -121,7 +121,7 @@ public class VariantGuid extends Variant implements Message {
     List<GuidValue> value =
         readCountArrayField(
             "value",
-            new DataReaderComplexDefault<>(() -> GuidValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> GuidValue.staticParse(readBuffer), readBuffer),
             (((arrayLength) == (null)) ? 1 : arrayLength));
 
     readBuffer.closeContext("VariantGuid");

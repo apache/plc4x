@@ -132,7 +132,7 @@ func (m *DriverContext) getDataTypeForDataTypeTableEntry(entry driverModel.AdsDa
 	} else if strings.HasPrefix(dataTypeName, "WSTRING(") {
 		dataTypeName = "WSTRING"
 	}
-	plcValueType, _ := apiValues.PlcValueByName(dataTypeName)
+	plcValueType, _ := apiValues.PlcValueTypeByName(dataTypeName)
 	return plcValueType
 }
 

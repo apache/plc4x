@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SemanticChangeStructureDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "899";
+  public Integer getExtensionId() {
+    return (int) 899;
   }
 
   // Properties.
@@ -68,10 +68,10 @@ public class SemanticChangeStructureDataType extends ExtensionObjectDefinition i
     writeBuffer.pushContext("SemanticChangeStructureDataType");
 
     // Simple Field (affected)
-    writeSimpleField("affected", affected, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("affected", affected, writeComplex(writeBuffer));
 
     // Simple Field (affectedType)
-    writeSimpleField("affectedType", affectedType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("affectedType", affectedType, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SemanticChangeStructureDataType");
   }
@@ -97,20 +97,17 @@ public class SemanticChangeStructureDataType extends ExtensionObjectDefinition i
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SemanticChangeStructureDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId affected =
-        readSimpleField(
-            "affected",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("affected", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     NodeId affectedType =
         readSimpleField(
-            "affectedType",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "affectedType", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SemanticChangeStructureDataType");
     // Create the instance

@@ -38,19 +38,19 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RegisterServerResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "440";
+  public Integer getExtensionId() {
+    return (int) 440;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
+  protected final ResponseHeader responseHeader;
 
-  public RegisterServerResponse(ExtensionObjectDefinition responseHeader) {
+  public RegisterServerResponse(ResponseHeader responseHeader) {
     super();
     this.responseHeader = responseHeader;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
@@ -62,7 +62,7 @@ public class RegisterServerResponse extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("RegisterServerResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     writeBuffer.popContext("RegisterServerResponse");
   }
@@ -85,16 +85,17 @@ public class RegisterServerResponse extends ExtensionObjectDefinition implements
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RegisterServerResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+            readComplex(
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     readBuffer.closeContext("RegisterServerResponse");
@@ -104,9 +105,9 @@ public class RegisterServerResponse extends ExtensionObjectDefinition implements
 
   public static class RegisterServerResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
+    private final ResponseHeader responseHeader;
 
-    public RegisterServerResponseBuilderImpl(ExtensionObjectDefinition responseHeader) {
+    public RegisterServerResponseBuilderImpl(ResponseHeader responseHeader) {
       this.responseHeader = responseHeader;
     }
 

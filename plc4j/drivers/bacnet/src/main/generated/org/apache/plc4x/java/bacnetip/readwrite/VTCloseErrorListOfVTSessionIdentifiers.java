@@ -75,14 +75,14 @@ public class VTCloseErrorListOfVTSessionIdentifiers implements Message {
     writeBuffer.pushContext("VTCloseErrorListOfVTSessionIdentifiers");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfVtSessionIdentifiers)
     writeComplexTypeArrayField(
         "listOfVtSessionIdentifiers", listOfVtSessionIdentifiers, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("VTCloseErrorListOfVTSessionIdentifiers");
   }
@@ -115,26 +115,6 @@ public class VTCloseErrorListOfVTSessionIdentifiers implements Message {
   }
 
   public static VTCloseErrorListOfVTSessionIdentifiers staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber);
-  }
-
-  public static VTCloseErrorListOfVTSessionIdentifiers staticParse(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("VTCloseErrorListOfVTSessionIdentifiers");
     PositionAware positionAware = readBuffer;
@@ -143,13 +123,13 @@ public class VTCloseErrorListOfVTSessionIdentifiers implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetApplicationTagUnsignedInteger> listOfVtSessionIdentifiers =
         readTerminatedArrayField(
             "listOfVtSessionIdentifiers",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,7 +142,7 @@ public class VTCloseErrorListOfVTSessionIdentifiers implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("VTCloseErrorListOfVTSessionIdentifiers");

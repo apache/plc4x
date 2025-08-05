@@ -20,12 +20,13 @@
 package model
 
 import (
-	"github.com/rs/zerolog"
 	"strconv"
 	"strings"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 )
 
 type Configuration struct {

@@ -96,7 +96,7 @@ public class OpenProtocolMessageApplicationGenericUnsubscribeRev1
         "subscriptionMid",
         "Mid",
         subscriptionMid,
-        new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
+        writeEnum(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
         WithOption.WithEncoding("ASCII"));
 
     // Simple Field (extraDataRevision)
@@ -160,7 +160,7 @@ public class OpenProtocolMessageApplicationGenericUnsubscribeRev1
         readEnumField(
             "subscriptionMid",
             "Mid",
-            new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
+            readEnum(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithEncoding("ASCII"));
 
     int extraDataRevision =

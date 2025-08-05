@@ -100,7 +100,7 @@ public class BACnetConstructedDataPositiveAccessRules extends BACnetConstructedD
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (positiveAccessRules)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataPositiveAccessRules extends BACnetConstructedD
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,8 +162,7 @@ public class BACnetConstructedDataPositiveAccessRules extends BACnetConstructedD
     List<BACnetAccessRule> positiveAccessRules =
         readTerminatedArrayField(
             "positiveAccessRules",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAccessRule.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetAccessRule.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

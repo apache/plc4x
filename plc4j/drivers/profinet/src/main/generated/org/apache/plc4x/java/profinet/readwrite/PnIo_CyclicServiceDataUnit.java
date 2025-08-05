@@ -83,26 +83,6 @@ public class PnIo_CyclicServiceDataUnit implements Message {
     return lengthInBits;
   }
 
-  public static PnIo_CyclicServiceDataUnit staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short dataUnitLength;
-    if (args[0] instanceof Short) {
-      dataUnitLength = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      dataUnitLength = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, dataUnitLength);
-  }
-
   public static PnIo_CyclicServiceDataUnit staticParse(ReadBuffer readBuffer, Short dataUnitLength)
       throws ParseException {
     readBuffer.pullContext("PnIo_CyclicServiceDataUnit");

@@ -20,13 +20,13 @@
 package test
 
 import (
-	"github.com/rs/zerolog/log"
 	"net/url"
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/spi/transports"
-
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
 func TestNewTransport(t *testing.T) {

@@ -22,22 +22,21 @@ package opcua
 import (
 	"context"
 	"encoding/binary"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"runtime/debug"
-	"strconv"
 	"sync"
 	"time"
 
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/options"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Subscriber
+//go:generate go tool plc4xGenerator -type=Subscriber
 type Subscriber struct {
 	consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 	addSubscriber func(subscriber *Subscriber)
@@ -143,21 +142,20 @@ func (s *Subscriber) onSubscribeCreateSubscription(ctx context.Context, cycleTim
 		0,
 	)
 
-	identifier, err := strconv.ParseUint(createSubscriptionRequest.GetIdentifier(), 10, 16)
-	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing identifier")
-	}
+	identifier := createSubscriptionRequest.GetExtensionId()
 	expandedNodeId := readWriteModel.NewExpandedNodeId(false, //Namespace Uri Specified
 		false, //Server Index Specified
 		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
 		nil,
 		nil)
 
-	extObject := readWriteModel.NewExtensionObject(
-		expandedNodeId,
+	extObject := readWriteModel.NewExtensiblePayload(
 		nil,
-		createSubscriptionRequest,
-		false)
+		readWriteModel.NewRootExtensionObject(
+			expandedNodeId, createSubscriptionRequest, createSubscriptionRequest.GetExtensionId(),
+		),
+		0,
+	)
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
@@ -168,7 +166,7 @@ func (s *Subscriber) onSubscribeCreateSubscription(ctx context.Context, cycleTim
 	errorChan := make(chan error, 100)                                        // TODO: bit oversized to not block anything. Discards errors
 	/* Functional Consumer example using inner class */
 	consumer := func(opcuaResponse []byte) {
-		extensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+		extensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
 			errorChan <- errors.Wrap(err, "error Parsing")
 			return

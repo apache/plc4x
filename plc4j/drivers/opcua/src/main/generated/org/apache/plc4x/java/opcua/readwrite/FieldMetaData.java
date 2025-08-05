@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class FieldMetaData extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "14526";
+  public Integer getExtensionId() {
+    return (int) 14526;
   }
 
   // Properties.
@@ -49,12 +49,10 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
   protected final short builtInType;
   protected final NodeId dataType;
   protected final int valueRank;
-  protected final int noOfArrayDimensions;
   protected final List<Long> arrayDimensions;
   protected final long maxStringLength;
   protected final GuidValue dataSetFieldId;
-  protected final int noOfProperties;
-  protected final List<ExtensionObjectDefinition> properties;
+  protected final List<KeyValuePair> properties;
 
   public FieldMetaData(
       PascalString name,
@@ -63,12 +61,10 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
       short builtInType,
       NodeId dataType,
       int valueRank,
-      int noOfArrayDimensions,
       List<Long> arrayDimensions,
       long maxStringLength,
       GuidValue dataSetFieldId,
-      int noOfProperties,
-      List<ExtensionObjectDefinition> properties) {
+      List<KeyValuePair> properties) {
     super();
     this.name = name;
     this.description = description;
@@ -76,11 +72,9 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     this.builtInType = builtInType;
     this.dataType = dataType;
     this.valueRank = valueRank;
-    this.noOfArrayDimensions = noOfArrayDimensions;
     this.arrayDimensions = arrayDimensions;
     this.maxStringLength = maxStringLength;
     this.dataSetFieldId = dataSetFieldId;
-    this.noOfProperties = noOfProperties;
     this.properties = properties;
   }
 
@@ -108,10 +102,6 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     return valueRank;
   }
 
-  public int getNoOfArrayDimensions() {
-    return noOfArrayDimensions;
-  }
-
   public List<Long> getArrayDimensions() {
     return arrayDimensions;
   }
@@ -124,11 +114,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     return dataSetFieldId;
   }
 
-  public int getNoOfProperties() {
-    return noOfProperties;
-  }
-
-  public List<ExtensionObjectDefinition> getProperties() {
+  public List<KeyValuePair> getProperties() {
     return properties;
   }
 
@@ -140,17 +126,17 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("FieldMetaData");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     // Simple Field (fieldFlags)
     writeSimpleEnumField(
         "fieldFlags",
         "DataSetFieldFlags",
         fieldFlags,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataSetFieldFlags::getValue,
             DataSetFieldFlags::name,
             writeUnsignedInt(writeBuffer, 16)));
@@ -159,13 +145,16 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     writeSimpleField("builtInType", builtInType, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (dataType)
-    writeSimpleField("dataType", dataType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataType", dataType, writeComplex(writeBuffer));
 
     // Simple Field (valueRank)
     writeSimpleField("valueRank", valueRank, writeSignedInt(writeBuffer, 32));
 
-    // Simple Field (noOfArrayDimensions)
-    writeSimpleField("noOfArrayDimensions", noOfArrayDimensions, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfArrayDimensions) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfArrayDimensions =
+        (int) ((((getArrayDimensions()) == (null)) ? -(1) : COUNT(getArrayDimensions())));
+    writeImplicitField("noOfArrayDimensions", noOfArrayDimensions, writeSignedInt(writeBuffer, 32));
 
     // Array Field (arrayDimensions)
     writeSimpleTypeArrayField(
@@ -175,10 +164,12 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     writeSimpleField("maxStringLength", maxStringLength, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (dataSetFieldId)
-    writeSimpleField("dataSetFieldId", dataSetFieldId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataSetFieldId", dataSetFieldId, writeComplex(writeBuffer));
 
-    // Simple Field (noOfProperties)
-    writeSimpleField("noOfProperties", noOfProperties, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfProperties) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfProperties = (int) ((((getProperties()) == (null)) ? -(1) : COUNT(getProperties())));
+    writeImplicitField("noOfProperties", noOfProperties, writeSignedInt(writeBuffer, 32));
 
     // Array Field (properties)
     writeComplexTypeArrayField("properties", properties, writeBuffer);
@@ -215,7 +206,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     // Simple field (valueRank)
     lengthInBits += 32;
 
-    // Simple field (noOfArrayDimensions)
+    // Implicit Field (noOfArrayDimensions)
     lengthInBits += 32;
 
     // Array field
@@ -229,13 +220,13 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     // Simple field (dataSetFieldId)
     lengthInBits += dataSetFieldId.getLengthInBits();
 
-    // Simple field (noOfProperties)
+    // Implicit Field (noOfProperties)
     lengthInBits += 32;
 
     // Array field
     if (properties != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : properties) {
+      for (KeyValuePair element : properties) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= properties.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -245,39 +236,34 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("FieldMetaData");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     LocalizedText description =
         readSimpleField(
-            "description",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "description", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     DataSetFieldFlags fieldFlags =
         readEnumField(
             "fieldFlags",
             "DataSetFieldFlags",
-            new DataReaderEnumDefault<>(
-                DataSetFieldFlags::enumForValue, readUnsignedInt(readBuffer, 16)));
+            readEnum(DataSetFieldFlags::enumForValue, readUnsignedInt(readBuffer, 16)));
 
     short builtInType = readSimpleField("builtInType", readUnsignedShort(readBuffer, 8));
 
     NodeId dataType =
-        readSimpleField(
-            "dataType",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("dataType", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     int valueRank = readSimpleField("valueRank", readSignedInt(readBuffer, 32));
 
-    int noOfArrayDimensions = readSimpleField("noOfArrayDimensions", readSignedInt(readBuffer, 32));
+    int noOfArrayDimensions =
+        readImplicitField("noOfArrayDimensions", readSignedInt(readBuffer, 32));
 
     List<Long> arrayDimensions =
         readCountArrayField(
@@ -287,16 +273,16 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
 
     GuidValue dataSetFieldId =
         readSimpleField(
-            "dataSetFieldId",
-            new DataReaderComplexDefault<>(() -> GuidValue.staticParse(readBuffer), readBuffer));
+            "dataSetFieldId", readComplex(() -> GuidValue.staticParse(readBuffer), readBuffer));
 
-    int noOfProperties = readSimpleField("noOfProperties", readSignedInt(readBuffer, 32));
+    int noOfProperties = readImplicitField("noOfProperties", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> properties =
+    List<KeyValuePair> properties =
         readCountArrayField(
             "properties",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
+            readComplex(
+                () ->
+                    (KeyValuePair) ExtensionObjectDefinition.staticParse(readBuffer, (int) (14535)),
                 readBuffer),
             noOfProperties);
 
@@ -309,11 +295,9 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
         builtInType,
         dataType,
         valueRank,
-        noOfArrayDimensions,
         arrayDimensions,
         maxStringLength,
         dataSetFieldId,
-        noOfProperties,
         properties);
   }
 
@@ -325,12 +309,10 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     private final short builtInType;
     private final NodeId dataType;
     private final int valueRank;
-    private final int noOfArrayDimensions;
     private final List<Long> arrayDimensions;
     private final long maxStringLength;
     private final GuidValue dataSetFieldId;
-    private final int noOfProperties;
-    private final List<ExtensionObjectDefinition> properties;
+    private final List<KeyValuePair> properties;
 
     public FieldMetaDataBuilderImpl(
         PascalString name,
@@ -339,23 +321,19 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
         short builtInType,
         NodeId dataType,
         int valueRank,
-        int noOfArrayDimensions,
         List<Long> arrayDimensions,
         long maxStringLength,
         GuidValue dataSetFieldId,
-        int noOfProperties,
-        List<ExtensionObjectDefinition> properties) {
+        List<KeyValuePair> properties) {
       this.name = name;
       this.description = description;
       this.fieldFlags = fieldFlags;
       this.builtInType = builtInType;
       this.dataType = dataType;
       this.valueRank = valueRank;
-      this.noOfArrayDimensions = noOfArrayDimensions;
       this.arrayDimensions = arrayDimensions;
       this.maxStringLength = maxStringLength;
       this.dataSetFieldId = dataSetFieldId;
-      this.noOfProperties = noOfProperties;
       this.properties = properties;
     }
 
@@ -368,11 +346,9 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
               builtInType,
               dataType,
               valueRank,
-              noOfArrayDimensions,
               arrayDimensions,
               maxStringLength,
               dataSetFieldId,
-              noOfProperties,
               properties);
       return fieldMetaData;
     }
@@ -393,11 +369,9 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
         && (getBuiltInType() == that.getBuiltInType())
         && (getDataType() == that.getDataType())
         && (getValueRank() == that.getValueRank())
-        && (getNoOfArrayDimensions() == that.getNoOfArrayDimensions())
         && (getArrayDimensions() == that.getArrayDimensions())
         && (getMaxStringLength() == that.getMaxStringLength())
         && (getDataSetFieldId() == that.getDataSetFieldId())
-        && (getNoOfProperties() == that.getNoOfProperties())
         && (getProperties() == that.getProperties())
         && super.equals(that)
         && true;
@@ -413,11 +387,9 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
         getBuiltInType(),
         getDataType(),
         getValueRank(),
-        getNoOfArrayDimensions(),
         getArrayDimensions(),
         getMaxStringLength(),
         getDataSetFieldId(),
-        getNoOfProperties(),
         getProperties());
   }
 

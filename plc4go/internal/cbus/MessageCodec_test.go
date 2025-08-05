@@ -23,15 +23,16 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestMessageCodec_Send(t *testing.T) {
@@ -60,8 +61,18 @@ func TestMessageCodec_Send(t *testing.T) {
 			name: "a cbus message",
 			args: args{message: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewReplyOrConfirmationConfirmation(
-					readWriteModel.NewConfirmation(readWriteModel.NewAlpha('!'), nil, readWriteModel.ConfirmationType_CHECKSUM_FAILURE), nil, 0x00, nil, nil,
-				), nil, nil,
+					0x00,
+					readWriteModel.NewConfirmation(
+						readWriteModel.NewAlpha('!'),
+						nil,
+						readWriteModel.ConfirmationType_CHECKSUM_FAILURE,
+					),
+					nil,
+					nil,
+					nil,
+				),
+				nil,
+				nil,
 			)},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
@@ -257,19 +268,19 @@ func TestMessageCodec_Receive(t *testing.T) {
 			},
 			want: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestDirectCommandAccess(
+					64,
+					nil,
+					nil,
+					readWriteModel.RequestType_DIRECT_COMMAND,
+					readWriteModel.NewRequestTermination(),
 					readWriteModel.NewCALDataRecall(
-						readWriteModel.Parameter_UNKNOWN_33,
-						1,
 						readWriteModel.CALCommandTypeContainer_CALCommandRecall,
 						nil,
+						readWriteModel.Parameter_UNKNOWN_33,
+						1,
 						nil,
 					),
 					nil,
-					readWriteModel.RequestType_DIRECT_COMMAND,
-					nil,
-					nil,
-					64,
-					readWriteModel.NewRequestTermination(),
 					cbusOptions,
 				),
 				requestContext, cbusOptions,
@@ -316,20 +327,16 @@ func TestMessageCodec_Receive(t *testing.T) {
 			},
 			want: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewReplyOrConfirmationReply(
+					56,
 					readWriteModel.NewReplyEncodedReply(
+						56,
 						readWriteModel.NewEncodedReplyCALReply(
+							134,
 							readWriteModel.NewCALReplyLong(
-								262656,
-								readWriteModel.NewUnitAddress(4),
-								nil,
-								readWriteModel.NewSerialInterfaceAddress(2),
-								func() *byte {
-									var b byte = 0
-									return &b
-								}(),
-								nil,
 								134,
 								readWriteModel.NewCALDataStatusExtended(
+									249,
+									nil,
 									64,
 									56,
 									0,
@@ -468,24 +475,25 @@ func TestMessageCodec_Receive(t *testing.T) {
 										),
 									},
 									nil,
-									249,
-									nil,
 									requestContext,
 								),
+								262656,
+								readWriteModel.NewUnitAddress(4),
+								nil,
+								readWriteModel.NewSerialInterfaceAddress(2),
+								utils.ToPtr(byte(0)),
+								nil,
 								cbusOptions,
 								requestContext,
 							),
-							134,
 							cbusOptions,
 							requestContext,
 						),
 						nil,
-						56,
 						cbusOptions,
 						requestContext,
 					),
 					readWriteModel.NewResponseTermination(),
-					56,
 					cbusOptions,
 					requestContext,
 				),
@@ -520,25 +528,24 @@ func TestMessageCodec_Receive(t *testing.T) {
 			},
 			want: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewReplyOrConfirmationReply(
+					48,
 					readWriteModel.NewReplyEncodedReply(
+						48,
 						readWriteModel.NewMonitoredSALReply(
+							5,
 							readWriteModel.NewMonitoredSALLongFormSmartMode(
+								5,
 								3255296,
 								readWriteModel.NewUnitAddress(49),
 								nil,
 								172,
-								func() *byte {
-									var b byte = 0
-									return &b
-								}(),
+								utils.ToPtr(byte(0)),
 								nil,
 								readWriteModel.NewSALDataAirConditioning(
-									readWriteModel.NewAirConditioningDataSetZoneGroupOn(
-										4,
-										readWriteModel.AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneGroupOn,
-									),
 									readWriteModel.NewSALDataAirConditioning(
+										nil,
 										readWriteModel.NewAirConditioningDataSetZoneHvacMode(
+											readWriteModel.AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneHvacMode,
 											4,
 											readWriteModel.NewHVACZoneList(false, false, false, false, false, false, false, true),
 											readWriteModel.NewHVACModeAndFlags(true, false, false, false, readWriteModel.HVACModeAndFlagsMode_HEAT_AND_COOL),
@@ -546,25 +553,23 @@ func TestMessageCodec_Receive(t *testing.T) {
 											readWriteModel.NewHVACTemperature(5632),
 											nil,
 											readWriteModel.NewHVACAuxiliaryLevel(false, 0),
-											readWriteModel.AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneHvacMode,
 										),
-										nil,
+									),
+									readWriteModel.NewAirConditioningDataSetZoneGroupOn(
+										readWriteModel.AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneGroupOn,
+										4,
 									),
 								),
-								5,
 								cbusOptions,
 							),
-							5,
 							cbusOptions,
 							requestContext,
 						),
 						nil,
-						48,
 						cbusOptions,
 						requestContext,
 					),
 					readWriteModel.NewResponseTermination(),
-					48,
 					cbusOptions,
 					requestContext,
 				),
@@ -774,20 +779,29 @@ func Test_extractMMIAndSAL(t *testing.T) {
 			args: args{
 				message: readWriteModel.NewCBusMessageToClient(
 					readWriteModel.NewReplyOrConfirmationReply(
+						0,
 						readWriteModel.NewReplyEncodedReply(
+							0,
 							readWriteModel.NewMonitoredSALReply(
-								nil,
 								0,
+								readWriteModel.NewMonitoredSALShortFormBasicMode(
+									0,
+									0,
+									nil,
+									nil,
+									nil,
+									readWriteModel.ApplicationIdContainer_RESERVED_00,
+									nil,
+									nil,
+								),
 								nil,
 								nil,
 							),
 							nil,
-							0,
 							nil,
 							nil,
 						),
-						nil,
-						0,
+						readWriteModel.NewResponseTermination(),
 						nil,
 						nil,
 					),
@@ -809,76 +823,6 @@ func Test_extractMMIAndSAL(t *testing.T) {
 				tt.setup(t, &tt.args)
 			}
 			assert.Equalf(t, tt.want, extractMMIAndSAL(testutils.ProduceTestingLogger(t))(tt.args.codec, tt.args.message), "extractMMIAndSAL(%v, %v)", tt.args.codec, tt.args.message)
-		})
-	}
-}
-
-func TestMessageCodec_String(t *testing.T) {
-	type fields struct {
-		DefaultCodec   _default.DefaultCodec
-		requestContext readWriteModel.RequestContext
-		cbusOptions    readWriteModel.CBusOptions
-		monitoredMMIs  chan readWriteModel.CALReply
-		monitoredSALs  chan readWriteModel.MonitoredSAL
-	}
-	tests := []struct {
-		name        string
-		fields      fields
-		manipulator func(t *testing.T, messageCodec *MessageCodec)
-		want        string
-	}{
-		{
-			name: "string it",
-			fields: fields{
-				DefaultCodec:   _default.NewDefaultCodec(nil, test.NewTransportInstance(test.NewTransport())),
-				requestContext: readWriteModel.NewRequestContext(true),
-				cbusOptions:    readWriteModel.NewCBusOptions(true, true, true, true, true, true, true, true, true),
-				monitoredMMIs:  nil,
-				monitoredSALs:  nil,
-			},
-			manipulator: func(t *testing.T, messageCodec *MessageCodec) {
-				messageCodec.lastPackageHash.Store(2)
-				messageCodec.hashEncountered.Store(3)
-				messageCodec.currentlyReportedServerErrors.Store(4)
-			},
-			want: `
-╔═MessageCodec════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═defaultCodec══════════════════════════════════════════════════════════════════════════════════════════╗            ║
-║║╔═transportInstance╗╔═defaultIncomingMessageChannel╗╔═customMessageHandling╗╔═running╗╔═receiveTimeout╗║            ║
-║║║       test       ║║         0 element(s)         ║║       b0 false       ║║b0 false║║      10s      ║║            ║
-║║╚══════════════════╝╚══════════════════════════════╝╚══════════════════════╝╚════════╝╚═══════════════╝║            ║
-║║╔═traceDefaultMessageCodecWorker╗                                                                      ║            ║
-║║║           b0 false            ║                                                                      ║            ║
-║║╚═══════════════════════════════╝                                                                      ║            ║
-║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝            ║
-║╔═requestContext/RequestContext/sendIdentifyRequestBefore═════════════════════════════════════════════════════╗      ║
-║║                                                   b1 true                                                   ║      ║
-║╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════╝      ║
-║╔═cbusOptions/CBusOptions═══════════════════════════════════════════════════════════╗╔═monitoredMMIs╗╔═monitoredSALs╗║
-║║╔═connect╗╔═smart═╗╔═idmon═╗╔═exstat╗╔═monitor╗╔═monall╗╔═pun═══╗╔═pcn═══╗╔═srchk═╗║║ 0 element(s) ║║ 0 element(s) ║║
-║║║b1 true ║║b1 true║║b1 true║║b1 true║║b1 true ║║b1 true║║b1 true║║b1 true║║b1 true║║╚══════════════╝╚══════════════╝║
-║║╚════════╝╚═══════╝╚═══════╝╚═══════╝╚════════╝╚═══════╝╚═══════╝╚═══════╝╚═══════╝║                                ║
-║╚═══════════════════════════════════════════════════════════════════════════════════╝                                ║
-║╔═lastPackageHash╗╔═hashEncountered════╗╔═currentlyReportedServerErrors╗                                             ║
-║║  0x00000002 2  ║║0x0000000000000003 3║║     0x0000000000000004 4     ║                                             ║
-║╚════════════════╝╚════════════════════╝╚══════════════════════════════╝                                             ║
-╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := &MessageCodec{
-				DefaultCodec:   tt.fields.DefaultCodec,
-				requestContext: tt.fields.requestContext,
-				cbusOptions:    tt.fields.cbusOptions,
-				monitoredMMIs:  tt.fields.monitoredMMIs,
-				monitoredSALs:  tt.fields.monitoredSALs,
-				log:            testutils.ProduceTestingLogger(t),
-			}
-			if tt.manipulator != nil {
-				tt.manipulator(t, m)
-			}
-			assert.Equalf(t, tt.want, m.String(), "String()")
 		})
 	}
 }

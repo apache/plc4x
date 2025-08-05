@@ -38,21 +38,21 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CloseSessionRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "473";
+  public Integer getExtensionId() {
+    return (int) 473;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final boolean deleteSubscriptions;
 
-  public CloseSessionRequest(ExtensionObjectDefinition requestHeader, boolean deleteSubscriptions) {
+  public CloseSessionRequest(RequestHeader requestHeader, boolean deleteSubscriptions) {
     super();
     this.requestHeader = requestHeader;
     this.deleteSubscriptions = deleteSubscriptions;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -68,7 +68,7 @@ public class CloseSessionRequest extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("CloseSessionRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -103,16 +103,17 @@ public class CloseSessionRequest extends ExtensionObjectDefinition implements Me
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CloseSessionRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+            readComplex(
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     Byte reservedField0 =
@@ -127,11 +128,11 @@ public class CloseSessionRequest extends ExtensionObjectDefinition implements Me
 
   public static class CloseSessionRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final boolean deleteSubscriptions;
 
     public CloseSessionRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader, boolean deleteSubscriptions) {
+        RequestHeader requestHeader, boolean deleteSubscriptions) {
       this.requestHeader = requestHeader;
       this.deleteSubscriptions = deleteSubscriptions;
     }

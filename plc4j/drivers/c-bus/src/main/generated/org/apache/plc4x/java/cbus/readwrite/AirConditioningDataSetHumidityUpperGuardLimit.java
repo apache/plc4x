@@ -86,14 +86,13 @@ public class AirConditioningDataSetHumidityUpperGuardLimit extends AirConditioni
     writeSimpleField("zoneGroup", zoneGroup, writeByte(writeBuffer, 8));
 
     // Simple Field (zoneList)
-    writeSimpleField("zoneList", zoneList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneList", zoneList, writeComplex(writeBuffer));
 
     // Simple Field (limit)
-    writeSimpleField("limit", limit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("limit", limit, writeComplex(writeBuffer));
 
     // Simple Field (hvacModeAndFlags)
-    writeSimpleField(
-        "hvacModeAndFlags", hvacModeAndFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("hvacModeAndFlags", hvacModeAndFlags, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AirConditioningDataSetHumidityUpperGuardLimit");
   }
@@ -134,19 +133,16 @@ public class AirConditioningDataSetHumidityUpperGuardLimit extends AirConditioni
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     HVACHumidity limit =
         readSimpleField(
-            "limit",
-            new DataReaderComplexDefault<>(() -> HVACHumidity.staticParse(readBuffer), readBuffer));
+            "limit", readComplex(() -> HVACHumidity.staticParse(readBuffer), readBuffer));
 
     HVACHumidityModeAndFlags hvacModeAndFlags =
         readSimpleField(
             "hvacModeAndFlags",
-            new DataReaderComplexDefault<>(
-                () -> HVACHumidityModeAndFlags.staticParse(readBuffer), readBuffer));
+            readComplex(() -> HVACHumidityModeAndFlags.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AirConditioningDataSetHumidityUpperGuardLimit");
     // Create the instance

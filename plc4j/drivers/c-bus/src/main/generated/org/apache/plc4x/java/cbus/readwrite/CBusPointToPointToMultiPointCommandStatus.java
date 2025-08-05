@@ -77,7 +77,7 @@ public class CBusPointToPointToMultiPointCommandStatus extends CBusPointToPointT
         writeByte(writeBuffer, 8));
 
     // Simple Field (statusRequest)
-    writeSimpleField("statusRequest", statusRequest, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusRequest", statusRequest, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CBusPointToPointToMultiPointCommandStatus");
   }
@@ -113,9 +113,7 @@ public class CBusPointToPointToMultiPointCommandStatus extends CBusPointToPointT
 
     StatusRequest statusRequest =
         readSimpleField(
-            "statusRequest",
-            new DataReaderComplexDefault<>(
-                () -> StatusRequest.staticParse(readBuffer), readBuffer));
+            "statusRequest", readComplex(() -> StatusRequest.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("CBusPointToPointToMultiPointCommandStatus");
     // Create the instance

@@ -61,10 +61,10 @@ public class BACnetDateRange implements Message {
     writeBuffer.pushContext("BACnetDateRange");
 
     // Simple Field (startDate)
-    writeSimpleField("startDate", startDate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("startDate", startDate, writeComplex(writeBuffer));
 
     // Simple Field (endDate)
-    writeSimpleField("endDate", endDate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("endDate", endDate, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetDateRange");
   }
@@ -89,12 +89,6 @@ public class BACnetDateRange implements Message {
     return lengthInBits;
   }
 
-  public static BACnetDateRange staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetDateRange staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetDateRange");
     PositionAware positionAware = readBuffer;
@@ -103,14 +97,14 @@ public class BACnetDateRange implements Message {
     BACnetApplicationTagDate startDate =
         readSimpleField(
             "startDate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDate) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 
     BACnetApplicationTagDate endDate =
         readSimpleField(
             "endDate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDate) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

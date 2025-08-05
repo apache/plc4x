@@ -22,27 +22,26 @@ package cbus
 import (
 	"context"
 	"encoding/hex"
-	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/stretchr/testify/require"
 	"net/url"
 	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestAlphaGenerator_getAndIncrement(t *testing.T) {
@@ -483,68 +482,6 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 			}
 			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
 			assert.Truef(t, tt.wantAssert(t, c.ReadRequestBuilder()), "ReadRequestBuilder()")
-		})
-	}
-}
-
-func TestConnection_String(t *testing.T) {
-	type fields struct {
-		messageCodec  *MessageCodec
-		subscribers   []*Subscriber
-		tm            transactions.RequestTransactionManager
-		configuration Configuration
-		connectionId  string
-		tracer        tracer.Tracer
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{
-			name: "a string",
-			want: `
-╔═Connection══════════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═defaultConnection═══════╗╔═alphaGenerator════════════════════╗╔═messageCodec╗                          ║
-║║╔═defaultTtl╗╔═connected╗║║╔═AlphaGenerator/currentAlpha═════╗║║    <nil>    ║                          ║
-║║║    10s    ║║ b0 false ║║║║            0x67 'g'             ║║╚═════════════╝                          ║
-║║╚═══════════╝╚══════════╝║║╚═════════════════════════════════╝║                                         ║
-║╚═════════════════════════╝╚═══════════════════════════════════╝                                         ║
-║╔═configuration═════════════════════════════════════════════════════════════════════════════════════════╗║
-║║╔═Configuration═══════════════════════════════════════════════════════════════════════════════════════╗║║
-║║║╔═srchk══╗╔═exstat═╗╔═pun════╗╔═localSal╗╔═pcn════╗╔═idmon══╗╔═monitor╗╔═smart══╗╔═xonXoff╗╔═connect╗║║║
-║║║║b0 false║║b0 false║║b0 false║║b0 false ║║b0 false║║b0 false║║b0 false║║b0 false║║b0 false║║b0 false║║║║
-║║║╚════════╝╚════════╝╚════════╝╚═════════╝╚════════╝╚════════╝╚════════╝╚════════╝╚════════╝╚════════╝║║║
-║║║╔═monitoredApplication1╗╔═monitoredApplication2╗                                                     ║║║
-║║║║       0x00 '.'       ║║       0x00 '.'       ║                                                     ║║║
-║║║╚══════════════════════╝╚══════════════════════╝                                                     ║║║
-║║╚═════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
-║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝║
-║╔═driverContext═══════════════════════════════════╗                                                      ║
-║║╔═DriverContext═════════════════════════════════╗║                                                      ║
-║║║╔═awaitSetupComplete╗╔═awaitDisconnectComplete╗║║                                                      ║
-║║║║      b1 true      ║║        b1 true         ║║║                                                      ║
-║║║╚═══════════════════╝╚════════════════════════╝║║                                                      ║
-║║╚═══════════════════════════════════════════════╝║                                                      ║
-║╚═════════════════════════════════════════════════╝                                                      ║
-╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:], // TODO: configuration is not redered right now
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := &Connection{
-				alphaGenerator: AlphaGenerator{currentAlpha: 'g'},
-				messageCodec:   tt.fields.messageCodec,
-				subscribers:    tt.fields.subscribers,
-				tm:             tt.fields.tm,
-				configuration:  tt.fields.configuration,
-				driverContext:  driverContextForTesting(),
-				connectionId:   tt.fields.connectionId,
-				tracer:         tt.fields.tracer,
-				log:            testutils.ProduceTestingLogger(t),
-			}
-			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
-			assert.Equalf(t, tt.want, c.String(), "String()")
 		})
 	}
 }
@@ -1697,9 +1634,6 @@ func TestConnection_setupConnection(t *testing.T) {
 			c.setupConnection(tt.args.ctx, tt.args.ch)
 			assert.NotNil(t, tt.args.ch, "We always need a result channel")
 			chanTimeout := time.NewTimer(10 * time.Second)
-			t.Cleanup(func() {
-				utils.CleanupTimer(chanTimeout)
-			})
 			select {
 			case <-chanTimeout.C:
 				t.Fatal("setup connection doesn't fill chan in time")
@@ -1710,9 +1644,6 @@ func TestConnection_setupConnection(t *testing.T) {
 			}
 			// To shut down properly we always do that
 			closeTimeout := time.NewTimer(10 * time.Second)
-			t.Cleanup(func() {
-				utils.CleanupTimer(closeTimeout)
-			})
 			select {
 			case <-closeTimeout.C:
 				t.Fatal("close didn't react in time")
@@ -1753,13 +1684,22 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				codec := NewMessageCodec(nil, _options...)
 				codec.monitoredMMIs = make(chan readWriteModel.CALReply, 1)
 				codec.monitoredSALs = make(chan readWriteModel.MonitoredSAL, 1)
-				dispatchWg := sync.WaitGroup{}
+				dispatchWg := new(sync.WaitGroup)
 				dispatchWg.Add(1)
 				t.Cleanup(dispatchWg.Wait)
 				go func() {
 					defer dispatchWg.Done()
 					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
-					codec.monitoredSALs <- readWriteModel.NewMonitoredSAL(0, nil)
+					codec.monitoredSALs <- readWriteModel.NewMonitoredSALShortFormBasicMode(
+						0,
+						0,
+						nil,
+						nil,
+						nil,
+						readWriteModel.ApplicationIdContainer_ACCESS_CONTROL_D5,
+						nil,
+						nil,
+					)
 				}()
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -1778,13 +1718,22 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				fields.subscribers = []*Subscriber{NewSubscriber(nil, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))}
 				codec := NewMessageCodec(nil, _options...)
 				written := make(chan struct{})
-				dispatchWg := sync.WaitGroup{}
+				dispatchWg := new(sync.WaitGroup)
 				dispatchWg.Add(1)
 				t.Cleanup(dispatchWg.Wait)
 				go func() {
 					defer dispatchWg.Done()
 					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
-					codec.monitoredSALs <- readWriteModel.NewMonitoredSAL(0, nil)
+					codec.monitoredSALs <- readWriteModel.NewMonitoredSALShortFormBasicMode(
+						0,
+						0,
+						nil,
+						nil,
+						nil,
+						readWriteModel.ApplicationIdContainer_ACCESS_CONTROL_D5,
+						nil,
+						nil,
+					)
 					close(written)
 				}()
 				t.Cleanup(func() {
@@ -1864,9 +1813,6 @@ func TestNewConnection(t *testing.T) {
 			connection := NewConnection(tt.args.messageCodec, tt.args.configuration, tt.args.driverContext, tt.args.tagHandler, tt.args.tm, tt.args.options, tt.args._options...)
 			t.Cleanup(func() {
 				timer := time.NewTimer(1 * time.Second)
-				t.Cleanup(func() {
-					utils.CleanupTimer(timer)
-				})
 				select {
 				case <-connection.Close():
 				case <-timer.C:

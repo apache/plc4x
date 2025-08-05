@@ -20,12 +20,12 @@
 package cbus
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 type SubscriptionEvent struct {

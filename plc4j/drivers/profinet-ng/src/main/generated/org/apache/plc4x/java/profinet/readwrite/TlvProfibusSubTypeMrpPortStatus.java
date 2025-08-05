@@ -68,7 +68,7 @@ public class TlvProfibusSubTypeMrpPortStatus extends TlvOrgSpecificProfibusUnit 
     writeBuffer.pushContext("TlvProfibusSubTypeMrpPortStatus");
 
     // Simple Field (macAddress)
-    writeSimpleField("macAddress", macAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("macAddress", macAddress, writeComplex(writeBuffer));
 
     // Simple Field (Status)
     writeSimpleField("Status", Status, writeUnsignedInt(writeBuffer, 16));
@@ -103,9 +103,7 @@ public class TlvProfibusSubTypeMrpPortStatus extends TlvOrgSpecificProfibusUnit 
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Uuid macAddress =
-        readSimpleField(
-            "macAddress",
-            new DataReaderComplexDefault<>(() -> Uuid.staticParse(readBuffer), readBuffer));
+        readSimpleField("macAddress", readComplex(() -> Uuid.staticParse(readBuffer), readBuffer));
 
     int Status = readSimpleField("Status", readUnsignedInt(readBuffer, 16));
 

@@ -20,9 +20,11 @@
 package config
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"time"
+
+	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 // TraceTransactionManagerWorkers when set to true the transaction manager displays worker states in log

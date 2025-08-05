@@ -61,7 +61,7 @@ public class BACnetLandingCallStatusCommandDestination extends BACnetLandingCall
     writeBuffer.pushContext("BACnetLandingCallStatusCommandDestination");
 
     // Simple Field (destination)
-    writeSimpleField("destination", destination, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("destination", destination, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLandingCallStatusCommandDestination");
   }
@@ -93,7 +93,7 @@ public class BACnetLandingCallStatusCommandDestination extends BACnetLandingCall
     BACnetContextTagUnsignedInteger destination =
         readSimpleField(
             "destination",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

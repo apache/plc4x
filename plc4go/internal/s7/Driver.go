@@ -21,15 +21,17 @@ package s7
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
 	"net/url"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Driver struct {
@@ -138,5 +140,6 @@ func (d *Driver) SetAwaitDisconnectComplete(awaitComplete bool) {
 }
 
 func (d *Driver) Close() error {
+	defer utils.StopWarn(d.log)()
 	return d.tm.Close()
 }

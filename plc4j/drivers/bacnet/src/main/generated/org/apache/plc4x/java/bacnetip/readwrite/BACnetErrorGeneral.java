@@ -61,7 +61,7 @@ public class BACnetErrorGeneral extends BACnetError implements Message {
     writeBuffer.pushContext("BACnetErrorGeneral");
 
     // Simple Field (error)
-    writeSimpleField("error", error, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("error", error, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetErrorGeneral");
   }
@@ -90,9 +90,7 @@ public class BACnetErrorGeneral extends BACnetError implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Error error =
-        readSimpleField(
-            "error",
-            new DataReaderComplexDefault<>(() -> Error.staticParse(readBuffer), readBuffer));
+        readSimpleField("error", readComplex(() -> Error.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("BACnetErrorGeneral");
     // Create the instance

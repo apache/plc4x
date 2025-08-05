@@ -102,12 +102,6 @@ public class PascalString16BitLength implements Message {
     return lengthInBits;
   }
 
-  public static PascalString16BitLength staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PascalString16BitLength staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PascalString16BitLength");
     PositionAware positionAware = readBuffer;

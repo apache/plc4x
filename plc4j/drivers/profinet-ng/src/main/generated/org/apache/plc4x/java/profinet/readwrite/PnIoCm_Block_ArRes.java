@@ -131,15 +131,14 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
         "arType",
         "PnIoCm_ArType",
         arType,
-        new DataWriterEnumDefault<>(
-            PnIoCm_ArType::getValue, PnIoCm_ArType::name, writeUnsignedInt(writeBuffer, 16)),
+        writeEnum(PnIoCm_ArType::getValue, PnIoCm_ArType::name, writeUnsignedInt(writeBuffer, 16)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (arUuid)
     writeSimpleField(
         "arUuid",
         arUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (sessionKey)
@@ -153,7 +152,7 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
     writeSimpleField(
         "cmResponderMacAddr",
         cmResponderMacAddr,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (responderUDPRTPort)
@@ -232,14 +231,13 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
         readEnumField(
             "arType",
             "PnIoCm_ArType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_ArType::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(PnIoCm_ArType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Uuid arUuid =
         readSimpleField(
             "arUuid",
-            new DataReaderComplexDefault<>(() -> Uuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Uuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int sessionKey =
@@ -251,7 +249,7 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
     MacAddress cmResponderMacAddr =
         readSimpleField(
             "cmResponderMacAddr",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> MacAddress.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int responderUDPRTPort =

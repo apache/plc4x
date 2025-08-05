@@ -22,13 +22,13 @@ package tests
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestManualBacnetDriver(t *testing.T) {

@@ -61,8 +61,7 @@ public class BACnetPropertyStatesLiftCarDriveStatus extends BACnetPropertyStates
     writeBuffer.pushContext("BACnetPropertyStatesLiftCarDriveStatus");
 
     // Simple Field (liftCarDriveStatus)
-    writeSimpleField(
-        "liftCarDriveStatus", liftCarDriveStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("liftCarDriveStatus", liftCarDriveStatus, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesLiftCarDriveStatus");
   }
@@ -93,7 +92,7 @@ public class BACnetPropertyStatesLiftCarDriveStatus extends BACnetPropertyStates
     BACnetLiftCarDriveStatusTagged liftCarDriveStatus =
         readSimpleField(
             "liftCarDriveStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftCarDriveStatusTagged.staticParse(
                         readBuffer,

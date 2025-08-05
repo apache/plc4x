@@ -1,0 +1,330 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+= Getting Started with Go
+
+
+
+== Initializing a dummy project
+
+Just in case you want to get started with `Go`. In this part we'll setup a new `Go` project.
+If you are familiar with this, you can go to the next chapter.
+
+Be sure to have installed `Go` on your system by downloading and installing it from https://golang.org/[https://golang.org/].
+
+Now that that's done, create a new directory and console execute the following command:
+
+   go mod init main
+
+This will effectively only create a `go.mod` file, which is sort of like Go's counterpart to a Maven pom.xml.
+
+This should look like this:
+
+```
+module main
+
+go 1.16
+```
+
+Now we need to create a `app.go` file which will be our main program.
+
+Create a file `app.go` with the following content:
+
+----
+package main
+
+func main() {
+
+}
+----
+
+By executing the command:
+
+   go run app.go
+
+You will execute your first `Go` progran ... however the output is rather underwhelming ;-)
+
+You're now ready to continue.
+
+== Using the PLC4Go API directly
+
+In order to write a valid PLC4X Go application, all you need, is to add a dependency to the `plc4go module`.
+Now all you need to do, is execute the following command:
+
+   go get github.com/apache/plc4x/plc4go
+
+This will checkout the latest version of the Apache PLC4X `PLC4Go` module.
+As soon as we have released a PLC4Go version by adding the name of the release-tag will use an explicit version.
+
+This will be checked out in our home directory in
+
+   ⁓/go/pkg/mod/github.com/apache/plc4/plc4go@v0.0.0-{some-commit-hash}
+
+In contrast to the PLC4J version this already contains all supported drivers.
+Perhaps we'll change this in the future, but for now all comes in one bundle.
+
+Now you're generally set to start writing your first `PLC4Go` program.
+
+=== Connecting to a PLC
+
+In contrast to PLC4J, which uses the service lookup to find the `transports` and the `drivers` automatically, in `PLC4Go` they need to be manually registered at the driver manager.
+
+First we need to initialize the `PlcDriverManager` by registering the transports and drivers with it.
+
+----
+    // Create a new instance of the PlcDriverManager
+	driverManager := plc4go.NewPlcDriverManager()
+
+    // Register the Transports
+    transports.RegisterTcpTransport(driverManager)
+    transports.RegisterUdpTransport(driverManager)
+
+    // Register the Drivers
+	drivers.RegisterKnxDriver(driverManager)
+	drivers.RegisterModbusDriver(driverManager)
+----
+
+Now that the `PlcDriverManager` is configured, we can use it to get a new connection.
+
+----
+   	// Get a connection to a remote PLC
+	connectionRequestChanel := driverManager.GetConnection("modbus-tcp://192.168.23.30?unit-identifier=1")
+
+	// Wait for the driver to connect (or not)
+	connectionResult := <-connectionRequestChanel
+
+    // Check if something went wrong
+    if connectionResult.Err != nil {
+	    fmt.Printf("Error connecting to PLC: %s", connectionResult.Err.Error())
+		return
+	}
+
+    // If all was ok, get the connection instance
+	connection := connectionResult.Connection
+
+	// Make sure the connection is closed at the end
+	defer connection.Close()
+----
+
+In PLC4Go we make heavy use of Go `channels`, which are similar to `Futures` or `Promisses`.
+
+And please pay attention to the `defer` command.
+This adds a call to a stack of things that need to be called as soon as the program terminates.
+However in contrast to Java's `try-finally` blocks, this isn't executed at the end of the code-block, but really when the program terminates.
+So when working with many connections or when using connections in loops (if for example you are polling), then this will keep on piling up active connections, till either you are no longer able to connect cause your PLC denies connections or till you run out of memory.
+
+So if you only need the connection in a code block, be sure to explicitly close it after usage.
+
+After this code block we should be in possession of a `connection` instance.
+
+If we simply want to check the connectivity, we can use the `Ping` function on the connection object.
+Depending on the protocol used, it will exeute a command which only will complete if the connection is available.
+
+----
+	// Try to ping the remote device
+	pingResultChannel := connection.Ping()
+
+    // Wait for the Ping operation to finsh
+	pingResult := <-pingResultChannel
+	if pingResult.Err != nil {
+	    fmt.Printf("Couldn't ping device: %s", pingResult.Err.Error())
+		return
+	}
+----
+
+==== Reading Data
+
+Most probably you will want to read something from a PLC.
+This is done by a `PlcReadRequest`.
+
+First off all, it's probably a good idea to check if this connection supports reading:
+
+----
+	if !connection.GetMetadata().CanRead() {
+	    fmt.Printf("This connection doesn't support read operations")
+        return
+    }
+----
+
+In order to create and run such a `PlcReadRequest`, please add the following code:
+
+.Up to version 0.10.0
+----
+	// Prepare a read-request
+	readRequest, err := connection.ReadRequestBuilder().
+		AddQuery("field1", "holding-register:1:REAL").
+		AddQuery("field2", "holding-register:3:REAL").
+        Build()
+	if err != nil {
+		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
+		t.Fail()
+		return
+	}
+----
+
+.SNAPSHOT version
+----
+	// Prepare a read-request
+	readRequest, err := connection.ReadRequestBuilder().
+		AddTagAddress("tag1", "holding-register:1:REAL").
+		AddTagAddress("tag2", "holding-register:3:REAL").
+        Build()
+	if err != nil {
+		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
+		t.Fail()
+		return
+	}
+----
+
+If you have any errors in the addresses or whatever, you will get an `err` instead of a `readRequest`.
+
+For now, let's assume you got all addresses correctly.
+
+----
+	// Execute a read-request
+	readResponseChanel := readRequest.Execute()
+
+	// Wait for the response to finish
+	readRequestResult := <-readResponseChanel
+	if readRequestResult.Err != nil {
+		t.Errorf("error executing read-request: %s", readRequestResult.Err.Error())
+		return
+	}
+----
+
+Please note that in this case we want to return a triple: `PlcReadRequest`, `PlcReadResponse`, `err`.
+As this is not supported in `Go`, the `PlcReadRequestResult` will contain all of these 3 elements.
+
+NOTE: This will probably change soon. The API is still a bit in flux.
+
+Now in order to do something with the response:
+
+----
+	// Do something with the response
+	value1 := readRequestResult.Response.GetValue("field1")
+	value2 := readRequestResult.Response.GetValue("field2")
+	fmt.Printf("\n\nResult field1: %f\n", value1.GetFloat32())
+	fmt.Printf("\n\nResult field2: %f\n", value2.GetFloat32())
+----
+
+The `GetValue` function returns a `PlcValue` instance, this had accessors for the most general `Go` types.
+
+==== Writing Data
+
+NOTE: Not implemented yet
+
+==== Subscribing to Data
+
+As the `Modbus` protocol, which we used in the above examples, doesn't support subscriptions, we are using the `KNX` protocol for a demonstration on the subscription API.
+
+Subscribing to data can be considered similar to reading data, at least the subscription itself if very similar to reading of data.
+
+We first have to check if the connection supports this:
+
+----
+	if !connection.GetMetadata().CanSubscribe() {
+	    fmt.Printf("This connection doesn't support subscriptions operations")
+        return
+    }
+----
+
+Now we'll create the subscription request.
+
+The main difference is that while reading there is only one form how you could read, with subscriptions there are different forms of subscriptions:
+
+- Change of state (Event is sent as soon as a value changes)
+- Cyclic (The Event is sent in regular cyclic intervals)
+- Event (The Event is usually explicitly sent form the PLC as a signal)
+
+Therefore instead of using a normal `AddItem`, there are tree different functions as you can see in the following examples.
+
+.Up to version 0.10.0
+----
+	// Prepare a subscription-request
+    subscriptionRequest, err := connection.SubscriptionRequestBuilder().
+        AddChangeOfStateItem("heating-actual-temperature", "*/*/10:DPT_Value_Temp").
+        AddChangeOfStateItem("heating-target-temperature", "*/*/11:DPT_Value_Temp").
+        AddCyclicItem("heating-valve-open", "*/*/12:DPT_OpenClose", 500 * time.Millisecond).
+        AddItemHandler(knxEventHandler).
+        Build()
+    if err != nil {
+	    fmt.Printf("Error preparing subscription-request: %s", connectionResult.Err.Error())
+        return
+    }
+----
+
+.SNAPSHOT version
+----
+	// Prepare a subscription-request
+    subscriptionRequest, err := connection.SubscriptionRequestBuilder().
+        AddChangeOfStateTagAddress("heating-actual-temperature", "*/*/10:DPT_Value_Temp").
+        AddChangeOfStateTagAddress("heating-target-temperature", "*/*/11:DPT_Value_Temp").
+        AddCyclicTagAddress("heating-valve-open", "*/*/12:DPT_OpenClose", 500 * time.Millisecond).
+        AddItemHandler(knxEventHandler).
+        Build()
+    if err != nil {
+	    fmt.Printf("Error preparing subscription-request: %s", connectionResult.Err.Error())
+        return
+    }
+----
+
+The `Event hadnler` for intercepting incoming events could look like this:
+
+.Up to version 0.10.0
+----
+func knxEventHandler(event apiModel.PlcSubscriptionEvent) {
+    for _, fieldName := range event.GetFieldNames() {
+        if event.GetResponseCode(fieldName) == apiModel.PlcResponseCode_OK {
+            groupAddress := event.GetAddress(fieldName)
+            fmt.Printf("Got update for field %s with address %s. Value changed to: %s\n",
+                fieldName, groupAddress, event.GetValue(fieldName).GetString())
+        }
+    }
+}
+----
+
+.SNAPSHOT version
+----
+func knxEventHandler(event apiModel.PlcSubscriptionEvent) {
+    for _, tagName := range event.GetTagNames() {
+        if event.GetResponseCode(tagName) == apiModel.PlcResponseCode_OK {
+            groupAddress := event.GetTag(tagName).GetAddressString()
+            fmt.Printf("Got update for tag %s with address %s. Value changed to: %s\n",
+                tagName, groupAddress, event.GetValue(tagName).GetString())
+        }
+    }
+}
+----
+
+NOTE: The `AddCyclicField`/`AddCyclicTagAddress` method requires a third parameter `duration` which specifies the interval, in which a given value is sent (even if it has not changed).
+
+NOTE: Here the API differs slightly form the Java version, as in the request-builder itself you specify the reference to the callback handler which should be notified on incoming data. However, we will be aligning all API variants as much as possible in the near future.
+
+The request itself is executed exactly the same way the read and write operations are executed, using the `Execute` function.
+
+----
+    // Execute a subscription-request
+    subscriptionRequestResultChanel := subscriptionRequest.Execute()
+
+    // Wait for the response to finish
+    subscriptionRequestResult := <-subscriptionRequestResultChanel
+    if subscriptionRequestResult.Err != nil {
+	    fmt.Printf("Error executing read-request: %s", subscriptionRequestResult.Err.Error())
+        return
+    }
+----
+

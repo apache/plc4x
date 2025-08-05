@@ -27,90 +27,2055 @@
   <protocolName>opcua</protocolName>
   <outputFlavor>read-write</outputFlavor>
   <driver-name>opcua</driver-name>
+  <driver-parameters>
+    <parameter>
+      <name>discovery</name>
+      <value>false</value>
+    </parameter>
+  </driver-parameters>
 
+  <setup>
+    <outgoing-plc-message name="Send Opcua Hello Packet">
+      <parser-arguments>
+        <response>false</response>
+        <binary>false</binary>
+      </parser-arguments>
+      <MessagePDU>
+        <messageType dataType="string" bitLength="24" encoding="UTF-8">HEL</messageType>
+        <chunk>
+          <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+        </chunk>
+        <totalLength dataType="uint" bitLength="32">47</totalLength>
+        <OpcuaHelloRequest>
+          <version dataType="uint" bitLength="32">0</version>
+          <limits>
+            <OpcuaProtocolLimits>
+              <receiveBufferSize dataType="uint" bitLength="32">65535</receiveBufferSize>
+              <sendBufferSize dataType="uint" bitLength="32">65535</sendBufferSize>
+              <maxMessageSize dataType="uint" bitLength="32">2097152</maxMessageSize>
+              <maxChunkCount dataType="uint" bitLength="32">64</maxChunkCount>
+            </OpcuaProtocolLimits>
+          </limits>
+          <endpoint>
+            <PascalString>
+              <sLength dataType="int" bitLength="32">15</sLength>
+              <stringValue dataType="string" bitLength="120" encoding="UTF-8">opc.test://hurz</stringValue>
+            </PascalString>
+          </endpoint>
+        </OpcuaHelloRequest>
+      </MessagePDU>
+    </outgoing-plc-message>
+
+    <incoming-plc-message name="Receive Acknowledgement Response">
+      <parser-arguments>
+        <response>true</response>
+        <binary>false</binary>
+      </parser-arguments>
+      <MessagePDU>
+        <messageType dataType="string" bitLength="24" encoding="UTF-8">ACK</messageType>
+        <chunk>
+          <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+        </chunk>
+        <totalLength dataType="uint" bitLength="32">24</totalLength>
+        <OpcuaAcknowledgeResponse>
+          <version dataType="uint" bitLength="32">0</version>
+          <limits>
+            <OpcuaProtocolLimits>
+              <receiveBufferSize dataType="uint" bitLength="32">65535</receiveBufferSize>
+              <sendBufferSize dataType="uint" bitLength="32">65535</sendBufferSize>
+              <maxMessageSize dataType="uint" bitLength="32">2097152</maxMessageSize>
+              <maxChunkCount dataType="uint" bitLength="32">64</maxChunkCount>
+            </OpcuaProtocolLimits>
+          </limits>
+        </OpcuaAcknowledgeResponse>
+      </MessagePDU>
+    </incoming-plc-message>
+
+    <outgoing-plc-message name="Send Opcua Open Secure Channel Request">
+      <parser-arguments>
+        <response>false</response>
+        <binary>false</binary>
+      </parser-arguments>
+      <MessagePDU>
+        <messageType dataType="string" bitLength="24" encoding="UTF-8">OPN</messageType>
+        <chunk>
+          <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+        </chunk>
+        <totalLength dataType="uint" bitLength="32">132</totalLength>
+        <OpcuaOpenRequest>
+          <openRequest>
+            <OpenChannelMessage>
+              <OpenChannelMessageRequest>
+                <secureChannelId dataType="int" bitLength="32">0</secureChannelId>
+                <endpoint>
+                  <PascalString>
+                    <sLength dataType="int" bitLength="32">47</sLength>
+                    <stringValue dataType="string" bitLength="376" encoding="UTF-8">http://opcfoundation.org/UA/SecurityPolicy#None</stringValue>
+                  </PascalString>
+                </endpoint>
+                <senderCertificate>
+                  <PascalByteString>
+                    <stringLength dataType="int" bitLength="32">-1</stringLength>
+                    <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                  </PascalByteString>
+                </senderCertificate>
+                <receiverCertificateThumbprint>
+                  <PascalByteString>
+                    <stringLength dataType="int" bitLength="32">-1</stringLength>
+                    <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                  </PascalByteString>
+                </receiverCertificateThumbprint>
+              </OpenChannelMessageRequest>
+            </OpenChannelMessage>
+          </openRequest>
+          <message>
+            <Payload>
+              <sequenceHeader>
+                <SequenceHeader>
+                  <sequenceNumber dataType="int" bitLength="32">1</sequenceNumber>
+                  <requestId dataType="int" bitLength="32">1</requestId>
+                </SequenceHeader>
+              </sequenceHeader>
+              <ExtensiblePayload>
+                <payload>
+                  <ExtensionObject>
+                    <typeId>
+                      <ExpandedNodeId>
+                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                        <nodeId>
+                          <NodeIdTypeDefinition>
+                            <nodeType>
+                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                            </nodeType>
+                            <NodeIdFourByte>
+                              <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                              <id dataType="uint" bitLength="16">446</id>
+                            </NodeIdFourByte>
+                          </NodeIdTypeDefinition>
+                        </nodeId>
+                      </ExpandedNodeId>
+                    </typeId>
+                    <RootExtensionObject>
+                      <body>
+                        <ExtensionObjectDefinition>
+                          <OpenSecureChannelRequest>
+                            <requestHeader>
+                              <ExtensionObjectDefinition>
+                                <RequestHeader>
+                                  <authenticationToken>
+                                    <NodeId>
+                                      <reserved dataType="int" bitLength="2">0</reserved>
+                                      <nodeId>
+                                        <NodeIdTypeDefinition>
+                                          <nodeType>
+                                            <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                          </nodeType>
+                                          <NodeIdTwoByte>
+                                            <id dataType="uint" bitLength="8">0</id>
+                                          </NodeIdTwoByte>
+                                        </NodeIdTypeDefinition>
+                                      </nodeId>
+                                    </NodeId>
+                                  </authenticationToken>
+                                  <timestamp dataType="int" bitLength="64" plc4x-skip-comparison="true">0</timestamp>
+                                  <requestHandle dataType="uint" bitLength="32">0</requestHandle>
+                                  <returnDiagnostics dataType="uint" bitLength="32">0</returnDiagnostics>
+                                  <auditEntryId>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">0</sLength>
+                                      <stringValue dataType="string" bitLength="0" encoding="UTF-8"></stringValue>
+                                    </PascalString>
+                                  </auditEntryId>
+                                  <timeoutHint dataType="uint" bitLength="32">60000</timeoutHint>
+                                  <additionalHeader>
+                                    <ExtensionObject>
+                                      <typeId>
+                                        <ExpandedNodeId>
+                                          <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                          <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                                          <nodeId>
+                                            <NodeIdTypeDefinition>
+                                              <nodeType>
+                                                <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                              </nodeType>
+                                              <NodeIdTwoByte>
+                                                <id dataType="uint" bitLength="8">0</id>
+                                              </NodeIdTwoByte>
+                                            </NodeIdTypeDefinition>
+                                          </nodeId>
+                                        </ExpandedNodeId>
+                                      </typeId>
+                                      <ExtensionObjectWithMask>
+                                        <encodingMask>
+                                          <ExtensionObjectEncodingMask>
+                                            <reserved dataType="int" bitLength="5">0</reserved>
+                                            <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                                            <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                                            <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                                          </ExtensionObjectEncodingMask>
+                                        </encodingMask>
+                                        <NullExtensionObjectWithMask>
+                                        </NullExtensionObjectWithMask>
+                                      </ExtensionObjectWithMask>
+                                    </ExtensionObject>
+                                  </additionalHeader>
+                                </RequestHeader>
+                              </ExtensionObjectDefinition>
+                            </requestHeader>
+                            <clientProtocolVersion dataType="uint" bitLength="32">0</clientProtocolVersion>
+                            <requestType>
+                              <SecurityTokenRequestType dataType="uint" bitLength="32" stringRepresentation="securityTokenRequestTypeIssue">0</SecurityTokenRequestType>
+                            </requestType>
+                            <securityMode>
+                              <MessageSecurityMode dataType="uint" bitLength="32" stringRepresentation="messageSecurityModeNone">1</MessageSecurityMode>
+                            </securityMode>
+                            <clientNonce>
+                              <PascalByteString>
+                                <stringLength dataType="int" bitLength="32">-1</stringLength>
+                                <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                              </PascalByteString>
+                            </clientNonce>
+                            <requestedLifetime dataType="uint" bitLength="32">3600000</requestedLifetime>
+                          </OpenSecureChannelRequest>
+                        </ExtensionObjectDefinition>
+                      </body>
+                    </RootExtensionObject>
+                  </ExtensionObject>
+                </payload>
+              </ExtensiblePayload>
+            </Payload>
+          </message>
+        </OpcuaOpenRequest>
+      </MessagePDU>
+    </outgoing-plc-message>
+
+    <incoming-plc-message name="Receive Opcua Open Secure Channel Response">
+      <parser-arguments>
+        <response>true</response>
+        <binary>false</binary>
+      </parser-arguments>
+      <MessagePDU>
+        <messageType dataType="string" bitLength="24" encoding="UTF-8">OPN</messageType>
+        <chunk>
+          <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+        </chunk>
+        <totalLength dataType="uint" bitLength="32">135</totalLength>
+        <OpcuaOpenResponse>
+          <openResponse>
+            <OpenChannelMessage>
+              <OpenChannelMessageResponse>
+                <secureChannelId dataType="int" bitLength="32">1</secureChannelId>
+                <securityPolicyUri>
+                  <PascalString>
+                    <sLength dataType="int" bitLength="32">47</sLength>
+                    <stringValue dataType="string" bitLength="376" encoding="UTF-8">http://opcfoundation.org/UA/SecurityPolicy#None</stringValue>
+                  </PascalString>
+                </securityPolicyUri>
+                <senderCertificate>
+                  <PascalByteString>
+                    <stringLength dataType="int" bitLength="32">-1</stringLength>
+                    <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                  </PascalByteString>
+                </senderCertificate>
+                <receiverCertificateThumbprint>
+                  <PascalByteString>
+                    <stringLength dataType="int" bitLength="32">-1</stringLength>
+                    <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                  </PascalByteString>
+                </receiverCertificateThumbprint>
+              </OpenChannelMessageResponse>
+            </OpenChannelMessage>
+          </openResponse>
+          <message>
+            <Payload>
+              <sequenceHeader>
+                <SequenceHeader>
+                  <sequenceNumber dataType="int" bitLength="32">1</sequenceNumber>
+                  <requestId dataType="int" bitLength="32">1</requestId>
+                </SequenceHeader>
+              </sequenceHeader>
+              <ExtensiblePayload>
+                <payload>
+                  <ExtensionObject>
+                    <typeId>
+                      <ExpandedNodeId>
+                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                        <nodeId>
+                          <NodeIdTypeDefinition>
+                            <nodeType>
+                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                            </nodeType>
+                            <NodeIdFourByte>
+                              <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                              <id dataType="uint" bitLength="16">449</id>
+                            </NodeIdFourByte>
+                          </NodeIdTypeDefinition>
+                        </nodeId>
+                      </ExpandedNodeId>
+                    </typeId>
+                    <RootExtensionObject>
+                      <body>
+                        <ExtensionObjectDefinition>
+                          <OpenSecureChannelResponse>
+                            <responseHeader>
+                              <ExtensionObjectDefinition>
+                                <ResponseHeader>
+                                  <timestamp dataType="int" bitLength="64">133747673145090000</timestamp>
+                                  <requestHandle dataType="uint" bitLength="32">0</requestHandle>
+                                  <serviceResult>
+                                    <StatusCode>
+                                      <statusCode dataType="uint" bitLength="32">0</statusCode>
+                                    </StatusCode>
+                                  </serviceResult>
+                                  <serviceDiagnostics>
+                                    <DiagnosticInfo>
+                                      <reserved dataType="bit" bitLength="1">false</reserved>
+                                      <innerDiagnosticInfoSpecified dataType="bit" bitLength="1">false</innerDiagnosticInfoSpecified>
+                                      <innerStatusCodeSpecified dataType="bit" bitLength="1">false</innerStatusCodeSpecified>
+                                      <additionalInfoSpecified dataType="bit" bitLength="1">false</additionalInfoSpecified>
+                                      <localeSpecified dataType="bit" bitLength="1">false</localeSpecified>
+                                      <localizedTextSpecified dataType="bit" bitLength="1">false</localizedTextSpecified>
+                                      <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                      <symbolicIdSpecified dataType="bit" bitLength="1">false</symbolicIdSpecified>
+                                    </DiagnosticInfo>
+                                  </serviceDiagnostics>
+                                  <noOfStringTable dataType="int" bitLength="32">-1</noOfStringTable>
+                                  <additionalHeader>
+                                    <ExtensionObject>
+                                      <typeId>
+                                        <ExpandedNodeId>
+                                          <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                          <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                                          <nodeId>
+                                            <NodeIdTypeDefinition>
+                                              <nodeType>
+                                                <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                              </nodeType>
+                                              <NodeIdTwoByte>
+                                                <id dataType="uint" bitLength="8">0</id>
+                                              </NodeIdTwoByte>
+                                            </NodeIdTypeDefinition>
+                                          </nodeId>
+                                        </ExpandedNodeId>
+                                      </typeId>
+                                      <ExtensionObjectWithMask>
+                                        <encodingMask>
+                                          <ExtensionObjectEncodingMask>
+                                            <reserved dataType="int" bitLength="5">0</reserved>
+                                            <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                                            <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                                            <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                                          </ExtensionObjectEncodingMask>
+                                        </encodingMask>
+                                        <NullExtensionObjectWithMask>
+                                        </NullExtensionObjectWithMask>
+                                      </ExtensionObjectWithMask>
+                                    </ExtensionObject>
+                                  </additionalHeader>
+                                </ResponseHeader>
+                              </ExtensionObjectDefinition>
+                            </responseHeader>
+                            <serverProtocolVersion dataType="uint" bitLength="32">0</serverProtocolVersion>
+                            <securityToken>
+                              <ExtensionObjectDefinition>
+                                <ChannelSecurityToken>
+                                  <channelId dataType="uint" bitLength="32">1</channelId>
+                                  <tokenId dataType="uint" bitLength="32">1</tokenId>
+                                  <createdAt dataType="int" bitLength="64">133747673145040000</createdAt>
+                                  <revisedLifetime dataType="uint" bitLength="32">3600000</revisedLifetime>
+                                </ChannelSecurityToken>
+                              </ExtensionObjectDefinition>
+                            </securityToken>
+                            <serverNonce>
+                              <PascalByteString>
+                                <stringLength dataType="int" bitLength="32">-1</stringLength>
+                                <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                              </PascalByteString>
+                            </serverNonce>
+                          </OpenSecureChannelResponse>
+                        </ExtensionObjectDefinition>
+                      </body>
+                    </RootExtensionObject>
+                  </ExtensionObject>
+                </payload>
+              </ExtensiblePayload>
+            </Payload>
+          </message>
+        </OpcuaOpenResponse>
+      </MessagePDU>
+    </incoming-plc-message>
+
+    <outgoing-plc-message name="Send Create Session Request">
+      <parser-arguments>
+        <response>false</response>
+        <binary>false</binary>
+      </parser-arguments>
+      <MessagePDU>
+        <messageType dataType="string" bitLength="24" encoding="UTF-8">MSG</messageType>
+        <chunk>
+          <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+        </chunk>
+        <totalLength dataType="uint" bitLength="32">310</totalLength>
+        <OpcuaMessageRequest>
+          <securityHeader>
+            <SecurityHeader>
+              <secureChannelId dataType="uint" bitLength="32">1</secureChannelId>
+              <secureTokenId dataType="uint" bitLength="32">1</secureTokenId>
+            </SecurityHeader>
+          </securityHeader>
+          <message>
+            <Payload>
+              <sequenceHeader>
+                <SequenceHeader>
+                  <sequenceNumber dataType="int" bitLength="32">2</sequenceNumber>
+                  <requestId dataType="int" bitLength="32">2</requestId>
+                </SequenceHeader>
+              </sequenceHeader>
+              <ExtensiblePayload>
+                <payload>
+                  <ExtensionObject>
+                    <typeId>
+                      <ExpandedNodeId>
+                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                        <nodeId>
+                          <NodeIdTypeDefinition>
+                            <nodeType>
+                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                            </nodeType>
+                            <NodeIdFourByte>
+                              <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                              <id dataType="uint" bitLength="16">461</id>
+                            </NodeIdFourByte>
+                          </NodeIdTypeDefinition>
+                        </nodeId>
+                      </ExpandedNodeId>
+                    </typeId>
+                    <RootExtensionObject>
+                      <body>
+                        <ExtensionObjectDefinition>
+                          <CreateSessionRequest>
+                            <requestHeader>
+                              <ExtensionObjectDefinition>
+                                <RequestHeader>
+                                  <authenticationToken>
+                                    <NodeId>
+                                      <reserved dataType="int" bitLength="2">0</reserved>
+                                      <nodeId>
+                                        <NodeIdTypeDefinition>
+                                          <nodeType>
+                                            <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                          </nodeType>
+                                          <NodeIdTwoByte>
+                                            <id dataType="uint" bitLength="8">0</id>
+                                          </NodeIdTwoByte>
+                                        </NodeIdTypeDefinition>
+                                      </nodeId>
+                                    </NodeId>
+                                  </authenticationToken>
+                                  <timestamp dataType="int" bitLength="64" plc4x-skip-comparison="true">0</timestamp>
+                                  <requestHandle dataType="uint" bitLength="32">1</requestHandle>
+                                  <returnDiagnostics dataType="uint" bitLength="32">0</returnDiagnostics>
+                                  <auditEntryId>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">0</sLength>
+                                      <stringValue dataType="string" bitLength="0" encoding="UTF-8"></stringValue>
+                                    </PascalString>
+                                  </auditEntryId>
+                                  <timeoutHint dataType="uint" bitLength="32">30000</timeoutHint>
+                                  <additionalHeader>
+                                    <ExtensionObject>
+                                      <typeId>
+                                        <ExpandedNodeId>
+                                          <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                          <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                                          <nodeId>
+                                            <NodeIdTypeDefinition>
+                                              <nodeType>
+                                                <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                              </nodeType>
+                                              <NodeIdTwoByte>
+                                                <id dataType="uint" bitLength="8">0</id>
+                                              </NodeIdTwoByte>
+                                            </NodeIdTypeDefinition>
+                                          </nodeId>
+                                        </ExpandedNodeId>
+                                      </typeId>
+                                      <ExtensionObjectWithMask>
+                                        <encodingMask>
+                                          <ExtensionObjectEncodingMask>
+                                            <reserved dataType="int" bitLength="5">0</reserved>
+                                            <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                                            <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                                            <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                                          </ExtensionObjectEncodingMask>
+                                        </encodingMask>
+                                        <NullExtensionObjectWithMask>
+                                        </NullExtensionObjectWithMask>
+                                      </ExtensionObjectWithMask>
+                                    </ExtensionObject>
+                                  </additionalHeader>
+                                </RequestHeader>
+                              </ExtensionObjectDefinition>
+                            </requestHeader>
+                            <clientDescription>
+                              <ExtensionObjectDefinition>
+                                <ApplicationDescription>
+                                  <applicationUri>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">23</sLength>
+                                      <stringValue dataType="string" bitLength="184" encoding="UTF-8">urn:apache:plc4x:client</stringValue>
+                                    </PascalString>
+                                  </applicationUri>
+                                  <productUri>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">23</sLength>
+                                      <stringValue dataType="string" bitLength="184" encoding="UTF-8">urn:apache:plc4x:client</stringValue>
+                                    </PascalString>
+                                  </productUri>
+                                  <applicationName>
+                                    <LocalizedText>
+                                      <reserved dataType="uint" bitLength="6">0</reserved>
+                                      <textSpecified dataType="bit" bitLength="1">true</textSpecified>
+                                      <localeSpecified dataType="bit" bitLength="1">true</localeSpecified>
+                                      <locale>
+                                        <PascalString>
+                                          <sLength dataType="int" bitLength="32">2</sLength>
+                                          <stringValue dataType="string" bitLength="16" encoding="UTF-8">en</stringValue>
+                                        </PascalString>
+                                      </locale>
+                                      <text>
+                                        <PascalString>
+                                          <sLength dataType="int" bitLength="32">47</sLength>
+                                          <stringValue dataType="string" bitLength="376" encoding="UTF-8">OPCUA client for the Apache PLC4X:PLC4J project</stringValue>
+                                        </PascalString>
+                                      </text>
+                                    </LocalizedText>
+                                  </applicationName>
+                                  <applicationType>
+                                    <ApplicationType dataType="uint" bitLength="32" stringRepresentation="applicationTypeClient">1</ApplicationType>
+                                  </applicationType>
+                                  <gatewayServerUri>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">0</sLength>
+                                      <stringValue dataType="string" bitLength="0" encoding="UTF-8"></stringValue>
+                                    </PascalString>
+                                  </gatewayServerUri>
+                                  <discoveryProfileUri>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">0</sLength>
+                                      <stringValue dataType="string" bitLength="0" encoding="UTF-8"></stringValue>
+                                    </PascalString>
+                                  </discoveryProfileUri>
+                                  <noOfDiscoveryUrls dataType="int" bitLength="32">0</noOfDiscoveryUrls>
+                                  <discoveryUrls isList="true">
+                                  </discoveryUrls>
+                                </ApplicationDescription>
+                              </ExtensionObjectDefinition>
+                            </clientDescription>
+                            <serverUri>
+                              <PascalString>
+                                <sLength dataType="int" bitLength="32">0</sLength>
+                                <stringValue dataType="string" bitLength="0" encoding="UTF-8"></stringValue>
+                              </PascalString>
+                            </serverUri>
+                            <endpointUrl>
+                              <PascalString>
+                                <sLength dataType="int" bitLength="32">15</sLength>
+                                <stringValue dataType="string" bitLength="120" encoding="UTF-8">opc.test://hurz</stringValue>
+                              </PascalString>
+                            </endpointUrl>
+                            <sessionName>
+                              <PascalString>
+                                <sLength dataType="int" bitLength="32">78</sLength>
+                                <stringValue dataType="string" bitLength="624" encoding="UTF-8" plc4x-skip-comparison="true">UaSession:OPCUA client for the Apache PLC4X:PLC4J project:xyz</stringValue>
+                              </PascalString>
+                            </sessionName>
+                            <clientNonce>
+                              <PascalByteString>
+                                <stringLength dataType="int" bitLength="32">-1</stringLength>
+                                <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                              </PascalByteString>
+                            </clientNonce>
+                            <clientCertificate>
+                              <PascalByteString>
+                                <stringLength dataType="int" bitLength="32">-1</stringLength>
+                                <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                              </PascalByteString>
+                            </clientCertificate>
+                            <requestedSessionTimeout dataType="float" bitLength="64">120000.0</requestedSessionTimeout>
+                            <maxResponseMessageSize dataType="uint" bitLength="32">0</maxResponseMessageSize>
+                          </CreateSessionRequest>
+                        </ExtensionObjectDefinition>
+                      </body>
+                    </RootExtensionObject>
+                  </ExtensionObject>
+                </payload>
+              </ExtensiblePayload>
+            </Payload>
+          </message>
+        </OpcuaMessageRequest>
+      </MessagePDU>
+    </outgoing-plc-message>
+
+    <incoming-plc-message name="Receive Create Session Response">
+      <parser-arguments>
+        <response>true</response>
+        <binary>false</binary>
+      </parser-arguments>
+      <MessagePDU>
+        <messageType dataType="string" bitLength="24" encoding="UTF-8">MSG</messageType>
+        <chunk>
+          <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+        </chunk>
+        <totalLength dataType="uint" bitLength="32">6450</totalLength>
+        <OpcuaMessageResponse>
+          <securityHeader>
+            <SecurityHeader>
+              <secureChannelId dataType="uint" bitLength="32">2</secureChannelId>
+              <secureTokenId dataType="uint" bitLength="32">2</secureTokenId>
+            </SecurityHeader>
+          </securityHeader>
+          <message>
+            <Payload>
+              <sequenceHeader>
+                <SequenceHeader>
+                  <sequenceNumber dataType="int" bitLength="32">2</sequenceNumber>
+                  <requestId dataType="int" bitLength="32">2</requestId>
+                </SequenceHeader>
+              </sequenceHeader>
+              <ExtensiblePayload>
+                <payload>
+                  <ExtensionObject>
+                    <typeId>
+                      <ExpandedNodeId>
+                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                        <nodeId>
+                          <NodeIdTypeDefinition>
+                            <nodeType>
+                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                            </nodeType>
+                            <NodeIdFourByte>
+                              <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                              <id dataType="uint" bitLength="16">464</id>
+                            </NodeIdFourByte>
+                          </NodeIdTypeDefinition>
+                        </nodeId>
+                      </ExpandedNodeId>
+                    </typeId>
+                    <RootExtensionObject>
+                      <body>
+                        <ExtensionObjectDefinition>
+                          <CreateSessionResponse>
+                            <responseHeader>
+                              <ExtensionObjectDefinition>
+                                <ResponseHeader>
+                                  <timestamp dataType="int" bitLength="64">133747673167260000</timestamp>
+                                  <requestHandle dataType="uint" bitLength="32">1</requestHandle>
+                                  <serviceResult>
+                                    <StatusCode>
+                                      <statusCode dataType="uint" bitLength="32">0</statusCode>
+                                    </StatusCode>
+                                  </serviceResult>
+                                  <serviceDiagnostics>
+                                    <DiagnosticInfo>
+                                      <reserved dataType="bit" bitLength="1">false</reserved>
+                                      <innerDiagnosticInfoSpecified dataType="bit" bitLength="1">false</innerDiagnosticInfoSpecified>
+                                      <innerStatusCodeSpecified dataType="bit" bitLength="1">false</innerStatusCodeSpecified>
+                                      <additionalInfoSpecified dataType="bit" bitLength="1">false</additionalInfoSpecified>
+                                      <localeSpecified dataType="bit" bitLength="1">false</localeSpecified>
+                                      <localizedTextSpecified dataType="bit" bitLength="1">false</localizedTextSpecified>
+                                      <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                      <symbolicIdSpecified dataType="bit" bitLength="1">false</symbolicIdSpecified>
+                                    </DiagnosticInfo>
+                                  </serviceDiagnostics>
+                                  <noOfStringTable dataType="int" bitLength="32">-1</noOfStringTable>
+                                  <additionalHeader>
+                                    <ExtensionObject>
+                                      <typeId>
+                                        <ExpandedNodeId>
+                                          <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                          <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                                          <nodeId>
+                                            <NodeIdTypeDefinition>
+                                              <nodeType>
+                                                <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                              </nodeType>
+                                              <NodeIdTwoByte>
+                                                <id dataType="uint" bitLength="8">0</id>
+                                              </NodeIdTwoByte>
+                                            </NodeIdTypeDefinition>
+                                          </nodeId>
+                                        </ExpandedNodeId>
+                                      </typeId>
+                                      <ExtensionObjectWithMask>
+                                        <encodingMask>
+                                          <ExtensionObjectEncodingMask>
+                                            <reserved dataType="int" bitLength="5">0</reserved>
+                                            <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                                            <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                                            <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                                          </ExtensionObjectEncodingMask>
+                                        </encodingMask>
+                                        <NullExtensionObjectWithMask>
+                                        </NullExtensionObjectWithMask>
+                                      </ExtensionObjectWithMask>
+                                    </ExtensionObject>
+                                  </additionalHeader>
+                                </ResponseHeader>
+                              </ExtensionObjectDefinition>
+                            </responseHeader>
+                            <sessionId>
+                              <NodeId>
+                                <reserved dataType="int" bitLength="2">0</reserved>
+                                <nodeId>
+                                  <NodeIdTypeDefinition>
+                                    <nodeType>
+                                      <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeString">3</NodeIdType>
+                                    </nodeType>
+                                    <NodeIdString>
+                                      <namespaceIndex dataType="uint" bitLength="16">1</namespaceIndex>
+                                      <id>
+                                        <PascalString>
+                                          <sLength dataType="int" bitLength="32">44</sLength>
+                                          <stringValue dataType="string" bitLength="352" encoding="UTF-8">Session:9f4a975a-9f74-43f8-8a01-a0b6cc325cc9</stringValue>
+                                        </PascalString>
+                                      </id>
+                                    </NodeIdString>
+                                  </NodeIdTypeDefinition>
+                                </nodeId>
+                              </NodeId>
+                            </sessionId>
+                            <authenticationToken>
+                              <NodeId>
+                                <reserved dataType="int" bitLength="2">0</reserved>
+                                <nodeId>
+                                  <NodeIdTypeDefinition>
+                                    <nodeType>
+                                      <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeByteString">5</NodeIdType>
+                                    </nodeType>
+                                    <NodeIdByteString>
+                                      <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                      <id>
+                                        <PascalByteString>
+                                          <stringLength dataType="int" bitLength="32">32</stringLength>
+                                          <stringValue dataType="byte" bitLength="256">0x6160517155af26284e1e1d4968484405e2d18a00ed6dab32a2ef44c996d86925</stringValue>
+                                        </PascalByteString>
+                                      </id>
+                                    </NodeIdByteString>
+                                  </NodeIdTypeDefinition>
+                                </nodeId>
+                              </NodeId>
+                            </authenticationToken>
+                            <revisedSessionTimeout dataType="float" bitLength="64">120000.0</revisedSessionTimeout>
+                            <serverNonce>
+                              <PascalByteString>
+                                <stringLength dataType="int" bitLength="32">32</stringLength>
+                                <stringValue dataType="byte" bitLength="256">0x64fc10fa00582aa654f211eec59b9b45972d5663511af8917c8c715e1ed58555</stringValue>
+                              </PascalByteString>
+                            </serverNonce>
+                            <serverCertificate>
+                              <PascalByteString>
+                                <stringLength dataType="int" bitLength="32">1222</stringLength>
+                                <stringValue dataType="byte" bitLength="9776">0x308204c2308203aaa00302010202060192daaf4928300d06092a864886f70d01010b050030763124302206035504030c1b45636c69707365204d696c6f204578616d706c652053657276657231153013060355040a0c0c6469676974616c7065747269310c300a060355040b0c03646576310f300d06035504070c06466f6c736f6d310b300906035504080c024341310b3009060355040613025553301e170d3234313032393233303030305a170d3237313032393232303030305a30763124302206035504030c1b45636c69707365204d696c6f204578616d706c652053657276657231153013060355040a0c0c6469676974616c7065747269310c300a060355040b0c03646576310f300d06035504070c06466f6c736f6d310b300906035504080c024341310b300906035504061302555330820122300d06092a864886f70d01010105000382010f003082010a0282010100bcf039c878db79487e3ce9571d54858e1b46f76476b7a00a8a7eba602a67c06dc924e52b3c6a78bdb6ba1c948490b21954b116128b61caa2c3b1083a81f8459cd42b34e2f672b7703a1016ab19a97c22056caa3bed70e730fa1c0eb00786b47f05012b5a1d4d3716e34c1da8173c91291194f1b38b7dbfc11581ce7e44d93501d81bed0b4daf0d3a6ebcf71d90443439fd95a3bb0574342d9e2e560cc66311c5c89107fd6c90041bf7f8ad4729c67088931268bb7433b70375fd8f301fecd9a27ef8c41c2657f70554398c91846536026baf8dc5a64a2a096a1c97ca5e534f65122d0e2feb78a3dfcd28770b49afbb9ee3ddd85a6c3bd06f81190ef5b82026730203010001a382015430820150301f0603551d230418301680149b1b32655e707e5045c1c755ff716ece6d28ed8930090603551d1304023000300b0603551d0f0404030202f4301d0603551d250416301406082b0601050507030206082b060105050703013081d60603551d110481ce3081cb864575726e3a65636c697073653a6d696c6f3a6578616d706c65733a7365727665723a37386335666137322d373232342d343338362d613263642d3131636630313036636535658204617263688704ac1600018704ac1900018704ac1b000187040a0b14018704ac1d00018704ac1800018704ac1200018704c0a820018704c0a830018704ac1400018704c0a810018704ac1f00018704ac15000187040a0a14018704ac1c00018704c0a8026a8704ac1a00018704ac1e00018704ac1700018704ac1100018704ac130001301d0603551d0e041604149b1b32655e707e5045c1c755ff716ece6d28ed89300d06092a864886f70d01010b050003820101006222edfffd42ca65cd19509f8f6eacbe1479043a3327ed46804fd70c3652845bb2df9961d3a6befb7e5cc46e7cee139607690558d32bde3eb1f60329ce261d44622c61c3078abc187b9e0597db3572c9ea9dc3ff0b2b9c12f6eedb24d417edf69b0b39af4f7c71c18d8d04b8dd3d92f60d20ae507859dc7a68589dee4fef5fb5e5dd1e1a9239a040ea2efbd67a34a6ff6d61460b3c13ae5dfe00c82bc3367909684e577cb41be709632285bce066bdd8802889eabea425845c4d0b500b9ef6de3f19c787eedb15922161bf05ddcd0fa39a32eea264c738f120099f4cdf8b9e74cf1fa354c9f1cfc21d5d9a87e5923425a8e47ada642327d435ce8e7cc6b99e85</stringValue>
+                              </PascalByteString>
+                            </serverCertificate>
+                            <noOfServerEndpoints dataType="int" bitLength="32">1</noOfServerEndpoints>
+                            <serverEndpoints isList="true">
+                              <ExtensionObjectDefinition>
+                                <EndpointDescription>
+                                  <endpointUrl>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">25</sLength>
+                                      <stringValue dataType="string" bitLength="200" encoding="UTF-8">opc.tcp://hurz</stringValue>
+                                    </PascalString>
+                                  </endpointUrl>
+                                  <server>
+                                    <ExtensionObjectDefinition>
+                                      <ApplicationDescription>
+                                        <applicationUri>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">69</sLength>
+                                            <stringValue dataType="string" bitLength="552" encoding="UTF-8">urn:eclipse:milo:examples:server:78c5fa72-7224-4386-a2cd-11cf0106ce5e</stringValue>
+                                          </PascalString>
+                                        </applicationUri>
+                                        <productUri>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">-1</sLength>
+                                          </PascalString>
+                                        </productUri>
+                                        <applicationName>
+                                          <LocalizedText>
+                                            <reserved dataType="uint" bitLength="6">0</reserved>
+                                            <textSpecified dataType="bit" bitLength="1">false</textSpecified>
+                                            <localeSpecified dataType="bit" bitLength="1">false</localeSpecified>
+                                          </LocalizedText>
+                                        </applicationName>
+                                        <applicationType>
+                                          <ApplicationType dataType="uint" bitLength="32" stringRepresentation="applicationTypeServer">0</ApplicationType>
+                                        </applicationType>
+                                        <gatewayServerUri>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">-1</sLength>
+                                          </PascalString>
+                                        </gatewayServerUri>
+                                        <discoveryProfileUri>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">-1</sLength>
+                                          </PascalString>
+                                        </discoveryProfileUri>
+                                        <noOfDiscoveryUrls dataType="int" bitLength="32">-1</noOfDiscoveryUrls>
+                                      </ApplicationDescription>
+                                    </ExtensionObjectDefinition>
+                                  </server>
+                                  <serverCertificate>
+                                    <PascalByteString>
+                                      <stringLength dataType="int" bitLength="32">-1</stringLength>
+                                      <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                                    </PascalByteString>
+                                  </serverCertificate>
+                                  <securityMode>
+                                    <MessageSecurityMode dataType="uint" bitLength="32" stringRepresentation="messageSecurityModeNone">1</MessageSecurityMode>
+                                  </securityMode>
+                                  <securityPolicyUri>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">47</sLength>
+                                      <stringValue dataType="string" bitLength="376" encoding="UTF-8">http://opcfoundation.org/UA/SecurityPolicy#None</stringValue>
+                                    </PascalString>
+                                  </securityPolicyUri>
+                                  <noOfUserIdentityTokens dataType="int" bitLength="32">3</noOfUserIdentityTokens>
+                                  <userIdentityTokens isList="true">
+                                    <ExtensionObjectDefinition>
+                                      <UserTokenPolicy>
+                                        <policyId>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">9</sLength>
+                                            <stringValue dataType="string" bitLength="72" encoding="UTF-8">anonymous</stringValue>
+                                          </PascalString>
+                                        </policyId>
+                                        <tokenType>
+                                          <UserTokenType dataType="uint" bitLength="32" stringRepresentation="userTokenTypeAnonymous">0</UserTokenType>
+                                        </tokenType>
+                                        <issuedTokenType>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">-1</sLength>
+                                          </PascalString>
+                                        </issuedTokenType>
+                                        <issuerEndpointUrl>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">-1</sLength>
+                                          </PascalString>
+                                        </issuerEndpointUrl>
+                                        <securityPolicyUri>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">-1</sLength>
+                                          </PascalString>
+                                        </securityPolicyUri>
+                                      </UserTokenPolicy>
+                                    </ExtensionObjectDefinition>
+                                    <ExtensionObjectDefinition>
+                                      <UserTokenPolicy>
+                                        <policyId>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">8</sLength>
+                                            <stringValue dataType="string" bitLength="64" encoding="UTF-8">username</stringValue>
+                                          </PascalString>
+                                        </policyId>
+                                        <tokenType>
+                                          <UserTokenType dataType="uint" bitLength="32" stringRepresentation="userTokenTypeUserName">1</UserTokenType>
+                                        </tokenType>
+                                        <issuedTokenType>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">-1</sLength>
+                                          </PascalString>
+                                        </issuedTokenType>
+                                        <issuerEndpointUrl>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">-1</sLength>
+                                          </PascalString>
+                                        </issuerEndpointUrl>
+                                        <securityPolicyUri>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">51</sLength>
+                                            <stringValue dataType="string" bitLength="408" encoding="UTF-8">http://opcfoundation.org/UA/SecurityPolicy#Basic256</stringValue>
+                                          </PascalString>
+                                        </securityPolicyUri>
+                                      </UserTokenPolicy>
+                                    </ExtensionObjectDefinition>
+                                    <ExtensionObjectDefinition>
+                                      <UserTokenPolicy>
+                                        <policyId>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">11</sLength>
+                                            <stringValue dataType="string" bitLength="88" encoding="UTF-8">certificate</stringValue>
+                                          </PascalString>
+                                        </policyId>
+                                        <tokenType>
+                                          <UserTokenType dataType="uint" bitLength="32" stringRepresentation="userTokenTypeCertificate">2</UserTokenType>
+                                        </tokenType>
+                                        <issuedTokenType>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">-1</sLength>
+                                          </PascalString>
+                                        </issuedTokenType>
+                                        <issuerEndpointUrl>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">-1</sLength>
+                                          </PascalString>
+                                        </issuerEndpointUrl>
+                                        <securityPolicyUri>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">51</sLength>
+                                            <stringValue dataType="string" bitLength="408" encoding="UTF-8">http://opcfoundation.org/UA/SecurityPolicy#Basic256</stringValue>
+                                          </PascalString>
+                                        </securityPolicyUri>
+                                      </UserTokenPolicy>
+                                    </ExtensionObjectDefinition>
+                                  </userIdentityTokens>
+                                  <transportProfileUri>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">65</sLength>
+                                      <stringValue dataType="string" bitLength="520" encoding="UTF-8">http://opcfoundation.org/UA-Profile/Transport/uatcp-uasc-uabinary</stringValue>
+                                    </PascalString>
+                                  </transportProfileUri>
+                                  <securityLevel dataType="uint" bitLength="8">32</securityLevel>
+                                </EndpointDescription>
+                              </ExtensionObjectDefinition>
+                            </serverEndpoints>
+                            <noOfServerSoftwareCertificates dataType="int" bitLength="32">0</noOfServerSoftwareCertificates>
+                            <serverSoftwareCertificates isList="true">
+                            </serverSoftwareCertificates>
+                            <serverSignature>
+                              <ExtensionObjectDefinition>
+                                <SignatureData>
+                                  <algorithm>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">-1</sLength>
+                                    </PascalString>
+                                  </algorithm>
+                                  <signature>
+                                    <PascalByteString>
+                                      <stringLength dataType="int" bitLength="32">-1</stringLength>
+                                      <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                                    </PascalByteString>
+                                  </signature>
+                                </SignatureData>
+                              </ExtensionObjectDefinition>
+                            </serverSignature>
+                            <maxRequestMessageSize dataType="uint" bitLength="32">2097152</maxRequestMessageSize>
+                          </CreateSessionResponse>
+                        </ExtensionObjectDefinition>
+                      </body>
+                    </RootExtensionObject>
+                  </ExtensionObject>
+                </payload>
+              </ExtensiblePayload>
+            </Payload>
+          </message>
+        </OpcuaMessageResponse>
+      </MessagePDU>
+    </incoming-plc-message>
+
+    <outgoing-plc-message name="Send Activate Session Request">
+      <parser-arguments>
+        <response>false</response>
+        <binary>false</binary>
+      </parser-arguments>
+      <MessagePDU>
+        <messageType dataType="string" bitLength="24" encoding="UTF-8">MSG</messageType>
+        <chunk>
+          <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+        </chunk>
+        <totalLength dataType="uint" bitLength="32">140</totalLength>
+        <OpcuaMessageRequest>
+          <securityHeader>
+            <SecurityHeader>
+              <secureChannelId dataType="uint" bitLength="32">2</secureChannelId>
+              <secureTokenId dataType="uint" bitLength="32">2</secureTokenId>
+            </SecurityHeader>
+          </securityHeader>
+          <message>
+            <Payload>
+              <sequenceHeader>
+                <SequenceHeader>
+                  <sequenceNumber dataType="int" bitLength="32">3</sequenceNumber>
+                  <requestId dataType="int" bitLength="32">3</requestId>
+                </SequenceHeader>
+              </sequenceHeader>
+              <ExtensiblePayload>
+                <payload>
+                  <ExtensionObject>
+                    <typeId>
+                      <ExpandedNodeId>
+                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                        <nodeId>
+                          <NodeIdTypeDefinition>
+                            <nodeType>
+                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                            </nodeType>
+                            <NodeIdFourByte>
+                              <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                              <id dataType="uint" bitLength="16">467</id>
+                            </NodeIdFourByte>
+                          </NodeIdTypeDefinition>
+                        </nodeId>
+                      </ExpandedNodeId>
+                    </typeId>
+                    <RootExtensionObject>
+                      <body>
+                        <ExtensionObjectDefinition>
+                          <ActivateSessionRequest>
+                            <requestHeader>
+                              <ExtensionObjectDefinition>
+                                <RequestHeader>
+                                  <authenticationToken>
+                                    <NodeId>
+                                      <reserved dataType="int" bitLength="2">0</reserved>
+                                      <nodeId>
+                                        <NodeIdTypeDefinition>
+                                          <nodeType>
+                                            <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeByteString">5</NodeIdType>
+                                          </nodeType>
+                                          <NodeIdByteString>
+                                            <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                            <id>
+                                              <PascalByteString>
+                                                <stringLength dataType="int" bitLength="32">32</stringLength>
+                                                <stringValue dataType="byte" bitLength="256">0x6160517155af26284e1e1d4968484405e2d18a00ed6dab32a2ef44c996d86925</stringValue>
+                                              </PascalByteString>
+                                            </id>
+                                          </NodeIdByteString>
+                                        </NodeIdTypeDefinition>
+                                      </nodeId>
+                                    </NodeId>
+                                  </authenticationToken>
+                                  <timestamp dataType="int" bitLength="64" plc4x-skip-comparison="true">0</timestamp>
+                                  <requestHandle dataType="uint" bitLength="32">2</requestHandle>
+                                  <returnDiagnostics dataType="uint" bitLength="32">0</returnDiagnostics>
+                                  <auditEntryId>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">0</sLength>
+                                      <stringValue dataType="string" bitLength="0" encoding="UTF-8"></stringValue>
+                                    </PascalString>
+                                  </auditEntryId>
+                                  <timeoutHint dataType="uint" bitLength="32">30000</timeoutHint>
+                                  <additionalHeader>
+                                    <ExtensionObject>
+                                      <typeId>
+                                        <ExpandedNodeId>
+                                          <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                          <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                                          <nodeId>
+                                            <NodeIdTypeDefinition>
+                                              <nodeType>
+                                                <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                              </nodeType>
+                                              <NodeIdTwoByte>
+                                                <id dataType="uint" bitLength="8">0</id>
+                                              </NodeIdTwoByte>
+                                            </NodeIdTypeDefinition>
+                                          </nodeId>
+                                        </ExpandedNodeId>
+                                      </typeId>
+                                      <ExtensionObjectWithMask>
+                                        <encodingMask>
+                                          <ExtensionObjectEncodingMask>
+                                            <reserved dataType="int" bitLength="5">0</reserved>
+                                            <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                                            <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                                            <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                                          </ExtensionObjectEncodingMask>
+                                        </encodingMask>
+                                        <NullExtensionObjectWithMask>
+                                        </NullExtensionObjectWithMask>
+                                      </ExtensionObjectWithMask>
+                                    </ExtensionObject>
+                                  </additionalHeader>
+                                </RequestHeader>
+                              </ExtensionObjectDefinition>
+                            </requestHeader>
+                            <clientSignature>
+                              <ExtensionObjectDefinition>
+                                <SignatureData>
+                                  <algorithm>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">0</sLength>
+                                      <stringValue dataType="string" bitLength="0" encoding="UTF-8"></stringValue>
+                                    </PascalString>
+                                  </algorithm>
+                                  <signature>
+                                    <PascalByteString>
+                                      <stringLength dataType="int" bitLength="32">-1</stringLength>
+                                      <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                                    </PascalByteString>
+                                  </signature>
+                                </SignatureData>
+                              </ExtensionObjectDefinition>
+                            </clientSignature>
+                            <noOfClientSoftwareCertificates dataType="int" bitLength="32">-1</noOfClientSoftwareCertificates>
+                            <noOfLocaleIds dataType="int" bitLength="32">-1</noOfLocaleIds>
+                            <userIdentityToken>
+                              <ExtensionObject>
+                                <typeId>
+                                  <ExpandedNodeId>
+                                    <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                    <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                                    <nodeId>
+                                      <NodeIdTypeDefinition>
+                                        <nodeType>
+                                          <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                                        </nodeType>
+                                        <NodeIdFourByte>
+                                          <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                          <id dataType="uint" bitLength="16">321</id>
+                                        </NodeIdFourByte>
+                                      </NodeIdTypeDefinition>
+                                    </nodeId>
+                                  </ExpandedNodeId>
+                                </typeId>
+                                <ExtensionObjectWithMask>
+                                  <encodingMask>
+                                    <ExtensionObjectEncodingMask>
+                                      <reserved dataType="int" bitLength="5">0</reserved>
+                                      <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                                      <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                                      <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+                                    </ExtensionObjectEncodingMask>
+                                  </encodingMask>
+                                  <BinaryExtensionObjectWithMask>
+                                    <bodyLength dataType="int" bitLength="32">13</bodyLength>
+                                    <body>
+                                      <ExtensionObjectDefinition>
+                                        <AnonymousIdentityToken>
+                                          <policyId>
+                                            <PascalString>
+                                              <sLength dataType="int" bitLength="32">9</sLength>
+                                              <stringValue dataType="string" bitLength="72" encoding="UTF-8">anonymous</stringValue>
+                                            </PascalString>
+                                          </policyId>
+                                        </AnonymousIdentityToken>
+                                      </ExtensionObjectDefinition>
+                                    </body>
+                                  </BinaryExtensionObjectWithMask>
+                                </ExtensionObjectWithMask>
+                              </ExtensionObject>
+                            </userIdentityToken>
+                            <userTokenSignature>
+                              <ExtensionObjectDefinition>
+                                <SignatureData>
+                                  <algorithm>
+                                    <PascalString>
+                                      <sLength dataType="int" bitLength="32">0</sLength>
+                                      <stringValue dataType="string" bitLength="0" encoding="UTF-8"></stringValue>
+                                    </PascalString>
+                                  </algorithm>
+                                  <signature>
+                                    <PascalByteString>
+                                      <stringLength dataType="int" bitLength="32">-1</stringLength>
+                                      <stringValue dataType="byte" bitLength="0">0x</stringValue>
+                                    </PascalByteString>
+                                  </signature>
+                                </SignatureData>
+                              </ExtensionObjectDefinition>
+                            </userTokenSignature>
+                          </ActivateSessionRequest>
+                        </ExtensionObjectDefinition>
+                      </body>
+                    </RootExtensionObject>
+                  </ExtensionObject>
+                </payload>
+              </ExtensiblePayload>
+            </Payload>
+          </message>
+        </OpcuaMessageRequest>
+      </MessagePDU>
+    </outgoing-plc-message>
+
+    <incoming-plc-message name="Receive Activate Session Response">
+      <parser-arguments>
+        <response>true</response>
+        <binary>false</binary>
+      </parser-arguments>
+      <MessagePDU>
+        <messageType dataType="string" bitLength="24" encoding="UTF-8">MSG</messageType>
+        <chunk>
+          <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+        </chunk>
+        <totalLength dataType="uint" bitLength="32">96</totalLength>
+        <OpcuaMessageResponse>
+          <securityHeader>
+            <SecurityHeader>
+              <secureChannelId dataType="uint" bitLength="32">2</secureChannelId>
+              <secureTokenId dataType="uint" bitLength="32">2</secureTokenId>
+            </SecurityHeader>
+          </securityHeader>
+          <message>
+            <Payload>
+              <sequenceHeader>
+                <SequenceHeader>
+                  <sequenceNumber dataType="int" bitLength="32">3</sequenceNumber>
+                  <requestId dataType="int" bitLength="32">3</requestId>
+                </SequenceHeader>
+              </sequenceHeader>
+              <ExtensiblePayload>
+                <payload>
+                  <ExtensionObject>
+                    <typeId>
+                      <ExpandedNodeId>
+                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                        <nodeId>
+                          <NodeIdTypeDefinition>
+                            <nodeType>
+                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                            </nodeType>
+                            <NodeIdFourByte>
+                              <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                              <id dataType="uint" bitLength="16">470</id>
+                            </NodeIdFourByte>
+                          </NodeIdTypeDefinition>
+                        </nodeId>
+                      </ExpandedNodeId>
+                    </typeId>
+                    <RootExtensionObject>
+                      <body>
+                        <ExtensionObjectDefinition>
+                          <ActivateSessionResponse>
+                            <responseHeader>
+                              <ExtensionObjectDefinition>
+                                <ResponseHeader>
+                                  <timestamp dataType="int" bitLength="64">133747673167520000</timestamp>
+                                  <requestHandle dataType="uint" bitLength="32">2</requestHandle>
+                                  <serviceResult>
+                                    <StatusCode>
+                                      <statusCode dataType="uint" bitLength="32">0</statusCode>
+                                    </StatusCode>
+                                  </serviceResult>
+                                  <serviceDiagnostics>
+                                    <DiagnosticInfo>
+                                      <reserved dataType="bit" bitLength="1">false</reserved>
+                                      <innerDiagnosticInfoSpecified dataType="bit" bitLength="1">false</innerDiagnosticInfoSpecified>
+                                      <innerStatusCodeSpecified dataType="bit" bitLength="1">false</innerStatusCodeSpecified>
+                                      <additionalInfoSpecified dataType="bit" bitLength="1">false</additionalInfoSpecified>
+                                      <localeSpecified dataType="bit" bitLength="1">false</localeSpecified>
+                                      <localizedTextSpecified dataType="bit" bitLength="1">false</localizedTextSpecified>
+                                      <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                      <symbolicIdSpecified dataType="bit" bitLength="1">false</symbolicIdSpecified>
+                                    </DiagnosticInfo>
+                                  </serviceDiagnostics>
+                                  <noOfStringTable dataType="int" bitLength="32">-1</noOfStringTable>
+                                  <additionalHeader>
+                                    <ExtensionObject>
+                                      <typeId>
+                                        <ExpandedNodeId>
+                                          <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                          <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                                          <nodeId>
+                                            <NodeIdTypeDefinition>
+                                              <nodeType>
+                                                <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                              </nodeType>
+                                              <NodeIdTwoByte>
+                                                <id dataType="uint" bitLength="8">0</id>
+                                              </NodeIdTwoByte>
+                                            </NodeIdTypeDefinition>
+                                          </nodeId>
+                                        </ExpandedNodeId>
+                                      </typeId>
+                                      <ExtensionObjectWithMask>
+                                        <encodingMask>
+                                          <ExtensionObjectEncodingMask>
+                                            <reserved dataType="int" bitLength="5">0</reserved>
+                                            <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                                            <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                                            <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                                          </ExtensionObjectEncodingMask>
+                                        </encodingMask>
+                                        <NullExtensionObjectWithMask>
+                                        </NullExtensionObjectWithMask>
+                                      </ExtensionObjectWithMask>
+                                    </ExtensionObject>
+                                  </additionalHeader>
+                                </ResponseHeader>
+                              </ExtensionObjectDefinition>
+                            </responseHeader>
+                            <serverNonce>
+                              <PascalByteString>
+                                <stringLength dataType="int" bitLength="32">32</stringLength>
+                                <stringValue dataType="byte" bitLength="256">0x176c1d0bb34ca7db0a00f71b604d3c06e83930d46e66d8451a6dbe4ab431420b</stringValue>
+                              </PascalByteString>
+                            </serverNonce>
+                            <noOfResults dataType="int" bitLength="32">0</noOfResults>
+                            <results isList="true">
+                            </results>
+                            <noOfDiagnosticInfos dataType="int" bitLength="32">0</noOfDiagnosticInfos>
+                            <diagnosticInfos isList="true">
+                            </diagnosticInfos>
+                          </ActivateSessionResponse>
+                        </ExtensionObjectDefinition>
+                      </body>
+                    </RootExtensionObject>
+                  </ExtensionObject>
+                </payload>
+              </ExtensiblePayload>
+            </Payload>
+          </message>
+        </OpcuaMessageResponse>
+      </MessagePDU>
+    </incoming-plc-message>
+  </setup>
+  
   <testcase>
-    <name>Hello Request Response</name>
+    <name>Read tag</name>
     <steps>
-      <outgoing-plc-message name="Send Opcua Hello Packet">
+      <!-- Submit read request -->
+      <api-request name="Read Server Time">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>time</name>
+              <address>ns=0;i=2258</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+
+      <outgoing-plc-message name="Send read request">
         <parser-arguments>
           <response>false</response>
+          <binary>false</binary>
         </parser-arguments>
         <MessagePDU>
-          <messageType dataType="string" bitLength="24" encoding="UTF-8">HEL</messageType>
-          <OpcuaHelloRequest>
-            <chunk dataType="string" bitLength="8" encoding="UTF-8">F</chunk>
-            <messageSize dataType="int" bitLength="32">47</messageSize>
-            <version dataType="int" bitLength="32">0</version>
-            <receiveBufferSize dataType="int" bitLength="32">65535</receiveBufferSize>
-            <sendBufferSize dataType="int" bitLength="32">65535</sendBufferSize>
-            <maxMessageSize dataType="int" bitLength="32">2097152</maxMessageSize>
-            <maxChunkCount dataType="int" bitLength="32">64</maxChunkCount>
-            <endpoint>
-              <PascalString>
-                <sLength dataType="int" bitLength="32">15</sLength>
-                <stringValue dataType="string" bitLength="120" encoding="UTF-8">opc.test://hurz</stringValue>
-              </PascalString>
-            </endpoint>
-          </OpcuaHelloRequest>
+          <messageType dataType="string" bitLength="24" encoding="UTF-8">MSG</messageType>
+          <chunk>
+            <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+          </chunk>
+          <totalLength dataType="uint" bitLength="32">131</totalLength>
+          <OpcuaMessageRequest>
+            <securityHeader>
+              <SecurityHeader>
+                <secureChannelId dataType="uint" bitLength="32">2</secureChannelId>
+                <secureTokenId dataType="uint" bitLength="32">2</secureTokenId>
+              </SecurityHeader>
+            </securityHeader>
+            <message>
+              <Payload>
+                <sequenceHeader>
+                  <SequenceHeader>
+                    <sequenceNumber dataType="int" bitLength="32">4</sequenceNumber>
+                    <requestId dataType="int" bitLength="32">4</requestId>
+                  </SequenceHeader>
+                </sequenceHeader>
+                <ExtensiblePayload>
+                  <payload>
+                    <ExtensionObject>
+                      <typeId>
+                        <ExpandedNodeId>
+                          <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                          <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                          <nodeId>
+                            <NodeIdTypeDefinition>
+                              <nodeType>
+                                <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                              </nodeType>
+                              <NodeIdFourByte>
+                                <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                <id dataType="uint" bitLength="16">631</id>
+                              </NodeIdFourByte>
+                            </NodeIdTypeDefinition>
+                          </nodeId>
+                        </ExpandedNodeId>
+                      </typeId>
+                      <RootExtensionObject>
+                        <body>
+                          <ExtensionObjectDefinition>
+                            <ReadRequest>
+                              <requestHeader>
+                                <ExtensionObjectDefinition>
+                                  <RequestHeader>
+                                    <authenticationToken>
+                                      <NodeId>
+                                        <reserved dataType="int" bitLength="2">0</reserved>
+                                        <nodeId>
+                                          <NodeIdTypeDefinition>
+                                            <nodeType>
+                                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeByteString">5</NodeIdType>
+                                            </nodeType>
+                                            <NodeIdByteString>
+                                              <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                              <id>
+                                                <PascalByteString>
+                                                  <stringLength dataType="int" bitLength="32">32</stringLength>
+                                                  <stringValue dataType="byte" bitLength="256">0x6160517155af26284e1e1d4968484405e2d18a00ed6dab32a2ef44c996d86925</stringValue>
+                                                </PascalByteString>
+                                              </id>
+                                            </NodeIdByteString>
+                                          </NodeIdTypeDefinition>
+                                        </nodeId>
+                                      </NodeId>
+                                    </authenticationToken>
+                                    <timestamp dataType="int" bitLength="64" plc4x-skip-comparison="true">0</timestamp>
+                                    <requestHandle dataType="uint" bitLength="32">3</requestHandle>
+                                    <returnDiagnostics dataType="uint" bitLength="32">0</returnDiagnostics>
+                                    <auditEntryId>
+                                      <PascalString>
+                                        <sLength dataType="int" bitLength="32">0</sLength>
+                                        <stringValue dataType="string" bitLength="0" encoding="UTF-8"></stringValue>
+                                      </PascalString>
+                                    </auditEntryId>
+                                    <timeoutHint dataType="uint" bitLength="32">30000</timeoutHint>
+                                    <additionalHeader>
+                                      <ExtensionObject>
+                                        <typeId>
+                                          <ExpandedNodeId>
+                                            <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                            <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                                            <nodeId>
+                                              <NodeIdTypeDefinition>
+                                                <nodeType>
+                                                  <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                                </nodeType>
+                                                <NodeIdTwoByte>
+                                                  <id dataType="uint" bitLength="8">0</id>
+                                                </NodeIdTwoByte>
+                                              </NodeIdTypeDefinition>
+                                            </nodeId>
+                                          </ExpandedNodeId>
+                                        </typeId>
+                                        <ExtensionObjectWithMask>
+                                          <encodingMask>
+                                            <ExtensionObjectEncodingMask>
+                                              <reserved dataType="int" bitLength="5">0</reserved>
+                                              <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                                              <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                                              <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                                            </ExtensionObjectEncodingMask>
+                                          </encodingMask>
+                                          <NullExtensionObjectWithMask>
+                                          </NullExtensionObjectWithMask>
+                                        </ExtensionObjectWithMask>
+                                      </ExtensionObject>
+                                    </additionalHeader>
+                                  </RequestHeader>
+                                </ExtensionObjectDefinition>
+                              </requestHeader>
+                              <maxAge dataType="float" bitLength="64">0.0</maxAge>
+                              <timestampsToReturn>
+                                <TimestampsToReturn dataType="uint" bitLength="32" stringRepresentation="timestampsToReturnBoth">2</TimestampsToReturn>
+                              </timestampsToReturn>
+                              <noOfNodesToRead dataType="int" bitLength="32">1</noOfNodesToRead>
+                              <nodesToRead isList="true">
+                                <ExtensionObjectDefinition>
+                                  <ReadValueId>
+                                    <nodeId>
+                                      <NodeId>
+                                        <reserved dataType="int" bitLength="2">0</reserved>
+                                        <nodeId>
+                                          <NodeIdTypeDefinition>
+                                            <nodeType>
+                                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeNumeric">2</NodeIdType>
+                                            </nodeType>
+                                            <NodeIdNumeric>
+                                              <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                              <id dataType="uint" bitLength="32">2258</id>
+                                            </NodeIdNumeric>
+                                          </NodeIdTypeDefinition>
+                                        </nodeId>
+                                      </NodeId>
+                                    </nodeId>
+                                    <attributeId dataType="uint" bitLength="32">13</attributeId>
+                                    <indexRange>
+                                      <PascalString>
+                                        <sLength dataType="int" bitLength="32">-1</sLength>
+                                      </PascalString>
+                                    </indexRange>
+                                    <dataEncoding>
+                                      <QualifiedName>
+                                        <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                        <name>
+                                          <PascalString>
+                                            <sLength dataType="int" bitLength="32">-1</sLength>
+                                          </PascalString>
+                                        </name>
+                                      </QualifiedName>
+                                    </dataEncoding>
+                                  </ReadValueId>
+                                </ExtensionObjectDefinition>
+                              </nodesToRead>
+                            </ReadRequest>
+                          </ExtensionObjectDefinition>
+                        </body>
+                      </RootExtensionObject>
+                    </ExtensionObject>
+                  </payload>
+                </ExtensiblePayload>
+              </Payload>
+            </message>
+          </OpcuaMessageRequest>
         </MessagePDU>
       </outgoing-plc-message>
 
-      <incoming-plc-message name="Receive Acknowledgement Response">
+      <incoming-plc-message name="Receive read response">
         <parser-arguments>
           <response>true</response>
+          <binary>false</binary>
         </parser-arguments>
         <MessagePDU>
-          <messageType dataType="string" bitLength="24">ACK</messageType>
-          <OpcuaAcknowledgeResponse>
-            <chunk dataType="string" bitLength="8">F</chunk>
-            <messageSize dataType="int" bitLength="32">24</messageSize>
-            <version dataType="int" bitLength="32">0</version>
-            <receiveBufferSize dataType="int" bitLength="32">65535</receiveBufferSize>
-            <sendBufferSize dataType="int" bitLength="32">65535</sendBufferSize>
-            <maxMessageSize dataType="int" bitLength="32">2097152</maxMessageSize>
-            <maxChunkCount dataType="int" bitLength="32">64</maxChunkCount>
-          </OpcuaAcknowledgeResponse>
+          <messageType dataType="string" bitLength="24" encoding="UTF-8">MSG</messageType>
+          <chunk>
+            <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+          </chunk>
+          <totalLength dataType="uint" bitLength="32">70</totalLength>
+          <OpcuaMessageResponse>
+            <securityHeader>
+              <SecurityHeader>
+                <secureChannelId dataType="uint" bitLength="32">2</secureChannelId>
+                <secureTokenId dataType="uint" bitLength="32">2</secureTokenId>
+              </SecurityHeader>
+            </securityHeader>
+            <message>
+              <Payload>
+                <sequenceHeader>
+                  <SequenceHeader>
+                    <sequenceNumber dataType="int" bitLength="32">4</sequenceNumber>
+                    <requestId dataType="int" bitLength="32">4</requestId>
+                  </SequenceHeader>
+                </sequenceHeader>
+                <ExtensiblePayload>
+                  <payload>
+                    <ExtensionObject>
+                      <typeId>
+                        <ExpandedNodeId>
+                          <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                          <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                          <nodeId>
+                            <NodeIdTypeDefinition>
+                              <nodeType>
+                                <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                              </nodeType>
+                              <NodeIdFourByte>
+                                <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                <id dataType="uint" bitLength="16">634</id>
+                              </NodeIdFourByte>
+                            </NodeIdTypeDefinition>
+                          </nodeId>
+                        </ExpandedNodeId>
+                      </typeId>
+                      <RootExtensionObject>
+                        <body>
+                          <ExtensionObjectDefinition>
+                            <ReadResponse>
+                              <responseHeader>
+                                <ExtensionObjectDefinition>
+                                  <ResponseHeader>
+                                    <timestamp dataType="int" bitLength="64">133748547148430000</timestamp>
+                                    <requestHandle dataType="uint" bitLength="32">3</requestHandle>
+                                    <serviceResult>
+                                      <StatusCode>
+                                        <statusCode dataType="uint" bitLength="32">0</statusCode>
+                                      </StatusCode>
+                                    </serviceResult>
+                                    <serviceDiagnostics>
+                                      <DiagnosticInfo>
+                                        <reserved dataType="bit" bitLength="1">false</reserved>
+                                        <innerDiagnosticInfoSpecified dataType="bit" bitLength="1">false</innerDiagnosticInfoSpecified>
+                                        <innerStatusCodeSpecified dataType="bit" bitLength="1">false</innerStatusCodeSpecified>
+                                        <additionalInfoSpecified dataType="bit" bitLength="1">false</additionalInfoSpecified>
+                                        <localeSpecified dataType="bit" bitLength="1">false</localeSpecified>
+                                        <localizedTextSpecified dataType="bit" bitLength="1">false</localizedTextSpecified>
+                                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                        <symbolicIdSpecified dataType="bit" bitLength="1">false</symbolicIdSpecified>
+                                      </DiagnosticInfo>
+                                    </serviceDiagnostics>
+                                    <noOfStringTable dataType="int" bitLength="32">-1</noOfStringTable>
+                                    <additionalHeader>
+                                      <ExtensionObject>
+                                        <typeId>
+                                          <ExpandedNodeId>
+                                            <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                            <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                                            <nodeId>
+                                              <NodeIdTypeDefinition>
+                                                <nodeType>
+                                                  <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                                </nodeType>
+                                                <NodeIdTwoByte>
+                                                  <id dataType="uint" bitLength="8">0</id>
+                                                </NodeIdTwoByte>
+                                              </NodeIdTypeDefinition>
+                                            </nodeId>
+                                          </ExpandedNodeId>
+                                        </typeId>
+                                        <ExtensionObjectWithMask>
+                                          <encodingMask>
+                                            <ExtensionObjectEncodingMask>
+                                              <reserved dataType="int" bitLength="5">0</reserved>
+                                              <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                                              <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                                              <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                                            </ExtensionObjectEncodingMask>
+                                          </encodingMask>
+                                          <NullExtensionObjectWithMask>
+                                          </NullExtensionObjectWithMask>
+                                        </ExtensionObjectWithMask>
+                                      </ExtensionObject>
+                                    </additionalHeader>
+                                  </ResponseHeader>
+                                </ExtensionObjectDefinition>
+                              </responseHeader>
+                              <noOfResults dataType="int" bitLength="32">1</noOfResults>
+                              <results isList="true">
+                                <DataValue>
+                                  <reserved dataType="uint" bitLength="2">0</reserved>
+                                  <serverPicosecondsSpecified dataType="bit" bitLength="1">false</serverPicosecondsSpecified>
+                                  <sourcePicosecondsSpecified dataType="bit" bitLength="1">false</sourcePicosecondsSpecified>
+                                  <serverTimestampSpecified dataType="bit" bitLength="1">false</serverTimestampSpecified>
+                                  <sourceTimestampSpecified dataType="bit" bitLength="1">false</sourceTimestampSpecified>
+                                  <statusCodeSpecified dataType="bit" bitLength="1">false</statusCodeSpecified>
+                                  <valueSpecified dataType="bit" bitLength="1">true</valueSpecified>
+                                  <value>
+                                    <Variant>
+                                      <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                      <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                      <VariantType dataType="uint" bitLength="6">13</VariantType>
+                                      <VariantDateTime>
+                                        <value isList="true">
+                                          <value dataType="int" bitLength="64">133748547148420000</value>
+                                        </value>
+                                      </VariantDateTime>
+                                      <arrayDimensions isList="true">
+                                      </arrayDimensions>
+                                    </Variant>
+                                  </value>
+                                </DataValue>
+                              </results>
+                              <noOfDiagnosticInfos dataType="int" bitLength="32">0</noOfDiagnosticInfos>
+                              <diagnosticInfos isList="true">
+                              </diagnosticInfos>
+                            </ReadResponse>
+                          </ExtensionObjectDefinition>
+                        </body>
+                      </RootExtensionObject>
+                    </ExtensionObject>
+                  </payload>
+                </ExtensiblePayload>
+              </Payload>
+            </message>
+          </OpcuaMessageResponse>
         </MessagePDU>
       </incoming-plc-message>
-<!--
-      <outgoing-plc-message name="Send Opcua Open Request">
+
+      <api-response name="Read response">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <time>
+                    <PlcTagItem>
+                      <tag>
+                        <OpcuaTag>
+                          <nodeId dataType="string" bitLength="88" encoding="UTF-8">ns=0;i=2258</nodeId>
+                          <attributeId dataType="string" bitLength="40" encoding="UTF-8">Value</attributeId>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">NULL</dataType>
+                        </OpcuaTag>
+                      </tag>
+                    </PlcTagItem>
+                  </time>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <time>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcDATE_AND_TIME dataType="string" bitLength="184" encoding="UTF-8">2024-10-31T13:25:14.842</PlcDATE_AND_TIME>
+                </value>
+              </PlcResponseItem>
+            </time>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+
+  </testcase>
+
+  <testcase>
+    <name>Write tag</name>
+    <steps>
+      <!-- Submit read request -->
+      <api-request name="Write Basic Tag">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>test_int64</name>
+              <address>ns=2;s=HelloWorld/ScalarTypes/Int64;LINT</address>
+              <value>1</value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+
+      <outgoing-plc-message name="Send write request">
         <parser-arguments>
           <response>false</response>
+          <binary>false</binary>
         </parser-arguments>
         <MessagePDU>
-          <messageType dataType="string" bitLength="24" encoding="UTF-8">OPN</messageType>
-          <OpcuaOpenRequest>
-            <chunk dataType="string" bitLength="8" encoding="UTF-8">F</chunk>
-            <messageSize dataType="int" bitLength="32">132</messageSize>
-            <secureChannelId dataType="int" bitLength="32">0</secureChannelId>
-            <endpoint>
-              <PascalString>
-                <sLength dataType="int" bitLength="32">47</sLength>
-                <stringValue dataType="string" bitLength="376" encoding="'UTF-8'">http://opcfoundation.org/UA/SecurityPolicy#None</stringValue>
-              </PascalString>
-            </endpoint>
-            <senderCertificate>
-              <PascalByteString>
-                <stringLength dataType="int" bitLength="32">-1</stringLength>
-                <stringValue isList="true">
-                </stringValue>
-              </PascalByteString>
-            </senderCertificate>
-            <receiverCertificateThumbprint>
-              <PascalByteString>
-                <stringLength dataType="int" bitLength="32">-1</stringLength>
-                <stringValue isList="true">
-                </stringValue>
-              </PascalByteString>
-            </receiverCertificateThumbprint>
-            <sequenceNumber dataType="int" bitLength="32">1</sequenceNumber>
-            <requestId dataType="int" bitLength="32">1</requestId>
-            <message dataType="byte" bitLength="424">0x0100be010000f068ddb096d5d7010000000000000000ffffffff10270000000000000000000000000001000000ffffffff00512502</message>
-          </OpcuaOpenRequest>
+          <messageType dataType="string" bitLength="24" encoding="UTF-8">MSG</messageType>
+          <chunk>
+            <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+          </chunk>
+          <totalLength dataType="uint" bitLength="32">151</totalLength>
+          <OpcuaMessageRequest>
+            <securityHeader>
+              <SecurityHeader>
+                <secureChannelId dataType="uint" bitLength="32">2</secureChannelId>
+                <secureTokenId dataType="uint" bitLength="32">2</secureTokenId>
+              </SecurityHeader>
+            </securityHeader>
+            <message>
+              <Payload>
+                <sequenceHeader>
+                  <SequenceHeader>
+                    <sequenceNumber dataType="int" bitLength="32">4</sequenceNumber>
+                    <requestId dataType="int" bitLength="32">4</requestId>
+                  </SequenceHeader>
+                </sequenceHeader>
+                <ExtensiblePayload>
+                  <payload>
+                    <ExtensionObject>
+                      <typeId>
+                        <ExpandedNodeId>
+                          <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                          <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                          <nodeId>
+                            <NodeIdTypeDefinition>
+                              <nodeType>
+                                <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                              </nodeType>
+                              <NodeIdFourByte>
+                                <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                <id dataType="uint" bitLength="16">673</id>
+                              </NodeIdFourByte>
+                            </NodeIdTypeDefinition>
+                          </nodeId>
+                        </ExpandedNodeId>
+                      </typeId>
+                      <RootExtensionObject>
+                        <body>
+                          <ExtensionObjectDefinition>
+                            <WriteRequest>
+                              <requestHeader>
+                                <ExtensionObjectDefinition>
+                                  <RequestHeader>
+                                    <authenticationToken>
+                                      <NodeId>
+                                        <reserved dataType="int" bitLength="2">0</reserved>
+                                        <nodeId>
+                                          <NodeIdTypeDefinition>
+                                            <nodeType>
+                                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeByteString">5</NodeIdType>
+                                            </nodeType>
+                                            <NodeIdByteString>
+                                              <namespaceIndex dataType="uint" bitLength="16">0</namespaceIndex>
+                                              <id>
+                                                <PascalByteString>
+                                                  <stringLength dataType="int" bitLength="32">32</stringLength>
+                                                  <stringValue dataType="byte" bitLength="256">0x6160517155af26284e1e1d4968484405e2d18a00ed6dab32a2ef44c996d86925</stringValue>
+                                                </PascalByteString>
+                                              </id>
+                                            </NodeIdByteString>
+                                          </NodeIdTypeDefinition>
+                                        </nodeId>
+                                      </NodeId>
+                                    </authenticationToken>
+                                    <timestamp dataType="int" bitLength="64" plc4x-skip-comparison="true">0</timestamp>
+                                    <requestHandle dataType="uint" bitLength="32">3</requestHandle>
+                                    <returnDiagnostics dataType="uint" bitLength="32">0</returnDiagnostics>
+                                    <auditEntryId>
+                                      <PascalString>
+                                        <sLength dataType="int" bitLength="32">0</sLength>
+                                        <stringValue dataType="string" bitLength="0" encoding="UTF-8"></stringValue>
+                                      </PascalString>
+                                    </auditEntryId>
+                                    <timeoutHint dataType="uint" bitLength="32">30000</timeoutHint>
+                                    <additionalHeader>
+                                      <ExtensionObject>
+                                        <typeId>
+                                          <ExpandedNodeId>
+                                            <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                            <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                                            <nodeId>
+                                              <NodeIdTypeDefinition>
+                                                <nodeType>
+                                                  <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                                </nodeType>
+                                                <NodeIdTwoByte>
+                                                  <id dataType="uint" bitLength="8">0</id>
+                                                </NodeIdTwoByte>
+                                              </NodeIdTypeDefinition>
+                                            </nodeId>
+                                          </ExpandedNodeId>
+                                        </typeId>
+                                        <ExtensionObjectWithMask>
+                                          <encodingMask>
+                                            <ExtensionObjectEncodingMask>
+                                              <reserved dataType="int" bitLength="5">0</reserved>
+                                              <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                                              <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                                              <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                                            </ExtensionObjectEncodingMask>
+                                          </encodingMask>
+                                          <NullExtensionObjectWithMask>
+                                          </NullExtensionObjectWithMask>
+                                        </ExtensionObjectWithMask>
+                                      </ExtensionObject>
+                                    </additionalHeader>
+                                  </RequestHeader>
+                                </ExtensionObjectDefinition>
+                              </requestHeader>
+                              <noOfNodesToWrite dataType="int" bitLength="32">1</noOfNodesToWrite>
+                              <nodesToWrite isList="true">
+                                <ExtensionObjectDefinition>
+                                  <WriteValue>
+                                    <nodeId>
+                                      <NodeId>
+                                        <reserved dataType="int" bitLength="2">0</reserved>
+                                        <nodeId>
+                                          <NodeIdTypeDefinition>
+                                            <nodeType>
+                                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeString">3</NodeIdType>
+                                            </nodeType>
+                                            <NodeIdString>
+                                              <namespaceIndex dataType="uint" bitLength="16">2</namespaceIndex>
+                                              <id>
+                                                <PascalString>
+                                                  <sLength dataType="int" bitLength="32">28</sLength>
+                                                  <stringValue dataType="string" bitLength="224" encoding="UTF-8">HelloWorld/ScalarTypes/Int64</stringValue>
+                                                </PascalString>
+                                              </id>
+                                            </NodeIdString>
+                                          </NodeIdTypeDefinition>
+                                        </nodeId>
+                                      </NodeId>
+                                    </nodeId>
+                                    <attributeId dataType="uint" bitLength="32">13</attributeId>
+                                    <indexRange>
+                                      <PascalString>
+                                        <sLength dataType="int" bitLength="32">-1</sLength>
+                                      </PascalString>
+                                    </indexRange>
+                                    <value>
+                                      <DataValue>
+                                        <reserved dataType="uint" bitLength="2">0</reserved>
+                                        <serverPicosecondsSpecified dataType="bit" bitLength="1">false</serverPicosecondsSpecified>
+                                        <sourcePicosecondsSpecified dataType="bit" bitLength="1">false</sourcePicosecondsSpecified>
+                                        <serverTimestampSpecified dataType="bit" bitLength="1">false</serverTimestampSpecified>
+                                        <sourceTimestampSpecified dataType="bit" bitLength="1">false</sourceTimestampSpecified>
+                                        <statusCodeSpecified dataType="bit" bitLength="1">false</statusCodeSpecified>
+                                        <valueSpecified dataType="bit" bitLength="1">true</valueSpecified>
+                                        <value>
+                                          <Variant>
+                                            <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                            <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                            <VariantType dataType="uint" bitLength="6">8</VariantType>
+                                            <VariantInt64>
+                                              <value isList="true">
+                                                <value dataType="int" bitLength="64">1</value>
+                                              </value>
+                                            </VariantInt64>
+                                            <arrayDimensions isList="true">
+                                            </arrayDimensions>
+                                          </Variant>
+                                        </value>
+                                      </DataValue>
+                                    </value>
+                                  </WriteValue>
+                                </ExtensionObjectDefinition>
+                              </nodesToWrite>
+                            </WriteRequest>
+                          </ExtensionObjectDefinition>
+                        </body>
+                      </RootExtensionObject>
+                    </ExtensionObject>
+                  </payload>
+                </ExtensiblePayload>
+              </Payload>
+            </message>
+          </OpcuaMessageRequest>
         </MessagePDU>
       </outgoing-plc-message>
--->
+
+      <incoming-plc-message name="Receive write response">
+        <parser-arguments>
+          <response>true</response>
+          <binary>false</binary>
+        </parser-arguments>
+        <MessagePDU>
+          <messageType dataType="string" bitLength="24" encoding="UTF-8">MSG</messageType>
+          <chunk>
+            <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+          </chunk>
+          <totalLength dataType="uint" bitLength="32">64</totalLength>
+          <OpcuaMessageResponse>
+            <securityHeader>
+              <SecurityHeader>
+                <secureChannelId dataType="uint" bitLength="32">10</secureChannelId>
+                <secureTokenId dataType="uint" bitLength="32">10</secureTokenId>
+              </SecurityHeader>
+            </securityHeader>
+            <message>
+              <Payload>
+                <sequenceHeader>
+                  <SequenceHeader>
+                    <sequenceNumber dataType="int" bitLength="32">4</sequenceNumber>
+                    <requestId dataType="int" bitLength="32">4</requestId>
+                  </SequenceHeader>
+                </sequenceHeader>
+                <ExtensiblePayload>
+                  <payload>
+                    <ExtensionObject>
+                      <typeId>
+                        <ExpandedNodeId>
+                          <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                          <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                          <nodeId>
+                            <NodeIdTypeDefinition>
+                              <nodeType>
+                                <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                              </nodeType>
+                              <NodeIdFourByte>
+                                <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                                <id dataType="uint" bitLength="16">676</id>
+                              </NodeIdFourByte>
+                            </NodeIdTypeDefinition>
+                          </nodeId>
+                        </ExpandedNodeId>
+                      </typeId>
+                      <RootExtensionObject>
+                        <body>
+                          <ExtensionObjectDefinition>
+                            <WriteResponse>
+                              <responseHeader>
+                                <ExtensionObjectDefinition>
+                                  <ResponseHeader>
+                                    <timestamp dataType="int" bitLength="64" plc4x-skip-comparison="true">0</timestamp>
+                                    <requestHandle dataType="uint" bitLength="32">3</requestHandle>
+                                    <serviceResult>
+                                      <StatusCode>
+                                        <statusCode dataType="uint" bitLength="32">0</statusCode>
+                                      </StatusCode>
+                                    </serviceResult>
+                                    <serviceDiagnostics>
+                                      <DiagnosticInfo>
+                                        <reserved dataType="bit" bitLength="1">false</reserved>
+                                        <innerDiagnosticInfoSpecified dataType="bit" bitLength="1">false</innerDiagnosticInfoSpecified>
+                                        <innerStatusCodeSpecified dataType="bit" bitLength="1">false</innerStatusCodeSpecified>
+                                        <additionalInfoSpecified dataType="bit" bitLength="1">false</additionalInfoSpecified>
+                                        <localeSpecified dataType="bit" bitLength="1">false</localeSpecified>
+                                        <localizedTextSpecified dataType="bit" bitLength="1">false</localizedTextSpecified>
+                                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                        <symbolicIdSpecified dataType="bit" bitLength="1">false</symbolicIdSpecified>
+                                      </DiagnosticInfo>
+                                    </serviceDiagnostics>
+                                    <noOfStringTable dataType="int" bitLength="32">-1</noOfStringTable>
+                                    <additionalHeader>
+                                      <ExtensionObject>
+                                        <typeId>
+                                          <ExpandedNodeId>
+                                            <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                                            <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                                            <nodeId>
+                                              <NodeIdTypeDefinition>
+                                                <nodeType>
+                                                  <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                                                </nodeType>
+                                                <NodeIdTwoByte>
+                                                  <id dataType="uint" bitLength="8">0</id>
+                                                </NodeIdTwoByte>
+                                              </NodeIdTypeDefinition>
+                                            </nodeId>
+                                          </ExpandedNodeId>
+                                        </typeId>
+                                        <ExtensionObjectWithMask>
+                                          <encodingMask>
+                                            <ExtensionObjectEncodingMask>
+                                              <reserved dataType="int" bitLength="5">0</reserved>
+                                              <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                                              <xmlBody dataType="bit" bitLength="1">false</xmlBody>
+                                              <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                                            </ExtensionObjectEncodingMask>
+                                          </encodingMask>
+                                          <NullExtensionObjectWithMask>
+                                          </NullExtensionObjectWithMask>
+                                        </ExtensionObjectWithMask>
+                                      </ExtensionObject>
+                                    </additionalHeader>
+                                  </ResponseHeader>
+                                </ExtensionObjectDefinition>
+                              </responseHeader>
+                              <noOfResults dataType="int" bitLength="32">1</noOfResults>
+                              <results isList="true">
+                                <StatusCode>
+                                  <statusCode dataType="uint" bitLength="32">0</statusCode>
+                                </StatusCode>
+                              </results>
+                              <noOfDiagnosticInfos dataType="int" bitLength="32">0</noOfDiagnosticInfos>
+                              <diagnosticInfos isList="true">
+                              </diagnosticInfos>
+                            </WriteResponse>
+                          </ExtensionObjectDefinition>
+                        </body>
+                      </RootExtensionObject>
+                    </ExtensionObject>
+                  </payload>
+                </ExtensiblePayload>
+              </Payload>
+            </message>
+          </OpcuaMessageResponse>
+        </MessagePDU>
+      </incoming-plc-message>
+
+      <api-response name="Read response">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <test_int64>
+                    <PlcTagValueItem>
+                      <tag>
+                        <OpcuaTag>
+                          <nodeId dataType="string" bitLength="280" encoding="UTF-8">ns=2;s=HelloWorld/ScalarTypes/Int64</nodeId>
+                          <attributeId dataType="string" bitLength="40" encoding="UTF-8">Value</attributeId>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">LINT</dataType>
+                        </OpcuaTag>
+                      </tag>
+                      <value>
+                        <PlcLINT dataType="int" bitLength="64">1</PlcLINT>
+                      </value>
+                    </PlcTagValueItem>
+                  </test_int64>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <test_int64>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </test_int64>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
     </steps>
+
   </testcase>
 
 </test:driver-testsuite>

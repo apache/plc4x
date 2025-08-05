@@ -19,7 +19,6 @@
 package org.apache.plc4x.protocol.plc4xapi.v0;
 
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
-import org.apache.plc4x.protocol.plc4xapi.v0.Plc4xApi;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

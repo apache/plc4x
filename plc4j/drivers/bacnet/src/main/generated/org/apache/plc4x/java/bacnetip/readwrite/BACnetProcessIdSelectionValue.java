@@ -60,8 +60,7 @@ public class BACnetProcessIdSelectionValue extends BACnetProcessIdSelection impl
     writeBuffer.pushContext("BACnetProcessIdSelectionValue");
 
     // Simple Field (processIdentifier)
-    writeSimpleField(
-        "processIdentifier", processIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("processIdentifier", processIdentifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetProcessIdSelectionValue");
   }
@@ -92,7 +91,7 @@ public class BACnetProcessIdSelectionValue extends BACnetProcessIdSelection impl
     BACnetApplicationTagUnsignedInteger processIdentifier =
         readSimpleField(
             "processIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

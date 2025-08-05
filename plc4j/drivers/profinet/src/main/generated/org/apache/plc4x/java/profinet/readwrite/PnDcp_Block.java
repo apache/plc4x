@@ -59,7 +59,7 @@ public abstract class PnDcp_Block implements Message {
         "option",
         "PnDcp_BlockOptions",
         getOption(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnDcp_BlockOptions::getValue,
             PnDcp_BlockOptions::name,
             writeUnsignedShort(writeBuffer, 8)),
@@ -112,22 +112,16 @@ public abstract class PnDcp_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Block staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnDcp_Block staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnDcp_Block");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnDcp_BlockOptions option =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "option",
-            new DataReaderEnumDefault<>(
-                PnDcp_BlockOptions::enumForValue, readUnsignedShort(readBuffer, 8)),
+            "PnDcp_BlockOptions",
+            readEnum(PnDcp_BlockOptions::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     short suboption =

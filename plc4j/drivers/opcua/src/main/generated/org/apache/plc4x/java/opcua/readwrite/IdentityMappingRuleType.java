@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class IdentityMappingRuleType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "15636";
+  public Integer getExtensionId() {
+    return (int) 15636;
   }
 
   // Properties.
@@ -72,13 +72,13 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
         "criteriaType",
         "IdentityCriteriaType",
         criteriaType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             IdentityCriteriaType::getValue,
             IdentityCriteriaType::name,
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (criteria)
-    writeSimpleField("criteria", criteria, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("criteria", criteria, writeComplex(writeBuffer));
 
     writeBuffer.popContext("IdentityMappingRuleType");
   }
@@ -104,7 +104,7 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("IdentityMappingRuleType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -113,13 +113,11 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
         readEnumField(
             "criteriaType",
             "IdentityCriteriaType",
-            new DataReaderEnumDefault<>(
-                IdentityCriteriaType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(IdentityCriteriaType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString criteria =
         readSimpleField(
-            "criteria",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "criteria", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("IdentityMappingRuleType");
     // Create the instance

@@ -99,7 +99,7 @@ public class BACnetConstructedDataPropertyList extends BACnetConstructedData imp
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (propertyList)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataPropertyList extends BACnetConstructedData imp
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataPropertyList extends BACnetConstructedData imp
     List<BACnetPropertyIdentifierTagged> propertyList =
         readTerminatedArrayField(
             "propertyList",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

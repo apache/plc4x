@@ -63,7 +63,7 @@ public class CBusCommandPointToPointToMultiPoint extends CBusCommand implements 
     writeBuffer.pushContext("CBusCommandPointToPointToMultiPoint");
 
     // Simple Field (command)
-    writeSimpleField("command", command, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("command", command, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CBusCommandPointToPointToMultiPoint");
   }
@@ -94,7 +94,7 @@ public class CBusCommandPointToPointToMultiPoint extends CBusCommand implements 
     CBusPointToPointToMultiPointCommand command =
         readSimpleField(
             "command",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     CBusPointToPointToMultiPointCommand.staticParse(
                         readBuffer, (CBusOptions) (cBusOptions)),

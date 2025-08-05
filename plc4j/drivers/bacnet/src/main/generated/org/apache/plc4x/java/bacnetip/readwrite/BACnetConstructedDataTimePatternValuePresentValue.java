@@ -83,7 +83,7 @@ public class BACnetConstructedDataTimePatternValuePresentValue extends BACnetCon
     writeBuffer.pushContext("BACnetConstructedDataTimePatternValuePresentValue");
 
     // Simple Field (presentValue)
-    writeSimpleField("presentValue", presentValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("presentValue", presentValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagTime actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataTimePatternValuePresentValue extends BACnetCon
     BACnetApplicationTagTime presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagTime actualValue =

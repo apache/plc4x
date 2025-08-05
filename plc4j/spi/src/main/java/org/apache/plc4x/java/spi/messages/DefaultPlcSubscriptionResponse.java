@@ -28,7 +28,7 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.util.Collection;
@@ -39,29 +39,29 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
 
     private final PlcSubscriptionRequest request;
 
-    private final Map<String, ResponseItem<PlcSubscriptionHandle>> values;
+    private final Map<String, PlcResponseItem<PlcSubscriptionHandle>> values;
 
     public DefaultPlcSubscriptionResponse(PlcSubscriptionRequest request,
-                                          Map<String, ResponseItem<PlcSubscriptionHandle>> values) {
+                                          Map<String, PlcResponseItem<PlcSubscriptionHandle>> values) {
         this.request = request;
         this.values = values;
-        request.getPreRegisteredConsumers().forEach((subscriptionTagName, consumers) -> {
+        /*request.getPreRegisteredConsumers().forEach((subscriptionTagName, consumers) -> {
             PlcSubscriptionHandle subscriptionHandle = getSubscriptionHandle(subscriptionTagName);
             if (subscriptionHandle == null) {
                 throw new PlcRuntimeException("PlcSubscriptionHandle for " + subscriptionTagName + " not found");
             }
             consumers.forEach(subscriptionHandle::register);
-        });
+        });*/
     }
 
     @Override
     public PlcSubscriptionHandle getSubscriptionHandle(String name) {
-        ResponseItem<PlcSubscriptionHandle> response = values.get(name);
+        PlcResponseItem<PlcSubscriptionHandle> response = values.get(name);
         if (response == null) {
             return null;
         }
-        if (response.getCode() != PlcResponseCode.OK) {
-            throw new PlcRuntimeException("Item " + name + " failed to subscribe: " + response.getCode());
+        if (response.getResponseCode() != PlcResponseCode.OK) {
+            throw new PlcRuntimeException("Item " + name + " failed to subscribe: " + response.getResponseCode());
         }
         return response.getValue();
     }
@@ -78,11 +78,11 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
 
     @Override
     public PlcResponseCode getResponseCode(String name) {
-        ResponseItem<PlcSubscriptionHandle> response = values.get(name);
+        PlcResponseItem<PlcSubscriptionHandle> response = values.get(name);
         if (response == null) {
             return null;
         }
-        return response.getCode();
+        return response.getResponseCode();
     }
 
     @Override
@@ -92,10 +92,10 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
 
     @Override
     public Collection<PlcSubscriptionHandle> getSubscriptionHandles() {
-        return values.values().stream().map(ResponseItem::getValue).collect(Collectors.toList());
+        return values.values().stream().map(PlcResponseItem::getValue).collect(Collectors.toList());
     }
 
-    public Map<String, ResponseItem<PlcSubscriptionHandle>> getValues() {
+    public Map<String, PlcResponseItem<PlcSubscriptionHandle>> getValues() {
         return values;
     }
 
@@ -107,11 +107,14 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
             ((Serializable) request).serialize(writeBuffer);
         }
         writeBuffer.pushContext("values");
-        for (Map.Entry<String, ResponseItem<PlcSubscriptionHandle>> valueEntry : values.entrySet()) {
+        for (Map.Entry<String, PlcResponseItem<PlcSubscriptionHandle>> valueEntry : values.entrySet()) {
             String tagName = valueEntry.getKey();
             writeBuffer.pushContext(tagName);
-            ResponseItem<PlcSubscriptionHandle> valueResponse = valueEntry.getValue();
-            valueResponse.serialize(writeBuffer);
+            PlcResponseItem<PlcSubscriptionHandle> valueResponse = valueEntry.getValue();
+            if (!(valueResponse instanceof Serializable)) {
+                throw new RuntimeException("Error serializing. PlcResponseItem doesn't implement Serializable");
+            }
+            ((Serializable) valueResponse).serialize(writeBuffer);
             writeBuffer.pushContext(tagName);
         }
         writeBuffer.popContext("values");

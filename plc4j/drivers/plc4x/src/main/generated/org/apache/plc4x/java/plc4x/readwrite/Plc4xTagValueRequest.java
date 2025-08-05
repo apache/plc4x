@@ -67,22 +67,21 @@ public class Plc4xTagValueRequest implements Message {
     writeBuffer.pushContext("Plc4xTagValueRequest");
 
     // Simple Field (tag)
-    writeSimpleField("tag", tag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("tag", tag, writeComplex(writeBuffer));
 
     // Simple Field (valueType)
     writeSimpleEnumField(
         "valueType",
         "Plc4xValueType",
         valueType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             Plc4xValueType::getValue, Plc4xValueType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Optional Field (value) (Can be skipped, if the value is null)
     writeOptionalField(
         "value",
         value,
-        new DataWriterDataIoDefault(
-            writeBuffer, (wb, val) -> Plc4xValue.staticSerialize(wb, val, valueType)),
+        writeDataIO(writeBuffer, (wb, val) -> Plc4xValue.staticSerialize(wb, val, valueType)),
         (getValueType()) != (Plc4xValueType.NULL));
 
     writeBuffer.popContext("Plc4xTagValueRequest");
@@ -113,33 +112,24 @@ public class Plc4xTagValueRequest implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xTagValueRequest staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Plc4xTagValueRequest staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Plc4xTagValueRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Plc4xTag tag =
-        readSimpleField(
-            "tag",
-            new DataReaderComplexDefault<>(() -> Plc4xTag.staticParse(readBuffer), readBuffer));
+        readSimpleField("tag", readComplex(() -> Plc4xTag.staticParse(readBuffer), readBuffer));
 
     Plc4xValueType valueType =
         readEnumField(
             "valueType",
             "Plc4xValueType",
-            new DataReaderEnumDefault<>(
-                Plc4xValueType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Plc4xValueType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     PlcValue value =
         readOptionalField(
             "value",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> Plc4xValue.staticParse(readBuffer, (Plc4xValueType) (valueType)), readBuffer),
             (valueType) != (Plc4xValueType.NULL));
 

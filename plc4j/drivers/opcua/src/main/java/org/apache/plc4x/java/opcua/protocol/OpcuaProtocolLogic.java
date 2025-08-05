@@ -18,32 +18,50 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
+import static org.apache.plc4x.java.opcua.context.SecureChannel.getX509Certificate;
+
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.metadata.Metadata;
+import org.apache.plc4x.java.api.metadata.time.TimeSource;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.opcua.OpcMetadataKeys;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
+import org.apache.plc4x.java.opcua.context.Conversation;
 import org.apache.plc4x.java.opcua.context.OpcuaDriverContext;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
 import org.apache.plc4x.java.opcua.readwrite.*;
+import org.apache.plc4x.java.opcua.tag.OpcuaPlcTagHandler;
+import org.apache.plc4x.java.opcua.tag.OpcuaQualityStatus;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
+import org.apache.plc4x.java.spi.metadata.DefaultMetadata.Builder;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
+import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.apache.plc4x.java.spi.transaction.RequestTransactionManager.RequestTransaction;
+import org.apache.plc4x.java.spi.values.LegacyPlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,15 +72,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements HasConfiguration<OpcuaConfiguration>, PlcSubscriber {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaProtocolLogic.class);
-    protected static final PascalString NULL_STRING = new PascalString("");
+    protected static final PascalString NULL_STRING = new PascalString(null);
     private static final ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeId(false,
         false,
         new NodeIdTwoByte((short) 0),
@@ -70,15 +85,18 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         null
     );
 
-    protected static final ExtensionObject NULL_EXTENSION_OBJECT = new ExtensionObject(
+    protected static final ExtensionObject NULL_EXTENSION_OBJECT = new NullExtensionObjectWithMask(
         NULL_EXPANDED_NODEID,
-        new ExtensionObjectEncodingMask(false, false, false),
-        new NullExtension());               // Body
+        new ExtensionObjectEncodingMask(false, false, false));
 
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
+    private final Map<Long, OpcuaSubscriptionHandle> subscriptions = new ConcurrentHashMap<>();
+    private final RequestTransactionManager tm = new RequestTransactionManager();
+
     private OpcuaConfiguration configuration;
-    private final Map<Long, OpcuaSubscriptionHandle> subscriptions = new HashMap<>();
+    private OpcuaDriverContext driverContext;
     private SecureChannel channel;
+    private Conversation conversation;
 
     @Override
     public void setConfiguration(OpcuaConfiguration configuration) {
@@ -86,8 +104,13 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     }
 
     @Override
+    public PlcTagHandler getTagHandler() {
+        return new OpcuaPlcTagHandler();
+    }
+
+    @Override
     public void close(ConversationContext<OpcuaAPU> context) {
-        //Nothing
+        tm.shutdown();
     }
 
     @Override
@@ -95,15 +118,24 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         if (channel == null) {
             return;
         }
-        for (Map.Entry<Long, OpcuaSubscriptionHandle> subscriber : subscriptions.entrySet()) {
+        for (Entry<Long, OpcuaSubscriptionHandle> subscriber : subscriptions.entrySet()) {
             subscriber.getValue().stopSubscriber();
         }
-        channel.onDisconnect(context);
+
+        RequestTransaction tx = tm.startRequest();
+        tx.submit(() -> {
+            try {
+                channel.onDisconnect();
+                tx.endRequest();
+            } catch (Exception e) {
+                tx.failRequest(e);
+            }
+        });
     }
 
     @Override
     public void setDriverContext(DriverContext driverContext) {
-        super.setDriverContext(driverContext);
+        this.driverContext = (OpcuaDriverContext) driverContext;
     }
 
     @Override
@@ -112,59 +144,91 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
         if (this.channel == null) {
             try {
-                this.channel = createSecureChannel(context.getAuthentication());
+                this.channel = createSecureChannel(context, context.getAuthentication());
             } catch (PlcRuntimeException ex) {
                 context.getChannel().pipeline().fireExceptionCaught(new PlcConnectionException(ex));
                 return;
             }
         }
-        this.channel.onConnect(context);
+
+        CompletableFuture<ActivateSessionResponse> future = new CompletableFuture<>();
+        RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> {
+            channel.onConnect().whenComplete(((response, error) -> bridge(transaction, future, response, error)));
+        });
+        future.whenComplete((response, error) -> {
+            if (error != null) {
+                LOGGER.error("Failed to establish connection", error);
+                return;
+            }
+            LOGGER.info("Established connection to server");
+            context.fireConnected();
+        });
     }
 
     @Override
     public void onDiscover(ConversationContext<OpcuaAPU> context) {
+        if (!configuration.isDiscovery()) {
+            LOGGER.debug("not encrypted, ignoring onDiscover");
+            context.fireDiscovered(configuration);
+            return;
+        }
+
         // Only the TCP transport supports login.
         LOGGER.debug("Opcua Driver running in ACTIVE mode, discovering endpoints");
         if (this.channel == null) {
             try {
-                this.channel = createSecureChannel(context.getAuthentication());
+                this.channel = createSecureChannel(context, context.getAuthentication());
             } catch (PlcRuntimeException ex) {
                 context.getChannel().pipeline().fireExceptionCaught(new PlcConnectionException(ex));
                 return;
             }
         }
-        channel.onDiscover(context);
+
+        CompletableFuture<EndpointDescription> future = new CompletableFuture<>();
+        RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() ->
+            channel.onDiscover().whenComplete((response, error) -> bridge(transaction, future, response, error))
+        );
+        future.whenComplete((response, error) -> {
+          if (error != null) {
+              PlcConnectionException exception = new PlcConnectionException(error);
+              context.getChannel().pipeline().fireExceptionCaught(exception);
+              transaction.failRequest(exception);
+              return;
+          }
+          configuration.setServerCertificate(getX509Certificate(response.getServerCertificate().getStringValue()));
+          context.fireDiscovered(configuration);
+          context.fireDisconnected();
+          transaction.endRequest();
+        });
     }
 
-    private SecureChannel createSecureChannel(PlcAuthentication authentication) {
-        return new SecureChannel((OpcuaDriverContext) driverContext, configuration, authentication);
+    private SecureChannel createSecureChannel(ConversationContext<OpcuaAPU> context, PlcAuthentication authentication) {
+        this.conversation = new Conversation(context, driverContext, configuration);
+        return new SecureChannel(conversation, tm, driverContext, configuration, authentication);
     }
 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         LOGGER.trace("Reading Value");
 
-        CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
+        RequestHeader requestHeader = conversation.createRequestHeader();
 
-        RequestHeader requestHeader = new RequestHeader(channel.getAuthenticationToken(),
-            SecureChannel.getCurrentDateTime(),
-            channel.getRequestHandle(),
-            0L,
-            NULL_STRING,
-            SecureChannel.REQUEST_TIMEOUT_LONG,
-            NULL_EXTENSION_OBJECT);
-
-        List<ExtensionObjectDefinition> readValueArray = new ArrayList<>(request.getTagNames().size());
+        List<ReadValueId> readValueArray = new ArrayList<>(request.getTagNames().size());
         Iterator<String> iterator = request.getTagNames().iterator();
+        Map<String, PlcTag> tagMap = new LinkedHashMap<>();
         for (int i = 0; i < request.getTagNames().size(); i++) {
             String tagName = iterator.next();
+            // TODO: We need to check that the tag-return-code is OK as it could also be INVALID_TAG
             OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
+            tagMap.put(tagName, tag);
 
             NodeId nodeId = generateNodeId(tag);
 
             readValueArray.add(new ReadValueId(nodeId,
-                0xD,
+                tag.getAttributeId().getValue(),
                 NULL_STRING,
                 new QualifiedName(0, NULL_STRING)));
         }
@@ -172,68 +236,22 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         ReadRequest opcuaReadRequest = new ReadRequest(
             requestHeader,
             0.0d,
-            TimestampsToReturn.timestampsToReturnNeither,
-            readValueArray.size(),
-            readValueArray);
+            TimestampsToReturn.timestampsToReturnBoth,
+            readValueArray
+        );
 
-        ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
-            false,            //Server Index Specified
-            new NodeIdFourByte((short) 0, Integer.parseInt(opcuaReadRequest.getIdentifier())),
-            null,
-            null);
-
-        ExtensionObject extObject = new ExtensionObject(
-            expandedNodeId,
-            null,
-            opcuaReadRequest);
-
-        try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            extObject.serialize(buffer);
-
-            /* Functional Consumer example using inner class */
-            Consumer<byte[]> consumer = opcuaResponse -> {
-                try {
-                    ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
-                    if (reply instanceof ReadResponse) {
-                        future.complete(new DefaultPlcReadResponse(request, readResponse(request.getTagNames(), ((ReadResponse) reply).getResults())));
-                    } else {
-                        if (reply instanceof ServiceFault) {
-                            ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
-                            LOGGER.error("Read request ended up with ServiceFault: {}", header);
-                        } else {
-                            LOGGER.error("Remote party returned an error '{}'", reply);
-                        }
-
-                        Map<String, ResponseItem<PlcValue>> status = new LinkedHashMap<>();
-                        for (String key : request.getTagNames()) {
-                            status.put(key, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
-                        }
-                        future.complete(new DefaultPlcReadResponse(request, status));
-                    }
-                } catch (ParseException | PlcRuntimeException e) {
-                    future.completeExceptionally(new PlcRuntimeException(e));
-                }
-            };
-
-            /* Functional Consumer example using inner class */
-            // Pass the response back to the application.
-            Consumer<TimeoutException> timeout = future::completeExceptionally;
-
-            /* Functional Consumer example using inner class */
-            BiConsumer<OpcuaAPU, Throwable> error = (message, t) -> {
-
-                // Pass the response back to the application.
-                future.completeExceptionally(t);
-            };
-
-            channel.submit(context, timeout, error, consumer, buffer);
-
-        } catch (SerializationException e) {
-            LOGGER.error("Unable to serialise the ReadRequest");
-        }
-
-        return future;
+        CompletableFuture<ReadResponse> future = new CompletableFuture<>();
+        RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> {
+            conversation.submit(opcuaReadRequest, ReadResponse.class).whenComplete((response, error) -> bridge(transaction, future, response, error));
+        });
+        return future.thenApply(response -> {
+            Metadata responseMetadata = new Builder()
+                .put(PlcMetadataKeys.RECEIVE_TIMESTAMP, System.currentTimeMillis())
+                .build();
+            Entry<Map<String, Metadata>, Map<String, PlcResponseItem<PlcValue>>> mappedResponse = readResponse(tagMap, response.getResults(), responseMetadata);
+            return new DefaultPlcReadResponse(request, mappedResponse.getValue(), mappedResponse.getKey());
+        });
     }
 
     static NodeId generateNodeId(OpcuaTag tag) {
@@ -245,11 +263,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         } else if (tag.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
             UUID guid = UUID.fromString(tag.getIdentifier());
             ByteBuffer bb = ByteBuffer.allocate(16)
-                    .order(java.nio.ByteOrder.LITTLE_ENDIAN)
+                    .order(ByteOrder.LITTLE_ENDIAN)
                     .putInt((int)(guid.getMostSignificantBits() >> (4*8)))
                     .putShort((short)(guid.getMostSignificantBits() >> (2*8)))
                     .putShort((short)guid.getMostSignificantBits())
-                    .order(java.nio.ByteOrder.BIG_ENDIAN)
+                    .order(ByteOrder.BIG_ENDIAN)
                     .putLong(guid.getLeastSignificantBits());
             nodeId = new NodeId(new NodeIdGuid((short) tag.getNamespace(), bb.array()));
         } else if (tag.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
@@ -258,181 +276,218 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return nodeId;
     }
 
-    public Map<String, ResponseItem<PlcValue>> readResponse(LinkedHashSet<String> tagNames, List<DataValue> results) {
-        PlcResponseCode responseCode = PlcResponseCode.OK;
-        Map<String, ResponseItem<PlcValue>> response = new HashMap<>();
-        int count = 0;
-        for (String tagName : tagNames) {
+    Entry<Map<String, Metadata>, Map<String, PlcResponseItem<PlcValue>>> readResponse(Map<String, PlcTag> tagMap, List<DataValue> results, Metadata responseMetadata) {
+        Map<String, PlcResponseItem<PlcValue>> response = new HashMap<>();
+        Map<String, Metadata> metadata = new HashMap<>();
+        int index = 0;
+        for (String tagName : tagMap.keySet()) {
+            PlcTag tag = tagMap.get(tagName);
             PlcValue value = null;
-            if (results.get(count).getValueSpecified()) {
-                Variant variant = results.get(count).getValue();
-                LOGGER.trace("Response of type {}", variant.getClass().toString());
-                if (variant instanceof VariantBoolean) {
-                    byte[] array = ((VariantBoolean) variant).getValue();
-                    int length = array.length;
-                    Boolean[] tmpValue = new Boolean[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = array[i] != 0;
-                    }
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantSByte) {
-                    byte[] array = ((VariantSByte) variant).getValue();
-                    value = PlcValueHandler.of(array);
-                } else if (variant instanceof VariantByte) {
-                    List<Short> array = ((VariantByte) variant).getValue();
-                    Short[] tmpValue = array.toArray(new Short[0]);
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantInt16) {
-                    List<Short> array = ((VariantInt16) variant).getValue();
-                    Short[] tmpValue = array.toArray(new Short[0]);
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantUInt16) {
-                    List<Integer> array = ((VariantUInt16) variant).getValue();
-                    Integer[] tmpValue = array.toArray(new Integer[0]);
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantInt32) {
-                    List<Integer> array = ((VariantInt32) variant).getValue();
-                    Integer[] tmpValue = array.toArray(new Integer[0]);
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantUInt32) {
-                    List<Long> array = ((VariantUInt32) variant).getValue();
-                    Long[] tmpValue = array.toArray(new Long[0]);
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantInt64) {
-                    List<Long> array = ((VariantInt64) variant).getValue();
-                    Long[] tmpValue = array.toArray(new Long[0]);
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantUInt64) {
-                    value = PlcValueHandler.of(((VariantUInt64) variant).getValue());
-                } else if (variant instanceof VariantFloat) {
-                    List<Float> array = ((VariantFloat) variant).getValue();
-                    Float[] tmpValue = array.toArray(new Float[0]);
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantDouble) {
-                    List<Double> array = ((VariantDouble) variant).getValue();
-                    Double[] tmpValue = array.toArray(new Double[0]);
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantString) {
-                    int length = ((VariantString) variant).getValue().size();
-                    List<PascalString> stringArray = ((VariantString) variant).getValue();
-                    String[] tmpValue = new String[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = stringArray.get(i).getStringValue();
-                    }
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantDateTime) {
-                    List<Long> array = ((VariantDateTime) variant).getValue();
-                    int length = array.size();
-                    LocalDateTime[] tmpValue = new LocalDateTime[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = LocalDateTime.ofInstant(Instant.ofEpochMilli(getDateTime(array.get(i))), ZoneOffset.UTC);
-                    }
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantGuid) {
-                    List<GuidValue> array = ((VariantGuid) variant).getValue();
-                    int length = array.size();
-                    String[] tmpValue = new String[length];
-                    for (int i = 0; i < length; i++) {
-                        //These two data section aren't little endian like the rest.
-                        byte[] data4Bytes = array.get(i).getData4();
-                        int data4 = 0;
-                        for (byte data4Byte : data4Bytes) {
-                            data4 = (data4 << 8) + (data4Byte & 0xff);
-                        }
-                        byte[] data5Bytes = array.get(i).getData5();
-                        long data5 = 0;
-                        for (byte data5Byte : data5Bytes) {
-                            data5 = (data5 << 8) + (data5Byte & 0xff);
-                        }
-                        tmpValue[i] = Long.toHexString(array.get(i).getData1()) + "-" + Integer.toHexString(array.get(i).getData2()) + "-" + Integer.toHexString(array.get(i).getData3()) + "-" + Integer.toHexString(data4) + "-" + Long.toHexString(data5);
-                    }
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantXmlElement) {
-                    int length = ((VariantXmlElement) variant).getValue().size();
-                    List<PascalString> strings = ((VariantXmlElement) variant).getValue();
-                    String[] tmpValue = new String[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = strings.get(i).getStringValue();
-                    }
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantLocalizedText) {
-                    int length = ((VariantLocalizedText) variant).getValue().size();
-                    List<LocalizedText> strings = ((VariantLocalizedText) variant).getValue();
-                    String[] tmpValue = new String[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = "";
-                        tmpValue[i] += strings.get(i).getLocaleSpecified() ? strings.get(i).getLocale().getStringValue() + "|" : "";
-                        tmpValue[i] += strings.get(i).getTextSpecified() ? strings.get(i).getText().getStringValue() : "";
-                    }
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantQualifiedName) {
-                    int length = ((VariantQualifiedName) variant).getValue().size();
-                    List<QualifiedName> strings = ((VariantQualifiedName) variant).getValue();
-                    String[] tmpValue = new String[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = "ns=" + strings.get(i).getNamespaceIndex() + ";s=" + strings.get(i).getName().getStringValue();
-                    }
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantExtensionObject) {
-                    int length = ((VariantExtensionObject) variant).getValue().size();
-                    List<ExtensionObject> strings = ((VariantExtensionObject) variant).getValue();
-                    String[] tmpValue = new String[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = strings.get(i).toString();
-                    }
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantNodeId) {
-                    int length = ((VariantNodeId) variant).getValue().size();
-                    List<NodeId> strings = ((VariantNodeId) variant).getValue();
-                    String[] tmpValue = new String[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = strings.get(i).toString();
-                    }
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantStatusCode) {
-                    int length = ((VariantStatusCode) variant).getValue().size();
-                    List<StatusCode> strings = ((VariantStatusCode) variant).getValue();
-                    String[] tmpValue = new String[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = strings.get(i).toString();
-                    }
-                    value = PlcValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantByteString) {
-                    PlcList plcList = new PlcList();
-                    List<ByteStringArray> array = ((VariantByteString) variant).getValue();
-                    for (ByteStringArray byteStringArray : array) {
-                        int length = byteStringArray.getValue().size();
-                        Short[] tmpValue = new Short[length];
-                        for (int i = 0; i < length; i++) {
-                            tmpValue[i] = byteStringArray.getValue().get(i);
-                        }
-                        plcList.add(PlcValueHandler.of(tmpValue));
-                    }
-                    value = plcList;
-                } else {
+            DataValue dataValue = results.get(index++);
+            PlcResponseCode responseCode = PlcResponseCode.OK;
+            if (dataValue.getValueSpecified()) {
+                value = variantToPlcValue(tag, dataValue.getValue());
+                if (value == null) {
+                    LOGGER.error("Variant type {} is not supported.", dataValue.getValue().getClass());
                     responseCode = PlcResponseCode.UNSUPPORTED;
-                    LOGGER.error("Data type - " + variant.getClass() + " is not supported ");
                 }
             } else {
-                if (results.get(count).getStatusCode().getStatusCode() == OpcuaStatusCode.BadNodeIdUnknown.getValue()) {
-                    responseCode = PlcResponseCode.NOT_FOUND;
-                } else {
-                    responseCode = PlcResponseCode.UNSUPPORTED;
-                }
-                LOGGER.error("Error while reading value from OPC UA server error code:- " + results.get(count).getStatusCode().toString());
+                StatusCode statusCode = dataValue.getStatusCode();
+                responseCode = mapOpcStatusCode(statusCode.getStatusCode(), PlcResponseCode.UNSUPPORTED);
+                LOGGER.error("Error while reading value from OPC UA server error code: {}", statusCode.toString());
             }
-            count++;
-            response.put(tagName, new ResponseItem<>(responseCode, value));
+
+            Metadata tagMetadata = new Builder(responseMetadata)
+                .put(OpcMetadataKeys.QUALITY, new OpcuaQualityStatus(dataValue.getStatusCode()))
+                .put(OpcMetadataKeys.SERVER_TIMESTAMP, dataValue.getServerTimestamp())
+                .put(OpcMetadataKeys.SOURCE_TIMESTAMP, dataValue.getSourceTimestamp())
+                .put(PlcMetadataKeys.TIMESTAMP, dataValue.getSourceTimestamp())
+                .put(PlcMetadataKeys.TIMESTAMP_SOURCE, TimeSource.SOFTWARE)
+                .build();
+            response.put(tagName, new DefaultPlcResponseItem<>(responseCode, value));
+            metadata.put(tagName, tagMetadata);
         }
-        return response;
+        return Map.entry(metadata, response);
+    }
+
+    static PlcValue variantToPlcValue(PlcTag tag, Variant variant) {
+        PlcValue value = null;
+        if (variant instanceof VariantBoolean) {
+            byte[] array = ((VariantBoolean) variant).getValue();
+            int length = array.length;
+            Boolean[] tmpValue = new Boolean[length];
+            for (int i = 0; i < length; i++) {
+                tmpValue[i] = array[i] != 0;
+            }
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantSByte) {
+            byte[] array = ((VariantSByte) variant).getValue();
+            value = LegacyPlcValueHandler.of(tag, array);
+        } else if (variant instanceof VariantByte) {
+            List<Short> array = ((VariantByte) variant).getValue();
+            Short[] tmpValue = array.toArray(new Short[0]);
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantInt16) {
+            List<Short> array = ((VariantInt16) variant).getValue();
+            Short[] tmpValue = array.toArray(new Short[0]);
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantUInt16) {
+            List<Integer> array = ((VariantUInt16) variant).getValue();
+            Integer[] tmpValue = array.toArray(new Integer[0]);
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantInt32) {
+            List<Integer> array = ((VariantInt32) variant).getValue();
+            Integer[] tmpValue = array.toArray(new Integer[0]);
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantUInt32) {
+            List<Long> array = ((VariantUInt32) variant).getValue();
+            Long[] tmpValue = array.toArray(new Long[0]);
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantInt64) {
+            List<Long> array = ((VariantInt64) variant).getValue();
+            Long[] tmpValue = array.toArray(new Long[0]);
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantUInt64) {
+            value = LegacyPlcValueHandler.of(((VariantUInt64) variant).getValue());
+        } else if (variant instanceof VariantFloat) {
+            List<Float> array = ((VariantFloat) variant).getValue();
+            Float[] tmpValue = array.toArray(new Float[0]);
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantDouble) {
+            List<Double> array = ((VariantDouble) variant).getValue();
+            Double[] tmpValue = array.toArray(new Double[0]);
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantString) {
+            int length = ((VariantString) variant).getValue().size();
+            List<PascalString> stringArray = ((VariantString) variant).getValue();
+            String[] tmpValue = new String[length];
+            for (int i = 0; i < length; i++) {
+                tmpValue[i] = stringArray.get(i).getStringValue();
+            }
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantDateTime) {
+            List<Long> array = ((VariantDateTime) variant).getValue();
+            int length = array.size();
+            LocalDateTime[] tmpValue = new LocalDateTime[length];
+            for (int i = 0; i < length; i++) {
+                tmpValue[i] = LocalDateTime.ofInstant(Instant.ofEpochMilli(getDateTime(array.get(i))), ZoneOffset.UTC);
+            }
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantGuid) {
+            List<GuidValue> array = ((VariantGuid) variant).getValue();
+            int length = array.size();
+            String[] tmpValue = new String[length];
+            for (int i = 0; i < length; i++) {
+                //These two data section aren't little endian like the rest.
+                byte[] data4Bytes = array.get(i).getData4();
+                int data4 = 0;
+                for (byte data4Byte : data4Bytes) {
+                    data4 = (data4 << 8) + (data4Byte & 0xff);
+                }
+                byte[] data5Bytes = array.get(i).getData5();
+                long data5 = 0;
+                for (byte data5Byte : data5Bytes) {
+                    data5 = (data5 << 8) + (data5Byte & 0xff);
+                }
+                tmpValue[i] = Long.toHexString(array.get(i).getData1()) + "-" + Integer.toHexString(array.get(i).getData2()) + "-" + Integer.toHexString(array.get(i).getData3()) + "-" + Integer.toHexString(data4) + "-" + Long.toHexString(data5);
+            }
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantXmlElement) {
+            int length = ((VariantXmlElement) variant).getValue().size();
+            List<PascalString> strings = ((VariantXmlElement) variant).getValue();
+            String[] tmpValue = new String[length];
+            for (int i = 0; i < length; i++) {
+                tmpValue[i] = strings.get(i).getStringValue();
+            }
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantLocalizedText) {
+            int length = ((VariantLocalizedText) variant).getValue().size();
+            List<LocalizedText> strings = ((VariantLocalizedText) variant).getValue();
+            String[] tmpValue = new String[length];
+            for (int i = 0; i < length; i++) {
+                tmpValue[i] = "";
+                tmpValue[i] += strings.get(i).getLocaleSpecified() ? strings.get(i).getLocale().getStringValue() + "|" : "";
+                tmpValue[i] += strings.get(i).getTextSpecified() ? strings.get(i).getText().getStringValue() : "";
+            }
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantQualifiedName) {
+            int length = ((VariantQualifiedName) variant).getValue().size();
+            List<QualifiedName> strings = ((VariantQualifiedName) variant).getValue();
+            String[] tmpValue = new String[length];
+            for (int i = 0; i < length; i++) {
+                tmpValue[i] = "ns=" + strings.get(i).getNamespaceIndex() + ";s=" + strings.get(i).getName().getStringValue();
+            }
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantExtensionObject) {
+            int length = ((VariantExtensionObject) variant).getValue().size();
+            List<ExtensionObject> strings = ((VariantExtensionObject) variant).getValue();
+            String[] tmpValue = new String[length];
+            for (int i = 0; i < length; i++) {
+                tmpValue[i] = strings.get(i).toString();
+            }
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantNodeId) {
+            int length = ((VariantNodeId) variant).getValue().size();
+            List<NodeId> strings = ((VariantNodeId) variant).getValue();
+            String[] tmpValue = new String[length];
+            for (int i = 0; i < length; i++) {
+                tmpValue[i] = strings.get(i).toString();
+            }
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantStatusCode) {
+            int length = ((VariantStatusCode) variant).getValue().size();
+            List<StatusCode> strings = ((VariantStatusCode) variant).getValue();
+            String[] tmpValue = new String[length];
+            for (int i = 0; i < length; i++) {
+                tmpValue[i] = strings.get(i).toString();
+            }
+            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantByteString) {
+            PlcList plcList = new PlcList();
+            List<ByteStringArray> array = ((VariantByteString) variant).getValue();
+            for (ByteStringArray byteStringArray : array) {
+                int length = byteStringArray.getValue().size();
+                Short[] tmpValue = new Short[length];
+                for (int i = 0; i < length; i++) {
+                    tmpValue[i] = byteStringArray.getValue().get(i);
+                }
+                plcList.add(LegacyPlcValueHandler.of(tmpValue));
+            }
+            value = plcList;
+        }
+        return value;
+    }
+
+    private static PlcResponseCode mapOpcStatusCode(long opcStatusCode, PlcResponseCode fallback) {
+        if (!OpcuaStatusCode.isDefined(opcStatusCode)) {
+            return PlcResponseCode.INTERNAL_ERROR;
+        }
+
+        OpcuaStatusCode statusCode = OpcuaStatusCode.enumForValue(opcStatusCode);
+        if (statusCode == OpcuaStatusCode.Good) {
+            return PlcResponseCode.OK;
+        } else if (statusCode == OpcuaStatusCode.BadNodeIdUnknown) {
+            return PlcResponseCode.NOT_FOUND;
+        } else if (statusCode == OpcuaStatusCode.BadTypeMismatch) {
+            return PlcResponseCode.INVALID_DATATYPE;
+        } else if (statusCode == OpcuaStatusCode.BadNotWritable) {
+            return PlcResponseCode.ACCESS_DENIED;
+        } else if (statusCode == OpcuaStatusCode.BadUserAccessDenied) {
+            return PlcResponseCode.ACCESS_DENIED;
+        } else if (statusCode == OpcuaStatusCode.BadAttributeIdInvalid) {
+            return PlcResponseCode.INVALID_ADDRESS;
+        } else if (statusCode == OpcuaStatusCode.BadIndexRangeNoData) {
+            return PlcResponseCode.INVALID_ADDRESS;
+        }
+        return fallback;
     }
 
     private Variant fromPlcValue(String tagName, OpcuaTag tag, PlcWriteRequest request) {
         PlcList valueObject;
-        if (request.getPlcValue(tagName).getObject() instanceof ArrayList) {
+        if (request.getPlcValue(tagName).getObject() instanceof List) {
             valueObject = (PlcList) request.getPlcValue(tagName);
         } else {
-            ArrayList<PlcValue> list = new ArrayList<>();
+            List<PlcValue> list = new ArrayList<>();
             list.add(request.getPlcValue(tagName));
             valueObject = new PlcList(list);
         }
@@ -693,25 +748,17 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         LOGGER.trace("Writing Value");
-        CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
 
-        RequestHeader requestHeader = new RequestHeader(channel.getAuthenticationToken(),
-            SecureChannel.getCurrentDateTime(),
-            channel.getRequestHandle(),
-            0L,
-            NULL_STRING,
-            SecureChannel.REQUEST_TIMEOUT_LONG,
-            NULL_EXTENSION_OBJECT);
-
-        List<ExtensionObjectDefinition> writeValueList = new ArrayList<>(request.getTagNames().size());
+        RequestHeader requestHeader = conversation.createRequestHeader();
+        List<WriteValue> writeValueList = new ArrayList<>(request.getTagNames().size());
         for (String tagName : request.getTagNames()) {
             OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
 
             NodeId nodeId = generateNodeId(tag);
 
             writeValueList.add(new WriteValue(nodeId,
-                0xD,
+                tag.getAttributeId().getValue(),
                 NULL_STRING,
                 new DataValue(
                     false,
@@ -728,72 +775,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null)));
         }
 
-        WriteRequest opcuaWriteRequest = new WriteRequest(
-            requestHeader,
-            writeValueList.size(),
-            writeValueList);
+        WriteRequest opcuaWriteRequest = new WriteRequest(requestHeader, writeValueList);
 
-        ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
-            false,            //Server Index Specified
-            new NodeIdFourByte((short) 0, Integer.parseInt(opcuaWriteRequest.getIdentifier())),
-            null,
-            null);
-
-        ExtensionObject extObject = new ExtensionObject(
-            expandedNodeId,
-            null,
-            opcuaWriteRequest);
-
-        try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            extObject.serialize(buffer);
-
-            /* Functional Consumer example using inner class */
-            Consumer<byte[]> consumer = opcuaResponse -> {
-                try {
-                    ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
-                    if (reply instanceof WriteResponse) {
-                        WriteResponse responseMessage = (WriteResponse) reply;
-                        PlcWriteResponse response = writeResponse(request, responseMessage);
-
-                        // Pass the response back to the application.
-                        future.complete(response);
-                    } else {
-                        if (reply instanceof ServiceFault) {
-                            ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
-                            LOGGER.error("Write request ended up with ServiceFault: {}", header);
-                        } else {
-                            LOGGER.error("Remote party returned an error '{}'", reply);
-                        }
-
-                        Map<String, PlcResponseCode> status = new LinkedHashMap<>();
-                        for (String key : request.getTagNames()) {
-                            status.put(key, PlcResponseCode.INTERNAL_ERROR);
-                        }
-                        future.complete(new DefaultPlcWriteResponse(request, status));
-                    }
-                } catch (ParseException e) {
-                    throw new PlcRuntimeException(e);
-                }
-            };
-
-            /* Functional Consumer example using inner class */
-            // Pass the response back to the application.
-            Consumer<TimeoutException> timeout = future::completeExceptionally;
-
-            /* Functional Consumer example using inner class */
-            BiConsumer<OpcuaAPU, Throwable> error = (message, t) -> {
-                // Pass the response back to the application.
-                future.completeExceptionally(t);
-            };
-
-            channel.submit(context, timeout, error, consumer, buffer);
-
-        } catch (SerializationException e) {
-            LOGGER.error("Unable to serialise the ReadRequest");
-        }
-
-        return future;
+        CompletableFuture<WriteResponse> future = new CompletableFuture<>();
+        RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> {
+            conversation.submit(opcuaWriteRequest, WriteResponse.class).whenComplete((response, error) -> bridge(transaction, future, response, error));
+        });
+        return future.thenApply(response -> writeResponse(request, response));
     }
 
     private PlcWriteResponse writeResponse(DefaultPlcWriteRequest request, WriteResponse writeResponse) {
@@ -802,17 +791,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         Iterator<String> responseIterator = request.getTagNames().iterator();
         for (int i = 0; i < request.getTagNames().size(); i++) {
             String tagName = responseIterator.next();
-            OpcuaStatusCode statusCode = OpcuaStatusCode.enumForValue(results.get(i).getStatusCode());
-            switch (statusCode) {
-                case Good:
-                    responseMap.put(tagName, PlcResponseCode.OK);
-                    break;
-                case BadNodeIdUnknown:
-                    responseMap.put(tagName, PlcResponseCode.NOT_FOUND);
-                    break;
-                default:
-                    responseMap.put(tagName, PlcResponseCode.REMOTE_ERROR);
-            }
+            long opcStatusCode = results.get(i).getStatusCode();
+            PlcResponseCode statusCode = mapOpcStatusCode(opcStatusCode, PlcResponseCode.REMOTE_ERROR);
+            responseMap.put(tagName, statusCode);
         }
         return new DefaultPlcWriteResponse(request, responseMap);
     }
@@ -820,45 +801,42 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
-        return CompletableFuture.supplyAsync(() -> {
-            Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
-            long subscriptionId;
-            ArrayList<String> tagNames = new ArrayList<>(subscriptionRequest.getTagNames());
-            long cycleTime = (subscriptionRequest.getTag(tagNames.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
+        List<String> tagNames = new ArrayList<>(subscriptionRequest.getTagNames());
+        long cycleTime = (subscriptionRequest.getTag(tagNames.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
 
-            try {
-                CompletableFuture<CreateSubscriptionResponse> subscription = onSubscribeCreateSubscription(cycleTime);
-                CreateSubscriptionResponse response = subscription.get(SecureChannel.REQUEST_TIMEOUT_LONG, TimeUnit.MILLISECONDS);
-                subscriptionId = response.getSubscriptionId();
-                subscriptions.put(subscriptionId, new OpcuaSubscriptionHandle(context, this, channel, subscriptionRequest, subscriptionId, cycleTime));
-            } catch (Exception e) {
-                throw new PlcRuntimeException("Unable to subscribe because of: " + e.getMessage());
-            }
-
-            for (String tagName : subscriptionRequest.getTagNames()) {
-                final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
-                if (!(tagDefaultPlcSubscription.getTag() instanceof OpcuaTag)) {
-                    values.put(tagName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
-                } else {
-                    values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, subscriptions.get(subscriptionId)));
+        CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
+        RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> {
+            onSubscribeCreateSubscription(cycleTime).thenApply(response -> {
+                long subscriptionId = response.getSubscriptionId();
+                OpcuaSubscriptionHandle handle = new OpcuaSubscriptionHandle(this, tm,
+                    conversation, subscriptionRequest, subscriptionId, cycleTime);
+                subscriptions.put(handle.getSubscriptionId(), handle);
+                return handle;
+            })
+            .thenCompose(handle -> handle.onSubscribeCreateMonitoredItemsRequest())
+            .thenApply(handle -> {
+                Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+                for (String tagName : subscriptionRequest.getTagNames()) {
+                    final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
+                    if (!(tagDefaultPlcSubscription.getTag() instanceof OpcuaTag)) {
+                        values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+                    } else {
+                        values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, handle));
+                    }
                 }
-            }
-            return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
+
+                return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
+            })
+            .whenComplete((response, error) -> bridge(transaction, future, response, error));
         });
+        return future;
     }
 
     private CompletableFuture<CreateSubscriptionResponse> onSubscribeCreateSubscription(long cycleTime) {
-        CompletableFuture<CreateSubscriptionResponse> future = new CompletableFuture<>();
         LOGGER.trace("Entering creating subscription request");
 
-        RequestHeader requestHeader = new RequestHeader(channel.getAuthenticationToken(),
-            SecureChannel.getCurrentDateTime(),
-            channel.getRequestHandle(),
-            0L,
-            NULL_STRING,
-            SecureChannel.REQUEST_TIMEOUT_LONG,
-            NULL_EXTENSION_OBJECT);
-
+        RequestHeader requestHeader = conversation.createRequestHeader();
         CreateSubscriptionRequest createSubscriptionRequest = new CreateSubscriptionRequest(
             requestHeader,
             cycleTime,
@@ -869,69 +847,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             (short) 0
         );
 
-        ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
-            false,            //Server Index Specified
-            new NodeIdFourByte((short) 0, Integer.parseInt(createSubscriptionRequest.getIdentifier())),
-            null,
-            null);
-
-        ExtensionObject extObject = new ExtensionObject(
-            expandedNodeId,
-            null,
-            createSubscriptionRequest);
-
-        try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            extObject.serialize(buffer);
-
-            /* Functional Consumer example using inner class */
-            Consumer<byte[]> consumer = opcuaResponse -> {
-                try {
-                    ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN),false).getBody();
-                    if (reply instanceof CreateSubscriptionResponse) {
-                        CreateSubscriptionResponse responseMessage = (CreateSubscriptionResponse) reply;
-
-                        // Pass the response back to the application.
-                        future.complete(responseMessage);
-                    } else {
-                        if (reply instanceof ServiceFault) {
-                            ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
-                            LOGGER.error("Subscription request ended up with ServiceFault: {}", header);
-                            future.completeExceptionally(new PlcRuntimeException(
-                                    String.format("Subscription request ended up with ServiceFault: %s", header)
-                            ));
-                        } else {
-                            LOGGER.error("Remote party returned an error '{}'", reply);
-                            future.completeExceptionally(new PlcRuntimeException(
-                                    String.format("Remote party returned an error '%s'", reply)
-                            ));
-                        }
-                    }
-                } catch (ParseException e) {
-                    LOGGER.error("error parsing", e);
-                }
-            };
-
-            /* Functional Consumer example using inner class */
-            Consumer<TimeoutException> timeout = e -> {
-                LOGGER.error("Timeout while waiting on the crate subscription response", e);
-                // Pass the response back to the application.
-                future.completeExceptionally(e);
-            };
-
-            /* Functional Consumer example using inner class */
-            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while creating the subscription", e);
-                // Pass the response back to the application.
-                future.completeExceptionally(e);
-            };
-
-            channel.submit(context, timeout, error, consumer, buffer);
-        } catch (SerializationException e) {
-            LOGGER.error("Error while creating the subscription", e);
-            future.completeExceptionally(e);
-        }
-        return future;
+        return conversation.submit(createSubscriptionRequest, CreateSubscriptionResponse.class);
     }
 
     @Override
@@ -974,4 +890,15 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         byte[] data5 = new byte[]{0, 0, 0, 0, 0, 0};
         return new GuidValue(0L, 0, 0, data4, data5);
     }
+
+    private static <T> void bridge(RequestTransaction transaction, CompletableFuture<T> future, T response, Throwable error) {
+        if (error != null) {
+            future.completeExceptionally(error);
+            transaction.failRequest(error);
+        } else {
+            future.complete(response);
+            transaction.endRequest();
+        }
+    }
+
 }

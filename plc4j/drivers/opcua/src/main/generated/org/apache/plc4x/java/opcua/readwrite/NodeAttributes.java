@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class NodeAttributes extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "351";
+  public Integer getExtensionId() {
+    return (int) 351;
   }
 
   // Properties.
@@ -95,10 +95,10 @@ public class NodeAttributes extends ExtensionObjectDefinition implements Message
         "specifiedAttributes", specifiedAttributes, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (displayName)
-    writeSimpleField("displayName", displayName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("displayName", displayName, writeComplex(writeBuffer));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     // Simple Field (writeMask)
     writeSimpleField("writeMask", writeMask, writeUnsignedLong(writeBuffer, 32));
@@ -139,7 +139,7 @@ public class NodeAttributes extends ExtensionObjectDefinition implements Message
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("NodeAttributes");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -149,15 +149,11 @@ public class NodeAttributes extends ExtensionObjectDefinition implements Message
 
     LocalizedText displayName =
         readSimpleField(
-            "displayName",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "displayName", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     LocalizedText description =
         readSimpleField(
-            "description",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "description", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     long writeMask = readSimpleField("writeMask", readUnsignedLong(readBuffer, 32));
 

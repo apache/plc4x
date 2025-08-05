@@ -101,12 +101,6 @@ public class DIBSuppSvcFamilies implements Message {
     return lengthInBits;
   }
 
-  public static DIBSuppSvcFamilies staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DIBSuppSvcFamilies staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DIBSuppSvcFamilies");
     PositionAware positionAware = readBuffer;
@@ -119,7 +113,7 @@ public class DIBSuppSvcFamilies implements Message {
     List<ServiceId> serviceIds =
         readLengthArrayField(
             "serviceIds",
-            new DataReaderComplexDefault<>(() -> ServiceId.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ServiceId.staticParse(readBuffer), readBuffer),
             (structureLength) - (2));
 
     readBuffer.closeContext("DIBSuppSvcFamilies");

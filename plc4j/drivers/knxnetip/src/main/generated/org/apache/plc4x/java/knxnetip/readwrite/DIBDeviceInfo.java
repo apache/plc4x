@@ -124,20 +124,17 @@ public class DIBDeviceInfo implements Message {
         "knxMedium",
         "KnxMedium",
         knxMedium,
-        new DataWriterEnumDefault<>(
-            KnxMedium::getValue, KnxMedium::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(KnxMedium::getValue, KnxMedium::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (deviceStatus)
-    writeSimpleField("deviceStatus", deviceStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deviceStatus", deviceStatus, writeComplex(writeBuffer));
 
     // Simple Field (knxAddress)
-    writeSimpleField("knxAddress", knxAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("knxAddress", knxAddress, writeComplex(writeBuffer));
 
     // Simple Field (projectInstallationIdentifier)
     writeSimpleField(
-        "projectInstallationIdentifier",
-        projectInstallationIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "projectInstallationIdentifier", projectInstallationIdentifier, writeComplex(writeBuffer));
 
     // Array Field (knxNetIpDeviceSerialNumber)
     writeByteArrayField(
@@ -147,13 +144,11 @@ public class DIBDeviceInfo implements Message {
     writeSimpleField(
         "knxNetIpDeviceMulticastAddress",
         knxNetIpDeviceMulticastAddress,
-        new DataWriterComplexDefault<>(writeBuffer));
+        writeComplex(writeBuffer));
 
     // Simple Field (knxNetIpDeviceMacAddress)
     writeSimpleField(
-        "knxNetIpDeviceMacAddress",
-        knxNetIpDeviceMacAddress,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "knxNetIpDeviceMacAddress", knxNetIpDeviceMacAddress, writeComplex(writeBuffer));
 
     // Array Field (deviceFriendlyName)
     writeByteArrayField("deviceFriendlyName", deviceFriendlyName, writeByteArray(writeBuffer, 8));
@@ -209,12 +204,6 @@ public class DIBDeviceInfo implements Message {
     return lengthInBits;
   }
 
-  public static DIBDeviceInfo staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DIBDeviceInfo staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DIBDeviceInfo");
     PositionAware positionAware = readBuffer;
@@ -228,23 +217,20 @@ public class DIBDeviceInfo implements Message {
         readEnumField(
             "knxMedium",
             "KnxMedium",
-            new DataReaderEnumDefault<>(KnxMedium::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(KnxMedium::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     DeviceStatus deviceStatus =
         readSimpleField(
-            "deviceStatus",
-            new DataReaderComplexDefault<>(() -> DeviceStatus.staticParse(readBuffer), readBuffer));
+            "deviceStatus", readComplex(() -> DeviceStatus.staticParse(readBuffer), readBuffer));
 
     KnxAddress knxAddress =
         readSimpleField(
-            "knxAddress",
-            new DataReaderComplexDefault<>(() -> KnxAddress.staticParse(readBuffer), readBuffer));
+            "knxAddress", readComplex(() -> KnxAddress.staticParse(readBuffer), readBuffer));
 
     ProjectInstallationIdentifier projectInstallationIdentifier =
         readSimpleField(
             "projectInstallationIdentifier",
-            new DataReaderComplexDefault<>(
-                () -> ProjectInstallationIdentifier.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ProjectInstallationIdentifier.staticParse(readBuffer), readBuffer));
 
     byte[] knxNetIpDeviceSerialNumber =
         readBuffer.readByteArray("knxNetIpDeviceSerialNumber", Math.toIntExact(6));
@@ -252,12 +238,12 @@ public class DIBDeviceInfo implements Message {
     IPAddress knxNetIpDeviceMulticastAddress =
         readSimpleField(
             "knxNetIpDeviceMulticastAddress",
-            new DataReaderComplexDefault<>(() -> IPAddress.staticParse(readBuffer), readBuffer));
+            readComplex(() -> IPAddress.staticParse(readBuffer), readBuffer));
 
     MACAddress knxNetIpDeviceMacAddress =
         readSimpleField(
             "knxNetIpDeviceMacAddress",
-            new DataReaderComplexDefault<>(() -> MACAddress.staticParse(readBuffer), readBuffer));
+            readComplex(() -> MACAddress.staticParse(readBuffer), readBuffer));
 
     byte[] deviceFriendlyName = readBuffer.readByteArray("deviceFriendlyName", Math.toIntExact(30));
 

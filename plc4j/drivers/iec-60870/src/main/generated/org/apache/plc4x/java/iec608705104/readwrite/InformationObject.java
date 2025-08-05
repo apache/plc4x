@@ -92,37 +92,6 @@ public abstract class InformationObject implements Message {
     return lengthInBits;
   }
 
-  public static InformationObject staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 2)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 2, but got " + args.length);
-    }
-    TypeIdentification typeIdentification;
-    if (args[0] instanceof TypeIdentification) {
-      typeIdentification = (TypeIdentification) args[0];
-    } else if (args[0] instanceof String) {
-      typeIdentification = TypeIdentification.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type TypeIdentification or a string which is parseable but"
-              + " was "
-              + args[0].getClass().getName());
-    }
-    Byte numTimeByte;
-    if (args[1] instanceof Byte) {
-      numTimeByte = (Byte) args[1];
-    } else if (args[1] instanceof String) {
-      numTimeByte = Byte.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type Byte or a string which is parseable but was "
-              + args[1].getClass().getName());
-    }
-    return staticParse(readBuffer, typeIdentification, numTimeByte);
-  }
-
   public static InformationObject staticParse(
       ReadBuffer readBuffer, TypeIdentification typeIdentification, Byte numTimeByte)
       throws ParseException {

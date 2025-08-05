@@ -63,12 +63,6 @@ public class DurationString implements Message {
     return lengthInBits;
   }
 
-  public static DurationString staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DurationString staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DurationString");
     PositionAware positionAware = readBuffer;

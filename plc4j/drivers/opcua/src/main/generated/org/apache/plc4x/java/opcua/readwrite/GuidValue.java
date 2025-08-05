@@ -129,11 +129,6 @@ public class GuidValue implements Message {
     return lengthInBits;
   }
 
-  public static GuidValue staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static GuidValue staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("GuidValue");
     PositionAware positionAware = readBuffer;

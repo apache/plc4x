@@ -62,12 +62,10 @@ public class BACnetVMACEntry implements Message {
     writeBuffer.pushContext("BACnetVMACEntry");
 
     // Optional Field (virtualMacAddress) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "virtualMacAddress", virtualMacAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("virtualMacAddress", virtualMacAddress, writeComplex(writeBuffer));
 
     // Optional Field (nativeMacAddress) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "nativeMacAddress", nativeMacAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("nativeMacAddress", nativeMacAddress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetVMACEntry");
   }
@@ -96,12 +94,6 @@ public class BACnetVMACEntry implements Message {
     return lengthInBits;
   }
 
-  public static BACnetVMACEntry staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetVMACEntry staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetVMACEntry");
     PositionAware positionAware = readBuffer;
@@ -110,7 +102,7 @@ public class BACnetVMACEntry implements Message {
     BACnetContextTagOctetString virtualMacAddress =
         readOptionalField(
             "virtualMacAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagOctetString)
                         BACnetContextTag.staticParse(
@@ -122,7 +114,7 @@ public class BACnetVMACEntry implements Message {
     BACnetContextTagOctetString nativeMacAddress =
         readOptionalField(
             "nativeMacAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagOctetString)
                         BACnetContextTag.staticParse(

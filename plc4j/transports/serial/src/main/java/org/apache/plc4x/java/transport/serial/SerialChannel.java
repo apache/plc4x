@@ -352,6 +352,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
                 serialSelectionKey = (SerialSelectionKey) ((SerialChannel) promise.channel()).javaChannel().register(selector, 0, SerialChannel.this);
 
                 // Set selection key
+                // TODO: in newer netty versions, there is no "selectionKey" field. I have no idea what this is needed for ... so I'll comment this out for now.
                 final Field selectionKeyField = AbstractNioChannel.class.getDeclaredField("selectionKey");
                 selectionKeyField.setAccessible(true);
                 selectionKeyField.set(SerialChannel.this, serialSelectionKey);

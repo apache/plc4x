@@ -23,7 +23,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionResponseItem
+//go:generate go tool plc4xGenerator -type=DefaultPlcSubscriptionResponseItem
 type DefaultPlcSubscriptionResponseItem struct {
 	code               apiModel.PlcResponseCode `stringer:"true"`
 	subscriptionHandle apiModel.PlcSubscriptionHandle

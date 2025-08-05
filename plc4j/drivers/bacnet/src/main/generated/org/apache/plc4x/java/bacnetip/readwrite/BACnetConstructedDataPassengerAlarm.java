@@ -82,7 +82,7 @@ public class BACnetConstructedDataPassengerAlarm extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataPassengerAlarm");
 
     // Simple Field (passengerAlarm)
-    writeSimpleField("passengerAlarm", passengerAlarm, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("passengerAlarm", passengerAlarm, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataPassengerAlarm extends BACnetConstructedData i
     BACnetApplicationTagBoolean passengerAlarm =
         readSimpleField(
             "passengerAlarm",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

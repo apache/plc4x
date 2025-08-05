@@ -139,11 +139,6 @@ public abstract class Variant implements Message {
     return lengthInBits;
   }
 
-  public static Variant staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Variant staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Variant");
     PositionAware positionAware = readBuffer;
@@ -158,7 +153,9 @@ public abstract class Variant implements Message {
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     VariantBuilder builder = null;
-    if (EvaluationHelper.equals(VariantType, (byte) 1)) {
+    if (EvaluationHelper.equals(VariantType, (byte) 0)) {
+      builder = VariantNull.staticParseVariantBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(VariantType, (byte) 1)) {
       builder = VariantBoolean.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
     } else if (EvaluationHelper.equals(VariantType, (byte) 2)) {
       builder = VariantSByte.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);

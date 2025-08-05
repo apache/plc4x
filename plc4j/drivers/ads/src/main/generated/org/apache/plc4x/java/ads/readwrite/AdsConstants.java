@@ -76,12 +76,6 @@ public class AdsConstants implements Message {
     return lengthInBits;
   }
 
-  public static AdsConstants staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AdsConstants staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AdsConstants");
     PositionAware positionAware = readBuffer;

@@ -63,11 +63,6 @@ public class ImageGIF implements Message {
     return lengthInBits;
   }
 
-  public static ImageGIF staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ImageGIF staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ImageGIF");
     PositionAware positionAware = readBuffer;

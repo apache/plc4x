@@ -127,9 +127,7 @@ public class RequestSmartConnectShortcut extends Request implements Message {
 
     RequestType pipePeek =
         readPeekField(
-            "pipePeek",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "pipePeek", readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Byte secondPipe =
         readOptionalField(

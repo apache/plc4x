@@ -66,7 +66,7 @@ public class BACnetPriorityValueUnsigned extends BACnetPriorityValue implements 
     writeBuffer.pushContext("BACnetPriorityValueUnsigned");
 
     // Simple Field (unsignedValue)
-    writeSimpleField("unsignedValue", unsignedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unsignedValue", unsignedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueUnsigned");
   }
@@ -97,7 +97,7 @@ public class BACnetPriorityValueUnsigned extends BACnetPriorityValue implements 
     BACnetApplicationTagUnsignedInteger unsignedValue =
         readSimpleField(
             "unsignedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

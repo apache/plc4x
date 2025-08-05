@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.transport.can;
 
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 
-public interface CANTransportConfiguration extends TransportConfiguration {
+public interface CANTransportConfiguration extends PlcTransportConfiguration {
 
 }

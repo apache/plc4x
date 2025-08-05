@@ -78,15 +78,13 @@ public class BACnetPropertyValues implements Message {
     writeBuffer.pushContext("BACnetPropertyValues");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Array Field (data)
     writeComplexTypeArrayField("data", data, writeBuffer);
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyValues");
   }
@@ -118,37 +116,6 @@ public class BACnetPropertyValues implements Message {
     return lengthInBits;
   }
 
-  public static BACnetPropertyValues staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 2)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 2, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    BACnetObjectType objectTypeArgument;
-    if (args[1] instanceof BACnetObjectType) {
-      objectTypeArgument = (BACnetObjectType) args[1];
-    } else if (args[1] instanceof String) {
-      objectTypeArgument = BACnetObjectType.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type BACnetObjectType or a string which is parseable but"
-              + " was "
-              + args[1].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber, objectTypeArgument);
-  }
-
   public static BACnetPropertyValues staticParse(
       ReadBuffer readBuffer, Short tagNumber, BACnetObjectType objectTypeArgument)
       throws ParseException {
@@ -159,13 +126,13 @@ public class BACnetPropertyValues implements Message {
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetPropertyValue> data =
         readTerminatedArrayField(
             "data",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyValue.staticParse(
                         readBuffer, (BACnetObjectType) (objectTypeArgument)),
@@ -178,7 +145,7 @@ public class BACnetPropertyValues implements Message {
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetPropertyValues");

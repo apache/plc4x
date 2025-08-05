@@ -38,35 +38,29 @@ import org.apache.plc4x.java.spi.generation.*;
 public class FindServersRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "422";
+  public Integer getExtensionId() {
+    return (int) 422;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final PascalString endpointUrl;
-  protected final int noOfLocaleIds;
   protected final List<PascalString> localeIds;
-  protected final int noOfServerUris;
   protected final List<PascalString> serverUris;
 
   public FindServersRequest(
-      ExtensionObjectDefinition requestHeader,
+      RequestHeader requestHeader,
       PascalString endpointUrl,
-      int noOfLocaleIds,
       List<PascalString> localeIds,
-      int noOfServerUris,
       List<PascalString> serverUris) {
     super();
     this.requestHeader = requestHeader;
     this.endpointUrl = endpointUrl;
-    this.noOfLocaleIds = noOfLocaleIds;
     this.localeIds = localeIds;
-    this.noOfServerUris = noOfServerUris;
     this.serverUris = serverUris;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -74,16 +68,8 @@ public class FindServersRequest extends ExtensionObjectDefinition implements Mes
     return endpointUrl;
   }
 
-  public int getNoOfLocaleIds() {
-    return noOfLocaleIds;
-  }
-
   public List<PascalString> getLocaleIds() {
     return localeIds;
-  }
-
-  public int getNoOfServerUris() {
-    return noOfServerUris;
   }
 
   public List<PascalString> getServerUris() {
@@ -98,19 +84,23 @@ public class FindServersRequest extends ExtensionObjectDefinition implements Mes
     writeBuffer.pushContext("FindServersRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (endpointUrl)
-    writeSimpleField("endpointUrl", endpointUrl, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("endpointUrl", endpointUrl, writeComplex(writeBuffer));
 
-    // Simple Field (noOfLocaleIds)
-    writeSimpleField("noOfLocaleIds", noOfLocaleIds, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfLocaleIds) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfLocaleIds = (int) ((((getLocaleIds()) == (null)) ? -(1) : COUNT(getLocaleIds())));
+    writeImplicitField("noOfLocaleIds", noOfLocaleIds, writeSignedInt(writeBuffer, 32));
 
     // Array Field (localeIds)
     writeComplexTypeArrayField("localeIds", localeIds, writeBuffer);
 
-    // Simple Field (noOfServerUris)
-    writeSimpleField("noOfServerUris", noOfServerUris, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfServerUris) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfServerUris = (int) ((((getServerUris()) == (null)) ? -(1) : COUNT(getServerUris())));
+    writeImplicitField("noOfServerUris", noOfServerUris, writeSignedInt(writeBuffer, 32));
 
     // Array Field (serverUris)
     writeComplexTypeArrayField("serverUris", serverUris, writeBuffer);
@@ -135,7 +125,7 @@ public class FindServersRequest extends ExtensionObjectDefinition implements Mes
     // Simple field (endpointUrl)
     lengthInBits += endpointUrl.getLengthInBits();
 
-    // Simple field (noOfLocaleIds)
+    // Implicit Field (noOfLocaleIds)
     lengthInBits += 32;
 
     // Array field
@@ -147,7 +137,7 @@ public class FindServersRequest extends ExtensionObjectDefinition implements Mes
       }
     }
 
-    // Simple field (noOfServerUris)
+    // Implicit Field (noOfServerUris)
     lengthInBits += 32;
 
     // Array field
@@ -163,73 +153,65 @@ public class FindServersRequest extends ExtensionObjectDefinition implements Mes
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("FindServersRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+            readComplex(
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     PascalString endpointUrl =
         readSimpleField(
-            "endpointUrl",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "endpointUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    int noOfLocaleIds = readSimpleField("noOfLocaleIds", readSignedInt(readBuffer, 32));
+    int noOfLocaleIds = readImplicitField("noOfLocaleIds", readSignedInt(readBuffer, 32));
 
     List<PascalString> localeIds =
         readCountArrayField(
             "localeIds",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfLocaleIds);
 
-    int noOfServerUris = readSimpleField("noOfServerUris", readSignedInt(readBuffer, 32));
+    int noOfServerUris = readImplicitField("noOfServerUris", readSignedInt(readBuffer, 32));
 
     List<PascalString> serverUris =
         readCountArrayField(
             "serverUris",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfServerUris);
 
     readBuffer.closeContext("FindServersRequest");
     // Create the instance
-    return new FindServersRequestBuilderImpl(
-        requestHeader, endpointUrl, noOfLocaleIds, localeIds, noOfServerUris, serverUris);
+    return new FindServersRequestBuilderImpl(requestHeader, endpointUrl, localeIds, serverUris);
   }
 
   public static class FindServersRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final PascalString endpointUrl;
-    private final int noOfLocaleIds;
     private final List<PascalString> localeIds;
-    private final int noOfServerUris;
     private final List<PascalString> serverUris;
 
     public FindServersRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
+        RequestHeader requestHeader,
         PascalString endpointUrl,
-        int noOfLocaleIds,
         List<PascalString> localeIds,
-        int noOfServerUris,
         List<PascalString> serverUris) {
       this.requestHeader = requestHeader;
       this.endpointUrl = endpointUrl;
-      this.noOfLocaleIds = noOfLocaleIds;
       this.localeIds = localeIds;
-      this.noOfServerUris = noOfServerUris;
       this.serverUris = serverUris;
     }
 
     public FindServersRequest build() {
       FindServersRequest findServersRequest =
-          new FindServersRequest(
-              requestHeader, endpointUrl, noOfLocaleIds, localeIds, noOfServerUris, serverUris);
+          new FindServersRequest(requestHeader, endpointUrl, localeIds, serverUris);
       return findServersRequest;
     }
   }
@@ -245,9 +227,7 @@ public class FindServersRequest extends ExtensionObjectDefinition implements Mes
     FindServersRequest that = (FindServersRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
         && (getEndpointUrl() == that.getEndpointUrl())
-        && (getNoOfLocaleIds() == that.getNoOfLocaleIds())
         && (getLocaleIds() == that.getLocaleIds())
-        && (getNoOfServerUris() == that.getNoOfServerUris())
         && (getServerUris() == that.getServerUris())
         && super.equals(that)
         && true;
@@ -256,13 +236,7 @@ public class FindServersRequest extends ExtensionObjectDefinition implements Mes
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getRequestHeader(),
-        getEndpointUrl(),
-        getNoOfLocaleIds(),
-        getLocaleIds(),
-        getNoOfServerUris(),
-        getServerUris());
+        super.hashCode(), getRequestHeader(), getEndpointUrl(), getLocaleIds(), getServerUris());
   }
 
   @Override

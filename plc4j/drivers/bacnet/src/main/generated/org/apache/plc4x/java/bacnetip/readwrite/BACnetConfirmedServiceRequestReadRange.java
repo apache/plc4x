@@ -90,19 +90,16 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadRange");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (propertyArrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "propertyArrayIndex", propertyArrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("propertyArrayIndex", propertyArrayIndex, writeComplex(writeBuffer));
 
     // Optional Field (readRange) (Can be skipped, if the value is null)
-    writeOptionalField("readRange", readRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("readRange", readRange, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestReadRange");
   }
@@ -147,7 +144,7 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -159,7 +156,7 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -168,7 +165,7 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
     BACnetContextTagUnsignedInteger propertyArrayIndex =
         readOptionalField(
             "propertyArrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -180,7 +177,7 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
     BACnetConfirmedServiceRequestReadRangeRange readRange =
         readOptionalField(
             "readRange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetConfirmedServiceRequestReadRangeRange.staticParse(readBuffer),
                 readBuffer));
 

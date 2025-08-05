@@ -82,7 +82,7 @@ public class BACnetConstructedDataAckRequired extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataAckRequired");
 
     // Simple Field (ackRequired)
-    writeSimpleField("ackRequired", ackRequired, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackRequired", ackRequired, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetEventTransitionBitsTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataAckRequired extends BACnetConstructedData impl
     BACnetEventTransitionBitsTagged ackRequired =
         readSimpleField(
             "ackRequired",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTransitionBitsTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

@@ -57,7 +57,7 @@ public abstract class AdsDiscoveryBlock implements Message {
         "blockType",
         "AdsDiscoveryBlockType",
         getBlockType(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AdsDiscoveryBlockType::getValue,
             AdsDiscoveryBlockType::name,
             writeUnsignedInt(writeBuffer, 16)));
@@ -87,22 +87,16 @@ public abstract class AdsDiscoveryBlock implements Message {
     return lengthInBits;
   }
 
-  public static AdsDiscoveryBlock staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AdsDiscoveryBlock staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AdsDiscoveryBlock");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AdsDiscoveryBlockType blockType =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "blockType",
-            new DataReaderEnumDefault<>(
-                AdsDiscoveryBlockType::enumForValue, readUnsignedInt(readBuffer, 16)));
+            "AdsDiscoveryBlockType",
+            readEnum(AdsDiscoveryBlockType::enumForValue, readUnsignedInt(readBuffer, 16)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     AdsDiscoveryBlockBuilder builder = null;

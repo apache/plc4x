@@ -50,6 +50,8 @@ github:
     wiki: true
     issues: true
     projects: true
+    # Enable discussions
+    discussions: true
 
   enabled_merge_buttons:
     squash: true
@@ -80,9 +82,8 @@ github:
 
 notifications:
   commits:              commits@plc4x.apache.org
-  issues:               dev@plc4x.apache.org
+  issues:               issues@plc4x.apache.org
   discussions:          dev@plc4x.apache.org
-  pullrequests_status:  dev@plc4x.apache.org
-  pullrequests_comment: dev@plc4x.apache.org
-  # Send dependabot PRs to commits@ instead
+  pullrequests_status:  commits@plc4x.apache.org
+  pullrequests_comment: commits@plc4x.apache.org
   pullrequests_bot_dependabot: commits@plc4x.apache.org

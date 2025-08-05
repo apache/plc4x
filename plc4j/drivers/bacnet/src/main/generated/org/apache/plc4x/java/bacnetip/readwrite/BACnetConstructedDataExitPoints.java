@@ -118,8 +118,7 @@ public class BACnetConstructedDataExitPoints extends BACnetConstructedData imple
     List<BACnetDeviceObjectReference> exitPoints =
         readTerminatedArrayField(
             "exitPoints",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

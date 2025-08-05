@@ -82,7 +82,7 @@ public class BACnetConstructedDataInProgress extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataInProgress");
 
     // Simple Field (inProgress)
-    writeSimpleField("inProgress", inProgress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("inProgress", inProgress, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLightingInProgressTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataInProgress extends BACnetConstructedData imple
     BACnetLightingInProgressTagged inProgress =
         readSimpleField(
             "inProgress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLightingInProgressTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

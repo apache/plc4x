@@ -22,8 +22,9 @@ package cbus
 import (
 	"context"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -520,43 +521,6 @@ func Test_calGetStatusTag_SerializeWithWriteBuffer(t *testing.T) {
 	}
 }
 
-func Test_calGetStatusTag_String(t *testing.T) {
-	type fields struct {
-		calTag      calTag
-		tagType     TagType
-		parameter   readWriteModel.Parameter
-		count       uint8
-		numElements uint16
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{
-			name: "default to string",
-			want: `
-╔═STATUS════════════════════╗
-║╔═Parameter═══════╗╔═count╗║
-║║0x00 0 UNKNOWN_01║║0x00 0║║
-║╚═════════════════╝╚══════╝║
-╚═══════════════════════════╝`[1:],
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := calGetStatusTag{
-				calTag:      tt.fields.calTag,
-				tagType:     tt.fields.tagType,
-				parameter:   tt.fields.parameter,
-				count:       tt.fields.count,
-				numElements: tt.fields.numElements,
-			}
-			assert.Equalf(t, tt.want, c.String(), "String()")
-		})
-	}
-}
-
 func Test_calIdentifyTag_GetAddressString(t *testing.T) {
 	type fields struct {
 		calTag      calTag
@@ -790,39 +754,6 @@ func Test_calIdentifyTag_SerializeWithWriteBuffer(t *testing.T) {
 				numElements: tt.fields.numElements,
 			}
 			tt.wantErr(t, c.SerializeWithWriteBuffer(tt.args.ctx, tt.args.writeBuffer), fmt.Sprintf("SerializeWithWriteBuffer(%v, %v)", tt.args.ctx, tt.args.writeBuffer))
-		})
-	}
-}
-
-func Test_calIdentifyTag_String(t *testing.T) {
-	type fields struct {
-		calTag      calTag
-		tagType     TagType
-		attribute   readWriteModel.Attribute
-		numElements uint16
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{
-			name: "default to string",
-			want: `
-╔═STATUS/Attribute╗
-║0x00 0 Manufacturer║
-╚═════════════════╝`[1:],
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := calIdentifyTag{
-				calTag:      tt.fields.calTag,
-				tagType:     tt.fields.tagType,
-				attribute:   tt.fields.attribute,
-				numElements: tt.fields.numElements,
-			}
-			assert.Equalf(t, tt.want, c.String(), "String()")
 		})
 	}
 }
@@ -1105,43 +1036,6 @@ func Test_calRecallTag_SerializeWithWriteBuffer(t *testing.T) {
 				numElements: tt.fields.numElements,
 			}
 			tt.wantErr(t, c.SerializeWithWriteBuffer(tt.args.ctx, tt.args.writeBuffer), fmt.Sprintf("SerializeWithWriteBuffer(%v, %v)", tt.args.ctx, tt.args.writeBuffer))
-		})
-	}
-}
-
-func Test_calRecallTag_String(t *testing.T) {
-	type fields struct {
-		calTag      calTag
-		tagType     TagType
-		parameter   readWriteModel.Parameter
-		count       uint8
-		numElements uint16
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{
-			name: "default to string",
-			want: `
-╔═STATUS════════════════════╗
-║╔═Parameter═══════╗╔═count╗║
-║║0x00 0 UNKNOWN_01║║0x00 0║║
-║╚═════════════════╝╚══════╝║
-╚═══════════════════════════╝`[1:],
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := calRecallTag{
-				calTag:      tt.fields.calTag,
-				tagType:     tt.fields.tagType,
-				parameter:   tt.fields.parameter,
-				count:       tt.fields.count,
-				numElements: tt.fields.numElements,
-			}
-			assert.Equalf(t, tt.want, c.String(), "String()")
 		})
 	}
 }
@@ -2261,41 +2155,6 @@ func Test_salTag_SerializeWithWriteBuffer(t *testing.T) {
 	}
 }
 
-func Test_salTag_String(t *testing.T) {
-	type fields struct {
-		bridgeAddresses []readWriteModel.BridgeAddress
-		tagType         TagType
-		application     readWriteModel.ApplicationIdContainer
-		salCommand      string
-		numElements     uint16
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{
-			name: "default to string",
-			want: `
-╔═STATUS/ApplicationIdContainer═════╗
-║        0x00 0 RESERVED_00         ║
-╚═══════════════════════════════════╝`[1:],
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			s := salTag{
-				bridgeAddresses: tt.fields.bridgeAddresses,
-				tagType:         tt.fields.tagType,
-				application:     tt.fields.application,
-				salCommand:      tt.fields.salCommand,
-				numElements:     tt.fields.numElements,
-			}
-			assert.Equalf(t, tt.want, s.String(), "String()")
-		})
-	}
-}
-
 func Test_statusTag_GetAddressString(t *testing.T) {
 	type fields struct {
 		bridgeAddresses           []readWriteModel.BridgeAddress
@@ -2711,45 +2570,6 @@ func Test_statusTag_SerializeWithWriteBuffer(t *testing.T) {
 				numElements:               tt.fields.numElements,
 			}
 			tt.wantErr(t, s.SerializeWithWriteBuffer(tt.args.ctx, tt.args.writeBuffer), fmt.Sprintf("SerializeWithWriteBuffer(%v, %v)", tt.args.ctx, tt.args.writeBuffer))
-		})
-	}
-}
-
-func Test_statusTag_String(t *testing.T) {
-	type fields struct {
-		bridgeAddresses           []readWriteModel.BridgeAddress
-		tagType                   TagType
-		statusRequestType         StatusRequestType
-		startingGroupAddressLabel *byte
-		application               readWriteModel.ApplicationIdContainer
-		numElements               uint16
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{
-			name: "default to string",
-			want: `
-╔═STATUS══════════════════════════════════════════════════╗
-║╔═statusRequestType═════════════════╗╔═application══════╗║
-║║0x00 0 StatusRequestTypeBinaryState║║0x00 0 RESERVED_00║║
-║╚═══════════════════════════════════╝╚══════════════════╝║
-╚═════════════════════════════════════════════════════════╝`[1:],
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			s := statusTag{
-				bridgeAddresses:           tt.fields.bridgeAddresses,
-				tagType:                   tt.fields.tagType,
-				statusRequestType:         tt.fields.statusRequestType,
-				startingGroupAddressLabel: tt.fields.startingGroupAddressLabel,
-				application:               tt.fields.application,
-				numElements:               tt.fields.numElements,
-			}
-			assert.Equalf(t, tt.want, s.String(), "String()")
 		})
 	}
 }

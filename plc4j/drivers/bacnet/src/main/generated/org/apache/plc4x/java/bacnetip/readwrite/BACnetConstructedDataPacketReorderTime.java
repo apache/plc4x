@@ -83,8 +83,7 @@ public class BACnetConstructedDataPacketReorderTime extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataPacketReorderTime");
 
     // Simple Field (packetReorderTime)
-    writeSimpleField(
-        "packetReorderTime", packetReorderTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("packetReorderTime", packetReorderTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataPacketReorderTime extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger packetReorderTime =
         readSimpleField(
             "packetReorderTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

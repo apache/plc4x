@@ -21,13 +21,13 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/stretchr/testify/mock"
 	"testing"
 
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
 )
 
 func TestDefaultPlcSubscriptionResponse_GetRequest(t *testing.T) {

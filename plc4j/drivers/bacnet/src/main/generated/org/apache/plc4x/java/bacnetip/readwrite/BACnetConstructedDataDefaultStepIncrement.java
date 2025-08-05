@@ -83,8 +83,7 @@ public class BACnetConstructedDataDefaultStepIncrement extends BACnetConstructed
     writeBuffer.pushContext("BACnetConstructedDataDefaultStepIncrement");
 
     // Simple Field (defaultStepIncrement)
-    writeSimpleField(
-        "defaultStepIncrement", defaultStepIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("defaultStepIncrement", defaultStepIncrement, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataDefaultStepIncrement extends BACnetConstructed
     BACnetApplicationTagReal defaultStepIncrement =
         readSimpleField(
             "defaultStepIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

@@ -75,10 +75,7 @@ public class ModbusRtuADU extends ModbusADU implements Message {
 
     // Simple Field (pdu)
     writeSimpleField(
-        "pdu",
-        pdu,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+        "pdu", pdu, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Checksum Field (checksum) (Calculated)
     writeChecksumField(
@@ -128,8 +125,7 @@ public class ModbusRtuADU extends ModbusADU implements Message {
     ModbusPDU pdu =
         readSimpleField(
             "pdu",
-            new DataReaderComplexDefault<>(
-                () -> ModbusPDU.staticParse(readBuffer, (boolean) (response)), readBuffer),
+            readComplex(() -> ModbusPDU.staticParse(readBuffer, (boolean) (response)), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int crc =

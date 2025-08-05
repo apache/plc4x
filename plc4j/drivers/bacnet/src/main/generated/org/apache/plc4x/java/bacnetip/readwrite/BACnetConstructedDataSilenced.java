@@ -82,7 +82,7 @@ public class BACnetConstructedDataSilenced extends BACnetConstructedData impleme
     writeBuffer.pushContext("BACnetConstructedDataSilenced");
 
     // Simple Field (silenced)
-    writeSimpleField("silenced", silenced, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("silenced", silenced, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetSilencedStateTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataSilenced extends BACnetConstructedData impleme
     BACnetSilencedStateTagged silenced =
         readSimpleField(
             "silenced",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetSilencedStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

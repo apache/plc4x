@@ -82,7 +82,7 @@ public class BACnetConstructedDataMaxActualValue extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataMaxActualValue");
 
     // Simple Field (maxActualValue)
-    writeSimpleField("maxActualValue", maxActualValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxActualValue", maxActualValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataMaxActualValue extends BACnetConstructedData i
     BACnetApplicationTagReal maxActualValue =
         readSimpleField(
             "maxActualValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

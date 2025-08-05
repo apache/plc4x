@@ -70,14 +70,13 @@ public class BACnetGroupChannelValue implements Message {
     writeBuffer.pushContext("BACnetGroupChannelValue");
 
     // Simple Field (channel)
-    writeSimpleField("channel", channel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("channel", channel, writeComplex(writeBuffer));
 
     // Optional Field (overridingPriority) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "overridingPriority", overridingPriority, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("overridingPriority", overridingPriority, writeComplex(writeBuffer));
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetGroupChannelValue");
   }
@@ -107,12 +106,6 @@ public class BACnetGroupChannelValue implements Message {
     return lengthInBits;
   }
 
-  public static BACnetGroupChannelValue staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetGroupChannelValue staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetGroupChannelValue");
     PositionAware positionAware = readBuffer;
@@ -121,7 +114,7 @@ public class BACnetGroupChannelValue implements Message {
     BACnetContextTagUnsignedInteger channel =
         readSimpleField(
             "channel",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -133,7 +126,7 @@ public class BACnetGroupChannelValue implements Message {
     BACnetContextTagUnsignedInteger overridingPriority =
         readOptionalField(
             "overridingPriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -144,9 +137,7 @@ public class BACnetGroupChannelValue implements Message {
 
     BACnetChannelValue value =
         readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(
-                () -> BACnetChannelValue.staticParse(readBuffer), readBuffer));
+            "value", readComplex(() -> BACnetChannelValue.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("BACnetGroupChannelValue");
     // Create the instance

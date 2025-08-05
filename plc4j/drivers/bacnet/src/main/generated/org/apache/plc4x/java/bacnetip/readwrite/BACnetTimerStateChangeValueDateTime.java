@@ -67,7 +67,7 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
     writeBuffer.pushContext("BACnetTimerStateChangeValueDateTime");
 
     // Simple Field (dateTimeValue)
-    writeSimpleField("dateTimeValue", dateTimeValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateTimeValue", dateTimeValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimerStateChangeValueDateTime");
   }
@@ -98,7 +98,7 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
     BACnetDateTimeEnclosed dateTimeValue =
         readSimpleField(
             "dateTimeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (2)), readBuffer));
 
     readBuffer.closeContext("BACnetTimerStateChangeValueDateTime");

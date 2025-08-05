@@ -121,7 +121,7 @@ public class VariantQualifiedName extends Variant implements Message {
     List<QualifiedName> value =
         readCountArrayField(
             "value",
-            new DataReaderComplexDefault<>(() -> QualifiedName.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer),
             (((arrayLength) == (null)) ? 1 : arrayLength));
 
     readBuffer.closeContext("VariantQualifiedName");

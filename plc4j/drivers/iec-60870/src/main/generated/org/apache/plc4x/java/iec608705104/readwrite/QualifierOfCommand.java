@@ -97,12 +97,6 @@ public class QualifierOfCommand implements Message {
     return lengthInBits;
   }
 
-  public static QualifierOfCommand staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static QualifierOfCommand staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("QualifierOfCommand");
     PositionAware positionAware = readBuffer;

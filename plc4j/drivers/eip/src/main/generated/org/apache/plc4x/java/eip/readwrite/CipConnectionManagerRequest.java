@@ -197,11 +197,10 @@ public class CipConnectionManagerRequest extends CipService implements Message {
     writeImplicitField("requestPathSize", requestPathSize, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (classSegment)
-    writeSimpleField("classSegment", classSegment, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("classSegment", classSegment, writeComplex(writeBuffer));
 
     // Simple Field (instanceSegment)
-    writeSimpleField(
-        "instanceSegment", instanceSegment, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("instanceSegment", instanceSegment, writeComplex(writeBuffer));
 
     // Simple Field (priority)
     writeSimpleField("priority", priority, writeUnsignedByte(writeBuffer, 4));
@@ -239,22 +238,16 @@ public class CipConnectionManagerRequest extends CipService implements Message {
     writeSimpleField("otRpi", otRpi, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (otConnectionParameters)
-    writeSimpleField(
-        "otConnectionParameters",
-        otConnectionParameters,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("otConnectionParameters", otConnectionParameters, writeComplex(writeBuffer));
 
     // Simple Field (toRpi)
     writeSimpleField("toRpi", toRpi, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (toConnectionParameters)
-    writeSimpleField(
-        "toConnectionParameters",
-        toConnectionParameters,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("toConnectionParameters", toConnectionParameters, writeComplex(writeBuffer));
 
     // Simple Field (transportType)
-    writeSimpleField("transportType", transportType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportType", transportType, writeComplex(writeBuffer));
 
     // Simple Field (connectionPathSize)
     writeSimpleField("connectionPathSize", connectionPathSize, writeUnsignedShort(writeBuffer, 8));
@@ -353,13 +346,11 @@ public class CipConnectionManagerRequest extends CipService implements Message {
 
     PathSegment classSegment =
         readSimpleField(
-            "classSegment",
-            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
+            "classSegment", readComplex(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     PathSegment instanceSegment =
         readSimpleField(
-            "instanceSegment",
-            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
+            "instanceSegment", readComplex(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     byte priority = readSimpleField("priority", readUnsignedByte(readBuffer, 4));
 
@@ -390,22 +381,18 @@ public class CipConnectionManagerRequest extends CipService implements Message {
     NetworkConnectionParameters otConnectionParameters =
         readSimpleField(
             "otConnectionParameters",
-            new DataReaderComplexDefault<>(
-                () -> NetworkConnectionParameters.staticParse(readBuffer), readBuffer));
+            readComplex(() -> NetworkConnectionParameters.staticParse(readBuffer), readBuffer));
 
     long toRpi = readSimpleField("toRpi", readUnsignedLong(readBuffer, 32));
 
     NetworkConnectionParameters toConnectionParameters =
         readSimpleField(
             "toConnectionParameters",
-            new DataReaderComplexDefault<>(
-                () -> NetworkConnectionParameters.staticParse(readBuffer), readBuffer));
+            readComplex(() -> NetworkConnectionParameters.staticParse(readBuffer), readBuffer));
 
     TransportType transportType =
         readSimpleField(
-            "transportType",
-            new DataReaderComplexDefault<>(
-                () -> TransportType.staticParse(readBuffer), readBuffer));
+            "transportType", readComplex(() -> TransportType.staticParse(readBuffer), readBuffer));
 
     short connectionPathSize =
         readSimpleField("connectionPathSize", readUnsignedShort(readBuffer, 8));
@@ -413,7 +400,7 @@ public class CipConnectionManagerRequest extends CipService implements Message {
     List<PathSegment> connectionPaths =
         readTerminatedArrayField(
             "connectionPaths",
-            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PathSegment.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.eip.readwrite.utils.StaticHelper.noMorePathSegments(

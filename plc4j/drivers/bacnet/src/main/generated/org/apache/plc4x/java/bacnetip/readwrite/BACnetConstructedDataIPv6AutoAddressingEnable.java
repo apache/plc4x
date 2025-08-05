@@ -83,8 +83,7 @@ public class BACnetConstructedDataIPv6AutoAddressingEnable extends BACnetConstru
     writeBuffer.pushContext("BACnetConstructedDataIPv6AutoAddressingEnable");
 
     // Simple Field (autoAddressingEnable)
-    writeSimpleField(
-        "autoAddressingEnable", autoAddressingEnable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("autoAddressingEnable", autoAddressingEnable, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataIPv6AutoAddressingEnable extends BACnetConstru
     BACnetApplicationTagBoolean autoAddressingEnable =
         readSimpleField(
             "autoAddressingEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

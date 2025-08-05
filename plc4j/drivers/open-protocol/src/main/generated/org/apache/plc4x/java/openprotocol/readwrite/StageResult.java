@@ -97,12 +97,6 @@ public class StageResult implements Message {
     return lengthInBits;
   }
 
-  public static StageResult staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static StageResult staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("StageResult");
     PositionAware positionAware = readBuffer;

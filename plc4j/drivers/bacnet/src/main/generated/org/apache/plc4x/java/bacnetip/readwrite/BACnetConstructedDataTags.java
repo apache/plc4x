@@ -99,7 +99,7 @@ public class BACnetConstructedDataTags extends BACnetConstructedData implements 
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (tags)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataTags extends BACnetConstructedData implements 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,8 +161,7 @@ public class BACnetConstructedDataTags extends BACnetConstructedData implements 
     List<BACnetNameValue> tags =
         readTerminatedArrayField(
             "tags",
-            new DataReaderComplexDefault<>(
-                () -> BACnetNameValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetNameValue.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

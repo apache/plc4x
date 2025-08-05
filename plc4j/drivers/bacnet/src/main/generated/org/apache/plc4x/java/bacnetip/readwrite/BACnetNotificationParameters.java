@@ -87,7 +87,7 @@ public abstract class BACnetNotificationParameters implements Message {
     writeBuffer.pushContext("BACnetNotificationParameters");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     short peekedTagNumber = getPeekedTagNumber();
@@ -97,7 +97,7 @@ public abstract class BACnetNotificationParameters implements Message {
     serializeBACnetNotificationParametersChild(writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParameters");
   }
@@ -126,37 +126,6 @@ public abstract class BACnetNotificationParameters implements Message {
     return lengthInBits;
   }
 
-  public static BACnetNotificationParameters staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 2)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 2, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    BACnetObjectType objectTypeArgument;
-    if (args[1] instanceof BACnetObjectType) {
-      objectTypeArgument = (BACnetObjectType) args[1];
-    } else if (args[1] instanceof String) {
-      objectTypeArgument = BACnetObjectType.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type BACnetObjectType or a string which is parseable but"
-              + " was "
-              + args[1].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber, objectTypeArgument);
-  }
-
   public static BACnetNotificationParameters staticParse(
       ReadBuffer readBuffer, Short tagNumber, BACnetObjectType objectTypeArgument)
       throws ParseException {
@@ -167,14 +136,13 @@ public abstract class BACnetNotificationParameters implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
 
@@ -283,7 +251,7 @@ public abstract class BACnetNotificationParameters implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetNotificationParameters");

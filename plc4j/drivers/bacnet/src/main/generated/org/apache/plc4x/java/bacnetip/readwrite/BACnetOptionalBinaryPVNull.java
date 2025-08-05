@@ -60,7 +60,7 @@ public class BACnetOptionalBinaryPVNull extends BACnetOptionalBinaryPV implement
     writeBuffer.pushContext("BACnetOptionalBinaryPVNull");
 
     // Simple Field (nullValue)
-    writeSimpleField("nullValue", nullValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nullValue", nullValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetOptionalBinaryPVNull");
   }
@@ -91,7 +91,7 @@ public class BACnetOptionalBinaryPVNull extends BACnetOptionalBinaryPV implement
     BACnetApplicationTagNull nullValue =
         readSimpleField(
             "nullValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagNull) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

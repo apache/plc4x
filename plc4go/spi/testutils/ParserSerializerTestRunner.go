@@ -30,12 +30,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/subchen/go-xmldom"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type ParserSerializerTestsuite struct {
@@ -214,7 +214,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, parser Parser, 
 	}
 	t.Log("Done running testcases")
 	// Execute the tests in the testsuite
-	t.Logf(testsuite.name)
+	t.Log(testsuite.name)
 }
 
 func ParseParserSerializerTestSuiteXml(t *testing.T, testPath string) *xmldom.Node {

@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<ISO15745Profile xmlns="http://www.profibus.com/GSDML/2003/11/DeviceProfile" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.profibus.com/GSDML/2003/11/DeviceProfile .\GSDML-DeviceProfile-V2.2.xsd">
+	<ProfileHeader>
+		<ProfileIdentification>PROFINET Device Profile</ProfileIdentification>
+		<ProfileRevision>1.00</ProfileRevision>
+		<ProfileName>Device Profile for PROFINET Devices</ProfileName>
+		<ProfileSource>PROFIBUS Nutzerorganisation e. V. (PNO)</ProfileSource>
+		<ProfileClassID>Device</ProfileClassID>
+		<ISO15745Reference>
+			<ISO15745Part>4</ISO15745Part>
+			<ISO15745Edition>1</ISO15745Edition>
+			<ProfileTechnology>GSDML</ProfileTechnology>
+		</ISO15745Reference>
+	</ProfileHeader>
+	<ProfileBody>
+		<DeviceIdentity VendorID="0x01C6" DeviceID="0x6100">
+			<InfoText TextId="IDT_FamilyDescription"/>
+			<VendorName Value="Advantech Co., Ltd."/>
+		</DeviceIdentity>
+		<DeviceFunction>
+			<Family MainFamily="I/O" ProductFamily="Advantech PROFINET Devices"/>
+		</DeviceFunction>
+		<ApplicationProcess>
+			<DeviceAccessPointList>
+				<DeviceAccessPointItem ID="ID_DAP1" PhysicalSlots="0..1" ModuleIdentNumber="0x61000000" MinDeviceInterval="32" ImplementationType="Motorola" DNS_CompatibleName="adam-6100pn" FixedInSlots="0" ObjectUUID_LocalIndex="1">
+					<ModuleInfo>
+						<Name TextId="IDT_DAP1_NAME"/>
+						<InfoText TextId="IDT_DAP1_INFO"/>
+						<VendorName Value="Advantech Co., Ltd."/>
+						<OrderNumber Value="ADAM-6100PN"/>
+                        <HardwareRelease Value="1"/>
+                        <SoftwareRelease Value="V  1  2  1"/>
+					</ModuleInfo>
+                    <SubslotList>
+                        <SubslotItem SubslotNumber="32768" TextId="IDT_SS_Interface"/>
+                        <SubslotItem SubslotNumber="32769" TextId="IDT_SS_Port1"/>
+                        <SubslotItem SubslotNumber="32770" TextId="IDT_SS_Port2"/>
+                    </SubslotList>
+					<IOConfigData MaxInputLength="642" MaxOutputLength="642"/>
+					<UseableModules>
+						<ModuleItemRef ModuleItemTarget="IDM_ADAM6117PN_1" AllowedInSlots="1"/>
+						<ModuleItemRef ModuleItemTarget="IDM_ADAM6118PN_1" AllowedInSlots="1"/>
+						<ModuleItemRef ModuleItemTarget="IDM_ADAM6124PN_1" AllowedInSlots="1"/>
+						<ModuleItemRef ModuleItemTarget="IDM_ADAM6150PN_1" AllowedInSlots="1"/>
+						<ModuleItemRef ModuleItemTarget="IDM_ADAM6151PN_1" AllowedInSlots="1"/>
+						<ModuleItemRef ModuleItemTarget="IDM_ADAM6156PN_1" AllowedInSlots="1"/>
+						<ModuleItemRef ModuleItemTarget="IDM_ADAM6160PN_1" AllowedInSlots="1"/>
+					</UseableModules>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="ID_DAP1_VSM_1" SubmoduleIdentNumber="0x61001000">
+							<IOData IOCS_Length="1" IOPS_Length="1"/>
+							<RecordDataList/>
+							<ModuleInfo>
+							    <Name TextId="IDT_DAP1_NAME" /> 
+							    <InfoText TextId="IDT_DAP1_INFO" /> 
+						    </ModuleInfo>
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+                    <SystemDefinedSubmoduleList>
+                        <InterfaceSubmoduleItem SupportedRT_Class="Class1" SupportedProtocols="LLDP" SupportedMibs="" NetworkComponentDiagnosisSupported="false" SubslotNumber="32768" TextId="InterfaceName" SubmoduleIdentNumber="0x00000001" >
+                            <ApplicationRelations />
+                        </InterfaceSubmoduleItem>
+                        <PortSubmoduleItem SubslotNumber="32769" TextId="CommunicationPort1" SubmoduleIdentNumber="0x00000002"/>
+                        <PortSubmoduleItem SubslotNumber="32770" TextId="CommunicationPort2" SubmoduleIdentNumber="0x00000002"/>
+                    </SystemDefinedSubmoduleList>
+                    <Graphics>
+						<GraphicItemRef Type="DeviceSymbol" GraphicItemTarget="IDG_DeviceSymbol"/>
+					</Graphics>
+				</DeviceAccessPointItem>
+			</DeviceAccessPointList>
+			<ModuleList>
+				<!--Digital Input-->
+				<ModuleItem ID="IDM_ADAM6151PN_1" ModuleIdentNumber="0x61510000">
+					<ModuleInfo CategoryRef="IDC_ADAM_DI_1">
+						<Name TextId="IDT_ADAM6151PN_NAME"/>
+						<InfoText TextId="IDT_ADAM6151PN_INFO"/>
+					</ModuleInfo>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="ID_6151VSM_1" SubmoduleIdentNumber="0x61511000">
+							<IOData IOPS_Length="1" IOCS_Length="1">
+								<Input>
+									<DataItem DataType="Unsigned8" TextId="IDT_ADAM6151PN_DI_0" UseAsBits="true"/>
+									<DataItem DataType="Unsigned8" TextId="IDT_ADAM6151PN_DI_1" UseAsBits="true"/>
+								</Input>
+							</IOData>
+							<RecordDataList/>
+							<ModuleInfo CategoryRef="IDC_ADAM_DI_1">
+							    <Name TextId="IDT_ADAM6151PN_NAME" /> 
+							    <InfoText TextId="IDT_ADAM6151PN_INFO" /> 
+						    </ModuleInfo>
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+				</ModuleItem>
+				<!--Digital Output-->
+				<ModuleItem ID="IDM_ADAM6156PN_1" ModuleIdentNumber="0x61560000">
+					<ModuleInfo CategoryRef="IDC_ADAM_DO_1">
+						<Name TextId="IDT_ADAM6156PN_NAME"/>
+						<InfoText TextId="IDT_ADAM6156PN_INFO"/>
+					</ModuleInfo>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="ID_6156VSM_1" SubmoduleIdentNumber="0x61561000">
+							<IOData IOPS_Length="1" IOCS_Length="1">
+								<Output>
+									<DataItem DataType="Unsigned8" TextId="IDT_ADAM6156PN_DO_0" UseAsBits="true"/>
+									<DataItem DataType="Unsigned8" TextId="IDT_ADAM6156PN_DO_1" UseAsBits="true"/>
+								</Output>
+							</IOData>
+							<RecordDataList/>
+							<ModuleInfo CategoryRef="IDC_ADAM_DO_1">
+						        <Name TextId="IDT_ADAM6156PN_NAME"/>
+						        <InfoText TextId="IDT_ADAM6156PN_INFO"/>
+						    </ModuleInfo>
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+				</ModuleItem>
+				<!--Digital Input and Output-->
+				<ModuleItem ID="IDM_ADAM6150PN_1" ModuleIdentNumber="0x61500000">
+					<ModuleInfo CategoryRef="IDC_ADAM_DIO_1">
+						<Name TextId="IDT_ADAM6150PN_NAME"/>
+						<InfoText TextId="IDT_ADAM6150PN_INFO"/>
+					</ModuleInfo>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="ID_6150VSM_1" SubmoduleIdentNumber="0x61501000">
+							<IOData IOPS_Length="1" IOCS_Length="1">
+							    <Input>
+							        <DataItem DataType="Unsigned8" TextId="IDT_ADAM6150PN_DI_0" UseAsBits="true"/>
+							    </Input>
+								<Output>
+									<DataItem DataType="Unsigned8" TextId="IDT_ADAM6150PN_DO_0" UseAsBits="true"/>
+								</Output>
+							</IOData>
+							<RecordDataList/>
+					        <ModuleInfo CategoryRef="IDC_ADAM_DIO_1">
+						        <Name TextId="IDT_ADAM6150PN_NAME"/>
+						        <InfoText TextId="IDT_ADAM6150PN_INFO"/>
+					        </ModuleInfo>							
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+				</ModuleItem>
+				<!--Relay Output-->
+				<ModuleItem ID="IDM_ADAM6160PN_1" ModuleIdentNumber="0x61600000">
+					<ModuleInfo CategoryRef="IDC_ADAM_RELAY_1">
+						<Name TextId="IDT_ADAM6160PN_NAME"/>
+						<InfoText TextId="IDT_ADAM6160PN_INFO"/>
+					</ModuleInfo>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="ID_6160VSM_1" SubmoduleIdentNumber="0x61601000">
+							<IOData IOPS_Length="1" IOCS_Length="1">
+								<Output>
+									<DataItem DataType="Unsigned8" TextId="IDT_ADAM6160PN_DO_0" UseAsBits="true"/>
+								</Output>
+							</IOData>
+							<RecordDataList/>
+							<ModuleInfo CategoryRef="IDC_ADAM_RELAY_1">
+						        <Name TextId="IDT_ADAM6160PN_NAME"/>
+						        <InfoText TextId="IDT_ADAM6160PN_INFO"/>
+					        </ModuleInfo>
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+				</ModuleItem>
+				<!--Analog Input-->
+				<ModuleItem ID="IDM_ADAM6117PN_1" ModuleIdentNumber="0x61170000">
+					<ModuleInfo CategoryRef="IDC_ADAM_AI_1">
+						<Name TextId="IDT_ADAM6117PN_NAME"/>
+						<InfoText TextId="IDT_ADAM6117PN_INFO"/>
+					</ModuleInfo>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="ID_6117VSM_1" SubmoduleIdentNumber="0x61171000">
+							<IOData IOPS_Length="1" IOCS_Length="1">
+								<Input>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6117PN_AI_0" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6117PN_AI_1" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6117PN_AI_2" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6117PN_AI_3" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6117PN_AI_4" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6117PN_AI_5" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6117PN_AI_6" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6117PN_AI_7" UseAsBits="false"/>
+								</Input>
+							</IOData>
+							<RecordDataList/>
+							<ModuleInfo CategoryRef="IDC_ADAM_AI_1">
+						        <Name TextId="IDT_ADAM6117PN_NAME"/>
+						        <InfoText TextId="IDT_ADAM6117PN_INFO"/>
+					        </ModuleInfo>
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+				</ModuleItem>
+				<!--Analog Input-->
+				<ModuleItem ID="IDM_ADAM6118PN_1" ModuleIdentNumber="0x61180000">
+					<ModuleInfo CategoryRef="IDC_ADAM_AI_1">
+						<Name TextId="IDT_ADAM6118PN_NAME"/>
+						<InfoText TextId="IDT_ADAM6118PN_INFO"/>
+					</ModuleInfo>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="ID_6118VSM_1" SubmoduleIdentNumber="0x61181000">
+							<IOData IOPS_Length="1" IOCS_Length="1">
+								<Input>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6118PN_AI_0" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6118PN_AI_1" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6118PN_AI_2" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6118PN_AI_3" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6118PN_AI_4" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6118PN_AI_5" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6118PN_AI_6" UseAsBits="false"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6118PN_CJC_0" UseAsBits="false"/>
+								</Input>
+							</IOData>
+							<RecordDataList/>
+							<ModuleInfo CategoryRef="IDC_ADAM_AI_1">
+						        <Name TextId="IDT_ADAM6118PN_NAME"/>
+						        <InfoText TextId="IDT_ADAM6118PN_INFO"/>
+					        </ModuleInfo>
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+				</ModuleItem>
+				<!--Analog Output and Digital Input-->
+				<ModuleItem ID="IDM_ADAM6124PN_1" ModuleIdentNumber="0x61240000">
+					<ModuleInfo CategoryRef="IDC_ADAM_AODI_1">
+						<Name TextId="IDT_ADAM6124PN_NAME"/>
+						<InfoText TextId="IDT_ADAM6124PN_INFO"/>
+					</ModuleInfo>
+					<VirtualSubmoduleList>
+						<VirtualSubmoduleItem ID="ID_6124VSM_1" SubmoduleIdentNumber="0x61241000">
+							<IOData IOPS_Length="1" IOCS_Length="1">
+								<Input>
+									<DataItem DataType="Unsigned8" TextId="IDT_ADAM6124PN_DI_0" UseAsBits="true"/>
+								</Input>
+								<Output>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6124PN_AO_0"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6124PN_AO_1"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6124PN_AO_2"/>
+									<DataItem DataType="Unsigned16" TextId="IDT_ADAM6124PN_AO_3"/>
+								</Output>
+							</IOData>
+							<RecordDataList/>
+							<ModuleInfo CategoryRef="IDC_ADAM_AODI_1">
+						        <Name TextId="IDT_ADAM6124PN_NAME"/>
+						        <InfoText TextId="IDT_ADAM6124PN_INFO"/>
+					        </ModuleInfo>
+						</VirtualSubmoduleItem>
+					</VirtualSubmoduleList>
+				</ModuleItem>
+			</ModuleList>
+			<GraphicsList>
+				<GraphicItem ID="IDG_DeviceSymbol" GraphicFile="ADAM-6100"/>
+			</GraphicsList>
+			<CategoryList>
+				<CategoryItem ID="IDC_ADAM_DI_1" TextId="IDT_CI_DI_1"/>
+				<CategoryItem ID="IDC_ADAM_DO_1" TextId="IDT_CI_DO_1"/>
+				<CategoryItem ID="IDC_ADAM_DIO_1" TextId="IDT_CI_DIO_1"/>
+				<CategoryItem ID="IDC_ADAM_RELAY_1" TextId="IDT_CI_RELAY_1"/>
+				<CategoryItem ID="IDC_ADAM_AI_1" TextId="IDT_CI_AI_1"/>
+				<CategoryItem ID="IDC_ADAM_AODI_1" TextId="IDT_CI_AODI_1"/>
+			</CategoryList>
+			<ExternalTextList>
+				<PrimaryLanguage>
+					<!--DAP-->
+					<Text TextId="IDT_FamilyDescription" Value="ADAM PROFINET IO Device Series"/>
+					<Text TextId="IDT_DAP1_NAME" Value="ADAM-6100PN Compact I/O"/>
+					<Text TextId="IDT_DAP1_INFO" Value="ADAM-6100PN IO module"/>
+                    <Text TextId="IDT_SS_Interface" Value="X1"/>
+                    <Text TextId="IDT_SS_Port1" Value="X1 P1"/>
+                    <Text TextId="IDT_SS_Port2" Value="X1 P2"/>
+                    <Text TextId="InterfaceName" Value="PN-IO"/>
+                    <Text TextId="CommunicationPort1" Value="Port 1"/>
+                    <Text TextId="CommunicationPort2" Value="Port 2"/>
+					<!--ADAM-6151PN-->
+					<Text TextId="IDT_ADAM6151PN_NAME" Value="ADAM-6151PN"/>
+					<Text TextId="IDT_ADAM6151PN_INFO" Value="16-ch IDI Module"/>
+					<Text TextId="IDT_ADAM6151PN_DI_0" Value="DI Channel 0..7"/>
+					<Text TextId="IDT_ADAM6151PN_DI_1" Value="DI Channel 8..15"/>
+					<!--ADAM-6156PN-->
+					<Text TextId="IDT_ADAM6156PN_NAME" Value="ADAM-6156PN"/>
+					<Text TextId="IDT_ADAM6156PN_INFO" Value="16-ch IDO Module"/>
+					<Text TextId="IDT_ADAM6156PN_DO_0" Value="DO Channel 0..7"/>
+					<Text TextId="IDT_ADAM6156PN_DO_1" Value="DO Channel 8..15"/>
+					<!--ADAM-6150PN-->
+					<Text TextId="IDT_ADAM6150PN_NAME" Value="ADAM-6150PN"/>
+					<Text TextId="IDT_ADAM6150PN_INFO" Value="8-ch IDI and 7-ch IDO Module"/>
+					<Text TextId="IDT_ADAM6150PN_DI_0" Value="DI Channel 0..7"/>
+					<Text TextId="IDT_ADAM6150PN_DO_0" Value="DO Channel 0..6"/>
+					<!--ADAM-6160PN-->
+					<Text TextId="IDT_ADAM6160PN_NAME" Value="ADAM-6160PN"/>
+					<Text TextId="IDT_ADAM6160PN_INFO" Value="6-ch Relay Output Module"/>
+					<Text TextId="IDT_ADAM6160PN_DO_0" Value="DO Channel 0..6"/>
+					<!--ADAM-6117PN-->
+					<Text TextId="IDT_ADAM6117PN_NAME" Value="ADAM-6117PN"/>
+					<Text TextId="IDT_ADAM6117PN_INFO" Value="8-ch AI Module"/>
+					<Text TextId="IDT_ADAM6117PN_AI_0" Value="AI Channel 0"/>
+					<Text TextId="IDT_ADAM6117PN_AI_1" Value="AI Channel 1"/>
+					<Text TextId="IDT_ADAM6117PN_AI_2" Value="AI Channel 2"/>
+					<Text TextId="IDT_ADAM6117PN_AI_3" Value="AI Channel 3"/>
+					<Text TextId="IDT_ADAM6117PN_AI_4" Value="AI Channel 4"/>
+					<Text TextId="IDT_ADAM6117PN_AI_5" Value="AI Channel 5"/>
+					<Text TextId="IDT_ADAM6117PN_AI_6" Value="AI Channel 6"/>
+					<Text TextId="IDT_ADAM6117PN_AI_7" Value="AI Channel 7"/>
+					<!--ADAM-6118PN-->
+					<Text TextId="IDT_ADAM6118PN_NAME" Value="ADAM-6118PN"/>
+					<Text TextId="IDT_ADAM6118PN_INFO" Value="7-ch Thermocouple with 1-ch CJC Input Module"/>
+					<Text TextId="IDT_ADAM6118PN_AI_0" Value="AI Channel 0"/>
+					<Text TextId="IDT_ADAM6118PN_AI_1" Value="AI Channel 1"/>
+					<Text TextId="IDT_ADAM6118PN_AI_2" Value="AI Channel 2"/>
+					<Text TextId="IDT_ADAM6118PN_AI_3" Value="AI Channel 3"/>
+					<Text TextId="IDT_ADAM6118PN_AI_4" Value="AI Channel 4"/>
+					<Text TextId="IDT_ADAM6118PN_AI_5" Value="AI Channel 5"/>
+					<Text TextId="IDT_ADAM6118PN_AI_6" Value="AI Channel 6"/>
+					<Text TextId="IDT_ADAM6118PN_CJC_0" Value="CJC Channel"/>
+					<!--ADAM-6124PN-->
+					<Text TextId="IDT_ADAM6124PN_NAME" Value="ADAM-6124PN"/>
+					<Text TextId="IDT_ADAM6124PN_INFO" Value="4-ch AO and 4-ch IDI Module"/>
+					<Text TextId="IDT_ADAM6124PN_DI_0" Value="DI Channel 0..3"/>
+					<Text TextId="IDT_ADAM6124PN_AO_0" Value="AO Channel 0"/>
+					<Text TextId="IDT_ADAM6124PN_AO_1" Value="AO Channel 1"/>
+					<Text TextId="IDT_ADAM6124PN_AO_2" Value="AO Channel 2"/>
+					<Text TextId="IDT_ADAM6124PN_AO_3" Value="AO Channel 3"/>
+					<!--CATEGORY-->
+					<Text TextId="IDT_CI_DI_1" Value="DI"/>
+					<Text TextId="IDT_CI_DO_1" Value="DO"/>
+					<Text TextId="IDT_CI_DIO_1" Value="DI/DO"/>
+					<Text TextId="IDT_CI_RELAY_1" Value="Relay"/>
+					<Text TextId="IDT_CI_AI_1" Value="AI"/>
+					<Text TextId="IDT_CI_AODI_1" Value="AO/DI"/>
+				</PrimaryLanguage>
+			</ExternalTextList>
+		</ApplicationProcess>
+	</ProfileBody>
+</ISO15745Profile>

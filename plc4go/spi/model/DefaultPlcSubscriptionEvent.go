@@ -20,24 +20,25 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"time"
+
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 var _ apiModel.PlcSubscriptionEvent = &DefaultPlcSubscriptionEvent{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionEvent
+//go:generate go tool plc4xGenerator -type=DefaultPlcSubscriptionEvent
 type DefaultPlcSubscriptionEvent struct {
 	DefaultPlcSubscriptionEventRequirements `ignore:"true"` // Avoid recursion
 	values                                  map[string]*DefaultPlcSubscriptionEventItem
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 type DefaultPlcSubscriptionEventRequirements interface {

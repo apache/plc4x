@@ -26,16 +26,17 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/pkg/errors"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 )
 
 type TagType uint8
 
-//go:generate stringer -type TagType
-//go:generate go run ../../tools/plc4xlicenser/gen.go -type=TagType
+//go:generate go tool stringer -type TagType
+//go:generate go tool plc4xLicencer -type=TagType
 const (
 	STATUS    TagType = iota
 	CAL_RESET         /* TODO: implement me*/
@@ -147,7 +148,7 @@ func (m TagHandler) handleStatusRequestPattern(match map[string]string) (apiMode
 			statusRequestType = StatusRequestTypeLevel
 			decodedHex, _ := hex.DecodeString(levelArgument)
 			if hexLength := len(decodedHex); hexLength != 1 {
-				return nil, errors.Errorf("invalid state. Should have exactly 1. Actual length %d", hexLength)
+				return nil, errors.Errorf("invalid state. Should have  1. Actual length %d", hexLength)
 			}
 			startingGroupAddressLabel = &decodedHex[0]
 		} else {

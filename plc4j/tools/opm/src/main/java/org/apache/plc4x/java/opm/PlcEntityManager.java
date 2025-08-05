@@ -41,14 +41,14 @@ import static net.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
 import static net.bytebuddy.matcher.ElementMatchers.not;
 
 /**
- * Plc4x equivalent of Jpas EntityManager for implementing Object-Plc-Mapping.
+ * PLC4X equivalent of JPAs EntityManager for implementing Object-Plc-Mapping.
  * This means that calls to a plc can be done by using plain POJOs with Annotations.
  * <p>
  * First, the necessary annotations are {@link PlcEntity} and {@link PlcTag}.
  * For a class to be usable as PlcEntity it needs
  * <ul>
- * <li>be non-final (as proxiing has to be used in case of {@link #connect(Class, String)}</li>
- * <li>a public no args constructor for instanciation</li>
+ * <li>be non-final (as proxying has to be used in case of {@link #connect(Class, String)}</li>
+ * <li>a public no args constructor for instantiation</li>
  * <li>Needs to be annotated with {@link PlcEntity} and has a valid value which is the connection string</li>
  * </ul>
  * <p>
@@ -60,7 +60,7 @@ import static net.bytebuddy.matcher.ElementMatchers.not;
  * The connection string is taken from the value of the {@link PlcEntity} annotation on the class.
  * <p>
  * The {@link #read(Class, String)} method has no direkt equivalent in JPA (as far as I know) as it only returns a "detached"
- * entity. This means it fetches all values from the plc that are annotated wiht the {@link PlcTag} annotations.
+ * entity. This means it fetches all values from the plc that are annotated with the {@link PlcTag} annotations.
  * <p>
  * The {@link #connect(Class, String)} method is more JPA-like as it returns a "connected" entity. This means, that each
  * time one of the getters on the returned entity is called a call is made to the plc (and the tag value is changed
@@ -120,7 +120,7 @@ public class PlcEntityManager {
      * @param clazz clazz to be connected.
      * @param <T>   type of param {@code clazz}.
      * @return a connected entity.
-     * @throws OPMException when proxy can't be build.
+     * @throws OPMException when proxy can't be built.
      */
     public <T> T connect(Class<T> clazz, String address) throws OPMException {
         return connect(clazz, address, null);
@@ -133,7 +133,7 @@ public class PlcEntityManager {
      * @param clazz clazz to be connected.
      * @param <T>   type of param {@code clazz}.
      * @return a connected entity.
-     * @throws OPMException when proxy can't be build.
+     * @throws OPMException when proxy can't be built.
      */
     public <T> T merge(Class<T> clazz, String address, T instance) throws OPMException {
         return connect(clazz, address, instance);
@@ -168,8 +168,9 @@ public class PlcEntityManager {
 
             // Initially fetch all values
             if (existingInstance == null) {
-                PlcEntityInterceptor.refetchAllFields(instance, connectionManager, address, registry, lastFetched);
+                PlcEntityInterceptor.readAllFields(instance, connectionManager, address, registry, lastFetched);
             } else {
+                // Copy all field values from the existing instance to the new one.
                 FieldUtils.getAllFieldsList(clazz).stream()
                     .peek(field -> field.setAccessible(true))
                     .forEach(field -> setValueToField(field, instance, getValueFromField(field, existingInstance)));

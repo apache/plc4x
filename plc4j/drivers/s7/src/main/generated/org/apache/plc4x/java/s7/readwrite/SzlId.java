@@ -71,7 +71,7 @@ public class SzlId implements Message {
         "typeClass",
         "SzlModuleTypeClass",
         typeClass,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             SzlModuleTypeClass::getValue,
             SzlModuleTypeClass::name,
             writeUnsignedByte(writeBuffer, 4)));
@@ -84,8 +84,7 @@ public class SzlId implements Message {
         "sublistList",
         "SzlSublist",
         sublistList,
-        new DataWriterEnumDefault<>(
-            SzlSublist::getValue, SzlSublist::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(SzlSublist::getValue, SzlSublist::name, writeUnsignedShort(writeBuffer, 8)));
 
     writeBuffer.popContext("SzlId");
   }
@@ -113,11 +112,6 @@ public class SzlId implements Message {
     return lengthInBits;
   }
 
-  public static SzlId staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SzlId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SzlId");
     PositionAware positionAware = readBuffer;
@@ -127,8 +121,7 @@ public class SzlId implements Message {
         readEnumField(
             "typeClass",
             "SzlModuleTypeClass",
-            new DataReaderEnumDefault<>(
-                SzlModuleTypeClass::enumForValue, readUnsignedByte(readBuffer, 4)));
+            readEnum(SzlModuleTypeClass::enumForValue, readUnsignedByte(readBuffer, 4)));
 
     byte sublistExtract = readSimpleField("sublistExtract", readUnsignedByte(readBuffer, 4));
 
@@ -136,8 +129,7 @@ public class SzlId implements Message {
         readEnumField(
             "sublistList",
             "SzlSublist",
-            new DataReaderEnumDefault<>(
-                SzlSublist::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(SzlSublist::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("SzlId");
     // Create the instance

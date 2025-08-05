@@ -118,12 +118,6 @@ public class ClassSegment implements Message {
     return lengthInBits;
   }
 
-  public static ClassSegment staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ClassSegment staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ClassSegment");
     PositionAware positionAware = readBuffer;

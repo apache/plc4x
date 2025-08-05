@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.util.List;
@@ -53,6 +53,18 @@ public interface PlcBrowseItem {
     boolean isSubscribable();
 
     /**
+     * @return returns 'true' if we can publish this variable.
+     */
+    boolean isPublishable();
+
+    boolean isArray();
+
+    /**
+     * @return list of elements providing information about the array dimensions of this item.
+     */
+    List<ArrayInfo> getArrayInformation();
+
+    /**
      * @return returns any children this item might have
      */
     Map<String, PlcBrowseItem> getChildren();
@@ -61,5 +73,15 @@ public interface PlcBrowseItem {
      * @return returns a map of additional options the given protocol might provide.
      */
     Map<String, PlcValue> getOptions();
+
+    /**
+     * Sometimes it would be beneficial for clients to have the array information resolved to
+     * individual elements, allowing to treat array items as children. As not all drivers form addresses
+     * the same way, this option allows the driver to override the structure.
+     *
+     * @return if a browse item has array information, resolve this information
+     *  translating the array elements to child elements.
+     */
+    //PlcBrowseItem resolveArrayItems();
 
 }

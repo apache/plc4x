@@ -81,7 +81,7 @@ public class AssociatedValueType implements Message {
         "returnCode",
         "DataTransportErrorCode",
         returnCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataTransportErrorCode::getValue,
             DataTransportErrorCode::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -91,7 +91,7 @@ public class AssociatedValueType implements Message {
         "transportSize",
         "DataTransportSize",
         transportSize,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataTransportSize::getValue,
             DataTransportSize::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -100,7 +100,7 @@ public class AssociatedValueType implements Message {
     writeManualField(
         "valueLength",
         () ->
-            org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.LeftShift3(
+            org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.leftShift3(
                 writeBuffer, valueLength),
         writeBuffer);
 
@@ -138,12 +138,6 @@ public class AssociatedValueType implements Message {
     return lengthInBits;
   }
 
-  public static AssociatedValueType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AssociatedValueType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AssociatedValueType");
     PositionAware positionAware = readBuffer;
@@ -153,15 +147,13 @@ public class AssociatedValueType implements Message {
         readEnumField(
             "returnCode",
             "DataTransportErrorCode",
-            new DataReaderEnumDefault<>(
-                DataTransportErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(DataTransportErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     DataTransportSize transportSize =
         readEnumField(
             "transportSize",
             "DataTransportSize",
-            new DataReaderEnumDefault<>(
-                DataTransportSize::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(DataTransportSize::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     int valueLength =
         readManualField(
@@ -169,14 +161,14 @@ public class AssociatedValueType implements Message {
             readBuffer,
             () ->
                 (int)
-                    (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.RightShift3(
+                    (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.rightShift3(
                         readBuffer, transportSize)));
 
     List<Short> data =
         readCountArrayField(
             "data",
             readUnsignedShort(readBuffer, 8),
-            org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.EventItemLength(
+            org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.eventItemLength(
                 readBuffer, valueLength));
 
     readBuffer.closeContext("AssociatedValueType");

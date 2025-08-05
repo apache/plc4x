@@ -20,13 +20,15 @@
 package utils
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"encoding/xml"
 	"fmt"
-	"github.com/pkg/errors"
 	"io"
 	"math/big"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 // NewXmlReadBuffer return as ReadBuffer which doesn't validate attributes and lists
@@ -63,11 +65,20 @@ type xmlReadBuffer struct {
 	doValidateList bool
 }
 
+var _ ReadBuffer = (*xmlReadBuffer)(nil)
+
 //
 // Internal section
 //
 ///////////////////////////////////////
 ///////////////////////////////////////
+
+func (x *xmlReadBuffer) SetByteOrder(binary.ByteOrder) {
+}
+
+func (x *xmlReadBuffer) GetByteOrder() binary.ByteOrder {
+	return binary.BigEndian
+}
 
 func (x *xmlReadBuffer) GetPos() uint16 {
 	return uint16(x.pos / 8)
@@ -264,7 +275,7 @@ func (x *xmlReadBuffer) ReadBigFloat(logicalName string, bitLength uint8, reader
 	return &value, nil
 }
 
-func (x *xmlReadBuffer) ReadString(logicalName string, bitLength uint32, encoding string, readerArgs ...WithReaderArgs) (string, error) {
+func (x *xmlReadBuffer) ReadString(logicalName string, bitLength uint32, readerArgs ...WithReaderArgs) (string, error) {
 	var value string
 	// TODO: bitlength too short
 	err := x.decode(logicalName, rwStringKey, uint(bitLength), readerArgs, &value)

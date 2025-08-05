@@ -22,26 +22,27 @@ package opcua
 import (
 	"context"
 	"encoding/binary"
+	"sync"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"sync"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
+//go:generate go tool plc4xGenerator -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
 
 	stateChange sync.Mutex
 
-	passLogToModel bool           `ignore:"true"`
-	log            zerolog.Logger `ignore:"true"`
+	passLogToModel bool `ignore:"true"`
+	log            zerolog.Logger
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
@@ -69,7 +70,7 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	opcuaApu, ok := message.(readWriteModel.OpcuaAPU)
 	if !ok {
 		if message, ok := message.(readWriteModel.MessagePDU); ok {
-			opcuaApu = readWriteModel.NewOpcuaAPU(message, false)
+			opcuaApu = readWriteModel.NewOpcuaAPU(message, false, true)
 		} else {
 			return errors.Errorf("Invalid message type %T", message)
 		}
@@ -123,7 +124,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	}
 	ctxForModel := options.GetLoggerContextForModel(context.Background(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	rbbb := utils.NewReadBufferByteBased(readBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-	opcuaAPU, err := readWriteModel.OpcuaAPUParseWithBuffer(ctxForModel, rbbb, true)
+	opcuaAPU, err := readWriteModel.OpcuaAPUParseWithBuffer(ctxForModel, rbbb, true, true)
 	if err != nil {
 		return nil, errors.New("Could not parse pdu")
 	}

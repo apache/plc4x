@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.java.opcua;
 
+import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.test.manual.ManualTest;
 
 public class ManualMiloOpcua extends ManualTest {
@@ -30,7 +31,7 @@ public class ManualMiloOpcua extends ManualTest {
     public static void main(String[] args) throws Exception {
         ManualMiloOpcua manualMiloOpcua = new ManualMiloOpcua("opcua:tcp://milo.digitalpetri.com:62541/milo");
         manualMiloOpcua
-            .addTestCase("ns=2;i=10846;BOOL", 0)
+            .addTestCase("ns=2;i=10846;BOOL", new PlcBOOL(false))
             .run();
     }
 }

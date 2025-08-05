@@ -18,39 +18,21 @@
  */
 package org.apache.plc4x.java.bacnetip.configuration;
 
-import org.apache.plc4x.java.bacnetip.readwrite.BacnetConstants;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.DoubleDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
-import org.apache.plc4x.java.transport.pcapreplay.PcapReplayTransportConfiguration;
-import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
-import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
-import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
-import org.pcap4j.packet.Dot1qVlanTagPacket;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 
-public class BacNetIpConfiguration implements Configuration, UdpTransportConfiguration, RawSocketTransportConfiguration, PcapReplayTransportConfiguration {
+public class BacNetIpConfiguration implements PlcConnectionConfiguration {
 
     // Path to a single EDE file.
     @ConfigurationParameter("ede-file-path")
+    @Description("Path to the location of a single EDE file, that contains the descriptor for the target device.")
     private String edeFilePath;
 
     // Path to a directory containing many EDE files.
     @ConfigurationParameter("ede-directory-path")
+    @Description("Path to the directory used for storing multiple EDE files. These files contain the descriptors for the possible target devices.")
     private String edeDirectoryPath;
-
-    // The speed in which the pcap file is replayed:
-    // - 1.0 being the original speed
-    // - 0   being as fast as possible (no delays between the packets)
-    // - 0.5 being double speed
-    // - 2.0 being half speed
-    @ConfigurationParameter("pcap-replay-speed")
-    @DoubleDefaultValue(1.0F)
-    private double pcapReplaySpeed;
-
-    @ConfigurationParameter("filter")
-    @StringDefaultValue("")
-    private String filter = "";
 
     public String getEdeFilePath() {
         return edeFilePath;
@@ -66,63 +48,6 @@ public class BacNetIpConfiguration implements Configuration, UdpTransportConfigu
 
     public void setEdeDirectoryPath(String edeDirectoryPath) {
         this.edeDirectoryPath = edeDirectoryPath;
-    }
-
-    public void setPcapReplaySpeed(double pcapReplaySpeed) {
-        this.pcapReplaySpeed = pcapReplaySpeed;
-    }
-
-    @Override
-    public float getReplaySpeedFactor() {
-        return (float) pcapReplaySpeed;
-    }
-
-    @Override
-    public boolean getSupportVlans() {
-        return true;
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return BacnetConstants.BACNETUDPDEFAULTPORT;
-    }
-
-    @Override
-    public Integer getProtocolId() {
-        return null;
-    }
-
-    @Override
-    public String getFilter() {
-        return filter;
-    }
-
-    public void setFilter(String filter) {
-        this.filter = filter;
-    }
-
-    /**
-     * Packet handler to use when running in PCAP mode.
-     * In this case all packets are Ethernet frames and we need to first get the
-     * IP packet and then the UDP packet and then the raw data from that.
-     *
-     * @return payload of the packet.
-     */
-    @Override
-    public PacketHandler getPcapPacketHandler() {
-        return packet -> {
-            // If it's a VLan packet, we need to go one level deeper.
-            if (packet.getPayload() instanceof Dot1qVlanTagPacket) {
-                return packet.getPayload().getPayload().getPayload().getPayload().getRawData();
-            }
-            // This is a normal udp packet.
-            else {
-                if ((packet.getPayload() != null) && (packet.getPayload().getPayload() != null) && (packet.getPayload().getPayload().getPayload() != null)) {
-                    return packet.getPayload().getPayload().getPayload().getRawData();
-                }
-            }
-            return null;
-        };
     }
 
 }

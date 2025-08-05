@@ -67,7 +67,7 @@ public class BACnetTimerStateChangeValueUnsigned extends BACnetTimerStateChangeV
     writeBuffer.pushContext("BACnetTimerStateChangeValueUnsigned");
 
     // Simple Field (unsignedValue)
-    writeSimpleField("unsignedValue", unsignedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unsignedValue", unsignedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimerStateChangeValueUnsigned");
   }
@@ -98,7 +98,7 @@ public class BACnetTimerStateChangeValueUnsigned extends BACnetTimerStateChangeV
     BACnetApplicationTagUnsignedInteger unsignedValue =
         readSimpleField(
             "unsignedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

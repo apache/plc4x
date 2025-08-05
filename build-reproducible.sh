@@ -18,10 +18,27 @@
 # under the License.
 # ----------------------------------------------------------------------------
 
+# TODO: Reproducible builds
+# - Creating an RC
+#   - We should run the following builds on the normal developer environment:
+#     - build with all "with-*" profiles and "update-generated-code" profile enabled
+#     - release:branch
+#     - release:prepare
+#   - The release build (release:perform) should then be run inside the docker-compose build in order to build the jars in the controlled environment
+#   - Run the signing on all locally staged artifacts
+#   - Transfer all locally staged artifacts to nexus
+#
+# - Validating an RC
+#   - Download the entire content of the staging repo locally
+#   - Programmatically check the Hashes and the signatures with a script
+#   - Run a local build in docker-compose but with the "clean validate {compare-artifact}" config
+
+
+
 # Run a standard build
 function build() {
   echo "Building ..."
-  mvn -U -P apache-release,with-c,with-dotnet,with-go,with-python,with-sandbox -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy
+  mvn -U -P apache-release,with-c,with-dotnet,with-go,with-java,with-python -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy
   echo "Done"
 }
 
@@ -51,7 +68,7 @@ function renameArtifacts() {
   pwd
 }
 
-# Package the remaiing files into one tgz archive
+# Package the remaining files into one tgz archive
 function packageDirectory() {
   echo "Packaging ..."
   tar -cvf reproducible-build-candidate.tgz local-snapshots-dir/

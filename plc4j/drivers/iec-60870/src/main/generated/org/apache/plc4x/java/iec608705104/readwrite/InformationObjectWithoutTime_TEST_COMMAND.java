@@ -64,10 +64,7 @@ public class InformationObjectWithoutTime_TEST_COMMAND extends InformationObject
 
     // Simple Field (fbp)
     writeSimpleField(
-        "fbp",
-        fbp,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "fbp", fbp, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_TEST_COMMAND");
   }
@@ -99,8 +96,7 @@ public class InformationObjectWithoutTime_TEST_COMMAND extends InformationObject
     FixedTestBitPatternTwoOctet fbp =
         readSimpleField(
             "fbp",
-            new DataReaderComplexDefault<>(
-                () -> FixedTestBitPatternTwoOctet.staticParse(readBuffer), readBuffer),
+            readComplex(() -> FixedTestBitPatternTwoOctet.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_TEST_COMMAND");

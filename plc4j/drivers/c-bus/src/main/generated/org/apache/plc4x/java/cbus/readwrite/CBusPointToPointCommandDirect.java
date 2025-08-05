@@ -69,7 +69,7 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
     writeBuffer.pushContext("CBusPointToPointCommandDirect");
 
     // Simple Field (unitAddress)
-    writeSimpleField("unitAddress", unitAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unitAddress", unitAddress, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField(
@@ -108,8 +108,7 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
 
     UnitAddress unitAddress =
         readSimpleField(
-            "unitAddress",
-            new DataReaderComplexDefault<>(() -> UnitAddress.staticParse(readBuffer), readBuffer));
+            "unitAddress", readComplex(() -> UnitAddress.staticParse(readBuffer), readBuffer));
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);

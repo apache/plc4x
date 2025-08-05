@@ -29,11 +29,13 @@ import java.math.BigInteger;
 public class PlcINT extends PlcIECValue<Short> {
 
     private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
-    static final Short minValue = Short.MIN_VALUE;
-    static final Short maxValue = Short.MAX_VALUE;
+    public static final Short MIN_VALUE = Short.MIN_VALUE;
+    public static final Short MAX_VALUE = Short.MAX_VALUE;
 
     public static PlcINT of(Object value) {
-        if (value instanceof Boolean) {
+        if (value instanceof PlcINT) {
+            return (PlcINT) value;
+        } else if (value instanceof Boolean) {
             return new PlcINT((Boolean) value);
         } else if (value instanceof Byte) {
             return new PlcINT((Byte) value);
@@ -52,7 +54,7 @@ public class PlcINT extends PlcIECValue<Short> {
         } else if (value instanceof BigDecimal) {
             return new PlcINT((BigDecimal) value);
         } else {
-            return new PlcINT((String) value);
+            return new PlcINT(value.toString());
         }
     }
 
@@ -72,8 +74,8 @@ public class PlcINT extends PlcIECValue<Short> {
     }
 
     public PlcINT(Integer value) {
-        if ((value < minValue) || (value > maxValue)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((value < MIN_VALUE) || (value > MAX_VALUE)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         } else {
             this.value = value.shortValue();
             this.isNullable = false;
@@ -81,40 +83,40 @@ public class PlcINT extends PlcIECValue<Short> {
     }
 
     public PlcINT(Long value) {
-        if ((value < minValue) || (value > maxValue)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((value < MIN_VALUE) || (value > MAX_VALUE)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = value.shortValue();
         this.isNullable = false;
     }
 
     public PlcINT(Float value) {
-        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((value < MIN_VALUE) || (value > MAX_VALUE)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = value.shortValue();
         this.isNullable = false;
     }
 
     public PlcINT(Double value) {
-        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((value < MIN_VALUE) || (value > MAX_VALUE)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = value.shortValue();
         this.isNullable = false;
     }
 
     public PlcINT(BigInteger value) {
-        if ((value.compareTo(BigInteger.valueOf(minValue)) < 0) || (value.compareTo(BigInteger.valueOf(maxValue)) > 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((value.compareTo(BigInteger.valueOf(MIN_VALUE)) < 0) || (value.compareTo(BigInteger.valueOf(MAX_VALUE)) > 0)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = value.shortValue();
         this.isNullable = true;
     }
 
     public PlcINT(BigDecimal value) {
-        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if ((value.compareTo(BigDecimal.valueOf(MIN_VALUE)) < 0) || (value.compareTo(BigDecimal.valueOf(MAX_VALUE)) > 0)) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
         this.value = value.shortValue();
         this.isNullable = true;
@@ -125,7 +127,7 @@ public class PlcINT extends PlcIECValue<Short> {
             this.value = Short.valueOf(value.trim());
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
     }
 
@@ -244,6 +246,11 @@ public class PlcINT extends PlcIECValue<Short> {
         return Integer.toString(value);
     }
 
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
+    
     public byte[] getBytes() {
         return new byte[]{
             (byte) ((value >> 8) & 0xff),

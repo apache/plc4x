@@ -20,15 +20,14 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"net/url"
 	"testing"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestDriver_CheckQuery(t *testing.T) {
@@ -134,7 +133,6 @@ func TestDriver_GetConnection(t *testing.T) {
 			d := NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			connectionChan := d.GetConnection(tt.args.in0, tt.args.in1, tt.args.options)
 			timeout := time.NewTimer(3 * time.Second)
-			defer utils.CleanupTimer(timeout)
 			select {
 			case connectResult := <-connectionChan:
 				if tt.wantErr && (connectResult.GetErr() == nil) {

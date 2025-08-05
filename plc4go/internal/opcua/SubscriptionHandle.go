@@ -22,17 +22,18 @@ package opcua
 import (
 	"context"
 	"encoding/binary"
+	"slices"
+	"sync"
+	"sync/atomic"
+	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-	"golang.org/x/exp/slices"
-	"strconv"
-	"sync"
-	"sync/atomic"
-	"time"
 )
 
 type SubscriptionHandle struct {
@@ -51,7 +52,9 @@ type SubscriptionHandle struct {
 	subscriberWg sync.WaitGroup
 	complete     bool
 
-	log zerolog.Logger `ignore:"true""`
+	wg sync.WaitGroup // use to track spawned go routines
+
+	log zerolog.Logger
 }
 
 func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, connection *Connection, subscriptionRequest apiModel.PlcSubscriptionRequest, subscriptionId uint32, cycleTime time.Duration) *SubscriptionHandle {
@@ -75,7 +78,7 @@ func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, connectio
 }
 
 func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWriteModel.CreateMonitoredItemsResponse, error) {
-	requestList := make([]readWriteModel.ExtensionObjectDefinition, len(h.tagNames))
+	requestList := make([]readWriteModel.MonitoredItemCreateRequest, len(h.tagNames))
 
 	for _, tagName := range h.tagNames {
 		tagDefaultPlcSubscription := h.subscriptionRequest.GetTag(tagName)
@@ -131,48 +134,42 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		requestHeader,
 		h.subscriptionId,
 		readWriteModel.TimestampsToReturn_timestampsToReturnBoth,
-		int32(len(requestList)),
 		requestList,
 	)
 
-	identifier, err := strconv.ParseUint(createMonitoredItemsRequest.GetIdentifier(), 10, 16)
-	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing identifier")
-	}
-
+	identifier := createMonitoredItemsRequest.GetExtensionId()
 	expandedNodeId := readWriteModel.NewExpandedNodeId(false, //Namespace Uri Specified
 		false, //Server Index Specified
 		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
 		nil,
 		nil)
 
-	extObject := readWriteModel.NewExtensionObject(
+	extObject := readWriteModel.NewRootExtensionObject(
 		expandedNodeId,
-		nil,
 		createMonitoredItemsRequest,
-		false,
+		identifier,
 	)
 
 	ctx, cancel := context.WithTimeout(context.Background(), REQUEST_TIMEOUT)
 	defer cancel()
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err = extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		return nil, errors.Wrapf(err, "Unable to serialise the ReadRequest")
 	}
 
 	responseChan := make(chan readWriteModel.CreateMonitoredItemsResponse, 100) // TODO: bit oversized to not block anything. Discards errors
 	errorChan := make(chan error, 100)                                          // TODO: bit oversized to not block anything. Discards errors
 	consumer := func(opcuaResponse []byte) {
-		unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+		unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
 			errorChan <- errors.Wrapf(err, "Unable to read the reply")
 			return
 		}
 		var responseMessage readWriteModel.CreateMonitoredItemsResponse
 		switch unknownExtensionObject := unknownExtensionObject.(type) {
-		case readWriteModel.CreateMonitoredItemsResponseExactly:
+		case readWriteModel.CreateMonitoredItemsResponse:
 			responseMessage = unknownExtensionObject
-		case readWriteModel.ServiceFaultExactly:
+		case readWriteModel.ServiceFault:
 			serviceFault := unknownExtensionObject
 			header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
 			errorChan <- errors.Errorf("Subscription ServiceFault returned from server with error code,  '%s'", header.GetServiceResult())
@@ -224,10 +221,12 @@ func (h *SubscriptionHandle) startSubscriber() {
 	h.log.Trace().Msg("Starting Subscription")
 
 	h.subscriberWg.Add(1)
+	h.wg.Add(1)
 	go func() {
+		defer h.wg.Done()
 		defer h.subscriberWg.Done()
 
-		var outstandingAcknowledgements []readWriteModel.ExtensionObjectDefinition
+		var outstandingAcknowledgements []readWriteModel.SubscriptionAcknowledgement
 		var outstandingRequests []uint32
 		for !h.destroy.Load() {
 
@@ -250,14 +249,14 @@ func (h *SubscriptionHandle) startSubscriber() {
 					ackLength = -1
 				}
 				{ // golang version of remove all
-					tmpOutstandingAcknowledgements := map[readWriteModel.ExtensionObjectDefinition]bool{}
+					tmpOutstandingAcknowledgements := map[readWriteModel.SubscriptionAcknowledgement]bool{}
 					for _, acknowledgement := range outstandingAcknowledgements {
 						tmpOutstandingAcknowledgements[acknowledgement] = true
 					}
 					for _, ack := range acks {
 						delete(tmpOutstandingAcknowledgements, ack)
 					}
-					outstandingAcknowledgements = make([]readWriteModel.ExtensionObjectDefinition, len(tmpOutstandingAcknowledgements))
+					outstandingAcknowledgements = make([]readWriteModel.SubscriptionAcknowledgement, len(tmpOutstandingAcknowledgements))
 					count := 0
 					for ack := range tmpOutstandingAcknowledgements {
 						outstandingAcknowledgements[count] = ack
@@ -267,31 +266,26 @@ func (h *SubscriptionHandle) startSubscriber() {
 
 				publishRequest := readWriteModel.NewPublishRequest(
 					requestHeader,
-					int32(ackLength),
 					acks,
 				)
 
-				identifier, err := strconv.ParseUint(publishRequest.GetIdentifier(), 10, 16)
-				if err != nil {
-					h.log.Error().Err(err).Msg("error parsing identifier")
-					continue
-				}
+				identifier := publishRequest.GetExtensionId()
 				extExpandedNodeId := readWriteModel.NewExpandedNodeId(false, //Namespace Uri Specified
 					false, //Server Index Specified
 					readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
 					nil,
 					nil)
 
-				extObject := readWriteModel.NewExtensionObject(
+				extObject := readWriteModel.NewRootExtensionObject(
 					extExpandedNodeId,
-					nil,
 					publishRequest,
-					false)
+					identifier,
+				)
 
 				ctx := context.Background()
 
 				buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-				if err = extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+				if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 					h.log.Error().Err(err).Msg("Unable to serialise the ReadRequest")
 					continue
 				}
@@ -299,7 +293,7 @@ func (h *SubscriptionHandle) startSubscriber() {
 				consumer := func(opcuaResponse []byte) {
 					var responseMessage readWriteModel.PublishResponse
 					var serviceFault readWriteModel.ServiceFault
-					unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+					unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 					if err != nil {
 						h.log.Error().Err(err).Msg("Unable to parse the returned Subscription response")
 						h.plcSubscriber.onDisconnect()
@@ -382,15 +376,10 @@ func (h *SubscriptionHandle) stopSubscriber() {
 
 	subscriptions := []uint32{h.subscriptionId}
 	deleteSubscriptionrequest := readWriteModel.NewDeleteSubscriptionsRequest(requestHeader,
-		1,
 		subscriptions,
 	)
 
-	identifier, err := strconv.ParseUint(deleteSubscriptionrequest.GetIdentifier(), 10, 16)
-	if err != nil {
-		h.log.Error().Err(err).Msg("error parsing identifier")
-		return
-	}
+	identifier := deleteSubscriptionrequest.GetExtensionId()
 	extExpandedNodeId := readWriteModel.NewExpandedNodeId(false, //Namespace Uri Specified
 		false, //Server Index Specified
 		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
@@ -398,24 +387,23 @@ func (h *SubscriptionHandle) stopSubscriber() {
 		nil,
 	)
 
-	extObject := readWriteModel.NewExtensionObject(
+	extObject := readWriteModel.NewRootExtensionObject(
 		extExpandedNodeId,
-		nil,
 		deleteSubscriptionrequest,
-		false,
+		identifier,
 	)
 
 	ctx := context.Background()
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err = extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		h.log.Error().Err(err).Msg("Unable to serialise the ReadRequest")
 		return
 	}
 
 	consumer := func(opcuaResponse []byte) {
 		var responseMessage readWriteModel.DeleteSubscriptionsResponse
-		unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+		unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
 			h.log.Error().Err(err).Msg("Unable to parse the returned Subscription response")
 			h.plcSubscriber.onDisconnect()

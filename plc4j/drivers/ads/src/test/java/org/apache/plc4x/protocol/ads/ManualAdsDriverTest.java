@@ -26,6 +26,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public class ManualAdsDriverTest extends ManualTest {
      */
 
     public ManualAdsDriverTest(String connectionString) {
-        super(connectionString, true);
+        super(connectionString, true, true, true, true, 100);
     }
 
     public static void main(String[] args) throws Exception {
@@ -81,7 +82,7 @@ public class ManualAdsDriverTest extends ManualTest {
         int sourceAmsPort = 65534;
         String targetAmsNetId = spsIp + ".1.1";
         int targetAmsPort = 851;
-        String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
+        String connectionString = String.format("ads:tcp://%s?source-ams-net-id=%s&source-ams-port=%d&target-ams-net-id=%s&target-ams-port=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
         ManualAdsDriverTest test = new ManualAdsDriverTest(connectionString);
         test.addTestCase("MAIN.hurz_BOOL", new PlcBOOL(true));
         test.addTestCase("MAIN.hurz_BYTE", new PlcBYTE(42));
@@ -129,8 +130,12 @@ public class ManualAdsDriverTest extends ManualTest {
         children.put("hurz_LTIME", new PlcLTIME(Duration.parse("PT24015H23M12.034002044S")));
         children.put("hurz_DATE", new PlcDATE(LocalDate.parse("1978-03-28")));
         children.put("hurz_TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
-        children.put("hurz_DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
+        children.put("hurz_DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30").atOffset(OffsetDateTime.now().getOffset()).toLocalDateTime()));
         test.addTestCase("MAIN.hurz_Struct", new PlcStruct(children));
+        //test.addTestCase("MAIN.thisVariableDoesntExist", PlcResponseCode.NOT_FOUND);
+        // TODO: Add some complex array path
+        //test.addTestCase("...3323(/987", PlcResponseCode.INVALID_ADDRESS);
+        //test.addTestCase("MAIN.hurz_UDT_array[4].hurz_INT_array[2].someProperty", PlcResponseCode.NOT_FOUND);
         test.run();
     }
 

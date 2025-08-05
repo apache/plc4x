@@ -100,21 +100,19 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
     writeBuffer.pushContext("BACnetNotificationParametersCommandFailure");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (commandValue)
-    writeSimpleField("commandValue", commandValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("commandValue", commandValue, writeComplex(writeBuffer));
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Simple Field (feedbackValue)
-    writeSimpleField("feedbackValue", feedbackValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("feedbackValue", feedbackValue, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersCommandFailure");
   }
@@ -161,14 +159,14 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetConstructedData commandValue =
         readSimpleField(
             "commandValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,
@@ -182,7 +180,7 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -191,7 +189,7 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
     BACnetConstructedData feedbackValue =
         readSimpleField(
             "feedbackValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,
@@ -205,7 +203,7 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

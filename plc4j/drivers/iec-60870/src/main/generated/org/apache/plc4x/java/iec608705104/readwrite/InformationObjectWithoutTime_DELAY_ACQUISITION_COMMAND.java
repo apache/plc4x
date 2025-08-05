@@ -67,7 +67,7 @@ public class InformationObjectWithoutTime_DELAY_ACQUISITION_COMMAND
     writeSimpleField(
         "cp16Time2a",
         cp16Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_DELAY_ACQUISITION_COMMAND");
@@ -100,8 +100,7 @@ public class InformationObjectWithoutTime_DELAY_ACQUISITION_COMMAND
     TwoOctetBinaryTime cp16Time2a =
         readSimpleField(
             "cp16Time2a",
-            new DataReaderComplexDefault<>(
-                () -> TwoOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> TwoOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_DELAY_ACQUISITION_COMMAND");

@@ -81,12 +81,6 @@ public class QualifierOfResetProcessCommand implements Message {
     return lengthInBits;
   }
 
-  public static QualifierOfResetProcessCommand staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static QualifierOfResetProcessCommand staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("QualifierOfResetProcessCommand");

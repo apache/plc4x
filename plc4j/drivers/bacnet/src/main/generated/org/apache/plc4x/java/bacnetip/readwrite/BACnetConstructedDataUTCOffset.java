@@ -82,7 +82,7 @@ public class BACnetConstructedDataUTCOffset extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataUTCOffset");
 
     // Simple Field (utcOffset)
-    writeSimpleField("utcOffset", utcOffset, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("utcOffset", utcOffset, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataUTCOffset extends BACnetConstructedData implem
     BACnetApplicationTagSignedInteger utcOffset =
         readSimpleField(
             "utcOffset",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

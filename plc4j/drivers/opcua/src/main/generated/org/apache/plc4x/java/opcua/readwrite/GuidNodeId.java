@@ -64,7 +64,7 @@ public class GuidNodeId implements Message {
     writeSimpleField("namespaceIndex", namespaceIndex, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (identifier)
-    writeSimpleField("identifier", identifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("identifier", identifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("GuidNodeId");
   }
@@ -89,12 +89,6 @@ public class GuidNodeId implements Message {
     return lengthInBits;
   }
 
-  public static GuidNodeId staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static GuidNodeId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("GuidNodeId");
     PositionAware positionAware = readBuffer;
@@ -104,8 +98,7 @@ public class GuidNodeId implements Message {
 
     GuidValue identifier =
         readSimpleField(
-            "identifier",
-            new DataReaderComplexDefault<>(() -> GuidValue.staticParse(readBuffer), readBuffer));
+            "identifier", readComplex(() -> GuidValue.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("GuidNodeId");
     // Create the instance

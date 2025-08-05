@@ -74,7 +74,7 @@ public class S7PayloadAlarmSC extends S7PayloadUserDataItem implements Message {
     writeBuffer.pushContext("S7PayloadAlarmSC");
 
     // Simple Field (alarmMessage)
-    writeSimpleField("alarmMessage", alarmMessage, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("alarmMessage", alarmMessage, writeComplex(writeBuffer));
 
     writeBuffer.popContext("S7PayloadAlarmSC");
   }
@@ -106,8 +106,7 @@ public class S7PayloadAlarmSC extends S7PayloadUserDataItem implements Message {
     AlarmMessagePushType alarmMessage =
         readSimpleField(
             "alarmMessage",
-            new DataReaderComplexDefault<>(
-                () -> AlarmMessagePushType.staticParse(readBuffer), readBuffer));
+            readComplex(() -> AlarmMessagePushType.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("S7PayloadAlarmSC");
     // Create the instance

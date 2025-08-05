@@ -100,7 +100,7 @@ public class PnIoCm_Block_ArServer extends PnIoCm_Block implements Message {
     writeSimpleField(
         "stationName",
         stationName,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Padding Field (padding)
@@ -173,8 +173,7 @@ public class PnIoCm_Block_ArServer extends PnIoCm_Block implements Message {
     PascalString16BitLength stationName =
         readSimpleField(
             "stationName",
-            new DataReaderComplexDefault<>(
-                () -> PascalString16BitLength.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString16BitLength.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readPaddingField(

@@ -121,8 +121,7 @@ public class VariantDiagnosticInfo extends Variant implements Message {
     List<DiagnosticInfo> value =
         readCountArrayField(
             "value",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             (((arrayLength) == (null)) ? 1 : arrayLength));
 
     readBuffer.closeContext("VariantDiagnosticInfo");

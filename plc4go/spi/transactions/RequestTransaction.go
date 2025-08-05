@@ -26,11 +26,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/spi/pool"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+
+	"github.com/apache/plc4x/plc4go/spi/pool"
 )
 
 // RequestTransaction represents a transaction
@@ -54,7 +54,7 @@ type RequestTransaction interface {
 // Internal section
 //
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=requestTransaction
+//go:generate go tool plc4xGenerator -type=requestTransaction
 type requestTransaction struct {
 	parent        *requestTransactionManager `ignore:"true"`
 	transactionId int32
@@ -66,7 +66,7 @@ type requestTransaction struct {
 	stateChangeMutex sync.Mutex
 	completed        bool
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func newRequestTransaction(localLog zerolog.Logger, parent *requestTransactionManager, transactionId int32) *requestTransaction {

@@ -20,14 +20,15 @@
 package model
 
 import (
+	"math/rand"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"math/rand"
 )
 
 var _ apiModel.PlcConsumerRegistration = &DefaultPlcConsumerRegistration{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcConsumerRegistration
+//go:generate go tool plc4xGenerator -type=DefaultPlcConsumerRegistration
 type DefaultPlcConsumerRegistration struct {
 	consumerId    int
 	consumer      apiModel.PlcSubscriptionEventConsumer `ignore:"true"` // Function not renderable

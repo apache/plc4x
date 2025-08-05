@@ -60,7 +60,7 @@ public class BACnetPropertyStatesBacnetIpMode extends BACnetPropertyStates imple
     writeBuffer.pushContext("BACnetPropertyStatesBacnetIpMode");
 
     // Simple Field (bacnetIpMode)
-    writeSimpleField("bacnetIpMode", bacnetIpMode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bacnetIpMode", bacnetIpMode, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesBacnetIpMode");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesBacnetIpMode extends BACnetPropertyStates imple
     BACnetIPModeTagged bacnetIpMode =
         readSimpleField(
             "bacnetIpMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetIPModeTagged.staticParse(
                         readBuffer,

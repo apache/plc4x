@@ -55,7 +55,7 @@ public class BACnetAssignedLandingCalls implements Message {
     writeBuffer.pushContext("BACnetAssignedLandingCalls");
 
     // Simple Field (landingCalls)
-    writeSimpleField("landingCalls", landingCalls, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("landingCalls", landingCalls, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAssignedLandingCalls");
   }
@@ -77,12 +77,6 @@ public class BACnetAssignedLandingCalls implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAssignedLandingCalls staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAssignedLandingCalls staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetAssignedLandingCalls");
@@ -92,7 +86,7 @@ public class BACnetAssignedLandingCalls implements Message {
     BACnetAssignedLandingCallsLandingCallsList landingCalls =
         readSimpleField(
             "landingCalls",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAssignedLandingCallsLandingCallsList.staticParse(readBuffer, (short) (0)),
                 readBuffer));

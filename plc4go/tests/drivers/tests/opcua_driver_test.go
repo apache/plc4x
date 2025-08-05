@@ -20,29 +20,9 @@
 package tests
 
 import (
-	"context"
 	"testing"
-
-	"github.com/apache/plc4x/plc4go/internal/opcua"
-	opcuaIO "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestOPCUADriver(t *testing.T) {
-	//t.Skip("Not yet finished")
-	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
-		return readWriteModel.MessagePDUParseWithBuffer(context.Background(), readBufferByteBased, false)
-	}
-	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
-	testutils.RunDriverTestsuite(
-		t,
-		opcua.NewDriver(optionsForTesting...),
-		"assets/testing/protocols/opcua/DriverTestsuite.xml",
-		opcuaIO.OpcuaXmlParserHelper{},
-		append(optionsForTesting,
-			testutils.WithRootTypeParser(parser),
-		)...,
-	)
+	t.Skip("Not yet finished")
 }

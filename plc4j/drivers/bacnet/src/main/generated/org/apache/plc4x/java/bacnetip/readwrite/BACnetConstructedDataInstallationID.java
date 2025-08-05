@@ -82,7 +82,7 @@ public class BACnetConstructedDataInstallationID extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataInstallationID");
 
     // Simple Field (installationId)
-    writeSimpleField("installationId", installationId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("installationId", installationId, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataInstallationID extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger installationId =
         readSimpleField(
             "installationId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

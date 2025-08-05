@@ -1,0 +1,125 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+= Mac OS
+
+
+
+As tracking down issues which result from missing or outdated third party tools such as compilers are always hard do diagnose, we have extended the build of PLC4X with a `prerequisiteCheck` that automatically checks if required tools are installed and if a required minimum version is available.
+
+If any of the prerequisites are not met, the build fails with an error message that will help finding out what's wrong.
+
+The number of checks is highly dependent on which profiles are enabled.
+So for example the availability and version of the C compiler is only checked if the `with-c` profile is enabled.
+
+Most libraries on Mac are installed using `Homebrew`.
+
+Make sure `Homebrew` ist installed in order to install most of these.
+
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+== Git
+
+Checking:
+
+ git --version
+
+If you get any successful output, you probably don't need to do anything.
+
+If you are running this command on a really fresh and clean system, it might be that you are asked to finish installing the XCode commandline tools.
+If this happens, just follow the process and re-try after it has finished.
+
+If you get a response that indicates that git needs to be installed, please execute the following command:
+
+ brew install git
+
+== Java
+
+Checking:
+
+ java --version
+
+If you get successful output indicating at least Java 11, you don't need to do anything.
+
+Apt based systems:
+
+ brew install openjdk
+
+== Optional and other language support
+
+Git an Java should be all you need for building the Java part of PLC4X.
+
+=== LibPCAP (For raw-ethernet support)
+
+The libpcap version bundled with macOS is currently 1.9.1.
+This version causes exceptions.
+So it's best to update to a newer version using brew:
+
+   brew install libpcap
+
+=== gcc (For PLC4C)
+
+Checking:
+
+ gcc --version
+
+If you get any successful output, you probably don't need to do anything.
+
+It seems macOS comes with a version of gcc which is good enough for our use cases.
+
+=== dotnet (For PLC4Net)
+
+Checking:
+
+ dotnet --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Microsoft is offering an installer for macOS which is available from https://dotnet.microsoft.com/download/dotnet-core/2.2[here].
+
+Alternatively you can also install it via homebrew:
+
+ brew install --cask dotnet-sdk
+
+=== python (For PLC4Py)
+
+Checking:
+
+ python --version
+
+If you get a version of 3.0.0 or higher reported, you probably don't need to do anything.
+
+In order to install it, please execute the following command:
+
+ brew install pyenv
+
+Then use pyenv to install python:
+
+ pyenv install 3.9.13
+
+Then set this as the global python version:
+
+ pyenv global 3.9.13
+
+And add pyenv to the PATH:
+
+ echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.zshrc
+ echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bash_profile
+
+After opening a new terminal, `python` should be configured
+
+ python --version

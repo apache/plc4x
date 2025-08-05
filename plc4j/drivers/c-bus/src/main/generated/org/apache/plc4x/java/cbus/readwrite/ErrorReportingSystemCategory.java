@@ -74,21 +74,20 @@ public class ErrorReportingSystemCategory implements Message {
         "systemCategoryClass",
         "ErrorReportingSystemCategoryClass",
         systemCategoryClass,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ErrorReportingSystemCategoryClass::getValue,
             ErrorReportingSystemCategoryClass::name,
             writeUnsignedByte(writeBuffer, 4)));
 
     // Simple Field (systemCategoryType)
-    writeSimpleField(
-        "systemCategoryType", systemCategoryType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("systemCategoryType", systemCategoryType, writeComplex(writeBuffer));
 
     // Simple Field (systemCategoryVariant)
     writeSimpleEnumField(
         "systemCategoryVariant",
         "ErrorReportingSystemCategoryVariant",
         systemCategoryVariant,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ErrorReportingSystemCategoryVariant::getValue,
             ErrorReportingSystemCategoryVariant::name,
             writeUnsignedByte(writeBuffer, 2)));
@@ -119,12 +118,6 @@ public class ErrorReportingSystemCategory implements Message {
     return lengthInBits;
   }
 
-  public static ErrorReportingSystemCategory staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ErrorReportingSystemCategory staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategory");
@@ -135,13 +128,13 @@ public class ErrorReportingSystemCategory implements Message {
         readEnumField(
             "systemCategoryClass",
             "ErrorReportingSystemCategoryClass",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ErrorReportingSystemCategoryClass::enumForValue, readUnsignedByte(readBuffer, 4)));
 
     ErrorReportingSystemCategoryType systemCategoryType =
         readSimpleField(
             "systemCategoryType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     ErrorReportingSystemCategoryType.staticParse(
                         readBuffer, (ErrorReportingSystemCategoryClass) (systemCategoryClass)),
@@ -151,7 +144,7 @@ public class ErrorReportingSystemCategory implements Message {
         readEnumField(
             "systemCategoryVariant",
             "ErrorReportingSystemCategoryVariant",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ErrorReportingSystemCategoryVariant::enumForValue,
                 readUnsignedByte(readBuffer, 2)));
 

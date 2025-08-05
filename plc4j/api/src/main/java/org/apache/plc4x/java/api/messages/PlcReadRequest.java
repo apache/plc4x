@@ -20,6 +20,7 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.PlcTag;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -37,7 +38,6 @@ public interface PlcReadRequest extends PlcTagRequest {
 
         Builder addTagAddress(String name, String tagAddress);
         Builder addTag(String name, PlcTag tag);
-
     }
 
 }

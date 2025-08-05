@@ -83,7 +83,7 @@ public class BACnetConstructedDataRestoreCompletionTime extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataRestoreCompletionTime");
 
     // Simple Field (completionTime)
-    writeSimpleField("completionTime", completionTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("completionTime", completionTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataRestoreCompletionTime extends BACnetConstructe
     BACnetApplicationTagUnsignedInteger completionTime =
         readSimpleField(
             "completionTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

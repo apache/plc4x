@@ -130,7 +130,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
         "propertyDataType",
         "KnxPropertyDataType",
         propertyDataType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             KnxPropertyDataType::getValue,
             KnxPropertyDataType::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -146,16 +146,14 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
         "readLevel",
         "AccessLevel",
         readLevel,
-        new DataWriterEnumDefault<>(
-            AccessLevel::getValue, AccessLevel::name, writeUnsignedByte(writeBuffer, 4)));
+        writeEnum(AccessLevel::getValue, AccessLevel::name, writeUnsignedByte(writeBuffer, 4)));
 
     // Simple Field (writeLevel)
     writeSimpleEnumField(
         "writeLevel",
         "AccessLevel",
         writeLevel,
-        new DataWriterEnumDefault<>(
-            AccessLevel::getValue, AccessLevel::name, writeUnsignedByte(writeBuffer, 4)));
+        writeEnum(AccessLevel::getValue, AccessLevel::name, writeUnsignedByte(writeBuffer, 4)));
 
     writeBuffer.popContext("ApduDataExtPropertyDescriptionResponse");
   }
@@ -225,8 +223,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
         readEnumField(
             "propertyDataType",
             "KnxPropertyDataType",
-            new DataReaderEnumDefault<>(
-                KnxPropertyDataType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(KnxPropertyDataType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Byte reservedField1 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 4), (byte) 0x0);
@@ -237,15 +234,13 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
         readEnumField(
             "readLevel",
             "AccessLevel",
-            new DataReaderEnumDefault<>(
-                AccessLevel::enumForValue, readUnsignedByte(readBuffer, 4)));
+            readEnum(AccessLevel::enumForValue, readUnsignedByte(readBuffer, 4)));
 
     AccessLevel writeLevel =
         readEnumField(
             "writeLevel",
             "AccessLevel",
-            new DataReaderEnumDefault<>(
-                AccessLevel::enumForValue, readUnsignedByte(readBuffer, 4)));
+            readEnum(AccessLevel::enumForValue, readUnsignedByte(readBuffer, 4)));
 
     readBuffer.closeContext("ApduDataExtPropertyDescriptionResponse");
     // Create the instance

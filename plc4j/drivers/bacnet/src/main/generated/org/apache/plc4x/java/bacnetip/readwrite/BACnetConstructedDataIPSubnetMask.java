@@ -82,7 +82,7 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataIPSubnetMask");
 
     // Simple Field (ipSubnetMask)
-    writeSimpleField("ipSubnetMask", ipSubnetMask, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipSubnetMask", ipSubnetMask, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
     BACnetApplicationTagOctetString ipSubnetMask =
         readSimpleField(
             "ipSubnetMask",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

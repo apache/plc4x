@@ -100,7 +100,7 @@ func (m PlcTIME_OF_DAY) Serialize() ([]byte, error) {
 }
 
 func (m PlcTIME_OF_DAY) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcTIME_OF_DAY", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+	return writeBuffer.WriteString("PlcTIME_OF_DAY", uint32(len([]rune(m.GetString()))*8), m.GetString())
 }
 
 func (m PlcTIME_OF_DAY) String() string {

@@ -119,7 +119,7 @@ public class BACnetConstructedDataAccessDoorFaultValues extends BACnetConstructe
     List<BACnetDoorAlarmStateTagged> faultValues =
         readTerminatedArrayField(
             "faultValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorAlarmStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

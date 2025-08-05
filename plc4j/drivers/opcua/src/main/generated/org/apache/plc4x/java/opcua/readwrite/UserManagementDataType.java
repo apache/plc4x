@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class UserManagementDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "24283";
+  public Integer getExtensionId() {
+    return (int) 24283;
   }
 
   // Properties.
@@ -75,20 +75,20 @@ public class UserManagementDataType extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("UserManagementDataType");
 
     // Simple Field (userName)
-    writeSimpleField("userName", userName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userName", userName, writeComplex(writeBuffer));
 
     // Simple Field (userConfiguration)
     writeSimpleEnumField(
         "userConfiguration",
         "UserConfigurationMask",
         userConfiguration,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             UserConfigurationMask::getValue,
             UserConfigurationMask::name,
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     writeBuffer.popContext("UserManagementDataType");
   }
@@ -117,27 +117,24 @@ public class UserManagementDataType extends ExtensionObjectDefinition implements
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("UserManagementDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString userName =
         readSimpleField(
-            "userName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "userName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     UserConfigurationMask userConfiguration =
         readEnumField(
             "userConfiguration",
             "UserConfigurationMask",
-            new DataReaderEnumDefault<>(
-                UserConfigurationMask::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(UserConfigurationMask::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString description =
         readSimpleField(
-            "description",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "description", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("UserManagementDataType");
     // Create the instance

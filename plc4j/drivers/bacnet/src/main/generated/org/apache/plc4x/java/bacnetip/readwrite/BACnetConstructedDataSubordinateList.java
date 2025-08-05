@@ -99,7 +99,7 @@ public class BACnetConstructedDataSubordinateList extends BACnetConstructedData 
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (subordinateList)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataSubordinateList extends BACnetConstructedData 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,8 +161,7 @@ public class BACnetConstructedDataSubordinateList extends BACnetConstructedData 
     List<BACnetDeviceObjectReference> subordinateList =
         readTerminatedArrayField(
             "subordinateList",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

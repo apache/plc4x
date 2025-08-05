@@ -83,10 +83,7 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
     writeBuffer.pushContext("TriggerControlDataLabel");
 
     // Simple Field (triggerControlOptions)
-    writeSimpleField(
-        "triggerControlOptions",
-        triggerControlOptions,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("triggerControlOptions", triggerControlOptions, writeComplex(writeBuffer));
 
     // Simple Field (actionSelector)
     writeSimpleField("actionSelector", actionSelector, writeByte(writeBuffer, 8));
@@ -96,8 +93,7 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
         "language",
         "Language",
         language,
-        new DataWriterEnumDefault<>(
-            Language::getValue, Language::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Language::getValue, Language::name, writeUnsignedShort(writeBuffer, 8)),
         (getTriggerControlOptions().getLabelType()) != (TriggerControlLabelType.LOAD_DYNAMIC_ICON));
 
     // Array Field (data)
@@ -146,15 +142,14 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
     TriggerControlLabelOptions triggerControlOptions =
         readSimpleField(
             "triggerControlOptions",
-            new DataReaderComplexDefault<>(
-                () -> TriggerControlLabelOptions.staticParse(readBuffer), readBuffer));
+            readComplex(() -> TriggerControlLabelOptions.staticParse(readBuffer), readBuffer));
 
     byte actionSelector = readSimpleField("actionSelector", readByte(readBuffer, 8));
 
     Language language =
         readOptionalField(
             "language",
-            new DataReaderEnumDefault<>(Language::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Language::enumForValue, readUnsignedShort(readBuffer, 8)),
             (triggerControlOptions.getLabelType()) != (TriggerControlLabelType.LOAD_DYNAMIC_ICON));
 
     byte[] data =

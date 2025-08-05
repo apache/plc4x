@@ -20,11 +20,12 @@
 package cbus
 
 import (
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 

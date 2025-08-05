@@ -68,8 +68,7 @@ public class ParameterChangeReply extends Reply implements Message {
     writeBuffer.pushContext("ParameterChangeReply");
 
     // Simple Field (parameterChange)
-    writeSimpleField(
-        "parameterChange", parameterChange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("parameterChange", parameterChange, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ParameterChangeReply");
   }
@@ -101,8 +100,7 @@ public class ParameterChangeReply extends Reply implements Message {
     ParameterChange parameterChange =
         readSimpleField(
             "parameterChange",
-            new DataReaderComplexDefault<>(
-                () -> ParameterChange.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ParameterChange.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ParameterChangeReply");
     // Create the instance

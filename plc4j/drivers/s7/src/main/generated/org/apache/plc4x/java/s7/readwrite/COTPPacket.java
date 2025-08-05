@@ -86,7 +86,7 @@ public abstract class COTPPacket implements Message {
     writeComplexTypeArrayField("parameters", parameters, writeBuffer);
 
     // Optional Field (payload) (Can be skipped, if the value is null)
-    writeOptionalField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("COTPPacket");
   }
@@ -123,26 +123,6 @@ public abstract class COTPPacket implements Message {
     }
 
     return lengthInBits;
-  }
-
-  public static COTPPacket staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Integer cotpLen;
-    if (args[0] instanceof Integer) {
-      cotpLen = (Integer) args[0];
-    } else if (args[0] instanceof String) {
-      cotpLen = Integer.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Integer or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, cotpLen);
   }
 
   public static COTPPacket staticParse(ReadBuffer readBuffer, Integer cotpLen)
@@ -184,7 +164,7 @@ public abstract class COTPPacket implements Message {
     List<COTPParameter> parameters =
         readLengthArrayField(
             "parameters",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     COTPParameter.staticParse(
                         readBuffer,
@@ -195,7 +175,7 @@ public abstract class COTPPacket implements Message {
     S7Message payload =
         readOptionalField(
             "payload",
-            new DataReaderComplexDefault<>(() -> S7Message.staticParse(readBuffer), readBuffer),
+            readComplex(() -> S7Message.staticParse(readBuffer), readBuffer),
             ((positionAware.getPos() - startPos)) < (cotpLen));
 
     readBuffer.closeContext("COTPPacket");

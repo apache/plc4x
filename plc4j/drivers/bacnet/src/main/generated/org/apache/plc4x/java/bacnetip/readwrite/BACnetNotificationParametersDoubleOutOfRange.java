@@ -107,24 +107,22 @@ public class BACnetNotificationParametersDoubleOutOfRange extends BACnetNotifica
     writeBuffer.pushContext("BACnetNotificationParametersDoubleOutOfRange");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (exceedingValue)
-    writeSimpleField("exceedingValue", exceedingValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("exceedingValue", exceedingValue, writeComplex(writeBuffer));
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Simple Field (deadband)
-    writeSimpleField("deadband", deadband, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deadband", deadband, writeComplex(writeBuffer));
 
     // Simple Field (exceededLimit)
-    writeSimpleField("exceededLimit", exceededLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("exceededLimit", exceededLimit, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersDoubleOutOfRange");
   }
@@ -174,14 +172,14 @@ public class BACnetNotificationParametersDoubleOutOfRange extends BACnetNotifica
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetContextTagDouble exceedingValue =
         readSimpleField(
             "exceedingValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagDouble)
                         BACnetContextTag.staticParse(
@@ -191,7 +189,7 @@ public class BACnetNotificationParametersDoubleOutOfRange extends BACnetNotifica
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -200,7 +198,7 @@ public class BACnetNotificationParametersDoubleOutOfRange extends BACnetNotifica
     BACnetContextTagDouble deadband =
         readSimpleField(
             "deadband",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagDouble)
                         BACnetContextTag.staticParse(
@@ -210,7 +208,7 @@ public class BACnetNotificationParametersDoubleOutOfRange extends BACnetNotifica
     BACnetContextTagDouble exceededLimit =
         readSimpleField(
             "exceededLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagDouble)
                         BACnetContextTag.staticParse(
@@ -220,7 +218,7 @@ public class BACnetNotificationParametersDoubleOutOfRange extends BACnetNotifica
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

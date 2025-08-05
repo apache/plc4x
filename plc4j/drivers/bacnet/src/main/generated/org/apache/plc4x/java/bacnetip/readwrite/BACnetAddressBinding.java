@@ -62,11 +62,10 @@ public class BACnetAddressBinding implements Message {
     writeBuffer.pushContext("BACnetAddressBinding");
 
     // Simple Field (deviceIdentifier)
-    writeSimpleField(
-        "deviceIdentifier", deviceIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deviceIdentifier", deviceIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (deviceAddress)
-    writeSimpleField("deviceAddress", deviceAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deviceAddress", deviceAddress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAddressBinding");
   }
@@ -91,12 +90,6 @@ public class BACnetAddressBinding implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAddressBinding staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAddressBinding staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetAddressBinding");
     PositionAware positionAware = readBuffer;
@@ -105,7 +98,7 @@ public class BACnetAddressBinding implements Message {
     BACnetApplicationTagObjectIdentifier deviceIdentifier =
         readSimpleField(
             "deviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -113,9 +106,7 @@ public class BACnetAddressBinding implements Message {
 
     BACnetAddress deviceAddress =
         readSimpleField(
-            "deviceAddress",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAddress.staticParse(readBuffer), readBuffer));
+            "deviceAddress", readComplex(() -> BACnetAddress.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("BACnetAddressBinding");
     // Create the instance

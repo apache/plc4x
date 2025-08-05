@@ -81,12 +81,6 @@ public abstract class PortSegmentType implements Message {
     return lengthInBits;
   }
 
-  public static PortSegmentType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PortSegmentType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PortSegmentType");
     PositionAware positionAware = readBuffer;

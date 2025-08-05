@@ -81,11 +81,6 @@ public class APDUs implements Message {
     return lengthInBits;
   }
 
-  public static APDUs staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static APDUs staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("APDUs");
     PositionAware positionAware = readBuffer;
@@ -94,7 +89,7 @@ public class APDUs implements Message {
     List<APDU> apdus =
         readTerminatedArrayField(
             "apdus",
-            new DataReaderComplexDefault<>(() -> APDU.staticParse(readBuffer), readBuffer),
+            readComplex(() -> APDU.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.iec608705104.readwrite.utils.StaticHelper.finished(

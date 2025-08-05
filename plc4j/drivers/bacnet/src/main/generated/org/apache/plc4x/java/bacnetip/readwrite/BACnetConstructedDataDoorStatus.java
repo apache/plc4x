@@ -82,7 +82,7 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataDoorStatus");
 
     // Simple Field (doorStatus)
-    writeSimpleField("doorStatus", doorStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doorStatus", doorStatus, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDoorStatusTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
     BACnetDoorStatusTagged doorStatus =
         readSimpleField(
             "doorStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorStatusTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

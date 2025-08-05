@@ -21,8 +21,9 @@ package simulated
 
 import (
 	"context"
-	"github.com/rs/zerolog"
 	"math/rand"
+
+	"github.com/rs/zerolog"
 
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
@@ -54,6 +55,8 @@ func (d *Device) Get(tag simulatedTag) *apiValues.PlcValue {
 		return d.State[tag]
 	case TagRandom:
 		return d.getRandomValue(tag)
+	default:
+		d.log.Debug().Stringer("tagType", tag.TagType).Msg("unmapped tag type")
 	}
 	return nil
 }
@@ -79,7 +82,7 @@ func (d *Device) getRandomValue(tag simulatedTag) *apiValues.PlcValue {
 	size := tag.GetDataTypeSize().DataTypeSize()
 	data := make([]byte, uint16(size)*tag.Quantity)
 	rand.Read(data)
-	ctxForModel := options.GetLoggerContextForModel(context.TODO(), d.log, options.WithPassLoggerToModel(d.passLogToModel))
+	ctxForModel := options.GetLoggerContextForModel(context.Background(), d.log, options.WithPassLoggerToModel(d.passLogToModel))
 	plcValue, err := readWriteModel.DataItemParse(ctxForModel, data, tag.DataTypeSize.String(), tag.Quantity)
 	if err != nil {
 		d.log.Err(err).Msg("Unable to parse random bytes")

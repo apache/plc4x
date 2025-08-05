@@ -70,13 +70,13 @@ public class BACnetAuthenticationFactorFormat implements Message {
     writeBuffer.pushContext("BACnetAuthenticationFactorFormat");
 
     // Simple Field (formatType)
-    writeSimpleField("formatType", formatType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("formatType", formatType, writeComplex(writeBuffer));
 
     // Optional Field (vendorId) (Can be skipped, if the value is null)
-    writeOptionalField("vendorId", vendorId, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("vendorId", vendorId, writeComplex(writeBuffer));
 
     // Optional Field (vendorFormat) (Can be skipped, if the value is null)
-    writeOptionalField("vendorFormat", vendorFormat, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("vendorFormat", vendorFormat, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAuthenticationFactorFormat");
   }
@@ -108,12 +108,6 @@ public class BACnetAuthenticationFactorFormat implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAuthenticationFactorFormat staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAuthenticationFactorFormat staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetAuthenticationFactorFormat");
@@ -123,7 +117,7 @@ public class BACnetAuthenticationFactorFormat implements Message {
     BACnetAuthenticationFactorTypeTagged formatType =
         readSimpleField(
             "formatType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAuthenticationFactorTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -132,7 +126,7 @@ public class BACnetAuthenticationFactorFormat implements Message {
     BACnetVendorIdTagged vendorId =
         readOptionalField(
             "vendorId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVendorIdTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -141,7 +135,7 @@ public class BACnetAuthenticationFactorFormat implements Message {
     BACnetContextTagUnsignedInteger vendorFormat =
         readOptionalField(
             "vendorFormat",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

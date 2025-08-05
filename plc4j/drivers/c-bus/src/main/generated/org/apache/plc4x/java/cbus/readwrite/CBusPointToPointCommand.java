@@ -82,7 +82,7 @@ public abstract class CBusPointToPointCommand implements Message {
     serializeCBusPointToPointCommandChild(writeBuffer);
 
     // Simple Field (calData)
-    writeSimpleField("calData", calData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("calData", calData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CBusPointToPointCommand");
   }
@@ -106,24 +106,6 @@ public abstract class CBusPointToPointCommand implements Message {
     lengthInBits += calData.getLengthInBits();
 
     return lengthInBits;
-  }
-
-  public static CBusPointToPointCommand staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    CBusOptions cBusOptions;
-    if (args[0] instanceof CBusOptions) {
-      cBusOptions = (CBusOptions) args[0];
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type CBusOptions or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, cBusOptions);
   }
 
   public static CBusPointToPointCommand staticParse(ReadBuffer readBuffer, CBusOptions cBusOptions)
@@ -161,7 +143,7 @@ public abstract class CBusPointToPointCommand implements Message {
     CALData calData =
         readSimpleField(
             "calData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CALData.staticParse(readBuffer, (RequestContext) (null)), readBuffer));
 
     readBuffer.closeContext("CBusPointToPointCommand");

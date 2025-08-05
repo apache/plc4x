@@ -82,7 +82,7 @@ public class BACnetConstructedDataDeviceMaxMaster extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataDeviceMaxMaster");
 
     // Simple Field (maxMaster)
-    writeSimpleField("maxMaster", maxMaster, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxMaster", maxMaster, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataDeviceMaxMaster extends BACnetConstructedData 
     BACnetApplicationTagUnsignedInteger maxMaster =
         readSimpleField(
             "maxMaster",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

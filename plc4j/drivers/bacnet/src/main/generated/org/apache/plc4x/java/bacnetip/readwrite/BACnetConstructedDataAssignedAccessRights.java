@@ -100,7 +100,7 @@ public class BACnetConstructedDataAssignedAccessRights extends BACnetConstructed
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (assignedAccessRights)
@@ -152,7 +152,7 @@ public class BACnetConstructedDataAssignedAccessRights extends BACnetConstructed
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,8 +162,7 @@ public class BACnetConstructedDataAssignedAccessRights extends BACnetConstructed
     List<BACnetAssignedAccessRights> assignedAccessRights =
         readTerminatedArrayField(
             "assignedAccessRights",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAssignedAccessRights.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetAssignedAccessRights.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

@@ -177,12 +177,6 @@ public class SingleEventOfProtectionEquipment implements Message {
     return lengthInBits;
   }
 
-  public static SingleEventOfProtectionEquipment staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SingleEventOfProtectionEquipment staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SingleEventOfProtectionEquipment");

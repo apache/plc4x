@@ -60,7 +60,7 @@ public class BACnetPropertyStatesSecurityLevel extends BACnetPropertyStates impl
     writeBuffer.pushContext("BACnetPropertyStatesSecurityLevel");
 
     // Simple Field (securityLevel)
-    writeSimpleField("securityLevel", securityLevel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityLevel", securityLevel, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesSecurityLevel");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesSecurityLevel extends BACnetPropertyStates impl
     BACnetSecurityLevelTagged securityLevel =
         readSimpleField(
             "securityLevel",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetSecurityLevelTagged.staticParse(
                         readBuffer,

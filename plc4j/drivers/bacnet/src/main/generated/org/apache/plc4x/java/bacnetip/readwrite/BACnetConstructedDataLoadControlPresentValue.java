@@ -83,7 +83,7 @@ public class BACnetConstructedDataLoadControlPresentValue extends BACnetConstruc
     writeBuffer.pushContext("BACnetConstructedDataLoadControlPresentValue");
 
     // Simple Field (presentValue)
-    writeSimpleField("presentValue", presentValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("presentValue", presentValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetShedStateTagged actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataLoadControlPresentValue extends BACnetConstruc
     BACnetShedStateTagged presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetShedStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

@@ -61,7 +61,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDouble
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryDouble");
 
     // Simple Field (doubleValue)
-    writeSimpleField("doubleValue", doubleValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doubleValue", doubleValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtendedParametersEntryDouble");
   }
@@ -93,7 +93,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDouble
     BACnetApplicationTagDouble doubleValue =
         readSimpleField(
             "doubleValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDouble) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

@@ -1,0 +1,266 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/users/protocols
+:icons: font
+
+= OPC UA
+
+
+
+== Connection String Options
+
+include::partial$opcua.adoc[]
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+3+|Supported Operations
+
+|| `read`      |The read interface allows for reading the full range of supported PLC4X data types in single and bulk requests
+|| `write`     |The write interface allows for writing the full range of supported PLC4X data types in single and bulk requests
+|| `subscribe` |Subscriptions are possible with events on event- and cyclic-basis
+
+|===
+
+== Connection String
+
+The OPC UA drivers uses the connection string
+
+----
+
+opcua:{transport}://{ip-address}:{port}?{options}
+
+----
+
+An example of this connection string would be:-
+
+----
+
+opcua:tcp://127.0.0.1:12686?discovery=true&username=admin&password=password
+
+----
+
+Note the transport, port and options fields are optional.
+
+== Secure communication
+The secure channel implementation within Apache PLC4X project have been tested against existing open source server implementations.
+This includes Eclipse Milo (all modes) as well as OPC Foundation .NET server (except `Basic128Rsa15`).
+Manual tests proven that driver is able to communicate with OPC UA server launched on PLCs as well as commercial simulators.
+
+Depending on actual configuration of remote end there might be necessity to prepare client certificate.
+Preparation of certificate is beyond driver, however in case when no client certificate is provided, it will be auto-generated to establish a session.
+Please follow our tutorial link:../getting-started/opcua-client-certificate.html[on provisioning of client private key and certificate].
+By following it you will be able to create self-signed certificate for use with both hardware and software based OPC-UA servers.
+Please note that there are multiple appearances of certificates within specification.
+There is transport level certificate which can be provided though keystore options, but there is also a X509 Certificate which can be used for authentication (currently unsupported by PLC4X).
+
+The security modes differ between themselves by strength of applied signature and encryption algorithms.
+Driver is able to communicate with single security mode at the time.
+Additionally, to security policy it is possible to specify `message-security` option which indicates expected security settings after initial handshake.
+By default, this option is set to `SIGN_ENCRYPT` which imposes high security settings and full encryption of exchanged message payloads.
+In case when additional diagnostics is needed payloads has to be traced through TRACE level log entries.
+The `SIGN` mode gives possibility o browse packets in tools such wireshark.
+
+=== Certificate verification
+The OPC UA specification defines its own procedures for certificate validation.
+In order to simplify implementation by default server certificate validation is relaxed.
+Unless explicitly disabled through configuration of `trust-store-file` all server certificates will be accepted without validation.
+
+In case when secure communication is enabled the `trust-store-file` option might be used to point certificates which client should accept.
+The acceptance rely on regular TLS checks (expiry date, certificate path etc.), does not validate OPC UA specific parts such as application URI.
+
+=== Negotiation procedure
+Depending on settings driver might or might not attempt to discover endpoints from remote server.
+In case when `discovery` option is set to `true` driver will look up server certificate through connection attempt.
+The discovery option also enables checks of server endpoints for matching security settings.
+
+Once initial discovery is completed and driver finds endpoint matching its security settings it will launch second connection attempt which will switch to configured security mode.
+
+Each connection attempt made by driver attempt to use limits described in table above.
+Role of these options is declaration of values accepted and expected by client.
+Once server returns its limits (`Acknowledge` for supplied `Hello` call) driver picks values from these.
+The only one note is that driver takes minimum of local receive and remote send buffer size.
+It does same with local send and remote receive buffer.
+
+Usual values of `encoding.send-buffer-size` and `encoding.receive-buffer-size` PLC devices remain at 8196 bytes.
+
+NOTE: Due to lack of complete implementation of negotiation and chunking logic the OPC UA driver prior Apache PLC4X 0.11 release could supply calls exceeding server limits.
+
+== Address Format
+To read, write and subscribe to data, the OPC UA driver uses the variable declaration string of the OPC UA server it is
+connecting to.
+It includes the namespace(`ns`) of the hierarchy tree followed by the type of identifier string(`s`), numeric(`i`),
+binary(`b`) or guid(`g`) and its address. The Data Type is an optional field, if it is not included a default data type
+is selected based on the datatype of the returned value. For Unsigned data types it needs to be included otherwise.
+
+----
+
+ns={namespace-index};[s|i|g|b]={Identifier};a=attributeId;{Data Type}
+
+----
+
+The `a` parameter which stands for `attributeId` of an object is optional, and by default it is assumed to be Value 13 (`0x0d`).
+Value of this parameter can be specified using numeric value or OPC-UA attribute name (case-sensitive).
+
+=== Data Types
+
+The following data types are supported
+
+- BOOL (boolean)
+- SINT (int 8)
+- USINT (uint 8)
+- BYTE (uint 8)
+- INT (int 16)
+- UINT (uint 16)
+- WORD (uint 16)
+- DINT (int 32)
+- UDINT (uint 32)
+- DWORD (uint 32)
+- LINT (int 64)
+- ULINT (uint 64)
+- LWORD (uint 64)
+- REAL (float)
+- LREAL (double)
+- CHAR (char)
+- WCHAR (2 byte char)
+- STRING (utf-8)
+- WSTRING (utf-16)
+
+
+=== Example of a valid OPC UA address:
+
+The following are examples of valid addresses
+
+String address:
+----
+ns=2;s=HelloWorld/ScalarTypes/Boolean
+ns=2;s=HelloWorld/ScalarTypes/Boolean;BOOL
+ns=2;s=HelloWorld/ScalarTypes/Boolean;a=Value;BOOL
+----
+Numeric address
+----
+ns=1;i=1337
+ns=1;i=1337;DINT
+ns=1;i=1337;a=Value;DINT
+----
+GUID address:
+----
+ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a
+ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a;REAL
+ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a;a=Value;REAL
+----
+Event Subscription:
+----
+ns=0;i=2253;a=EventNotifier;BOOL{EventId: '', EventType: '', Severity: '', Time: '', Message: ''}
+----
+
+Note the Identifiers `s`,`i`,`b` and `g` specify the format of the address not the data type of the returned value.
+The `a` attribute is required only for event subscriptions which additionally makes use of tag config.
+Tag config is a list of key-value pairs which rely on simplified JSON syntax.
+
+== Some useful tips
+
+The namespace (e.g. `ns=2`) within the address is specific to the server you are connecting to.
+Objects appearing in namespaces can, and will vary, as namespaces are used to separate scope of objects.
+
+OPC-UA servers support subscriptions which allow to reduce amount of data exchanged between client and server.
+There are three primary subscription modes: Data Change Notification, Status Change Notification and Event Notification.
+Currently, Apache PLC4X client supports Data Change Notification and Event Notification.
+
+Under the hood subscriptions still require client to request data though PublishRequest.
+
+=== OPC UA Data Change Notification
+
+Data change notifications are created with list of tags, after which client need to send publish requests.
+Upon each publish request server will send response which will include values of all tag for which subscription was created.
+While OPC-UA specification permits mutation of subscription contents, PLC4X API does not allow that.
+
+By default, `Cyclic` and `Change of State` subscriptions operations defined in PLC4X client API result in data change notifications.
+
+=== OPC UA Event Notification
+
+Third mode of subscription defined by PLC4X API is `Event Subscription`.
+This kind of subscription is available since PLC4X 0.13 and have slightly different syntax, which brings more complex data.
+OPC-UA events can be used to receive notifications of various kinds which appear when specific situation happens.
+In other protocols this kind of behavior can function as alarms or alerts.
+
+In order to create OPC-UA event subscription you need to:
+
+- define `a=EventNotifier` or `a=12`
+- specify event fields to retrieve through a tag config
+
+The tag config key must match OPC-UA event field.
+The tag config value is not used, thus it can not be used to specify filter criteria for field value.
+Fields which are supported are defined in OPC UA `BaseEventType`:
+
+- `EventId`
+- `EventType`
+- `SourceNode`
+- `SourceName`
+- `Time`
+- `ReceiveTime`
+- `LocalTime`
+- `Message`
+- `Severity`
+
+Example syntax: `ns=0;i=2253;a=EventNotifier;BOOL{EventId: '', EventType: '', Severity: '', Time: '', Message: ''}`.
+
+Subscription event generated by client upon receiving notification will contain an object (`PlcSTRUCT`/`Map`) which will contain all requested fields.
+Please note that Apache PLC4X does only basic normalization of data, thus your application need to take care of actual processing of event data.
+
+== Tag metadata
+
+This driver supports tag metadata.
+Beyond standard metadata fields such `timestamp` and `timestamp_source` it can provide following keys:
+
+- `opcua_quality`
+- `opcua_server_timestamp`
+- `opcua_source_timestamp`
+
+Appearance of these fields is conditional, they are provided only when it can be sourced from packets exchanged between client and server.
+This means that depending on operation conducted by client (read/write/subscribe) metadata will vary.
+
+== Compatibility with OPC-UA Servers
+
+There are multiple OPC-UA server implementations.
+Each of it have its own specifics, sometimes showing up more detailed security handling or further edge case buried in specification.
+So far Apache PLC4X OPC-UA client have been confirmed to be working with below servers (order in chronology of passed tests/confirmed compatibility):
+
+* version 0.13
+- https://github.com/node-opcua/node-opcua[node-opcua]
+- Mitsubishi Electric MX OPC Server UA
+* version 0.12
+- https://prosysopc.com/products/opc-ua-simulation-server/[Prosys OPC-UA Simulation Server]
+- Simatic OPC UA S7-1200 Basic
+- https://github.com/OPCFoundation/UA-.NETStandard[OPC Foundation UA-.NET Standard]
+- Simocode OPC UA server
+* versions prior 0.12
+- https://eclipse.org/milo[Eclipse Milo]
+
+
+== More details on OPC UA
+
+https://opcfoundation.org/about/opc-technologies/opc-ua/[OPC UA]
+The OPC Unified Architecture (UA), released in 2008, is a platform independent service-oriented architecture that integrates all the functionality of the individual OPC Classic specifications into one extensible framework.
+
+This multi-layered approach accomplishes the original design specification goals of:
+
+* Functional equivalence: all COM OPC Classic specifications are mapped to UA
+* Platform independence: from an embedded micro-controller to cloud-based infrastructure
+* Secure: encryption, authentication, and auditing
+* Extensible: ability to add new features without affecting existing applications
+* Comprehensive information modeling: for defining complex information

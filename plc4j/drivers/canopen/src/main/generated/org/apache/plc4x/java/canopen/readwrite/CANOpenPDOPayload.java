@@ -62,7 +62,7 @@ public class CANOpenPDOPayload extends CANOpenPayload implements Message {
     writeBuffer.pushContext("CANOpenPDOPayload");
 
     // Simple Field (pdo)
-    writeSimpleField("pdo", pdo, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("pdo", pdo, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CANOpenPDOPayload");
   }
@@ -91,9 +91,7 @@ public class CANOpenPDOPayload extends CANOpenPayload implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CANOpenPDO pdo =
-        readSimpleField(
-            "pdo",
-            new DataReaderComplexDefault<>(() -> CANOpenPDO.staticParse(readBuffer), readBuffer));
+        readSimpleField("pdo", readComplex(() -> CANOpenPDO.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("CANOpenPDOPayload");
     // Create the instance

@@ -67,8 +67,7 @@ public class BACnetTimerStateChangeValueCharacterString extends BACnetTimerState
     writeBuffer.pushContext("BACnetTimerStateChangeValueCharacterString");
 
     // Simple Field (characterStringValue)
-    writeSimpleField(
-        "characterStringValue", characterStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("characterStringValue", characterStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimerStateChangeValueCharacterString");
   }
@@ -99,7 +98,7 @@ public class BACnetTimerStateChangeValueCharacterString extends BACnetTimerState
     BACnetApplicationTagCharacterString characterStringValue =
         readSimpleField(
             "characterStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

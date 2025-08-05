@@ -82,7 +82,7 @@ public class BACnetConstructedDataIPv6Address extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataIPv6Address");
 
     // Simple Field (ipv6Address)
-    writeSimpleField("ipv6Address", ipv6Address, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipv6Address", ipv6Address, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataIPv6Address extends BACnetConstructedData impl
     BACnetApplicationTagOctetString ipv6Address =
         readSimpleField(
             "ipv6Address",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

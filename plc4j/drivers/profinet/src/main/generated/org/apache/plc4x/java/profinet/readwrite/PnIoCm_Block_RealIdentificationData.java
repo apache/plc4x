@@ -180,8 +180,7 @@ public class PnIoCm_Block_RealIdentificationData extends PnIoCm_Block implements
     List<PnIoCm_RealIdentificationApi> apis =
         readCountArrayField(
             "apis",
-            new DataReaderComplexDefault<>(
-                () -> PnIoCm_RealIdentificationApi.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnIoCm_RealIdentificationApi.staticParse(readBuffer), readBuffer),
             numApis,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

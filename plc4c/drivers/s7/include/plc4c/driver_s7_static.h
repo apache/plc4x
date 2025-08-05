@@ -66,6 +66,8 @@ time_t plc4c_s7_read_write_parse_tia_time_of_day(plc4c_spi_read_buffer* io);
 
 time_t plc4c_s7_read_write_parse_tia_date_time(plc4c_spi_read_buffer* io);
 
+uint8_t plc4c_s7_read_write_parse_siemens_year(plc4c_spi_read_buffer* io);
+
 #ifdef __cplusplus
 }
 #endif

@@ -21,18 +21,18 @@ package opcua
 
 import (
 	"fmt"
-	"github.com/rs/zerolog"
 	"strconv"
 	"time"
 
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
-	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 func generateNodeId(tag Tag) (readWriteModel.NodeId, error) {
@@ -60,7 +60,7 @@ func generateNodeId(tag Tag) (readWriteModel.NodeId, error) {
 		}
 		nodeId = readWriteModel.NewNodeId(readWriteModel.NewNodeIdGuid( /*TODO: do we want to check for overflow?*/ uint16(tag.GetNamespace()), guidBytes))
 	} else if tag.GetIdentifierType() == readWriteModel.OpcuaIdentifierType_STRING_IDENTIFIER {
-		nodeId = readWriteModel.NewNodeId(readWriteModel.NewNodeIdString( /*TODO: do we want to check for overflow?*/ uint16(tag.GetNamespace()), readWriteModel.NewPascalString(tag.GetIdentifier())))
+		nodeId = readWriteModel.NewNodeId(readWriteModel.NewNodeIdString( /*TODO: do we want to check for overflow?*/ uint16(tag.GetNamespace()), readWriteModel.NewPascalString(utils.ToPtr(tag.GetIdentifier()))))
 	}
 	return nodeId, nil
 }
@@ -81,90 +81,90 @@ func readResponse(localLog zerolog.Logger, readRequestIn apiModel.PlcReadRequest
 			variant := results[count].GetValue()
 			localLog.Trace().Type("type", variant).Msg("Response of type")
 			switch variant := variant.(type) {
-			case readWriteModel.VariantBooleanExactly:
+			case readWriteModel.VariantBoolean:
 				array := variant.GetValue()
 				boolValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					boolValues[i] = spiValues.NewPlcBOOL(t != 0)
 				}
 				value = spiValues.NewPlcList(boolValues)
-			case readWriteModel.VariantSByteExactly:
+			case readWriteModel.VariantSByte:
 				array := variant.GetValue()
 				value = spiValues.NewPlcRawByteArray(array)
-			case readWriteModel.VariantByteExactly:
+			case readWriteModel.VariantByte:
 				array := variant.GetValue()
 				value = spiValues.NewPlcRawByteArray(array)
-			case readWriteModel.VariantInt16Exactly:
+			case readWriteModel.VariantInt16:
 				array := variant.GetValue()
 				int16Values := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					int16Values[i] = spiValues.NewPlcINT(t)
 				}
 				value = spiValues.NewPlcList(int16Values)
-			case readWriteModel.VariantUInt16Exactly:
+			case readWriteModel.VariantUInt16:
 				array := variant.GetValue()
 				uint16Values := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					uint16Values[i] = spiValues.NewPlcUINT(t)
 				}
 				value = spiValues.NewPlcList(uint16Values)
-			case readWriteModel.VariantInt32Exactly:
+			case readWriteModel.VariantInt32:
 				array := variant.GetValue()
 				int32Values := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					int32Values[i] = spiValues.NewPlcDINT(t)
 				}
 				value = spiValues.NewPlcList(int32Values)
-			case readWriteModel.VariantUInt32Exactly:
+			case readWriteModel.VariantUInt32:
 				array := variant.GetValue()
 				uint32Values := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					uint32Values[i] = spiValues.NewPlcUDINT(t)
 				}
 				value = spiValues.NewPlcList(uint32Values)
-			case readWriteModel.VariantInt64Exactly:
+			case readWriteModel.VariantInt64:
 				array := variant.GetValue()
 				int64Values := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					int64Values[i] = spiValues.NewPlcLINT(t)
 				}
 				value = spiValues.NewPlcList(int64Values)
-			case readWriteModel.VariantUInt64Exactly:
+			case readWriteModel.VariantUInt64:
 				array := variant.GetValue()
 				uint64Values := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					uint64Values[i] = spiValues.NewPlcULINT(t)
 				}
 				value = spiValues.NewPlcList(uint64Values)
-			case readWriteModel.VariantFloatExactly:
+			case readWriteModel.VariantFloat:
 				array := variant.GetValue()
 				floatValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					floatValues[i] = spiValues.NewPlcREAL(t)
 				}
 				value = spiValues.NewPlcList(floatValues)
-			case readWriteModel.VariantDoubleExactly:
+			case readWriteModel.VariantDouble:
 				array := variant.GetValue()
 				doubleValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					doubleValues[i] = spiValues.NewPlcLREAL(t)
 				}
 				value = spiValues.NewPlcList(doubleValues)
-			case readWriteModel.VariantStringExactly:
+			case readWriteModel.VariantString:
 				array := variant.GetValue()
 				stringValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
-					stringValues[i] = spiValues.NewPlcSTRING(t.GetStringValue())
+					stringValues[i] = spiValues.NewPlcSTRING(*t.GetStringValue())
 				}
 				value = spiValues.NewPlcList(stringValues)
-			case readWriteModel.VariantDateTimeExactly:
+			case readWriteModel.VariantDateTime:
 				array := variant.GetValue()
 				dateTimeValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					dateTimeValues[i] = spiValues.NewPlcDATE_AND_TIME(getDateTime(t))
 				}
 				value = spiValues.NewPlcList(dateTimeValues)
-			case readWriteModel.VariantGuidExactly:
+			case readWriteModel.VariantGuid:
 				array := variant.GetValue()
 				guidValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
@@ -182,56 +182,56 @@ func readResponse(localLog zerolog.Logger, readRequestIn apiModel.PlcReadRequest
 					guidValues[i] = spiValues.NewPlcSTRING(fmt.Sprintf("%x-%x-%x-%x-%x", t.GetData1(), t.GetData2(), t.GetData3(), data4, data5))
 				}
 				value = spiValues.NewPlcList(guidValues)
-			case readWriteModel.VariantXmlElementExactly:
+			case readWriteModel.VariantXmlElement:
 				array := variant.GetValue()
 				xmlElementValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
-					xmlElementValues[i] = spiValues.NewPlcSTRING(t.GetStringValue())
+					xmlElementValues[i] = spiValues.NewPlcSTRING(*t.GetStringValue())
 				}
 				value = spiValues.NewPlcList(xmlElementValues)
-			case readWriteModel.VariantLocalizedTextExactly:
+			case readWriteModel.VariantLocalizedText:
 				array := variant.GetValue()
 				localizedTextValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					v := ""
 					if t.GetLocaleSpecified() {
-						v += t.GetLocale().GetStringValue() + "|"
+						v += *t.GetLocale().GetStringValue() + "|"
 					}
 					if t.GetTextSpecified() {
-						v += t.GetText().GetStringValue()
+						v += *t.GetText().GetStringValue()
 					}
 					localizedTextValues[i] = spiValues.NewPlcSTRING(v)
 				}
 				value = spiValues.NewPlcList(localizedTextValues)
-			case readWriteModel.VariantQualifiedNameExactly:
+			case readWriteModel.VariantQualifiedName:
 				array := variant.GetValue()
 				qualifiedNameValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
-					qualifiedNameValues[i] = spiValues.NewPlcSTRING(fmt.Sprintf("ns=%d;s=%s", t.GetNamespaceIndex(), t.GetName().GetStringValue()))
+					qualifiedNameValues[i] = spiValues.NewPlcSTRING(fmt.Sprintf("ns=%d;s=%s", t.GetNamespaceIndex(), *t.GetName().GetStringValue()))
 				}
 				value = spiValues.NewPlcList(qualifiedNameValues)
-			case readWriteModel.VariantExtensionObjectExactly:
+			case readWriteModel.VariantExtensionObject:
 				array := variant.GetValue()
 				extensionObjectValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					extensionObjectValues[i] = spiValues.NewPlcSTRING(t.String())
 				}
 				value = spiValues.NewPlcList(extensionObjectValues)
-			case readWriteModel.VariantNodeIdExactly:
+			case readWriteModel.VariantNodeId:
 				array := variant.GetValue()
 				nodeIdValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					nodeIdValues[i] = spiValues.NewPlcSTRING(t.String())
 				}
 				value = spiValues.NewPlcList(nodeIdValues)
-			case readWriteModel.VariantStatusCodeExactly:
+			case readWriteModel.VariantStatusCode:
 				array := variant.GetValue()
 				statusCodeValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
 					statusCodeValues[i] = spiValues.NewPlcSTRING(t.String())
 				}
 				value = spiValues.NewPlcList(statusCodeValues)
-			case readWriteModel.VariantByteStringExactly:
+			case readWriteModel.VariantByteString:
 				array := variant.GetValue()
 				statusCodeValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {

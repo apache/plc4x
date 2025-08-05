@@ -165,12 +165,6 @@ public abstract class DceRpc_InterfaceUuid implements Message {
     return lengthInBits;
   }
 
-  public static DceRpc_InterfaceUuid staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DceRpc_InterfaceUuid staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DceRpc_InterfaceUuid");
     PositionAware positionAware = readBuffer;

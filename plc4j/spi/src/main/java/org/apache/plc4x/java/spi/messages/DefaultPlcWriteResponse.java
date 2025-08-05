@@ -18,8 +18,11 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import java.util.Collections;
+import java.util.Map.Entry;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.metadata.Metadata;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -36,16 +39,29 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
 
     private final PlcWriteRequest request;
     private final Map<String, PlcResponseCode> responseCodes;
+    private final Map<String, Metadata> metadata;
 
     public DefaultPlcWriteResponse(PlcWriteRequest request,
                                    Map<String, PlcResponseCode> responseCodes) {
+        this(request, responseCodes, Collections.emptyMap());
+    }
+
+    public DefaultPlcWriteResponse(PlcWriteRequest request,
+                                   Map<String, PlcResponseCode> responseCodes,
+                                   Map<String, Metadata> metadata) {
         this.request = request;
         this.responseCodes = responseCodes;
+        this.metadata = metadata;
     }
 
     @Override
     public PlcWriteRequest getRequest() {
         return request;
+    }
+
+    @Override
+    public Metadata getTagMetadata(String tag) {
+        return metadata.getOrDefault(tag, Metadata.EMPTY);
     }
 
     @Override
@@ -82,6 +98,20 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
             writeBuffer.popContext(tagName);
         }
         writeBuffer.popContext("responseCodes");
+
+        if (metadata != null && !metadata.isEmpty()) {
+            writeBuffer.pushContext("metadata", WithRenderAsList(true));
+
+            for (Entry<String, Metadata> entry : metadata.entrySet()) {
+                if (entry.getValue() instanceof Serializable) {
+                    writeBuffer.pushContext(entry.getKey());
+                    ((Serializable) entry.getValue()).serialize(writeBuffer);
+                    writeBuffer.popContext(entry.getKey());
+                }
+            }
+
+            writeBuffer.popContext("metadata");
+        }
 
         writeBuffer.popContext("PlcWriteResponse");
     }

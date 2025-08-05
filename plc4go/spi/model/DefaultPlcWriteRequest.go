@@ -22,19 +22,20 @@ package model
 import (
 	"context"
 	"runtime/debug"
+	"sync"
 	"time"
+
+	"github.com/pkg/errors"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
-
-	"github.com/pkg/errors"
 )
 
 var _ apiModel.PlcWriteRequestBuilder = &DefaultPlcWriteRequestBuilder{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequestBuilder
+//go:generate go tool plc4xGenerator -type=DefaultPlcWriteRequestBuilder
 type DefaultPlcWriteRequestBuilder struct {
 	writer                  spi.PlcWriter       `ignore:"true"`
 	tagHandler              spi.PlcTagHandler   `ignore:"true"`
@@ -124,16 +125,18 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (apiModel.PlcWriteRequest, error
 
 var _ apiModel.PlcWriteRequest = &DefaultPlcWriteRequest{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequest
+//go:generate go tool plc4xGenerator -type=DefaultPlcWriteRequest
 type DefaultPlcWriteRequest struct {
 	*DefaultPlcTagRequest
 	values                  map[string]apiValues.PlcValue
 	writer                  spi.PlcWriter                        `ignore:"true"`
 	writeRequestInterceptor interceptors.WriteRequestInterceptor `ignore:"true"`
+
+	wg sync.WaitGroup // use to track spawned go routines
 }
 
 func NewDefaultPlcWriteRequest(tags map[string]apiModel.PlcTag, tagNames []string, values map[string]apiValues.PlcValue, writer spi.PlcWriter, writeRequestInterceptor interceptors.WriteRequestInterceptor) apiModel.PlcWriteRequest {
-	return &DefaultPlcWriteRequest{NewDefaultPlcTagRequest(tags, tagNames), values, writer, writeRequestInterceptor}
+	return &DefaultPlcWriteRequest{DefaultPlcTagRequest: NewDefaultPlcTagRequest(tags, tagNames), values: values, writer: writer, writeRequestInterceptor: writeRequestInterceptor}
 }
 
 func (d *DefaultPlcWriteRequest) Execute() <-chan apiModel.PlcWriteRequestResult {
@@ -167,7 +170,9 @@ func (d *DefaultPlcWriteRequest) ExecuteWithContextAndInterceptor(ctx context.Co
 
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
 	resultChannel := make(chan apiModel.PlcWriteRequestResult, 1)
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				resultChannel <- NewDefaultPlcWriteRequestResult(d, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))

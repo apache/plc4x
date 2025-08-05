@@ -83,7 +83,7 @@ public class BACnetConstructedDataBACnetIPv6UDPPort extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPv6UDPPort");
 
     // Simple Field (ipv6UdpPort)
-    writeSimpleField("ipv6UdpPort", ipv6UdpPort, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipv6UdpPort", ipv6UdpPort, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataBACnetIPv6UDPPort extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger ipv6UdpPort =
         readSimpleField(
             "ipv6UdpPort",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

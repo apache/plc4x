@@ -100,23 +100,19 @@ public class BACnetNotificationParametersBufferReady extends BACnetNotificationP
     writeBuffer.pushContext("BACnetNotificationParametersBufferReady");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (bufferProperty)
-    writeSimpleField("bufferProperty", bufferProperty, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bufferProperty", bufferProperty, writeComplex(writeBuffer));
 
     // Simple Field (previousNotification)
-    writeSimpleField(
-        "previousNotification", previousNotification, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("previousNotification", previousNotification, writeComplex(writeBuffer));
 
     // Simple Field (currentNotification)
-    writeSimpleField(
-        "currentNotification", currentNotification, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("currentNotification", currentNotification, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersBufferReady");
   }
@@ -163,14 +159,14 @@ public class BACnetNotificationParametersBufferReady extends BACnetNotificationP
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetDeviceObjectPropertyReferenceEnclosed bufferProperty =
         readSimpleField(
             "bufferProperty",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (0)),
@@ -179,7 +175,7 @@ public class BACnetNotificationParametersBufferReady extends BACnetNotificationP
     BACnetContextTagUnsignedInteger previousNotification =
         readSimpleField(
             "previousNotification",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -191,7 +187,7 @@ public class BACnetNotificationParametersBufferReady extends BACnetNotificationP
     BACnetContextTagUnsignedInteger currentNotification =
         readSimpleField(
             "currentNotification",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -203,7 +199,7 @@ public class BACnetNotificationParametersBufferReady extends BACnetNotificationP
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

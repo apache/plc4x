@@ -61,8 +61,7 @@ public class SALDataMeasurement extends SALData implements Message {
     writeBuffer.pushContext("SALDataMeasurement");
 
     // Simple Field (measurementData)
-    writeSimpleField(
-        "measurementData", measurementData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("measurementData", measurementData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataMeasurement");
   }
@@ -93,8 +92,7 @@ public class SALDataMeasurement extends SALData implements Message {
     MeasurementData measurementData =
         readSimpleField(
             "measurementData",
-            new DataReaderComplexDefault<>(
-                () -> MeasurementData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> MeasurementData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataMeasurement");
     // Create the instance

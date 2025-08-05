@@ -75,7 +75,7 @@ public class ConnectedDataItem extends TypeId implements Message {
     writeSimpleField("sequenceCount", sequenceCount, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (service)
-    writeSimpleField("service", service, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("service", service, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ConnectedDataItem");
   }
@@ -116,7 +116,7 @@ public class ConnectedDataItem extends TypeId implements Message {
     CipService service =
         readSimpleField(
             "service",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     CipService.staticParse(
                         readBuffer, (boolean) (true), (int) ((packetSize) - (2))),

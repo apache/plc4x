@@ -21,9 +21,10 @@ package utils
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // ErrorIdentify is an interface defining the inline interface defined in errors.Is(err, target error) bool (wrap.go)
@@ -31,7 +32,8 @@ type ErrorIdentify interface {
 	Is(target error) bool
 }
 
-// MultiError is a Wrapper for multiple Errors
+// Deprecated: MultiError is a Wrapper for multiple Errors
+// Deprecated: use errors.Join
 type MultiError struct {
 	// MainError denotes the error which summarize the error
 	MainError error
@@ -39,7 +41,24 @@ type MultiError struct {
 	Errors []error
 }
 
-func (m MultiError) Error() string {
+// ToErrorIfAny returns this if there was an error collected or nil if nothing there
+func (m *MultiError) ToErrorIfAny() error {
+	if m.Errors == nil && len(m.Errors) == 0 {
+		return nil
+	}
+	return m
+}
+
+// HasErrored returns true if a MainError or Errors have been collected
+func (m *MultiError) HasErrored() bool {
+	return m.MainError != nil || len(m.Errors) > 0
+}
+
+func (m *MultiError) Append(err error) {
+	m.Errors = append(m.Errors, err)
+}
+
+func (m *MultiError) Error() string {
 	if m.MainError == nil && len(m.Errors) == 0 {
 		return ""
 	}
@@ -60,8 +79,9 @@ func (m MultiError) Error() string {
 	return mainErrorText + childErrorText
 }
 
-func (m MultiError) Is(target error) bool {
-	if _, ok := target.(MultiError); ok {
+func (m *MultiError) Is(target error) bool {
+	var multiError *MultiError
+	if errors.As(target, &multiError) {
 		return true
 	}
 	for _, childError := range m.Errors {
@@ -72,8 +92,16 @@ func (m MultiError) Is(target error) bool {
 	return false
 }
 
+func (m *MultiError) DeepCopy() any {
+	return &MultiError{
+		MainError: m.MainError,
+		Errors:    DeepCopySlice[error, error](m.Errors),
+	}
+}
+
 type ParseAssertError struct {
 	Message string
+	Err     error // TODO: make available as root cause
 }
 
 func (e ParseAssertError) Error() string {

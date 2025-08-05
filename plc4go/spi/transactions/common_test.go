@@ -20,9 +20,10 @@
 package transactions
 
 import (
-	"github.com/rs/zerolog"
 	"os"
 	"testing"
+
+	"github.com/rs/zerolog"
 )
 
 // note: we can't use testutils here due to import cycle

@@ -21,23 +21,27 @@ package simulated
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"strconv"
+	"sync"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 )
 
 type Reader struct {
 	device  *Device
 	options map[string][]string
 	tracer  tracer.Tracer
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
@@ -55,7 +59,9 @@ func NewReader(device *Device, readerOptions map[string][]string, tracer tracer.
 
 func (r *Reader) Read(_ context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	ch := make(chan apiModel.PlcReadRequestResult, 1)
+	r.wg.Add(1)
 	go func() {
+		defer r.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))

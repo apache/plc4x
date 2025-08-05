@@ -82,7 +82,7 @@ public class BACnetConstructedDataEventEnable extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataEventEnable");
 
     // Simple Field (eventEnable)
-    writeSimpleField("eventEnable", eventEnable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventEnable", eventEnable, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetEventTransitionBitsTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataEventEnable extends BACnetConstructedData impl
     BACnetEventTransitionBitsTagged eventEnable =
         readSimpleField(
             "eventEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTransitionBitsTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

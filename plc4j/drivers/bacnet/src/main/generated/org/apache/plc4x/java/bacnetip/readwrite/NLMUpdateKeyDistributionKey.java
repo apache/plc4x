@@ -75,7 +75,7 @@ public class NLMUpdateKeyDistributionKey extends NLM implements Message {
     writeSimpleField("keyRevision", keyRevision, writeByte(writeBuffer, 8));
 
     // Simple Field (key)
-    writeSimpleField("key", key, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("key", key, writeComplex(writeBuffer));
 
     writeBuffer.popContext("NLMUpdateKeyDistributionKey");
   }
@@ -111,8 +111,7 @@ public class NLMUpdateKeyDistributionKey extends NLM implements Message {
     NLMUpdateKeyUpdateKeyEntry key =
         readSimpleField(
             "key",
-            new DataReaderComplexDefault<>(
-                () -> NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer), readBuffer));
+            readComplex(() -> NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("NLMUpdateKeyDistributionKey");
     // Create the instance

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class KeyValuePair extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "14535";
+  public Integer getExtensionId() {
+    return (int) 14535;
   }
 
   // Properties.
@@ -68,10 +68,10 @@ public class KeyValuePair extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("KeyValuePair");
 
     // Simple Field (key)
-    writeSimpleField("key", key, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("key", key, writeComplex(writeBuffer));
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("KeyValuePair");
   }
@@ -97,21 +97,17 @@ public class KeyValuePair extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("KeyValuePair");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     QualifiedName key =
         readSimpleField(
-            "key",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "key", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
     Variant value =
-        readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer));
+        readSimpleField("value", readComplex(() -> Variant.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("KeyValuePair");
     // Create the instance

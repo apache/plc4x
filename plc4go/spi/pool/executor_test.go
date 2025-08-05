@@ -255,7 +255,7 @@ func Test_executor_Submit(t *testing.T) {
 		{
 			name: "submit canceled",
 			fields: fields{
-				queue: make(chan workItem, 0),
+				queue: make(chan workItem),
 			},
 			args: args{
 				workItemId: 13,
@@ -285,7 +285,7 @@ func Test_executor_Submit(t *testing.T) {
 					// We do something for 3 seconds
 					<-time.NewTimer(3 * time.Second).C
 				},
-				context: context.TODO(),
+				context: t.Context(),
 			},
 			completionFutureValidator: func(t *testing.T, completionFuture CompletionFuture) bool {
 				completed := completionFuture.(*future).completed.Load()
@@ -309,7 +309,7 @@ func Test_executor_Submit(t *testing.T) {
 				runnable: func() {
 					// NOOP
 				},
-				context: context.TODO(),
+				context: t.Context(),
 			},
 			completionFutureValidator: func(t *testing.T, completionFuture CompletionFuture) bool {
 				completed := completionFuture.(*future).completed.Load()
@@ -377,7 +377,6 @@ func Test_executor_getWorksItems(t *testing.T) {
 		worker       []*worker
 		workItems    chan workItem
 		traceWorkers bool
-		log          zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -396,7 +395,7 @@ func Test_executor_getWorksItems(t *testing.T) {
 				worker:       tt.fields.worker,
 				workItems:    tt.fields.workItems,
 				traceWorkers: tt.fields.traceWorkers,
-				log:          tt.fields.log,
+				log:          produceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, e.getWorksItems(), "getWorksItems()")
 		})

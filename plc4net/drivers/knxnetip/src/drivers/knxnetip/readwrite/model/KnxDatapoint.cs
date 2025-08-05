@@ -25,6 +25,7 @@ using NLog;
 using org.apache.plc4net.api.value;
 using org.apache.plc4net.spi.generation;
 using org.apache.plc4net.spi.model.values;
+using org.apache.plc4net.types;
 
 namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
 {
@@ -50,7 +51,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.BYTE ) { // BYTE
+            } if( datapointType == KnxDatapointType.BYTE ) { // BYTE
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -64,7 +65,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcBYTE(value);
-            } else if( datapointType == KnxDatapointType.WORD ) { // WORD
+            } if( datapointType == KnxDatapointType.WORD ) { // WORD
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -78,7 +79,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcWORD(value);
-            } else if( datapointType == KnxDatapointType.DWORD ) { // DWORD
+            } if( datapointType == KnxDatapointType.DWORD ) { // DWORD
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -92,7 +93,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUint("", 32);
 
                 return new PlcDWORD(value);
-            } else if( datapointType == KnxDatapointType.LWORD ) { // LWORD
+            } if( datapointType == KnxDatapointType.LWORD ) { // LWORD
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -106,7 +107,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUlong("", 64);
 
                 return new PlcLWORD(value);
-            } else if( datapointType == KnxDatapointType.USINT ) { // USINT
+            } if( datapointType == KnxDatapointType.USINT ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -120,7 +121,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.SINT ) { // SINT
+            } if( datapointType == KnxDatapointType.SINT ) { // SINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -134,7 +135,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadSbyte("", 8);
 
                 return new PlcSINT(value);
-            } else if( datapointType == KnxDatapointType.UINT ) { // UINT
+            } if( datapointType == KnxDatapointType.UINT ) { // UINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -148,7 +149,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcUINT(value);
-            } else if( datapointType == KnxDatapointType.INT ) { // INT
+            } if( datapointType == KnxDatapointType.INT ) { // INT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -162,7 +163,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadShort("", 16);
 
                 return new PlcINT(value);
-            } else if( datapointType == KnxDatapointType.UDINT ) { // UDINT
+            } if( datapointType == KnxDatapointType.UDINT ) { // UDINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -176,7 +177,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUint("", 32);
 
                 return new PlcUDINT(value);
-            } else if( datapointType == KnxDatapointType.DINT ) { // DINT
+            } if( datapointType == KnxDatapointType.DINT ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -190,7 +191,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } else if( datapointType == KnxDatapointType.ULINT ) { // ULINT
+            } if( datapointType == KnxDatapointType.ULINT ) { // ULINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -204,7 +205,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUlong("", 64);
 
                 return new PlcULINT(value);
-            } else if( datapointType == KnxDatapointType.LINT ) { // LINT
+            } if( datapointType == KnxDatapointType.LINT ) { // LINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -218,7 +219,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadLong("", 64);
 
                 return new PlcLINT(value);
-            } else if( datapointType == KnxDatapointType.REAL ) { // REAL
+            } if( datapointType == KnxDatapointType.REAL ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -232,7 +233,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.LREAL ) { // LREAL
+            } if( datapointType == KnxDatapointType.LREAL ) { // LREAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -246,7 +247,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadDouble("", 64);
 
                 return new PlcLREAL(value);
-            } else if( datapointType == KnxDatapointType.CHAR ) { // CHAR
+            } if( datapointType == KnxDatapointType.CHAR ) { // CHAR
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -260,7 +261,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadString("", 8, System.Text.Encoding.GetEncoding("UTF-8"));
 
                 return new PlcCHAR(Convert.ToChar(value));
-            } else if( datapointType == KnxDatapointType.WCHAR ) { // WCHAR
+            } if( datapointType == KnxDatapointType.WCHAR ) { // WCHAR
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -274,7 +275,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadString("", 16, System.Text.Encoding.GetEncoding("UTF-16"));
 
                 return new PlcWCHAR(Convert.ToChar(value));
-            } else if( datapointType == KnxDatapointType.TIME ) { // TIME
+            } if( datapointType == KnxDatapointType.TIME ) { // TIME
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -287,7 +288,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (milliseconds)
                 var milliseconds = readBuffer.ReadUint("", 32);
 
-            } else if( datapointType == KnxDatapointType.LTIME ) { // LTIME
+            } if( datapointType == KnxDatapointType.LTIME ) { // LTIME
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -300,7 +301,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (nanoseconds)
                 var nanoseconds = readBuffer.ReadUlong("", 64);
 
-            } else if( datapointType == KnxDatapointType.DATE ) { // DATE
+            } if( datapointType == KnxDatapointType.DATE ) { // DATE
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -313,7 +314,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (secondsSinceEpoch)
                 var secondsSinceEpoch = readBuffer.ReadUint("", 32);
 
-            } else if( datapointType == KnxDatapointType.TIME_OF_DAY ) { // TIME_OF_DAY
+            } if( datapointType == KnxDatapointType.TIME_OF_DAY ) { // TIME_OF_DAY
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -326,7 +327,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (millisecondsSinceMidnight)
                 var millisecondsSinceMidnight = readBuffer.ReadUint("", 32);
 
-            } else if( datapointType == KnxDatapointType.TOD ) { // TIME_OF_DAY
+            } if( datapointType == KnxDatapointType.TOD ) { // TIME_OF_DAY
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -339,7 +340,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (millisecondsSinceMidnight)
                 var millisecondsSinceMidnight = readBuffer.ReadUint("", 32);
 
-            } else if( datapointType == KnxDatapointType.DATE_AND_TIME ) { // DATE_AND_TIME
+            } if( datapointType == KnxDatapointType.DATE_AND_TIME ) { // DATE_AND_TIME
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -375,7 +376,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
 
                 var value = new DateTime(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, 0);
                 return new PlcDATE_AND_TIME(value);
-            } else if( datapointType == KnxDatapointType.DT ) { // DATE_AND_TIME
+            } if( datapointType == KnxDatapointType.DT ) { // DATE_AND_TIME
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -411,7 +412,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
 
                 var value = new DateTime(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, 0);
                 return new PlcDATE_AND_TIME(value);
-            } else if( datapointType == KnxDatapointType.DPT_Switch ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Switch ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -425,7 +426,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Bool ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Bool ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -439,7 +440,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Enable ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Enable ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -453,7 +454,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Ramp ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Ramp ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -467,7 +468,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Alarm ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Alarm ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -481,7 +482,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_BinaryValue ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_BinaryValue ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -495,7 +496,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Step ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Step ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -509,7 +510,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_UpDown ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_UpDown ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -523,7 +524,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_OpenClose ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_OpenClose ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -537,7 +538,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Start ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Start ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -551,7 +552,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_State ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_State ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -565,7 +566,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Invert ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Invert ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -579,7 +580,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_DimSendStyle ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_DimSendStyle ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -593,7 +594,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_InputSource ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_InputSource ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -607,7 +608,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Reset ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Reset ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -621,7 +622,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Ack ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Ack ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -635,7 +636,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Trigger ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Trigger ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -649,7 +650,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Occupancy ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Occupancy ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -663,7 +664,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Window_Door ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Window_Door ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -677,7 +678,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_LogicalFunction ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_LogicalFunction ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -691,7 +692,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Scene_AB ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Scene_AB ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -705,7 +706,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_ShutterBlinds_Mode ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_ShutterBlinds_Mode ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -719,7 +720,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_DayNight ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_DayNight ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -733,7 +734,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Heat_Cool ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_Heat_Cool ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -747,7 +748,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Switch_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Switch_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -766,7 +767,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Bool_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Bool_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -785,7 +786,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Enable_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Enable_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -804,7 +805,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Ramp_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Ramp_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -823,7 +824,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Alarm_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Alarm_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -842,7 +843,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_BinaryValue_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_BinaryValue_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -861,7 +862,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Step_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Step_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -880,7 +881,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Direction1_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Direction1_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -899,7 +900,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Direction2_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Direction2_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -918,7 +919,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Start_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Start_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -937,7 +938,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_State_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_State_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -956,7 +957,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Invert_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Invert_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -975,7 +976,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Control_Dimming ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Control_Dimming ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -994,7 +995,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Control_Blinds ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Control_Blinds ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1013,7 +1014,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Char_ASCII ) { // STRING
+            } if( datapointType == KnxDatapointType.DPT_Char_ASCII ) { // STRING
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1027,7 +1028,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadString("", 8, System.Text.Encoding.GetEncoding("ASCII"));
 
                 return new PlcSTRING(value);
-            } else if( datapointType == KnxDatapointType.DPT_Char_8859_1 ) { // STRING
+            } if( datapointType == KnxDatapointType.DPT_Char_8859_1 ) { // STRING
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1041,7 +1042,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadString("", 8, System.Text.Encoding.GetEncoding("ISO-8859-1"));
 
                 return new PlcSTRING(value);
-            } else if( datapointType == KnxDatapointType.DPT_Scaling ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Scaling ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1055,7 +1056,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Angle ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Angle ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1069,7 +1070,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Percent_U8 ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Percent_U8 ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1083,7 +1084,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DecimalFactor ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_DecimalFactor ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1097,7 +1098,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Tariff ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Tariff ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1111,7 +1112,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_1_Ucount ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Value_1_Ucount ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1125,7 +1126,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_FanStage ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_FanStage ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1139,7 +1140,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Percent_V8 ) { // SINT
+            } if( datapointType == KnxDatapointType.DPT_Percent_V8 ) { // SINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1153,7 +1154,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadSbyte("", 8);
 
                 return new PlcSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_1_Count ) { // SINT
+            } if( datapointType == KnxDatapointType.DPT_Value_1_Count ) { // SINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1167,7 +1168,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadSbyte("", 8);
 
                 return new PlcSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Status_Mode3 ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Status_Mode3 ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1198,7 +1199,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Value_2_Ucount ) { // UINT
+            } if( datapointType == KnxDatapointType.DPT_Value_2_Ucount ) { // UINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1212,7 +1213,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcUINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_TimePeriodMsec ) { // UINT
+            } if( datapointType == KnxDatapointType.DPT_TimePeriodMsec ) { // UINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1226,7 +1227,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcUINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_TimePeriod10Msec ) { // UINT
+            } if( datapointType == KnxDatapointType.DPT_TimePeriod10Msec ) { // UINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1240,7 +1241,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcUINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_TimePeriod100Msec ) { // UINT
+            } if( datapointType == KnxDatapointType.DPT_TimePeriod100Msec ) { // UINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1254,7 +1255,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcUINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_TimePeriodSec ) { // UINT
+            } if( datapointType == KnxDatapointType.DPT_TimePeriodSec ) { // UINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1268,7 +1269,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcUINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_TimePeriodMin ) { // UINT
+            } if( datapointType == KnxDatapointType.DPT_TimePeriodMin ) { // UINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1282,7 +1283,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcUINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_TimePeriodHrs ) { // UINT
+            } if( datapointType == KnxDatapointType.DPT_TimePeriodHrs ) { // UINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1296,7 +1297,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcUINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_PropDataType ) { // UINT
+            } if( datapointType == KnxDatapointType.DPT_PropDataType ) { // UINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1310,7 +1311,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcUINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Length_mm ) { // UINT
+            } if( datapointType == KnxDatapointType.DPT_Length_mm ) { // UINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1324,7 +1325,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcUINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_UElCurrentmA ) { // UINT
+            } if( datapointType == KnxDatapointType.DPT_UElCurrentmA ) { // UINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1338,7 +1339,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcUINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Brightness ) { // UINT
+            } if( datapointType == KnxDatapointType.DPT_Brightness ) { // UINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1352,7 +1353,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcUINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Absolute_Colour_Temperature ) { // UINT
+            } if( datapointType == KnxDatapointType.DPT_Absolute_Colour_Temperature ) { // UINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1366,7 +1367,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUshort("", 16);
 
                 return new PlcUINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_2_Count ) { // INT
+            } if( datapointType == KnxDatapointType.DPT_Value_2_Count ) { // INT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1380,7 +1381,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadShort("", 16);
 
                 return new PlcINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DeltaTimeMsec ) { // INT
+            } if( datapointType == KnxDatapointType.DPT_DeltaTimeMsec ) { // INT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1394,7 +1395,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadShort("", 16);
 
                 return new PlcINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DeltaTime10Msec ) { // INT
+            } if( datapointType == KnxDatapointType.DPT_DeltaTime10Msec ) { // INT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1408,7 +1409,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadShort("", 16);
 
                 return new PlcINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DeltaTime100Msec ) { // INT
+            } if( datapointType == KnxDatapointType.DPT_DeltaTime100Msec ) { // INT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1422,7 +1423,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadShort("", 16);
 
                 return new PlcINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DeltaTimeSec ) { // INT
+            } if( datapointType == KnxDatapointType.DPT_DeltaTimeSec ) { // INT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1436,7 +1437,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadShort("", 16);
 
                 return new PlcINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DeltaTimeMin ) { // INT
+            } if( datapointType == KnxDatapointType.DPT_DeltaTimeMin ) { // INT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1450,7 +1451,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadShort("", 16);
 
                 return new PlcINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DeltaTimeHrs ) { // INT
+            } if( datapointType == KnxDatapointType.DPT_DeltaTimeHrs ) { // INT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1464,7 +1465,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadShort("", 16);
 
                 return new PlcINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Percent_V16 ) { // INT
+            } if( datapointType == KnxDatapointType.DPT_Percent_V16 ) { // INT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1478,7 +1479,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadShort("", 16);
 
                 return new PlcINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Rotation_Angle ) { // INT
+            } if( datapointType == KnxDatapointType.DPT_Rotation_Angle ) { // INT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1492,7 +1493,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadShort("", 16);
 
                 return new PlcINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Length_m ) { // INT
+            } if( datapointType == KnxDatapointType.DPT_Length_m ) { // INT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1506,7 +1507,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadShort("", 16);
 
                 return new PlcINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Temp ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Temp ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1520,7 +1521,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Tempd ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Tempd ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1534,7 +1535,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Tempa ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Tempa ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1548,7 +1549,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Lux ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Lux ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1562,7 +1563,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Wsp ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Wsp ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1576,7 +1577,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Pres ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Pres ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1590,7 +1591,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Humidity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Humidity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1604,7 +1605,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_AirQuality ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_AirQuality ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1618,7 +1619,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_AirFlow ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_AirFlow ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1632,7 +1633,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Time1 ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Time1 ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1646,7 +1647,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Time2 ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Time2 ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1660,7 +1661,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Volt ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Volt ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1674,7 +1675,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Curr ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Curr ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1688,7 +1689,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_PowerDensity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_PowerDensity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1702,7 +1703,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_KelvinPerPercent ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_KelvinPerPercent ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1716,7 +1717,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Power ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Power ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1730,7 +1731,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Volume_Flow ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Volume_Flow ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1744,7 +1745,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Rain_Amount ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Rain_Amount ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1758,7 +1759,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Temp_F ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Temp_F ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1772,7 +1773,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Wsp_kmh ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Wsp_kmh ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1786,7 +1787,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Absolute_Humidity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Absolute_Humidity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1800,7 +1801,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Concentration_ygm3 ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Concentration_ygm3 ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1814,7 +1815,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Coefficient ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Coefficient ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1828,7 +1829,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_TimeOfDay ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_TimeOfDay ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1869,7 +1870,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Date ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Date ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1915,7 +1916,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Value_4_Ucount ) { // UDINT
+            } if( datapointType == KnxDatapointType.DPT_Value_4_Ucount ) { // UDINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1929,7 +1930,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUint("", 32);
 
                 return new PlcUDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_LongTimePeriod_Sec ) { // UDINT
+            } if( datapointType == KnxDatapointType.DPT_LongTimePeriod_Sec ) { // UDINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1943,7 +1944,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUint("", 32);
 
                 return new PlcUDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_LongTimePeriod_Min ) { // UDINT
+            } if( datapointType == KnxDatapointType.DPT_LongTimePeriod_Min ) { // UDINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1957,7 +1958,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUint("", 32);
 
                 return new PlcUDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_LongTimePeriod_Hrs ) { // UDINT
+            } if( datapointType == KnxDatapointType.DPT_LongTimePeriod_Hrs ) { // UDINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1971,7 +1972,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUint("", 32);
 
                 return new PlcUDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_VolumeLiquid_Litre ) { // UDINT
+            } if( datapointType == KnxDatapointType.DPT_VolumeLiquid_Litre ) { // UDINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1985,7 +1986,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUint("", 32);
 
                 return new PlcUDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Volume_m_3 ) { // UDINT
+            } if( datapointType == KnxDatapointType.DPT_Volume_m_3 ) { // UDINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -1999,7 +2000,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadUint("", 32);
 
                 return new PlcUDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_4_Count ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_Value_4_Count ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2013,7 +2014,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_FlowRate_m3h ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_FlowRate_m3h ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2027,7 +2028,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ActiveEnergy ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_ActiveEnergy ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2041,7 +2042,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ApparantEnergy ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_ApparentEnergy ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2055,7 +2056,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ReactiveEnergy ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_ReactiveEnergy ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2069,7 +2070,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ActiveEnergy_kWh ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_ActiveEnergy_kWh ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2083,7 +2084,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ApparantEnergy_kVAh ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_ApparentEnergy_kVAh ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2097,7 +2098,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ReactiveEnergy_kVARh ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_ReactiveEnergy_kVARh ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2111,7 +2112,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ActiveEnergy_MWh ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_ActiveEnergy_MWh ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2125,7 +2126,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_LongDeltaTimeSec ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_LongDeltaTimeSec ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2139,7 +2140,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DeltaVolumeLiquid_Litre ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_DeltaVolumeLiquid_Litre ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2153,7 +2154,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DeltaVolume_m_3 ) { // DINT
+            } if( datapointType == KnxDatapointType.DPT_DeltaVolume_m_3 ) { // DINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2167,7 +2168,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadInt("", 32);
 
                 return new PlcDINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Acceleration ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Acceleration ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2181,7 +2182,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Acceleration_Angular ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Acceleration_Angular ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2195,7 +2196,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Activation_Energy ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Activation_Energy ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2209,7 +2210,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Activity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Activity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2223,7 +2224,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Mol ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Mol ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2237,7 +2238,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Amplitude ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Amplitude ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2251,7 +2252,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_AngleRad ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_AngleRad ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2265,7 +2266,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_AngleDeg ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_AngleDeg ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2279,7 +2280,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Angular_Momentum ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Angular_Momentum ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2293,7 +2294,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Angular_Velocity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Angular_Velocity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2307,7 +2308,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Area ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Area ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2321,7 +2322,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Capacitance ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Capacitance ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2335,7 +2336,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Charge_DensitySurface ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Charge_DensitySurface ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2349,7 +2350,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Charge_DensityVolume ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Charge_DensityVolume ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2363,7 +2364,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Compressibility ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Compressibility ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2377,7 +2378,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Conductance ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Conductance ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2391,7 +2392,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Electrical_Conductivity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Electrical_Conductivity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2405,7 +2406,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Density ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Density ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2419,7 +2420,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Electric_Charge ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Electric_Charge ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2433,7 +2434,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Electric_Current ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Electric_Current ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2447,7 +2448,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Electric_CurrentDensity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Electric_CurrentDensity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2461,7 +2462,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Electric_DipoleMoment ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Electric_DipoleMoment ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2475,7 +2476,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Electric_Displacement ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Electric_Displacement ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2489,7 +2490,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Electric_FieldStrength ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Electric_FieldStrength ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2503,7 +2504,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Electric_Flux ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Electric_Flux ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2517,7 +2518,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Electric_FluxDensity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Electric_FluxDensity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2531,7 +2532,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Electric_Polarization ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Electric_Polarization ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2545,7 +2546,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Electric_Potential ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Electric_Potential ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2559,7 +2560,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Electric_PotentialDifference ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Electric_PotentialDifference ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2573,7 +2574,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_ElectromagneticMoment ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_ElectromagneticMoment ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2587,7 +2588,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Electromotive_Force ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Electromotive_Force ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2601,7 +2602,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Energy ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Energy ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2615,7 +2616,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Force ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Force ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2629,7 +2630,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Frequency ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Frequency ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2643,7 +2644,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Angular_Frequency ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Angular_Frequency ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2657,7 +2658,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Heat_Capacity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Heat_Capacity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2671,7 +2672,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Heat_FlowRate ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Heat_FlowRate ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2685,7 +2686,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Heat_Quantity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Heat_Quantity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2699,7 +2700,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Impedance ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Impedance ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2713,7 +2714,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Length ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Length ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2727,7 +2728,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Light_Quantity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Light_Quantity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2741,7 +2742,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Luminance ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Luminance ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2755,7 +2756,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Luminous_Flux ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Luminous_Flux ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2769,7 +2770,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Luminous_Intensity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Luminous_Intensity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2783,7 +2784,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Magnetic_FieldStrength ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Magnetic_FieldStrength ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2797,7 +2798,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Magnetic_Flux ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Magnetic_Flux ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2811,7 +2812,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Magnetic_FluxDensity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Magnetic_FluxDensity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2825,7 +2826,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Magnetic_Moment ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Magnetic_Moment ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2839,7 +2840,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Magnetic_Polarization ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Magnetic_Polarization ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2853,7 +2854,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Magnetization ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Magnetization ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2867,7 +2868,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_MagnetomotiveForce ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_MagnetomotiveForce ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2881,7 +2882,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Mass ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Mass ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2895,7 +2896,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_MassFlux ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_MassFlux ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2909,7 +2910,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Momentum ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Momentum ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2923,7 +2924,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Phase_AngleRad ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Phase_AngleRad ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2937,7 +2938,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Phase_AngleDeg ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Phase_AngleDeg ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2951,7 +2952,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Power ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Power ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2965,7 +2966,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Power_Factor ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Power_Factor ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2979,7 +2980,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Pressure ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Pressure ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -2993,7 +2994,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Reactance ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Reactance ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3007,7 +3008,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Resistance ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Resistance ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3021,7 +3022,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Resistivity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Resistivity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3035,7 +3036,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_SelfInductance ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_SelfInductance ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3049,7 +3050,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_SolidAngle ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_SolidAngle ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3063,7 +3064,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Sound_Intensity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Sound_Intensity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3077,7 +3078,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Speed ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Speed ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3091,7 +3092,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Stress ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Stress ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3105,7 +3106,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Surface_Tension ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Surface_Tension ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3119,7 +3120,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Common_Temperature ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Common_Temperature ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3133,7 +3134,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Absolute_Temperature ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Absolute_Temperature ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3147,7 +3148,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_TemperatureDifference ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_TemperatureDifference ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3161,7 +3162,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Thermal_Capacity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Thermal_Capacity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3175,7 +3176,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Thermal_Conductivity ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Thermal_Conductivity ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3189,7 +3190,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_ThermoelectricPower ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_ThermoelectricPower ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3203,7 +3204,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Time ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Time ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3217,7 +3218,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Torque ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Torque ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3231,7 +3232,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Volume ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Volume ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3245,7 +3246,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Volume_Flux ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Volume_Flux ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3259,7 +3260,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Weight ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Weight ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3273,7 +3274,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_Work ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_Work ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3287,7 +3288,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Value_ApparentPower ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Value_ApparentPower ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3301,7 +3302,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 32);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Volume_Flux_Meter ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Volume_Flux_Meter ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3315,7 +3316,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Volume_Flux_ls ) { // REAL
+            } if( datapointType == KnxDatapointType.DPT_Volume_Flux_ls ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3329,7 +3330,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
-            } else if( datapointType == KnxDatapointType.DPT_Access_Data ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Access_Data ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3375,7 +3376,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_String_ASCII ) { // STRING
+            } if( datapointType == KnxDatapointType.DPT_String_ASCII ) { // STRING
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3389,7 +3390,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadString("", 112, System.Text.Encoding.GetEncoding("ASCII"));
 
                 return new PlcSTRING(value);
-            } else if( datapointType == KnxDatapointType.DPT_String_8859_1 ) { // STRING
+            } if( datapointType == KnxDatapointType.DPT_String_8859_1 ) { // STRING
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3403,7 +3404,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadString("", 112, System.Text.Encoding.GetEncoding("ISO-8859-1"));
 
                 return new PlcSTRING(value);
-            } else if( datapointType == KnxDatapointType.DPT_SceneNumber ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_SceneNumber ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3417,7 +3418,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 6);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_SceneControl ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_SceneControl ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3444,7 +3445,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_DateTime ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_DateTime ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3545,7 +3546,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_SCLOMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_SCLOMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3559,7 +3560,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_BuildingMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_BuildingMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3573,7 +3574,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_OccMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_OccMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3587,7 +3588,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Priority ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Priority ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3601,7 +3602,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_LightApplicationMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_LightApplicationMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3615,7 +3616,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ApplicationArea ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_ApplicationArea ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3629,7 +3630,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_AlarmClassType ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_AlarmClassType ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3643,7 +3644,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_PSUMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_PSUMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3657,7 +3658,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ErrorClass_System ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_ErrorClass_System ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3671,7 +3672,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ErrorClass_HVAC ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_ErrorClass_HVAC ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3685,7 +3686,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Time_Delay ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Time_Delay ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3699,7 +3700,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Beaufort_Wind_Force_Scale ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Beaufort_Wind_Force_Scale ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3713,7 +3714,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_SensorSelect ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_SensorSelect ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3727,7 +3728,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ActuatorConnectType ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_ActuatorConnectType ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3741,7 +3742,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Cloud_Cover ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Cloud_Cover ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3755,7 +3756,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_PowerReturnMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_PowerReturnMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3769,7 +3770,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_FuelType ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_FuelType ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3783,7 +3784,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_BurnerType ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_BurnerType ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3797,7 +3798,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_HVACMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_HVACMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3811,7 +3812,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DHWMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_DHWMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3825,7 +3826,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_LoadPriority ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_LoadPriority ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3839,7 +3840,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_HVACContrMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_HVACContrMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3853,7 +3854,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_HVACEmergMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_HVACEmergMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3867,7 +3868,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ChangeoverMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_ChangeoverMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3881,7 +3882,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ValveMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_ValveMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3895,7 +3896,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DamperMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_DamperMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3909,7 +3910,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_HeaterMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_HeaterMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3923,7 +3924,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_FanMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_FanMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3937,7 +3938,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_MasterSlaveMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_MasterSlaveMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3951,7 +3952,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_StatusRoomSetp ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_StatusRoomSetp ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3965,7 +3966,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Metering_DeviceType ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Metering_DeviceType ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3979,7 +3980,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_HumDehumMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_HumDehumMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -3993,7 +3994,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_EnableHCStage ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_EnableHCStage ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4007,7 +4008,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ADAType ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_ADAType ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4021,7 +4022,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_BackupMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_BackupMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4035,7 +4036,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_StartSynchronization ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_StartSynchronization ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4049,7 +4050,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Behaviour_Lock_Unlock ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Behaviour_Lock_Unlock ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4063,7 +4064,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Behaviour_Bus_Power_Up_Down ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Behaviour_Bus_Power_Up_Down ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4077,7 +4078,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DALI_Fade_Time ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_DALI_Fade_Time ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4091,7 +4092,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_BlinkingMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_BlinkingMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4105,7 +4106,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_LightControlMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_LightControlMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4119,7 +4120,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_SwitchPBModel ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_SwitchPBModel ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4133,7 +4134,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_PBAction ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_PBAction ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4147,7 +4148,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DimmPBModel ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_DimmPBModel ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4161,7 +4162,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_SwitchOnMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_SwitchOnMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4175,7 +4176,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_LoadTypeSet ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_LoadTypeSet ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4189,7 +4190,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_LoadTypeDetected ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_LoadTypeDetected ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4203,7 +4204,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Converter_Test_Control ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Converter_Test_Control ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4217,7 +4218,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_SABExcept_Behaviour ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Converter_Control ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4231,7 +4232,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_SABBehaviour_Lock_Unlock ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_SABExcept_Behaviour ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4245,7 +4246,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_SSSBMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_SABBehaviour_Lock_Unlock ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4259,7 +4260,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_BlindsControlMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_SSSBMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4273,7 +4274,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_CommMode ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_BlindsControlMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4287,7 +4288,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_AddInfoTypes ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_CommMode ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4301,7 +4302,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_RF_ModeSelect ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_AddInfoTypes ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4315,7 +4316,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_RF_FilterSelect ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_RF_ModeSelect ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4329,7 +4330,21 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 8);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_StatusGen ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_RF_FilterSelect ) { // USINT
+
+                // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+                {
+                    var reserved = readBuffer.ReadByte("", 8);
+                    if(reserved != 0x00) {
+                        Logger.Info("Expected constant value {expected} but got {got} for reserved field.", 0x00, reserved);
+                    }
+                }
+
+                // Simple Field (value)
+                var value = readBuffer.ReadByte("", 8);
+
+                return new PlcUSINT(value);
+            } if( datapointType == KnxDatapointType.DPT_StatusGen ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4365,7 +4380,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Device_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Device_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4395,7 +4410,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_ForceSign ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_ForceSign ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4432,7 +4447,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_ForceSignCool ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_ForceSignCool ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4446,7 +4461,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_StatusRHC ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_StatusRHC ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4483,7 +4498,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_StatusSDHWC ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_StatusSDHWC ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4513,7 +4528,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_FuelTypeSet ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_FuelTypeSet ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4543,7 +4558,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_StatusRCC ) { // BOOL
+            } if( datapointType == KnxDatapointType.DPT_StatusRCC ) { // BOOL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4557,7 +4572,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.DPT_StatusAHU ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_StatusAHU ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4590,7 +4605,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_CombinedStatus_RTSM ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_CombinedStatus_RTSM ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4626,7 +4641,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_LightActuatorErrorInfo ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_LightActuatorErrorInfo ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4668,7 +4683,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_RF_ModeInfo ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_RF_ModeInfo ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4698,7 +4713,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_RF_FilterInfo ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_RF_FilterInfo ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4728,7 +4743,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Channel_Activation_8 ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Channel_Activation_8 ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4765,7 +4780,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_StatusDHWC ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_StatusDHWC ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4810,7 +4825,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_StatusRHCC ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_StatusRHCC ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4876,7 +4891,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_CombinedStatus_HVA ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_CombinedStatus_HVA ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4924,7 +4939,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_CombinedStatus_RTC ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_CombinedStatus_RTC ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -4972,7 +4987,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Media ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Media ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5021,7 +5036,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Channel_Activation_16 ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Channel_Activation_16 ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5082,7 +5097,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_OnOffAction ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_OnOffAction ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5096,7 +5111,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 2);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Alarm_Reaction ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_Alarm_Reaction ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5110,7 +5125,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 2);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_UpDown_Action ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_UpDown_Action ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5124,7 +5139,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 2);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_HVAC_PB_Action ) { // USINT
+            } if( datapointType == KnxDatapointType.DPT_HVAC_PB_Action ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5138,7 +5153,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadByte("", 2);
 
                 return new PlcUSINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_DoubleNibble ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_DoubleNibble ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5157,7 +5172,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_SceneInfo ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_SceneInfo ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5184,7 +5199,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_CombinedInfoOnOff ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_CombinedInfoOnOff ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5293,7 +5308,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_ActiveEnergy_V64 ) { // LINT
+            } if( datapointType == KnxDatapointType.DPT_ActiveEnergy_V64 ) { // LINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5307,7 +5322,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadLong("", 64);
 
                 return new PlcLINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ApparantEnergy_V64 ) { // LINT
+            } if( datapointType == KnxDatapointType.DPT_ApparentEnergy_V64 ) { // LINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5321,7 +5336,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadLong("", 64);
 
                 return new PlcLINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_ReactiveEnergy_V64 ) { // LINT
+            } if( datapointType == KnxDatapointType.DPT_ReactiveEnergy_V64 ) { // LINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5335,7 +5350,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadLong("", 64);
 
                 return new PlcLINT(value);
-            } else if( datapointType == KnxDatapointType.DPT_Channel_Activation_24 ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Channel_Activation_24 ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5420,7 +5435,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_HVACModeNext ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_HVACModeNext ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5439,7 +5454,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_DHWModeNext ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_DHWModeNext ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5458,7 +5473,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_OccModeNext ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_OccModeNext ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5477,7 +5492,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_BuildingModeNext ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_BuildingModeNext ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5496,7 +5511,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_StatusLightingActuator ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_StatusLightingActuator ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5536,7 +5551,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Version ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Version ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5558,7 +5573,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_AlarmInfo ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_AlarmInfo ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5620,7 +5635,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetF16_3 ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetF16_3 ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5642,7 +5657,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetShiftF16_3 ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetShiftF16_3 ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5664,7 +5679,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Scaling_Speed ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Scaling_Speed ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5683,7 +5698,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Scaling_Step_Time ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Scaling_Step_Time ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5702,7 +5717,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_MeteringValue ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_MeteringValue ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5744,7 +5759,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_MBus_Address ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_MBus_Address ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5769,7 +5784,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Colour_RGB ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Colour_RGB ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5791,7 +5806,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII ) { // STRING
+            } if( datapointType == KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII ) { // STRING
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5805,7 +5820,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadString("", 16, System.Text.Encoding.GetEncoding("ASCII"));
 
                 return new PlcSTRING(value);
-            } else if( datapointType == KnxDatapointType.DPT_Tariff_ActiveEnergy ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Tariff_ActiveEnergy ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5838,7 +5853,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Prioritised_Mode_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Prioritised_Mode_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5860,7 +5875,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5899,7 +5914,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_DALI_Diagnostics ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_DALI_Diagnostics ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5921,7 +5936,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_CombinedPosition ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_CombinedPosition ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -5954,7 +5969,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_StatusSAB ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_StatusSAB ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -6020,7 +6035,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Colour_xyY ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Colour_xyY ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -6056,7 +6071,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Converter_Status ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Converter_Status ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -6098,7 +6113,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Converter_Test_Result ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Converter_Test_Result ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -6151,7 +6166,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Battery_Info ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Battery_Info ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -6184,7 +6199,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -6223,7 +6238,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Brightness_Colour_Temperature_Control ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Brightness_Colour_Temperature_Control ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -6278,7 +6293,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Colour_RGBW ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Colour_RGBW ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -6331,7 +6346,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Relative_Control_RGBW ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Relative_Control_RGBW ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -6420,7 +6435,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_Relative_Control_RGB ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_Relative_Control_RGB ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -6475,7 +6490,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_GeographicalLocation ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_GeographicalLocation ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -6494,7 +6509,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetF16_4 ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetF16_4 ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -6519,7 +6534,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            } else if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4 ) { // Struct
+            } if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4 ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -6544,7 +6559,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
-            }
+            } 
             return null;
         }
 
@@ -6564,7 +6579,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.BYTE ) { // BYTE
+        } if( datapointType == KnxDatapointType.BYTE ) { // BYTE
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6573,7 +6588,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.WORD ) { // WORD
+        } if( datapointType == KnxDatapointType.WORD ) { // WORD
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6582,7 +6597,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DWORD ) { // DWORD
+        } if( datapointType == KnxDatapointType.DWORD ) { // DWORD
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6591,7 +6606,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.LWORD ) { // LWORD
+        } if( datapointType == KnxDatapointType.LWORD ) { // LWORD
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6600,7 +6615,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ulong) _value.GetUlong();
                 writeBuffer.WriteUlong("", 64, (ulong) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.USINT ) { // USINT
+        } if( datapointType == KnxDatapointType.USINT ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6609,7 +6624,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.SINT ) { // SINT
+        } if( datapointType == KnxDatapointType.SINT ) { // SINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6618,7 +6633,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (sbyte) _value.GetSbyte();
                 writeBuffer.WriteSbyte("", 8, (sbyte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.UINT ) { // UINT
+        } if( datapointType == KnxDatapointType.UINT ) { // UINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6627,7 +6642,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.INT ) { // INT
+        } if( datapointType == KnxDatapointType.INT ) { // INT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6636,7 +6651,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (short) _value.GetShort();
                 writeBuffer.WriteShort("", 16, (short) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.UDINT ) { // UDINT
+        } if( datapointType == KnxDatapointType.UDINT ) { // UDINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6645,7 +6660,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DINT ) { // DINT
+        } if( datapointType == KnxDatapointType.DINT ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6654,7 +6669,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.ULINT ) { // ULINT
+        } if( datapointType == KnxDatapointType.ULINT ) { // ULINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6663,7 +6678,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ulong) _value.GetUlong();
                 writeBuffer.WriteUlong("", 64, (ulong) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.LINT ) { // LINT
+        } if( datapointType == KnxDatapointType.LINT ) { // LINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6672,7 +6687,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (long) _value.GetLong();
                 writeBuffer.WriteLong("", 64, (long) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.REAL ) { // REAL
+        } if( datapointType == KnxDatapointType.REAL ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6681,7 +6696,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.LREAL ) { // LREAL
+        } if( datapointType == KnxDatapointType.LREAL ) { // LREAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6690,7 +6705,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (double) _value.GetDouble();
                 writeBuffer.WriteDouble("", 64,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.CHAR ) { // CHAR
+        } if( datapointType == KnxDatapointType.CHAR ) { // CHAR
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6699,7 +6714,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (string) _value.GetString();
                 writeBuffer.WriteString("", 8, "UTF-8", (string) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.WCHAR ) { // WCHAR
+        } if( datapointType == KnxDatapointType.WCHAR ) { // WCHAR
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6708,7 +6723,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (string) _value.GetString();
                 writeBuffer.WriteString("", 16, "UTF-16", (string) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.TIME ) { // TIME
+        } if( datapointType == KnxDatapointType.TIME ) { // TIME
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6717,7 +6732,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var milliseconds = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (milliseconds));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.LTIME ) { // LTIME
+        } if( datapointType == KnxDatapointType.LTIME ) { // LTIME
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6726,7 +6741,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var nanoseconds = (ulong) _value.GetUlong();
                 writeBuffer.WriteUlong("", 64, (ulong) (nanoseconds));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DATE ) { // DATE
+        } if( datapointType == KnxDatapointType.DATE ) { // DATE
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6735,7 +6750,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var secondsSinceEpoch = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (secondsSinceEpoch));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.TIME_OF_DAY ) { // TIME_OF_DAY
+        } if( datapointType == KnxDatapointType.TIME_OF_DAY ) { // TIME_OF_DAY
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6744,7 +6759,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var millisecondsSinceMidnight = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (millisecondsSinceMidnight));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.TOD ) { // TIME_OF_DAY
+        } if( datapointType == KnxDatapointType.TOD ) { // TIME_OF_DAY
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6753,7 +6768,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var millisecondsSinceMidnight = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (millisecondsSinceMidnight));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DATE_AND_TIME ) { // DATE_AND_TIME
+        } if( datapointType == KnxDatapointType.DATE_AND_TIME ) { // DATE_AND_TIME
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6783,7 +6798,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var nanoseconds = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (nanoseconds));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DT ) { // DATE_AND_TIME
+        } if( datapointType == KnxDatapointType.DT ) { // DATE_AND_TIME
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6813,7 +6828,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var nanoseconds = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (nanoseconds));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Switch ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Switch ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6822,7 +6837,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Bool ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Bool ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6831,7 +6846,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Enable ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Enable ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6840,7 +6855,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Ramp ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Ramp ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6849,7 +6864,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Alarm ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Alarm ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6858,7 +6873,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_BinaryValue ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_BinaryValue ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6867,7 +6882,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Step ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Step ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6876,7 +6891,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_UpDown ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_UpDown ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6885,7 +6900,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_OpenClose ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_OpenClose ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6894,7 +6909,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Start ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Start ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6903,7 +6918,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_State ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_State ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6912,7 +6927,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Invert ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Invert ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6921,7 +6936,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DimSendStyle ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_DimSendStyle ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6930,7 +6945,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_InputSource ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_InputSource ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6939,7 +6954,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Reset ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Reset ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6948,7 +6963,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Ack ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Ack ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6957,7 +6972,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Trigger ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Trigger ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6966,7 +6981,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Occupancy ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Occupancy ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6975,7 +6990,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Window_Door ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Window_Door ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6984,7 +6999,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_LogicalFunction ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_LogicalFunction ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6993,7 +7008,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Scene_AB ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Scene_AB ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7002,7 +7017,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ShutterBlinds_Mode ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_ShutterBlinds_Mode ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7011,7 +7026,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DayNight ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_DayNight ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7020,7 +7035,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Heat_Cool ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_Heat_Cool ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7029,7 +7044,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Switch_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Switch_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7041,7 +7056,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var on = (bool) _value.GetStruct()["on"].GetBool();
                 writeBuffer.WriteBit("", (on));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Bool_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Bool_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7053,7 +7068,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var valueTrue = (bool) _value.GetStruct()["valueTrue"].GetBool();
                 writeBuffer.WriteBit("", (valueTrue));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Enable_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Enable_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7065,7 +7080,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var enable = (bool) _value.GetStruct()["enable"].GetBool();
                 writeBuffer.WriteBit("", (enable));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Ramp_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Ramp_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7077,7 +7092,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var ramp = (bool) _value.GetStruct()["ramp"].GetBool();
                 writeBuffer.WriteBit("", (ramp));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Alarm_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Alarm_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7089,7 +7104,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var alarm = (bool) _value.GetStruct()["alarm"].GetBool();
                 writeBuffer.WriteBit("", (alarm));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_BinaryValue_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_BinaryValue_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7101,7 +7116,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var high = (bool) _value.GetStruct()["high"].GetBool();
                 writeBuffer.WriteBit("", (high));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Step_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Step_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7113,7 +7128,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var increase = (bool) _value.GetStruct()["increase"].GetBool();
                 writeBuffer.WriteBit("", (increase));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Direction1_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Direction1_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7125,7 +7140,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var down = (bool) _value.GetStruct()["down"].GetBool();
                 writeBuffer.WriteBit("", (down));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Direction2_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Direction2_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7137,7 +7152,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var close = (bool) _value.GetStruct()["close"].GetBool();
                 writeBuffer.WriteBit("", (close));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Start_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Start_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7149,7 +7164,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var start = (bool) _value.GetStruct()["start"].GetBool();
                 writeBuffer.WriteBit("", (start));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_State_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_State_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7161,7 +7176,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var active = (bool) _value.GetStruct()["active"].GetBool();
                 writeBuffer.WriteBit("", (active));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Invert_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Invert_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7173,7 +7188,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var inverted = (bool) _value.GetStruct()["inverted"].GetBool();
                 writeBuffer.WriteBit("", (inverted));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Control_Dimming ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Control_Dimming ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7185,7 +7200,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var stepcode = (byte) _value.GetStruct()["stepcode"].GetByte();
                 writeBuffer.WriteByte("", 3, (byte) (stepcode));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Control_Blinds ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Control_Blinds ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7197,7 +7212,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var stepcode = (byte) _value.GetStruct()["stepcode"].GetByte();
                 writeBuffer.WriteByte("", 3, (byte) (stepcode));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Char_ASCII ) { // STRING
+        } if( datapointType == KnxDatapointType.DPT_Char_ASCII ) { // STRING
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7206,7 +7221,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (string) _value.GetString();
                 writeBuffer.WriteString("", 8, "ASCII", (string) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Char_8859_1 ) { // STRING
+        } if( datapointType == KnxDatapointType.DPT_Char_8859_1 ) { // STRING
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7215,7 +7230,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (string) _value.GetString();
                 writeBuffer.WriteString("", 8, "ISO-8859-1", (string) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Scaling ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Scaling ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7224,7 +7239,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Angle ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Angle ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7233,7 +7248,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Percent_U8 ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Percent_U8 ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7242,7 +7257,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DecimalFactor ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_DecimalFactor ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7251,7 +7266,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Tariff ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Tariff ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7260,7 +7275,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_1_Ucount ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Value_1_Ucount ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7269,7 +7284,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_FanStage ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_FanStage ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7278,7 +7293,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Percent_V8 ) { // SINT
+        } if( datapointType == KnxDatapointType.DPT_Percent_V8 ) { // SINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7287,7 +7302,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (sbyte) _value.GetSbyte();
                 writeBuffer.WriteSbyte("", 8, (sbyte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_1_Count ) { // SINT
+        } if( datapointType == KnxDatapointType.DPT_Value_1_Count ) { // SINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7296,7 +7311,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (sbyte) _value.GetSbyte();
                 writeBuffer.WriteSbyte("", 8, (sbyte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Status_Mode3 ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Status_Mode3 ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7320,7 +7335,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var mode = (byte) _value.GetStruct()["mode"].GetByte();
                 writeBuffer.WriteByte("", 3, (byte) (mode));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_2_Ucount ) { // UINT
+        } if( datapointType == KnxDatapointType.DPT_Value_2_Ucount ) { // UINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7329,7 +7344,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_TimePeriodMsec ) { // UINT
+        } if( datapointType == KnxDatapointType.DPT_TimePeriodMsec ) { // UINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7338,7 +7353,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_TimePeriod10Msec ) { // UINT
+        } if( datapointType == KnxDatapointType.DPT_TimePeriod10Msec ) { // UINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7347,7 +7362,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_TimePeriod100Msec ) { // UINT
+        } if( datapointType == KnxDatapointType.DPT_TimePeriod100Msec ) { // UINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7356,7 +7371,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_TimePeriodSec ) { // UINT
+        } if( datapointType == KnxDatapointType.DPT_TimePeriodSec ) { // UINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7365,7 +7380,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_TimePeriodMin ) { // UINT
+        } if( datapointType == KnxDatapointType.DPT_TimePeriodMin ) { // UINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7374,7 +7389,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_TimePeriodHrs ) { // UINT
+        } if( datapointType == KnxDatapointType.DPT_TimePeriodHrs ) { // UINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7383,7 +7398,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_PropDataType ) { // UINT
+        } if( datapointType == KnxDatapointType.DPT_PropDataType ) { // UINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7392,7 +7407,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Length_mm ) { // UINT
+        } if( datapointType == KnxDatapointType.DPT_Length_mm ) { // UINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7401,7 +7416,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_UElCurrentmA ) { // UINT
+        } if( datapointType == KnxDatapointType.DPT_UElCurrentmA ) { // UINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7410,7 +7425,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Brightness ) { // UINT
+        } if( datapointType == KnxDatapointType.DPT_Brightness ) { // UINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7419,7 +7434,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Absolute_Colour_Temperature ) { // UINT
+        } if( datapointType == KnxDatapointType.DPT_Absolute_Colour_Temperature ) { // UINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7428,7 +7443,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_2_Count ) { // INT
+        } if( datapointType == KnxDatapointType.DPT_Value_2_Count ) { // INT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7437,7 +7452,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (short) _value.GetShort();
                 writeBuffer.WriteShort("", 16, (short) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DeltaTimeMsec ) { // INT
+        } if( datapointType == KnxDatapointType.DPT_DeltaTimeMsec ) { // INT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7446,7 +7461,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (short) _value.GetShort();
                 writeBuffer.WriteShort("", 16, (short) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DeltaTime10Msec ) { // INT
+        } if( datapointType == KnxDatapointType.DPT_DeltaTime10Msec ) { // INT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7455,7 +7470,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (short) _value.GetShort();
                 writeBuffer.WriteShort("", 16, (short) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DeltaTime100Msec ) { // INT
+        } if( datapointType == KnxDatapointType.DPT_DeltaTime100Msec ) { // INT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7464,7 +7479,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (short) _value.GetShort();
                 writeBuffer.WriteShort("", 16, (short) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DeltaTimeSec ) { // INT
+        } if( datapointType == KnxDatapointType.DPT_DeltaTimeSec ) { // INT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7473,7 +7488,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (short) _value.GetShort();
                 writeBuffer.WriteShort("", 16, (short) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DeltaTimeMin ) { // INT
+        } if( datapointType == KnxDatapointType.DPT_DeltaTimeMin ) { // INT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7482,7 +7497,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (short) _value.GetShort();
                 writeBuffer.WriteShort("", 16, (short) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DeltaTimeHrs ) { // INT
+        } if( datapointType == KnxDatapointType.DPT_DeltaTimeHrs ) { // INT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7491,7 +7506,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (short) _value.GetShort();
                 writeBuffer.WriteShort("", 16, (short) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Percent_V16 ) { // INT
+        } if( datapointType == KnxDatapointType.DPT_Percent_V16 ) { // INT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7500,7 +7515,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (short) _value.GetShort();
                 writeBuffer.WriteShort("", 16, (short) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Rotation_Angle ) { // INT
+        } if( datapointType == KnxDatapointType.DPT_Rotation_Angle ) { // INT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7509,7 +7524,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (short) _value.GetShort();
                 writeBuffer.WriteShort("", 16, (short) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Length_m ) { // INT
+        } if( datapointType == KnxDatapointType.DPT_Length_m ) { // INT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7518,7 +7533,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (short) _value.GetShort();
                 writeBuffer.WriteShort("", 16, (short) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Temp ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Temp ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7527,7 +7542,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Tempd ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Tempd ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7536,7 +7551,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Tempa ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Tempa ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7545,7 +7560,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Lux ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Lux ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7554,7 +7569,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Wsp ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Wsp ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7563,7 +7578,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Pres ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Pres ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7572,7 +7587,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Humidity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Humidity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7581,7 +7596,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_AirQuality ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_AirQuality ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7590,7 +7605,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_AirFlow ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_AirFlow ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7599,7 +7614,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Time1 ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Time1 ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7608,7 +7623,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Time2 ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Time2 ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7617,7 +7632,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Volt ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Volt ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7626,7 +7641,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Curr ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Curr ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7635,7 +7650,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_PowerDensity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_PowerDensity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7644,7 +7659,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_KelvinPerPercent ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_KelvinPerPercent ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7653,7 +7668,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Power ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Power ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7662,7 +7677,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Volume_Flow ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Volume_Flow ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7671,7 +7686,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Rain_Amount ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Rain_Amount ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7680,7 +7695,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Temp_F ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Temp_F ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7689,7 +7704,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Wsp_kmh ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Wsp_kmh ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7698,7 +7713,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Absolute_Humidity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Absolute_Humidity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7707,7 +7722,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Concentration_ygm3 ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Concentration_ygm3 ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7716,7 +7731,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Coefficient ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Coefficient ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7725,7 +7740,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_TimeOfDay ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_TimeOfDay ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7747,7 +7762,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var seconds = (byte) _value.GetStruct()["seconds"].GetByte();
                 writeBuffer.WriteByte("", 6, (byte) (seconds));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Date ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Date ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7768,7 +7783,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var year = (byte) _value.GetStruct()["year"].GetByte();
                 writeBuffer.WriteByte("", 7, (byte) (year));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_4_Ucount ) { // UDINT
+        } if( datapointType == KnxDatapointType.DPT_Value_4_Ucount ) { // UDINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7777,7 +7792,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_LongTimePeriod_Sec ) { // UDINT
+        } if( datapointType == KnxDatapointType.DPT_LongTimePeriod_Sec ) { // UDINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7786,7 +7801,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_LongTimePeriod_Min ) { // UDINT
+        } if( datapointType == KnxDatapointType.DPT_LongTimePeriod_Min ) { // UDINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7795,7 +7810,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_LongTimePeriod_Hrs ) { // UDINT
+        } if( datapointType == KnxDatapointType.DPT_LongTimePeriod_Hrs ) { // UDINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7804,7 +7819,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_VolumeLiquid_Litre ) { // UDINT
+        } if( datapointType == KnxDatapointType.DPT_VolumeLiquid_Litre ) { // UDINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7813,7 +7828,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Volume_m_3 ) { // UDINT
+        } if( datapointType == KnxDatapointType.DPT_Volume_m_3 ) { // UDINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7822,7 +7837,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_4_Count ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_Value_4_Count ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7831,7 +7846,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_FlowRate_m3h ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_FlowRate_m3h ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7840,7 +7855,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ActiveEnergy ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_ActiveEnergy ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7849,7 +7864,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ApparantEnergy ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_ApparentEnergy ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7858,7 +7873,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ReactiveEnergy ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_ReactiveEnergy ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7867,7 +7882,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ActiveEnergy_kWh ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_ActiveEnergy_kWh ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7876,7 +7891,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ApparantEnergy_kVAh ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_ApparentEnergy_kVAh ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7885,7 +7900,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ReactiveEnergy_kVARh ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_ReactiveEnergy_kVARh ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7894,7 +7909,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ActiveEnergy_MWh ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_ActiveEnergy_MWh ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7903,7 +7918,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_LongDeltaTimeSec ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_LongDeltaTimeSec ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7912,7 +7927,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DeltaVolumeLiquid_Litre ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_DeltaVolumeLiquid_Litre ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7921,7 +7936,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DeltaVolume_m_3 ) { // DINT
+        } if( datapointType == KnxDatapointType.DPT_DeltaVolume_m_3 ) { // DINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7930,7 +7945,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (int) _value.GetInt();
                 writeBuffer.WriteInt("", 32, (int) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Acceleration ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Acceleration ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7939,7 +7954,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Acceleration_Angular ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Acceleration_Angular ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7948,7 +7963,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Activation_Energy ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Activation_Energy ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7957,7 +7972,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Activity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Activity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7966,7 +7981,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Mol ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Mol ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7975,7 +7990,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Amplitude ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Amplitude ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7984,7 +7999,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_AngleRad ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_AngleRad ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -7993,7 +8008,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_AngleDeg ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_AngleDeg ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8002,7 +8017,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Angular_Momentum ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Angular_Momentum ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8011,7 +8026,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Angular_Velocity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Angular_Velocity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8020,7 +8035,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Area ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Area ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8029,7 +8044,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Capacitance ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Capacitance ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8038,7 +8053,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Charge_DensitySurface ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Charge_DensitySurface ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8047,7 +8062,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Charge_DensityVolume ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Charge_DensityVolume ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8056,7 +8071,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Compressibility ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Compressibility ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8065,7 +8080,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Conductance ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Conductance ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8074,7 +8089,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Electrical_Conductivity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Electrical_Conductivity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8083,7 +8098,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Density ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Density ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8092,7 +8107,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Electric_Charge ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Electric_Charge ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8101,7 +8116,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Electric_Current ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Electric_Current ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8110,7 +8125,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Electric_CurrentDensity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Electric_CurrentDensity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8119,7 +8134,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Electric_DipoleMoment ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Electric_DipoleMoment ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8128,7 +8143,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Electric_Displacement ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Electric_Displacement ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8137,7 +8152,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Electric_FieldStrength ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Electric_FieldStrength ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8146,7 +8161,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Electric_Flux ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Electric_Flux ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8155,7 +8170,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Electric_FluxDensity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Electric_FluxDensity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8164,7 +8179,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Electric_Polarization ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Electric_Polarization ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8173,7 +8188,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Electric_Potential ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Electric_Potential ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8182,7 +8197,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Electric_PotentialDifference ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Electric_PotentialDifference ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8191,7 +8206,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_ElectromagneticMoment ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_ElectromagneticMoment ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8200,7 +8215,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Electromotive_Force ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Electromotive_Force ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8209,7 +8224,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Energy ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Energy ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8218,7 +8233,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Force ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Force ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8227,7 +8242,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Frequency ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Frequency ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8236,7 +8251,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Angular_Frequency ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Angular_Frequency ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8245,7 +8260,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Heat_Capacity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Heat_Capacity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8254,7 +8269,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Heat_FlowRate ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Heat_FlowRate ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8263,7 +8278,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Heat_Quantity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Heat_Quantity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8272,7 +8287,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Impedance ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Impedance ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8281,7 +8296,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Length ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Length ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8290,7 +8305,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Light_Quantity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Light_Quantity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8299,7 +8314,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Luminance ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Luminance ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8308,7 +8323,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Luminous_Flux ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Luminous_Flux ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8317,7 +8332,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Luminous_Intensity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Luminous_Intensity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8326,7 +8341,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Magnetic_FieldStrength ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Magnetic_FieldStrength ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8335,7 +8350,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Magnetic_Flux ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Magnetic_Flux ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8344,7 +8359,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Magnetic_FluxDensity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Magnetic_FluxDensity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8353,7 +8368,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Magnetic_Moment ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Magnetic_Moment ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8362,7 +8377,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Magnetic_Polarization ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Magnetic_Polarization ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8371,7 +8386,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Magnetization ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Magnetization ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8380,7 +8395,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_MagnetomotiveForce ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_MagnetomotiveForce ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8389,7 +8404,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Mass ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Mass ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8398,7 +8413,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_MassFlux ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_MassFlux ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8407,7 +8422,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Momentum ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Momentum ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8416,7 +8431,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Phase_AngleRad ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Phase_AngleRad ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8425,7 +8440,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Phase_AngleDeg ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Phase_AngleDeg ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8434,7 +8449,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Power ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Power ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8443,7 +8458,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Power_Factor ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Power_Factor ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8452,7 +8467,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Pressure ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Pressure ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8461,7 +8476,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Reactance ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Reactance ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8470,7 +8485,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Resistance ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Resistance ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8479,7 +8494,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Resistivity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Resistivity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8488,7 +8503,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_SelfInductance ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_SelfInductance ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8497,7 +8512,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_SolidAngle ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_SolidAngle ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8506,7 +8521,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Sound_Intensity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Sound_Intensity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8515,7 +8530,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Speed ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Speed ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8524,7 +8539,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Stress ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Stress ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8533,7 +8548,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Surface_Tension ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Surface_Tension ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8542,7 +8557,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Common_Temperature ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Common_Temperature ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8551,7 +8566,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Absolute_Temperature ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Absolute_Temperature ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8560,7 +8575,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_TemperatureDifference ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_TemperatureDifference ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8569,7 +8584,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Thermal_Capacity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Thermal_Capacity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8578,7 +8593,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Thermal_Conductivity ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Thermal_Conductivity ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8587,7 +8602,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_ThermoelectricPower ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_ThermoelectricPower ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8596,7 +8611,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Time ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Time ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8605,7 +8620,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Torque ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Torque ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8614,7 +8629,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Volume ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Volume ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8623,7 +8638,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Volume_Flux ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Volume_Flux ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8632,7 +8647,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Weight ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Weight ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8641,7 +8656,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_Work ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_Work ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8650,7 +8665,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Value_ApparentPower ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Value_ApparentPower ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8659,7 +8674,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Volume_Flux_Meter ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Volume_Flux_Meter ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8668,7 +8683,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Volume_Flux_ls ) { // REAL
+        } if( datapointType == KnxDatapointType.DPT_Volume_Flux_ls ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8677,7 +8692,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Access_Data ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Access_Data ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8716,7 +8731,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var indexOfAccessIdentificationCode = (byte) _value.GetStruct()["indexOfAccessIdentificationCode"].GetByte();
                 writeBuffer.WriteByte("", 4, (byte) (indexOfAccessIdentificationCode));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_String_ASCII ) { // STRING
+        } if( datapointType == KnxDatapointType.DPT_String_ASCII ) { // STRING
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8725,7 +8740,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (string) _value.GetString();
                 writeBuffer.WriteString("", 112, "ASCII", (string) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_String_8859_1 ) { // STRING
+        } if( datapointType == KnxDatapointType.DPT_String_8859_1 ) { // STRING
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8734,7 +8749,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (string) _value.GetString();
                 writeBuffer.WriteString("", 112, "ISO-8859-1", (string) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_SceneNumber ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_SceneNumber ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8743,7 +8758,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 6, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_SceneControl ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_SceneControl ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8757,7 +8772,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var sceneNumber = (byte) _value.GetStruct()["sceneNumber"].GetByte();
                 writeBuffer.WriteByte("", 6, (byte) (sceneNumber));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DateTime ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_DateTime ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8821,7 +8836,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Reserved Field
                 writeBuffer.WriteByte("", 7, (byte) 0x00);
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_SCLOMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_SCLOMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8830,7 +8845,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_BuildingMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_BuildingMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8839,7 +8854,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_OccMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_OccMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8848,7 +8863,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Priority ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Priority ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8857,7 +8872,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_LightApplicationMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_LightApplicationMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8866,7 +8881,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ApplicationArea ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_ApplicationArea ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8875,7 +8890,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_AlarmClassType ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_AlarmClassType ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8884,7 +8899,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_PSUMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_PSUMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8893,7 +8908,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ErrorClass_System ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_ErrorClass_System ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8902,7 +8917,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ErrorClass_HVAC ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_ErrorClass_HVAC ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8911,7 +8926,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Time_Delay ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Time_Delay ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8920,7 +8935,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Beaufort_Wind_Force_Scale ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Beaufort_Wind_Force_Scale ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8929,7 +8944,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_SensorSelect ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_SensorSelect ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8938,7 +8953,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ActuatorConnectType ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_ActuatorConnectType ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8947,7 +8962,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Cloud_Cover ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Cloud_Cover ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8956,7 +8971,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_PowerReturnMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_PowerReturnMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8965,7 +8980,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_FuelType ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_FuelType ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8974,7 +8989,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_BurnerType ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_BurnerType ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8983,7 +8998,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_HVACMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_HVACMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -8992,7 +9007,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DHWMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_DHWMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9001,7 +9016,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_LoadPriority ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_LoadPriority ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9010,7 +9025,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_HVACContrMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_HVACContrMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9019,7 +9034,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_HVACEmergMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_HVACEmergMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9028,7 +9043,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ChangeoverMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_ChangeoverMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9037,7 +9052,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ValveMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_ValveMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9046,7 +9061,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DamperMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_DamperMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9055,7 +9070,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_HeaterMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_HeaterMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9064,7 +9079,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_FanMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_FanMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9073,7 +9088,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_MasterSlaveMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_MasterSlaveMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9082,7 +9097,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_StatusRoomSetp ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_StatusRoomSetp ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9091,7 +9106,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Metering_DeviceType ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Metering_DeviceType ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9100,7 +9115,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_HumDehumMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_HumDehumMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9109,7 +9124,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_EnableHCStage ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_EnableHCStage ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9118,7 +9133,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ADAType ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_ADAType ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9127,7 +9142,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_BackupMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_BackupMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9136,7 +9151,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_StartSynchronization ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_StartSynchronization ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9145,7 +9160,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Behaviour_Lock_Unlock ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Behaviour_Lock_Unlock ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9154,7 +9169,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Behaviour_Bus_Power_Up_Down ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Behaviour_Bus_Power_Up_Down ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9163,7 +9178,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DALI_Fade_Time ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_DALI_Fade_Time ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9172,7 +9187,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_BlinkingMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_BlinkingMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9181,7 +9196,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_LightControlMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_LightControlMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9190,7 +9205,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_SwitchPBModel ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_SwitchPBModel ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9199,7 +9214,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_PBAction ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_PBAction ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9208,7 +9223,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DimmPBModel ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_DimmPBModel ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9217,7 +9232,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_SwitchOnMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_SwitchOnMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9226,7 +9241,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_LoadTypeSet ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_LoadTypeSet ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9235,7 +9250,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_LoadTypeDetected ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_LoadTypeDetected ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9244,7 +9259,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Converter_Test_Control ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Converter_Test_Control ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9253,7 +9268,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_SABExcept_Behaviour ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Converter_Control ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9262,7 +9277,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_SABBehaviour_Lock_Unlock ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_SABExcept_Behaviour ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9271,7 +9286,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_SSSBMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_SABBehaviour_Lock_Unlock ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9280,7 +9295,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_BlindsControlMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_SSSBMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9289,7 +9304,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_CommMode ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_BlindsControlMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9298,7 +9313,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_AddInfoTypes ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_CommMode ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9307,7 +9322,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_RF_ModeSelect ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_AddInfoTypes ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9316,7 +9331,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_RF_FilterSelect ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_RF_ModeSelect ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9325,7 +9340,16 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_StatusGen ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_RF_FilterSelect ) { // USINT
+                var writeBuffer = new WriteBuffer();
+
+                // Reserved Field
+                writeBuffer.WriteByte("", 8, (byte) 0x00);
+                // Simple Field (value)
+                var value = (byte) _value.GetByte();
+                writeBuffer.WriteByte("", 8, (byte) (value));
+            return writeBuffer;
+        } if( datapointType == KnxDatapointType.DPT_StatusGen ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9348,7 +9372,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var correspondingDatapointValueIsOutOfService = (bool) _value.GetStruct()["correspondingDatapointValueIsOutOfService"].GetBool();
                 writeBuffer.WriteBit("", (correspondingDatapointValueIsOutOfService));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Device_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Device_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9365,7 +9389,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var theUserApplicationIsStopped = (bool) _value.GetStruct()["theUserApplicationIsStopped"].GetBool();
                 writeBuffer.WriteBit("", (theUserApplicationIsStopped));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ForceSign ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_ForceSign ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9395,7 +9419,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var forcerequest = (bool) _value.GetStruct()["forcerequest"].GetBool();
                 writeBuffer.WriteBit("", (forcerequest));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ForceSignCool ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_ForceSignCool ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9404,7 +9428,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_StatusRHC ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_StatusRHC ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9434,7 +9458,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var fault = (bool) _value.GetStruct()["fault"].GetBool();
                 writeBuffer.WriteBit("", (fault));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_StatusSDHWC ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_StatusSDHWC ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9451,7 +9475,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var fault = (bool) _value.GetStruct()["fault"].GetBool();
                 writeBuffer.WriteBit("", (fault));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_FuelTypeSet ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_FuelTypeSet ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9468,7 +9492,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var oil = (bool) _value.GetStruct()["oil"].GetBool();
                 writeBuffer.WriteBit("", (oil));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_StatusRCC ) { // BOOL
+        } if( datapointType == KnxDatapointType.DPT_StatusRCC ) { // BOOL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9477,7 +9501,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_StatusAHU ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_StatusAHU ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9497,7 +9521,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var fault = (bool) _value.GetStruct()["fault"].GetBool();
                 writeBuffer.WriteBit("", (fault));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_CombinedStatus_RTSM ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_CombinedStatus_RTSM ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9520,7 +9544,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var effectiveValueOfTheWindowStatus = (bool) _value.GetStruct()["effectiveValueOfTheWindowStatus"].GetBool();
                 writeBuffer.WriteBit("", (effectiveValueOfTheWindowStatus));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_LightActuatorErrorInfo ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_LightActuatorErrorInfo ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9549,7 +9573,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var loaddetectionerror = (bool) _value.GetStruct()["loaddetectionerror"].GetBool();
                 writeBuffer.WriteBit("", (loaddetectionerror));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_RF_ModeInfo ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_RF_ModeInfo ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9566,7 +9590,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var asynchronous = (bool) _value.GetStruct()["asynchronous"].GetBool();
                 writeBuffer.WriteBit("", (asynchronous));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_RF_FilterInfo ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_RF_FilterInfo ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9583,7 +9607,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var doaAndKnxSn = (bool) _value.GetStruct()["doaAndKnxSn"].GetBool();
                 writeBuffer.WriteBit("", (doaAndKnxSn));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Channel_Activation_8 ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Channel_Activation_8 ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9613,7 +9637,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var activationStateOfChannel8 = (bool) _value.GetStruct()["activationStateOfChannel8"].GetBool();
                 writeBuffer.WriteBit("", (activationStateOfChannel8));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_StatusDHWC ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_StatusDHWC ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9645,7 +9669,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var fault = (bool) _value.GetStruct()["fault"].GetBool();
                 writeBuffer.WriteBit("", (fault));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_StatusRHCC ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_StatusRHCC ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9698,7 +9722,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var fault = (bool) _value.GetStruct()["fault"].GetBool();
                 writeBuffer.WriteBit("", (fault));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_CombinedStatus_HVA ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_CombinedStatus_HVA ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9733,7 +9757,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var currentValvePosition = (bool) _value.GetStruct()["currentValvePosition"].GetBool();
                 writeBuffer.WriteBit("", (currentValvePosition));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_CombinedStatus_RTC ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_CombinedStatus_RTC ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9768,7 +9792,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var generalFailureInformation = (bool) _value.GetStruct()["generalFailureInformation"].GetBool();
                 writeBuffer.WriteBit("", (generalFailureInformation));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Media ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Media ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9792,7 +9816,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Reserved Field
                 writeBuffer.WriteByte("", 1, (byte) 0x00);
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Channel_Activation_16 ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Channel_Activation_16 ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9846,7 +9870,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var activationStateOfChannel16 = (bool) _value.GetStruct()["activationStateOfChannel16"].GetBool();
                 writeBuffer.WriteBit("", (activationStateOfChannel16));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_OnOffAction ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_OnOffAction ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9855,7 +9879,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 2, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Alarm_Reaction ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_Alarm_Reaction ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9864,7 +9888,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 2, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_UpDown_Action ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_UpDown_Action ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9873,7 +9897,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 2, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_HVAC_PB_Action ) { // USINT
+        } if( datapointType == KnxDatapointType.DPT_HVAC_PB_Action ) { // USINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9882,7 +9906,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 2, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DoubleNibble ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_DoubleNibble ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9894,7 +9918,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var nak = (byte) _value.GetStruct()["nak"].GetByte();
                 writeBuffer.WriteByte("", 4, (byte) (nak));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_SceneInfo ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_SceneInfo ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -9908,7 +9932,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var scenenumber = (byte) _value.GetStruct()["scenenumber"].GetByte();
                 writeBuffer.WriteByte("", 6, (byte) (scenenumber));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_CombinedInfoOnOff ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_CombinedInfoOnOff ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10010,7 +10034,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var infoOnOffOutput1 = (bool) _value.GetStruct()["infoOnOffOutput1"].GetBool();
                 writeBuffer.WriteBit("", (infoOnOffOutput1));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ActiveEnergy_V64 ) { // LINT
+        } if( datapointType == KnxDatapointType.DPT_ActiveEnergy_V64 ) { // LINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10019,7 +10043,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (long) _value.GetLong();
                 writeBuffer.WriteLong("", 64, (long) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ApparantEnergy_V64 ) { // LINT
+        } if( datapointType == KnxDatapointType.DPT_ApparentEnergy_V64 ) { // LINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10028,7 +10052,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (long) _value.GetLong();
                 writeBuffer.WriteLong("", 64, (long) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_ReactiveEnergy_V64 ) { // LINT
+        } if( datapointType == KnxDatapointType.DPT_ReactiveEnergy_V64 ) { // LINT
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10037,7 +10061,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (long) _value.GetLong();
                 writeBuffer.WriteLong("", 64, (long) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Channel_Activation_24 ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Channel_Activation_24 ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10115,7 +10139,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var activationStateOfChannel24 = (bool) _value.GetStruct()["activationStateOfChannel24"].GetBool();
                 writeBuffer.WriteBit("", (activationStateOfChannel24));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_HVACModeNext ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_HVACModeNext ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10127,7 +10151,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var hvacMode = (byte) _value.GetStruct()["hvacMode"].GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (hvacMode));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DHWModeNext ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_DHWModeNext ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10139,7 +10163,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var dhwMode = (byte) _value.GetStruct()["dhwMode"].GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (dhwMode));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_OccModeNext ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_OccModeNext ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10151,7 +10175,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var occupancyMode = (byte) _value.GetStruct()["occupancyMode"].GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (occupancyMode));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_BuildingModeNext ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_BuildingModeNext ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10163,7 +10187,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var buildingMode = (byte) _value.GetStruct()["buildingMode"].GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (buildingMode));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_StatusLightingActuator ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_StatusLightingActuator ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10196,7 +10220,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var actualvalue = (byte) _value.GetStruct()["actualvalue"].GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (actualvalue));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Version ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Version ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10211,7 +10235,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var revisionNumber = (byte) _value.GetStruct()["revisionNumber"].GetByte();
                 writeBuffer.WriteByte("", 6, (byte) (revisionNumber));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_AlarmInfo ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_AlarmInfo ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10254,7 +10278,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var inalarm = (bool) _value.GetStruct()["inalarm"].GetBool();
                 writeBuffer.WriteBit("", (inalarm));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetF16_3 ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetF16_3 ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10269,7 +10293,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var tempsetpeco = (float) _value.GetStruct()["tempsetpeco"].GetFloat();
                 writeBuffer.WriteFloat("", 16,(tempsetpeco));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetShiftF16_3 ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetShiftF16_3 ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10284,7 +10308,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var tempsetpshifteco = (float) _value.GetStruct()["tempsetpshifteco"].GetFloat();
                 writeBuffer.WriteFloat("", 16,(tempsetpshifteco));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Scaling_Speed ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Scaling_Speed ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10296,7 +10320,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var percent = (byte) _value.GetStruct()["percent"].GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (percent));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Scaling_Step_Time ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Scaling_Step_Time ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10308,7 +10332,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var percent = (byte) _value.GetStruct()["percent"].GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (percent));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_MeteringValue ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_MeteringValue ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10337,7 +10361,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var outofservice = (bool) _value.GetStruct()["outofservice"].GetBool();
                 writeBuffer.WriteBit("", (outofservice));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_MBus_Address ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_MBus_Address ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10355,7 +10379,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var medium = (byte) _value.GetStruct()["medium"].GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (medium));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Colour_RGB ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Colour_RGB ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10370,7 +10394,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var b = (byte) _value.GetStruct()["b"].GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (b));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII ) { // STRING
+        } if( datapointType == KnxDatapointType.DPT_LanguageCodeAlpha2_ASCII ) { // STRING
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10379,7 +10403,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (string) _value.GetString();
                 writeBuffer.WriteString("", 16, "ASCII", (string) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Tariff_ActiveEnergy ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Tariff_ActiveEnergy ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10399,7 +10423,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var tariffvalidity = (bool) _value.GetStruct()["tariffvalidity"].GetBool();
                 writeBuffer.WriteBit("", (tariffvalidity));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Prioritised_Mode_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Prioritised_Mode_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10414,7 +10438,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var modeLevel = (byte) _value.GetStruct()["modeLevel"].GetByte();
                 writeBuffer.WriteByte("", 4, (byte) (modeLevel));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_DALI_Control_Gear_Diagnostic ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10440,7 +10464,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var daliDeviceAddressOrDaliGroupAddress = (byte) _value.GetStruct()["daliDeviceAddressOrDaliGroupAddress"].GetByte();
                 writeBuffer.WriteByte("", 6, (byte) (daliDeviceAddressOrDaliGroupAddress));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_DALI_Diagnostics ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_DALI_Diagnostics ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10455,7 +10479,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var deviceAddress = (byte) _value.GetStruct()["deviceAddress"].GetByte();
                 writeBuffer.WriteByte("", 6, (byte) (deviceAddress));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_CombinedPosition ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_CombinedPosition ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10475,7 +10499,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var validityHeightPosition = (bool) _value.GetStruct()["validityHeightPosition"].GetBool();
                 writeBuffer.WriteBit("", (validityHeightPosition));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_StatusSAB ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_StatusSAB ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10528,7 +10552,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var validitySlatsPos = (bool) _value.GetStruct()["validitySlatsPos"].GetBool();
                 writeBuffer.WriteBit("", (validitySlatsPos));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Colour_xyY ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Colour_xyY ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10551,7 +10575,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var validityBrightness = (bool) _value.GetStruct()["validityBrightness"].GetBool();
                 writeBuffer.WriteBit("", (validityBrightness));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Converter_Status ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Converter_Status ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10580,7 +10604,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var converterFailure = (byte) _value.GetStruct()["converterFailure"].GetByte();
                 writeBuffer.WriteByte("", 2, (byte) (converterFailure));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Converter_Test_Result ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Converter_Test_Result ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10614,7 +10638,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var lpdtr = (byte) _value.GetStruct()["lpdtr"].GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (lpdtr));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Battery_Info ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Battery_Info ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10634,7 +10658,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var batteryChargeLevel = (byte) _value.GetStruct()["batteryChargeLevel"].GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (batteryChargeLevel));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Brightness_Colour_Temperature_Transition ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10660,7 +10684,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var validityOfTheAbsoluteBrightness = (bool) _value.GetStruct()["validityOfTheAbsoluteBrightness"].GetBool();
                 writeBuffer.WriteBit("", (validityOfTheAbsoluteBrightness));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Brightness_Colour_Temperature_Control ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Brightness_Colour_Temperature_Control ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10690,7 +10714,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var cbAndStepCodeBrightnessValidity = (bool) _value.GetStruct()["cbAndStepCodeBrightnessValidity"].GetBool();
                 writeBuffer.WriteBit("", (cbAndStepCodeBrightnessValidity));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Colour_RGBW ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Colour_RGBW ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10724,7 +10748,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var mw = (bool) _value.GetStruct()["mw"].GetBool();
                 writeBuffer.WriteBit("", (mw));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Relative_Control_RGBW ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Relative_Control_RGBW ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10776,7 +10800,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var stepCodeColourRed = (byte) _value.GetStruct()["stepCodeColourRed"].GetByte();
                 writeBuffer.WriteByte("", 3, (byte) (stepCodeColourRed));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_Relative_Control_RGB ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_Relative_Control_RGB ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10806,7 +10830,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var stepCodeColourRed = (byte) _value.GetStruct()["stepCodeColourRed"].GetByte();
                 writeBuffer.WriteByte("", 3, (byte) (stepCodeColourRed));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_GeographicalLocation ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_GeographicalLocation ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10818,7 +10842,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var latitude = (float) _value.GetStruct()["latitude"].GetFloat();
                 writeBuffer.WriteFloat("", 32,(latitude));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetF16_4 ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetF16_4 ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10836,7 +10860,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var roomTemperatureSetpointBuildingProtection = (float) _value.GetStruct()["roomTemperatureSetpointBuildingProtection"].GetFloat();
                 writeBuffer.WriteFloat("", 16,(roomTemperatureSetpointBuildingProtection));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4 ) { // Struct
+        } if( datapointType == KnxDatapointType.DPT_TempRoomSetpSetShiftF16_4 ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -10854,7 +10878,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var roomTemperatureSetpointShiftBuildingProtection = (float) _value.GetStruct()["roomTemperatureSetpointShiftBuildingProtection"].GetFloat();
                 writeBuffer.WriteFloat("", 16,(roomTemperatureSetpointShiftBuildingProtection));
             return writeBuffer;
-        }
+        } 
         return null;
         }
     }

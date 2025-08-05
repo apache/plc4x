@@ -44,15 +44,15 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
 
   // Constant values.
   public static final Integer INPUTDATADESCRIPTION = 0x0001;
+  public static final Short IOINPUTLENGTHIOCS = 0x01;
+  public static final Short IOINPUTLENGTHIOPS = 0x01;
   public static final Integer OUTPUTDATADESCRIPTION = 0x0002;
+  public static final Short IOOUTPUTLENGTHIOCS = 0x01;
+  public static final Short IOOUTPUTLENGTHIOPS = 0x01;
 
   // Properties.
   protected final int inputSubmoduleDataLength;
-  protected final short inputLengthIoCs;
-  protected final short inputLengthIoPs;
   protected final int outputSubmoduleDataLength;
-  protected final short outputLengthIoCs;
-  protected final short outputLengthIoPs;
 
   public PnIoCm_Submodule_InputAndOutputData(
       int slotNumber,
@@ -62,11 +62,7 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
       boolean reduceInputModuleDataLength,
       boolean sharedInput,
       int inputSubmoduleDataLength,
-      short inputLengthIoCs,
-      short inputLengthIoPs,
-      int outputSubmoduleDataLength,
-      short outputLengthIoCs,
-      short outputLengthIoPs) {
+      int outputSubmoduleDataLength) {
     super(
         slotNumber,
         submoduleIdentNumber,
@@ -75,43 +71,39 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
         reduceInputModuleDataLength,
         sharedInput);
     this.inputSubmoduleDataLength = inputSubmoduleDataLength;
-    this.inputLengthIoCs = inputLengthIoCs;
-    this.inputLengthIoPs = inputLengthIoPs;
     this.outputSubmoduleDataLength = outputSubmoduleDataLength;
-    this.outputLengthIoCs = outputLengthIoCs;
-    this.outputLengthIoPs = outputLengthIoPs;
   }
 
   public int getInputSubmoduleDataLength() {
     return inputSubmoduleDataLength;
   }
 
-  public short getInputLengthIoCs() {
-    return inputLengthIoCs;
-  }
-
-  public short getInputLengthIoPs() {
-    return inputLengthIoPs;
-  }
-
   public int getOutputSubmoduleDataLength() {
     return outputSubmoduleDataLength;
-  }
-
-  public short getOutputLengthIoCs() {
-    return outputLengthIoCs;
-  }
-
-  public short getOutputLengthIoPs() {
-    return outputLengthIoPs;
   }
 
   public int getInputDataDescription() {
     return INPUTDATADESCRIPTION;
   }
 
+  public short getIoInputLengthIoCs() {
+    return IOINPUTLENGTHIOCS;
+  }
+
+  public short getIoInputLengthIoPs() {
+    return IOINPUTLENGTHIOPS;
+  }
+
   public int getOutputDataDescription() {
     return OUTPUTDATADESCRIPTION;
+  }
+
+  public short getIoOutputLengthIoCs() {
+    return IOOUTPUTLENGTHIOCS;
+  }
+
+  public short getIoOutputLengthIoPs() {
+    return IOOUTPUTLENGTHIOPS;
   }
 
   @Override
@@ -135,17 +127,17 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    // Simple Field (inputLengthIoCs)
-    writeSimpleField(
-        "inputLengthIoCs",
-        inputLengthIoCs,
+    // Const Field (ioInputLengthIoCs)
+    writeConstField(
+        "ioInputLengthIoCs",
+        IOINPUTLENGTHIOCS,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    // Simple Field (inputLengthIoPs)
-    writeSimpleField(
-        "inputLengthIoPs",
-        inputLengthIoPs,
+    // Const Field (ioInputLengthIoPs)
+    writeConstField(
+        "ioInputLengthIoPs",
+        IOINPUTLENGTHIOPS,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -163,17 +155,17 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    // Simple Field (outputLengthIoCs)
-    writeSimpleField(
-        "outputLengthIoCs",
-        outputLengthIoCs,
+    // Const Field (ioOutputLengthIoCs)
+    writeConstField(
+        "ioOutputLengthIoCs",
+        IOOUTPUTLENGTHIOCS,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    // Simple Field (outputLengthIoPs)
-    writeSimpleField(
-        "outputLengthIoPs",
-        outputLengthIoPs,
+    // Const Field (ioOutputLengthIoPs)
+    writeConstField(
+        "ioOutputLengthIoPs",
+        IOOUTPUTLENGTHIOPS,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -197,10 +189,10 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
     // Simple field (inputSubmoduleDataLength)
     lengthInBits += 16;
 
-    // Simple field (inputLengthIoCs)
+    // Const Field (ioInputLengthIoCs)
     lengthInBits += 8;
 
-    // Simple field (inputLengthIoPs)
+    // Const Field (ioInputLengthIoPs)
     lengthInBits += 8;
 
     // Const Field (outputDataDescription)
@@ -209,10 +201,10 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
     // Simple field (outputSubmoduleDataLength)
     lengthInBits += 16;
 
-    // Simple field (outputLengthIoCs)
+    // Const Field (ioOutputLengthIoCs)
     lengthInBits += 8;
 
-    // Simple field (outputLengthIoPs)
+    // Const Field (ioOutputLengthIoPs)
     lengthInBits += 8;
 
     return lengthInBits;
@@ -237,16 +229,18 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
             readUnsignedInt(readBuffer, 16),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    short inputLengthIoCs =
-        readSimpleField(
-            "inputLengthIoCs",
+    short ioInputLengthIoCs =
+        readConstField(
+            "ioInputLengthIoCs",
             readUnsignedShort(readBuffer, 8),
+            PnIoCm_Submodule_InputAndOutputData.IOINPUTLENGTHIOCS,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    short inputLengthIoPs =
-        readSimpleField(
-            "inputLengthIoPs",
+    short ioInputLengthIoPs =
+        readConstField(
+            "ioInputLengthIoPs",
             readUnsignedShort(readBuffer, 8),
+            PnIoCm_Submodule_InputAndOutputData.IOINPUTLENGTHIOPS,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int outputDataDescription =
@@ -262,51 +256,35 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
             readUnsignedInt(readBuffer, 16),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    short outputLengthIoCs =
-        readSimpleField(
-            "outputLengthIoCs",
+    short ioOutputLengthIoCs =
+        readConstField(
+            "ioOutputLengthIoCs",
             readUnsignedShort(readBuffer, 8),
+            PnIoCm_Submodule_InputAndOutputData.IOOUTPUTLENGTHIOCS,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    short outputLengthIoPs =
-        readSimpleField(
-            "outputLengthIoPs",
+    short ioOutputLengthIoPs =
+        readConstField(
+            "ioOutputLengthIoPs",
             readUnsignedShort(readBuffer, 8),
+            PnIoCm_Submodule_InputAndOutputData.IOOUTPUTLENGTHIOPS,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_Submodule_InputAndOutputData");
     // Create the instance
     return new PnIoCm_Submodule_InputAndOutputDataBuilderImpl(
-        inputSubmoduleDataLength,
-        inputLengthIoCs,
-        inputLengthIoPs,
-        outputSubmoduleDataLength,
-        outputLengthIoCs,
-        outputLengthIoPs);
+        inputSubmoduleDataLength, outputSubmoduleDataLength);
   }
 
   public static class PnIoCm_Submodule_InputAndOutputDataBuilderImpl
       implements PnIoCm_Submodule.PnIoCm_SubmoduleBuilder {
     private final int inputSubmoduleDataLength;
-    private final short inputLengthIoCs;
-    private final short inputLengthIoPs;
     private final int outputSubmoduleDataLength;
-    private final short outputLengthIoCs;
-    private final short outputLengthIoPs;
 
     public PnIoCm_Submodule_InputAndOutputDataBuilderImpl(
-        int inputSubmoduleDataLength,
-        short inputLengthIoCs,
-        short inputLengthIoPs,
-        int outputSubmoduleDataLength,
-        short outputLengthIoCs,
-        short outputLengthIoPs) {
+        int inputSubmoduleDataLength, int outputSubmoduleDataLength) {
       this.inputSubmoduleDataLength = inputSubmoduleDataLength;
-      this.inputLengthIoCs = inputLengthIoCs;
-      this.inputLengthIoPs = inputLengthIoPs;
       this.outputSubmoduleDataLength = outputSubmoduleDataLength;
-      this.outputLengthIoCs = outputLengthIoCs;
-      this.outputLengthIoPs = outputLengthIoPs;
     }
 
     public PnIoCm_Submodule_InputAndOutputData build(
@@ -325,11 +303,7 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
               reduceInputModuleDataLength,
               sharedInput,
               inputSubmoduleDataLength,
-              inputLengthIoCs,
-              inputLengthIoPs,
-              outputSubmoduleDataLength,
-              outputLengthIoCs,
-              outputLengthIoPs);
+              outputSubmoduleDataLength);
       return pnIoCm_Submodule_InputAndOutputData;
     }
   }
@@ -344,11 +318,7 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
     }
     PnIoCm_Submodule_InputAndOutputData that = (PnIoCm_Submodule_InputAndOutputData) o;
     return (getInputSubmoduleDataLength() == that.getInputSubmoduleDataLength())
-        && (getInputLengthIoCs() == that.getInputLengthIoCs())
-        && (getInputLengthIoPs() == that.getInputLengthIoPs())
         && (getOutputSubmoduleDataLength() == that.getOutputSubmoduleDataLength())
-        && (getOutputLengthIoCs() == that.getOutputLengthIoCs())
-        && (getOutputLengthIoPs() == that.getOutputLengthIoPs())
         && super.equals(that)
         && true;
   }
@@ -356,13 +326,7 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getInputSubmoduleDataLength(),
-        getInputLengthIoCs(),
-        getInputLengthIoPs(),
-        getOutputSubmoduleDataLength(),
-        getOutputLengthIoCs(),
-        getOutputLengthIoPs());
+        super.hashCode(), getInputSubmoduleDataLength(), getOutputSubmoduleDataLength());
   }
 
   @Override

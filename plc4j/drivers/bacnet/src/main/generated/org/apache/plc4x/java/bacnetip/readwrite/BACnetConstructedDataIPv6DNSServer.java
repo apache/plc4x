@@ -99,7 +99,7 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (ipv6DnsServer)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
     List<BACnetApplicationTagOctetString> ipv6DnsServer =
         readTerminatedArrayField(
             "ipv6DnsServer",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),

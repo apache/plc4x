@@ -119,7 +119,7 @@ public class BACnetConstructedDataReasonForDisable extends BACnetConstructedData
     List<BACnetAccessCredentialDisableReasonTagged> reasonForDisable =
         readTerminatedArrayField(
             "reasonForDisable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessCredentialDisableReasonTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

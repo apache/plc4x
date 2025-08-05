@@ -60,8 +60,7 @@ public class BACnetChannelValueOctetString extends BACnetChannelValue implements
     writeBuffer.pushContext("BACnetChannelValueOctetString");
 
     // Simple Field (octetStringValue)
-    writeSimpleField(
-        "octetStringValue", octetStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("octetStringValue", octetStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueOctetString");
   }
@@ -92,7 +91,7 @@ public class BACnetChannelValueOctetString extends BACnetChannelValue implements
     BACnetApplicationTagOctetString octetStringValue =
         readSimpleField(
             "octetStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

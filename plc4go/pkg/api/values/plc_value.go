@@ -237,7 +237,8 @@ const (
 	TIME_OF_DAY    PlcValueType = 0x55
 	LTIME_OF_DAY   PlcValueType = 0x56
 	DATE_AND_TIME  PlcValueType = 0x57
-	LDATE_AND_TIME PlcValueType = 0x58
+	DATE_AND_LTIME PlcValueType = 0x58
+	LDATE_AND_TIME PlcValueType = 0x59
 	Struct         PlcValueType = 0x61
 	List           PlcValueType = 0x62
 	RAW_BYTE_ARRAY PlcValueType = 0x71
@@ -311,7 +312,7 @@ func (p PlcValueType) String() string {
 	return "Unknown"
 }
 
-func PlcValueByName(value string) (valueType PlcValueType, ok bool) {
+func PlcValueTypeByName(value string) (valueType PlcValueType, ok bool) {
 	switch value {
 	case "NULL":
 		return NULL, true

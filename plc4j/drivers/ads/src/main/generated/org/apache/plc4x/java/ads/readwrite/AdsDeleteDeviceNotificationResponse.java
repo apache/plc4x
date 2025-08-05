@@ -76,8 +76,7 @@ public class AdsDeleteDeviceNotificationResponse extends AmsPacket implements Me
         "result",
         "ReturnCode",
         result,
-        new DataWriterEnumDefault<>(
-            ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
 
     writeBuffer.popContext("AdsDeleteDeviceNotificationResponse");
   }
@@ -109,8 +108,7 @@ public class AdsDeleteDeviceNotificationResponse extends AmsPacket implements Me
         readEnumField(
             "result",
             "ReturnCode",
-            new DataReaderEnumDefault<>(
-                ReturnCode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ReturnCode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     readBuffer.closeContext("AdsDeleteDeviceNotificationResponse");
     // Create the instance

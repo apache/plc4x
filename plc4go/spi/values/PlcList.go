@@ -26,10 +26,11 @@ import (
 	"strings"
 	"time"
 
-	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type PlcList struct {

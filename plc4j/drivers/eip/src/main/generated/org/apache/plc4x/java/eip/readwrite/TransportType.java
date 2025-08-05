@@ -101,12 +101,6 @@ public class TransportType implements Message {
     return lengthInBits;
   }
 
-  public static TransportType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TransportType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TransportType");
     PositionAware positionAware = readBuffer;

@@ -82,7 +82,7 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
     writeBuffer.pushContext("BACnetConstructedDataPower");
 
     // Simple Field (power)
-    writeSimpleField("power", power, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("power", power, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
     BACnetApplicationTagReal power =
         readSimpleField(
             "power",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

@@ -80,11 +80,6 @@ public abstract class S7Address implements Message {
     return lengthInBits;
   }
 
-  public static S7Address staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static S7Address staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7Address");
     PositionAware positionAware = readBuffer;

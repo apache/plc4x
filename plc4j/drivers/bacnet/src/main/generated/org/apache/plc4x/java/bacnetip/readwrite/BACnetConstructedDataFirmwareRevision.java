@@ -83,8 +83,7 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataFirmwareRevision");
 
     // Simple Field (firmwareRevision)
-    writeSimpleField(
-        "firmwareRevision", firmwareRevision, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("firmwareRevision", firmwareRevision, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
     BACnetApplicationTagCharacterString firmwareRevision =
         readSimpleField(
             "firmwareRevision",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

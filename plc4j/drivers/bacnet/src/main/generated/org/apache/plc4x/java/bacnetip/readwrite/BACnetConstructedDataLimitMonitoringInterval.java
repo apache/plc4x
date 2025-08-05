@@ -83,10 +83,7 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
     writeBuffer.pushContext("BACnetConstructedDataLimitMonitoringInterval");
 
     // Simple Field (limitMonitoringInterval)
-    writeSimpleField(
-        "limitMonitoringInterval",
-        limitMonitoringInterval,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("limitMonitoringInterval", limitMonitoringInterval, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -128,7 +125,7 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
     BACnetApplicationTagUnsignedInteger limitMonitoringInterval =
         readSimpleField(
             "limitMonitoringInterval",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -83,7 +83,7 @@ public class BACnetConstructedDataBinaryOutputFeedbackValue extends BACnetConstr
     writeBuffer.pushContext("BACnetConstructedDataBinaryOutputFeedbackValue");
 
     // Simple Field (feedbackValue)
-    writeSimpleField("feedbackValue", feedbackValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("feedbackValue", feedbackValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetBinaryPVTagged actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataBinaryOutputFeedbackValue extends BACnetConstr
     BACnetBinaryPVTagged feedbackValue =
         readSimpleField(
             "feedbackValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBinaryPVTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

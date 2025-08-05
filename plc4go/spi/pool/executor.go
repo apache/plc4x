@@ -26,9 +26,11 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=executor
+//go:generate go tool plc4xGenerator -type=executor
 type executor struct {
 	running  bool
 	shutdown bool
@@ -40,7 +42,7 @@ type executor struct {
 	stateChange     sync.RWMutex
 	workerWaitGroup sync.WaitGroup
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func newExecutor(queueDepth int, numberOfInitialWorkers int, customLogger zerolog.Logger) *executor {
@@ -115,6 +117,7 @@ func (e *executor) Start() {
 }
 
 func (e *executor) Stop() {
+	defer utils.StopWarn(e.log)()
 	e.log.Trace().Msg("stopping now")
 	e.stateChange.Lock()
 	defer e.stateChange.Unlock()

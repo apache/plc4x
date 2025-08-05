@@ -22,8 +22,9 @@ package _default
 import (
 	"context"
 	"fmt"
-	"github.com/pkg/errors"
 	"net/url"
+
+	"github.com/pkg/errors"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"

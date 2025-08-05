@@ -24,16 +24,15 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestManualCBusDriverMixed(t *testing.T) {
@@ -85,7 +84,6 @@ func TestManualCBusDriverMixed(t *testing.T) {
 		require.NoError(t, err)
 		subscriptionRequest.Execute()
 		timeout := time.NewTimer(30 * time.Second)
-		defer utils.CleanupTimer(timeout)
 		// We expect couple monitors
 		mmiCount := 0
 		salCount := 0

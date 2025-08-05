@@ -23,14 +23,15 @@ import (
 	"bufio"
 	"bytes"
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/rs/zerolog/log"
 	"net"
 	"testing"
 
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/net/nettest"
+
+	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
 func TestNewTransportInstance(t *testing.T) {

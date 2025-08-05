@@ -59,7 +59,7 @@ public class BACnetShedLevelAmount extends BACnetShedLevel implements Message {
     writeBuffer.pushContext("BACnetShedLevelAmount");
 
     // Simple Field (amount)
-    writeSimpleField("amount", amount, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("amount", amount, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetShedLevelAmount");
   }
@@ -90,7 +90,7 @@ public class BACnetShedLevelAmount extends BACnetShedLevel implements Message {
     BACnetContextTagReal amount =
         readSimpleField(
             "amount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

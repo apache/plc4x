@@ -38,25 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BrowseResult extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "524";
+  public Integer getExtensionId() {
+    return (int) 524;
   }
 
   // Properties.
   protected final StatusCode statusCode;
   protected final PascalByteString continuationPoint;
-  protected final int noOfReferences;
-  protected final List<ExtensionObjectDefinition> references;
+  protected final List<ReferenceDescription> references;
 
   public BrowseResult(
       StatusCode statusCode,
       PascalByteString continuationPoint,
-      int noOfReferences,
-      List<ExtensionObjectDefinition> references) {
+      List<ReferenceDescription> references) {
     super();
     this.statusCode = statusCode;
     this.continuationPoint = continuationPoint;
-    this.noOfReferences = noOfReferences;
     this.references = references;
   }
 
@@ -68,11 +65,7 @@ public class BrowseResult extends ExtensionObjectDefinition implements Message {
     return continuationPoint;
   }
 
-  public int getNoOfReferences() {
-    return noOfReferences;
-  }
-
-  public List<ExtensionObjectDefinition> getReferences() {
+  public List<ReferenceDescription> getReferences() {
     return references;
   }
 
@@ -84,14 +77,15 @@ public class BrowseResult extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("BrowseResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (continuationPoint)
-    writeSimpleField(
-        "continuationPoint", continuationPoint, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("continuationPoint", continuationPoint, writeComplex(writeBuffer));
 
-    // Simple Field (noOfReferences)
-    writeSimpleField("noOfReferences", noOfReferences, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfReferences) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfReferences = (int) ((((getReferences()) == (null)) ? -(1) : COUNT(getReferences())));
+    writeImplicitField("noOfReferences", noOfReferences, writeSignedInt(writeBuffer, 32));
 
     // Array Field (references)
     writeComplexTypeArrayField("references", references, writeBuffer);
@@ -116,13 +110,13 @@ public class BrowseResult extends ExtensionObjectDefinition implements Message {
     // Simple field (continuationPoint)
     lengthInBits += continuationPoint.getLengthInBits();
 
-    // Simple field (noOfReferences)
+    // Implicit Field (noOfReferences)
     lengthInBits += 32;
 
     // Array field
     if (references != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : references) {
+      for (ReferenceDescription element : references) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= references.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -132,58 +126,54 @@ public class BrowseResult extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("BrowseResult");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     PascalByteString continuationPoint =
         readSimpleField(
             "continuationPoint",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
-    int noOfReferences = readSimpleField("noOfReferences", readSignedInt(readBuffer, 32));
+    int noOfReferences = readImplicitField("noOfReferences", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> references =
+    List<ReferenceDescription> references =
         readCountArrayField(
             "references",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("520")),
+            readComplex(
+                () ->
+                    (ReferenceDescription)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (520)),
                 readBuffer),
             noOfReferences);
 
     readBuffer.closeContext("BrowseResult");
     // Create the instance
-    return new BrowseResultBuilderImpl(statusCode, continuationPoint, noOfReferences, references);
+    return new BrowseResultBuilderImpl(statusCode, continuationPoint, references);
   }
 
   public static class BrowseResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final PascalByteString continuationPoint;
-    private final int noOfReferences;
-    private final List<ExtensionObjectDefinition> references;
+    private final List<ReferenceDescription> references;
 
     public BrowseResultBuilderImpl(
         StatusCode statusCode,
         PascalByteString continuationPoint,
-        int noOfReferences,
-        List<ExtensionObjectDefinition> references) {
+        List<ReferenceDescription> references) {
       this.statusCode = statusCode;
       this.continuationPoint = continuationPoint;
-      this.noOfReferences = noOfReferences;
       this.references = references;
     }
 
     public BrowseResult build() {
-      BrowseResult browseResult =
-          new BrowseResult(statusCode, continuationPoint, noOfReferences, references);
+      BrowseResult browseResult = new BrowseResult(statusCode, continuationPoint, references);
       return browseResult;
     }
   }
@@ -199,7 +189,6 @@ public class BrowseResult extends ExtensionObjectDefinition implements Message {
     BrowseResult that = (BrowseResult) o;
     return (getStatusCode() == that.getStatusCode())
         && (getContinuationPoint() == that.getContinuationPoint())
-        && (getNoOfReferences() == that.getNoOfReferences())
         && (getReferences() == that.getReferences())
         && super.equals(that)
         && true;
@@ -207,12 +196,7 @@ public class BrowseResult extends ExtensionObjectDefinition implements Message {
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getStatusCode(),
-        getContinuationPoint(),
-        getNoOfReferences(),
-        getReferences());
+    return Objects.hash(super.hashCode(), getStatusCode(), getContinuationPoint(), getReferences());
   }
 
   @Override

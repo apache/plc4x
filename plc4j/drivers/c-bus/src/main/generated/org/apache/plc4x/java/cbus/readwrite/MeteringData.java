@@ -74,7 +74,7 @@ public abstract class MeteringData implements Message {
         "commandTypeContainer",
         "MeteringCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MeteringCommandTypeContainer::getValue,
             MeteringCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -116,12 +116,6 @@ public abstract class MeteringData implements Message {
     return lengthInBits;
   }
 
-  public static MeteringData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static MeteringData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MeteringData");
     PositionAware positionAware = readBuffer;
@@ -136,8 +130,7 @@ public abstract class MeteringData implements Message {
         readEnumField(
             "commandTypeContainer",
             "MeteringCommandTypeContainer",
-            new DataReaderEnumDefault<>(
-                MeteringCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(MeteringCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     MeteringCommandType commandType =
         readVirtualField(
             "commandType", MeteringCommandType.class, commandTypeContainer.getCommandType());

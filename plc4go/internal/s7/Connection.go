@@ -22,13 +22,12 @@ package s7
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"strings"
 	"sync"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -36,8 +35,10 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 )
 
 type TpduGenerator struct {
@@ -67,6 +68,8 @@ type Connection struct {
 
 	connectionId string
 	tracer       tracer.Tracer
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
@@ -118,7 +121,9 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+	c.wg.Add(1)
 	go func() {
+		defer c.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -174,7 +179,8 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		return nil
 	}, func(err error) error {
 		// If this is a timeout, do a check if the connection requires a reconnection
-		if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
 			c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 			c.Close()
 		}
@@ -192,19 +198,19 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		s7ConnectionResult := make(chan readWriteModel.S7ParameterSetupCommunication, 1)
 		s7ConnectionErrorChan := make(chan error, 1)
 		if err := c.messageCodec.SendRequest(ctx, c.createS7ConnectionRequest(cotpPacketConnectionResponse), func(message spi.Message) bool {
-			tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+			tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 			if !ok {
 				return false
 			}
-			cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+			cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
 			if !ok {
 				return false
 			}
-			messageResponseData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageResponseDataExactly)
+			messageResponseData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageResponseData)
 			if !ok {
 				return false
 			}
-			_, ok = messageResponseData.GetParameter().(readWriteModel.S7ParameterSetupCommunicationExactly)
+			_, ok = messageResponseData.GetParameter().(readWriteModel.S7ParameterSetupCommunication)
 			return ok
 		}, func(message spi.Message) error {
 			tpktPacket := message.(readWriteModel.TPKTPacket)
@@ -215,7 +221,8 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 			return nil
 		}, func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 				c.Close()
 			}
@@ -253,19 +260,19 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 			s7IdentificationResult := make(chan readWriteModel.S7PayloadUserData, 1)
 			s7IdentificationErrorChan := make(chan error, 1)
 			if err := c.messageCodec.SendRequest(ctx, c.createIdentifyRemoteMessage(), func(message spi.Message) bool {
-				tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 				if !ok {
 					return false
 				}
-				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
 				if !ok {
 					return false
 				}
-				messageUserData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserDataExactly)
+				messageUserData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserData)
 				if !ok {
 					return false
 				}
-				_, ok = messageUserData.GetPayload().(readWriteModel.S7PayloadUserDataExactly)
+				_, ok = messageUserData.GetPayload().(readWriteModel.S7PayloadUserData)
 				return ok
 			}, func(message spi.Message) error {
 				tpktPacket := message.(readWriteModel.TPKTPacket)
@@ -275,7 +282,8 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 				return nil
 			}, func(err error) error {
 				// If this is a timeout, do a check if the connection requires a reconnection
-				if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+				var timeoutError utils.TimeoutError
+				if errors.As(err, &timeoutError) {
 					c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 					c.Close()
 				}
@@ -381,21 +389,21 @@ func (c *Connection) createIdentifyRemoteMessage() readWriteModel.TPKTPacket {
 		readWriteModel.NewS7PayloadUserData(
 			[]readWriteModel.S7PayloadUserDataItem{
 				readWriteModel.NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(
+					readWriteModel.DataTransportErrorCode_OK,
+					readWriteModel.DataTransportSize_OCTET_STRING,
+					4,
 					readWriteModel.NewSzlId(
 						readWriteModel.SzlModuleTypeClass_CPU,
 						0x00,
 						readWriteModel.SzlSublist_MODULE_IDENTIFICATION,
 					),
 					0x0000,
-					readWriteModel.DataTransportErrorCode_OK,
-					readWriteModel.DataTransportSize_OCTET_STRING,
-					4,
 				),
 			},
 			nil,
 		),
 	)
-	cotpPacketData := readWriteModel.NewCOTPPacketData(true, 2, nil, identifyRemoteMessage, 0)
+	cotpPacketData := readWriteModel.NewCOTPPacketData(nil, identifyRemoteMessage, true, 2, 0)
 	return readWriteModel.NewTPKTPacket(cotpPacketData)
 }
 
@@ -420,21 +428,21 @@ func (c *Connection) createS7ConnectionRequest(cotpPacketConnectionResponse read
 		c.driverContext.MaxAmqCaller, c.driverContext.MaxAmqCallee, c.driverContext.PduSize,
 	)
 	s7Message := readWriteModel.NewS7MessageRequest(0, s7ParameterSetupCommunication, nil)
-	cotpPacketData := readWriteModel.NewCOTPPacketData(true, 1, nil, s7Message, 0)
+	cotpPacketData := readWriteModel.NewCOTPPacketData(nil, s7Message, true, 1, 0)
 	return readWriteModel.NewTPKTPacket(cotpPacketData)
 }
 
 func (c *Connection) createCOTPConnectionRequest() readWriteModel.COTPPacket {
 	return readWriteModel.NewCOTPPacketConnectionRequest(
-		0x0000,
-		0x000F,
-		readWriteModel.COTPProtocolClass_CLASS_0,
 		[]readWriteModel.COTPParameter{
 			readWriteModel.NewCOTPParameterCallingTsap(c.driverContext.CallingTsapId, 0),
 			readWriteModel.NewCOTPParameterCalledTsap(c.driverContext.CalledTsapId, 0),
 			readWriteModel.NewCOTPParameterTpduSize(c.driverContext.CotpTpduSize, 0),
 		},
 		nil,
+		0x0000,
+		0x000F,
+		readWriteModel.COTPProtocolClass_CLASS_0,
 		0,
 	)
 }

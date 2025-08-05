@@ -25,7 +25,6 @@ import java.util.Map;
 
 public enum OpcuaNodeIdServicesVariablePublished {
   PublishedDataSetType_ConfigurationVersion((int) 14519L),
-  PublishedDataItemsType_ConfigurationVersion((int) 14544L),
   PublishedDataItemsType_PublishedData((int) 14548L),
   PublishedDataItemsType_AddVariables_InputArguments((int) 14556L),
   PublishedDataItemsType_AddVariables_OutputArguments((int) 14557L),
@@ -35,7 +34,6 @@ public enum OpcuaNodeIdServicesVariablePublished {
   PublishedDataItemsAddVariablesMethodType_OutputArguments((int) 14566L),
   PublishedDataItemsRemoveVariablesMethodType_InputArguments((int) 14568L),
   PublishedDataItemsRemoveVariablesMethodType_OutputArguments((int) 14569L),
-  PublishedEventsType_ConfigurationVersion((int) 14582L),
   PublishedEventsType_PubSubEventNotifier((int) 14586L),
   PublishedEventsType_SelectedFields((int) 14587L),
   PublishedEventsType_Filter((int) 14588L),
@@ -43,36 +41,16 @@ public enum OpcuaNodeIdServicesVariablePublished {
   PublishedEventsTypeModifyFieldSelectionMethodType_InputArguments((int) 15055L),
   PublishedDataSetType_DataSetWriterName_Placeholder_Status_State((int) 15224L),
   PublishedDataSetType_DataSetMetaData((int) 15229L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Status_State((int) 15232L),
-  PublishedDataItemsType_DataSetMetaData((int) 15237L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Status_State((int) 15240L),
-  PublishedEventsType_DataSetMetaData((int) 15245L),
   PublishedDataSetType_ExtensionFields_AddExtensionField_InputArguments((int) 15483L),
   PublishedDataSetType_ExtensionFields_AddExtensionField_OutputArguments((int) 15484L),
   PublishedDataSetType_ExtensionFields_RemoveExtensionField_InputArguments((int) 15486L),
-  PublishedDataItemsType_ExtensionFields_AddExtensionField_InputArguments((int) 15505L),
-  PublishedDataItemsType_ExtensionFields_AddExtensionField_OutputArguments((int) 15506L),
-  PublishedDataItemsType_ExtensionFields_RemoveExtensionField_InputArguments((int) 15508L),
-  PublishedEventsType_ExtensionFields_AddExtensionField_InputArguments((int) 15513L),
-  PublishedEventsType_ExtensionFields_AddExtensionField_OutputArguments((int) 15514L),
-  PublishedEventsType_ExtensionFields_RemoveExtensionField_InputArguments((int) 15516L),
   PublishedEventsType_ModifyFieldSelection_OutputArguments((int) 15517L),
   PublishedEventsTypeModifyFieldSelectionMethodType_OutputArguments((int) 15518L),
   PublishedDataSetType_DataSetWriterName_Placeholder_DataSetWriterId((int) 16720L),
   PublishedDataSetType_DataSetWriterName_Placeholder_DataSetFieldContentMask((int) 16721L),
   PublishedDataSetType_DataSetWriterName_Placeholder_KeyFrameCount((int) 16731L),
   PublishedDataSetType_DataSetClassId((int) 16759L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetWriterId((int) 16760L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetFieldContentMask((int) 16761L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_KeyFrameCount((int) 16771L),
-  PublishedDataItemsType_DataSetClassId((int) 16800L),
-  PublishedEventsType_DataSetWriterName_Placeholder_DataSetWriterId((int) 16801L),
-  PublishedEventsType_DataSetWriterName_Placeholder_DataSetFieldContentMask((int) 16802L),
-  PublishedEventsType_DataSetWriterName_Placeholder_KeyFrameCount((int) 16812L),
-  PublishedEventsType_DataSetClassId((int) 16841L),
   PublishedDataSetType_DataSetWriterName_Placeholder_DataSetWriterProperties((int) 17482L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetWriterProperties((int) 17483L),
-  PublishedEventsType_DataSetWriterName_Placeholder_DataSetWriterProperties((int) 17484L),
   PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel((int) 18872L),
   PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation((int) 18873L),
   PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active(
@@ -177,217 +155,7 @@ public enum OpcuaNodeIdServicesVariablePublished {
       (int) 18928L),
   PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel(
       (int) 18929L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel((int) 18931L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation((int) 18932L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active(
-      (int) 18933L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification(
-      (int) 18934L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel(
-      (int) 18935L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange(
-      (int) 18936L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError((int) 18937L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active((int) 18938L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification(
-      (int) 18939L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel(
-      (int) 18940L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange(
-      (int) 18941L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_SubError((int) 18943L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError(
-      (int) 18945L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active(
-      (int) 18946L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification(
-      (int) 18947L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel(
-      (int) 18948L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange(
-      (int) 18949L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod(
-      (int) 18950L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active(
-      (int) 18951L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification(
-      (int) 18952L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel(
-      (int) 18953L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange(
-      (int) 18954L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent(
-      (int) 18955L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active(
-      (int) 18956L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification(
-      (int) 18957L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel(
-      (int) 18958L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange(
-      (int) 18959L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError(
-      (int) 18960L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active(
-      (int) 18961L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification(
-      (int) 18962L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel(
-      (int) 18963L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange(
-      (int) 18964L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent(
-      (int) 18965L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active(
-      (int) 18966L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification(
-      (int) 18967L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel(
-      (int) 18968L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange(
-      (int) 18969L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod(
-      (int) 18970L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active(
-      (int) 18971L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification(
-      (int) 18972L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel(
-      (int) 18973L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange(
-      (int) 18974L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages(
-      (int) 18976L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active(
-      (int) 18977L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification(
-      (int) 18978L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel(
-      (int) 18979L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange(
-      (int) 18980L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber(
-      (int) 18981L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel(
-      (int) 18982L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode(
-      (int) 18983L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel(
-      (int) 18984L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion(
-      (int) 18985L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel(
-      (int) 18986L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion(
-      (int) 18987L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel(
-      (int) 18988L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel((int) 18990L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation((int) 18991L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active(
-      (int) 18992L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification(
-      (int) 18993L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel(
-      (int) 18994L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange(
-      (int) 18995L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError((int) 18996L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active((int) 18997L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification(
-      (int) 18998L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel(
-      (int) 18999L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange(
-      (int) 19000L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_SubError((int) 19002L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError((int) 19004L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active(
-      (int) 19005L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification(
-      (int) 19006L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel(
-      (int) 19007L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange(
-      (int) 19008L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod(
-      (int) 19009L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active(
-      (int) 19010L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification(
-      (int) 19011L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel(
-      (int) 19012L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange(
-      (int) 19013L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent(
-      (int) 19014L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active(
-      (int) 19015L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification(
-      (int) 19016L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel(
-      (int) 19017L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange(
-      (int) 19018L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError(
-      (int) 19019L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active(
-      (int) 19020L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification(
-      (int) 19021L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel(
-      (int) 19022L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange(
-      (int) 19023L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent(
-      (int) 19024L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active(
-      (int) 19025L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification(
-      (int) 19026L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel(
-      (int) 19027L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange(
-      (int) 19028L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod(
-      (int) 19029L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active(
-      (int) 19030L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification(
-      (int) 19031L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel(
-      (int) 19032L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange(
-      (int) 19033L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages(
-      (int) 19035L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active(
-      (int) 19036L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification(
-      (int) 19037L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel(
-      (int) 19038L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange(
-      (int) 19039L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber(
-      (int) 19040L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel(
-      (int) 19041L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode((int) 19042L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel(
-      (int) 19043L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion(
-      (int) 19044L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel(
-      (int) 19045L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion(
-      (int) 19046L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel(
-      (int) 19047L),
-  PublishedDataSetType_CyclicDataSet((int) 25521L),
-  PublishedDataItemsType_CyclicDataSet((int) 25522L),
-  PublishedEventsType_CyclicDataSet((int) 25523L);
+  PublishedDataSetType_CyclicDataSet((int) 25521L);
   private static final Map<Integer, OpcuaNodeIdServicesVariablePublished> map;
 
   static {

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SignatureData extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "458";
+  public Integer getExtensionId() {
+    return (int) 458;
   }
 
   // Properties.
@@ -68,10 +68,10 @@ public class SignatureData extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("SignatureData");
 
     // Simple Field (algorithm)
-    writeSimpleField("algorithm", algorithm, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("algorithm", algorithm, writeComplex(writeBuffer));
 
     // Simple Field (signature)
-    writeSimpleField("signature", signature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("signature", signature, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SignatureData");
   }
@@ -97,21 +97,18 @@ public class SignatureData extends ExtensionObjectDefinition implements Message 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SignatureData");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString algorithm =
         readSimpleField(
-            "algorithm",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "algorithm", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalByteString signature =
         readSimpleField(
-            "signature",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "signature", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SignatureData");
     // Create the instance

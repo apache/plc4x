@@ -120,8 +120,7 @@ public class BACnetConstructedDataTimeSynchronizationRecipients extends BACnetCo
     List<BACnetRecipient> timeSynchronizationRecipients =
         readTerminatedArrayField(
             "timeSynchronizationRecipients",
-            new DataReaderComplexDefault<>(
-                () -> BACnetRecipient.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetRecipient.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

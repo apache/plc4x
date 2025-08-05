@@ -61,7 +61,7 @@ public class SALDataLighting extends SALData implements Message {
     writeBuffer.pushContext("SALDataLighting");
 
     // Simple Field (lightingData)
-    writeSimpleField("lightingData", lightingData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lightingData", lightingData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataLighting");
   }
@@ -91,8 +91,7 @@ public class SALDataLighting extends SALData implements Message {
 
     LightingData lightingData =
         readSimpleField(
-            "lightingData",
-            new DataReaderComplexDefault<>(() -> LightingData.staticParse(readBuffer), readBuffer));
+            "lightingData", readComplex(() -> LightingData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataLighting");
     // Create the instance

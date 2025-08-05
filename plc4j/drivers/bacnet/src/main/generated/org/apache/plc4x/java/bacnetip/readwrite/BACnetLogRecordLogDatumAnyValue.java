@@ -68,7 +68,7 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
     writeBuffer.pushContext("BACnetLogRecordLogDatumAnyValue");
 
     // Optional Field (anyValue) (Can be skipped, if the value is null)
-    writeOptionalField("anyValue", anyValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("anyValue", anyValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogRecordLogDatumAnyValue");
   }
@@ -101,7 +101,7 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
     BACnetConstructedData anyValue =
         readOptionalField(
             "anyValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

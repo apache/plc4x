@@ -29,6 +29,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -37,12 +42,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/require"
 )
 
 func TestNewReader(t *testing.T) {
@@ -105,7 +104,6 @@ func TestReader_Read(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -163,7 +161,6 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -213,7 +210,6 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -239,7 +235,6 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -316,7 +311,6 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -379,7 +373,6 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -466,7 +459,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.FailRequest(mock.Anything).Return(errors.New("no I say")).Run(func(_ error) {
-					close(ch)
+					if ch != nil {
+						close(ch)
+						ch = nil
+					}
 				})
 				args.transaction = transaction
 
@@ -481,15 +477,15 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestReset(
-						readWriteModel.RequestType_RESET,
-						nil,
-						0,
-						nil,
 						readWriteModel.RequestType_EMPTY,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.RequestType_RESET,
+						nil,
+						0,
+						nil,
 						nil,
 					),
 					nil,
@@ -561,15 +557,15 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestReset(
-						readWriteModel.RequestType_RESET,
-						nil,
-						0,
-						nil,
 						readWriteModel.RequestType_EMPTY,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.RequestType_RESET,
+						nil,
+						0,
+						nil,
 						nil,
 					),
 					nil,
@@ -642,18 +638,18 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataIdentify(
-							readWriteModel.Attribute_CurrentSenseLevels,
-							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-							nil,
-							nil,
-						),
-						readWriteModel.NewAlpha('g'),
 						readWriteModel.RequestType_DIRECT_COMMAND,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+							nil,
+							readWriteModel.Attribute_CurrentSenseLevels,
+							nil,
+						),
+						readWriteModel.NewAlpha('g'),
 						nil,
 					),
 					nil,
@@ -725,18 +721,18 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataIdentify(
-							readWriteModel.Attribute_CurrentSenseLevels,
-							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-							nil,
-							nil,
-						),
-						readWriteModel.NewAlpha('g'),
 						readWriteModel.RequestType_DIRECT_COMMAND,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+							nil,
+							readWriteModel.Attribute_CurrentSenseLevels,
+							nil,
+						),
+						readWriteModel.NewAlpha('g'),
 						nil,
 					),
 					nil,
@@ -808,18 +804,18 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataIdentify(
-							readWriteModel.Attribute_CurrentSenseLevels,
-							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-							nil,
-							nil,
-						),
-						readWriteModel.NewAlpha('g'),
 						readWriteModel.RequestType_DIRECT_COMMAND,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+							nil,
+							readWriteModel.Attribute_CurrentSenseLevels,
+							nil,
+						),
+						readWriteModel.NewAlpha('g'),
 						nil,
 					),
 					nil,
@@ -891,18 +887,18 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataIdentify(
-							readWriteModel.Attribute_CurrentSenseLevels,
-							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-							nil,
-							nil,
-						),
-						readWriteModel.NewAlpha('g'),
 						readWriteModel.RequestType_DIRECT_COMMAND,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+							nil,
+							readWriteModel.Attribute_CurrentSenseLevels,
+							nil,
+						),
+						readWriteModel.NewAlpha('g'),
 						nil,
 					),
 					nil,
@@ -974,18 +970,18 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataIdentify(
-							readWriteModel.Attribute_CurrentSenseLevels,
-							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-							nil,
-							nil,
-						),
-						readWriteModel.NewAlpha('g'),
 						readWriteModel.RequestType_DIRECT_COMMAND,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+							nil,
+							readWriteModel.Attribute_CurrentSenseLevels,
+							nil,
+						),
+						readWriteModel.NewAlpha('g'),
 						nil,
 					),
 					nil,
@@ -1057,18 +1053,18 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataIdentify(
-							readWriteModel.Attribute_CurrentSenseLevels,
-							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-							nil,
-							nil,
-						),
-						readWriteModel.NewAlpha('g'),
 						readWriteModel.RequestType_DIRECT_COMMAND,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+							nil,
+							readWriteModel.Attribute_CurrentSenseLevels,
+							nil,
+						),
+						readWriteModel.NewAlpha('g'),
 						nil,
 					),
 					nil,
@@ -1148,7 +1144,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			m.sendMessageOverTheWire(tt.args.ctx, tt.args.transaction, tt.args.messageToSend, tt.args.addResponseCode(t), tt.args.tagName, tt.args.addPlcValue(t))
 			t.Log("Waiting now")
 			timer := time.NewTimer(10 * time.Second)
-			defer utils.CleanupTimer(timer)
 			select {
 			case <-ch:
 				t.Log("Done waiting")

@@ -94,8 +94,7 @@ public class RequestReset extends Request implements Message {
         "secondTilde",
         "RequestType",
         secondTilde,
-        new DataWriterEnumDefault<>(
-            RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
         (getTildePeek()) == (RequestType.RESET));
 
     // Optional Field (thirdTilde) (Can be skipped, if the value is null)
@@ -103,8 +102,7 @@ public class RequestReset extends Request implements Message {
         "thirdTilde",
         "RequestType",
         thirdTilde,
-        new DataWriterEnumDefault<>(
-            RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
         (getTildePeek2()) == (RequestType.RESET));
 
     writeBuffer.popContext("RequestReset");
@@ -142,28 +140,22 @@ public class RequestReset extends Request implements Message {
 
     RequestType tildePeek =
         readPeekField(
-            "tildePeek",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "tildePeek", readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     RequestType secondTilde =
         readOptionalField(
             "secondTilde",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
             (tildePeek) == (RequestType.RESET));
 
     RequestType tildePeek2 =
         readPeekField(
-            "tildePeek2",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "tildePeek2", readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     RequestType thirdTilde =
         readOptionalField(
             "thirdTilde",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
             (tildePeek2) == (RequestType.RESET));
 
     readBuffer.closeContext("RequestReset");

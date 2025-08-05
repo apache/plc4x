@@ -23,16 +23,16 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"strconv"
+
+	"github.com/pkg/errors"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
 )
 
 const (
@@ -80,7 +80,7 @@ func (m modbusTag) GetAddressString() string {
 }
 
 func (m modbusTag) GetValueType() apiValues.PlcValueType {
-	if plcValueType, ok := apiValues.PlcValueByName(m.Datatype.String()); !ok {
+	if plcValueType, ok := apiValues.PlcValueTypeByName(m.Datatype.String()); !ok {
 		return apiValues.NULL
 	} else {
 		return plcValueType
@@ -126,7 +126,7 @@ func (m modbusTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		return err
 	}
 	dataType := m.Datatype.String()
-	if err := writeBuffer.WriteString("dataType", uint32(len([]rune(dataType))*8), "UTF-8", dataType); err != nil {
+	if err := writeBuffer.WriteString("dataType", uint32(len([]rune(dataType))*8), dataType); err != nil {
 		return err
 	}
 

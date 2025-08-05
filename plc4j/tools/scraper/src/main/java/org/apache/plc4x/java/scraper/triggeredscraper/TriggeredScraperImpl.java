@@ -25,7 +25,6 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.scraper.*;
@@ -67,6 +66,8 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
 
     private final ScheduledExecutorService scheduler;
     private final ExecutorService executorService;
+    private ScheduledFuture<?> jobsLogger;
+    private ScheduledFuture<?> tasksLogger;
     private ScheduledFuture<?> statisticsLogger;
 
     private final ResultHandler resultHandler;
@@ -228,6 +229,18 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
 
         }
 
+        if (LOGGER.isDebugEnabled()) {
+            jobsLogger = scheduler.scheduleAtFixedRate(() -> {
+                for (Map.Entry<ScrapeJob, ScraperTask> entry : tasks.entries()) {
+                    LOGGER.debug("Job={} Task={}", entry.getKey(), entry.getValue());
+                }
+            }, 100, 1_000, TimeUnit.MILLISECONDS);
+            tasksLogger = scheduler.scheduleAtFixedRate(() -> {
+                for (Map.Entry<ScraperTask, ScheduledFuture<?>> entry : scraperTaskMap.entries()) {
+                    LOGGER.debug("Task={} Future={}", entry.getKey(), entry.getValue());
+                }
+            }, 100, 1_000, TimeUnit.MILLISECONDS);
+        }
         // Add statistics tracker
         statisticsLogger = scheduler.scheduleAtFixedRate(() -> {
             for (Map.Entry<ScrapeJob, ScraperTask> entry : tasks.entries()) {
@@ -257,6 +270,11 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
         }*/
     }
 
+    protected void cancelLoggingFuture(ScheduledFuture<?> logger) {
+        if ((logger != null) && (!logger.isCancelled())) {
+            logger.cancel(false);
+        }
+    }
     @Override
     public void stop() {
         // Stop all futures
@@ -269,6 +287,8 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
         scraperTaskMap.clear();
 
         // Stop the statistics logger, if it is currently running.
+        cancelLoggingFuture(jobsLogger);
+        cancelLoggingFuture(tasksLogger);
         if((statisticsLogger != null) && (!statisticsLogger.isCancelled())) {
             statisticsLogger.cancel(false);
         }
@@ -307,11 +327,11 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
         }
         PlcConnection plcConnection=null;
         try {
-            plcConnection = future.get(requestTimeoutMs, TimeUnit.MILLISECONDS);
+            plcConnection = future.orTimeout(requestTimeoutMs, TimeUnit.MILLISECONDS).get();
         }
         catch (Exception e){
             LOGGER.trace("Additional Info from caller {}", info,e);
-            throw e;
+            throw new PlcRuntimeException(e);
         }
         return plcConnection;
     }

@@ -59,7 +59,7 @@ public class S7VarPayloadStatusItem implements Message {
         "returnCode",
         "DataTransportErrorCode",
         returnCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataTransportErrorCode::getValue,
             DataTransportErrorCode::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -84,12 +84,6 @@ public class S7VarPayloadStatusItem implements Message {
     return lengthInBits;
   }
 
-  public static S7VarPayloadStatusItem staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static S7VarPayloadStatusItem staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7VarPayloadStatusItem");
     PositionAware positionAware = readBuffer;
@@ -99,8 +93,7 @@ public class S7VarPayloadStatusItem implements Message {
         readEnumField(
             "returnCode",
             "DataTransportErrorCode",
-            new DataReaderEnumDefault<>(
-                DataTransportErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(DataTransportErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("S7VarPayloadStatusItem");
     // Create the instance

@@ -21,14 +21,16 @@ package cache
 
 import (
 	"fmt"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/viney-shih/go-lock"
+
 	"github.com/apache/plc4x/plc4go/internal/simulated"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/stretchr/testify/assert"
-	"github.com/viney-shih/go-lock"
-	"testing"
 )
 
 func Test_connectionContainer_String(t1 *testing.T) {
@@ -181,7 +183,7 @@ func Test_connectionContainer_connect(t1 *testing.T) {
 				queue:            tt.fields.queue,
 				listeners:        tt.fields.listeners,
 			}
-			c.connect()
+			c.connect(testutils.TestContext(t))
 		})
 	}
 }
@@ -334,7 +336,7 @@ func Test_connectionContainer_returnConnection(t1 *testing.T) {
 				queue:            tt.fields.queue,
 				listeners:        tt.fields.listeners,
 			}
-			tt.wantErr(t1, c.returnConnection(tt.args.state), fmt.Sprintf("returnConnection(%v)", tt.args.state))
+			tt.wantErr(t1, c.returnConnection(testutils.TestContext(t), tt.args.state), fmt.Sprintf("returnConnection(%v)", tt.args.state))
 		})
 	}
 }

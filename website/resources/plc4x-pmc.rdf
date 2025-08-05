@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!--
+
+    This file contains information about the committee/PMC of the project.
+    It should be updated as soon as the PMC or the chair of the project changes.
+    It is referenced from https://svn.apache.org/repos/asf/comdev/projects.apache.org/trunk/data/committees.xml
+
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:asfext="http://projects.apache.org/ns/asfext#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xml:lang="en">
+    <asfext:pmc rdf:about="plc4x">
+        <asfext:name>Apache PLC4X</asfext:name>
+        <foaf:homepage rdf:resource="http://plc4x.apache.org/"/>
+        <asfext:charter>The mission of the Apache PLC4X project is creating
+            a set of libraries for communicating with industrial programmable logic
+            controllers (PLCs) using a variety of protocols but with a shared API.
+        </asfext:charter>
+
+        <asfext:chair>
+            <foaf:Person>
+                <foaf:name>César García</foaf:name>
+            </foaf:Person>
+        </asfext:chair>
+
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Ben Hutcheson</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Björn Höper</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Christofer Dutz</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>César García</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Julian Feinauer</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Justin Mclean</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Lukas Ott</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Markus Sommer</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Matthias Milan Strljic</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Otto Fowler</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Sebastian Rühl</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Tim Mitsch</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Łukasz Dywicki</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+    </asfext:pmc>
+</rdf:RDF>

@@ -26,12 +26,12 @@ import (
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionEventItem
+//go:generate go tool plc4xGenerator -type=DefaultPlcSubscriptionEventItem
 type DefaultPlcSubscriptionEventItem struct {
 	code             apiModel.PlcResponseCode `stringer:"true"`
 	tag              apiModel.PlcTag
 	subscriptionType apiModel.PlcSubscriptionType `stringer:"true"`
-	interval         time.Duration                `stringer:"true"`
+	interval         time.Duration
 	value            apiValues.PlcValue
 }
 

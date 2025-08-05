@@ -1,0 +1,124 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+= Windows
+
+
+
+As tracking down issues which result from missing or outdated third party tools such as compilers are always hard do diagnose, we have extended the build of PLC4X with a `prerequisiteCheck` that automatically checks if required tools are installed and if a required minimum version is available.
+
+If any of the prerequisites are not met, the build fails with an error message that will help finding out what's wrong.
+
+The number of checks is highly dependent on which profiles are enabled.
+So for example the availability and version of the C compiler is only checked if the `with-c` profile is enabled.
+
+As in the past keeping the documentation up to date has been quite challenging, as the projects providing and packaging some of the needed tools have been born and dying like weed, we'll start using Chocolatey as something similar to Homebrew on Mac or Apt on Linux.
+
+So first be sure to install Chocolatey from here: https://community.chocolatey.org/ and follow the most recent instructions on that page in order to install it.
+
+== Git
+
+Checking:
+
+ git --version
+
+If you get any successful output, you probably don't need to do anything.
+
+If above command is not successful, simply install it via Chocolatey:
+
+ choco install git
+
+== Java
+
+Checking:
+
+ java --version
+
+If you get successful output, check that the version reported is at least Java 11.
+If you need to install or update Java, unfortunately this doesn't seem to be available via Chocolatey, but needs to be installed directly from a distribution.
+
+For Oracles OpenJDK 21 this would be from here: https://learn.microsoft.com/de-de/java/openjdk/download
+If you are using a Windows VM on `aarch64` (Apple M1 or M2 virtual machine), the download available from Microsoft build seem to be one of the few options you have. When installing make sure to select the option to configure the "JAVA_HOME" environment variable (deactivated per default).
+
+== Optional and other language support
+
+Git an Java should be all you need for building the Java part of PLC4X.
+
+=== LibPCAP (For raw-ethernet support)
+
+In order to use the raw ethernet transport capabilities of PLC4X, we need to ensure the NPcap library is installed.
+
+In order to check if NPcap is installed, check the following directories:
+
+64-bit versions:
+
+- C:\Windows\System32\packet.dll
+- C:\Windows\System32\wpcap.dll
+
+32-bit versions:
+
+- C:\Windows\SysWOW64\packet.dll
+- C:\Windows\SysWOW64\wpcap.dll
+
+If none of these can be found, install it by downloading the installer from https://npcap.com/#download
+
+=== gcc (For PLC4C)
+
+Checking:
+
+ gcc --version
+
+If you get any successful output, you probably don't need to do anything.
+
+If above command fails, please install MinGW from an Administrative console with the following command:
+
+ choco install mingw
+
+https://repo.maven.apache.org/maven2/com/googlecode/cmake-maven-project/cmake-binaries/3.27.7-b1/
+Download:
+https://repo.maven.apache.org/maven2/com/googlecode/cmake-maven-project/cmake-binaries/3.27.7-b1/cmake-binaries-3.27.7-b1-windows-arm_64.jar
+Deploy as:
+https://repo.maven.apache.org/maven2/com/googlecode/cmake-maven-project/cmake-binaries/3.27.7-b1/cmake-binaries-3.27.7-b1-windows-arm64.jar
+
+=== dotnet (For PLC4Net)
+
+Checking:
+
+ dotnet --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Usually this is already installed on Windows machines.
+
+Download the installer from https://dotnet.microsoft.com/en-us/download[here]
+
+=== python (For PLC4Py)
+
+Checking:
+
+ python --version
+
+If you get any successful output, you probably don't need to do anything.
+
+You can get Python from https://www.python.org/downloads/windows/[here].
+
+Make sure directory containing `python.exe` is added to your systems `PATH`.
+Also make sure you restarted your IDE and or console window after changing the `PATH` settings for the changes to take effect.
+
+https://visualstudio.microsoft.com/de/visual-cpp-build-tools/
+
+PLC4PY Build doesn't work on Aarch64 on Windows

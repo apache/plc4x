@@ -20,12 +20,13 @@
 package model
 
 import (
+	"github.com/google/uuid"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/google/uuid"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionHandle
+//go:generate go tool plc4xGenerator -type=DefaultPlcSubscriptionHandle
 type DefaultPlcSubscriptionHandle struct {
 	uuid             uuid.UUID                      `stringer:"true"`
 	handleToRegister apiModel.PlcSubscriptionHandle `ignore:"true"` // avoid recursion

@@ -82,7 +82,7 @@ public class BACnetConstructedDataSerialNumber extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataSerialNumber");
 
     // Simple Field (serialNumber)
-    writeSimpleField("serialNumber", serialNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serialNumber", serialNumber, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataSerialNumber extends BACnetConstructedData imp
     BACnetApplicationTagCharacterString serialNumber =
         readSimpleField(
             "serialNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -79,11 +79,6 @@ public class IPAddress implements Message {
     return lengthInBits;
   }
 
-  public static IPAddress staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static IPAddress staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("IPAddress");
     PositionAware positionAware = readBuffer;

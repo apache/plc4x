@@ -17,3 +17,4 @@
 # under the License.
 #
 org.apache.plc4x.java.s7.readwrite.S7Driver
+org.apache.plc4x.java.s7light.readwrite.S7LightDriver

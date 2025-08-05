@@ -22,7 +22,6 @@ import io.vavr.control.Either;
 import org.apache.plc4x.java.spi.ConversationContext;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.TimeoutException;
@@ -32,6 +31,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class DefaultExpectRequestContext<T> implements ConversationContext.ExpectRequestContext<T> {
+
+    protected String name;
 
     protected Deque<Either<Function<?, ?>, Predicate<?>>> commands = new LinkedList<>();
 
@@ -50,14 +51,16 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
     protected final Duration timeout;
     private HandlerRegistration registration;
 
-    public DefaultExpectRequestContext(Consumer<HandlerRegistration> finisher, Class<T> expectClazz, Duration timeout, ConversationContext<T> context) {
+    public DefaultExpectRequestContext(String name, Consumer<HandlerRegistration> finisher, Class<T> expectClazz, Duration timeout, ConversationContext<T> context) {
+        this.name = name;
         this.finisher = finisher;
         this.expectClazz = expectClazz;
         this.timeout = timeout;
         this.context = context;
     }
 
-    protected DefaultExpectRequestContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Duration timeout, Consumer<HandlerRegistration> finisher, ConversationContext<T> context, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
+    protected DefaultExpectRequestContext(String name, Deque<Either<Function<?, ?>, Predicate<?>>> commands, Duration timeout, Consumer<HandlerRegistration> finisher, ConversationContext<T> context, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
+        this.name = name;
         this.commands = commands;
         this.timeout = timeout;
         this.finisher = finisher;
@@ -66,6 +69,12 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
         this.packetConsumer = packetConsumer;
         this.onTimeoutConsumer = onTimeoutConsumer;
         this.errorConsumer = errorConsumer;
+    }
+
+    @Override
+    public ConversationContext.ExpectRequestContext<T> name(String name) {
+        this.name = name;
+        return this;
     }
 
     @Override
@@ -80,9 +89,10 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
             throw new ConversationContext.PlcWiringException("can't handle multiple consumers");
         }
         this.packetConsumer = packetConsumer;
-        registration = new HandlerRegistration(commands, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer, timeout);
+        registration = new HandlerRegistration(name, commands, expectClazz, packetConsumer, onTimeoutConsumer,
+            errorConsumer, timeout);
         finisher.accept(registration);
-        return new DefaultContextHandler(registration::hasHandled, registration::cancel);
+        return new DefaultContextHandler(registration, registration::cancel);
     }
 
     @Override
@@ -114,7 +124,7 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
             };
         }
         commands.addLast(Either.left(unwrapper));
-        return new DefaultExpectRequestContext<>(commands, timeout, finisher, (ConversationContext<R>) context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
+        return new DefaultExpectRequestContext<>(name, commands, timeout, finisher, (ConversationContext<R>) context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
     }
 
 }

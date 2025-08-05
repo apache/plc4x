@@ -21,13 +21,15 @@ package udp
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/rs/zerolog/log"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"net"
 	"net/url"
 	"testing"
+
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
 func TestNewTransport(t *testing.T) {

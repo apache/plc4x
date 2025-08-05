@@ -77,12 +77,10 @@ public class CALDataIdentifyReply extends CALData implements Message {
         "attribute",
         "Attribute",
         attribute,
-        new DataWriterEnumDefault<>(
-            Attribute::getValue, Attribute::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(Attribute::getValue, Attribute::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (identifyReplyCommand)
-    writeSimpleField(
-        "identifyReplyCommand", identifyReplyCommand, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("identifyReplyCommand", identifyReplyCommand, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CALDataIdentifyReply");
   }
@@ -120,12 +118,12 @@ public class CALDataIdentifyReply extends CALData implements Message {
         readEnumField(
             "attribute",
             "Attribute",
-            new DataReaderEnumDefault<>(Attribute::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Attribute::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     IdentifyReplyCommand identifyReplyCommand =
         readSimpleField(
             "identifyReplyCommand",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     IdentifyReplyCommand.staticParse(
                         readBuffer,

@@ -463,8 +463,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
         "tighteningStatus",
         "NokOk",
         tighteningStatus,
-        new DataWriterEnumDefault<>(
-            NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTorqueStatus)
@@ -479,8 +478,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
         "torqueStatus",
         "Status",
         torqueStatus,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdAngleStatus)
@@ -495,8 +493,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
         "angleStatus",
         "Status",
         angleStatus,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTorqueMinLimit)
@@ -636,8 +633,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
         "batchStatus",
         "BatchStatus",
         batchStatus,
-        new DataWriterEnumDefault<>(
-            BatchStatus::getValue, BatchStatus::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(BatchStatus::getValue, BatchStatus::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTighteningId)
@@ -913,7 +909,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
         readEnumField(
             "tighteningStatus",
             "NokOk",
-            new DataReaderEnumDefault<>(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdTorqueStatus =
@@ -927,7 +923,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
         readEnumField(
             "torqueStatus",
             "Status",
-            new DataReaderEnumDefault<>(Status::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Status::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdAngleStatus =
@@ -941,7 +937,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
         readEnumField(
             "angleStatus",
             "Status",
-            new DataReaderEnumDefault<>(Status::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Status::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdTorqueMinLimit =
@@ -1069,8 +1065,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
         readEnumField(
             "batchStatus",
             "BatchStatus",
-            new DataReaderEnumDefault<>(
-                BatchStatus::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(BatchStatus::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdTighteningId =

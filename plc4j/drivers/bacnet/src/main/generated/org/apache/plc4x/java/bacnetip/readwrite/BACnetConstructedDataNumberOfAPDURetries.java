@@ -83,8 +83,7 @@ public class BACnetConstructedDataNumberOfAPDURetries extends BACnetConstructedD
     writeBuffer.pushContext("BACnetConstructedDataNumberOfAPDURetries");
 
     // Simple Field (numberOfApduRetries)
-    writeSimpleField(
-        "numberOfApduRetries", numberOfApduRetries, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("numberOfApduRetries", numberOfApduRetries, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataNumberOfAPDURetries extends BACnetConstructedD
     BACnetApplicationTagUnsignedInteger numberOfApduRetries =
         readSimpleField(
             "numberOfApduRetries",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

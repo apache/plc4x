@@ -49,7 +49,7 @@
           </command>
           <messageEnd dataType="uint" bitLength="8">16</messageEnd>
           <endTransaction dataType="uint" bitLength="8">3</endTransaction>
-          <checksum dataType="uint" bitLength="16">28500</checksum>
+          <crc dataType="uint" bitLength="16">28500</crc>
         </DF1SymbolMessageFrame>
       </DF1Symbol>
     </xml>
@@ -81,7 +81,7 @@
           </command>
           <messageEnd dataType="uint" bitLength="8">16</messageEnd>
           <endTransaction dataType="uint" bitLength="8">3</endTransaction>
-          <checksum dataType="uint" bitLength="16">53219</checksum>
+          <crc dataType="uint" bitLength="16">53219</crc>
         </DF1SymbolMessageFrame>
       </DF1Symbol>
     </xml>
@@ -114,7 +114,7 @@
           </command>
           <messageEnd dataType="uint" bitLength="8">16</messageEnd>
           <endTransaction dataType="uint" bitLength="8">3</endTransaction>
-          <checksum dataType="uint" bitLength="16">43402</checksum>
+          <crc dataType="uint" bitLength="16">43402</crc>
         </DF1SymbolMessageFrame>
       </DF1Symbol>
     </xml>

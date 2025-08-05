@@ -38,32 +38,60 @@ plc4c_return_code plc4c_s7_read_write_date_and_time_parse(plc4x_spi_context ctx,
     return NO_MEMORY;
   }
 
-  // Manual Field (year)
-  uint8_t year = (uint8_t) (plc4c_s7_read_write_bcd_to_int(readBuffer));
+  // Simple Field (year)
+  uint8_t year = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &year);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->year = year;
 
-  // Manual Field (month)
-  uint8_t month = (uint8_t) (plc4c_s7_read_write_bcd_to_int(readBuffer));
+  // Simple Field (month)
+  uint8_t month = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &month);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->month = month;
 
-  // Manual Field (day)
-  uint8_t day = (uint8_t) (plc4c_s7_read_write_bcd_to_int(readBuffer));
+  // Simple Field (day)
+  uint8_t day = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &day);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->day = day;
 
-  // Manual Field (hour)
-  uint8_t hour = (uint8_t) (plc4c_s7_read_write_bcd_to_int(readBuffer));
+  // Simple Field (hour)
+  uint8_t hour = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &hour);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->hour = hour;
 
-  // Manual Field (minutes)
-  uint8_t minutes = (uint8_t) (plc4c_s7_read_write_bcd_to_int(readBuffer));
+  // Simple Field (minutes)
+  uint8_t minutes = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &minutes);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->minutes = minutes;
 
-  // Manual Field (seconds)
-  uint8_t seconds = (uint8_t) (plc4c_s7_read_write_bcd_to_int(readBuffer));
+  // Simple Field (seconds)
+  uint8_t seconds = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &seconds);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->seconds = seconds;
 
-  // Manual Field (msec)
-  uint16_t msec = (uint16_t) (plc4c_s7_read_write_s7msec_to_int(readBuffer));
+  // Simple Field (msec)
+  uint16_t msec = 0;
+  _res = plc4c_spi_read_unsigned_short(readBuffer, 12, (uint16_t*) &msec);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->msec = msec;
 
   // Simple Field (dow)
@@ -80,44 +108,44 @@ plc4c_return_code plc4c_s7_read_write_date_and_time_parse(plc4x_spi_context ctx,
 plc4c_return_code plc4c_s7_read_write_date_and_time_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_date_and_time* _message) {
   plc4c_return_code _res = OK;
 
-  // Manual Field (year)  {
-  _res = plc4c_s7_read_write_byte_to_bcd(writeBuffer, _message->year);
+  // Simple Field (year)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->year);
   if(_res != OK) {
     return _res;
   }
 
-  // Manual Field (month)  {
-  _res = plc4c_s7_read_write_byte_to_bcd(writeBuffer, _message->month);
+  // Simple Field (month)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->month);
   if(_res != OK) {
     return _res;
   }
 
-  // Manual Field (day)  {
-  _res = plc4c_s7_read_write_byte_to_bcd(writeBuffer, _message->day);
+  // Simple Field (day)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->day);
   if(_res != OK) {
     return _res;
   }
 
-  // Manual Field (hour)  {
-  _res = plc4c_s7_read_write_byte_to_bcd(writeBuffer, _message->hour);
+  // Simple Field (hour)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->hour);
   if(_res != OK) {
     return _res;
   }
 
-  // Manual Field (minutes)  {
-  _res = plc4c_s7_read_write_byte_to_bcd(writeBuffer, _message->minutes);
+  // Simple Field (minutes)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->minutes);
   if(_res != OK) {
     return _res;
   }
 
-  // Manual Field (seconds)  {
-  _res = plc4c_s7_read_write_byte_to_bcd(writeBuffer, _message->seconds);
+  // Simple Field (seconds)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->seconds);
   if(_res != OK) {
     return _res;
   }
 
-  // Manual Field (msec)  {
-  _res = plc4c_s7_read_write_int_to_s7msec(writeBuffer, _message->msec);
+  // Simple Field (msec)
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 12, _message->msec);
   if(_res != OK) {
     return _res;
   }
@@ -138,25 +166,25 @@ uint16_t plc4c_s7_read_write_date_and_time_length_in_bytes(plc4x_spi_context ctx
 uint16_t plc4c_s7_read_write_date_and_time_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_date_and_time* _message) {
   uint16_t lengthInBits = 0;
 
-  // Manual Field (year)
+  // Simple field (year)
   lengthInBits += 8;
 
-  // Manual Field (month)
+  // Simple field (month)
   lengthInBits += 8;
 
-  // Manual Field (day)
+  // Simple field (day)
   lengthInBits += 8;
 
-  // Manual Field (hour)
+  // Simple field (hour)
   lengthInBits += 8;
 
-  // Manual Field (minutes)
+  // Simple field (minutes)
   lengthInBits += 8;
 
-  // Manual Field (seconds)
+  // Simple field (seconds)
   lengthInBits += 8;
 
-  // Manual Field (msec)
+  // Simple field (msec)
   lengthInBits += 12;
 
   // Simple field (dow)

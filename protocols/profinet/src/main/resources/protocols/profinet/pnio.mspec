@@ -61,6 +61,8 @@
         ]
         ['WORKING'  PnIoCm_Packet_Working
         ]
+        ['CONNECTIONLESS_CANCEL' PnIoCm_Packet_ConnectionlessCancel
+        ]
     ]
 ]
 
@@ -173,7 +175,7 @@
             [simple   DceRpc_ObjectUuid               cmInitiatorObjectUuid                                  ]
             // Begin ARProperties
             [simple   bit                             pullModuleAlarmAllowed                                 ]
-            [simple   bit                             nonLegacyStartupMode                                   ]
+            [simple   bit                             advancedStartupMode                                   ]
             [simple   bit                             combinedObjectContainerUsed                            ]
             [reserved uint 17                         '0x00000'                                              ]
             [simple   bit                             acknowledgeCompanionAr                                 ]
@@ -199,7 +201,7 @@
             [simple   MacAddress             cmResponderMacAddr                                              ]
             [simple   uint 16                responderUDPRTPort                                              ]
         ]
-        ['IOD_BLOCK_REQ_CONNECTION_APPLICATION_READY' PnIoCm_Control_Request
+        ['IOD_BLOCK_REQ_CONNECTION_PARAMETER_END' PnIoCm_Control_Request_ParameterEnd
             [implicit      uint 16          blockLength      'lengthInBytes - 4']
             [simple        uint 8           blockVersionHigh                    ]
             [simple        uint 8           blockVersionLow                     ]
@@ -210,7 +212,18 @@
             [simple   uint 16                         controlCommand                                         ]
             [reserved uint 16                         '0x0000'                                               ]
         ]
-        ['IOX_BLOCK_REQ_CONNECTION'    PnIoCM_Block_Request
+        ['IOX_BLOCK_REQ_CONNECTION_APPLICATION_READY' PnIoCm_Control_Request_ApplicationReady
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 16                         sessionKey                                             ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   uint 16                         controlCommand                                         ]
+            [reserved uint 16                         '0x0000'                                               ]
+        ]
+        ['IOX_BLOCK_RES_CONNECTION_APPLICATION_READY'    PnIoCm_Control_Response_ApplicationReady
             [implicit      uint 16          blockLength      'lengthInBytes - 4']
             [simple        uint 8           blockVersionHigh                    ]
             [simple        uint 8           blockVersionLow                     ]
@@ -221,18 +234,7 @@
             [simple   uint 16                         controlCommand                                         ]
             [simple   uint 16                         controlBlockProperties                                 ]
         ]
-        ['IOX_BLOCK_RES_CONNECT'    PnIoCM_Block_ResponseConnect
-            [implicit      uint 16          blockLength      'lengthInBytes - 4']
-            [simple        uint 8           blockVersionHigh                    ]
-            [simple        uint 8           blockVersionLow                     ]
-            [reserved uint 16                         '0x0000'                                               ]
-            [simple   Uuid                            arUuid                                                 ]
-            [simple   uint 16                         sessionKey                                             ]
-            [reserved uint 16                         '0x0000'                                               ]
-            [simple   uint 16                         controlCommand                                         ]
-            [simple   uint 16                         controlBlockProperties                                 ]
-        ]
-        ['IOD_CONTROL_RES_CONNECT' PnIoCm_Control_ResponseConnect
+        ['IOD_BLOCK_RES_CONNECTION_PARAMETER_END' PnIoCm_Control_Response_ParameterEnd
             [implicit      uint 16          blockLength      'lengthInBytes - 4']
             [simple        uint 8           blockVersionHigh                    ]
             [simple        uint 8           blockVersionLow                     ]
@@ -335,7 +337,7 @@
             [implicit uint 16                      numApis          'COUNT(apis)'                ]
             [array    PnIoCm_RealIdentificationApi apis             count               'numApis']
         ]
-        ['IOD_BLOCK_REQ_PLUGIN_ALARM_APPLICATION_READY' PnIoCm_Block_ReqPluginAlarmApplicationReady
+        ['IOX_BLOCK_REQ_CONNECTION_APPLICATION_READY_PLUG_ALARM' PnIoCm_Block_ReqPlugAlarmApplicationReady
             // TODO: Implement ...
         ]
 
@@ -487,32 +489,32 @@
     // End SubmoduleProperties
     [typeSwitch submoduleType
         ['NO_INPUT_NO_OUTPUT_DATA' PnIoCm_Submodule_NoInputNoOutputData
-            [const    uint 16             dataDescription       0x0001]
-            [const    uint 16             submoduleDataLength   0x0000]
-            [const    uint 8              lengthIoCs            0x01  ]
-            [const    uint 8              lengthIoPs            0x01  ]
+            [const    uint 16             dataDescription       0x0001  ]
+            [const    uint 16             submoduleDataLength   0x0000  ]
+            [const    uint 8              lengthIoCs            0x01    ]
+            [const    uint 8              lengthIoPs            0x01    ]
         ]
         ['INPUT_DATA' PnIoCm_Submodule_InputData
-            [const    uint 16             inputDataDescription  0x0001]
+            [const    uint 16             inputDataDescription  0x0001  ]
             [simple   uint 16             inputSubmoduleDataLength      ]
-            [simple   uint 8              inputLengthIoCs               ]
-            [simple   uint 8              inputLengthIoPs               ]
+            [const    uint 8              inputLengthIoCs       0x01    ]
+            [const    uint 8              inputLengthIoPs       0x01    ]
         ]
         ['OUTPUT_DATA' PnIoCm_Submodule_OutputData
-            [const    uint 16             inputDataDescription  0x0002]
-            [simple   uint 16             inputSubmoduleDataLength      ]
-            [simple   uint 8              inputLengthIoCs               ]
-            [simple   uint 8              inputLengthIoPs               ]
+            [const    uint 16             inputDataDescription  0x0002  ]
+            [simple   uint 16             outputSubmoduleDataLength     ]
+            [const    uint 8              outputLengthIoCs      0x01    ]
+            [const    uint 8              outputLengthIoPs      0x01    ]
         ]
         ['INPUT_AND_OUTPUT_DATA' PnIoCm_Submodule_InputAndOutputData
-            [const    uint 16             inputDataDescription  0x0001]
+            [const    uint 16             inputDataDescription  0x0001  ]
             [simple   uint 16             inputSubmoduleDataLength      ]
-            [simple   uint 8              inputLengthIoCs               ]
-            [simple   uint 8              inputLengthIoPs               ]
-            [const    uint 16             outputDataDescription 0x0002]
+            [const    uint 8              ioInputLengthIoCs     0x01    ]
+            [const    uint 8              ioInputLengthIoPs     0x01    ]
+            [const    uint 16             outputDataDescription 0x0002  ]
             [simple   uint 16             outputSubmoduleDataLength     ]
-            [simple   uint 8              outputLengthIoCs              ]
-            [simple   uint 8              outputLengthIoPs              ]
+            [const    uint 8              ioOutputLengthIoCs    0x01    ]
+            [const    uint 8              ioOutputLengthIoPs    0x01    ]
         ]
     ]
 ]
@@ -560,10 +562,10 @@
     ['0x010A' SR_INFO_BLOCK                                 ]
     ['0x010B' ARFSU_BLOCK                                   ]
     ['0x010C' RS_INFO_BLOCK                                 ]
-    ['0x0110' IOD_BLOCK_REQ_CONNECTION_APPLICATION_READY    ]
-    ['0x0101' IOD_BLOCK_REQ_PLUGIN_ALARM_APPLICATION_READY  ]
-    ['0x0112' IOX_BLOCK_REQ_CONNECTION                      ]
-    ['0x0113' IOX_BLOCK_REQ_PLUGIN_ALARM                    ]
+    ['0x0110' IOD_BLOCK_REQ_CONNECTION_PARAMETER_END        ]
+    ['0x0111' IOD_BLOCK_REQ_CONNECTION_PARAMETER_END_PLUG_ALARM]
+    ['0x0112' IOX_BLOCK_REQ_CONNECTION_APPLICATION_READY    ]
+    ['0x0113' IOX_BLOCK_REQ_CONNECTION_APPLICATION_READY_PLUG_ALARM]
     ['0x0114' RELEASE_BLOCK_REQ                             ]
     ['0x0116' IOX_BLOCK_REQ_CONNECTION_READY_FOR_COMPANION  ]
     ['0x0117' IOX_BLOCK_REQ_CONNECTION_READY_FOR_RT_CLASS_3 ]
@@ -598,10 +600,10 @@
     ['0x8106' AR_SERVER_BLOCK                               ]
     ['0x8007' AR_RPC_BLOCK_RES                              ]
     ['0x8008' AR_VENDOR_BLOCK_RES                           ]
-    ['0x8110' IOD_CONTROL_RES_CONNECT                       ]
-    ['0x8111' IOD_CONTROL_RES_PLUG                          ]
-    ['0x8112' IOX_BLOCK_RES_CONNECT                         ]
-    ['0x8113' IOX_BLOCK_RES_PLUG                            ]
+    ['0x8110' IOD_BLOCK_RES_CONNECTION_PARAMETER_END        ]
+    ['0x8111' IOD_BLOCK_REs_CONNECTION_PARAMETER_END_PLUG_ALARM]
+    ['0x8112' IOX_BLOCK_RES_CONNECTION_APPLICATION_READY    ]
+    ['0x8113' IOX_BLOCK_REs_CONNECTION_APPLICATION_READY_PLUG_ALARM]
     ['0x8114' RELEASE_BLOCK_RES                             ]
     ['0x8116' IOX_BLOCK_RES_CONNECT_COMPANION_READY         ]
     ['0x8117' IOX_BLOCK_RES_CONNECT_RT_CLASS_3_READY        ]

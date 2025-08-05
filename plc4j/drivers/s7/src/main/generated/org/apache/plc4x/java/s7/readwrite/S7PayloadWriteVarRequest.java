@@ -102,8 +102,7 @@ public class S7PayloadWriteVarRequest extends S7Payload implements Message {
     List<S7VarPayloadDataItem> items =
         readCountArrayField(
             "items",
-            new DataReaderComplexDefault<>(
-                () -> S7VarPayloadDataItem.staticParse(readBuffer), readBuffer),
+            readComplex(() -> S7VarPayloadDataItem.staticParse(readBuffer), readBuffer),
             COUNT(CAST(parameter, S7ParameterWriteVarRequest.class).getItems()));
 
     readBuffer.closeContext("S7PayloadWriteVarRequest");

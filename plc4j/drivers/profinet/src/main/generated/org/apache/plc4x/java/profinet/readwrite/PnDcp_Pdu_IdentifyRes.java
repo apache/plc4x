@@ -259,7 +259,7 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
     List<PnDcp_Block> blocks =
         readLengthArrayField(
             "blocks",
-            new DataReaderComplexDefault<>(() -> PnDcp_Block.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnDcp_Block.staticParse(readBuffer), readBuffer),
             dcpDataLength,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

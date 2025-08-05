@@ -45,7 +45,7 @@ pipeline {
 
     tools {
         maven 'maven_3_latest'
-        jdk 'jdk_11_latest'
+        jdk 'jdk_21_latest'
     }
 
     options {
@@ -54,6 +54,7 @@ pipeline {
         // When we have test-fails e.g. we don't need to run the remaining steps
         skipStagesAfterUnstable()
         buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '3'))
+        skipDefaultCheckout()
     }
 
     stages {
@@ -94,7 +95,7 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-c,with-go ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
+                sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-c,with-go,with-java,with-python ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
             }
             post {
                 always {
@@ -117,7 +118,7 @@ pipeline {
 
                 // We'll deploy to a relative directory so we can save
                 // that and deploy in a later step on a different node
-                sh './mvnw -U -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-c,with-go,enable-all-checks ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
+                sh './mvnw -U -P${JENKINS_PROFILE},skip-prerequisite-check,with-c,with-go,with-java,with-python,update-generated-code,enable-all-checks ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
 
                 // Stash the build results so we can deploy them on another node
                 stash name: 'plc4x-build-snapshots', includes: 'local-snapshots-dir/**'
@@ -137,8 +138,7 @@ pipeline {
             steps {
                 echo 'Checking Code Quality on SonarCloud'
                 withCredentials([string(credentialsId: 'chris-sonarcloud-token', variable: 'SONAR_TOKEN')]) {
-                    //sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-python,with-proxies,with-sandbox sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN}'
-                    sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-c,with-go,with-sandbox sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.token=${SONAR_TOKEN}'
+                    sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-c,with-go,with-java,with-python sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.token=${SONAR_TOKEN}'
                 }
             }
         }
@@ -150,9 +150,7 @@ pipeline {
             // Only the official build nodes have the credentials to deploy setup.
             agent {
                 node {
-                    // TODO: Disabled as H50 seems to be the only node with this label and it's currently offline for quite some time.
-                    // label 'nexus-deploy'
-                    label 'ubuntu && !H50'
+                    label 'nexus-deploy'
                 }
             }
             steps {
@@ -166,7 +164,7 @@ pipeline {
                 unstash name: 'plc4x-build-snapshots'
 
                 // Deploy the artifacts using the wagon-maven-plugin.
-                sh './mvnw -f jenkins.pom -X -P deploy-snapshots wagon:upload'
+                sh 'until ./mvnw -f jenkins.pom -X -P deploy-snapshots wagon:upload || (( count++ >= 5 )); do echo "Retrying to deploy"; done'
 
                 // Clean up the snapshots directory (freeing up more space after deploying).
                 dir("local-snapshots-dir/") {
@@ -175,63 +173,53 @@ pipeline {
             }
         }
 
-        stage('Build site') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                echo 'Building Site'
-                //sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies site'
-                sh './mvnw -Djava.version=1.8 -P${JENKINS_PROFILE},skip-prerequisite-check site -X -pl .'
-            }
-        }
-
-        stage('Stage site') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                echo 'Staging Site'
-                // Build a directory containing the aggregated website.
-                //sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies site:stage'
-                sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check site:stage -pl .'
-                // Make sure the script is executable.
-                sh 'chmod +x tools/clean-site.sh'
-                // Remove some redundant resources, which shouldn't be required.
-                //sh 'tools/clean-site.sh'
-                // Stash the generated site so we can publish it on the 'git-website' node.
-                stash includes: 'target/staging/**/*', name: 'plc4x-site'
-            }
-        }
-
-        stage('Deploy site') {
-            when {
-                branch 'develop'
-            }
+        stage("Website Build") {
             // Only the nodes labeled 'git-websites' have the credentials to commit to the.
             agent {
                 node {
                     label 'git-websites'
                 }
             }
-            steps {
-                echo 'Deploying Site'
-                // Clean up the site directory.
-                dir("target/staging") {
-                    deleteDir()
+            options { skipDefaultCheckout() }
+            stages {
+                stage('Cleanup') {
+                    steps {
+                        echo 'Cleaning up the workspace'
+                        deleteDir()
+                    }
                 }
-
-                // Unstash the previously stashed site.
-                unstash 'plc4x-site'
-                // Publish the site with the scm-publish plugin.
-                sh './mvnw -f jenkins.pom -X -P deploy-site scm-publish:publish-scm'
-
-                // Clean up the snapshots directory (freeing up more space after deploying).
-                dir("target/staging") {
-                    deleteDir()
+                stage('Checkout') {
+                    steps {
+                        echo 'Checking out branch ' + env.BRANCH_NAME
+                        checkout scm
+                    }
+                }
+                stage('Build site') {
+                    when {
+                        branch 'develop'
+                    }
+                    steps {
+                        echo 'Building Site'
+                        // Generate the driver documentation.
+                        sh './mvnw -P${JENKINS_PROFILE},with-java,skip-prerequisite-check site -X -pl :plc4j-driver-all'
+                        // Build the actual website.
+                        sh './mvnw -P${JENKINS_PROFILE},skip-prerequisite-check site -X -pl . -pl website'
+                    }
+                }
+                stage('Deploy site') {
+                    when {
+                        branch 'develop'
+                    }
+                    steps {
+                        echo 'Deploying Site'
+                        // Publish the site with the scm-publish plugin.
+                        sh './mvnw -f jenkins.pom -X -P deploy-site scm-publish:publish-scm'
+                    }
                 }
             }
         }
+
+
     }
 
     // Send out notifications on unsuccessful builds.

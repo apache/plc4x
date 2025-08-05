@@ -60,7 +60,7 @@ public class BACnetPropertyStatesIntegerValue extends BACnetPropertyStates imple
     writeBuffer.pushContext("BACnetPropertyStatesIntegerValue");
 
     // Simple Field (integerValue)
-    writeSimpleField("integerValue", integerValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("integerValue", integerValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesIntegerValue");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesIntegerValue extends BACnetPropertyStates imple
     BACnetContextTagSignedInteger integerValue =
         readSimpleField(
             "integerValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagSignedInteger)
                         BACnetContextTag.staticParse(

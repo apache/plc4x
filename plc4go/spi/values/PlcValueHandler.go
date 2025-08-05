@@ -22,15 +22,16 @@ package values
 import (
 	"errors"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 type DefaultValueHandler struct {

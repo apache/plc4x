@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.utils.cache.exceptions.PlcConnectionManagerClosedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,16 +33,20 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CachedPlcConnectionManager implements PlcConnectionManager {
+public class CachedPlcConnectionManager implements PlcConnectionManager, AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(CachedPlcConnectionManager.class);
 
     private final PlcConnectionManager connectionManager;
     private final Duration maxLeaseTime;
     private final Duration maxWaitTime;
+    private final Duration maxIdleTime;
 
     private final Map<String, ConnectionContainer> connectionContainers;
+
+    private final AtomicBoolean closed = new AtomicBoolean(false);
 
     public static Builder getBuilder() {
         return new Builder(new DefaultPlcDriverManager());
@@ -51,10 +56,11 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         return new Builder(connectionManager);
     }
 
-    public CachedPlcConnectionManager(PlcConnectionManager connectionManager, Duration maxLeaseTime, Duration maxWaitTime) {
+    public CachedPlcConnectionManager(PlcConnectionManager connectionManager, Duration maxLeaseTime, Duration maxWaitTime, Duration maxIdleTime) {
         this.connectionManager = connectionManager;
         this.maxLeaseTime = maxLeaseTime;
         this.maxWaitTime = maxWaitTime;
+        this.maxIdleTime = maxIdleTime;
         this.connectionContainers = new HashMap<>();
     }
 
@@ -78,14 +84,24 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     }
 
     public PlcConnection getConnection(String url) throws PlcConnectionException {
+        // If the connection manager is already closed, abort.
+        if(closed.get()) {
+            throw new PlcConnectionManagerClosedException();
+        }
+
+        // Get a connection container for the given url.
         ConnectionContainer connectionContainer;
         synchronized (connectionContainers) {
             connectionContainer = connectionContainers.get(url);
-            if (connectionContainers.get(url) == null) {
+            if (connectionContainer == null) {
                 LOG.debug("Creating new connection");
 
                 // Crate a connection container to manage handling this connection
-                connectionContainer = new ConnectionContainer(connectionManager, url, maxLeaseTime);
+                connectionContainer = new ConnectionContainer(connectionManager, url, maxLeaseTime, maxIdleTime,
+                    closeConnection -> {
+                        removeCachedConnection(closeConnection);
+                        return null;
+                    });
                 connectionContainers.put(url, connectionContainer);
             } else {
                 LOG.debug("Reusing exising connection");
@@ -105,20 +121,34 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         throw new PlcConnectionException("the cached driver manager currently doesn't support authentication");
     }
 
+    @Override
+    public void close() throws Exception {
+        // Set the cache to "closed" so no new connections can be requested.
+        closed.set(true);
+
+        // Tell all connections to close themselves.
+        connectionContainers.forEach((connectionString, connectionContainer) -> {
+            connectionContainer.close();
+        });
+    }
+
     public static class Builder {
 
         private final PlcConnectionManager connectionManager;
         private Duration maxLeaseTime;
         private Duration maxWaitTime;
+        private Duration maxIdleTime;
 
         public Builder(PlcConnectionManager connectionManager) {
             this.connectionManager = connectionManager;
             this.maxLeaseTime = Duration.ofSeconds(4);
             this.maxWaitTime = Duration.ofSeconds(20);
+            this.maxIdleTime = Duration.ofMinutes(5);
         }
 
         public CachedPlcConnectionManager build() {
-            return new CachedPlcConnectionManager(this.connectionManager, this.maxLeaseTime, this.maxWaitTime);
+            return new CachedPlcConnectionManager(
+                this.connectionManager, this.maxLeaseTime, this.maxWaitTime, this.maxIdleTime);
         }
 
         public CachedPlcConnectionManager.Builder withMaxLeaseTime(Duration maxLeaseTime) {
@@ -128,6 +158,11 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
 
         public CachedPlcConnectionManager.Builder withMaxWaitTime(Duration maxWaitTime) {
             this.maxWaitTime = maxWaitTime;
+            return this;
+        }
+
+        public CachedPlcConnectionManager.Builder withMaxIdleTime(Duration maxIdleTime) {
+            this.maxIdleTime = maxIdleTime;
             return this;
         }
     }

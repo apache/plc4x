@@ -89,12 +89,6 @@ public abstract class ConnectionRequestInformation implements Message {
     return lengthInBits;
   }
 
-  public static ConnectionRequestInformation staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ConnectionRequestInformation staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ConnectionRequestInformation");

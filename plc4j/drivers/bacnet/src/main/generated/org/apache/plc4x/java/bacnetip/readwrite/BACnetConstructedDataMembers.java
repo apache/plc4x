@@ -118,8 +118,7 @@ public class BACnetConstructedDataMembers extends BACnetConstructedData implemen
     List<BACnetDeviceObjectReference> members =
         readTerminatedArrayField(
             "members",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

@@ -63,12 +63,6 @@ public class DecimalString implements Message {
     return lengthInBits;
   }
 
-  public static DecimalString staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DecimalString staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DecimalString");
     PositionAware positionAware = readBuffer;

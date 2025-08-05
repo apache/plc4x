@@ -99,12 +99,6 @@ public class CANOpenTime implements Message {
     return lengthInBits;
   }
 
-  public static CANOpenTime staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static CANOpenTime staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CANOpenTime");
     PositionAware positionAware = readBuffer;

@@ -61,10 +61,10 @@ public class Error implements Message {
     writeBuffer.pushContext("Error");
 
     // Simple Field (errorClass)
-    writeSimpleField("errorClass", errorClass, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorClass", errorClass, writeComplex(writeBuffer));
 
     // Simple Field (errorCode)
-    writeSimpleField("errorCode", errorCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorCode", errorCode, writeComplex(writeBuffer));
 
     writeBuffer.popContext("Error");
   }
@@ -89,11 +89,6 @@ public class Error implements Message {
     return lengthInBits;
   }
 
-  public static Error staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Error staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Error");
     PositionAware positionAware = readBuffer;
@@ -102,7 +97,7 @@ public class Error implements Message {
     ErrorClassTagged errorClass =
         readSimpleField(
             "errorClass",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     ErrorClassTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),
@@ -111,7 +106,7 @@ public class Error implements Message {
     ErrorCodeTagged errorCode =
         readSimpleField(
             "errorCode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     ErrorCodeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

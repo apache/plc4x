@@ -82,11 +82,14 @@ func WithCustomBufferForByteBasedBuffer(buffer *bytes.Buffer) WriteBufferByteBas
 //
 
 type byteWriteBuffer struct {
+	BufferCommons
 	data      *bytes.Buffer
 	writer    *bitio.Writer
 	byteOrder binary.ByteOrder
 	pos       uint
 }
+
+var _ WriteBuffer = (*boxedWriteBuffer)(nil)
 
 //
 // Internal section
@@ -94,16 +97,16 @@ type byteWriteBuffer struct {
 ///////////////////////////////////////
 ///////////////////////////////////////
 
-func (wb *byteWriteBuffer) PushContext(_ string, _ ...WithWriterArgs) error {
-	return nil
-}
-
 func (wb *byteWriteBuffer) SetByteOrder(byteOrder binary.ByteOrder) {
 	wb.byteOrder = byteOrder
 }
 
 func (wb *byteWriteBuffer) GetByteOrder() binary.ByteOrder {
 	return wb.byteOrder
+}
+
+func (wb *byteWriteBuffer) PushContext(_ string, _ ...WithWriterArgs) error {
+	return nil
 }
 
 func (wb *byteWriteBuffer) GetPos() uint16 {
@@ -235,10 +238,11 @@ func (wb *byteWriteBuffer) WriteBigFloat(_ string, bitLength uint8, value *big.F
 	return errors.New("not implemented yet")
 }
 
-func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, encoding string, value string, _ ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, value string, writerArgs ...WithWriterArgs) error {
 	wb.move(uint(bitLength))
 	// TODO: make this a writer arg
 	var nonAlphanumericRegex = regexp.MustCompile(`[^A-Z0-9]+`)
+	encoding := wb.ExtractEncoding(UpcastWriterArgs(writerArgs...)...)
 	encoding = nonAlphanumericRegex.ReplaceAllLiteralString(strings.ToUpper(encoding), "")
 	remainingBits := int64(bitLength) // we use int64 otherwise the subtraction below flips
 	// TODO: the implementation completely ignores encoding for now. Fix this

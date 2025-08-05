@@ -91,12 +91,6 @@ public class ByteStringArray implements Message {
     return lengthInBits;
   }
 
-  public static ByteStringArray staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ByteStringArray staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ByteStringArray");
     PositionAware positionAware = readBuffer;

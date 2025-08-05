@@ -119,7 +119,7 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
     List<BACnetVTClassTagged> vtClassesSupported =
         readTerminatedArrayField(
             "vtClassesSupported",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVTClassTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

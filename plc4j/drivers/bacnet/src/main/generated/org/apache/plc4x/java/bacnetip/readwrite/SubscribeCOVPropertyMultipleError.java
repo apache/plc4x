@@ -69,13 +69,10 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
     writeBuffer.pushContext("SubscribeCOVPropertyMultipleError");
 
     // Simple Field (errorType)
-    writeSimpleField("errorType", errorType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorType", errorType, writeComplex(writeBuffer));
 
     // Simple Field (firstFailedSubscription)
-    writeSimpleField(
-        "firstFailedSubscription",
-        firstFailedSubscription,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("firstFailedSubscription", firstFailedSubscription, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SubscribeCOVPropertyMultipleError");
   }
@@ -109,13 +106,12 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
     ErrorEnclosed errorType =
         readSimpleField(
             "errorType",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     SubscribeCOVPropertyMultipleErrorFirstFailedSubscription firstFailedSubscription =
         readSimpleField(
             "firstFailedSubscription",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     SubscribeCOVPropertyMultipleErrorFirstFailedSubscription.staticParse(
                         readBuffer, (short) (1)),

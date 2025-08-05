@@ -64,7 +64,7 @@ public class ByteStringNodeId implements Message {
     writeSimpleField("namespaceIndex", namespaceIndex, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (identifier)
-    writeSimpleField("identifier", identifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("identifier", identifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ByteStringNodeId");
   }
@@ -89,12 +89,6 @@ public class ByteStringNodeId implements Message {
     return lengthInBits;
   }
 
-  public static ByteStringNodeId staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ByteStringNodeId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ByteStringNodeId");
     PositionAware positionAware = readBuffer;
@@ -104,9 +98,7 @@ public class ByteStringNodeId implements Message {
 
     PascalByteString identifier =
         readSimpleField(
-            "identifier",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "identifier", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ByteStringNodeId");
     // Create the instance

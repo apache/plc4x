@@ -22,14 +22,17 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
-import org.apache.plc4x.java.plc4x.tag.Plc4xTag;
 import org.apache.plc4x.java.plc4x.readwrite.*;
+import org.apache.plc4x.java.plc4x.tag.Plc4XTagHandler;
+import org.apache.plc4x.java.plc4x.tag.Plc4xTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +64,16 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
     }
 
     @Override
+    public PlcTagHandler getTagHandler() {
+        return new Plc4XTagHandler();
+    }
+
+    @Override
+    public void close(ConversationContext<Plc4xMessage> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void onConnect(ConversationContext<Plc4xMessage> context) {
         final int requestId = txIdGenerator.getAndIncrement();
 
@@ -73,7 +86,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             })
             .expectResponse(Plc4xMessage.class, requestTimeout)
             .check(p -> p.getRequestId() == requestId)
-            .unwrap(plc4xMessage -> (Plc4xConnectResponse) plc4xMessage)
+            .only(Plc4xConnectResponse.class)
             .handle(connectResponse -> {
                 // Save the connection id.
                 connectionId = connectResponse.getConnectionId();
@@ -104,20 +117,20 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
 
         // Send the request and await a response.
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        context.sendRequest(plc4xReadRequest)
+        conversationContext.sendRequest(plc4xReadRequest)
             .expectResponse(Plc4xMessage.class, requestTimeout)
             .onTimeout(future::completeExceptionally)
             .check(plc4xMessage -> plc4xMessage.getRequestId() == requestId)
-            .unwrap(plc4xMessage -> (Plc4xReadResponse) plc4xMessage)
+            .only(Plc4xReadResponse.class)
             .check(plc4xReadResponse -> plc4xReadResponse.getConnectionId() == connectionId)
             .handle(plc4xReadResponse -> {
-                Map<String, ResponseItem<PlcValue>> apiResponses = new HashMap<>();
+                Map<String, PlcResponseItem<PlcValue>> apiResponses = new HashMap<>();
                 // Create the API response from the incoming message.
                 for (Plc4xTagValueResponse plc4xTag : plc4xReadResponse.getTags()) {
                     final Plc4xResponseCode plc4xResponseCode = plc4xTag.getResponseCode();
                     final PlcResponseCode apiResponseCode = PlcResponseCode.valueOf(plc4xResponseCode.name());
                     apiResponses.put(plc4xTag.getTag().getName(),
-                        new ResponseItem<>(apiResponseCode, plc4xTag.getValue()));
+                        new DefaultPlcResponseItem<>(apiResponseCode, plc4xTag.getValue()));
                 }
 
                 // Send it back to the calling process.
@@ -148,11 +161,11 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
 
         // Send the request and await a response.
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        context.sendRequest(write)
+        conversationContext.sendRequest(write)
             .expectResponse(Plc4xMessage.class, requestTimeout)
             .onTimeout(future::completeExceptionally)
             .check(p -> p.getRequestId() == requestId)
-            .unwrap(plc4xMessage -> (Plc4xWriteResponse) plc4xMessage)
+            .only(Plc4xWriteResponse.class)
             .check(plc4xReadResponse -> plc4xReadResponse.getConnectionId() == connectionId)
             .handle(plc4xWriteResponse -> {
                 Map<String, PlcResponseCode> apiResponses = new HashMap<>();
@@ -180,11 +193,6 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
     @Override
     public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
         return super.unsubscribe(unsubscriptionRequest);
-    }
-
-    @Override
-    public void close(ConversationContext<Plc4xMessage> context) {
-        // Nothing to do here ...
     }
 
     @Override

@@ -128,8 +128,7 @@ public class S7PayloadUserDataItemCyclicServicesChangeDrivenPush extends S7Paylo
     List<AssociatedQueryValueType> items =
         readCountArrayField(
             "items",
-            new DataReaderComplexDefault<>(
-                () -> AssociatedQueryValueType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AssociatedQueryValueType.staticParse(readBuffer), readBuffer),
             itemsCount);
 
     readBuffer.closeContext("S7PayloadUserDataItemCyclicServicesChangeDrivenPush");

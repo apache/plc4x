@@ -90,12 +90,6 @@ public class EipConstants implements Message {
     return lengthInBits;
   }
 
-  public static EipConstants staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static EipConstants staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("EipConstants");
     PositionAware positionAware = readBuffer;

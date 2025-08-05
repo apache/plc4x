@@ -21,18 +21,19 @@ package modbus
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"math"
+	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 type Writer struct {
@@ -40,12 +41,14 @@ type Writer struct {
 	unitIdentifier        uint8
 	messageCodec          spi.MessageCodec
 
+	wg sync.WaitGroup // use to track spawned go routines
+
 	log zerolog.Logger
 }
 
-func NewWriter(unitIdentifier uint8, messageCodec spi.MessageCodec, _options ...options.WithOption) Writer {
+func NewWriter(unitIdentifier uint8, messageCodec spi.MessageCodec, _options ...options.WithOption) *Writer {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	return Writer{
+	return &Writer{
 		transactionIdentifier: 0,
 		unitIdentifier:        unitIdentifier,
 		messageCodec:          messageCodec,
@@ -53,10 +56,12 @@ func NewWriter(unitIdentifier uint8, messageCodec spi.MessageCodec, _options ...
 	}
 }
 
-func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
+func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	// TODO: handle context
 	result := make(chan apiModel.PlcWriteRequestResult, 1)
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		// If we are requesting only one tag, use a
 		if len(writeRequest.GetTagNames()) != 1 {
 			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("modbus only supports single-item requests"))
@@ -74,7 +79,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(tagName)
-		data, err := readWriteModel.DataItemSerialize(value, modbusTag.Datatype, modbusTag.Quantity)
+		data, err := readWriteModel.DataItemSerialize(value, modbusTag.Datatype, modbusTag.Quantity, true)
 		if err != nil {
 			result <- spiModel.NewDefaultPlcWriteRequestResult(
 				writeRequest,
@@ -151,7 +156,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 	return result
 }
 
-func (m Writer) ToPlc4xWriteResponse(requestAdu readWriteModel.ModbusTcpADU, responseAdu readWriteModel.ModbusTcpADU, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
+func (m *Writer) ToPlc4xWriteResponse(requestAdu readWriteModel.ModbusTcpADU, responseAdu readWriteModel.ModbusTcpADU, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	tagName := writeRequest.GetTagNames()[0]
 

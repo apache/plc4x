@@ -144,7 +144,7 @@ public class OpenProtocolMessageAlarmStatusRev2 extends OpenProtocolMessageAlarm
         "controllerAlarmStatus",
         "AlarmActiveStatus",
         controllerAlarmStatus,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AlarmActiveStatus::getValue,
             AlarmActiveStatus::name,
             writeUnsignedShort(writeBuffer, 8)),
@@ -173,8 +173,7 @@ public class OpenProtocolMessageAlarmStatusRev2 extends OpenProtocolMessageAlarm
         "controllerReadyStatus",
         "NokOk",
         controllerReadyStatus,
-        new DataWriterEnumDefault<>(
-            NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdToolReadyStatus)
@@ -189,8 +188,7 @@ public class OpenProtocolMessageAlarmStatusRev2 extends OpenProtocolMessageAlarm
         "toolReadyStatus",
         "NokOk",
         toolReadyStatus,
-        new DataWriterEnumDefault<>(
-            NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTime)
@@ -269,8 +267,7 @@ public class OpenProtocolMessageAlarmStatusRev2 extends OpenProtocolMessageAlarm
         readEnumField(
             "controllerAlarmStatus",
             "AlarmActiveStatus",
-            new DataReaderEnumDefault<>(
-                AlarmActiveStatus::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(AlarmActiveStatus::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdErrorCode =
@@ -294,7 +291,7 @@ public class OpenProtocolMessageAlarmStatusRev2 extends OpenProtocolMessageAlarm
         readEnumField(
             "controllerReadyStatus",
             "NokOk",
-            new DataReaderEnumDefault<>(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdToolReadyStatus =
@@ -308,7 +305,7 @@ public class OpenProtocolMessageAlarmStatusRev2 extends OpenProtocolMessageAlarm
         readEnumField(
             "toolReadyStatus",
             "NokOk",
-            new DataReaderEnumDefault<>(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdTime =

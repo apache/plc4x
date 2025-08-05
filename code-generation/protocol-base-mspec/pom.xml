@@ -24,13 +24,17 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation</artifactId>
-    <version>0.11.0</version>
+    <version>0.13.0</version>
   </parent>
 
   <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
 
   <name>Code-Generation: Protocol Base: MSpec</name>
   <description>Base stuff for building protocols using our custom MSpec format.</description>
+
+  <properties>
+    <project.build.outputTimestamp>2025-08-02T13:58:13Z</project.build.outputTimestamp>
+  </properties>
 
   <build>
     <plugins>
@@ -110,6 +114,27 @@
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-library</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- JUnit 5 Support -->
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -80,42 +80,6 @@ public abstract class CBusMessage implements Message {
     return lengthInBits;
   }
 
-  public static CBusMessage staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 3)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 3, but got " + args.length);
-    }
-    Boolean isResponse;
-    if (args[0] instanceof Boolean) {
-      isResponse = (Boolean) args[0];
-    } else if (args[0] instanceof String) {
-      isResponse = Boolean.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Boolean or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    RequestContext requestContext;
-    if (args[1] instanceof RequestContext) {
-      requestContext = (RequestContext) args[1];
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type RequestContext or a string which is parseable but was "
-              + args[1].getClass().getName());
-    }
-    CBusOptions cBusOptions;
-    if (args[2] instanceof CBusOptions) {
-      cBusOptions = (CBusOptions) args[2];
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 2 expected to be of type CBusOptions or a string which is parseable but was "
-              + args[2].getClass().getName());
-    }
-    return staticParse(readBuffer, isResponse, requestContext, cBusOptions);
-  }
-
   public static CBusMessage staticParse(
       ReadBuffer readBuffer,
       Boolean isResponse,

@@ -150,12 +150,6 @@ public class BinaryCounterReading implements Message {
     return lengthInBits;
   }
 
-  public static BinaryCounterReading staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BinaryCounterReading staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BinaryCounterReading");
     PositionAware positionAware = readBuffer;

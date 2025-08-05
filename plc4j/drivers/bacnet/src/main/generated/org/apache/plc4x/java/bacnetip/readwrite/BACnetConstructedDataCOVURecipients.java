@@ -118,8 +118,7 @@ public class BACnetConstructedDataCOVURecipients extends BACnetConstructedData i
     List<BACnetRecipient> covuRecipients =
         readTerminatedArrayField(
             "covuRecipients",
-            new DataReaderComplexDefault<>(
-                () -> BACnetRecipient.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetRecipient.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

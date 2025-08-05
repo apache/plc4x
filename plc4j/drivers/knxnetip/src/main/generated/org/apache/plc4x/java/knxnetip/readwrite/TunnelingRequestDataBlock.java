@@ -104,12 +104,6 @@ public class TunnelingRequestDataBlock implements Message {
     return lengthInBits;
   }
 
-  public static TunnelingRequestDataBlock staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TunnelingRequestDataBlock staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TunnelingRequestDataBlock");
     PositionAware positionAware = readBuffer;

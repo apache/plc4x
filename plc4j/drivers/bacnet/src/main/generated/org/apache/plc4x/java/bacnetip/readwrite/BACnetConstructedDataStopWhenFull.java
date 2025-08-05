@@ -82,7 +82,7 @@ public class BACnetConstructedDataStopWhenFull extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataStopWhenFull");
 
     // Simple Field (stopWhenFull)
-    writeSimpleField("stopWhenFull", stopWhenFull, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("stopWhenFull", stopWhenFull, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataStopWhenFull extends BACnetConstructedData imp
     BACnetApplicationTagBoolean stopWhenFull =
         readSimpleField(
             "stopWhenFull",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

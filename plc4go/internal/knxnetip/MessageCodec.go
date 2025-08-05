@@ -22,24 +22,24 @@ package knxnetip
 import (
 	"context"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
+//go:generate go tool plc4xGenerator -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
 	sequenceCounter    int32
 	messageInterceptor func(message spi.Message)
 
 	passLogToModel bool
-	log            zerolog.Logger `ignore:"true"`
+	log            zerolog.Logger
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, messageInterceptor func(message spi.Message), _options ...options.WithOption) *MessageCodec {
@@ -102,8 +102,8 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-		knxMessage, err := model.KnxNetIpMessageParse(ctxForModel, data)
+		ctxForModel := options.GetLoggerContextForModel(context.Background(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		knxMessage, err := model.KnxNetIpMessageParse[model.KnxNetIpMessage](ctxForModel, data)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing message")
 			// TODO: Possibly clean up ...

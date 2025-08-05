@@ -20,9 +20,10 @@
 package transports
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"io"
 	"net/url"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 type Transport interface {

@@ -106,41 +106,34 @@ public class AirConditioningDataSetZoneHumidityMode extends AirConditioningData 
     writeSimpleField("zoneGroup", zoneGroup, writeByte(writeBuffer, 8));
 
     // Simple Field (zoneList)
-    writeSimpleField("zoneList", zoneList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneList", zoneList, writeComplex(writeBuffer));
 
     // Simple Field (humidityModeAndFlags)
-    writeSimpleField(
-        "humidityModeAndFlags", humidityModeAndFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("humidityModeAndFlags", humidityModeAndFlags, writeComplex(writeBuffer));
 
     // Simple Field (humidityType)
     writeSimpleEnumField(
         "humidityType",
         "HVACHumidityType",
         humidityType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HVACHumidityType::getValue,
             HVACHumidityType::name,
             writeUnsignedShort(writeBuffer, 8)));
 
     // Optional Field (level) (Can be skipped, if the value is null)
     writeOptionalField(
-        "level",
-        level,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getHumidityModeAndFlags().getIsLevelHumidity());
+        "level", level, writeComplex(writeBuffer), getHumidityModeAndFlags().getIsLevelHumidity());
 
     // Optional Field (rawLevel) (Can be skipped, if the value is null)
     writeOptionalField(
-        "rawLevel",
-        rawLevel,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getHumidityModeAndFlags().getIsLevelRaw());
+        "rawLevel", rawLevel, writeComplex(writeBuffer), getHumidityModeAndFlags().getIsLevelRaw());
 
     // Optional Field (auxLevel) (Can be skipped, if the value is null)
     writeOptionalField(
         "auxLevel",
         auxLevel,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         getHumidityModeAndFlags().getIsAuxLevelUsed());
 
     writeBuffer.popContext("AirConditioningDataSetZoneHumidityMode");
@@ -197,39 +190,35 @@ public class AirConditioningDataSetZoneHumidityMode extends AirConditioningData 
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     HVACHumidityModeAndFlags humidityModeAndFlags =
         readSimpleField(
             "humidityModeAndFlags",
-            new DataReaderComplexDefault<>(
-                () -> HVACHumidityModeAndFlags.staticParse(readBuffer), readBuffer));
+            readComplex(() -> HVACHumidityModeAndFlags.staticParse(readBuffer), readBuffer));
 
     HVACHumidityType humidityType =
         readEnumField(
             "humidityType",
             "HVACHumidityType",
-            new DataReaderEnumDefault<>(
-                HVACHumidityType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HVACHumidityType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     HVACHumidity level =
         readOptionalField(
             "level",
-            new DataReaderComplexDefault<>(() -> HVACHumidity.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HVACHumidity.staticParse(readBuffer), readBuffer),
             humidityModeAndFlags.getIsLevelHumidity());
 
     HVACRawLevels rawLevel =
         readOptionalField(
             "rawLevel",
-            new DataReaderComplexDefault<>(() -> HVACRawLevels.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HVACRawLevels.staticParse(readBuffer), readBuffer),
             humidityModeAndFlags.getIsLevelRaw());
 
     HVACAuxiliaryLevel auxLevel =
         readOptionalField(
             "auxLevel",
-            new DataReaderComplexDefault<>(
-                () -> HVACAuxiliaryLevel.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HVACAuxiliaryLevel.staticParse(readBuffer), readBuffer),
             humidityModeAndFlags.getIsAuxLevelUsed());
 
     readBuffer.closeContext("AirConditioningDataSetZoneHumidityMode");

@@ -22,11 +22,12 @@ package utils
 import (
 	"encoding/xml"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"math/big"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewStrictXmlReadBuffer(t *testing.T) {
@@ -824,7 +825,6 @@ func Test_xmlReadBuffer_ReadString(t *testing.T) {
 	type args struct {
 		logicalName string
 		bitLength   uint32
-		encoding    string
 		readerArgs  []WithReaderArgs
 	}
 	tests := []struct {
@@ -855,11 +855,11 @@ func Test_xmlReadBuffer_ReadString(t *testing.T) {
 				doValidateAttr: tt.fields.doValidateAttr,
 				doValidateList: tt.fields.doValidateList,
 			}
-			got, err := x.ReadString(tt.args.logicalName, tt.args.bitLength, tt.args.encoding, tt.args.readerArgs...)
-			if !tt.wantErr(t, err, fmt.Sprintf("ReadString(%v, %v, %v, %v)", tt.args.logicalName, tt.args.bitLength, tt.args.encoding, tt.args.readerArgs)) {
+			got, err := x.ReadString(tt.args.logicalName, tt.args.bitLength, tt.args.readerArgs...)
+			if !tt.wantErr(t, err, fmt.Sprintf("ReadString(%v, %v, %v)", tt.args.logicalName, tt.args.bitLength, tt.args.readerArgs)) {
 				return
 			}
-			assert.Equalf(t, tt.want, got, "ReadString(%v, %v, %v, %v)", tt.args.logicalName, tt.args.bitLength, tt.args.encoding, tt.args.readerArgs)
+			assert.Equalf(t, tt.want, got, "ReadString(%v, %v, %v)", tt.args.logicalName, tt.args.bitLength, tt.args.readerArgs)
 		})
 	}
 }

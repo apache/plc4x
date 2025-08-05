@@ -105,27 +105,6 @@ public abstract class BACnetPriorityValue implements Message {
     return lengthInBits;
   }
 
-  public static BACnetPriorityValue staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    BACnetObjectType objectTypeArgument;
-    if (args[0] instanceof BACnetObjectType) {
-      objectTypeArgument = (BACnetObjectType) args[0];
-    } else if (args[0] instanceof String) {
-      objectTypeArgument = BACnetObjectType.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type BACnetObjectType or a string which is parseable but"
-              + " was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, objectTypeArgument);
-  }
-
   public static BACnetPriorityValue staticParse(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValue");
@@ -135,8 +114,7 @@ public abstract class BACnetPriorityValue implements Message {
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
     boolean peekedIsContextTag =

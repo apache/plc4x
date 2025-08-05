@@ -55,7 +55,7 @@ public class Plc4xTagRequest implements Message {
     writeBuffer.pushContext("Plc4xTagRequest");
 
     // Simple Field (tag)
-    writeSimpleField("tag", tag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("tag", tag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("Plc4xTagRequest");
   }
@@ -77,21 +77,13 @@ public class Plc4xTagRequest implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xTagRequest staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Plc4xTagRequest staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Plc4xTagRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Plc4xTag tag =
-        readSimpleField(
-            "tag",
-            new DataReaderComplexDefault<>(() -> Plc4xTag.staticParse(readBuffer), readBuffer));
+        readSimpleField("tag", readComplex(() -> Plc4xTag.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("Plc4xTagRequest");
     // Create the instance

@@ -170,7 +170,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
         "maxSegmentsAccepted",
         "MaxSegmentsAccepted",
         maxSegmentsAccepted,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MaxSegmentsAccepted::getValue,
             MaxSegmentsAccepted::name,
             writeUnsignedByte(writeBuffer, 3)));
@@ -180,7 +180,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
         "maxApduLengthAccepted",
         "MaxApduLengthAccepted",
         maxApduLengthAccepted,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MaxApduLengthAccepted::getValue,
             MaxApduLengthAccepted::name,
             writeUnsignedByte(writeBuffer, 4)));
@@ -208,17 +208,14 @@ public class APDUConfirmedRequest extends APDU implements Message {
 
     // Optional Field (serviceRequest) (Can be skipped, if the value is null)
     writeOptionalField(
-        "serviceRequest",
-        serviceRequest,
-        new DataWriterComplexDefault<>(writeBuffer),
-        !(getSegmentedMessage()));
+        "serviceRequest", serviceRequest, writeComplex(writeBuffer), !(getSegmentedMessage()));
 
     // Optional Field (segmentServiceChoice) (Can be skipped, if the value is null)
     writeOptionalEnumField(
         "segmentServiceChoice",
         "BACnetConfirmedServiceChoice",
         segmentServiceChoice,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetConfirmedServiceChoice::getValue,
             BACnetConfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)),
@@ -317,15 +314,13 @@ public class APDUConfirmedRequest extends APDU implements Message {
         readEnumField(
             "maxSegmentsAccepted",
             "MaxSegmentsAccepted",
-            new DataReaderEnumDefault<>(
-                MaxSegmentsAccepted::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(MaxSegmentsAccepted::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     MaxApduLengthAccepted maxApduLengthAccepted =
         readEnumField(
             "maxApduLengthAccepted",
             "MaxApduLengthAccepted",
-            new DataReaderEnumDefault<>(
-                MaxApduLengthAccepted::enumForValue, readUnsignedByte(readBuffer, 4)));
+            readEnum(MaxApduLengthAccepted::enumForValue, readUnsignedByte(readBuffer, 4)));
 
     short invokeId = readSimpleField("invokeId", readUnsignedShort(readBuffer, 8));
 
@@ -340,7 +335,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
     BACnetConfirmedServiceRequest serviceRequest =
         readOptionalField(
             "serviceRequest",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConfirmedServiceRequest.staticParse(
                         readBuffer, (long) ((apduLength) - (apduHeaderReduction))),
@@ -354,8 +349,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
     BACnetConfirmedServiceChoice segmentServiceChoice =
         readOptionalField(
             "segmentServiceChoice",
-            new DataReaderEnumDefault<>(
-                BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)),
             (segmentedMessage) && ((sequenceNumber) != (0)));
     int segmentReduction =
         readVirtualField(

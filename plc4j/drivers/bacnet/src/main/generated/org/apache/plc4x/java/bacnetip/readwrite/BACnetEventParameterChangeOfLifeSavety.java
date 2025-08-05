@@ -99,29 +99,23 @@ public class BACnetEventParameterChangeOfLifeSavety extends BACnetEventParameter
     writeBuffer.pushContext("BACnetEventParameterChangeOfLifeSavety");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (timeDelay)
-    writeSimpleField("timeDelay", timeDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeDelay", timeDelay, writeComplex(writeBuffer));
 
     // Simple Field (listOfLifeSavetyAlarmValues)
     writeSimpleField(
-        "listOfLifeSavetyAlarmValues",
-        listOfLifeSavetyAlarmValues,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "listOfLifeSavetyAlarmValues", listOfLifeSavetyAlarmValues, writeComplex(writeBuffer));
 
     // Simple Field (listOfAlarmValues)
-    writeSimpleField(
-        "listOfAlarmValues", listOfAlarmValues, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfAlarmValues", listOfAlarmValues, writeComplex(writeBuffer));
 
     // Simple Field (modePropertyReference)
-    writeSimpleField(
-        "modePropertyReference",
-        modePropertyReference,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("modePropertyReference", modePropertyReference, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterChangeOfLifeSavety");
   }
@@ -167,13 +161,12 @@ public class BACnetEventParameterChangeOfLifeSavety extends BACnetEventParameter
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (8)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (8)), readBuffer));
 
     BACnetContextTagUnsignedInteger timeDelay =
         readSimpleField(
             "timeDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -185,7 +178,7 @@ public class BACnetEventParameterChangeOfLifeSavety extends BACnetEventParameter
     BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues listOfLifeSavetyAlarmValues =
         readSimpleField(
             "listOfLifeSavetyAlarmValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues.staticParse(
                         readBuffer, (short) (1)),
@@ -194,7 +187,7 @@ public class BACnetEventParameterChangeOfLifeSavety extends BACnetEventParameter
     BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues listOfAlarmValues =
         readSimpleField(
             "listOfAlarmValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues.staticParse(
                         readBuffer, (short) (2)),
@@ -203,7 +196,7 @@ public class BACnetEventParameterChangeOfLifeSavety extends BACnetEventParameter
     BACnetDeviceObjectPropertyReferenceEnclosed modePropertyReference =
         readSimpleField(
             "modePropertyReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (4)),
@@ -212,8 +205,7 @@ public class BACnetEventParameterChangeOfLifeSavety extends BACnetEventParameter
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (8)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (8)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterChangeOfLifeSavety");
     // Create the instance

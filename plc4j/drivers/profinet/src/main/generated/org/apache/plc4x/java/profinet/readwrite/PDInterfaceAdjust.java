@@ -141,7 +141,7 @@ public class PDInterfaceAdjust extends PnIoCm_Block implements Message {
         "multipleInterfaceModeNameOfDevice",
         "MultipleInterfaceModeNameOfDevice",
         multipleInterfaceModeNameOfDevice,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MultipleInterfaceModeNameOfDevice::getValue,
             MultipleInterfaceModeNameOfDevice::name,
             writeBoolean(writeBuffer)),
@@ -234,8 +234,7 @@ public class PDInterfaceAdjust extends PnIoCm_Block implements Message {
         readEnumField(
             "multipleInterfaceModeNameOfDevice",
             "MultipleInterfaceModeNameOfDevice",
-            new DataReaderEnumDefault<>(
-                MultipleInterfaceModeNameOfDevice::enumForValue, readBoolean(readBuffer)),
+            readEnum(MultipleInterfaceModeNameOfDevice::enumForValue, readBoolean(readBuffer)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PDInterfaceAdjust");

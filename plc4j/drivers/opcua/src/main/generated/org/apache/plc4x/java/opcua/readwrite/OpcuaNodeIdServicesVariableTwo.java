@@ -26,12 +26,7 @@ import java.util.Map;
 public enum OpcuaNodeIdServicesVariableTwo {
   TwoStateDiscreteType_FalseState((int) 2374L),
   TwoStateDiscreteType_TrueState((int) 2375L),
-  TwoStateDiscreteType_Definition((int) 3778L),
-  TwoStateDiscreteType_ValuePrecision((int) 3779L),
   TwoStateVariableType_Id((int) 8996L),
-  TwoStateVariableType_Name((int) 8997L),
-  TwoStateVariableType_Number((int) 8998L),
-  TwoStateVariableType_EffectiveDisplayName((int) 8999L),
   TwoStateVariableType_TransitionTime((int) 9000L),
   TwoStateVariableType_EffectiveTransitionTime((int) 9001L),
   TwoStateVariableType_TrueState((int) 11110L),

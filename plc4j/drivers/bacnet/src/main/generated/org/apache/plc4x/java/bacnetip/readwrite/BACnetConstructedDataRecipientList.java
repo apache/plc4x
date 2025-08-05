@@ -118,8 +118,7 @@ public class BACnetConstructedDataRecipientList extends BACnetConstructedData im
     List<BACnetDestination> recipientList =
         readTerminatedArrayField(
             "recipientList",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDestination.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetDestination.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

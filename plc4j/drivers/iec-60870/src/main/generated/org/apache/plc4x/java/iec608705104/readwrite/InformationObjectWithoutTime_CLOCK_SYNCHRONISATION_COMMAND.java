@@ -67,7 +67,7 @@ public class InformationObjectWithoutTime_CLOCK_SYNCHRONISATION_COMMAND
     writeSimpleField(
         "cp56Time2a",
         cp56Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_CLOCK_SYNCHRONISATION_COMMAND");
@@ -100,8 +100,7 @@ public class InformationObjectWithoutTime_CLOCK_SYNCHRONISATION_COMMAND
     SevenOctetBinaryTime cp56Time2a =
         readSimpleField(
             "cp56Time2a",
-            new DataReaderComplexDefault<>(
-                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_CLOCK_SYNCHRONISATION_COMMAND");

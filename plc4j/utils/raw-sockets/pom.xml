@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-utils</artifactId>
-    <version>0.11.0</version>
+    <version>0.13.0</version>
   </parent>
 
   <artifactId>plc4j-utils-raw-sockets</artifactId>
@@ -33,11 +33,15 @@
   <description>An implementation of a Netty Channel that allows implementing protocols below the TCP and UCP level.
   </description>
 
+  <properties>
+    <project.build.outputTimestamp>2025-08-02T13:58:13Z</project.build.outputTimestamp>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.11.0</version>
+      <version>0.13.0</version>
     </dependency>
 
     <dependency>
@@ -85,7 +89,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.11.0</version>
+      <version>0.13.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -99,6 +103,13 @@
           <usedDependencies>
             <usedDependency>org.pcap4j:pcap4j-packetfactory-static</usedDependency>
           </usedDependencies>
+          <ignoredDependencies combine.children="append">
+            <!--
+              For some reason we need to do this. The compiler needs it in order to compile,
+              but the plugin doesn't detect this.
+            -->
+            <ignoredDependency>io.netty:netty-common</ignoredDependency>
+          </ignoredDependencies>
         </configuration>
       </plugin>
 

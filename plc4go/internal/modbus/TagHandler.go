@@ -21,21 +21,21 @@ package modbus
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"regexp"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
 )
 
 type TagType uint8
 
-//go:generate stringer -type TagType
-//go:generate go run ../../tools/plc4xlicenser/gen.go -type=TagType
+//go:generate go tool stringer -type TagType
+//go:generate go tool plc4xLicencer -type=TagType
 const (
 	Coil             TagType = 0x00
 	DiscreteInput    TagType = 0x01

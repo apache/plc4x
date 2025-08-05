@@ -137,7 +137,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     writeBuffer.pushContext("NLMUpdateKeyUpdate");
 
     // Simple Field (controlFlags)
-    writeSimpleField("controlFlags", controlFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("controlFlags", controlFlags, writeComplex(writeBuffer));
 
     // Optional Field (set1KeyRevision) (Can be skipped, if the value is null)
     writeOptionalField(
@@ -288,8 +288,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     NLMUpdateKeyUpdateControlFlags controlFlags =
         readSimpleField(
             "controlFlags",
-            new DataReaderComplexDefault<>(
-                () -> NLMUpdateKeyUpdateControlFlags.staticParse(readBuffer), readBuffer));
+            readComplex(() -> NLMUpdateKeyUpdateControlFlags.staticParse(readBuffer), readBuffer));
 
     Byte set1KeyRevision =
         readOptionalField(
@@ -318,8 +317,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     List<NLMUpdateKeyUpdateKeyEntry> set1Keys =
         readCountArrayField(
             "set1Keys",
-            new DataReaderComplexDefault<>(
-                () -> NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer), readBuffer),
             (((set1KeyCount) != (null)) ? set1KeyCount : 0));
 
     Byte set2KeyRevision =
@@ -349,8 +347,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     List<NLMUpdateKeyUpdateKeyEntry> set2Keys =
         readCountArrayField(
             "set2Keys",
-            new DataReaderComplexDefault<>(
-                () -> NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer), readBuffer),
             (((set1KeyCount) != (null)) ? set1KeyCount : 0));
 
     readBuffer.closeContext("NLMUpdateKeyUpdate");

@@ -169,11 +169,6 @@ public class State implements Message {
     return lengthInBits;
   }
 
-  public static State staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static State staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("State");
     PositionAware positionAware = readBuffer;

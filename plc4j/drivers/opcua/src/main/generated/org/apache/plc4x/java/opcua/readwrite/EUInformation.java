@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class EUInformation extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "889";
+  public Integer getExtensionId() {
+    return (int) 889;
   }
 
   // Properties.
@@ -81,16 +81,16 @@ public class EUInformation extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("EUInformation");
 
     // Simple Field (namespaceUri)
-    writeSimpleField("namespaceUri", namespaceUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("namespaceUri", namespaceUri, writeComplex(writeBuffer));
 
     // Simple Field (unitId)
     writeSimpleField("unitId", unitId, writeSignedInt(writeBuffer, 32));
 
     // Simple Field (displayName)
-    writeSimpleField("displayName", displayName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("displayName", displayName, writeComplex(writeBuffer));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     writeBuffer.popContext("EUInformation");
   }
@@ -122,29 +122,24 @@ public class EUInformation extends ExtensionObjectDefinition implements Message 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("EUInformation");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString namespaceUri =
         readSimpleField(
-            "namespaceUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "namespaceUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int unitId = readSimpleField("unitId", readSignedInt(readBuffer, 32));
 
     LocalizedText displayName =
         readSimpleField(
-            "displayName",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "displayName", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     LocalizedText description =
         readSimpleField(
-            "description",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "description", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("EUInformation");
     // Create the instance

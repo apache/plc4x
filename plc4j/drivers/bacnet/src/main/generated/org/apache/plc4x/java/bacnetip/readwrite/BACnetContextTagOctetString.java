@@ -67,7 +67,7 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
     writeBuffer.pushContext("BACnetContextTagOctetString");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetContextTagOctetString");
   }
@@ -102,7 +102,7 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
     BACnetTagPayloadOctetString payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadOctetString.staticParse(
                         readBuffer, (long) (header.getActualLength())),

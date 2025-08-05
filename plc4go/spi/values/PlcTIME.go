@@ -40,7 +40,7 @@ func NewPlcTIME(value time.Duration) PlcTIME {
 	}
 }
 
-func NewPlcTIMEFromMilliseconds(milliseconds uint32) PlcTIME {
+func NewPlcTIMEFromMilliseconds(milliseconds int64) PlcTIME {
 	return NewPlcTIME(time.Duration(milliseconds) * time.Millisecond)
 }
 
@@ -53,8 +53,8 @@ func (m PlcTIME) GetRaw() []byte {
 	return theBytes
 }
 
-func (m PlcTIME) GetMilliseconds() uint32 {
-	return uint32(m.value.Milliseconds())
+func (m PlcTIME) GetMilliseconds() int64 {
+	return m.value.Milliseconds()
 }
 
 func (m PlcTIME) IsDuration() bool {
@@ -86,7 +86,7 @@ func (m PlcTIME) Serialize() ([]byte, error) {
 }
 
 func (m PlcTIME) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcTIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+	return writeBuffer.WriteString("PlcTIME", uint32(len([]rune(m.GetString()))*8), m.GetString())
 }
 
 func (m PlcTIME) String() string {

@@ -21,18 +21,18 @@ package testutils
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"math/rand"
 	"reflect"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/stretchr/testify/assert"
 )
 
 type ManualTestCase struct {

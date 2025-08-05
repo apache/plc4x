@@ -35,6 +35,11 @@ func WithRenderAsList(renderAsList bool) WithReaderWriterArgs {
 	return withRenderAsList{readerWriterArg: readerWriterArg{WithReaderArgs: readerArg{}, WithWriterArgs: writerArg{}}, renderAsList: renderAsList}
 }
 
+// WithEncoding specifies an encoding
+func WithEncoding(encoding string) WithReaderWriterArgs {
+	return withEncoding{readerWriterArg: readerWriterArg{WithReaderArgs: readerArg{}, WithWriterArgs: writerArg{}}, encoding: encoding}
+}
+
 ///////////////////////////////////////
 ///////////////////////////////////////
 //
@@ -62,6 +67,11 @@ type withAdditionalStringRepresentation struct {
 type withRenderAsList struct {
 	readerWriterArg
 	renderAsList bool
+}
+
+type withEncoding struct {
+	readerWriterArg
+	encoding string
 }
 
 //

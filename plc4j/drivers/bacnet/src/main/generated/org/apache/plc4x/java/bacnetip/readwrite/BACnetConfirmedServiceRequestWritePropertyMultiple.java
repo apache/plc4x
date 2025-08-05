@@ -109,8 +109,7 @@ public class BACnetConfirmedServiceRequestWritePropertyMultiple
     List<BACnetWriteAccessSpecification> data =
         readLengthArrayField(
             "data",
-            new DataReaderComplexDefault<>(
-                () -> BACnetWriteAccessSpecification.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetWriteAccessSpecification.staticParse(readBuffer), readBuffer),
             serviceRequestPayloadLength);
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestWritePropertyMultiple");

@@ -18,20 +18,22 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagErrorItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagValueItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcTagValueItem;
 import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -45,10 +47,10 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
 
     private final PlcWriter writer;
 
-    private final LinkedHashMap<String, TagValueItem> tags;
+    private final LinkedHashMap<String, PlcTagValueItem<PlcTag>> tags;
 
     public DefaultPlcWriteRequest(PlcWriter writer,
-                                  LinkedHashMap<String, TagValueItem> tags) {
+                                  LinkedHashMap<String, PlcTagValueItem<PlcTag>> tags) {
         this.writer = writer;
         this.tags = tags;
     }
@@ -69,6 +71,15 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
         return new LinkedHashSet<>(tags.keySet());
     }
 
+    public PlcTagValueItem<PlcTag> getTagValueItem(String tagName) {
+        return tags.get(tagName);
+    }
+
+    @Override
+    public PlcResponseCode getTagResponseCode(String tagName) {
+        return tags.get(tagName).getResponseCode();
+    }
+
     @Override
     public PlcTag getTag(String name) {
         return tags.get(name).getTag();
@@ -76,7 +87,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
 
     @Override
     public List<PlcTag> getTags() {
-        return tags.values().stream().map(TagValueItem::getTag).collect(Collectors.toCollection(LinkedList::new));
+        return tags.values().stream().map(PlcTagValueItem::getTag).collect(Collectors.toCollection(LinkedList::new));
     }
 
     public PlcValue getPlcValue(String name) {
@@ -84,7 +95,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
     }
 
     public List<PlcValue> getPlcValues() {
-        return tags.values().stream().map(TagValueItem::getValue).collect(Collectors.toCollection(LinkedList::new));
+        return tags.values().stream().map(PlcTagValueItem::getValue).collect(Collectors.toCollection(LinkedList::new));
     }
 
     public PlcWriter getWriter() {
@@ -107,32 +118,18 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
 
         writeBuffer.pushContext("PlcTagRequest");
         writeBuffer.pushContext("tags", WithRenderAsList(true));
-        for (Map.Entry<String, TagValueItem> tagEntry : tags.entrySet()) {
-            TagValueItem tagValueItem = tagEntry.getValue();
+        for (Map.Entry<String, PlcTagValueItem<PlcTag>> tagEntry : tags.entrySet()) {
             String tagName = tagEntry.getKey();
             writeBuffer.pushContext(tagName);
-            PlcTag tag = tagValueItem.getTag();
-            if (!(tag instanceof Serializable)) {
-                throw new RuntimeException("Error serializing. Tag doesn't implement Serializable");
+            PlcTagValueItem<PlcTag> plcTagValueItem = tagEntry.getValue();
+            if (!(plcTagValueItem instanceof Serializable)) {
+                throw new RuntimeException("Error serializing. PlcTagValueItem doesn't implement Serializable");
             }
-            ((Serializable) tag).serialize(writeBuffer);
+            ((Serializable) plcTagValueItem).serialize(writeBuffer);
             writeBuffer.popContext(tagName);
         }
         writeBuffer.popContext("tags");
         writeBuffer.popContext("PlcTagRequest");
-
-        writeBuffer.pushContext("values", WithRenderAsList(true));
-        for (Map.Entry<String, TagValueItem> tagEntry : tags.entrySet()) {
-            TagValueItem tagValueItem = tagEntry.getValue();
-            String tagName = tagEntry.getKey();
-            writeBuffer.pushContext(tagName);
-            final PlcValue value = tagValueItem.getValue();
-            if (value != null) {
-                serializePlcValue(value, writeBuffer);
-            }
-            writeBuffer.popContext(tagName);
-        }
-        writeBuffer.popContext("values");
 
         writeBuffer.popContext("PlcWriteRequest");
     }
@@ -154,42 +151,62 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
         private final PlcWriter writer;
         private final PlcTagHandler tagHandler;
         private final PlcValueHandler valueHandler;
-        private final Map<String, Pair<Supplier<PlcTag>, Object[]>> tags;
+        private final Map<String, Supplier<PlcTagValueItem<PlcTag>>> tagValues;
 
         public Builder(PlcWriter writer, PlcTagHandler tagHandler, PlcValueHandler valueHandler) {
-            this.writer = writer;
-            this.tagHandler = tagHandler;
-            this.valueHandler = valueHandler;
-            tags = new TreeMap<>();
+            this.writer = Objects.requireNonNull(writer);
+            this.tagHandler = Objects.requireNonNull(tagHandler);
+            this.valueHandler = Objects.requireNonNull(valueHandler);
+            tagValues = new TreeMap<>();
         }
 
         @Override
         public Builder addTagAddress(String name, String tagAddress, Object... values) {
-            if (tags.containsKey(name)) {
+            if (tagValues.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            tags.put(name, Pair.of(() -> tagHandler.parseTag(tagAddress), values));
+            tagValues.put(name, () -> {
+                try {
+                    PlcTag tag = tagHandler.parseTag(tagAddress);
+                    try {
+                        PlcValue plcValue = parsePlcValue(tag, values);
+                        return new DefaultPlcTagValueItem<>(tag, plcValue);
+                    } catch (Exception e) {
+                        return new DefaultPlcTagErrorItem<>(PlcResponseCode.INVALID_DATA);
+                    }
+                } catch (Exception e) {
+                    return new DefaultPlcTagErrorItem<>(PlcResponseCode.INVALID_ADDRESS);
+                }
+            });
             return this;
         }
 
         @Override
         public Builder addTag(String name, PlcTag tag, Object... values) {
-            if (tags.containsKey(name)) {
+            if (tagValues.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            tags.put(name, Pair.of(() -> tag, values));
+            tagValues.put(name, () -> {
+                try {
+                    PlcValue plcValue = parsePlcValue(tag, values);
+                    return new DefaultPlcTagValueItem<>(tag, plcValue);
+                } catch (Exception e) {
+                    return new DefaultPlcTagErrorItem<>(PlcResponseCode.INVALID_DATA);
+                }
+            });
             return this;
+        }
+
+        protected PlcValue parsePlcValue(PlcTag tag, Object[] values) {
+            return valueHandler.newPlcValue(tag, values);
         }
 
         @Override
         public PlcWriteRequest build() {
-            LinkedHashMap<String, TagValueItem> parsedTags = new LinkedHashMap<>();
-            tags.forEach((name, tagValues) -> {
-                // Compile the query string.
-                PlcTag tag = tagValues.getLeft().get();
-                Object[] value = tagValues.getRight();
-                PlcValue plcValue = valueHandler.newPlcValue(tag, value);
-                parsedTags.put(name, new TagValueItem(tag, plcValue));
+            LinkedHashMap<String, PlcTagValueItem<PlcTag>> parsedTags = new LinkedHashMap<>();
+            tagValues.forEach((name, tagValueItemSupplier) -> {
+                PlcTagValueItem<PlcTag> plcTagValueItem = tagValueItemSupplier.get();
+                parsedTags.put(name, plcTagValueItem);
             });
             return new DefaultPlcWriteRequest(writer, parsedTags);
         }

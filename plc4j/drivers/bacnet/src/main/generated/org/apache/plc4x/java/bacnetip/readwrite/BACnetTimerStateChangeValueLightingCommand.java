@@ -67,8 +67,7 @@ public class BACnetTimerStateChangeValueLightingCommand extends BACnetTimerState
     writeBuffer.pushContext("BACnetTimerStateChangeValueLightingCommand");
 
     // Simple Field (ligthingCommandValue)
-    writeSimpleField(
-        "ligthingCommandValue", ligthingCommandValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ligthingCommandValue", ligthingCommandValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimerStateChangeValueLightingCommand");
   }
@@ -99,7 +98,7 @@ public class BACnetTimerStateChangeValueLightingCommand extends BACnetTimerState
     BACnetLightingCommandEnclosed ligthingCommandValue =
         readSimpleField(
             "ligthingCommandValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetLightingCommandEnclosed.staticParse(readBuffer, (short) (3)),
                 readBuffer));
 

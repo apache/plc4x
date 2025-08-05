@@ -67,8 +67,7 @@ public class BACnetServiceAckCreateObject extends BACnetServiceAck implements Me
     writeBuffer.pushContext("BACnetServiceAckCreateObject");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckCreateObject");
   }
@@ -99,7 +98,7 @@ public class BACnetServiceAckCreateObject extends BACnetServiceAck implements Me
     BACnetApplicationTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

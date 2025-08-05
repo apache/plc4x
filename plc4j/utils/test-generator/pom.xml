@@ -24,7 +24,7 @@
   <parent>
     <artifactId>plc4j-utils</artifactId>
     <groupId>org.apache.plc4x</groupId>
-    <version>0.11.0</version>
+    <version>0.13.0</version>
   </parent>
 
   <artifactId>plc4j-utils-test-generator</artifactId>
@@ -32,12 +32,16 @@
   <name>PLC4J: Utils: Test-Generator</name>
   <description>Generates tests.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2025-08-02T13:58:13Z</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>3.0.2</version>
+        <version>4.2.1</version>
         <executions>
           <execution>
             <goals>
@@ -98,12 +102,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.11.0</version>
+      <version>0.13.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.11.0</version>
+      <version>0.13.0</version>
     </dependency>
 
     <dependency>
@@ -114,10 +118,6 @@
     <dependency>
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.xmlunit</groupId>
-      <artifactId>xmlunit-matchers</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -133,21 +133,26 @@
       <!-- Explicitly managing this back to "compile" -->
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <version>${groovy.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.11.0</version>
+      <version>0.13.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
-      <version>0.11.0</version>
+      <version>0.13.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-iec-60870</artifactId>
-      <version>0.11.0</version>
+      <version>0.13.0</version>
     </dependency>
 
     <dependency>
@@ -158,6 +163,16 @@
     <dependency>
       <groupId>org.spockframework</groupId>
       <artifactId>spock-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-matchers</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

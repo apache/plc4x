@@ -28,12 +28,12 @@ import java.math.BigInteger;
 
 public class PlcBOOL extends PlcIECValue<Boolean> {
 
-    private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
-    static final int minValue = 0;
-    static final int maxValue = 1;
+    private static final String VALUE_OUT_OF_RANGE = "Value of is required for a %s Value";
 
     public static PlcBOOL of(Object value) {
-        if (value instanceof Boolean) {
+        if (value instanceof PlcBOOL) {
+            return (PlcBOOL) value;
+        } else if (value instanceof Boolean) {
             return new PlcBOOL((Boolean) value);
         } else if (value instanceof Byte) {
             return new PlcBOOL((Byte) value);
@@ -52,7 +52,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
         } else if (value instanceof BigDecimal) {
             return new PlcBOOL((BigDecimal) value);
         } else {
-            return new PlcBOOL((String) value);
+            return new PlcBOOL(value.toString());
         }
     }
 
@@ -62,66 +62,66 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     }
 
     public PlcBOOL(Byte value) {
-        if ((value == null) || (value < minValue || value > maxValue)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if (value == null) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, this.getClass().getSimpleName()));
         }
-        this.value = value >= 1;
+        this.value = value != 0;
         this.isNullable = true;
     }
 
     public PlcBOOL(Short value) {
-        if ((value == null) || (value < minValue || value > maxValue)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if (value == null) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, this.getClass().getSimpleName()));
         }
-        this.value = value >= 1;
+        this.value = value != 0;
         this.isNullable = true;
     }
 
     public PlcBOOL(Integer value) {
-        if ((value == null) || (value < minValue || value > maxValue)) {
-            throw new PlcInvalidTagException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
+        if (value == null) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, this.getClass().getSimpleName()));
         }
-        this.value = value >= 1;
+        this.value = value != 0;
         this.isNullable = true;
     }
 
     public PlcBOOL(Long value) {
-        if ((value == null) || (value < minValue || value > maxValue)) {
-            throw new PlcInvalidTagException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
+        if (value == null) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, this.getClass().getSimpleName()));
         }
-        this.value = value >= 1;
+        this.value = value != 0;
         this.isNullable = true;
     }
 
     public PlcBOOL(Float value) {
-        if ((value == null) || (value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if (value == null) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, this.getClass().getSimpleName()));
         }
-        this.value = value >= 1;
+        this.value = value != 0.0;
         this.isNullable = true;
     }
 
     public PlcBOOL(Double value) {
-        if ((value == null) || (value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if (value == null) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, this.getClass().getSimpleName()));
         }
-        this.value = value >= 1;
+        this.value = value != 0.0d;
         this.isNullable = true;
     }
 
     public PlcBOOL(BigInteger value) {
-        if ((value == null) || (value.compareTo(BigInteger.valueOf(minValue)) < 0) || (value.compareTo(BigInteger.valueOf(maxValue)) > 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if (value == null) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, this.getClass().getSimpleName()));
         }
-        this.value = value.compareTo(BigInteger.valueOf(maxValue)) >= 0;
+        this.value = value.compareTo(BigInteger.ZERO) != 0;
         this.isNullable = true;
     }
 
     public PlcBOOL(BigDecimal value) {
-        if ((value == null) || (value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        if (value == null) {
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, this.getClass().getSimpleName()));
         }
-        this.value = value.compareTo(BigDecimal.valueOf(maxValue)) >= 0;
+        this.value = value.compareTo(BigDecimal.ZERO) != 0;
         this.isNullable = true;
     }
 
@@ -130,7 +130,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
             this.value = parseValue(value);
             this.isNullable = false;
         } catch (RuntimeException e) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format("Value %s could not be parsed to %s Value", value, this.getClass().getSimpleName()), e);
         }
     }
 
@@ -253,6 +253,11 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
         return toString();
     }
 
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }
+        
     public byte[] getBytes() {
         return ((value != null) && value) ? new byte[]{0x01} : new byte[]{0x00};
     }

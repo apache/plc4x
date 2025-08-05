@@ -28,11 +28,11 @@ import (
 	"crypto/x509"
 	"encoding/binary"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type EncryptionHandler struct {
@@ -78,7 +78,7 @@ func (h *EncryptionHandler) encodeMessage(ctx context.Context, pdu readWriteMode
 	numberOfBlocks := preEncryptedLength / PREENCRYPTED_BLOCK_LENGTH
 	encryptedLength := numberOfBlocks*256 + positionFirstBlock
 	buf := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err := readWriteModel.NewOpcuaAPU(pdu, false).SerializeWithWriteBuffer(ctx, buf); err != nil {
+	if err := readWriteModel.NewOpcuaAPU(pdu, false, true).SerializeWithWriteBuffer(ctx, buf); err != nil {
 		return nil, errors.Wrap(err, "error serializing")
 	}
 	paddingByte := byte(paddingSize)
@@ -130,10 +130,10 @@ func (h *EncryptionHandler) decodeMessage(ctx context.Context, pdu readWriteMode
 	case "Basic256Sha256":
 		var message []byte
 		switch pduMessage := pdu.GetMessage().(type) {
-		case readWriteModel.OpcuaOpenResponseExactly:
-			message = pduMessage.GetMessage()
-		case readWriteModel.OpcuaMessageResponseExactly:
-			message = pduMessage.GetMessage()
+		case readWriteModel.OpcuaOpenResponse:
+			message = pduMessage.(readWriteModel.BinaryPayload).GetPayload()
+		case readWriteModel.OpcuaMessageResponse:
+			message = pduMessage.(readWriteModel.BinaryPayload).GetPayload()
 		default:
 			h.log.Trace().Type("pdu", pdu).Msg("unhandled type")
 			return pdu, nil
@@ -168,7 +168,7 @@ func (h *EncryptionHandler) decodeMessage(ctx context.Context, pdu readWriteMode
 		}
 
 		readBuffer := utils.NewReadBufferByteBased(buf.GetBytes(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-		return readWriteModel.OpcuaAPUParseWithBuffer(ctx, readBuffer, true)
+		return readWriteModel.OpcuaAPUParseWithBuffer(ctx, readBuffer, true, true)
 	default:
 		h.log.Trace().Msg("unmapped security policy")
 		return pdu, nil

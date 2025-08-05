@@ -22,12 +22,13 @@ package utils
 import (
 	"context"
 	"runtime/debug"
-
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transports"
+	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
 type DefaultBufferedTransportInstanceRequirements interface {
@@ -55,13 +56,17 @@ func NewDefaultBufferedTransportInstance(defaultBufferedTransportInstanceRequire
 type defaultBufferedTransportInstance struct {
 	DefaultBufferedTransportInstanceRequirements
 
+	wg sync.WaitGroup // use to track spawned go routines
+
 	log zerolog.Logger
 }
 
 // ConnectWithContext is a compatibility implementation for those transports not implementing this function
 func (m *defaultBufferedTransportInstance) ConnectWithContext(ctx context.Context) error {
 	ch := make(chan error, 1)
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().

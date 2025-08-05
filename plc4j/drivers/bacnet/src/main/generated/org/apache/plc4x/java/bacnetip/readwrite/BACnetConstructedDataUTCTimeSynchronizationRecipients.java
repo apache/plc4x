@@ -120,8 +120,7 @@ public class BACnetConstructedDataUTCTimeSynchronizationRecipients extends BACne
     List<BACnetRecipient> utcTimeSynchronizationRecipients =
         readTerminatedArrayField(
             "utcTimeSynchronizationRecipients",
-            new DataReaderComplexDefault<>(
-                () -> BACnetRecipient.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetRecipient.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

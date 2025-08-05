@@ -21,8 +21,9 @@ package utils
 
 import (
 	"encoding/hex"
-	"github.com/rs/zerolog"
 	"math/rand"
+
+	"github.com/rs/zerolog"
 )
 
 var randomByteFiller = rand.Read

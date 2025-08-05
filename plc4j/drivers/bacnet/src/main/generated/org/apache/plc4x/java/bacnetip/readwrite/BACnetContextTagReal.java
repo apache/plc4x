@@ -71,7 +71,7 @@ public class BACnetContextTagReal extends BACnetContextTag implements Message {
     writeBuffer.pushContext("BACnetContextTagReal");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     float actualValue = getActualValue();
@@ -108,9 +108,7 @@ public class BACnetContextTagReal extends BACnetContextTag implements Message {
 
     BACnetTagPayloadReal payload =
         readSimpleField(
-            "payload",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagPayloadReal.staticParse(readBuffer), readBuffer));
+            "payload", readComplex(() -> BACnetTagPayloadReal.staticParse(readBuffer), readBuffer));
     float actualValue = readVirtualField("actualValue", float.class, payload.getValue());
 
     readBuffer.closeContext("BACnetContextTagReal");

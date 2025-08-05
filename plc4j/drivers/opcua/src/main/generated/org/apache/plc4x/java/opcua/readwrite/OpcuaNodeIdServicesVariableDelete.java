@@ -25,6 +25,7 @@ import java.util.Map;
 
 public enum OpcuaNodeIdServicesVariableDelete {
   DeleteFileMethodType_InputArguments((int) 13349L),
+  DeleteCertificateMethodType_InputArguments((int) 19331L),
   DeletePriorityMappingEntryMethodType_InputArguments((int) 25236L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableDelete> map;
 

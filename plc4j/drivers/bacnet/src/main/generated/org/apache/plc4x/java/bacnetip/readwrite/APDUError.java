@@ -96,13 +96,13 @@ public class APDUError extends APDU implements Message {
         "errorChoice",
         "BACnetConfirmedServiceChoice",
         errorChoice,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetConfirmedServiceChoice::getValue,
             BACnetConfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (error)
-    writeSimpleField("error", error, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("error", error, writeComplex(writeBuffer));
 
     writeBuffer.popContext("APDUError");
   }
@@ -148,13 +148,12 @@ public class APDUError extends APDU implements Message {
         readEnumField(
             "errorChoice",
             "BACnetConfirmedServiceChoice",
-            new DataReaderEnumDefault<>(
-                BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     BACnetError error =
         readSimpleField(
             "error",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetError.staticParse(
                         readBuffer, (BACnetConfirmedServiceChoice) (errorChoice)),

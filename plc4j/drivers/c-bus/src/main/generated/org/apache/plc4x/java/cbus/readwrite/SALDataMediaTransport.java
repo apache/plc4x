@@ -63,9 +63,7 @@ public class SALDataMediaTransport extends SALData implements Message {
 
     // Simple Field (mediaTransportControlData)
     writeSimpleField(
-        "mediaTransportControlData",
-        mediaTransportControlData,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "mediaTransportControlData", mediaTransportControlData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataMediaTransport");
   }
@@ -96,8 +94,7 @@ public class SALDataMediaTransport extends SALData implements Message {
     MediaTransportControlData mediaTransportControlData =
         readSimpleField(
             "mediaTransportControlData",
-            new DataReaderComplexDefault<>(
-                () -> MediaTransportControlData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> MediaTransportControlData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataMediaTransport");
     // Create the instance

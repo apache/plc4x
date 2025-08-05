@@ -89,19 +89,19 @@ public class BACnetEventPriorities implements Message {
     writeBuffer.pushContext("BACnetEventPriorities");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (toOffnormal)
-    writeSimpleField("toOffnormal", toOffnormal, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("toOffnormal", toOffnormal, writeComplex(writeBuffer));
 
     // Simple Field (toFault)
-    writeSimpleField("toFault", toFault, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("toFault", toFault, writeComplex(writeBuffer));
 
     // Simple Field (toNormal)
-    writeSimpleField("toNormal", toNormal, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("toNormal", toNormal, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventPriorities");
   }
@@ -135,26 +135,6 @@ public class BACnetEventPriorities implements Message {
     return lengthInBits;
   }
 
-  public static BACnetEventPriorities staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber);
-  }
-
   public static BACnetEventPriorities staticParse(ReadBuffer readBuffer, Short tagNumber)
       throws ParseException {
     readBuffer.pullContext("BACnetEventPriorities");
@@ -164,13 +144,13 @@ public class BACnetEventPriorities implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetApplicationTagUnsignedInteger toOffnormal =
         readSimpleField(
             "toOffnormal",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -179,7 +159,7 @@ public class BACnetEventPriorities implements Message {
     BACnetApplicationTagUnsignedInteger toFault =
         readSimpleField(
             "toFault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -188,7 +168,7 @@ public class BACnetEventPriorities implements Message {
     BACnetApplicationTagUnsignedInteger toNormal =
         readSimpleField(
             "toNormal",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -197,7 +177,7 @@ public class BACnetEventPriorities implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventPriorities");

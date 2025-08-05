@@ -30,7 +30,7 @@ public class SerialChannelConfig extends DefaultChannelConfig implements Channel
     private int baudRate;
     private int dataBits;
     private int stopBits;
-    private int parityBits;
+    private SerialChannelOptionsParity parity;
 
     public SerialChannelConfig(Channel channel) {
         super(channel);
@@ -40,7 +40,7 @@ public class SerialChannelConfig extends DefaultChannelConfig implements Channel
     public Map<ChannelOption<?>, Object> getOptions() {
         return getOptions(super.getOptions(),
             SerialChannelOptions.BAUD_RATE, SerialChannelOptions.DATA_BITS,
-            SerialChannelOptions.STOP_BITS, SerialChannelOptions.PARITY_BITS);
+            SerialChannelOptions.STOP_BITS, SerialChannelOptions.PARITY);
     }
 
     @Override
@@ -63,9 +63,9 @@ public class SerialChannelConfig extends DefaultChannelConfig implements Channel
                 return true;
             }
             return false;
-        } else if(option == SerialChannelOptions.PARITY_BITS) {
-            if(value instanceof Integer) {
-                parityBits = (Integer) value;
+        } else if(option == SerialChannelOptions.PARITY) {
+            if(value instanceof SerialChannelOptionsParity) {
+                parity = (SerialChannelOptionsParity) value;
                 return true;
             }
             return false;
@@ -98,12 +98,12 @@ public class SerialChannelConfig extends DefaultChannelConfig implements Channel
         this.stopBits = stopBits;
     }
 
-    public int getParityBits() {
-        return parityBits;
+    public SerialChannelOptionsParity getParity() {
+        return parity;
     }
 
-    public void setParityBits(int parityBits) {
-        this.parityBits = parityBits;
+    public void setParity(SerialChannelOptionsParity parity) {
+        this.parity = parity;
     }
 
 }

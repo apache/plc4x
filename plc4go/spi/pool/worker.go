@@ -20,7 +20,6 @@
 package pool
 
 import (
-	"github.com/rs/zerolog/log"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
@@ -29,7 +28,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=worker
+//go:generate go tool plc4xGenerator -type=worker
 type worker struct {
 	id       int
 	executor interface {
@@ -46,7 +45,7 @@ type worker struct {
 	interrupted atomic.Bool
 	interrupter chan struct{}
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func newWorker(localLog zerolog.Logger, workerId int, executor interface {
@@ -77,7 +76,7 @@ func (w *worker) start() {
 	w.stateChange.Lock()
 	defer w.stateChange.Unlock()
 	if w.running.Load() {
-		log.Warn().Int("Worker id", w.id).Msg("Worker already started")
+		w.log.Warn().Int("Worker id", w.id).Msg("Worker already started")
 		return
 	}
 	if w.executor.isTraceWorkers() {

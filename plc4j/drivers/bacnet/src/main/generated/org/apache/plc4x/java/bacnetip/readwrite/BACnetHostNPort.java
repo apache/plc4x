@@ -61,10 +61,10 @@ public class BACnetHostNPort implements Message {
     writeBuffer.pushContext("BACnetHostNPort");
 
     // Simple Field (host)
-    writeSimpleField("host", host, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("host", host, writeComplex(writeBuffer));
 
     // Simple Field (port)
-    writeSimpleField("port", port, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("port", port, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetHostNPort");
   }
@@ -89,12 +89,6 @@ public class BACnetHostNPort implements Message {
     return lengthInBits;
   }
 
-  public static BACnetHostNPort staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetHostNPort staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetHostNPort");
     PositionAware positionAware = readBuffer;
@@ -103,13 +97,13 @@ public class BACnetHostNPort implements Message {
     BACnetHostAddressEnclosed host =
         readSimpleField(
             "host",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetHostAddressEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetContextTagUnsignedInteger port =
         readSimpleField(
             "port",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

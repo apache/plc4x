@@ -89,7 +89,7 @@ public class COTPPacketConnectionResponse extends COTPPacket implements Message 
         "protocolClass",
         "COTPProtocolClass",
         protocolClass,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             COTPProtocolClass::getValue,
             COTPProtocolClass::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -135,8 +135,7 @@ public class COTPPacketConnectionResponse extends COTPPacket implements Message 
         readEnumField(
             "protocolClass",
             "COTPProtocolClass",
-            new DataReaderEnumDefault<>(
-                COTPProtocolClass::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(COTPProtocolClass::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("COTPPacketConnectionResponse");
     // Create the instance

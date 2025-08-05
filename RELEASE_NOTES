@@ -1,4 +1,116 @@
 ==============================================================
+Apache PLC4X 0.13.0
+==============================================================
+
+New Features
+------------
+
+- The CachedPlcConnectionManager now has a maxIdleTimeout time
+  which defaults to 5 minutes. If a connection is not being
+  used for that amount of time, the connection is closed and
+  removed from the cache.
+- The CachedPlcConnectionManager now has a close method, which
+  shuts down all connections.
+- The CachedPlcConnection now implements the EventPlcConnection
+  interface which forwards listener registrations to the
+  connection.
+- The S7 driver is now able to automatically split up large
+  array requests into multiple ones and transparently merge
+  them back together. It is now possible to read arrays of
+  almost unlimited size.
+- Added an Optimizer to the Modbus driver, that improves read
+  performance of multi-item read requests by more than 10 times.
+- Added an optimizer to the Modbus protocol, that allows reading
+  multiple fields in one request.
+- Added support for Modbus encodings of BIG_ENDIAN_WORD_SWAP
+  and LITTLE_ENDIAN_WORD_SWAP.
+- Modbus tags allow specifying the unit-id in order to address
+  multiple devices using one serial modbus connection.
+- Added a new optimizer to the S7 protocol, that ready chunks
+  of data instead of individual fields, which allows reading
+  a lot more fields in one request.
+- Added a new variant of the S7 driver, called s7-light, which
+  doesn't have support for subscriptions, but is less likely
+  to cause connection problems.
+- Added auto-discovery to the KNX Driver in PLC4J.
+- Added auto-discovery to EIP in PLC4J.
+- Added auto-discovery to S7 in PLC4J.
+- Improved some things in the SPI, that caused issues with
+  drivers under heavy load.
+- The Modbus driver uses the "Single Register Request" if a
+  tag fits into one register. This can help communicating with
+  devices that don't support "Multi Register Requests".
+
+Incompatible changes
+--------------------
+
+- When reading byte arrays with the s7 driver, now the more
+  efficient PlcRawByteArray type is used, that gives users
+  direct access to the bytes returned from the PLC instead of
+  a list of PlcValues.
+- The builders for read-, write- ans subscription.requests now
+  process tags and values on a per-field level. If one field
+  has an invalid address it will now only fail the one item
+  related to that. Same applies to values. Only the tag who's
+  value was invalid will be considered failed and no longer an
+  exception should be thrown.
+- Subscription-requests now allow registering a handler for
+  all fields in the subscription.
+- The addPreRegisteredConsumer method was removed and versions
+  of the "addXYZ" methods were added, that allow providing
+  individual consumers for each tag.
+
+
+Bug Fixes
+---------
+
+==============================================================
+Apache PLC4X 0.12.0
+==============================================================
+
+New Features
+------------
+
+- API: Made several bits of information available via the API
+  allowing tools to provide more content assist when dealing
+  with PLC4X connections.
+- S7: The S7 driver now supports reading of STRING and
+  WSTRING data-types without providing a maximum length.
+- Build: Worked on making PLC4X provide reproducible builds.
+- Added "Ping" functionality to: ADS, EIP, KNX, Mock, Modbus
+  and Simulated drivers.
+- The OPC-UA Java driver now support certificate-based
+  authentication and encryption.
+
+Incompatible changes
+--------------------
+
+- Java 8 is no longer officially supported and Java 11 is the
+  new base-line.
+- Renamed the PlcDriverManager method `listDrivers` to
+  `getProtocolCodes`
+- Renamed the PlcDriverMetadata method `canDiscover` to
+  `isDiscoverySupported`
+- Renamed the PlcConnectionMetadata methods `canRead`, `canWrite`
+  `canSubscribe` and `canBrowse` to `isReadSupported`,
+  `isWriteSupported`, `isSubscribeSupported` and `isBrowseSupported`
+- The configuration syntax for configuring transport-related
+  config options in the connection-string was updated to be
+  now prefixed with the transport name the option belongs to.
+
+Bug Fixes
+---------
+
+- S7: Several bugs and issues regarding supporting various
+  duration, date and time data-types.
+- S7: Implemented the missing 64bit (L-) types.
+- KNX: Fixed an issue with decoding 16 bit floating point
+  numbers.
+- NiFi-Integration: The NiFi integration module was greatly
+  improved.
+- Core: Fixed several leaks of open threads.
+
+==============================================================
 Apache PLC4X 0.11.0
 ==============================================================
 
@@ -23,6 +135,8 @@ New Features
 Incompatible changes
 --------------------
 
+- Java 1.8 is no longer supported and Java 11 is now the new
+  baseline version we support.
 - We've updated the APIs of both PLC4J and PLC4Go to be more in
   sync. We also refined some of the terminology.
 - We've also re-written the `connection-cache`, which now replaces

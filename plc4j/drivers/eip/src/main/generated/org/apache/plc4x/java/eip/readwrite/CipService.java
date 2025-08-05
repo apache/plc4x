@@ -90,36 +90,6 @@ public abstract class CipService implements Message {
     return lengthInBits;
   }
 
-  public static CipService staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 2)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 2, but got " + args.length);
-    }
-    Boolean connected;
-    if (args[0] instanceof Boolean) {
-      connected = (Boolean) args[0];
-    } else if (args[0] instanceof String) {
-      connected = Boolean.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Boolean or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    Integer serviceLen;
-    if (args[1] instanceof Integer) {
-      serviceLen = (Integer) args[1];
-    } else if (args[1] instanceof String) {
-      serviceLen = Integer.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type Integer or a string which is parseable but was "
-              + args[1].getClass().getName());
-    }
-    return staticParse(readBuffer, connected, serviceLen);
-  }
-
   public static CipService staticParse(ReadBuffer readBuffer, Boolean connected, Integer serviceLen)
       throws ParseException {
     readBuffer.pullContext("CipService");

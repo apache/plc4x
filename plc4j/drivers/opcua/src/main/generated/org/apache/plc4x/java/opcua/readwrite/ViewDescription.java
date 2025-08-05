@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ViewDescription extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "513";
+  public Integer getExtensionId() {
+    return (int) 513;
   }
 
   // Properties.
@@ -74,7 +74,7 @@ public class ViewDescription extends ExtensionObjectDefinition implements Messag
     writeBuffer.pushContext("ViewDescription");
 
     // Simple Field (viewId)
-    writeSimpleField("viewId", viewId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("viewId", viewId, writeComplex(writeBuffer));
 
     // Simple Field (timestamp)
     writeSimpleField("timestamp", timestamp, writeSignedLong(writeBuffer, 64));
@@ -109,15 +109,13 @@ public class ViewDescription extends ExtensionObjectDefinition implements Messag
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ViewDescription");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId viewId =
-        readSimpleField(
-            "viewId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("viewId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     long timestamp = readSimpleField("timestamp", readSignedLong(readBuffer, 64));
 

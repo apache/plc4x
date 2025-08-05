@@ -82,7 +82,7 @@ public class BACnetConstructedDataLoggingObject extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataLoggingObject");
 
     // Simple Field (loggingObject)
-    writeSimpleField("loggingObject", loggingObject, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("loggingObject", loggingObject, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagObjectIdentifier actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataLoggingObject extends BACnetConstructedData im
     BACnetApplicationTagObjectIdentifier loggingObject =
         readSimpleField(
             "loggingObject",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

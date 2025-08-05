@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class StatusResult extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "301";
+  public Integer getExtensionId() {
+    return (int) 301;
   }
 
   // Properties.
@@ -68,10 +68,10 @@ public class StatusResult extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("StatusResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (diagnosticInfo)
-    writeSimpleField("diagnosticInfo", diagnosticInfo, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("diagnosticInfo", diagnosticInfo, writeComplex(writeBuffer));
 
     writeBuffer.popContext("StatusResult");
   }
@@ -97,21 +97,19 @@ public class StatusResult extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("StatusResult");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     DiagnosticInfo diagnosticInfo =
         readSimpleField(
             "diagnosticInfo",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer));
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("StatusResult");
     // Create the instance

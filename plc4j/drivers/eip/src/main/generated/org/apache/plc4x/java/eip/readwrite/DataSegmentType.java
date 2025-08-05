@@ -81,12 +81,6 @@ public abstract class DataSegmentType implements Message {
     return lengthInBits;
   }
 
-  public static DataSegmentType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DataSegmentType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DataSegmentType");
     PositionAware positionAware = readBuffer;

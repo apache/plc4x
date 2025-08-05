@@ -70,7 +70,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
         "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter");
 
     // Simple Field (characterValue)
-    writeSimpleField("characterValue", characterValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("characterValue", characterValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext(
         "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter");
@@ -104,7 +104,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
     BACnetContextTagCharacterString characterValue =
         readSimpleField(
             "characterValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(

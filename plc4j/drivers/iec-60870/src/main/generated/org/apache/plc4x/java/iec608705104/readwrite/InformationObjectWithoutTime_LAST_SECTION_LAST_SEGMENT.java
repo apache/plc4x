@@ -87,31 +87,19 @@ public class InformationObjectWithoutTime_LAST_SECTION_LAST_SEGMENT
 
     // Simple Field (nof)
     writeSimpleField(
-        "nof",
-        nof,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "nof", nof, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (nos)
     writeSimpleField(
-        "nos",
-        nos,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "nos", nos, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (lsq)
     writeSimpleField(
-        "lsq",
-        lsq,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "lsq", lsq, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (chs)
     writeSimpleField(
-        "chs",
-        chs,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "chs", chs, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_LAST_SECTION_LAST_SEGMENT");
   }
@@ -152,26 +140,25 @@ public class InformationObjectWithoutTime_LAST_SECTION_LAST_SEGMENT
     NameOfFile nof =
         readSimpleField(
             "nof",
-            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfFile.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     NameOfSection nos =
         readSimpleField(
             "nos",
-            new DataReaderComplexDefault<>(() -> NameOfSection.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfSection.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     LastSectionOrSegmentQualifier lsq =
         readSimpleField(
             "lsq",
-            new DataReaderComplexDefault<>(
-                () -> LastSectionOrSegmentQualifier.staticParse(readBuffer), readBuffer),
+            readComplex(() -> LastSectionOrSegmentQualifier.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     Checksum chs =
         readSimpleField(
             "chs",
-            new DataReaderComplexDefault<>(() -> Checksum.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Checksum.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_LAST_SECTION_LAST_SEGMENT");

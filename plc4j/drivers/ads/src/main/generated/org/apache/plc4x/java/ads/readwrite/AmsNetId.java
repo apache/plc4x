@@ -138,11 +138,6 @@ public class AmsNetId implements Message {
     return lengthInBits;
   }
 
-  public static AmsNetId staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AmsNetId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AmsNetId");
     PositionAware positionAware = readBuffer;

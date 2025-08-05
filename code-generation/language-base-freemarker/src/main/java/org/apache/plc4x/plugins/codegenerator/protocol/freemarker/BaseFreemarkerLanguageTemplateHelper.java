@@ -29,6 +29,7 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
+import org.apache.plc4x.plugins.codegenerator.types.terms.BooleanLiteral;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
 import org.slf4j.Logger;
@@ -361,7 +362,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     /**
-     * can be used to throw a exception from the template
+     * can be used to throw an exception from the template
      *
      * @param message the message
      * @return the exception
@@ -373,4 +374,10 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     public void info(String message, Object... objects) {
         LOGGER.info(message, objects);
     }
+
+    public boolean isExternal() {
+        Optional<Term> external = thisType.getAttribute("external");
+        return external.isPresent() && (external.get() instanceof BooleanLiteral) && ((BooleanLiteral) external.get()).getValue();
+    }
+
 }

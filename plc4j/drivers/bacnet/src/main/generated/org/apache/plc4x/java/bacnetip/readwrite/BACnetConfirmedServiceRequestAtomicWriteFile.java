@@ -97,21 +97,19 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     writeBuffer.pushContext("BACnetConfirmedServiceRequestAtomicWriteFile");
 
     // Simple Field (deviceIdentifier)
-    writeSimpleField(
-        "deviceIdentifier", deviceIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deviceIdentifier", deviceIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (openingTag) (Can be skipped, if the value is null)
-    writeOptionalField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (fileStartPosition)
-    writeSimpleField(
-        "fileStartPosition", fileStartPosition, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileStartPosition", fileStartPosition, writeComplex(writeBuffer));
 
     // Simple Field (fileData)
-    writeSimpleField("fileData", fileData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileData", fileData, writeComplex(writeBuffer));
 
     // Optional Field (closingTag) (Can be skipped, if the value is null)
-    writeOptionalField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestAtomicWriteFile");
   }
@@ -159,7 +157,7 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     BACnetApplicationTagObjectIdentifier deviceIdentifier =
         readSimpleField(
             "deviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -168,13 +166,12 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     BACnetOpeningTag openingTag =
         readOptionalField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetApplicationTagSignedInteger fileStartPosition =
         readSimpleField(
             "fileStartPosition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -183,7 +180,7 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     BACnetApplicationTagOctetString fileData =
         readSimpleField(
             "fileData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
@@ -191,8 +188,7 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     BACnetClosingTag closingTag =
         readOptionalField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestAtomicWriteFile");
     // Create the instance

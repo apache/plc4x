@@ -82,7 +82,7 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataLocalTime");
 
     // Simple Field (localTime)
-    writeSimpleField("localTime", localTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("localTime", localTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagTime actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
     BACnetApplicationTagTime localTime =
         readSimpleField(
             "localTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagTime actualValue =

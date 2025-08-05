@@ -60,7 +60,7 @@ public class BACnetHostAddressIpAddress extends BACnetHostAddress implements Mes
     writeBuffer.pushContext("BACnetHostAddressIpAddress");
 
     // Simple Field (ipAddress)
-    writeSimpleField("ipAddress", ipAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipAddress", ipAddress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetHostAddressIpAddress");
   }
@@ -91,7 +91,7 @@ public class BACnetHostAddressIpAddress extends BACnetHostAddress implements Mes
     BACnetContextTagOctetString ipAddress =
         readSimpleField(
             "ipAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagOctetString)
                         BACnetContextTag.staticParse(

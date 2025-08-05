@@ -82,7 +82,7 @@ public class BACnetConstructedDataIPDHCPEnable extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataIPDHCPEnable");
 
     // Simple Field (ipDhcpEnable)
-    writeSimpleField("ipDhcpEnable", ipDhcpEnable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipDhcpEnable", ipDhcpEnable, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataIPDHCPEnable extends BACnetConstructedData imp
     BACnetApplicationTagBoolean ipDhcpEnable =
         readSimpleField(
             "ipDhcpEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

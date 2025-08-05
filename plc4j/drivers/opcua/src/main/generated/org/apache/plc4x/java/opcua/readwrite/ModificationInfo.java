@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ModificationInfo extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "11218";
+  public Integer getExtensionId() {
+    return (int) 11218;
   }
 
   // Properties.
@@ -82,13 +82,13 @@ public class ModificationInfo extends ExtensionObjectDefinition implements Messa
         "updateType",
         "HistoryUpdateType",
         updateType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HistoryUpdateType::getValue,
             HistoryUpdateType::name,
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (userName)
-    writeSimpleField("userName", userName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userName", userName, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ModificationInfo");
   }
@@ -117,7 +117,7 @@ public class ModificationInfo extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ModificationInfo");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -128,13 +128,11 @@ public class ModificationInfo extends ExtensionObjectDefinition implements Messa
         readEnumField(
             "updateType",
             "HistoryUpdateType",
-            new DataReaderEnumDefault<>(
-                HistoryUpdateType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(HistoryUpdateType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString userName =
         readSimpleField(
-            "userName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "userName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ModificationInfo");
     // Create the instance

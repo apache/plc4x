@@ -336,6 +336,16 @@ plc4c_data *plc4c_data_create_ldate_and_time_array(uint64_t *nanosecondsSinceEpo
   return NULL;
 }
 
+plc4c_data *plc4c_data_create_date_and_ltime_data(uint64_t nanosecondsSinceEpoch) {
+  // TODO: Implement
+  return NULL;
+}
+
+plc4c_data *plc4c_data_create_date_and_ltime_array(uint64_t *nanosecondsSinceEpoch, int nItems) {
+  // TODO: Implement
+  return NULL;
+}
+
 plc4c_data *plc4c_data_create_string_data(unsigned int size, char *s) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
   data->data_type = PLC4C_STRING;

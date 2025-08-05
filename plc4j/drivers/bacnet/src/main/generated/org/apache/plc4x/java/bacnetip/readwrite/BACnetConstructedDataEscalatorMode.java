@@ -82,7 +82,7 @@ public class BACnetConstructedDataEscalatorMode extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataEscalatorMode");
 
     // Simple Field (escalatorMode)
-    writeSimpleField("escalatorMode", escalatorMode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("escalatorMode", escalatorMode, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetEscalatorModeTagged actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataEscalatorMode extends BACnetConstructedData im
     BACnetEscalatorModeTagged escalatorMode =
         readSimpleField(
             "escalatorMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEscalatorModeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

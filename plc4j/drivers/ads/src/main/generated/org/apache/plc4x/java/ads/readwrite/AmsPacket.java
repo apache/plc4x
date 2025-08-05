@@ -141,13 +141,13 @@ public abstract class AmsPacket implements Message {
     writeBuffer.pushContext("AmsPacket");
 
     // Simple Field (targetAmsNetId)
-    writeSimpleField("targetAmsNetId", targetAmsNetId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetAmsNetId", targetAmsNetId, writeComplex(writeBuffer));
 
     // Simple Field (targetAmsPort)
     writeSimpleField("targetAmsPort", targetAmsPort, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (sourceAmsNetId)
-    writeSimpleField("sourceAmsNetId", sourceAmsNetId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sourceAmsNetId", sourceAmsNetId, writeComplex(writeBuffer));
 
     // Simple Field (sourceAmsPort)
     writeSimpleField("sourceAmsPort", sourceAmsPort, writeUnsignedInt(writeBuffer, 16));
@@ -157,8 +157,7 @@ public abstract class AmsPacket implements Message {
         "commandId",
         "CommandId",
         getCommandId(),
-        new DataWriterEnumDefault<>(
-            CommandId::getValue, CommandId::name, writeUnsignedInt(writeBuffer, 16)));
+        writeEnum(CommandId::getValue, CommandId::name, writeUnsignedInt(writeBuffer, 16)));
 
     // Const Field (initCommand)
     writeConstField("initCommand", INITCOMMAND, writeBoolean(writeBuffer));
@@ -277,11 +276,6 @@ public abstract class AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AmsPacket staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AmsPacket staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AmsPacket");
     PositionAware positionAware = readBuffer;
@@ -289,22 +283,21 @@ public abstract class AmsPacket implements Message {
 
     AmsNetId targetAmsNetId =
         readSimpleField(
-            "targetAmsNetId",
-            new DataReaderComplexDefault<>(() -> AmsNetId.staticParse(readBuffer), readBuffer));
+            "targetAmsNetId", readComplex(() -> AmsNetId.staticParse(readBuffer), readBuffer));
 
     int targetAmsPort = readSimpleField("targetAmsPort", readUnsignedInt(readBuffer, 16));
 
     AmsNetId sourceAmsNetId =
         readSimpleField(
-            "sourceAmsNetId",
-            new DataReaderComplexDefault<>(() -> AmsNetId.staticParse(readBuffer), readBuffer));
+            "sourceAmsNetId", readComplex(() -> AmsNetId.staticParse(readBuffer), readBuffer));
 
     int sourceAmsPort = readSimpleField("sourceAmsPort", readUnsignedInt(readBuffer, 16));
 
     CommandId commandId =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "commandId",
-            new DataReaderEnumDefault<>(CommandId::enumForValue, readUnsignedInt(readBuffer, 16)));
+            "CommandId",
+            readEnum(CommandId::enumForValue, readUnsignedInt(readBuffer, 16)));
 
     boolean initCommand =
         readConstField("initCommand", readBoolean(readBuffer), AmsPacket.INITCOMMAND);

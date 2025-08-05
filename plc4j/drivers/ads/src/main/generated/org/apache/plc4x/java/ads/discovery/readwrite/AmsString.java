@@ -95,11 +95,6 @@ public class AmsString implements Message {
     return lengthInBits;
   }
 
-  public static AmsString staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AmsString staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AmsString");
     PositionAware positionAware = readBuffer;

@@ -82,7 +82,7 @@ public class BACnetConstructedDataEventParameters extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataEventParameters");
 
     // Simple Field (eventParameter)
-    writeSimpleField("eventParameter", eventParameter, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventParameter", eventParameter, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetEventParameter actualValue = getActualValue();
@@ -124,8 +124,7 @@ public class BACnetConstructedDataEventParameters extends BACnetConstructedData 
     BACnetEventParameter eventParameter =
         readSimpleField(
             "eventParameter",
-            new DataReaderComplexDefault<>(
-                () -> BACnetEventParameter.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetEventParameter.staticParse(readBuffer), readBuffer));
     BACnetEventParameter actualValue =
         readVirtualField("actualValue", BACnetEventParameter.class, eventParameter);
 

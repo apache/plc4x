@@ -139,6 +139,10 @@ plc4c_data *plc4c_data_create_date_and_time_array(uint32_t *tad, int nItems);
 plc4c_data *plc4c_data_create_ldate_and_time_data(uint64_t nanosecondsSinceEpoch);
 plc4c_data *plc4c_data_create_ldate_and_time_array(uint64_t *nanosecondsSinceEpoch, int nItems);
 
+plc4c_data *plc4c_data_create_date_and_ltime_data(uint64_t nanosecondsSinceEpoch);
+plc4c_data *plc4c_data_create_date_and_ltime_array(uint64_t *nanosecondsSinceEpoch, int nItems);
+
+
 /**
  * Creates a plc4c_data with char*
  * @param size the size of the string

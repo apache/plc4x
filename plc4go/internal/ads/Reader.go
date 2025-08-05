@@ -26,6 +26,8 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/pkg/errors"
+
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -33,8 +35,6 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/pkg/errors"
 )
 
 func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
@@ -44,7 +44,9 @@ func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 func (m *Connection) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	m.log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult, 1)
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -95,7 +97,9 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 		return
 	}
 
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -307,7 +311,8 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 		if valueType == apiValues.NULL {
 			return nil, errors.New(fmt.Sprintf("error converting %s into plc4x plc-value type", dataType.GetDataTypeName()))
 		}
-		adsValueType, ok := driverModel.PlcValueTypeByName(valueType.String())
+
+		adsValueType, ok := apiValues.PlcValueTypeByName(valueType.String())
 		if !ok {
 			return nil, errors.New(fmt.Sprintf("error converting plc4x plc-value type %s into ads plc-value type", valueType.String()))
 		}

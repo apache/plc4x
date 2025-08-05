@@ -61,10 +61,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier");
 
     // Simple Field (objectidentifierValue)
-    writeSimpleField(
-        "objectidentifierValue",
-        objectidentifierValue,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectidentifierValue", objectidentifierValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier");
   }
@@ -96,7 +93,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
     BACnetApplicationTagObjectIdentifier objectidentifierValue =
         readSimpleField(
             "objectidentifierValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

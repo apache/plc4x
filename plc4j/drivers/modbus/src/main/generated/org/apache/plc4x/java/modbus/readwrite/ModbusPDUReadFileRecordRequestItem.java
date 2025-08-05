@@ -114,12 +114,6 @@ public class ModbusPDUReadFileRecordRequestItem implements Message {
     return lengthInBits;
   }
 
-  public static ModbusPDUReadFileRecordRequestItem staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ModbusPDUReadFileRecordRequestItem staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ModbusPDUReadFileRecordRequestItem");

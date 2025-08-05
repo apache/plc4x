@@ -18,18 +18,20 @@
  */
 package org.apache.plc4x.java.can.generic.configuration;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.can.CANTransportConfiguration;
 
-public class GenericCANConfiguration implements Configuration, CANTransportConfiguration {
+public class GenericCANConfiguration implements PlcConnectionConfiguration {
 
-    @ConfigurationParameter
+    @ConfigurationParameter("node-id")
+    @Description("Node id of the target device.")
     private int nodeId;
 
     @ConfigurationParameter("request-timeout")
     @IntDefaultValue(1000)
+    @Description("Default timeout for all types of requests.")
     private int requestTimeout;
 
     public int getNodeId() {

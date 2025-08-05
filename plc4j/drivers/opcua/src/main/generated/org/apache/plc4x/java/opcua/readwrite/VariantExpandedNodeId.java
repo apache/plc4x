@@ -121,8 +121,7 @@ public class VariantExpandedNodeId extends Variant implements Message {
     List<ExpandedNodeId> value =
         readCountArrayField(
             "value",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer),
             (((arrayLength) == (null)) ? 1 : arrayLength));
 
     readBuffer.closeContext("VariantExpandedNodeId");

@@ -156,12 +156,6 @@ public class SinglePointInformation implements Message {
     return lengthInBits;
   }
 
-  public static SinglePointInformation staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SinglePointInformation staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SinglePointInformation");
     PositionAware positionAware = readBuffer;

@@ -22,23 +22,24 @@ package eip
 import (
 	"context"
 	"encoding/binary"
-	"github.com/apache/plc4x/plc4go/spi/options"
+
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
+//go:generate go tool plc4xGenerator -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
 	none bool // TODO: just a empty field to satisfy generator (needs fixing because in this case here we have the delegate)
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
@@ -97,7 +98,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			return nil, nil
 		}
 		rb := utils.NewReadBufferByteBased(data, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-		eipPacket, err := model.EipPacketParseWithBuffer(context.Background(), rb, true)
+		eipPacket, err := model.EipPacketParseWithBuffer[model.EipPacket](context.Background(), rb, true)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

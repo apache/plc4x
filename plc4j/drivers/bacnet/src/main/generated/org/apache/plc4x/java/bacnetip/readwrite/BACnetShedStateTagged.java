@@ -68,7 +68,7 @@ public class BACnetShedStateTagged implements Message {
     writeBuffer.pushContext("BACnetShedStateTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Manual Field (value)
     writeManualField(
@@ -101,36 +101,6 @@ public class BACnetShedStateTagged implements Message {
     return lengthInBits;
   }
 
-  public static BACnetShedStateTagged staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 2)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 2, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    TagClass tagClass;
-    if (args[1] instanceof TagClass) {
-      tagClass = (TagClass) args[1];
-    } else if (args[1] instanceof String) {
-      tagClass = TagClass.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type TagClass or a string which is parseable but was "
-              + args[1].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumber, tagClass);
-  }
-
   public static BACnetShedStateTagged staticParse(
       ReadBuffer readBuffer, Short tagNumber, TagClass tagClass) throws ParseException {
     readBuffer.pullContext("BACnetShedStateTagged");
@@ -139,9 +109,7 @@ public class BACnetShedStateTagged implements Message {
 
     BACnetTagHeader header =
         readSimpleField(
-            "header",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            "header", readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     // Validation
     if (!((header.getTagClass()) == (tagClass))) {
       throw new ParseValidationException("tag class doesn't match");

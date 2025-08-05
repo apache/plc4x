@@ -80,26 +80,6 @@ public abstract class ApduDataExt implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataExt staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short length;
-    if (args[0] instanceof Short) {
-      length = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      length = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, length);
-  }
-
   public static ApduDataExt staticParse(ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExt");
     PositionAware positionAware = readBuffer;

@@ -83,7 +83,7 @@ public class BACnetConstructedDataAccessDoorPresentValue extends BACnetConstruct
     writeBuffer.pushContext("BACnetConstructedDataAccessDoorPresentValue");
 
     // Simple Field (presentValue)
-    writeSimpleField("presentValue", presentValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("presentValue", presentValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDoorValueTagged actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataAccessDoorPresentValue extends BACnetConstruct
     BACnetDoorValueTagged presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorValueTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

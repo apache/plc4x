@@ -22,13 +22,10 @@ import org.apache.plc4x.java.transport.pcap.PcapTransportConfiguration;
 
 public interface PcapReplayTransportConfiguration extends PcapTransportConfiguration {
 
-    default float getReplaySpeedFactor() {
-        return 1;
-    }
+    float getReplaySpeedFactor();
 
-    default boolean isLoop() {
-        return false;
-    }
+    boolean isLoop();
 
-    default String getFilter() { return "";}
+    String getFilter();
+
 }

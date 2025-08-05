@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class OptionSet extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "12757";
+  public Integer getExtensionId() {
+    return (int) 12757;
   }
 
   // Properties.
@@ -68,10 +68,10 @@ public class OptionSet extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("OptionSet");
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     // Simple Field (validBits)
-    writeSimpleField("validBits", validBits, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("validBits", validBits, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OptionSet");
   }
@@ -97,22 +97,18 @@ public class OptionSet extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("OptionSet");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalByteString value =
         readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "value", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalByteString validBits =
         readSimpleField(
-            "validBits",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "validBits", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OptionSet");
     // Create the instance

@@ -75,14 +75,13 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
     writeBuffer.pushContext("BACnetFaultParameterFaultState");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (listOfFaultValues)
-    writeSimpleField(
-        "listOfFaultValues", listOfFaultValues, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfFaultValues", listOfFaultValues, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultState");
   }
@@ -119,13 +118,12 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (4)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (4)), readBuffer));
 
     BACnetFaultParameterFaultStateListOfFaultValues listOfFaultValues =
         readSimpleField(
             "listOfFaultValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetFaultParameterFaultStateListOfFaultValues.staticParse(
                         readBuffer, (short) (0)),
@@ -134,8 +132,7 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (4)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (4)), readBuffer));
 
     readBuffer.closeContext("BACnetFaultParameterFaultState");
     // Create the instance

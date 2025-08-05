@@ -20,7 +20,7 @@
 # This is the image we'll use to execute the build (and give it the name 'build').
 # (This image is based on Ubuntu)
 # Fixed version of this in order to have a fixed JDK version
-FROM azul/zulu-openjdk:11 as build
+FROM azul/zulu-openjdk:21 as build
 
 # Install some stuff we need to run the build
 RUN apt update -y
@@ -39,7 +39,7 @@ RUN apt install -y software-properties-common
 RUN add-apt-repository universe -y
 RUN apt install -y apt-transport-https
 RUN apt update -y
-RUN apt install -y dotnet-sdk-6.0
+RUN apt install -y dotnet-sdk-7.0
 
 # Required for "with-python" profile
 RUN apt install -y python3 python3-venv python3-pip

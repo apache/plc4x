@@ -102,8 +102,7 @@ public class BVLCReadForeignDeviceTableAck extends BVLC implements Message {
     List<BVLCForeignDeviceTableEntry> table =
         readLengthArrayField(
             "table",
-            new DataReaderComplexDefault<>(
-                () -> BVLCForeignDeviceTableEntry.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BVLCForeignDeviceTableEntry.staticParse(readBuffer), readBuffer),
             bvlcPayloadLength,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

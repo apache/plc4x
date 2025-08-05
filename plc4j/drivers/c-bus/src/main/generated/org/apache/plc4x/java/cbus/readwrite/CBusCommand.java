@@ -72,7 +72,7 @@ public abstract class CBusCommand implements Message {
     writeBuffer.pushContext("CBusCommand");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isDeviceManagement = getIsDeviceManagement();
@@ -111,24 +111,6 @@ public abstract class CBusCommand implements Message {
     return lengthInBits;
   }
 
-  public static CBusCommand staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    CBusOptions cBusOptions;
-    if (args[0] instanceof CBusOptions) {
-      cBusOptions = (CBusOptions) args[0];
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type CBusOptions or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, cBusOptions);
-  }
-
   public static CBusCommand staticParse(ReadBuffer readBuffer, CBusOptions cBusOptions)
       throws ParseException {
     readBuffer.pullContext("CBusCommand");
@@ -137,8 +119,7 @@ public abstract class CBusCommand implements Message {
 
     CBusHeader header =
         readSimpleField(
-            "header",
-            new DataReaderComplexDefault<>(() -> CBusHeader.staticParse(readBuffer), readBuffer));
+            "header", readComplex(() -> CBusHeader.staticParse(readBuffer), readBuffer));
     boolean isDeviceManagement =
         readVirtualField("isDeviceManagement", boolean.class, header.getDp());
     DestinationAddressType destinationAddressType =

@@ -25,16 +25,6 @@ import java.util.Map;
 
 public enum OpcuaNodeIdServicesVariableShelved {
   ShelvedStateMachineType_TimedShelve_InputArguments((int) 2991L),
-  ShelvedStateMachineType_CurrentState((int) 6088L),
-  ShelvedStateMachineType_CurrentState_Id((int) 6089L),
-  ShelvedStateMachineType_CurrentState_Name((int) 6090L),
-  ShelvedStateMachineType_CurrentState_Number((int) 6091L),
-  ShelvedStateMachineType_CurrentState_EffectiveDisplayName((int) 6092L),
-  ShelvedStateMachineType_LastTransition((int) 6093L),
-  ShelvedStateMachineType_LastTransition_Id((int) 6094L),
-  ShelvedStateMachineType_LastTransition_Name((int) 6095L),
-  ShelvedStateMachineType_LastTransition_Number((int) 6096L),
-  ShelvedStateMachineType_LastTransition_TransitionTime((int) 6097L),
   ShelvedStateMachineType_Unshelved_StateNumber((int) 6098L),
   ShelvedStateMachineType_TimedShelved_StateNumber((int) 6100L),
   ShelvedStateMachineType_OneShotShelved_StateNumber((int) 6101L),
@@ -45,9 +35,6 @@ public enum OpcuaNodeIdServicesVariableShelved {
   ShelvedStateMachineType_TimedShelvedToOneShotShelved_TransitionNumber((int) 11325L),
   ShelvedStateMachineType_OneShotShelvedToUnshelved_TransitionNumber((int) 11326L),
   ShelvedStateMachineType_OneShotShelvedToTimedShelved_TransitionNumber((int) 11327L),
-  ShelvedStateMachineType_LastTransition_EffectiveTransitionTime((int) 11465L),
-  ShelvedStateMachineType_AvailableStates((int) 17662L),
-  ShelvedStateMachineType_AvailableTransitions((int) 17663L),
   ShelvedStateMachineType_TimedShelve2_InputArguments((int) 24757L),
   ShelvedStateMachineType_Unshelve2_InputArguments((int) 24759L),
   ShelvedStateMachineType_OneShotShelve2_InputArguments((int) 24761L);

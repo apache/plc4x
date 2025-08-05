@@ -38,35 +38,29 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ActivateSessionResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "470";
+  public Integer getExtensionId() {
+    return (int) 470;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
+  protected final ResponseHeader responseHeader;
   protected final PascalByteString serverNonce;
-  protected final int noOfResults;
   protected final List<StatusCode> results;
-  protected final int noOfDiagnosticInfos;
   protected final List<DiagnosticInfo> diagnosticInfos;
 
   public ActivateSessionResponse(
-      ExtensionObjectDefinition responseHeader,
+      ResponseHeader responseHeader,
       PascalByteString serverNonce,
-      int noOfResults,
       List<StatusCode> results,
-      int noOfDiagnosticInfos,
       List<DiagnosticInfo> diagnosticInfos) {
     super();
     this.responseHeader = responseHeader;
     this.serverNonce = serverNonce;
-    this.noOfResults = noOfResults;
     this.results = results;
-    this.noOfDiagnosticInfos = noOfDiagnosticInfos;
     this.diagnosticInfos = diagnosticInfos;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
@@ -74,16 +68,8 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     return serverNonce;
   }
 
-  public int getNoOfResults() {
-    return noOfResults;
-  }
-
   public List<StatusCode> getResults() {
     return results;
-  }
-
-  public int getNoOfDiagnosticInfos() {
-    return noOfDiagnosticInfos;
   }
 
   public List<DiagnosticInfo> getDiagnosticInfos() {
@@ -98,19 +84,24 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     writeBuffer.pushContext("ActivateSessionResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (serverNonce)
-    writeSimpleField("serverNonce", serverNonce, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverNonce", serverNonce, writeComplex(writeBuffer));
 
-    // Simple Field (noOfResults)
-    writeSimpleField("noOfResults", noOfResults, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfResults) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfResults = (int) ((((getResults()) == (null)) ? -(1) : COUNT(getResults())));
+    writeImplicitField("noOfResults", noOfResults, writeSignedInt(writeBuffer, 32));
 
     // Array Field (results)
     writeComplexTypeArrayField("results", results, writeBuffer);
 
-    // Simple Field (noOfDiagnosticInfos)
-    writeSimpleField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfDiagnosticInfos) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfDiagnosticInfos =
+        (int) ((((getDiagnosticInfos()) == (null)) ? -(1) : COUNT(getDiagnosticInfos())));
+    writeImplicitField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
 
     // Array Field (diagnosticInfos)
     writeComplexTypeArrayField("diagnosticInfos", diagnosticInfos, writeBuffer);
@@ -135,7 +126,7 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     // Simple field (serverNonce)
     lengthInBits += serverNonce.getLengthInBits();
 
-    // Simple field (noOfResults)
+    // Implicit Field (noOfResults)
     lengthInBits += 32;
 
     // Array field
@@ -147,7 +138,7 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
       }
     }
 
-    // Simple field (noOfDiagnosticInfos)
+    // Implicit Field (noOfDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -163,80 +154,67 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ActivateSessionResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+            readComplex(
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     PascalByteString serverNonce =
         readSimpleField(
-            "serverNonce",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "serverNonce", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
-    int noOfResults = readSimpleField("noOfResults", readSignedInt(readBuffer, 32));
+    int noOfResults = readImplicitField("noOfResults", readSignedInt(readBuffer, 32));
 
     List<StatusCode> results =
         readCountArrayField(
             "results",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfResults);
 
-    int noOfDiagnosticInfos = readSimpleField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
+    int noOfDiagnosticInfos =
+        readImplicitField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
             "diagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDiagnosticInfos);
 
     readBuffer.closeContext("ActivateSessionResponse");
     // Create the instance
     return new ActivateSessionResponseBuilderImpl(
-        responseHeader, serverNonce, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
+        responseHeader, serverNonce, results, diagnosticInfos);
   }
 
   public static class ActivateSessionResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
+    private final ResponseHeader responseHeader;
     private final PascalByteString serverNonce;
-    private final int noOfResults;
     private final List<StatusCode> results;
-    private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
     public ActivateSessionResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
+        ResponseHeader responseHeader,
         PascalByteString serverNonce,
-        int noOfResults,
         List<StatusCode> results,
-        int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
       this.responseHeader = responseHeader;
       this.serverNonce = serverNonce;
-      this.noOfResults = noOfResults;
       this.results = results;
-      this.noOfDiagnosticInfos = noOfDiagnosticInfos;
       this.diagnosticInfos = diagnosticInfos;
     }
 
     public ActivateSessionResponse build() {
       ActivateSessionResponse activateSessionResponse =
-          new ActivateSessionResponse(
-              responseHeader,
-              serverNonce,
-              noOfResults,
-              results,
-              noOfDiagnosticInfos,
-              diagnosticInfos);
+          new ActivateSessionResponse(responseHeader, serverNonce, results, diagnosticInfos);
       return activateSessionResponse;
     }
   }
@@ -252,9 +230,7 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     ActivateSessionResponse that = (ActivateSessionResponse) o;
     return (getResponseHeader() == that.getResponseHeader())
         && (getServerNonce() == that.getServerNonce())
-        && (getNoOfResults() == that.getNoOfResults())
         && (getResults() == that.getResults())
-        && (getNoOfDiagnosticInfos() == that.getNoOfDiagnosticInfos())
         && (getDiagnosticInfos() == that.getDiagnosticInfos())
         && super.equals(that)
         && true;
@@ -266,9 +242,7 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
         super.hashCode(),
         getResponseHeader(),
         getServerNonce(),
-        getNoOfResults(),
         getResults(),
-        getNoOfDiagnosticInfos(),
         getDiagnosticInfos());
   }
 

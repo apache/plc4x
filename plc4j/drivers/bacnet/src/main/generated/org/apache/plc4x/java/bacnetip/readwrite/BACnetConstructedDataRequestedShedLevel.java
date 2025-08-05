@@ -83,8 +83,7 @@ public class BACnetConstructedDataRequestedShedLevel extends BACnetConstructedDa
     writeBuffer.pushContext("BACnetConstructedDataRequestedShedLevel");
 
     // Simple Field (requestedShedLevel)
-    writeSimpleField(
-        "requestedShedLevel", requestedShedLevel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestedShedLevel", requestedShedLevel, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetShedLevel actualValue = getActualValue();
@@ -126,8 +125,7 @@ public class BACnetConstructedDataRequestedShedLevel extends BACnetConstructedDa
     BACnetShedLevel requestedShedLevel =
         readSimpleField(
             "requestedShedLevel",
-            new DataReaderComplexDefault<>(
-                () -> BACnetShedLevel.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetShedLevel.staticParse(readBuffer), readBuffer));
     BACnetShedLevel actualValue =
         readVirtualField("actualValue", BACnetShedLevel.class, requestedShedLevel);
 

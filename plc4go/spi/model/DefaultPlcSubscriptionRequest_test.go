@@ -22,15 +22,15 @@ package model
 import (
 	"context"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/stretchr/testify/mock"
 	"testing"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestDefaultPlcSubscriptionRequestBuilder_AddChangeOfStateTag(t *testing.T) {

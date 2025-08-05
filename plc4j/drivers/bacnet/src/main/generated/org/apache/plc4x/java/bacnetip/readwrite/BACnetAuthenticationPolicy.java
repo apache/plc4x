@@ -70,13 +70,13 @@ public class BACnetAuthenticationPolicy implements Message {
     writeBuffer.pushContext("BACnetAuthenticationPolicy");
 
     // Simple Field (policy)
-    writeSimpleField("policy", policy, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("policy", policy, writeComplex(writeBuffer));
 
     // Simple Field (orderEnforced)
-    writeSimpleField("orderEnforced", orderEnforced, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("orderEnforced", orderEnforced, writeComplex(writeBuffer));
 
     // Simple Field (timeout)
-    writeSimpleField("timeout", timeout, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeout", timeout, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAuthenticationPolicy");
   }
@@ -104,12 +104,6 @@ public class BACnetAuthenticationPolicy implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAuthenticationPolicy staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAuthenticationPolicy staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetAuthenticationPolicy");
@@ -119,14 +113,14 @@ public class BACnetAuthenticationPolicy implements Message {
     BACnetAuthenticationPolicyList policy =
         readSimpleField(
             "policy",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetAuthenticationPolicyList.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 
     BACnetContextTagBoolean orderEnforced =
         readSimpleField(
             "orderEnforced",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(
@@ -136,7 +130,7 @@ public class BACnetAuthenticationPolicy implements Message {
     BACnetContextTagUnsignedInteger timeout =
         readSimpleField(
             "timeout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

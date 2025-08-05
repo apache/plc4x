@@ -80,12 +80,6 @@ public abstract class S7ParameterUserDataItem implements Message {
     return lengthInBits;
   }
 
-  public static S7ParameterUserDataItem staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static S7ParameterUserDataItem staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7ParameterUserDataItem");
     PositionAware positionAware = readBuffer;

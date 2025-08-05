@@ -21,20 +21,25 @@ package modbus
 
 import (
 	"context"
+	"net/url"
+	"runtime/debug"
+	"strconv"
+	"sync"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-	"net/url"
-	"runtime/debug"
-	"strconv"
 )
 
 type RtuDriver struct {
 	_default.DefaultDriver
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
@@ -50,7 +55,7 @@ func NewModbusRtuDriver(_options ...options.WithOption) *RtuDriver {
 	return driver
 }
 
-func (d RtuDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (d *RtuDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	d.log.Debug().
 		Stringer("transportUrl", &transportUrl).
 		Int("nTransports", len(transports)).
@@ -88,7 +93,9 @@ func (d RtuDriver) GetConnectionWithContext(ctx context.Context, transportUrl ur
 	// Create a new codec for taking care of encoding/decoding of messages
 	// TODO: the code below looks strange: where is defaultChanel being used?
 	defaultChanel := make(chan any)
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				d.log.Error().

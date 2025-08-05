@@ -121,7 +121,7 @@ public class VariantExtensionObject extends Variant implements Message {
     List<ExtensionObject> value =
         readCountArrayField(
             "value",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer),
             (((arrayLength) == (null)) ? 1 : arrayLength));
 

@@ -61,8 +61,7 @@ public class BACnetPropertyStatesNetworkPortCommand extends BACnetPropertyStates
     writeBuffer.pushContext("BACnetPropertyStatesNetworkPortCommand");
 
     // Simple Field (networkPortCommand)
-    writeSimpleField(
-        "networkPortCommand", networkPortCommand, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkPortCommand", networkPortCommand, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesNetworkPortCommand");
   }
@@ -93,7 +92,7 @@ public class BACnetPropertyStatesNetworkPortCommand extends BACnetPropertyStates
     BACnetNetworkPortCommandTagged networkPortCommand =
         readSimpleField(
             "networkPortCommand",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNetworkPortCommandTagged.staticParse(
                         readBuffer,

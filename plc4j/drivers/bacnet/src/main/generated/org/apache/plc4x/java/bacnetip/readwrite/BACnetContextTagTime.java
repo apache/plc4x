@@ -67,7 +67,7 @@ public class BACnetContextTagTime extends BACnetContextTag implements Message {
     writeBuffer.pushContext("BACnetContextTagTime");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetContextTagTime");
   }
@@ -98,9 +98,7 @@ public class BACnetContextTagTime extends BACnetContextTag implements Message {
 
     BACnetTagPayloadTime payload =
         readSimpleField(
-            "payload",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagPayloadTime.staticParse(readBuffer), readBuffer));
+            "payload", readComplex(() -> BACnetTagPayloadTime.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("BACnetContextTagTime");
     // Create the instance

@@ -21,10 +21,12 @@ package simulated
 
 import (
 	"context"
+
+	"github.com/pkg/errors"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/pkg/errors"
 )
 
 type Subscriber struct {

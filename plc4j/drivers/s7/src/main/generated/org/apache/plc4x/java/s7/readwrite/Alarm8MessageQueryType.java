@@ -101,7 +101,7 @@ public class Alarm8MessageQueryType implements Message {
         "returnCode",
         "DataTransportErrorCode",
         returnCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataTransportErrorCode::getValue,
             DataTransportErrorCode::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -111,7 +111,7 @@ public class Alarm8MessageQueryType implements Message {
         "transportSize",
         "DataTransportSize",
         transportSize,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataTransportSize::getValue,
             DataTransportSize::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -163,12 +163,6 @@ public class Alarm8MessageQueryType implements Message {
     return lengthInBits;
   }
 
-  public static Alarm8MessageQueryType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Alarm8MessageQueryType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Alarm8MessageQueryType");
     PositionAware positionAware = readBuffer;
@@ -182,23 +176,20 @@ public class Alarm8MessageQueryType implements Message {
         readEnumField(
             "returnCode",
             "DataTransportErrorCode",
-            new DataReaderEnumDefault<>(
-                DataTransportErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(DataTransportErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     DataTransportSize transportSize =
         readEnumField(
             "transportSize",
             "DataTransportSize",
-            new DataReaderEnumDefault<>(
-                DataTransportSize::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(DataTransportSize::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     int byteCount = readSimpleField("byteCount", readUnsignedInt(readBuffer, 16));
 
     List<AlarmMessageObjectQueryType> messageObjects =
         readCountArrayField(
             "messageObjects",
-            new DataReaderComplexDefault<>(
-                () -> AlarmMessageObjectQueryType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AlarmMessageObjectQueryType.staticParse(readBuffer), readBuffer),
             (byteCount) / (12));
 
     readBuffer.closeContext("Alarm8MessageQueryType");

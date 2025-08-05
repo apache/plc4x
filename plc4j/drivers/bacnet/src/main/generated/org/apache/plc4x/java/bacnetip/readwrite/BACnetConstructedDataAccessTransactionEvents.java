@@ -119,7 +119,7 @@ public class BACnetConstructedDataAccessTransactionEvents extends BACnetConstruc
     List<BACnetAccessEventTagged> accessTransactionEvents =
         readTerminatedArrayField(
             "accessTransactionEvents",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessEventTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

@@ -71,12 +71,10 @@ public class BACnetConfirmedServiceRequestAtomicReadFileStream
     writeBuffer.pushContext("BACnetConfirmedServiceRequestAtomicReadFileStream");
 
     // Simple Field (fileStartPosition)
-    writeSimpleField(
-        "fileStartPosition", fileStartPosition, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileStartPosition", fileStartPosition, writeComplex(writeBuffer));
 
     // Simple Field (requestOctetCount)
-    writeSimpleField(
-        "requestOctetCount", requestOctetCount, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestOctetCount", requestOctetCount, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestAtomicReadFileStream");
   }
@@ -111,7 +109,7 @@ public class BACnetConfirmedServiceRequestAtomicReadFileStream
     BACnetApplicationTagSignedInteger fileStartPosition =
         readSimpleField(
             "fileStartPosition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -120,7 +118,7 @@ public class BACnetConfirmedServiceRequestAtomicReadFileStream
     BACnetApplicationTagUnsignedInteger requestOctetCount =
         readSimpleField(
             "requestOctetCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

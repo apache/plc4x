@@ -21,17 +21,17 @@ package cbus
 
 import (
 	"context"
-	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/rs/zerolog/log"
-	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 )
 
 func TestNewWriter(t *testing.T) {
@@ -88,7 +88,6 @@ func TestWriter_Write(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Error("timeout")
@@ -112,7 +111,6 @@ func TestWriter_Write(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Fatal("timeout")
@@ -160,7 +158,6 @@ func TestWriter_Write(t *testing.T) {
 				},
 				wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 					timeout := time.NewTimer(2 * time.Second)
-					utils.CleanupTimer(timeout)
 					select {
 					case <-timeout.C:
 						t.Error("timeout")

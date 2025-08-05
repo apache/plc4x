@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ApplicationDescription extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "310";
+  public Integer getExtensionId() {
+    return (int) 310;
   }
 
   // Properties.
@@ -49,7 +49,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
   protected final ApplicationType applicationType;
   protected final PascalString gatewayServerUri;
   protected final PascalString discoveryProfileUri;
-  protected final int noOfDiscoveryUrls;
   protected final List<PascalString> discoveryUrls;
 
   public ApplicationDescription(
@@ -59,7 +58,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
       ApplicationType applicationType,
       PascalString gatewayServerUri,
       PascalString discoveryProfileUri,
-      int noOfDiscoveryUrls,
       List<PascalString> discoveryUrls) {
     super();
     this.applicationUri = applicationUri;
@@ -68,7 +66,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     this.applicationType = applicationType;
     this.gatewayServerUri = gatewayServerUri;
     this.discoveryProfileUri = discoveryProfileUri;
-    this.noOfDiscoveryUrls = noOfDiscoveryUrls;
     this.discoveryUrls = discoveryUrls;
   }
 
@@ -96,10 +93,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     return discoveryProfileUri;
   }
 
-  public int getNoOfDiscoveryUrls() {
-    return noOfDiscoveryUrls;
-  }
-
   public List<PascalString> getDiscoveryUrls() {
     return discoveryUrls;
   }
@@ -112,33 +105,33 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("ApplicationDescription");
 
     // Simple Field (applicationUri)
-    writeSimpleField("applicationUri", applicationUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("applicationUri", applicationUri, writeComplex(writeBuffer));
 
     // Simple Field (productUri)
-    writeSimpleField("productUri", productUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("productUri", productUri, writeComplex(writeBuffer));
 
     // Simple Field (applicationName)
-    writeSimpleField(
-        "applicationName", applicationName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("applicationName", applicationName, writeComplex(writeBuffer));
 
     // Simple Field (applicationType)
     writeSimpleEnumField(
         "applicationType",
         "ApplicationType",
         applicationType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationType::getValue, ApplicationType::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (gatewayServerUri)
-    writeSimpleField(
-        "gatewayServerUri", gatewayServerUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("gatewayServerUri", gatewayServerUri, writeComplex(writeBuffer));
 
     // Simple Field (discoveryProfileUri)
-    writeSimpleField(
-        "discoveryProfileUri", discoveryProfileUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("discoveryProfileUri", discoveryProfileUri, writeComplex(writeBuffer));
 
-    // Simple Field (noOfDiscoveryUrls)
-    writeSimpleField("noOfDiscoveryUrls", noOfDiscoveryUrls, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfDiscoveryUrls) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfDiscoveryUrls =
+        (int) ((((getDiscoveryUrls()) == (null)) ? -(1) : COUNT(getDiscoveryUrls())));
+    writeImplicitField("noOfDiscoveryUrls", noOfDiscoveryUrls, writeSignedInt(writeBuffer, 32));
 
     // Array Field (discoveryUrls)
     writeComplexTypeArrayField("discoveryUrls", discoveryUrls, writeBuffer);
@@ -175,7 +168,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     // Simple field (discoveryProfileUri)
     lengthInBits += discoveryProfileUri.getLengthInBits();
 
-    // Simple field (noOfDiscoveryUrls)
+    // Implicit Field (noOfDiscoveryUrls)
     lengthInBits += 32;
 
     // Array field
@@ -191,50 +184,46 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ApplicationDescription");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString applicationUri =
         readSimpleField(
-            "applicationUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "applicationUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString productUri =
         readSimpleField(
-            "productUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "productUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     LocalizedText applicationName =
         readSimpleField(
             "applicationName",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     ApplicationType applicationType =
         readEnumField(
             "applicationType",
             "ApplicationType",
-            new DataReaderEnumDefault<>(
-                ApplicationType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ApplicationType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString gatewayServerUri =
         readSimpleField(
             "gatewayServerUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString discoveryProfileUri =
         readSimpleField(
             "discoveryProfileUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    int noOfDiscoveryUrls = readSimpleField("noOfDiscoveryUrls", readSignedInt(readBuffer, 32));
+    int noOfDiscoveryUrls = readImplicitField("noOfDiscoveryUrls", readSignedInt(readBuffer, 32));
 
     List<PascalString> discoveryUrls =
         readCountArrayField(
             "discoveryUrls",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfDiscoveryUrls);
 
     readBuffer.closeContext("ApplicationDescription");
@@ -246,7 +235,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
         applicationType,
         gatewayServerUri,
         discoveryProfileUri,
-        noOfDiscoveryUrls,
         discoveryUrls);
   }
 
@@ -258,7 +246,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     private final ApplicationType applicationType;
     private final PascalString gatewayServerUri;
     private final PascalString discoveryProfileUri;
-    private final int noOfDiscoveryUrls;
     private final List<PascalString> discoveryUrls;
 
     public ApplicationDescriptionBuilderImpl(
@@ -268,7 +255,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
         ApplicationType applicationType,
         PascalString gatewayServerUri,
         PascalString discoveryProfileUri,
-        int noOfDiscoveryUrls,
         List<PascalString> discoveryUrls) {
       this.applicationUri = applicationUri;
       this.productUri = productUri;
@@ -276,7 +262,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
       this.applicationType = applicationType;
       this.gatewayServerUri = gatewayServerUri;
       this.discoveryProfileUri = discoveryProfileUri;
-      this.noOfDiscoveryUrls = noOfDiscoveryUrls;
       this.discoveryUrls = discoveryUrls;
     }
 
@@ -289,7 +274,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
               applicationType,
               gatewayServerUri,
               discoveryProfileUri,
-              noOfDiscoveryUrls,
               discoveryUrls);
       return applicationDescription;
     }
@@ -310,7 +294,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
         && (getApplicationType() == that.getApplicationType())
         && (getGatewayServerUri() == that.getGatewayServerUri())
         && (getDiscoveryProfileUri() == that.getDiscoveryProfileUri())
-        && (getNoOfDiscoveryUrls() == that.getNoOfDiscoveryUrls())
         && (getDiscoveryUrls() == that.getDiscoveryUrls())
         && super.equals(that)
         && true;
@@ -326,7 +309,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
         getApplicationType(),
         getGatewayServerUri(),
         getDiscoveryProfileUri(),
-        getNoOfDiscoveryUrls(),
         getDiscoveryUrls());
   }
 

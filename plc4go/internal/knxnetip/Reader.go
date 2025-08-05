@@ -21,25 +21,28 @@ package knxnetip
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/pkg/errors"
 )
 
 type Reader struct {
 	connection *Connection
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
@@ -52,10 +55,12 @@ func NewReader(connection *Connection, _options ...options.WithOption) *Reader {
 	}
 }
 
-func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
+func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	// TODO: handle ctx
 	resultChan := make(chan apiModel.PlcReadRequestResult, 1)
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				resultChan <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -178,7 +183,7 @@ func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <
 	return resultChan
 }
 
-func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiModel.PlcResponseCode, apiValues.PlcValue) {
+func (m *Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiModel.PlcResponseCode, apiValues.PlcValue) {
 	rawAddresses, err := m.resolveAddresses(tag)
 	if err != nil {
 		m.log.Debug().Err(err).Msg("error resolving addresses")
@@ -267,7 +272,7 @@ func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiM
 
 // If the given tag is a tag containing a pattern, resolve to all the possible addresses
 // it could be referring to.
-func (m Reader) resolveAddresses(tag GroupAddressTag) ([]uint16, error) {
+func (m *Reader) resolveAddresses(tag GroupAddressTag) ([]uint16, error) {
 	// Depending on the type of tag, get the uint16 ids of all values that match the current tag
 	var result []uint16
 	switch tag.(type) {
@@ -320,7 +325,7 @@ func (m Reader) resolveAddresses(tag GroupAddressTag) ([]uint16, error) {
 	return result, nil
 }
 
-func (m Reader) resoleSegment(pattern string, minValue uint16, maxValue uint16) ([]uint16, error) {
+func (m *Reader) resoleSegment(pattern string, minValue uint16, maxValue uint16) ([]uint16, error) {
 	var results []uint16
 	// A "*" simply matches everything
 	if pattern == "*" {

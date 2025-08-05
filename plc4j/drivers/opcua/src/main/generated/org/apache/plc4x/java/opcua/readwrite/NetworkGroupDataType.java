@@ -38,20 +38,17 @@ import org.apache.plc4x.java.spi.generation.*;
 public class NetworkGroupDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "11946";
+  public Integer getExtensionId() {
+    return (int) 11946;
   }
 
   // Properties.
   protected final PascalString serverUri;
-  protected final int noOfNetworkPaths;
-  protected final List<ExtensionObjectDefinition> networkPaths;
+  protected final List<EndpointUrlListDataType> networkPaths;
 
-  public NetworkGroupDataType(
-      PascalString serverUri, int noOfNetworkPaths, List<ExtensionObjectDefinition> networkPaths) {
+  public NetworkGroupDataType(PascalString serverUri, List<EndpointUrlListDataType> networkPaths) {
     super();
     this.serverUri = serverUri;
-    this.noOfNetworkPaths = noOfNetworkPaths;
     this.networkPaths = networkPaths;
   }
 
@@ -59,11 +56,7 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
     return serverUri;
   }
 
-  public int getNoOfNetworkPaths() {
-    return noOfNetworkPaths;
-  }
-
-  public List<ExtensionObjectDefinition> getNetworkPaths() {
+  public List<EndpointUrlListDataType> getNetworkPaths() {
     return networkPaths;
   }
 
@@ -75,10 +68,13 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("NetworkGroupDataType");
 
     // Simple Field (serverUri)
-    writeSimpleField("serverUri", serverUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverUri", serverUri, writeComplex(writeBuffer));
 
-    // Simple Field (noOfNetworkPaths)
-    writeSimpleField("noOfNetworkPaths", noOfNetworkPaths, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfNetworkPaths) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfNetworkPaths =
+        (int) ((((getNetworkPaths()) == (null)) ? -(1) : COUNT(getNetworkPaths())));
+    writeImplicitField("noOfNetworkPaths", noOfNetworkPaths, writeSignedInt(writeBuffer, 32));
 
     // Array Field (networkPaths)
     writeComplexTypeArrayField("networkPaths", networkPaths, writeBuffer);
@@ -100,13 +96,13 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
     // Simple field (serverUri)
     lengthInBits += serverUri.getLengthInBits();
 
-    // Simple field (noOfNetworkPaths)
+    // Implicit Field (noOfNetworkPaths)
     lengthInBits += 32;
 
     // Array field
     if (networkPaths != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : networkPaths) {
+      for (EndpointUrlListDataType element : networkPaths) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= networkPaths.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -116,49 +112,45 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("NetworkGroupDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString serverUri =
         readSimpleField(
-            "serverUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "serverUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    int noOfNetworkPaths = readSimpleField("noOfNetworkPaths", readSignedInt(readBuffer, 32));
+    int noOfNetworkPaths = readImplicitField("noOfNetworkPaths", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> networkPaths =
+    List<EndpointUrlListDataType> networkPaths =
         readCountArrayField(
             "networkPaths",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("11945")),
+            readComplex(
+                () ->
+                    (EndpointUrlListDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (11945)),
                 readBuffer),
             noOfNetworkPaths);
 
     readBuffer.closeContext("NetworkGroupDataType");
     // Create the instance
-    return new NetworkGroupDataTypeBuilderImpl(serverUri, noOfNetworkPaths, networkPaths);
+    return new NetworkGroupDataTypeBuilderImpl(serverUri, networkPaths);
   }
 
   public static class NetworkGroupDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString serverUri;
-    private final int noOfNetworkPaths;
-    private final List<ExtensionObjectDefinition> networkPaths;
+    private final List<EndpointUrlListDataType> networkPaths;
 
     public NetworkGroupDataTypeBuilderImpl(
-        PascalString serverUri,
-        int noOfNetworkPaths,
-        List<ExtensionObjectDefinition> networkPaths) {
+        PascalString serverUri, List<EndpointUrlListDataType> networkPaths) {
       this.serverUri = serverUri;
-      this.noOfNetworkPaths = noOfNetworkPaths;
       this.networkPaths = networkPaths;
     }
 
     public NetworkGroupDataType build() {
-      NetworkGroupDataType networkGroupDataType =
-          new NetworkGroupDataType(serverUri, noOfNetworkPaths, networkPaths);
+      NetworkGroupDataType networkGroupDataType = new NetworkGroupDataType(serverUri, networkPaths);
       return networkGroupDataType;
     }
   }
@@ -173,7 +165,6 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
     }
     NetworkGroupDataType that = (NetworkGroupDataType) o;
     return (getServerUri() == that.getServerUri())
-        && (getNoOfNetworkPaths() == that.getNoOfNetworkPaths())
         && (getNetworkPaths() == that.getNetworkPaths())
         && super.equals(that)
         && true;
@@ -181,7 +172,7 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getServerUri(), getNoOfNetworkPaths(), getNetworkPaths());
+    return Objects.hash(super.hashCode(), getServerUri(), getNetworkPaths());
   }
 
   @Override

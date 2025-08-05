@@ -55,7 +55,7 @@ public class BACnetLiftCarCallList implements Message {
     writeBuffer.pushContext("BACnetLiftCarCallList");
 
     // Simple Field (floorNumbers)
-    writeSimpleField("floorNumbers", floorNumbers, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("floorNumbers", floorNumbers, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLiftCarCallList");
   }
@@ -77,12 +77,6 @@ public class BACnetLiftCarCallList implements Message {
     return lengthInBits;
   }
 
-  public static BACnetLiftCarCallList staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetLiftCarCallList staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLiftCarCallList");
     PositionAware positionAware = readBuffer;
@@ -91,7 +85,7 @@ public class BACnetLiftCarCallList implements Message {
     BACnetLiftCarCallListFloorList floorNumbers =
         readSimpleField(
             "floorNumbers",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetLiftCarCallListFloorList.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 

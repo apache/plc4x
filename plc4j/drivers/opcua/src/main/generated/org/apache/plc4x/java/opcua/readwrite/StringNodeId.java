@@ -64,7 +64,7 @@ public class StringNodeId implements Message {
     writeSimpleField("namespaceIndex", namespaceIndex, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (identifier)
-    writeSimpleField("identifier", identifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("identifier", identifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("StringNodeId");
   }
@@ -89,12 +89,6 @@ public class StringNodeId implements Message {
     return lengthInBits;
   }
 
-  public static StringNodeId staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static StringNodeId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("StringNodeId");
     PositionAware positionAware = readBuffer;
@@ -104,8 +98,7 @@ public class StringNodeId implements Message {
 
     PascalString identifier =
         readSimpleField(
-            "identifier",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "identifier", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("StringNodeId");
     // Create the instance

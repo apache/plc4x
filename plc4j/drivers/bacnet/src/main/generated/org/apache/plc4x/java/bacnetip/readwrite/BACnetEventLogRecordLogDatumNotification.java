@@ -83,15 +83,13 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
     writeBuffer.pushContext("BACnetEventLogRecordLogDatumNotification");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (notification)
-    writeSimpleField("notification", notification, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("notification", notification, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventLogRecordLogDatumNotification");
   }
@@ -128,19 +126,18 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (1)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (1)), readBuffer));
 
     ConfirmedEventNotificationRequest notification =
         readSimpleField(
             "notification",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ConfirmedEventNotificationRequest.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventLogRecordLogDatumNotification");

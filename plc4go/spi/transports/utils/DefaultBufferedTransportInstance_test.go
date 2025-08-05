@@ -23,13 +23,13 @@ import (
 	"bufio"
 	"bytes"
 	"context"
-	"github.com/rs/zerolog/log"
 	"testing"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/spi/transports"
-
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
 func TestNewDefaultBufferedTransportInstance(t *testing.T) {

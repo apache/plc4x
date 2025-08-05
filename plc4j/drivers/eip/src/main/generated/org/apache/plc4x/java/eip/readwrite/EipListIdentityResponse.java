@@ -121,8 +121,7 @@ public class EipListIdentityResponse extends EipPacket implements Message {
     List<CommandSpecificDataItem> items =
         readCountArrayField(
             "items",
-            new DataReaderComplexDefault<>(
-                () -> CommandSpecificDataItem.staticParse(readBuffer), readBuffer),
+            readComplex(() -> CommandSpecificDataItem.staticParse(readBuffer), readBuffer),
             itemCount);
 
     readBuffer.closeContext("EipListIdentityResponse");

@@ -20,9 +20,10 @@
 package simulated
 
 import (
+	"testing"
+
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
-	"testing"
 
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"

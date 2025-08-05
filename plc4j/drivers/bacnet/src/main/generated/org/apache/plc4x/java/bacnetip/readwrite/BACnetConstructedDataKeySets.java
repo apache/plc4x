@@ -99,7 +99,7 @@ public class BACnetConstructedDataKeySets extends BACnetConstructedData implemen
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (keySets)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataKeySets extends BACnetConstructedData implemen
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,8 +161,7 @@ public class BACnetConstructedDataKeySets extends BACnetConstructedData implemen
     List<BACnetSecurityKeySet> keySets =
         readTerminatedArrayField(
             "keySets",
-            new DataReaderComplexDefault<>(
-                () -> BACnetSecurityKeySet.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetSecurityKeySet.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

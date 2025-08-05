@@ -86,7 +86,7 @@ public class ConnectionStateRequest extends KnxNetIpMessage implements Message {
     writeSimpleField(
         "hpaiControlEndpoint",
         hpaiControlEndpoint,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ConnectionStateRequest");
@@ -137,8 +137,7 @@ public class ConnectionStateRequest extends KnxNetIpMessage implements Message {
     HPAIControlEndpoint hpaiControlEndpoint =
         readSimpleField(
             "hpaiControlEndpoint",
-            new DataReaderComplexDefault<>(
-                () -> HPAIControlEndpoint.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HPAIControlEndpoint.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("ConnectionStateRequest");

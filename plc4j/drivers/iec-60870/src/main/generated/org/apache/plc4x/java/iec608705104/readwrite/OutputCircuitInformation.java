@@ -143,12 +143,6 @@ public class OutputCircuitInformation implements Message {
     return lengthInBits;
   }
 
-  public static OutputCircuitInformation staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static OutputCircuitInformation staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("OutputCircuitInformation");
     PositionAware positionAware = readBuffer;

@@ -20,11 +20,13 @@
 package model
 
 import (
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"testing"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
 )
 
 func TestDefaultPlcConsumerRegistration_GetConsumerId(t *testing.T) {

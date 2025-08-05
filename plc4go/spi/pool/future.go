@@ -27,7 +27,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=future
+//go:generate go tool plc4xGenerator -type=future
 type future struct {
 	cancelRequested    atomic.Bool
 	interruptRequested atomic.Bool

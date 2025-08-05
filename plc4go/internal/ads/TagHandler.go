@@ -27,12 +27,13 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/pkg/errors"
+
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 )
 
 type TagHandler struct {
@@ -106,7 +107,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		if adsDataTypeName == "" {
 			return nil, errors.Errorf("Missing ads data type")
 		}
-		plcValueType, ok := apiValues.PlcValueByName(adsDataTypeName)
+		plcValueType, ok := apiValues.PlcValueTypeByName(adsDataTypeName)
 		if !ok {
 			return nil, fmt.Errorf("invalid ads data type")
 		}
@@ -213,7 +214,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		if adsDataTypeName == "" {
 			return nil, errors.Errorf("Missing ads data type")
 		}
-		plcValueType, ok := apiValues.PlcValueByName(adsDataTypeName)
+		plcValueType, ok := apiValues.PlcValueTypeByName(adsDataTypeName)
 		if !ok {
 			return nil, fmt.Errorf("invalid ads data type")
 		}

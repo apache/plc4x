@@ -22,15 +22,15 @@ package tcp
 import (
 	"bufio"
 	"context"
-	"github.com/rs/zerolog/log"
 	"net"
 	"testing"
 
-	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
-
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/net/nettest"
+
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 )
 
 func TestNewTcpTransportInstance(t *testing.T) {

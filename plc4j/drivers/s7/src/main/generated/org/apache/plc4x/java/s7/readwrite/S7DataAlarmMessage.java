@@ -98,26 +98,6 @@ public abstract class S7DataAlarmMessage implements Message {
     return lengthInBits;
   }
 
-  public static S7DataAlarmMessage staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Byte cpuFunctionType;
-    if (args[0] instanceof Byte) {
-      cpuFunctionType = (Byte) args[0];
-    } else if (args[0] instanceof String) {
-      cpuFunctionType = Byte.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Byte or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, cpuFunctionType);
-  }
-
   public static S7DataAlarmMessage staticParse(ReadBuffer readBuffer, Byte cpuFunctionType)
       throws ParseException {
     readBuffer.pullContext("S7DataAlarmMessage");

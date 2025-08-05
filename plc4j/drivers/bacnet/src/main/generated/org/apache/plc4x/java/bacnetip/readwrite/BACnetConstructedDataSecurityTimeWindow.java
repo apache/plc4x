@@ -83,8 +83,7 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
     writeBuffer.pushContext("BACnetConstructedDataSecurityTimeWindow");
 
     // Simple Field (securityTimeWindow)
-    writeSimpleField(
-        "securityTimeWindow", securityTimeWindow, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityTimeWindow", securityTimeWindow, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
     BACnetApplicationTagUnsignedInteger securityTimeWindow =
         readSimpleField(
             "securityTimeWindow",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

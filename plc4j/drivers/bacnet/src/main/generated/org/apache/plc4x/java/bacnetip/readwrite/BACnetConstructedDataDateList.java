@@ -118,8 +118,7 @@ public class BACnetConstructedDataDateList extends BACnetConstructedData impleme
     List<BACnetCalendarEntry> dateList =
         readTerminatedArrayField(
             "dateList",
-            new DataReaderComplexDefault<>(
-                () -> BACnetCalendarEntry.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetCalendarEntry.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

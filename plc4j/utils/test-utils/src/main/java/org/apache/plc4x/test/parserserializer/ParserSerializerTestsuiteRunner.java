@@ -148,7 +148,8 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
         try {
             MessageInput<?> messageInput = MessageResolver.getMessageIOStaticLinked(
                 testSuite.getOptions(),
-                testcase.getRootType()
+                testcase.getRootType(),
+                testcase.getParserArguments()
             );
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -156,7 +157,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             LOGGER.trace("Parsing message");
-            Message parsedOutput = (Message) messageInput.parse(readBuffer, testcase.getParserArguments().toArray());
+            Message parsedOutput = (Message) messageInput.parse(readBuffer);
             LOGGER.trace("Validating and migrating");
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,7 +180,6 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
                 testcase.getName(),
                 messageInput,
                 testcase.getXml().elements().get(0),
-                testcase.getParserArguments(),
                 testcaseRaw,
                 testSuite.getByteOrder(),
                 autoMigrate,

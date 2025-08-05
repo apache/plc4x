@@ -19,6 +19,8 @@
 
 # plc4go
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/apache/plc4x/plc4go.svg)](https://pkg.go.dev/github.com/apache/plc4x/plc4go)
+
 ## plc4go module
 
 To use plc4go import `"github.com/apache/plc4x/plc4go/pkg/api"` and use the driver manager 
@@ -32,11 +34,25 @@ To use plc4go import `"github.com/apache/plc4x/plc4go/pkg/api"` and use the driv
 `plc4xpcapanalyzer` is a small tool to evaluate the plc4x parsing against a pcap and report the success rate.
 
 To install `plc4xpcapanalyzer` run: 
-`go install github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer@latest`
+`go install github.com/apache/plc4x-extras/plc4go/tools/plc4xpcapanalyzer@latest`
 
 ### plc4xbrowser
 
 `plc4xbrowser` is a terminal application to run `REPL`-commands against a PLC using plc4x (plc4go)
 
 To install `plc4xbrowser` run: 
-`go install github.com/apache/plc4x/plc4go/tools/plc4xbrowser@latest`
+`go install github.com/apache/plc4x-extras/plc4go/tools/plc4xbrowser@latest`
+
+### plc4xLicencer
+
+`plc4xLicencer` is a generator to add the Apache licence to files
+
+To install `plc4xLicencer` run: 
+`go install github.com/apache/plc4x-extras/plc4go/tools/plc4xLicencer@latest`
+
+### plc4xGenerator
+
+`plc4xGenerator` is a generator to generate Serializable and String methods
+
+To install `plc4xGenerator` run: 
+`go install github.com/apache/plc4x-extras/plc4go/tools/plc4xGenerator@latest`

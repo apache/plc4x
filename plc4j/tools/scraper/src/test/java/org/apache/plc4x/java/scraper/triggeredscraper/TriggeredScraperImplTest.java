@@ -27,7 +27,7 @@ import org.apache.plc4x.java.scraper.config.ScraperConfigurationClassicImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcLINT;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,24 +69,24 @@ class TriggeredScraperImplTest {
     void scrapeMultipleTargets() throws ScraperException, IOException, InterruptedException {
         // Prepare the Mocking
         // Scrate Jobs 1 and 2
-        when(mockDevice1.read("%DB810:DBB0:USINT")).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcLINT(1L)));
-        when(mockDevice2.read("%DB810:DBB0:USINT")).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcLINT(2L)));
+        when(mockDevice1.read("%DB810:DBB0:USINT")).thenReturn(new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcLINT(1L)));
+        when(mockDevice2.read("%DB810:DBB0:USINT")).thenReturn(new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcLINT(2L)));
         // Trigger Jobs
         // Trigger var
         Random rand = new Random();
         when(mockDevice1.read(("%M0.3:BOOL"))).thenAnswer(invocationOnMock -> {
             boolean trigger = rand.nextBoolean();
             System.out.println(trigger);
-            return new ResponseItem<>(PlcResponseCode.OK, new PlcBOOL(trigger));
+            return new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcBOOL(trigger));
         });
         when(mockDevice2.read(("%M0.3:BOOL"))).thenAnswer(invocationOnMock -> {
             boolean trigger = rand.nextBoolean();
             System.out.println("\t\t" + trigger);
-            return new ResponseItem<>(PlcResponseCode.OK, new PlcBOOL(trigger));
+            return new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcBOOL(trigger));
         });
         // Read var
-        when(mockDevice1.read("%DB810:DBW0:INT")).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcLINT(3L)));
-        when(mockDevice2.read("%DB810:DBW0:INT")).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcLINT(4L)));
+        when(mockDevice1.read("%DB810:DBW0:INT")).thenReturn(new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcLINT(3L)));
+        when(mockDevice2.read("%DB810:DBW0:INT")).thenReturn(new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcLINT(4L)));
 
         ScraperConfiguration configuration = ScraperConfiguration.fromFile("src/test/resources/mock-scraper-config.yml", ScraperConfigurationClassicImpl.class);
         TriggerCollector triggerCollector = new TriggerCollectorImpl(driverManager);

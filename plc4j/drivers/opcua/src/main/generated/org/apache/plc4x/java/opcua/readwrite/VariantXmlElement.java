@@ -121,7 +121,7 @@ public class VariantXmlElement extends Variant implements Message {
     List<PascalString> value =
         readCountArrayField(
             "value",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             (((arrayLength) == (null)) ? 1 : arrayLength));
 
     readBuffer.closeContext("VariantXmlElement");

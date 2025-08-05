@@ -23,12 +23,13 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"strings"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 )
 
 type PlcStruct struct {
@@ -102,7 +103,11 @@ func (m PlcStruct) GetString() string {
 		sb.WriteString("  ")
 		sb.WriteString(tagName)
 		sb.WriteString(": \"")
-		sb.WriteString(tagValue.GetString())
+		if tagValue.IsString() {
+			sb.WriteString(tagValue.GetString())
+		} else {
+			sb.WriteString(fmt.Sprintf("%v", tagValue))
+		}
 		sb.WriteString("\"\n")
 	}
 	sb.WriteString("}")

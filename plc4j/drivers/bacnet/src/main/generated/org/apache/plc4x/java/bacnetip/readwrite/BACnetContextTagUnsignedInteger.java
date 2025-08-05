@@ -74,7 +74,7 @@ public class BACnetContextTagUnsignedInteger extends BACnetContextTag implements
     writeBuffer.pushContext("BACnetContextTagUnsignedInteger");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BigInteger actualValue = getActualValue();
@@ -115,7 +115,7 @@ public class BACnetContextTagUnsignedInteger extends BACnetContextTag implements
     BACnetTagPayloadUnsignedInteger payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadUnsignedInteger.staticParse(
                         readBuffer, (long) (header.getActualLength())),

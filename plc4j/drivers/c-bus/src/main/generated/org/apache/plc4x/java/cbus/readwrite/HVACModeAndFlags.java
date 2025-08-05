@@ -173,7 +173,7 @@ public class HVACModeAndFlags implements Message {
         "mode",
         "HVACModeAndFlagsMode",
         mode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HVACModeAndFlagsMode::getValue,
             HVACModeAndFlagsMode::name,
             writeUnsignedByte(writeBuffer, 3)));
@@ -229,12 +229,6 @@ public class HVACModeAndFlags implements Message {
     return lengthInBits;
   }
 
-  public static HVACModeAndFlags staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static HVACModeAndFlags staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HVACModeAndFlags");
     PositionAware positionAware = readBuffer;
@@ -264,8 +258,7 @@ public class HVACModeAndFlags implements Message {
         readEnumField(
             "mode",
             "HVACModeAndFlagsMode",
-            new DataReaderEnumDefault<>(
-                HVACModeAndFlagsMode::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(HVACModeAndFlagsMode::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     readBuffer.closeContext("HVACModeAndFlags");
     // Create the instance

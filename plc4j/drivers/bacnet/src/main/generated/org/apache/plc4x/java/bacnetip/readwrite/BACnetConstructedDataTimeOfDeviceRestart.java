@@ -83,8 +83,7 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
     writeBuffer.pushContext("BACnetConstructedDataTimeOfDeviceRestart");
 
     // Simple Field (timeOfDeviceRestart)
-    writeSimpleField(
-        "timeOfDeviceRestart", timeOfDeviceRestart, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeOfDeviceRestart", timeOfDeviceRestart, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetTimeStamp actualValue = getActualValue();
@@ -126,8 +125,7 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
     BACnetTimeStamp timeOfDeviceRestart =
         readSimpleField(
             "timeOfDeviceRestart",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
     BACnetTimeStamp actualValue =
         readVirtualField("actualValue", BACnetTimeStamp.class, timeOfDeviceRestart);
 

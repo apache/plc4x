@@ -300,6 +300,34 @@ class AsciiBoxWriterTest {
                 "╚═════════════════════════════════════════════╝";
             assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.boxString(name, data, charWidth));
         }
+
+        @Test
+        void simpleBoxWithTabs(){
+            String name = "tabs";
+            String data = "a\n\tb\n\t\t\t\t\tc";
+            int charWidth = 1;
+            String want = "" +
+                "╔═tabs══════╗\n" +
+                "║     a     ║\n" +
+                "║      b    ║\n" +
+                "║          c║\n" +
+                "╚═══════════╝";
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.boxString(name, data, charWidth));
+        }
+
+        @Test
+        void simpleBoxWithCR(){
+            String name = "cr";
+            String data = "a\r\nb\r\nc\r\n";
+            int charWidth = 1;
+            String want = ""+
+                "╔═cr╗\n" +
+                "║ a ║\n" +
+                "║ b ║\n" +
+                "║ c ║\n" +
+                "╚═══╝";
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.boxString(name, data, charWidth));
+        }
     }
 
     @Nested

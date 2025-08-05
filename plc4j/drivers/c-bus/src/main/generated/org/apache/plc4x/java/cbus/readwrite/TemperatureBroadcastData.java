@@ -82,7 +82,7 @@ public class TemperatureBroadcastData implements Message {
         "commandTypeContainer",
         "TemperatureBroadcastCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TemperatureBroadcastCommandTypeContainer::getValue,
             TemperatureBroadcastCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -131,12 +131,6 @@ public class TemperatureBroadcastData implements Message {
     return lengthInBits;
   }
 
-  public static TemperatureBroadcastData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TemperatureBroadcastData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TemperatureBroadcastData");
     PositionAware positionAware = readBuffer;
@@ -151,7 +145,7 @@ public class TemperatureBroadcastData implements Message {
         readEnumField(
             "commandTypeContainer",
             "TemperatureBroadcastCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 TemperatureBroadcastCommandTypeContainer::enumForValue,
                 readUnsignedShort(readBuffer, 8)));
     TemperatureBroadcastCommandType commandType =

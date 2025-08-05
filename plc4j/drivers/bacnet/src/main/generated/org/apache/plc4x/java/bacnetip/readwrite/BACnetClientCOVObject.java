@@ -60,7 +60,7 @@ public class BACnetClientCOVObject extends BACnetClientCOV implements Message {
     writeBuffer.pushContext("BACnetClientCOVObject");
 
     // Simple Field (realIncrement)
-    writeSimpleField("realIncrement", realIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("realIncrement", realIncrement, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetClientCOVObject");
   }
@@ -91,7 +91,7 @@ public class BACnetClientCOVObject extends BACnetClientCOV implements Message {
     BACnetApplicationTagReal realIncrement =
         readSimpleField(
             "realIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

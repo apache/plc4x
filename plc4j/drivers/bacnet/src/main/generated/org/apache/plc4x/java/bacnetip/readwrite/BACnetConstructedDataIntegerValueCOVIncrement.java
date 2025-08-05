@@ -83,7 +83,7 @@ public class BACnetConstructedDataIntegerValueCOVIncrement extends BACnetConstru
     writeBuffer.pushContext("BACnetConstructedDataIntegerValueCOVIncrement");
 
     // Simple Field (covIncrement)
-    writeSimpleField("covIncrement", covIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("covIncrement", covIncrement, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataIntegerValueCOVIncrement extends BACnetConstru
     BACnetApplicationTagUnsignedInteger covIncrement =
         readSimpleField(
             "covIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

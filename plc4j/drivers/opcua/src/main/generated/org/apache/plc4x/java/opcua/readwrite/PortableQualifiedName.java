@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class PortableQualifiedName extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "24107";
+  public Integer getExtensionId() {
+    return (int) 24107;
   }
 
   // Properties.
@@ -68,10 +68,10 @@ public class PortableQualifiedName extends ExtensionObjectDefinition implements 
     writeBuffer.pushContext("PortableQualifiedName");
 
     // Simple Field (namespaceUri)
-    writeSimpleField("namespaceUri", namespaceUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("namespaceUri", namespaceUri, writeComplex(writeBuffer));
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     writeBuffer.popContext("PortableQualifiedName");
   }
@@ -97,20 +97,18 @@ public class PortableQualifiedName extends ExtensionObjectDefinition implements 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("PortableQualifiedName");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString namespaceUri =
         readSimpleField(
-            "namespaceUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "namespaceUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("PortableQualifiedName");
     // Create the instance

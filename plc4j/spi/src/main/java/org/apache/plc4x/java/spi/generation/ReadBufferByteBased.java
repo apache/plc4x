@@ -31,9 +31,14 @@ import java.util.Objects;
 
 public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
+    public static final long LAST_SEVEN_BITS = (byte) 0x7F;
+    public static final long SEVENTH_BIT = (byte) 0x40;
+    public static final long EIGHTH_BIT = (byte) 0x80;
+
     private final MyDefaultBitInput bi;
     private ByteOrder byteOrder;
     private final int totalBytes;
+    private int bitPos; // This is useful when debugging so you can see the actual bit position
 
     public ReadBufferByteBased(byte[] input) {
         this(input, ByteOrder.BIG_ENDIAN);
@@ -56,6 +61,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
     @Override
     public void reset(int pos) {
         bi.reset(pos);
+        bitPos = pos*8;
     }
 
     public byte[] getBytes(int startPos, int endPos) {
@@ -107,6 +113,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public boolean readBit(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos++;
         try {
             return bi.readBoolean();
         } catch (IOException e) {
@@ -116,11 +123,13 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public byte readByte(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=8;
         return readSignedByte(logicalName, 8, readerArgs);
     }
 
     @Override
     public byte[] readByteArray(String logicalName, int numberOfBytes, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=numberOfBytes*8;
         byte[] bytes = new byte[numberOfBytes];
         for (int i = 0; i < numberOfBytes; i++) {
             bytes[i] = readByte();
@@ -130,6 +139,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public byte readUnsignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("unsigned byte must contain at least 1 bit");
         }
@@ -137,7 +147,24 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("unsigned byte can only contain max 4 bits");
         }
         try {
-            return bi.readByte(true, bitLength);
+            String encoding = extractEncoding(readerArgs).orElse("default");
+            switch (encoding) {
+                case "default":
+                    return bi.readByte(true, bitLength);
+                // BCD = Binary Encoded Decimal (A decimal number is represented by a sequence of 4 bit hexadecimal values from 0-9.
+                // https://www.elektronik-kompendium.de/sites/dig/1010311.htm
+                case "BCD":
+                    if (bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    byte digit = bi.readByte(true, 4);
+                    if ((digit < 0) || (digit > 9)) {
+                        throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                    }
+                    return digit;
+                default:
+                    throw new ParseException("unsupported encoding '" + encoding + "'");
+            }
         } catch (IOException e) {
             throw new ParseException("Error reading unsigned byte", e);
         }
@@ -145,6 +172,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public short readUnsignedShort(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("unsigned short must contain at least 1 bit");
         }
@@ -167,6 +195,21 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
                     return Short.parseShort(stringValue);
+                case "BCD":
+                    if (bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    short value = 0;
+                    for (int i = numDigits - 1; i >= 0; i--) {
+                        byte digit = bi.readByte(true, 4);
+                        if ((digit < 0) || (digit > 9)) {
+                            throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                        }
+                        // Shift the current digit to the required position and add it to the rest.
+                        value += (short) (digit * Math.pow(10, i));
+                    }
+                    return value;
                 case "default":
                     // No need to flip here as we're only reading one byte.
                     return bi.readShort(true, bitLength);
@@ -180,6 +223,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public int readUnsignedInt(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("unsigned int must contain at least 1 bit");
         }
@@ -202,6 +246,21 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
                     return Integer.parseInt(stringValue);
+                case "BCD":
+                    if (bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    int value = 0;
+                    for (int i = numDigits - 1; i >= 0; i--) {
+                        byte digit = bi.readByte(true, 4);
+                        if ((digit < 0) || (digit > 9)) {
+                            throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                        }
+                        // Shift the current digit to the required position and add it to the rest.
+                        value += (int) (digit * Math.pow(10, i));
+                    }
+                    return value;
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         final int longValue = bi.readInt(true, bitLength);
@@ -218,6 +277,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public long readUnsignedLong(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("unsigned long must contain at least 1 bit");
         }
@@ -240,6 +300,41 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
                     return Long.parseLong(stringValue);
+                case "BCD":
+                    if (bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    long value = 0;
+                    for (int i = numDigits - 1; i >= 0; i--) {
+                        byte digit = bi.readByte(true, 4);
+                        if ((digit < 0) || (digit > 9)) {
+                            throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                        }
+                        // Shift the current digit to the required position and add it to the rest.
+                        value += (long) (digit * Math.pow(10, i));
+                    }
+                    return value;
+                case "VARUDINT": {
+                    long result = 0;
+                    int shift = 0;
+                    for (int i = 0; i < 4; i++) {
+                        short b = bi.readShort(true, 8);
+                        // Add the lower 7 bits of b, shifted appropriately.
+                        result = result << shift;
+                        result |= ((long) b & 0x0000007F);
+                        // If the most significant bit is 0, this is the last byte.
+                        if ((b & 0x80) == 0) {
+                            break;
+                        }
+                        shift = 7;
+                        // Ensure we do not exceed the maximum allowed bit length.
+                        if (shift >= bitLength) {
+                            throw new ParseException("var-length-uint exceeds allowed bit length " + bitLength);
+                        }
+                    }
+                    return result;
+                }
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         final long longValue = bi.readLong(true, bitLength);
@@ -256,12 +351,10 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public BigInteger readUnsignedBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         //Support specific case where value less than 64 bits and big endian.
         if (bitLength <= 0) {
             throw new ParseException("unsigned long must contain at least 1 bit");
-        }
-        if (bitLength > 64) {
-            throw new ParseException("unsigned long can only contain max 64 bits");
         }
         try {
             String encoding = extractEncoding(readerArgs).orElse("default");
@@ -279,6 +372,42 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
                     return new BigInteger(stringValue);
+                case "BCD":
+                    if (bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    BigInteger value = BigInteger.ZERO;
+                    for (int i = numDigits - 1; i >= 0; i--) {
+                        byte digit = bi.readByte(true, 4);
+                        if ((digit < 0) || (digit > 9)) {
+                            throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                        }
+                        // Shift the current digit to the required position and add it to the rest.
+                        value = value.add(BigInteger.valueOf(digit).multiply(BigInteger.valueOf(10).pow(i)));
+                    }
+                    return value;
+                case "VARUDINT": {
+                    long result = 0;
+                    for (int i = 0; i < 16; i++) {
+                        short b = bi.readShort(true, 8);
+
+                        // if this is the first byte, and it's negative (the 7th bit is true)
+                        // initialize the result with a value where all bits are 1
+                        if((i == 0) && ((b & SEVENTH_BIT) != 0)) {
+                            result = -1;
+                        }
+
+                        // Add the lower 7 bits of b, shifted appropriately.
+                        result = result << 7;
+                        result |= (int) (b & LAST_SEVEN_BITS);
+                        // If the most significant bit is 0, this is the last byte.
+                        if ((b & EIGHTH_BIT) == 0) {
+                            break;
+                        }
+                    }
+                    return BigInteger.valueOf(result);
+                }
                 case "default":
                     // Read as signed value
                     long val = bi.readLong(false, bitLength);
@@ -301,6 +430,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public byte readSignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("byte must contain at least 1 bit");
         }
@@ -316,6 +446,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public short readShort(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("short must contain at least 1 bit");
         }
@@ -334,6 +465,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public int readInt(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("int must contain at least 1 bit");
         }
@@ -341,10 +473,38 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("int can only contain max 32 bits");
         }
         try {
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                return Integer.reverseBytes(bi.readInt(false, bitLength));
+            String encoding = extractEncoding(readerArgs).orElse("default");
+            switch (encoding) {
+                case "VARDINT": {
+                    int result = 0;
+                    for (int i = 0; i < 5; i++) {
+                        short b = bi.readShort(true, 8);
+
+                        // if this is the first byte, and it's negative (the 7th bit is true)
+                        // initialize the result with a value where all bits are 1
+                        if((i == 0) && ((b & SEVENTH_BIT) != 0)) {
+                            result = -1;
+                        }
+
+                        // Add the lower 7 bits of b, shifted appropriately.
+                        result = result << 7;
+                        result |= (int) (b & LAST_SEVEN_BITS);
+                        // If the most significant bit is 0, this is the last byte.
+                        if ((b & EIGHTH_BIT) == 0) {
+                            break;
+                        }
+                    }
+                    return result;
+                }
+                case "default":
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        return Integer.reverseBytes(bi.readInt(false, bitLength));
+                    }
+                    return bi.readInt(false, bitLength);
+
+                default:
+                    throw new ParseException("unsupported encoding '" + encoding + "'");
             }
-            return bi.readInt(false, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading signed int", e);
         }
@@ -352,6 +512,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public long readLong(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength <= 0) {
             throw new ParseException("long must contain at least 1 bit");
         }
@@ -359,10 +520,17 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("long can only contain max 64 bits");
         }
         try {
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                return Long.reverseBytes(bi.readLong(false, bitLength));
+            String encoding = extractEncoding(readerArgs).orElse("default");
+            switch (encoding) {
+                case "default":
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        return Long.reverseBytes(bi.readLong(false, bitLength));
+                    }
+                    return bi.readLong(false, bitLength);
+
+                default:
+                    throw new ParseException("unsupported encoding '" + encoding + "'");
             }
-            return bi.readLong(false, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading signed long", e);
         }
@@ -370,14 +538,21 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public BigInteger readBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
     public float readFloat(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
+        String encoding = extractEncoding(readerArgs).orElse("UTF-8");
         try {
             if (bitLength == 16) {
-                return readFloat16();
+                if ("KNXFloat".equals(encoding)) {
+                    return readKnxFloat16();
+                } else {
+                    return readFloat16();
+                }
             } else if (bitLength == 32) {
                 return readFloat32(logicalName);
             } else {
@@ -388,37 +563,18 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
         }
     }
 
-    private float readFloat16() throws IOException {
+    private float readKnxFloat16() throws IOException {
         // NOTE: KNX uses 4 bits as exponent and 11 as fraction
         final boolean sign = bi.readBoolean();
         final byte exponent = bi.readByte(true, 4);
         short fraction = bi.readShort(true, 11);
-        // This is a 12-bit 2's complement notation ... the first bit belongs to the last 11 bits.
-        // If the first bit is set, then we need to also set the upper 5 bits of the fraction part.
         if (sign) {
             fraction = (short) (fraction | 0xF800);
         }
-        if ((exponent >= 1) && (exponent < 15)) {
-            return (float) (0.01 * fraction * Math.pow(2, exponent));
-        }
-        if (exponent == 0) {
-            if (fraction == 0) {
-                return 0.0f;
-            } else {
-                return (2 ^ (-14)) * (fraction / 10f);
-            }
-        }
-        if (exponent == 15) {
-            if (fraction == 0) {
-                return sign ? Float.POSITIVE_INFINITY : Float.NEGATIVE_INFINITY;
-            } else {
-                return Float.NaN;
-            }
-        }
-        throw new NumberFormatException();
+        return (float) (0.01 * fraction * Math.pow(2, exponent));
     }
 
-    /*private float readFloat16() throws IOException {
+    private float readFloat16() throws IOException {
         // https://en.wikipedia.org/wiki/Half-precision_floating-point_format
         final boolean sign = bi.readBoolean();
         final byte exponent = bi.readByte(true, 5);
@@ -442,15 +598,17 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             }
         }
         throw new NumberFormatException();
-    }*/
+    }
 
     private float readFloat32(String logicalName) throws ParseException {
+        bitPos+=32;
         int intValue = readInt(logicalName, 32);
         return Float.intBitsToFloat(intValue);
     }
 
     @Override
     public double readDouble(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         if (bitLength == 64) {
             long longValue = readLong(logicalName, 64);
             return Double.longBitsToDouble(longValue);
@@ -461,6 +619,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public BigDecimal readBigDecimal(String logicalName, int bitLength, WithReaderArgs... readerArgs) {
+        bitPos+=bitLength;
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -471,6 +630,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
      */
     @Override
     public String readString(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        bitPos+=bitLength;
         String encoding = extractEncoding(readerArgs).orElse("UTF-8");
         encoding = encoding.replaceAll("[^a-zA-Z0-9]", "");
         encoding = encoding.toUpperCase();

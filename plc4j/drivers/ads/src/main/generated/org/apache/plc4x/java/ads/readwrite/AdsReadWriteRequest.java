@@ -182,7 +182,7 @@ public class AdsReadWriteRequest extends AmsPacket implements Message {
     List<AdsMultiRequestItem> items =
         readCountArrayField(
             "items",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> AdsMultiRequestItem.staticParse(readBuffer, (long) (indexGroup)), readBuffer),
             (((((((indexGroup) == (61568))) || (((indexGroup) == (61569))))
                     || (((indexGroup) == (61570)))))

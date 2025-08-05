@@ -26,6 +26,7 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -36,8 +37,7 @@ import java.util.regex.Pattern;
  */
 public class SymbolicAdsTag implements AdsTag {
 
-    // TODO: Model the end of this address to allow usage of multi-dimensional arrays.
-    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+)");
+    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^([\\w_]+)(\"[\"\\d*]\")*(\\.(\\w+)(\"[\"\\d*]\")*)*");
 
     private final String symbolicAddress;
 
@@ -56,9 +56,7 @@ public class SymbolicAdsTag implements AdsTag {
         if (!matcher.matches()) {
             throw new PlcInvalidTagException(address, SYMBOLIC_ADDRESS_PATTERN, "{address}");
         }
-        String symbolicAddress = matcher.group("symbolicAddress");
-
-        return new SymbolicAdsTag(symbolicAddress, null, null);
+        return new SymbolicAdsTag(address, null, Collections.emptyList());
     }
 
     public static boolean matches(String address) {
@@ -119,4 +117,5 @@ public class SymbolicAdsTag implements AdsTag {
 
         writeBuffer.popContext(getClass().getSimpleName());
     }
+
 }

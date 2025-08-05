@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class Orientation extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "18813";
+  public Integer getExtensionId() {
+    return (int) 18813;
   }
 
   public Orientation() {
@@ -71,7 +71,7 @@ public class Orientation extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("Orientation");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

@@ -88,7 +88,7 @@ public class Plc4xReadResponse extends Plc4xMessage implements Message {
         "responseCode",
         "Plc4xResponseCode",
         responseCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             Plc4xResponseCode::getValue,
             Plc4xResponseCode::name,
             writeUnsignedShort(writeBuffer, 8)),
@@ -158,8 +158,7 @@ public class Plc4xReadResponse extends Plc4xMessage implements Message {
         readEnumField(
             "responseCode",
             "Plc4xResponseCode",
-            new DataReaderEnumDefault<>(
-                Plc4xResponseCode::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Plc4xResponseCode::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     short numTags =
@@ -171,8 +170,7 @@ public class Plc4xReadResponse extends Plc4xMessage implements Message {
     List<Plc4xTagValueResponse> tags =
         readCountArrayField(
             "tags",
-            new DataReaderComplexDefault<>(
-                () -> Plc4xTagValueResponse.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Plc4xTagValueResponse.staticParse(readBuffer), readBuffer),
             numTags,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

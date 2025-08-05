@@ -60,7 +60,7 @@ public class BACnetCalendarEntryDateRange extends BACnetCalendarEntry implements
     writeBuffer.pushContext("BACnetCalendarEntryDateRange");
 
     // Simple Field (dateRange)
-    writeSimpleField("dateRange", dateRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateRange", dateRange, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetCalendarEntryDateRange");
   }
@@ -91,7 +91,7 @@ public class BACnetCalendarEntryDateRange extends BACnetCalendarEntry implements
     BACnetDateRangeEnclosed dateRange =
         readSimpleField(
             "dateRange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateRangeEnclosed.staticParse(readBuffer, (short) (1)), readBuffer));
 
     readBuffer.closeContext("BACnetCalendarEntryDateRange");

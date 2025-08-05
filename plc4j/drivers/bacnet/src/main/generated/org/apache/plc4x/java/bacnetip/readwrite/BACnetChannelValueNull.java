@@ -60,7 +60,7 @@ public class BACnetChannelValueNull extends BACnetChannelValue implements Messag
     writeBuffer.pushContext("BACnetChannelValueNull");
 
     // Simple Field (nullValue)
-    writeSimpleField("nullValue", nullValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nullValue", nullValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueNull");
   }
@@ -91,7 +91,7 @@ public class BACnetChannelValueNull extends BACnetChannelValue implements Messag
     BACnetApplicationTagNull nullValue =
         readSimpleField(
             "nullValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagNull) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

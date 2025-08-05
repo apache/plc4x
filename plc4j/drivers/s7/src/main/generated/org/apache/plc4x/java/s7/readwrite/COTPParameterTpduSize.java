@@ -66,8 +66,7 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
         "tpduSize",
         "COTPTpduSize",
         tpduSize,
-        new DataWriterEnumDefault<>(
-            COTPTpduSize::getValue, COTPTpduSize::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(COTPTpduSize::getValue, COTPTpduSize::name, writeUnsignedShort(writeBuffer, 8)));
 
     writeBuffer.popContext("COTPParameterTpduSize");
   }
@@ -99,8 +98,7 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
         readEnumField(
             "tpduSize",
             "COTPTpduSize",
-            new DataReaderEnumDefault<>(
-                COTPTpduSize::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(COTPTpduSize::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("COTPParameterTpduSize");
     // Create the instance

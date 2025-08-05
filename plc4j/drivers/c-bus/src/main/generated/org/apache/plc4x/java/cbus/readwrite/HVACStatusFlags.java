@@ -188,12 +188,6 @@ public class HVACStatusFlags implements Message {
     return lengthInBits;
   }
 
-  public static HVACStatusFlags staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static HVACStatusFlags staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HVACStatusFlags");
     PositionAware positionAware = readBuffer;

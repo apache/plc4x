@@ -1,0 +1,129 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:icons: font
+:experimental:
+
+= OPC UA : Client certificate creation
+
+
+
+Below tutorial will teach you how to create client certificate for use within production environments.
+This tutorial focuses on preparation of configuration.
+It does not dive in X.509 and PKI details nor specifics of any OPC-UA server.
+
+The Apache PLC4X client, as many other UA clients is able to create ad-hoc certificate for communication.
+While it softens entry bearer for many, it creates also a gap when with secured environments, which control certificate chains.
+
+There are several ways on how to organize certificates.
+In this little tutorial we will use open source tool called https://github.com/kaikramer/keystore-explorer[KeyStore Explorer], referred herein as KSE.
+This tool allows to create files which can be used as a cryptographic keystore for Java-based programs but not only.
+One of nice things which Java runtime introduced, was change of default keystore format from JKS (Java KeyStore) to https://en.wikipedia.org/wiki/PKCS_12[PKCS#12].
+
+== Creating self-signed certificate using KSE
+Install the tool using the way which is valid for your operating system, then open the tool.
+
+Entire process can be observed in below short screen capture:
+
+image::tutorials/opcua/kse/kse_self_signed_ca_certificate.gif["Creation of self-signed certificate authority using KeyStore Explorer"]
+
+Step by step operations are.
+
+. Navigate to menu:File[New] or press kbd:[CTRL+N] to create new keystore.
++
+image::tutorials/opcua/kse/kse_1.png["Create new keystore"]
+
+. Pick PKCS#12 as desired store format.
++
+image::tutorials/opcua/kse/kse_2.png["Use PKCS#12 format"]
+
+. Navigate to menu:Tools[Generate key pair] or press kbd:[CTRL+G]:
++
+image::tutorials/opcua/kse/kse_3.png["Create new key pair"]
+
+. Decide on key type (RSA, DSA, EC) and its size. RSA is a fairly common, confirm key size and click btn:[OK]
++
+image::tutorials/opcua/kse/kse_4.png["Pick key type and size"]
+
+. KSE will ask you about certificate details
++
+image::tutorials/opcua/kse/kse_5.png["Certificate settings"]
+
+. Go to `Name` field and click little phone book icon and click it.
+You will be able to specify common name (CN), organization unit (OU) and other fields, and confirm with btn:[OK]
++
+image::tutorials/opcua/kse/kse_6.png["Certificate name details"]
+
+. Click btn:[Add Extensions], which is located below `Name` field (you will again see step 5 window), it will open next popup.
++
+image::tutorials/opcua/kse/kse_7.png["Add extension popup"]
+
+. Click btn:[Use Standard Template], select CA, then click btn:[OK].
++
+image::tutorials/opcua/kse/kse_8.png["Use CA template"]
+
+. This will fill extensions with few rows, but do not close this window yet.
++
+image::tutorials/opcua/kse/kse_9.png["CA certificate extensions details"]
+
+. Click btn:[+] next to the list, and select `Subject Alternative Name`, then click btn:[OK].
++
+image::tutorials/opcua/kse/kse_10.png["Add subject name"]
+
+. You will see again window with list, click btn:[+] next to it.
++
+image::tutorials/opcua/kse/kse_11.png["Subject alternative names list"]
+
+. Select `URI`, and type client identifier in `General Name Value` field (i.e. `urn:my:plc:client`), and confirm via btn:[OK].
++
+image::tutorials/opcua/kse/kse_12.png["Add subject alternative name"]
+
+. Click btn:[OK] to close certificate extensions prompt.
+. Click btn:[OK] to finish certificate creation.
+. Enter key pair alias and confirm with btn:[OK].
++
+image::tutorials/opcua/kse/kse_13.png["Specify key pair alias"]
+
+. Enter private key password, confirm it in second field and click btn:[OK].
++
+image::tutorials/opcua/kse/kse_14.png["Specify private key password"]
+
+. Upon completion of these steps you should be presented with "Key Pair Generation Successful" message.
++
+image::tutorials/opcua/kse/kse_15.png["Completion of key generation"]
+
+. Navigate to menu:File[Save] or press kbd:[CTRL+S] to save keystore.
++
+image::tutorials/opcua/kse/kse_16.png["Save keystore"]
+
+. Enter keystore password, for use within Java **it must be same as private key password**.
++
+image::tutorials/opcua/kse/kse_17.png["Save keystore"]
+
+. Specify file location.
++
+image::tutorials/opcua/kse/kse_17.png["Save keystore"]
+
+. Close KSE, your client private key and certificate is ready for use.
+
+== Usage within OPC UA PLC4X client
+
+For detailed use of options used to configure client please refer to documentation of Apache PLC4X OPC-UA driver.
+Please remember that keystore must be readable by your program.
+In case if you are not certain what is working directory of your program, specify full path to keystore.
+
+
+

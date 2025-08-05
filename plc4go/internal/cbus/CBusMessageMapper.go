@@ -22,19 +22,28 @@ package cbus
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-	"github.com/rs/zerolog"
 	"strconv"
 	"strings"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
-func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenerator *AlphaGenerator, messageCodec *MessageCodec) (cBusMessage readWriteModel.CBusMessage, supportsRead, supportsWrite, supportsSubscribe bool, err error) {
+func TagToCBusMessage(
+	tag apiModel.PlcTag,
+	value apiValues.PlcValue,
+	alphaGenerator *AlphaGenerator,
+	messageCodec *MessageCodec,
+) (cBusMessage readWriteModel.CBusMessage,
+	supportsRead, supportsWrite, supportsSubscribe bool,
+	err error,
+) {
 	cbusOptions := messageCodec.cbusOptions
 	requestContext := messageCodec.requestContext
 	switch tagType := tag.(type) {
@@ -42,49 +51,106 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 		var statusRequest readWriteModel.StatusRequest
 		switch tagType.statusRequestType {
 		case StatusRequestTypeBinaryState:
-			statusRequest = readWriteModel.NewStatusRequestBinaryState(tagType.application, 0x7A)
+			statusRequest = readWriteModel.NewStatusRequestBinaryState(0x7A, tagType.application)
 		case StatusRequestTypeLevel:
-			statusRequest = readWriteModel.NewStatusRequestLevel(tagType.application, *tagType.startingGroupAddressLabel, 0x73)
+			statusRequest = readWriteModel.NewStatusRequestLevel(0x73, tagType.application, *tagType.startingGroupAddressLabel)
 		}
 		var cbusCommand readWriteModel.CBusCommand
 		cbusCommand, err = producePointToMultiPointCommandStatus(tagType.bridgeAddresses, tagType.application, statusRequest, cbusOptions)
 		if err != nil {
 			return nil, false, false, false, errors.Wrap(err, "error producing point to multipoint command")
 		}
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
+		request := readWriteModel.NewRequestCommand(
+			readWriteModel.RequestType_REQUEST_COMMAND,
+			nil,
+			nil,
+			readWriteModel.RequestType_EMPTY,
+			readWriteModel.NewRequestTermination(),
+			cbusCommand,
+			nil,
+			readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()),
+			cbusOptions,
+		)
 
 		cBusMessage, supportsRead, supportsSubscribe = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), true, true
 		return
 	case *calRecallTag:
-		calData := readWriteModel.NewCALDataRecall(tagType.parameter, tagType.count, readWriteModel.CALCommandTypeContainer_CALCommandRecall, nil, requestContext)
+		calData := readWriteModel.NewCALDataRecall(
+			readWriteModel.CALCommandTypeContainer_CALCommandRecall,
+			nil,
+			tagType.parameter,
+			tagType.count,
+			requestContext,
+		)
 		var command readWriteModel.CBusCommand
 		command, err = producePointToPointCommand(tagType.unitAddress, tagType.bridgeAddresses, calData, cbusOptions)
 		if err != nil {
 			return nil, false, false, false, errors.Wrap(err, "error producing cal command")
 		}
-		request := readWriteModel.NewRequestCommand(command, nil, readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
+		request := readWriteModel.NewRequestCommand(
+			readWriteModel.RequestType_REQUEST_COMMAND,
+			nil,
+			nil,
+			readWriteModel.RequestType_EMPTY,
+			readWriteModel.NewRequestTermination(),
+			command,
+			nil,
+			readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()),
+			cbusOptions,
+		)
 
 		cBusMessage, supportsRead = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), true
 		return
 	case *calIdentifyTag:
-		calData := readWriteModel.NewCALDataIdentify(tagType.attribute, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, requestContext)
+		calData := readWriteModel.NewCALDataIdentify(
+			readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+			nil,
+			tagType.attribute,
+			requestContext,
+		)
 		var command readWriteModel.CBusCommand
 		command, err = producePointToPointCommand(tagType.unitAddress, tagType.bridgeAddresses, calData, cbusOptions)
 		if err != nil {
 			return nil, false, false, false, errors.Wrap(err, "error producing cal command")
 		}
-		request := readWriteModel.NewRequestCommand(command, nil, readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
+		request := readWriteModel.NewRequestCommand(
+			readWriteModel.RequestType_REQUEST_COMMAND,
+			nil,
+			nil,
+			readWriteModel.RequestType_EMPTY,
+			readWriteModel.NewRequestTermination(),
+			command,
+			nil,
+			readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()),
+			cbusOptions,
+		)
 
 		cBusMessage, supportsRead = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), true
 		return
 	case *calGetStatusTag:
-		calData := readWriteModel.NewCALDataGetStatus(tagType.parameter, tagType.count, readWriteModel.CALCommandTypeContainer_CALCommandGetStatus, nil, requestContext)
+		calData := readWriteModel.NewCALDataGetStatus(
+			readWriteModel.CALCommandTypeContainer_CALCommandGetStatus,
+			nil,
+			tagType.parameter,
+			tagType.count,
+			requestContext,
+		)
 		var command readWriteModel.CBusCommand
 		command, err = producePointToPointCommand(tagType.unitAddress, tagType.bridgeAddresses, calData, cbusOptions)
 		if err != nil {
 			return nil, false, false, false, errors.Wrap(err, "error producing cal command")
 		}
-		request := readWriteModel.NewRequestCommand(command, nil, readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
+		request := readWriteModel.NewRequestCommand(
+			readWriteModel.RequestType_REQUEST_COMMAND,
+			nil,
+			nil,
+			readWriteModel.RequestType_EMPTY,
+			readWriteModel.NewRequestTermination(),
+			command,
+			nil,
+			readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()),
+			cbusOptions,
+		)
 
 		cBusMessage, supportsRead = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), true
 		return
@@ -113,7 +179,7 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 			default:
 				return nil, false, false, false, errors.Errorf("Unsupported command %s for %s", salCommand, tagType.application.ApplicationId())
 			}
-			salData = readWriteModel.NewSALDataTemperatureBroadcast(temperatureBroadcastData, nil)
+			salData = readWriteModel.NewSALDataTemperatureBroadcast(nil, temperatureBroadcastData)
 		case readWriteModel.ApplicationId_ROOM_CONTROL_SYSTEM:
 			err = errors.New("Not yet implemented") // TODO: implement
 			return
@@ -133,7 +199,7 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 					return nil, false, false, false, errors.Errorf("%s requires exactly 1 arguments [group]", salCommand)
 				}
 				group := value.GetByte()
-				lightingData = readWriteModel.NewLightingDataOff(group, commandTypeContainer)
+				lightingData = readWriteModel.NewLightingDataOff(commandTypeContainer, group)
 				supportsWrite = true
 			case readWriteModel.LightingCommandType_ON.PLC4XEnumName():
 				commandTypeContainer := readWriteModel.LightingCommandTypeContainer_LightingCommandOn
@@ -141,7 +207,7 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 					return nil, false, false, false, errors.Errorf("%s requires exactly 1 arguments [group]", salCommand)
 				}
 				group := value.GetByte()
-				lightingData = readWriteModel.NewLightingDataOn(group, commandTypeContainer)
+				lightingData = readWriteModel.NewLightingDataOn(commandTypeContainer, group)
 				supportsWrite = true
 			case readWriteModel.LightingCommandType_RAMP_TO_LEVEL.PLC4XEnumName():
 				if value == nil || !value.IsList() || len(value.GetList()) != 3 || !value.GetList()[0].IsString() || !value.GetList()[1].IsByte() || !value.GetList()[2].IsByte() {
@@ -157,7 +223,7 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 				}
 				group := value.GetList()[1].GetByte()
 				level := value.GetList()[2].GetByte()
-				lightingData = readWriteModel.NewLightingDataRampToLevel(group, level, commandTypeContainer)
+				lightingData = readWriteModel.NewLightingDataRampToLevel(commandTypeContainer, group, level)
 				supportsWrite = true
 			case readWriteModel.LightingCommandType_TERMINATE_RAMP.PLC4XEnumName():
 				commandTypeContainer := readWriteModel.LightingCommandTypeContainer_LightingCommandTerminateRamp
@@ -165,7 +231,7 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 					return nil, false, false, false, errors.Errorf("%s requires exactly 1 arguments [group]", salCommand)
 				}
 				group := value.GetByte()
-				lightingData = readWriteModel.NewLightingDataTerminateRamp(group, commandTypeContainer)
+				lightingData = readWriteModel.NewLightingDataTerminateRamp(commandTypeContainer, group)
 				supportsWrite = true
 			case readWriteModel.LightingCommandType_LABEL.PLC4XEnumName():
 				err = errors.New("Not yet implemented") // TODO: implement
@@ -173,7 +239,7 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 			default:
 				return nil, false, false, false, errors.Errorf("Unsupported command %s for %s", salCommand, tagType.application.ApplicationId())
 			}
-			salData = readWriteModel.NewSALDataLighting(lightingData, nil)
+			salData = readWriteModel.NewSALDataLighting(nil, lightingData)
 		case readWriteModel.ApplicationId_AIR_CONDITIONING:
 			err = errors.New("Not yet implemented") // TODO: implement
 			return
@@ -218,7 +284,17 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 		if err != nil {
 			return nil, false, false, false, errors.Wrap(err, "error producing point to multipoint command")
 		}
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
+		request := readWriteModel.NewRequestCommand(
+			readWriteModel.RequestType_REQUEST_COMMAND,
+			nil,
+			nil,
+			readWriteModel.RequestType_EMPTY,
+			readWriteModel.NewRequestTermination(),
+			cbusCommand,
+			nil,
+			readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()),
+			cbusOptions,
+		)
 		cBusMessage = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions)
 		return
 	default:
@@ -227,6 +303,9 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 }
 
 func producePointToPointCommand(unitAddress readWriteModel.UnitAddress, bridgeAddresses []readWriteModel.BridgeAddress, calData readWriteModel.CALData, cbusOptions readWriteModel.CBusOptions) (readWriteModel.CBusCommand, error) {
+	if calData == nil {
+		return nil, errors.New("cal data required")
+	}
 	var command readWriteModel.CBusPointToPointCommand
 	numberOfBridgeAddresses := len(bridgeAddresses)
 	if numberOfBridgeAddresses > 0 {
@@ -235,13 +314,13 @@ func producePointToPointCommand(unitAddress readWriteModel.UnitAddress, bridgeAd
 		}
 		networkRoute := readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(uint8(numberOfBridgeAddresses), uint8(numberOfBridgeAddresses)), bridgeAddresses[1:])
 
-		command = readWriteModel.NewCBusPointToPointCommandIndirect(bridgeAddresses[0], networkRoute, unitAddress, 0x0000, calData, cbusOptions)
+		command = readWriteModel.NewCBusPointToPointCommandIndirect(0x0000, calData, bridgeAddresses[0], networkRoute, unitAddress, cbusOptions)
 	} else {
-		command = readWriteModel.NewCBusPointToPointCommandDirect(unitAddress, 0x0000, calData, cbusOptions)
+		command = readWriteModel.NewCBusPointToPointCommandDirect(0x0000, calData, unitAddress, cbusOptions)
 	}
 
 	header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-	return readWriteModel.NewCBusCommandPointToPoint(command, header, cbusOptions), nil
+	return readWriteModel.NewCBusCommandPointToPoint(header, command, cbusOptions), nil
 }
 
 func producePointToMultiPointCommandStatus(bridgeAddresses []readWriteModel.BridgeAddress, application readWriteModel.ApplicationIdContainer, statusRequest readWriteModel.StatusRequest, cbusOptions readWriteModel.CBusOptions) (readWriteModel.CBusCommand, error) {
@@ -251,13 +330,13 @@ func producePointToMultiPointCommandStatus(bridgeAddresses []readWriteModel.Brid
 			return nil, errors.Errorf("Can't have a path longer than 6. Actuall path length = %d", numberOfBridgeAddresses)
 		}
 		networkRoute := readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(uint8(numberOfBridgeAddresses), uint8(numberOfBridgeAddresses)), bridgeAddresses[1:])
-		command := readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(statusRequest, bridgeAddresses[0], networkRoute, byte(application), cbusOptions)
+		command := readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(bridgeAddresses[0], networkRoute, byte(application), statusRequest, cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint)
-		return readWriteModel.NewCBusCommandPointToPointToMultiPoint(command, header, cbusOptions), nil
+		return readWriteModel.NewCBusCommandPointToPointToMultiPoint(header, command, cbusOptions), nil
 	}
-	command := readWriteModel.NewCBusPointToMultiPointCommandStatus(statusRequest, byte(application), cbusOptions)
+	command := readWriteModel.NewCBusPointToMultiPointCommandStatus(byte(application), statusRequest, cbusOptions)
 	header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint)
-	return readWriteModel.NewCBusCommandPointToMultiPoint(command, header, cbusOptions), nil
+	return readWriteModel.NewCBusCommandPointToMultiPoint(header, command, cbusOptions), nil
 }
 
 func producePointToMultiPointCommandNormal(bridgeAddresses []readWriteModel.BridgeAddress, application readWriteModel.ApplicationIdContainer, salData readWriteModel.SALData, cbusOptions readWriteModel.CBusOptions) (readWriteModel.CBusCommand, error) {
@@ -267,23 +346,23 @@ func producePointToMultiPointCommandNormal(bridgeAddresses []readWriteModel.Brid
 			return nil, errors.Errorf("Can't have a path longer than 6. Actuall path length = %d", numberOfBridgeAddresses)
 		}
 		networkRoute := readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(uint8(numberOfBridgeAddresses), uint8(numberOfBridgeAddresses)), bridgeAddresses[1:])
-		command := readWriteModel.NewCBusPointToPointToMultiPointCommandNormal(application, salData, bridgeAddresses[0], networkRoute, byte(application), cbusOptions)
+		command := readWriteModel.NewCBusPointToPointToMultiPointCommandNormal(bridgeAddresses[0], networkRoute, byte(application), application, salData, cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint)
-		return readWriteModel.NewCBusCommandPointToPointToMultiPoint(command, header, cbusOptions), nil
+		return readWriteModel.NewCBusCommandPointToPointToMultiPoint(header, command, cbusOptions), nil
 	}
 
-	command := readWriteModel.NewCBusPointToMultiPointCommandNormal(application, salData, 0x00, cbusOptions)
+	command := readWriteModel.NewCBusPointToMultiPointCommandNormal(0x00, application, salData, cbusOptions)
 	header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-	return readWriteModel.NewCBusCommandPointToMultiPoint(command, header, cbusOptions), nil
+	return readWriteModel.NewCBusCommandPointToMultiPoint(header, command, cbusOptions), nil
 }
 
 func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTransaction, encodedReply readWriteModel.EncodedReply, tagName string, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), addPlcValue func(name string, plcValue apiValues.PlcValue)) error {
 	switch reply := encodedReply.(type) {
-	case readWriteModel.EncodedReplyCALReplyExactly:
+	case readWriteModel.EncodedReplyCALReply:
 		calData := reply.GetCalReply().GetCalData()
 		addResponseCode(tagName, apiModel.PlcResponseCode_OK)
 		switch calData := calData.(type) {
-		case readWriteModel.CALDataStatusExactly:
+		case readWriteModel.CALDataStatus:
 			application := calData.GetApplication()
 			// TODO: verify application... this should be the same
 			_ = application
@@ -304,7 +383,7 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 				"blockStart":  spiValues.NewPlcBYTE(blockStart),
 				"values":      spiValues.NewPlcList(plcListValues),
 			}))
-		case readWriteModel.CALDataStatusExtendedExactly:
+		case readWriteModel.CALDataStatusExtended:
 			coding := calData.GetCoding()
 			// TODO: verify coding... this should be the same
 			_ = coding
@@ -340,11 +419,11 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 				plcListValues := make([]apiValues.PlcValue, len(levelInformation))
 				for i, levelInformation := range levelInformation {
 					switch levelInformation := levelInformation.(type) {
-					case readWriteModel.LevelInformationAbsentExactly:
+					case readWriteModel.LevelInformationAbsent:
 						plcListValues[i] = spiValues.NewPlcSTRING("is absent")
-					case readWriteModel.LevelInformationCorruptedExactly:
+					case readWriteModel.LevelInformationCorrupted:
 						plcListValues[i] = spiValues.NewPlcSTRING("corrupted")
-					case readWriteModel.LevelInformationNormalExactly:
+					case readWriteModel.LevelInformationNormal:
 						plcListValues[i] = spiValues.NewPlcUSINT(levelInformation.GetActualLevel())
 					default:
 						return transaction.FailRequest(errors.Errorf("Impossible case %v", levelInformation))
@@ -352,16 +431,16 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 				}
 				addPlcValue(tagName, spiValues.NewPlcList(plcListValues))
 			}
-		case readWriteModel.CALDataIdentifyReplyExactly:
+		case readWriteModel.CALDataIdentifyReply:
 			switch identifyReplyCommand := calData.GetIdentifyReplyCommand().(type) {
-			case readWriteModel.IdentifyReplyCommandCurrentSenseLevelsExactly:
+			case readWriteModel.IdentifyReplyCommandCurrentSenseLevels:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetCurrentSenseLevels()))
-			case readWriteModel.IdentifyReplyCommandDelaysExactly:
+			case readWriteModel.IdentifyReplyCommandDelays:
 				addPlcValue(tagName, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 					"reStrikeDelay": spiValues.NewPlcUSINT(identifyReplyCommand.GetReStrikeDelay()),
 					"terminalLevel": spiValues.NewPlcRawByteArray(identifyReplyCommand.GetTerminalLevels()),
 				}))
-			case readWriteModel.IdentifyReplyCommandDSIStatusExactly:
+			case readWriteModel.IdentifyReplyCommandDSIStatus:
 				addPlcValue(tagName, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 					"channelStatus1":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus1().String()),
 					"channelStatus2":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus2().String()),
@@ -374,7 +453,7 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 					"unitStatus":              spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitStatus().String()),
 					"dimmingUCRevisionNumber": spiValues.NewPlcUSINT(identifyReplyCommand.GetDimmingUCRevisionNumber()),
 				}))
-			case readWriteModel.IdentifyReplyCommandExtendedDiagnosticSummaryExactly:
+			case readWriteModel.IdentifyReplyCommandExtendedDiagnosticSummary:
 				addPlcValue(tagName, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 					"lowApplication":         spiValues.NewPlcSTRING(identifyReplyCommand.GetLowApplication().String()),
 					"highApplication":        spiValues.NewPlcSTRING(identifyReplyCommand.GetHighApplication().String()),
@@ -396,21 +475,21 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 					"internalStackOverflow":  spiValues.NewPlcBOOL(identifyReplyCommand.GetInternalStackOverflow()),
 					"microPowerReset":        spiValues.NewPlcBOOL(identifyReplyCommand.GetMicroPowerReset()),
 				}))
-			case readWriteModel.IdentifyReplyCommandSummaryExactly:
+			case readWriteModel.IdentifyReplyCommandSummary:
 				addPlcValue(tagName, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 					"partName":        spiValues.NewPlcSTRING(identifyReplyCommand.GetPartName()),
 					"unitServiceType": spiValues.NewPlcUSINT(identifyReplyCommand.GetUnitServiceType()),
 					"version":         spiValues.NewPlcSTRING(identifyReplyCommand.GetVersion()),
 				}))
-			case readWriteModel.IdentifyReplyCommandFirmwareVersionExactly:
+			case readWriteModel.IdentifyReplyCommandFirmwareVersion:
 				addPlcValue(tagName, spiValues.NewPlcSTRING(identifyReplyCommand.GetFirmwareVersion()))
-			case readWriteModel.IdentifyReplyCommandGAVPhysicalAddressesExactly:
+			case readWriteModel.IdentifyReplyCommandGAVPhysicalAddresses:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetValues()))
-			case readWriteModel.IdentifyReplyCommandGAVValuesCurrentExactly:
+			case readWriteModel.IdentifyReplyCommandGAVValuesCurrent:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetValues()))
-			case readWriteModel.IdentifyReplyCommandGAVValuesStoredExactly:
+			case readWriteModel.IdentifyReplyCommandGAVValuesStored:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetValues()))
-			case readWriteModel.IdentifyReplyCommandLogicalAssignmentExactly:
+			case readWriteModel.IdentifyReplyCommandLogicalAssignment:
 				var plcValues []apiValues.PlcValue
 				for _, logicAssigment := range identifyReplyCommand.GetLogicAssigment() {
 					plcValues = append(plcValues, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
@@ -423,15 +502,15 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 					}))
 				}
 				addPlcValue(tagName, spiValues.NewPlcList(plcValues))
-			case readWriteModel.IdentifyReplyCommandManufacturerExactly:
+			case readWriteModel.IdentifyReplyCommandManufacturer:
 				addPlcValue(tagName, spiValues.NewPlcSTRING(identifyReplyCommand.GetManufacturerName()))
-			case readWriteModel.IdentifyReplyCommandMaximumLevelsExactly:
+			case readWriteModel.IdentifyReplyCommandMaximumLevels:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetMaximumLevels()))
-			case readWriteModel.IdentifyReplyCommandMinimumLevelsExactly:
+			case readWriteModel.IdentifyReplyCommandMinimumLevels:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetMinimumLevels()))
-			case readWriteModel.IdentifyReplyCommandNetworkTerminalLevelsExactly:
+			case readWriteModel.IdentifyReplyCommandNetworkTerminalLevels:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetNetworkTerminalLevels()))
-			case readWriteModel.IdentifyReplyCommandNetworkVoltageExactly:
+			case readWriteModel.IdentifyReplyCommandNetworkVoltage:
 				volts := identifyReplyCommand.GetVolts()
 				voltsFloat, err := strconv.ParseFloat(volts, 0)
 				if err != nil {
@@ -446,7 +525,7 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 				}
 				voltsFloat += voltsDecimalPlaceFloat / 10
 				addPlcValue(tagName, spiValues.NewPlcLREAL(voltsFloat))
-			case readWriteModel.IdentifyReplyCommandOutputUnitSummaryExactly:
+			case readWriteModel.IdentifyReplyCommandOutputUnitSummary:
 				unitFlags := identifyReplyCommand.GetUnitFlags()
 				structContent := map[string]apiValues.PlcValue{
 					"unitFlags": spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
@@ -468,9 +547,9 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 					structContent["gavStoreEnabledByte2"] = spiValues.NewPlcUSINT(*gavStoreEnabledByte2)
 				}
 				addPlcValue(tagName, spiValues.NewPlcStruct(structContent))
-			case readWriteModel.IdentifyReplyCommandTerminalLevelsExactly:
+			case readWriteModel.IdentifyReplyCommandTerminalLevels:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetTerminalLevels()))
-			case readWriteModel.IdentifyReplyCommandTypeExactly:
+			case readWriteModel.IdentifyReplyCommandType:
 				addPlcValue(tagName, spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitType()))
 			default:
 				addResponseCode(tagName, apiModel.PlcResponseCode_INVALID_DATA)

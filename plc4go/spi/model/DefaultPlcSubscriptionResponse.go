@@ -20,14 +20,15 @@
 package model
 
 import (
+	"github.com/pkg/errors"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/pkg/errors"
 )
 
 var _ apiModel.PlcSubscriptionResponse = &DefaultPlcSubscriptionResponse{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionResponse
+//go:generate go tool plc4xGenerator -type=DefaultPlcSubscriptionResponse
 type DefaultPlcSubscriptionResponse struct {
 	request apiModel.PlcSubscriptionRequest
 	values  map[string]*DefaultPlcSubscriptionResponseItem

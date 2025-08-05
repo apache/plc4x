@@ -76,12 +76,6 @@ public class Plc4xConstants implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xConstants staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Plc4xConstants staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Plc4xConstants");
     PositionAware positionAware = readBuffer;

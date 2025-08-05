@@ -99,7 +99,7 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (floorText)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,8 +161,7 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
     List<BACnetLogRecord> floorText =
         readTerminatedArrayField(
             "floorText",
-            new DataReaderComplexDefault<>(
-                () -> BACnetLogRecord.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetLogRecord.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

@@ -61,7 +61,7 @@ public class SALDataSecurity extends SALData implements Message {
     writeBuffer.pushContext("SALDataSecurity");
 
     // Simple Field (securityData)
-    writeSimpleField("securityData", securityData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityData", securityData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataSecurity");
   }
@@ -91,8 +91,7 @@ public class SALDataSecurity extends SALData implements Message {
 
     SecurityData securityData =
         readSimpleField(
-            "securityData",
-            new DataReaderComplexDefault<>(() -> SecurityData.staticParse(readBuffer), readBuffer));
+            "securityData", readComplex(() -> SecurityData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataSecurity");
     // Create the instance

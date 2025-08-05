@@ -90,7 +90,7 @@ public abstract class BACnetConstructedData implements Message {
     writeBuffer.pushContext("BACnetConstructedData");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     short peekedTagNumber = getPeekedTagNumber();
@@ -100,7 +100,7 @@ public abstract class BACnetConstructedData implements Message {
     serializeBACnetConstructedDataChild(writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConstructedData");
   }
@@ -129,58 +129,6 @@ public abstract class BACnetConstructedData implements Message {
     return lengthInBits;
   }
 
-  public static BACnetConstructedData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 4)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 4, but got " + args.length);
-    }
-    Short tagNumber;
-    if (args[0] instanceof Short) {
-      tagNumber = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumber = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    BACnetObjectType objectTypeArgument;
-    if (args[1] instanceof BACnetObjectType) {
-      objectTypeArgument = (BACnetObjectType) args[1];
-    } else if (args[1] instanceof String) {
-      objectTypeArgument = BACnetObjectType.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type BACnetObjectType or a string which is parseable but"
-              + " was "
-              + args[1].getClass().getName());
-    }
-    BACnetPropertyIdentifier propertyIdentifierArgument;
-    if (args[2] instanceof BACnetPropertyIdentifier) {
-      propertyIdentifierArgument = (BACnetPropertyIdentifier) args[2];
-    } else if (args[2] instanceof String) {
-      propertyIdentifierArgument = BACnetPropertyIdentifier.valueOf((String) args[2]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 2 expected to be of type BACnetPropertyIdentifier or a string which is"
-              + " parseable but was "
-              + args[2].getClass().getName());
-    }
-    BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-    if (args[3] instanceof BACnetTagPayloadUnsignedInteger) {
-      arrayIndexArgument = (BACnetTagPayloadUnsignedInteger) args[3];
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 3 expected to be of type BACnetTagPayloadUnsignedInteger or a string which is"
-              + " parseable but was "
-              + args[3].getClass().getName());
-    }
-    return staticParse(
-        readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument);
-  }
-
   public static BACnetConstructedData staticParse(
       ReadBuffer readBuffer,
       Short tagNumber,
@@ -195,14 +143,13 @@ public abstract class BACnetConstructedData implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
 
@@ -6721,17 +6668,6 @@ public abstract class BACnetConstructedData implements Message {
               objectTypeArgument,
               propertyIdentifierArgument,
               arrayIndexArgument);
-    } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LIGHTING_OUTPUT)
-        && EvaluationHelper.equals(
-            propertyIdentifierArgument, BACnetPropertyIdentifier.TRACKING_VALUE)
-        && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
-      builder =
-          BACnetConstructedDataLightingOutputTrackingValue.staticParseBACnetConstructedDataBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.TRACKING_VALUE)
@@ -7127,7 +7063,7 @@ public abstract class BACnetConstructedData implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetConstructedData");

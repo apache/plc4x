@@ -83,8 +83,7 @@ public class BACnetConstructedDataAPDUSegmentTimeout extends BACnetConstructedDa
     writeBuffer.pushContext("BACnetConstructedDataAPDUSegmentTimeout");
 
     // Simple Field (apduSegmentTimeout)
-    writeSimpleField(
-        "apduSegmentTimeout", apduSegmentTimeout, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("apduSegmentTimeout", apduSegmentTimeout, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -126,7 +125,7 @@ public class BACnetConstructedDataAPDUSegmentTimeout extends BACnetConstructedDa
     BACnetApplicationTagUnsignedInteger apduSegmentTimeout =
         readSimpleField(
             "apduSegmentTimeout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

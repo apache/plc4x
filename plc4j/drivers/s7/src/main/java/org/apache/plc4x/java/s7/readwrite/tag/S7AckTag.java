@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 public class S7AckTag implements PlcTag {
 
     private static final Pattern EVENT_ALARM_ACK_PATTERN =
-        Pattern.compile("(^ACK:)(((?:,{0,1})(16#[0-9a-fA-F]{8})(;([0-9a-fA-F]{2})))+)");
+        Pattern.compile("(^ACK:)((,{0,1}(16#[0-9a-fA-F]{8})(;([0-9a-fA-F]{2})))+)");
 
     private final ArrayList<Integer> ackAlarmIds;
     private final ArrayList<Integer> ackAlarmSigs;
@@ -36,7 +36,6 @@ public class S7AckTag implements PlcTag {
         this.ackAlarmIds = ackAlarmIds;
         this.ackAlarmSigs = ackAlarmSigs;
     }
-
 
     public ArrayList<Integer> getAlarmIds() {
         return ackAlarmIds;

@@ -109,7 +109,7 @@ public class ASDU implements Message {
         "typeIdentification",
         "TypeIdentification",
         typeIdentification,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TypeIdentification::getValue,
             TypeIdentification::name,
             writeUnsignedShort(writeBuffer, 8)),
@@ -147,7 +147,7 @@ public class ASDU implements Message {
         "causeOfTransmission",
         "CauseOfTransmission",
         causeOfTransmission,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             CauseOfTransmission::getValue,
             CauseOfTransmission::name,
             writeUnsignedByte(writeBuffer, 6)),
@@ -224,11 +224,6 @@ public class ASDU implements Message {
     return lengthInBits;
   }
 
-  public static ASDU staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ASDU staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ASDU");
     PositionAware positionAware = readBuffer;
@@ -238,8 +233,7 @@ public class ASDU implements Message {
         readEnumField(
             "typeIdentification",
             "TypeIdentification",
-            new DataReaderEnumDefault<>(
-                TypeIdentification::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(TypeIdentification::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     boolean structureQualifier =
@@ -266,8 +260,7 @@ public class ASDU implements Message {
         readEnumField(
             "causeOfTransmission",
             "CauseOfTransmission",
-            new DataReaderEnumDefault<>(
-                CauseOfTransmission::enumForValue, readUnsignedByte(readBuffer, 6)),
+            readEnum(CauseOfTransmission::enumForValue, readUnsignedByte(readBuffer, 6)),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     short originatorAddress =
@@ -285,7 +278,7 @@ public class ASDU implements Message {
     List<InformationObject> informationObjects =
         readCountArrayField(
             "informationObjects",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     InformationObject.staticParse(
                         readBuffer,

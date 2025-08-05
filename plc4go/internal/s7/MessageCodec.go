@@ -22,22 +22,22 @@ package s7
 import (
 	"context"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
+//go:generate go tool plc4xGenerator -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
 
 	passLogToModel bool
-	log            zerolog.Logger `ignore:"true"`
+	log            zerolog.Logger
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
@@ -58,7 +58,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 func (m *MessageCodec) Send(message spi.Message) error {
 	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
-	tpktPacket := message.(model.TPKTPacketExactly)
+	tpktPacket := message.(model.TPKTPacket)
 	// Serialize the request
 	theBytes, err := tpktPacket.Serialize()
 	if err != nil {
@@ -95,7 +95,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		ctxForModel := options.GetLoggerContextForModel(context.Background(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
 		tpktPacket, err := model.TPKTPacketParse(ctxForModel, data)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing")

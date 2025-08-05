@@ -82,7 +82,7 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
     writeBuffer.pushContext("BACnetConstructedDataBias");
 
     // Simple Field (bias)
-    writeSimpleField("bias", bias, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bias", bias, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
     BACnetApplicationTagReal bias =
         readSimpleField(
             "bias",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

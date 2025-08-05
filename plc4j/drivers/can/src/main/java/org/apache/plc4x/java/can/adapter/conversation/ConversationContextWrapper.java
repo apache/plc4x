@@ -23,8 +23,8 @@ import java.time.Duration;
 import java.util.function.Function;
 
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.transport.can.CANTransport.FrameHandler;
 import org.apache.plc4x.java.transport.can.FrameData;
 
@@ -76,13 +76,13 @@ public class ConversationContextWrapper<C, T> implements ConversationContext<T> 
     }
 
     @Override
-    public void fireDiscovered(Configuration c) {
+    public void fireDiscovered(PlcConnectionConfiguration c) {
         delegate.fireDiscovered(c);
     }
 
     @Override
     public SendRequestContext<T> sendRequest(T packet) {
-        return new SendRequestContextWrapper<>(delegate.sendRequest(frameHandler.toCAN(packet)), wireType, adapter, frameHandler);
+        return new SendRequestContextWrapper<>("", delegate.sendRequest(frameHandler.toCAN(packet)), wireType, adapter, frameHandler);
     }
 
     @Override

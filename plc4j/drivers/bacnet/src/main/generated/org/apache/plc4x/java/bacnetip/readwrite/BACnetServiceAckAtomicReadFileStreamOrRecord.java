@@ -77,7 +77,7 @@ public abstract class BACnetServiceAckAtomicReadFileStreamOrRecord implements Me
     writeBuffer.pushContext("BACnetServiceAckAtomicReadFileStreamOrRecord");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     short peekedTagNumber = getPeekedTagNumber();
@@ -87,7 +87,7 @@ public abstract class BACnetServiceAckAtomicReadFileStreamOrRecord implements Me
     serializeBACnetServiceAckAtomicReadFileStreamOrRecordChild(writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckAtomicReadFileStreamOrRecord");
   }
@@ -116,12 +116,6 @@ public abstract class BACnetServiceAckAtomicReadFileStreamOrRecord implements Me
     return lengthInBits;
   }
 
-  public static BACnetServiceAckAtomicReadFileStreamOrRecord staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetServiceAckAtomicReadFileStreamOrRecord staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAtomicReadFileStreamOrRecord");
@@ -131,13 +125,12 @@ public abstract class BACnetServiceAckAtomicReadFileStreamOrRecord implements Me
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
 
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetOpeningTag.staticParse(
                         readBuffer, (short) (peekedTagHeader.getActualTagNumber())),
@@ -168,7 +161,7 @@ public abstract class BACnetServiceAckAtomicReadFileStreamOrRecord implements Me
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetClosingTag.staticParse(
                         readBuffer, (short) (peekedTagHeader.getActualTagNumber())),

@@ -95,22 +95,21 @@ public class ConnectionResponse extends KnxNetIpMessage implements Message {
         "status",
         "Status",
         status,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
     writeOptionalField(
         "hpaiDataEndpoint",
         hpaiDataEndpoint,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
     writeOptionalField(
         "connectionResponseDataBlock",
         connectionResponseDataBlock,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ConnectionResponse");
@@ -162,22 +161,20 @@ public class ConnectionResponse extends KnxNetIpMessage implements Message {
         readEnumField(
             "status",
             "Status",
-            new DataReaderEnumDefault<>(Status::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Status::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     HPAIDataEndpoint hpaiDataEndpoint =
         readOptionalField(
             "hpaiDataEndpoint",
-            new DataReaderComplexDefault<>(
-                () -> HPAIDataEndpoint.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HPAIDataEndpoint.staticParse(readBuffer), readBuffer),
             (status) == (Status.NO_ERROR),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     ConnectionResponseDataBlock connectionResponseDataBlock =
         readOptionalField(
             "connectionResponseDataBlock",
-            new DataReaderComplexDefault<>(
-                () -> ConnectionResponseDataBlock.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ConnectionResponseDataBlock.staticParse(readBuffer), readBuffer),
             (status) == (Status.NO_ERROR),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

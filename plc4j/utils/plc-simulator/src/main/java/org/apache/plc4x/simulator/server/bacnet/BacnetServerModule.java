@@ -103,7 +103,6 @@ public class BacnetServerModule implements ServerModule {
                             })
                             .addLast(new GeneratedProtocolMessageCodec<>(BVLC.class,
                                 BVLC::staticParse, ByteOrder.BIG_ENDIAN,
-                                null,
                                 new BacNetIpDriver.ByteLengthEstimator(),
                                 new BacNetIpDriver.CorruptPackageCleaner()))
                             .addLast(new BacnetServerAdapter(context));

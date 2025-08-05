@@ -61,7 +61,7 @@ public class SALDataMetering extends SALData implements Message {
     writeBuffer.pushContext("SALDataMetering");
 
     // Simple Field (meteringData)
-    writeSimpleField("meteringData", meteringData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("meteringData", meteringData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataMetering");
   }
@@ -91,8 +91,7 @@ public class SALDataMetering extends SALData implements Message {
 
     MeteringData meteringData =
         readSimpleField(
-            "meteringData",
-            new DataReaderComplexDefault<>(() -> MeteringData.staticParse(readBuffer), readBuffer));
+            "meteringData", readComplex(() -> MeteringData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataMetering");
     // Create the instance

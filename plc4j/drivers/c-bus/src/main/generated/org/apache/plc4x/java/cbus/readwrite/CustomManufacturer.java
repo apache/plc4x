@@ -81,26 +81,6 @@ public class CustomManufacturer implements Message {
     return lengthInBits;
   }
 
-  public static CustomManufacturer staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short numBytes;
-    if (args[0] instanceof Short) {
-      numBytes = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      numBytes = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, numBytes);
-  }
-
   public static CustomManufacturer staticParse(ReadBuffer readBuffer, Short numBytes)
       throws ParseException {
     readBuffer.pullContext("CustomManufacturer");

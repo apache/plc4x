@@ -101,12 +101,6 @@ public class NetworkProtocolControlInformation implements Message {
     return lengthInBits;
   }
 
-  public static NetworkProtocolControlInformation staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static NetworkProtocolControlInformation staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("NetworkProtocolControlInformation");

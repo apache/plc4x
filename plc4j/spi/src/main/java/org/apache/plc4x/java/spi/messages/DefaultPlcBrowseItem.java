@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.messages;
 
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -27,6 +28,7 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 
 public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
@@ -38,9 +40,10 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     private final boolean readable;
     private final boolean writable;
     private final boolean subscribable;
+    private final boolean publishable;
 
+    private final List<ArrayInfo> arrayInformation;
     private final Map<String, PlcBrowseItem> children;
-
     private final Map<String, PlcValue> options;
 
     public DefaultPlcBrowseItem(PlcTag tag,
@@ -48,6 +51,8 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
                                 boolean readable,
                                 boolean writable,
                                 boolean subscribable,
+                                boolean publishable,
+                                List<ArrayInfo> arrayInformation,
                                 Map<String, PlcBrowseItem> children,
                                 Map<String, PlcValue> options) {
         this.tag = tag;
@@ -55,8 +60,22 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
         this.readable = readable;
         this.writable = writable;
         this.subscribable = subscribable;
+        this.publishable = publishable;
+        this.arrayInformation = arrayInformation;
         this.children = children;
         this.options = options;
+    }
+
+    protected DefaultPlcBrowseItem(PlcBrowseItem original, Map<String, PlcBrowseItem> children) {
+        this.tag = original.getTag();
+        this.name = original.getName();
+        this.readable = original.isReadable();
+        this.writable = original.isWritable();
+        this.subscribable = original.isSubscribable();
+        this.publishable = original.isPublishable();
+        this.arrayInformation = original.getArrayInformation();
+        this.options = original.getOptions();
+        this.children = children;
     }
 
     @Override
@@ -69,16 +88,34 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
         return name;
     }
 
+    @Override
     public boolean isReadable() {
         return readable;
     }
 
+    @Override
     public boolean isWritable() {
         return writable;
     }
 
+    @Override
     public boolean isSubscribable() {
         return subscribable;
+    }
+
+    @Override
+    public boolean isPublishable() {
+        return publishable;
+    }
+
+    @Override
+    public boolean isArray() {
+        return false;
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInformation() {
+        return arrayInformation;
     }
 
     @Override
@@ -91,9 +128,18 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
         return options;
     }
 
+    /**
+     * For simple non-array elements we usually don't have to do anything here
+     * @return a one-element list the unchanged item
+     */
+    /*@Override
+    public PlcBrowseItem resolveArrayItems() {
+        return this;
+    }*/
+
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext(getClass().getSimpleName());
+        writeBuffer.pushContext("PlcBrowseItem");
         writeBuffer.writeString("address",
             tag.getAddressString().getBytes(StandardCharsets.UTF_8).length * 8,
             tag.getAddressString(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
@@ -125,7 +171,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
             }
             writeBuffer.popContext("options");
         }
-        writeBuffer.popContext(getClass().getSimpleName());
+        writeBuffer.popContext("PlcBrowseItem");
     }
 
 }

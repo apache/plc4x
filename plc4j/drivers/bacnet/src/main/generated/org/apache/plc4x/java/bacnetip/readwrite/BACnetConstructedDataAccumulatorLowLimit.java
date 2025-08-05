@@ -83,7 +83,7 @@ public class BACnetConstructedDataAccumulatorLowLimit extends BACnetConstructedD
     writeBuffer.pushContext("BACnetConstructedDataAccumulatorLowLimit");
 
     // Simple Field (lowLimit)
-    writeSimpleField("lowLimit", lowLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lowLimit", lowLimit, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -125,7 +125,7 @@ public class BACnetConstructedDataAccumulatorLowLimit extends BACnetConstructedD
     BACnetApplicationTagUnsignedInteger lowLimit =
         readSimpleField(
             "lowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

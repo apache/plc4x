@@ -91,7 +91,7 @@ public class CipConnectedResponse extends CipService implements Message {
         "additionalStatusWords", additionalStatusWords, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (data) (Can be skipped, if the value is null)
-    writeOptionalField("data", data, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("data", data, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CipConnectedResponse");
   }
@@ -141,8 +141,7 @@ public class CipConnectedResponse extends CipService implements Message {
     CIPDataConnected data =
         readOptionalField(
             "data",
-            new DataReaderComplexDefault<>(
-                () -> CIPDataConnected.staticParse(readBuffer), readBuffer),
+            readComplex(() -> CIPDataConnected.staticParse(readBuffer), readBuffer),
             (((serviceLen) - (4))) > (0));
 
     readBuffer.closeContext("CipConnectedResponse");

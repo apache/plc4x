@@ -22,17 +22,17 @@ package model
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestDefaultPlcReadResponse_GetRequest(t *testing.T) {
 	type fields struct {
 		request apiModel.PlcReadRequest
-		values  map[string]*ResponseItem
+		values  map[string]*PlcResponseItem
 	}
 	tests := []struct {
 		name   string
@@ -57,7 +57,7 @@ func TestDefaultPlcReadResponse_GetRequest(t *testing.T) {
 func TestDefaultPlcReadResponse_GetResponseCode(t *testing.T) {
 	type fields struct {
 		request apiModel.PlcReadRequest
-		values  map[string]*ResponseItem
+		values  map[string]*PlcResponseItem
 	}
 	type args struct {
 		name string
@@ -75,7 +75,7 @@ func TestDefaultPlcReadResponse_GetResponseCode(t *testing.T) {
 		{
 			name: "get it",
 			fields: fields{
-				values: map[string]*ResponseItem{
+				values: map[string]*PlcResponseItem{
 					"something": {
 						code: apiModel.PlcResponseCode_OK,
 					},
@@ -101,7 +101,7 @@ func TestDefaultPlcReadResponse_GetResponseCode(t *testing.T) {
 func TestDefaultPlcReadResponse_GetTagNames(t *testing.T) {
 	type fields struct {
 		request apiModel.PlcReadRequest
-		values  map[string]*ResponseItem
+		values  map[string]*PlcResponseItem
 	}
 	tests := []struct {
 		name   string
@@ -112,7 +112,7 @@ func TestDefaultPlcReadResponse_GetTagNames(t *testing.T) {
 			name: "get it",
 			fields: fields{
 				request: NewDefaultPlcReadRequest(nil, []string{"tag1", "tag2"}, nil, nil),
-				values: map[string]*ResponseItem{
+				values: map[string]*PlcResponseItem{
 					"tag1": nil,
 					"tag2": nil,
 				},
@@ -134,7 +134,7 @@ func TestDefaultPlcReadResponse_GetTagNames(t *testing.T) {
 func TestDefaultPlcReadResponse_GetValue(t *testing.T) {
 	type fields struct {
 		request apiModel.PlcReadRequest
-		values  map[string]*ResponseItem
+		values  map[string]*PlcResponseItem
 	}
 	type args struct {
 		name string
@@ -152,7 +152,7 @@ func TestDefaultPlcReadResponse_GetValue(t *testing.T) {
 		{
 			name: "get it",
 			fields: fields{
-				values: map[string]*ResponseItem{
+				values: map[string]*PlcResponseItem{
 					"something": {
 						code:  apiModel.PlcResponseCode_OK,
 						value: spiValues.NewPlcSTRING("yes"),
@@ -179,7 +179,7 @@ func TestDefaultPlcReadResponse_GetValue(t *testing.T) {
 func TestDefaultPlcReadResponse_IsAPlcMessage(t *testing.T) {
 	type fields struct {
 		request apiModel.PlcReadRequest
-		values  map[string]*ResponseItem
+		values  map[string]*PlcResponseItem
 	}
 	tests := []struct {
 		name   string
@@ -215,7 +215,7 @@ func TestNewDefaultPlcReadResponse(t *testing.T) {
 	}{
 		{
 			name: "create it",
-			want: &DefaultPlcReadResponse{values: map[string]*ResponseItem{}},
+			want: &DefaultPlcReadResponse{values: map[string]*PlcResponseItem{}},
 		},
 	}
 	for _, tt := range tests {

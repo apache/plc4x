@@ -65,10 +65,7 @@ public class InformationObjectWithoutTime_BITSTRING_32_BIT_COMMAND
 
     // Simple Field (bsi)
     writeSimpleField(
-        "bsi",
-        bsi,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "bsi", bsi, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_BITSTRING_32_BIT_COMMAND");
   }
@@ -100,8 +97,7 @@ public class InformationObjectWithoutTime_BITSTRING_32_BIT_COMMAND
     BinaryStateInformation bsi =
         readSimpleField(
             "bsi",
-            new DataReaderComplexDefault<>(
-                () -> BinaryStateInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BinaryStateInformation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_BITSTRING_32_BIT_COMMAND");

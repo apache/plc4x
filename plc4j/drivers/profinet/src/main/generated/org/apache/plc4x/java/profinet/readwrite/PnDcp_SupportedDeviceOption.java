@@ -65,7 +65,7 @@ public class PnDcp_SupportedDeviceOption implements Message {
         "option",
         "PnDcp_BlockOptions",
         option,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnDcp_BlockOptions::getValue,
             PnDcp_BlockOptions::name,
             writeUnsignedShort(writeBuffer, 8)),
@@ -101,12 +101,6 @@ public class PnDcp_SupportedDeviceOption implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_SupportedDeviceOption staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnDcp_SupportedDeviceOption staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_SupportedDeviceOption");
@@ -117,8 +111,7 @@ public class PnDcp_SupportedDeviceOption implements Message {
         readEnumField(
             "option",
             "PnDcp_BlockOptions",
-            new DataReaderEnumDefault<>(
-                PnDcp_BlockOptions::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(PnDcp_BlockOptions::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     short suboption =

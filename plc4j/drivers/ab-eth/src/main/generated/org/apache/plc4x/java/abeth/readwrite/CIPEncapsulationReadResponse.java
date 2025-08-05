@@ -70,7 +70,7 @@ public class CIPEncapsulationReadResponse extends CIPEncapsulationPacket impleme
     writeSimpleField(
         "response",
         response,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("CIPEncapsulationReadResponse");
@@ -102,7 +102,7 @@ public class CIPEncapsulationReadResponse extends CIPEncapsulationPacket impleme
     DF1ResponseMessage response =
         readSimpleField(
             "response",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> DF1ResponseMessage.staticParse(readBuffer, (int) (packetLen)), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

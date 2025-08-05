@@ -82,7 +82,7 @@ public class BACnetConstructedDataEnergyMeter extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataEnergyMeter");
 
     // Simple Field (energyMeter)
-    writeSimpleField("energyMeter", energyMeter, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("energyMeter", energyMeter, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataEnergyMeter extends BACnetConstructedData impl
     BACnetApplicationTagReal energyMeter =
         readSimpleField(
             "energyMeter",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

@@ -141,12 +141,6 @@ public class HVACAuxiliaryLevel implements Message {
     return lengthInBits;
   }
 
-  public static HVACAuxiliaryLevel staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static HVACAuxiliaryLevel staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HVACAuxiliaryLevel");
     PositionAware positionAware = readBuffer;

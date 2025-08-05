@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.metadata.Metadata;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
@@ -37,5 +38,10 @@ public interface PlcTagResponse extends PlcResponse {
     PlcTag getTag(String name);
 
     PlcResponseCode getResponseCode(String name);
+
+    /**
+     * Returns tag level metadata information.
+     */
+    Metadata getTagMetadata(String name);
 
 }

@@ -63,7 +63,7 @@ public enum KnxManufacturer {
   M_ZUMTOBEL((int) 34, (int) 55, (String) "ZUMTOBEL"),
   M_HOLEC_SYSTEMEN((int) 35, (int) 56, (String) "HOLEC Systemen"),
   M_PHOENIX_CONTACT((int) 36, (int) 57, (String) "Phoenix Contact"),
-  M_WAGO_KONTAKTTECHNIK((int) 37, (int) 61, (String) "WAGO Kontakttechnik"),
+  M_WAGO_GMBH_AND_CO_KG((int) 37, (int) 61, (String) "WAGO GmbH & Co.KG"),
   M_KNXPRESSO((int) 38, (int) 62, (String) "knXpresso"),
   M_WIELAND_ELECTRIC((int) 39, (int) 66, (String) "Wieland Electric"),
   M_HERMANN_KLEINHUIS((int) 40, (int) 67, (String) "Hermann Kleinhuis"),
@@ -114,14 +114,14 @@ public enum KnxManufacturer {
   M_INNOTEAM((int) 84, (int) 123, (String) "Innoteam"),
   M_ISE_GMBH((int) 85, (int) 124, (String) "ise GmbH"),
   M_TEAM_FOR_TRONICS((int) 86, (int) 125, (String) "TEAM FOR TRONICS"),
-  M_CIAT((int) 87, (int) 126, (String) "CIAT"),
+  M_CARRIER_SAS((int) 87, (int) 126, (String) "CARRIER SAS"),
   M_REMEHA_BV((int) 88, (int) 127, (String) "Remeha BV"),
   M_ESYLUX((int) 89, (int) 128, (String) "ESYLUX"),
   M_BASALTE((int) 90, (int) 129, (String) "BASALTE"),
   M_VESTAMATIC((int) 91, (int) 130, (String) "Vestamatic"),
   M_MDT_TECHNOLOGIES((int) 92, (int) 131, (String) "MDT technologies"),
   M_WARENDORFER_KUECHEN_GMBH((int) 93, (int) 132, (String) "Warendorfer Küchen GmbH"),
-  M_VIDEO_STAR((int) 94, (int) 133, (String) "Video-Star"),
+  M_GVS((int) 94, (int) 133, (String) "GVS"),
   M_SITEK((int) 95, (int) 134, (String) "Sitek"),
   M_CONTROLTRONIC((int) 96, (int) 135, (String) "CONTROLtronic"),
   M_FUNCTION_TECHNOLOGY((int) 97, (int) 136, (String) "function Technology"),
@@ -409,7 +409,7 @@ public enum KnxManufacturer {
   M_V2_SPA((int) 360, (int) 411, (String) "V2 SpA"),
   M_JOHNSON_CONTROLS((int) 361, (int) 412, (String) "Johnson Controls"),
   M_ARKUD((int) 362, (int) 413, (String) "Arkud"),
-  M_IRIDIUM_LTD_((int) 363, (int) 414, (String) "Iridium Ltd."),
+  M_IRIDI_LTD_((int) 363, (int) 414, (String) "iRidi Ltd."),
   M_BSMART((int) 364, (int) 415, (String) "bsmart"),
   M_BAB_TECHNOLOGIE_GMBH((int) 365, (int) 416, (String) "BAB TECHNOLOGIE GmbH"),
   M_NICE_SPA((int) 366, (int) 417, (String) "NICE Spa"),
@@ -442,7 +442,7 @@ public enum KnxManufacturer {
   M_MOORGEN_DEUTSCHLAND_GMBH((int) 390, (int) 441, (String) "Moorgen Deutschland GmbH"),
   M_CULLMANN_TECH((int) 391, (int) 442, (String) "CULLMANN TECH"),
   M_EYRISE_B_V((int) 392, (int) 443, (String) "eyrise B.V"),
-  M_ABEGO((int) 393, (int) 444, (String) "ABEGO"),
+  M_DOBNEL((int) 393, (int) 444, (String) "Dobnel"),
   M_MYGEKKO((int) 394, (int) 445, (String) "myGEKKO"),
   M_ERGO3_SARL((int) 395, (int) 446, (String) "Ergo3 Sarl"),
   M_STMICROELECTRONICS_INTERNATIONAL_N_V_(
@@ -477,7 +477,8 @@ public enum KnxManufacturer {
   M_ONTROL((int) 419, (int) 471, (String) "Ontrol"),
   M_STARNET((int) 420, (int) 472, (String) "Starnet"),
   M_BETA_CAVI((int) 421, (int) 473, (String) "BETA CAVI"),
-  M_EASEMORE((int) 422, (int) 474, (String) "EaseMore"),
+  M_HANGZHOU_YIYUE_TECHNOLOGY_CO___LTD_(
+      (int) 422, (int) 474, (String) "Hangzhou YiYue Technology Co., Ltd."),
   M_VIVALDI_SRL((int) 423, (int) 475, (String) "Vivaldi srl"),
   M_GREE_ELECTRIC_APPLIANCES_INC__OF_ZHUHAI(
       (int) 424, (int) 476, (String) "Gree Electric Appliances,Inc. of Zhuhai"),
@@ -513,7 +514,7 @@ public enum KnxManufacturer {
   M_ONEHOME((int) 448, (int) 501, (String) "1Home"),
   M_EOS_SAUNATECHNIK_GMBH((int) 449, (int) 502, (String) "EOS Saunatechnik GmbH"),
   M_KUSATEK_GMBH((int) 450, (int) 503, (String) "KUSATEK GmbH"),
-  M_EISBAER_SCADA((int) 451, (int) 504, (String) "EisBär Scada"),
+  M_ALEXANDER_MAIER_GMBH((int) 451, (int) 504, (String) "Alexander Maier GmbH"),
   M_AUTOMATISMI_BENINCA_S_P_A_((int) 452, (int) 505, (String) "AUTOMATISMI BENINCA S.P.A."),
   M_BLENDOM((int) 453, (int) 506, (String) "Blendom"),
   M_MADEL_AIR_TECHNICAL_DIFFUSION((int) 454, (int) 507, (String) "Madel Air Technical diffusion"),
@@ -531,8 +532,8 @@ public enum KnxManufacturer {
   M_OSRAM((int) 464, (int) 519, (String) "OSRAM"),
   M_LEBENOR((int) 465, (int) 520, (String) "Lebenor"),
   M_AUTOMANENG((int) 466, (int) 521, (String) "automaneng"),
-  M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA(
-      (int) 467, (int) 522, (String) "Honeywell Automation Solution control(China)"),
+  M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD(
+      (int) 467, (int) 522, (String) "Honeywell Automation Control Solutions(China)CoLtd"),
   M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD(
       (int) 468, (int) 523, (String) "Hangzhou binthen Intelligence Technology Co.,Ltd"),
   M_ETA_HEIZTECHNIK((int) 469, (int) 524, (String) "ETA Heiztechnik"),
@@ -559,7 +560,7 @@ public enum KnxManufacturer {
   M_BERGHOF_AUTOMATION_GMBH((int) 485, (int) 540, (String) "Berghof Automation GmbH"),
   M_TOTAL_AUTOMATION_AND_CONTROLS_GMBH(
       (int) 486, (int) 541, (String) "Total Automation and controls GmbH"),
-  M_DOVIT((int) 487, (int) 542, (String) "dovit"),
+  M_DOVIT((int) 487, (int) 542, (String) "DOVIT"),
   M_INSTALIGHTING_GMBH((int) 488, (int) 543, (String) "Instalighting GmbH"),
   M_UNI_TEC((int) 489, (int) 544, (String) "UNI-TEC"),
   M_CASATUNES((int) 490, (int) 545, (String) "CasaTunes"),
@@ -578,7 +579,7 @@ public enum KnxManufacturer {
   M_AUTOMATIONPlus((int) 501, (int) 556, (String) "Automation+"),
   M_BLUE_AND_RED((int) 502, (int) 557, (String) "blue and red"),
   M_FROGBLUE((int) 503, (int) 558, (String) "frogblue"),
-  M_SAVESOR((int) 504, (int) 559, (String) "SAVESOR"),
+  M_LUXIO((int) 504, (int) 559, (String) "LUXIO"),
   M_APP_TECH((int) 505, (int) 560, (String) "App Tech"),
   M_SENSORTEC_AG((int) 506, (int) 561, (String) "sensortec AG"),
   M_NYSA_TECHNOLOGY_AND_SOLUTIONS((int) 507, (int) 562, (String) "nysa technology & solutions"),
@@ -656,7 +657,7 @@ public enum KnxManufacturer {
   M_VIEGA_GMBH_AND_CO__KG((int) 572, (int) 628, (String) "Viega GmbH & Co. KG"),
   M_FREDON_DIGITAL_BUILDINGS((int) 573, (int) 629, (String) "Fredon Digital Buildings"),
   M_HELUKABEL_THAILAND_CO__LTD_((int) 574, (int) 630, (String) "Helukabel (Thailand) Co.,Ltd."),
-  M_ACE_TECHNOLOGY((int) 575, (int) 631, (String) "ACE Technology"),
+  M_SICS((int) 575, (int) 631, (String) "SICS"),
   M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD(
       (int) 576, (int) 632, (String) "MEX Electric Technology (Shanghai) Co., Ltd"),
   M_SUMAMO((int) 577, (int) 633, (String) "SUMAMO"),
@@ -740,9 +741,147 @@ public enum KnxManufacturer {
   M_LAZZEN((int) 642, (int) 700, (String) "LAZZEN"),
   M_MOX_CONTROL_IT_CHINA_LIMITED((int) 643, (int) 701, (String) "MOX CONTROL IT (CHINA) LIMITED"),
   M_CLOWIRE((int) 644, (int) 702, (String) "CLOWIRE"),
-  M_ABB___RESERVED((int) 645, (int) 43954, (String) "ABB - reserved"),
+  M_NINGBO_QIYUAN_LIGHTING_TECH_CO__LTD(
+      (int) 645, (int) 703, (String) "NINGBO QIYUAN LIGHTING TECH CO.,LTD"),
+  M_NS_TOUCH((int) 646, (int) 704, (String) "NS Touch"),
+  M_ROOMIO((int) 647, (int) 705, (String) "ROOMIO"),
+  M_ATOUCH((int) 648, (int) 706, (String) "Atouch"),
+  M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD(
+      (int) 649, (int) 707, (String) "Panasonic Life Solutions India Pvt. Ltd"),
+  M_WALLYONS((int) 650, (int) 708, (String) "WallYons"),
+  M_ZIMMEX((int) 651, (int) 709, (String) "Zimmex"),
+  M_RHOMBUS_EUROPE((int) 652, (int) 710, (String) "Rhombus Europe"),
+  M_TURING_THINK((int) 653, (int) 711, (String) "Turing-Think"),
+  M_MICHOI((int) 654, (int) 712, (String) "Michoi"),
+  M_CAV_SMARTGUANGZHOUCO__LTD((int) 655, (int) 713, (String) "CAV SMART(GUANGZHOU)CO.,LTD"),
+  M_HELKAMA_BICA_OY((int) 656, (int) 714, (String) "Helkama Bica Oy"),
+  M_MODULYTE((int) 657, (int) 715, (String) "ModuLyte"),
+  M_CONSOLINNO_ENERGY_GMBH((int) 658, (int) 716, (String) "Consolinno Energy GmbH"),
+  M_SCHIDERON_ELECTRIC_ASIA_LIMITED(
+      (int) 659, (int) 717, (String) "SCHIDERON ELECTRIC (ASIA) LIMITED"),
+  M_3R((int) 660, (int) 718, (String) "3R"),
+  M_ARKLYFE((int) 661, (int) 719, (String) "Arklyfe"),
+  M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_(
+      (int) 662, (int) 720, (String) "Foshan Haydn Technology Lighting Co.,Ltd."),
+  M_KNXES_COMPANY_LIMITED((int) 663, (int) 721, (String) "KNXES COMPANY LIMITED"),
+  M_AKUVOX((int) 664, (int) 722, (String) "Akuvox"),
+  M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_(
+      (int) 665, (int) 723, (String) "NingBo Yinzhou ShengRuiJie Electronics Co. Ltd."),
+  M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD(
+      (int) 666, (int) 724, (String) "Shenzhen Haizhichuang Technology Co., Ltd"),
+  M_SHENZHEN_EASYDETEK_TECHNOLOGY_CO_LTD(
+      (int) 667, (int) 725, (String) "Shenzhen easydetek technology Co.Ltd"),
+  M_MUTLUSAN_ELECTRIC((int) 668, (int) 726, (String) "Mutlusan Electric"),
+  M_HANGZHOU_BROADLINK_TECHNOLOGY_CO__LTD_(
+      (int) 669, (int) 727, (String) "Hangzhou BroadLink Technology Co.,Ltd."),
+  M_MARLEY_DEUTSCHLAND_GMBH((int) 670, (int) 728, (String) "Marley Deutschland GmbH"),
+  M_CREATROL((int) 671, (int) 729, (String) "Creatrol"),
+  M_EUTELSAT((int) 672, (int) 730, (String) "EUTELSAT"),
+  M_TECNIKABEL((int) 673, (int) 731, (String) "TECNIKABEL"),
+  M_ATIOS_AG((int) 674, (int) 732, (String) "Atios AG"),
+  M_SMARTLICHT((int) 675, (int) 733, (String) "SmartLicht"),
+  M_BEIJING_BEVONE_ELECTRIC_CO__LTD_(
+      (int) 676, (int) 734, (String) "Beijing Bevone Electric Co. Ltd."),
+  M_ELSMART((int) 677, (int) 735, (String) "ELSMART"),
+  M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC(
+      (int) 678, (int) 736, (String) "Middle East Specialized Cables Co. (MESC)"),
+  M_HANGZHOU_SANYUAN_CABLE_CO___LTD(
+      (int) 679, (int) 737, (String) "HANGZHOU SANYUAN CABLE CO., LTD"),
+  M_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC_(
+      (int) 680, (int) 738, (String) "Beijing HaiLin Control Technology Inc."),
+  M_HANGZHOU_SNOWYI_TECHNOLOGY_CO__LTD_(
+      (int) 681, (int) 739, (String) "HangZhou Snowyi Technology Co.,LTD."),
+  M_XIAMEN_E_TOP_CONTROLS_TECHNOLOGY_CO__LTD(
+      (int) 682, (int) 740, (String) "Xiamen E-Top Controls Technology Co.,Ltd"),
+  M_VITRUM_DESIGN((int) 683, (int) 741, (String) "Vitrum Design"),
+  M_DETRONS((int) 684, (int) 742, (String) "DETRONS"),
+  M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD(
+      (int) 685, (int) 743, (String) "Zhejiang FORICK, Intelligent Technology Co., LTD"),
+  M_VARNI_DIGITAL_PRIVATE_LIMITED((int) 686, (int) 744, (String) "Varni Digital Private Limited"),
+  M_3A_ENTREPRISE_APS((int) 687, (int) 745, (String) "3a entreprise aps"),
+  M_ITALIANA_CONDUTTORI_SRL((int) 688, (int) 746, (String) "Italiana Conduttori srl"),
+  M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_(
+      (int) 689, (int) 747, (String) "Xiamen Leelen Technology Co.,Ltd."),
+  M_LEDNX((int) 690, (int) 748, (String) "LedNX"),
+  M_EBELONG((int) 691, (int) 749, (String) "ebelong"),
+  M_ASTRA_LED_AG((int) 692, (int) 750, (String) "Astra-LED AG"),
+  M_WONDERFUL_HI_TECH_CO___LTD_((int) 693, (int) 751, (String) "Wonderful Hi-Tech Co., Ltd."),
+  M_REXLITE_AI_INTEGRATIONS_CO__LTD(
+      (int) 694, (int) 752, (String) "REXLiTE Ai Integrations CO.,LTD"),
+  M_ALLORADO((int) 695, (int) 753, (String) "Allorado"),
+  M_FUZHOU_MILI_TECHNOLOGY_CO___LTD(
+      (int) 696, (int) 754, (String) "FUZHOU MILI TECHNOLOGY CO., LTD"),
+  M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD(
+      (int) 697, (int) 755, (String) "Maxtreen building technology co.,ltd"),
+  M_HYSINE((int) 698, (int) 756, (String) "Hysine"),
+  M_SANTAN((int) 699, (int) 757, (String) "SANTAN"),
+  M_HUIXIANGJU_IOT_TECHNOLOGY_SHANGHAI_CO___LTD(
+      (int) 700, (int) 758, (String) "Huixiangju IoT Technology (Shanghai) Co., Ltd"),
+  M_SHANGHAI_BENKONG_ELECTRONIC_TECHNOLOGY_CO__LTD(
+      (int) 701, (int) 759, (String) "Shanghai Benkong Electronic Technology Co.,Ltd"),
+  M_POLAR_BEAR_DESIGN((int) 702, (int) 760, (String) "Polar Bear Design"),
+  M_ELESSAN_NV((int) 703, (int) 761, (String) "Elessan NV"),
+  M_MIR((int) 704, (int) 762, (String) "MIR"),
+  M_ZHEJIANG_MISILIN_TECHNOLOGY_CO___LTD(
+      (int) 705, (int) 763, (String) "Zhejiang Misilin Technology Co., Ltd"),
+  M_LEAX_CONTROLS_CO___LTD_((int) 706, (int) 764, (String) "LEAX CONTROLS CO., LTD."),
+  M_ALCAD((int) 707, (int) 765, (String) "alcad"),
+  M_GUANG_DONG_REMAC_SMART_TECHNOLOGY_CO___LTD(
+      (int) 708, (int) 766, (String) "GUANG DONG REMAC SMART TECHNOLOGY CO., LTD"),
+  M_TAOS_ELECTRIC_CO___LTD((int) 709, (int) 769, (String) "Taos Electric Co., Ltd"),
+  M_KONSTANTIN_BOBIC_SYSTEMINTEGRATION(
+      (int) 710, (int) 771, (String) "Konstantin Bobic Systemintegration"),
+  M_ASAY_Q((int) 711, (int) 772, (String) "Asay Q"),
+  M_LAPP((int) 712, (int) 773, (String) "LAPP"),
+  M_ZEROBIT_DYNAMIC((int) 713, (int) 774, (String) "ZEROBIT DYNAMIC"),
+  M_HAVELLS((int) 714, (int) 775, (String) "havells"),
+  M_MULLER_INTUITIV((int) 715, (int) 776, (String) "Muller Intuitiv"),
+  M_TASKIT_GMBH((int) 716, (int) 777, (String) "taskit GmbH"),
+  M_COSTER_GROUP((int) 717, (int) 778, (String) "Coster Group"),
+  M_NXP_SEMICONDUCTOR((int) 718, (int) 779, (String) "NXP Semiconductor"),
+  M_COGCONS((int) 719, (int) 780, (String) "CogCons"),
+  M_MICRO_TEK_SRL_F_M_C_TRADE_MARK(
+      (int) 720, (int) 781, (String) "Micro Tek Srl (F.M.C trade mark)"),
+  M_ORENDA_ELECTRIC((int) 721, (int) 782, (String) "Orenda Electric"),
+  M_ERSE_KABLO((int) 722, (int) 783, (String) "ERSE KABLO"),
+  M_PRADO_EUROPE_BV((int) 723, (int) 784, (String) "prado europe bv"),
+  M_E2S_GBR((int) 724, (int) 785, (String) "e2s GbR"),
+  M_UNITLINK((int) 725, (int) 786, (String) "UnitLink"),
+  M_ONNA((int) 726, (int) 787, (String) "ONNA"),
+  M_CENTERSVET_LLC((int) 727, (int) 788, (String) "CENTERSVET LLC"),
+  M_ADVECO_TECHNOLOGY_CO___LTD_((int) 728, (int) 789, (String) "Adveco Technology Co., Ltd."),
+  M_FR__LUERSSEN_WERFT((int) 729, (int) 790, (String) "Fr. Lürssen Werft"),
+  M_MYLYR((int) 730, (int) 791, (String) "mylyr"),
+  M_HYUNDAI_HT((int) 731, (int) 792, (String) "HYUNDAI HT"),
+  M_GUANGDONG_YUEJINGRUN_TECHNOLOGY_CO__LTD(
+      (int) 732, (int) 793, (String) "Guangdong Yuejingrun Technology Co.,Ltd"),
+  M_SMATEK_ELECTRONICS_LIMITED((int) 733, (int) 794, (String) "SMATEK ELECTRONICS LIMITED"),
+  M_ANYTEK_ELECTRONIC_TECHNOLOGY_SZ_CO___LTD_(
+      (int) 734, (int) 795, (String) "Anytek Electronic Technology (SZ) Co., Ltd."),
+  M_MORELINKS_SMART_HOME((int) 735, (int) 796, (String) "Morelinks Smart Home"),
+  M_CIRTX_GMBH((int) 736, (int) 797, (String) "Cirtx GmbH"),
+  M_QLITE((int) 737, (int) 798, (String) "QLITE"),
+  M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD(
+      (int) 738, (int) 799, (String) "Zhongshan Illus LIghting Co.,Ltd"),
+  M_HANGZHOU_KONKE_INFORMATION_TECHNOLOGY_CO___LTD_(
+      (int) 739, (int) 800, (String) "Hangzhou Konke Information Technology Co., Ltd."),
+  M_SHANGHAI_FANTE_DIGITAL_TECHNOLOGY_CO___LTD(
+      (int) 740, (int) 801, (String) "Shanghai Fante Digital Technology Co., Ltd"),
+  M_CONFIO((int) 741, (int) 802, (String) "CONFIO"),
+  M_SONIC_TECHNOLOGIES((int) 742, (int) 803, (String) "Sonic Technologies"),
+  M_SHANGHAI_INNOVATECH_INFORMATION_TECHNOLOGY_CO___LT(
+      (int) 743, (int) 804, (String) "Shanghai Innovatech Information Technology Co., Lt"),
+  M_ABI_SICHERHEITSSYSTEME_GMBH((int) 744, (int) 805, (String) "ABI Sicherheitssysteme GmbH"),
+  M_RYT((int) 745, (int) 806, (String) "RYT"),
+  M_AURIGA_SYSTEMS((int) 746, (int) 807, (String) "Auriga Systems"),
+  M_ALZINGERANDVOGEL_SOFTWAREENTWICKLUNGS_GMBH(
+      (int) 747, (int) 808, (String) "Alzinger&Vogel Softwareentwicklungs GmbH"),
+  M_GIANFRANCO_SMART_SOLUTIONS_LTD((int) 748, (int) 809, (String) "Gianfranco Smart Solutions Ltd"),
+  M_ROGERWELL_CONTROL_SYSTEM_LIMITED(
+      (int) 749, (int) 810, (String) "Rogerwell Control System Limited"),
+  M_ABB___RESERVED((int) 750, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 646, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 751, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

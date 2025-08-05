@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.junit.jupiter.api.Test;
 
@@ -51,4 +52,5 @@ class ReadBufferTest {
 
         assertEquals(value, answer);
     }
+
 }

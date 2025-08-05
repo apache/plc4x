@@ -71,13 +71,10 @@ public class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber");
 
     // Simple Field (referenceSequenceNumber)
-    writeSimpleField(
-        "referenceSequenceNumber",
-        referenceSequenceNumber,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceSequenceNumber", referenceSequenceNumber, writeComplex(writeBuffer));
 
     // Simple Field (count)
-    writeSimpleField("count", count, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("count", count, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber");
   }
@@ -112,7 +109,7 @@ public class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
     BACnetApplicationTagUnsignedInteger referenceSequenceNumber =
         readSimpleField(
             "referenceSequenceNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -121,7 +118,7 @@ public class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
     BACnetApplicationTagSignedInteger count =
         readSimpleField(
             "count",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

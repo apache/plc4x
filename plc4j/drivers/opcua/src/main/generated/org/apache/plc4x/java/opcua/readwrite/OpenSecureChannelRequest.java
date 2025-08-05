@@ -38,12 +38,12 @@ import org.apache.plc4x.java.spi.generation.*;
 public class OpenSecureChannelRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "446";
+  public Integer getExtensionId() {
+    return (int) 446;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final long clientProtocolVersion;
   protected final SecurityTokenRequestType requestType;
   protected final MessageSecurityMode securityMode;
@@ -51,7 +51,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
   protected final long requestedLifetime;
 
   public OpenSecureChannelRequest(
-      ExtensionObjectDefinition requestHeader,
+      RequestHeader requestHeader,
       long clientProtocolVersion,
       SecurityTokenRequestType requestType,
       MessageSecurityMode securityMode,
@@ -66,7 +66,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
     this.requestedLifetime = requestedLifetime;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -98,7 +98,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
     writeBuffer.pushContext("OpenSecureChannelRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (clientProtocolVersion)
     writeSimpleField(
@@ -109,7 +109,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
         "requestType",
         "SecurityTokenRequestType",
         requestType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             SecurityTokenRequestType::getValue,
             SecurityTokenRequestType::name,
             writeUnsignedLong(writeBuffer, 32)));
@@ -119,13 +119,13 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
         "securityMode",
         "MessageSecurityMode",
         securityMode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MessageSecurityMode::getValue,
             MessageSecurityMode::name,
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (clientNonce)
-    writeSimpleField("clientNonce", clientNonce, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientNonce", clientNonce, writeComplex(writeBuffer));
 
     // Simple Field (requestedLifetime)
     writeSimpleField("requestedLifetime", requestedLifetime, writeUnsignedLong(writeBuffer, 32));
@@ -166,16 +166,17 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("OpenSecureChannelRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+            readComplex(
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     long clientProtocolVersion =
@@ -185,21 +186,17 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
         readEnumField(
             "requestType",
             "SecurityTokenRequestType",
-            new DataReaderEnumDefault<>(
-                SecurityTokenRequestType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(SecurityTokenRequestType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     MessageSecurityMode securityMode =
         readEnumField(
             "securityMode",
             "MessageSecurityMode",
-            new DataReaderEnumDefault<>(
-                MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalByteString clientNonce =
         readSimpleField(
-            "clientNonce",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "clientNonce", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     long requestedLifetime = readSimpleField("requestedLifetime", readUnsignedLong(readBuffer, 32));
 
@@ -216,7 +213,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
 
   public static class OpenSecureChannelRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final long clientProtocolVersion;
     private final SecurityTokenRequestType requestType;
     private final MessageSecurityMode securityMode;
@@ -224,7 +221,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
     private final long requestedLifetime;
 
     public OpenSecureChannelRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
+        RequestHeader requestHeader,
         long clientProtocolVersion,
         SecurityTokenRequestType requestType,
         MessageSecurityMode securityMode,

@@ -158,10 +158,10 @@ public class DataValue implements Message {
     writeSimpleField("valueSpecified", valueSpecified, writeBoolean(writeBuffer));
 
     // Optional Field (value) (Can be skipped, if the value is null)
-    writeOptionalField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("value", value, writeComplex(writeBuffer));
 
     // Optional Field (statusCode) (Can be skipped, if the value is null)
-    writeOptionalField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Optional Field (sourceTimestamp) (Can be skipped, if the value is null)
     writeOptionalField("sourceTimestamp", sourceTimestamp, writeSignedLong(writeBuffer, 64));
@@ -243,11 +243,6 @@ public class DataValue implements Message {
     return lengthInBits;
   }
 
-  public static DataValue staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DataValue staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DataValue");
     PositionAware positionAware = readBuffer;
@@ -275,13 +270,13 @@ public class DataValue implements Message {
     Variant value =
         readOptionalField(
             "value",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Variant.staticParse(readBuffer), readBuffer),
             valueSpecified);
 
     StatusCode statusCode =
         readOptionalField(
             "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             statusCodeSpecified);
 
     Long sourceTimestamp =

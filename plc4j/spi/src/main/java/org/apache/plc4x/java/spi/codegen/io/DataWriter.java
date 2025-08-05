@@ -22,12 +22,9 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-public interface DataWriter<T> extends ByteOrderAware {
+public interface DataWriter<T> extends ByteOrderAware, ContextWriter {
 
     void write(String logicalName, T value, WithWriterArgs... writerArgs) throws SerializationException;
-
-    void pushContext(String logicalName, WithWriterArgs... writerArgs);
-    void popContext(String logicalName, WithWriterArgs... writerArgs);
 
     WriteBuffer getWriteBuffer();
 

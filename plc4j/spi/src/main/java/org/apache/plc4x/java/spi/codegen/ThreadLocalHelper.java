@@ -21,5 +21,6 @@ package org.apache.plc4x.java.spi.codegen;
 public class ThreadLocalHelper {
 
     public static final ThreadLocal<Boolean> lastItemThreadLocal = ThreadLocal.withInitial(() -> false);
+    public static final ThreadLocal<Integer> curItemThreadLocal = ThreadLocal.withInitial(() -> 0);
 
 }

@@ -76,12 +76,6 @@ public class IEC608705104Constants implements Message {
     return lengthInBits;
   }
 
-  public static IEC608705104Constants staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static IEC608705104Constants staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("IEC608705104Constants");
     PositionAware positionAware = readBuffer;

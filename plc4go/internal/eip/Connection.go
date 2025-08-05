@@ -22,12 +22,12 @@ package eip
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
 	"runtime/debug"
+	"sync"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -35,8 +35,10 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 )
 
 const (
@@ -61,6 +63,8 @@ type Connection struct {
 	useConnectionManager      bool
 	routingAddress            []readWriteModel.PathSegment
 	tracer                    tracer.Tracer
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
@@ -126,7 +130,9 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+	c.wg.Add(1)
 	go func() {
+		defer c.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -157,7 +163,9 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	// TODO: use proper context
 	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionCloseResult, 1)
+	c.wg.Add(1)
 	go func() {
+		defer c.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- _default.NewDefaultPlcConnectionCloseResult(c, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -226,11 +234,11 @@ func (c *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcC
 			uint32(0),
 		),
 		func(message spi.Message) bool {
-			eipPacket := message.(readWriteModel.EipPacketExactly)
-			if eipPacket == nil {
+			eipPacket, ok := message.(readWriteModel.EipPacket)
+			if !ok {
 				return false
 			}
-			eipPacketListServicesResponse := eipPacket.(readWriteModel.ListServicesResponseExactly)
+			eipPacketListServicesResponse := eipPacket.(readWriteModel.ListServicesResponse)
 			return eipPacketListServicesResponse != nil
 		},
 		func(message spi.Message) error {
@@ -245,7 +253,8 @@ func (c *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcC
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 				c.Close()
 			}
@@ -257,7 +266,6 @@ func (c *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcC
 	}
 
 	timeout := time.NewTimer(1 * time.Second)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case <-timeout.C:
 		return errors.New("timeout")
@@ -281,8 +289,8 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 			uint32(0),
 		),
 		func(message spi.Message) bool {
-			eipPacket := message.(readWriteModel.EipPacketExactly)
-			return eipPacket != nil
+			_, ok := message.(readWriteModel.EipPacket)
+			return ok
 		},
 		func(message spi.Message) error {
 			eipPacket := message.(readWriteModel.EipPacket)
@@ -315,17 +323,24 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 						readWriteModel.NewTransportType(true, 2, 3),
 						c.connectionPathSize, c.routingAddress, 1))
 				typeIds := []readWriteModel.TypeId{readWriteModel.NewNullAddressItem(), exchange}
-				eipWrapper := readWriteModel.NewCipRRData(c.sessionHandle, 0, typeIds,
-					c.sessionHandle, uint32(readWriteModel.CIPStatus_Success), c.senderContext, 0)
+				eipWrapper := readWriteModel.NewCipRRData(
+					c.sessionHandle,
+					uint32(readWriteModel.CIPStatus_Success),
+					c.senderContext,
+					0,
+					c.sessionHandle,
+					0,
+					typeIds,
+				)
 				if err := c.messageCodec.SendRequest(
 					ctx,
 					eipWrapper,
 					func(message spi.Message) bool {
-						eipPacket := message.(readWriteModel.EipPacketExactly)
+						eipPacket := message.(readWriteModel.EipPacket)
 						if eipPacket == nil {
 							return false
 						}
-						cipRRData := eipPacket.(readWriteModel.CipRRDataExactly)
+						cipRRData := eipPacket.(readWriteModel.CipRRData)
 						return cipRRData != nil
 					},
 					func(message spi.Message) error {
@@ -345,7 +360,8 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 					},
 					func(err error) error {
 						// If this is a timeout, do a check if the connection requires a reconnection
-						if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+						var timeoutError utils.TimeoutError
+						if errors.As(err, &timeoutError) {
 							c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 							c.Close()
 						}
@@ -361,7 +377,8 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			var timeoutError utils.TimeoutError
+			if errors.As(err, &timeoutError) {
 				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 				c.Close()
 			}
@@ -373,7 +390,6 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 		c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 	}
 	timeout := time.NewTimer(1 * time.Second)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case <-timeout.C:
 		return errors.New("timeout")
@@ -393,6 +409,10 @@ func (c *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 	if err := c.messageCodec.SendRequest(
 		ctx,
 		readWriteModel.NewCipRRData(
+			c.sessionHandle,
+			uint32(readWriteModel.CIPStatus_Success),
+			c.senderContext,
+			0,
 			EmptyInterfaceHandle,
 			0,
 			[]readWriteModel.TypeId{
@@ -401,13 +421,9 @@ func (c *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 					readWriteModel.NewGetAttributeAllRequest(
 						classSegment, instanceSegment, uint16(0))),
 			},
-			c.sessionHandle,
-			uint32(readWriteModel.CIPStatus_Success),
-			c.senderContext,
-			0,
 		),
 		func(message spi.Message) bool {
-			eipPacket := message.(readWriteModel.CipRRDataExactly)
+			eipPacket := message.(readWriteModel.CipRRData)
 			return eipPacket != nil
 		},
 		func(message spi.Message) error {
@@ -452,7 +468,6 @@ func (c *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 	}
 
 	timeout := time.NewTimer(1 * time.Second)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case <-timeout.C:
 		return errors.New("timeout")

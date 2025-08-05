@@ -82,7 +82,7 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataChangesPending");
 
     // Simple Field (changesPending)
-    writeSimpleField("changesPending", changesPending, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("changesPending", changesPending, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
     BACnetApplicationTagBoolean changesPending =
         readSimpleField(
             "changesPending",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

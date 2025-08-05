@@ -60,8 +60,7 @@ public class BACnetPropertyStatesZoneOccupanyState extends BACnetPropertyStates 
     writeBuffer.pushContext("BACnetPropertyStatesZoneOccupanyState");
 
     // Simple Field (zoneOccupanyState)
-    writeSimpleField(
-        "zoneOccupanyState", zoneOccupanyState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneOccupanyState", zoneOccupanyState, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesZoneOccupanyState");
   }
@@ -92,7 +91,7 @@ public class BACnetPropertyStatesZoneOccupanyState extends BACnetPropertyStates 
     BACnetAccessZoneOccupancyStateTagged zoneOccupanyState =
         readSimpleField(
             "zoneOccupanyState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessZoneOccupancyStateTagged.staticParse(
                         readBuffer,

@@ -61,10 +61,7 @@ public class SALDataIrrigationControl extends SALData implements Message {
     writeBuffer.pushContext("SALDataIrrigationControl");
 
     // Simple Field (irrigationControlData)
-    writeSimpleField(
-        "irrigationControlData",
-        irrigationControlData,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("irrigationControlData", irrigationControlData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataIrrigationControl");
   }
@@ -95,7 +92,7 @@ public class SALDataIrrigationControl extends SALData implements Message {
     LightingData irrigationControlData =
         readSimpleField(
             "irrigationControlData",
-            new DataReaderComplexDefault<>(() -> LightingData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> LightingData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataIrrigationControl");
     // Create the instance

@@ -82,7 +82,7 @@ public class BACnetConstructedDataHigherDeck extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataHigherDeck");
 
     // Simple Field (higherDeck)
-    writeSimpleField("higherDeck", higherDeck, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("higherDeck", higherDeck, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagObjectIdentifier actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataHigherDeck extends BACnetConstructedData imple
     BACnetApplicationTagObjectIdentifier higherDeck =
         readSimpleField(
             "higherDeck",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

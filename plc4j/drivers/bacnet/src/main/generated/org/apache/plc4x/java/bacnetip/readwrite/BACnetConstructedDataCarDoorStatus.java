@@ -99,7 +99,7 @@ public class BACnetConstructedDataCarDoorStatus extends BACnetConstructedData im
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (carDoorStatus)
@@ -151,7 +151,7 @@ public class BACnetConstructedDataCarDoorStatus extends BACnetConstructedData im
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataCarDoorStatus extends BACnetConstructedData im
     List<BACnetDoorStatusTagged> carDoorStatus =
         readTerminatedArrayField(
             "carDoorStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorStatusTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

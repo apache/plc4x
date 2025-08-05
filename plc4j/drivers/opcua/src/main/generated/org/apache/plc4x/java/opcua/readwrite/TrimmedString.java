@@ -63,12 +63,6 @@ public class TrimmedString implements Message {
     return lengthInBits;
   }
 
-  public static TrimmedString staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TrimmedString staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TrimmedString");
     PositionAware positionAware = readBuffer;

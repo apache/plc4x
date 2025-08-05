@@ -469,7 +469,7 @@
 ]
 
 // Attention: No proprietary extension allowed
-[enum uint 8  NLMRejectRouterToNetworkRejectReason
+[enum uint 8  NLMRejectMessageToNetworkRejectReason
     ['0'    OTHER                                           ]
     ['1'    NOT_DIRECTLY_CONNECTED                          ]
     ['2'    BUSY                                            ]

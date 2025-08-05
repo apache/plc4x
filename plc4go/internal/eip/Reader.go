@@ -23,23 +23,24 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
 	"regexp"
 	"runtime/debug"
 	"strconv"
+	"sync"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/pkg/errors"
 )
 
 type Reader struct {
@@ -47,6 +48,8 @@ type Reader struct {
 	tm            transactions.RequestTransactionManager
 	configuration Configuration
 	sessionHandle *uint32
+
+	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
@@ -67,7 +70,9 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 	// TODO: handle ctx
 	m.log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult, 1)
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -94,18 +99,26 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				readWriteModel.NewNullAddressItem(),
 				readWriteModel.NewUnConnectedDataItem(requestItem),
 			}
-			request := readWriteModel.NewCipRRData(0, 0, typeIds, *m.sessionHandle, uint32(readWriteModel.CIPStatus_Success), []byte(DefaultSenderContext), 0)
+			request := readWriteModel.NewCipRRData(
+				*m.sessionHandle,
+				uint32(readWriteModel.CIPStatus_Success),
+				[]byte(DefaultSenderContext),
+				0,
+				0,
+				0,
+				typeIds,
+			)
 			transaction := m.tm.StartTransaction()
 			transaction.Submit(func(transaction transactions.RequestTransaction) {
 				if err := m.messageCodec.SendRequest(
 					ctx,
 					request,
 					func(message spi.Message) bool {
-						eipPacket := message.(readWriteModel.EipPacketExactly)
+						eipPacket := message.(readWriteModel.EipPacket)
 						if eipPacket == nil {
 							return false
 						}
-						cipRRData := eipPacket.(readWriteModel.CipRRDataExactly)
+						cipRRData := eipPacket.(readWriteModel.CipRRData)
 						if cipRRData == nil {
 							return false
 						}
@@ -205,7 +218,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 	plcValues := map[string]values.PlcValue{}
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	switch response := response.(type) {
-	case readWriteModel.CipReadResponseExactly: // only 1 tag
+	case readWriteModel.CipReadResponse: // only 1 tag
 		cipReadResponse := response
 		tagName := readRequest.GetTagNames()[0]
 		tag := readRequest.GetTag(tagName).(PlcTag)
@@ -222,7 +235,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 		}
 		plcValues[tagName] = plcValue
 		responseCodes[tagName] = code
-	case readWriteModel.MultipleServiceResponseExactly: //Multiple response
+	case readWriteModel.MultipleServiceResponse: //Multiple response
 		multipleServiceResponse := response
 		nb := multipleServiceResponse.GetServiceNb()
 		arr := make([]readWriteModel.CipService, nb)
@@ -239,7 +252,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 			serviceBuf := utils.NewReadBufferByteBased(read.GetBytes()[offset:offset+length], utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 			var err error
 			// TODO: If we're using a connected connection, do this differently
-			arr[i], err = readWriteModel.CipServiceParseWithBuffer(context.Background(), serviceBuf, false, length)
+			arr[i], err = readWriteModel.CipServiceParseWithBuffer[readWriteModel.CipService](context.Background(), serviceBuf, false, length)
 			if err != nil {
 				return nil, err
 			}

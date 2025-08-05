@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ReferenceListEntryDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "32662";
+  public Integer getExtensionId() {
+    return (int) 32662;
   }
 
   // Properties.
@@ -75,7 +75,7 @@ public class ReferenceListEntryDataType extends ExtensionObjectDefinition implem
     writeBuffer.pushContext("ReferenceListEntryDataType");
 
     // Simple Field (referenceType)
-    writeSimpleField("referenceType", referenceType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceType", referenceType, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -84,7 +84,7 @@ public class ReferenceListEntryDataType extends ExtensionObjectDefinition implem
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
 
     // Simple Field (targetNode)
-    writeSimpleField("targetNode", targetNode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetNode", targetNode, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ReferenceListEntryDataType");
   }
@@ -116,15 +116,14 @@ public class ReferenceListEntryDataType extends ExtensionObjectDefinition implem
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ReferenceListEntryDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId referenceType =
         readSimpleField(
-            "referenceType",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "referenceType", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -133,9 +132,7 @@ public class ReferenceListEntryDataType extends ExtensionObjectDefinition implem
 
     ExpandedNodeId targetNode =
         readSimpleField(
-            "targetNode",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "targetNode", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ReferenceListEntryDataType");
     // Create the instance

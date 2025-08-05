@@ -89,20 +89,19 @@ public class BACnetFaultParameterFaultExtended extends BACnetFaultParameter impl
     writeBuffer.pushContext("BACnetFaultParameterFaultExtended");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (vendorId)
-    writeSimpleField("vendorId", vendorId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vendorId", vendorId, writeComplex(writeBuffer));
 
     // Simple Field (extendedFaultType)
-    writeSimpleField(
-        "extendedFaultType", extendedFaultType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("extendedFaultType", extendedFaultType, writeComplex(writeBuffer));
 
     // Simple Field (parameters)
-    writeSimpleField("parameters", parameters, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("parameters", parameters, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtended");
   }
@@ -145,13 +144,12 @@ public class BACnetFaultParameterFaultExtended extends BACnetFaultParameter impl
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (2)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (2)), readBuffer));
 
     BACnetVendorIdTagged vendorId =
         readSimpleField(
             "vendorId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVendorIdTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -160,7 +158,7 @@ public class BACnetFaultParameterFaultExtended extends BACnetFaultParameter impl
     BACnetContextTagUnsignedInteger extendedFaultType =
         readSimpleField(
             "extendedFaultType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -172,7 +170,7 @@ public class BACnetFaultParameterFaultExtended extends BACnetFaultParameter impl
     BACnetFaultParameterFaultExtendedParameters parameters =
         readSimpleField(
             "parameters",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetFaultParameterFaultExtendedParameters.staticParse(
                         readBuffer, (short) (2)),
@@ -181,8 +179,7 @@ public class BACnetFaultParameterFaultExtended extends BACnetFaultParameter impl
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (2)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (2)), readBuffer));
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtended");
     // Create the instance

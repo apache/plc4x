@@ -92,6 +92,10 @@ public class DataReaderFactory {
         return new DataReaderEnumDefault<>(enumResolver, dataReader);
     }
 
+    public static <T> DataReaderComplexDefault<T> readComplex(ComplexTypeSupplier<T> complexSupplier, ReadBuffer readBuffer) {
+        return new DataReaderComplexDefault<>(complexSupplier, readBuffer);
+    }
+
     public static DataReader<LocalDate> readDate(ReadBuffer readBuffer) {
         return new DataReaderSimpleDate(readBuffer);
     }

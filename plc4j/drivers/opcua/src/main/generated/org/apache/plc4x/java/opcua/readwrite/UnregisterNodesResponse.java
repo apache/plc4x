@@ -38,19 +38,19 @@ import org.apache.plc4x.java.spi.generation.*;
 public class UnregisterNodesResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "569";
+  public Integer getExtensionId() {
+    return (int) 569;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
+  protected final ResponseHeader responseHeader;
 
-  public UnregisterNodesResponse(ExtensionObjectDefinition responseHeader) {
+  public UnregisterNodesResponse(ResponseHeader responseHeader) {
     super();
     this.responseHeader = responseHeader;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
@@ -62,7 +62,7 @@ public class UnregisterNodesResponse extends ExtensionObjectDefinition implement
     writeBuffer.pushContext("UnregisterNodesResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     writeBuffer.popContext("UnregisterNodesResponse");
   }
@@ -85,16 +85,17 @@ public class UnregisterNodesResponse extends ExtensionObjectDefinition implement
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("UnregisterNodesResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+            readComplex(
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     readBuffer.closeContext("UnregisterNodesResponse");
@@ -104,9 +105,9 @@ public class UnregisterNodesResponse extends ExtensionObjectDefinition implement
 
   public static class UnregisterNodesResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
+    private final ResponseHeader responseHeader;
 
-    public UnregisterNodesResponseBuilderImpl(ExtensionObjectDefinition responseHeader) {
+    public UnregisterNodesResponseBuilderImpl(ResponseHeader responseHeader) {
       this.responseHeader = responseHeader;
     }
 

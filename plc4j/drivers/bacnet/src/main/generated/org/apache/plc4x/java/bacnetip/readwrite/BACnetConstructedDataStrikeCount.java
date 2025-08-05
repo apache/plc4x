@@ -82,7 +82,7 @@ public class BACnetConstructedDataStrikeCount extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataStrikeCount");
 
     // Simple Field (strikeCount)
-    writeSimpleField("strikeCount", strikeCount, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("strikeCount", strikeCount, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
@@ -124,7 +124,7 @@ public class BACnetConstructedDataStrikeCount extends BACnetConstructedData impl
     BACnetApplicationTagUnsignedInteger strikeCount =
         readSimpleField(
             "strikeCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

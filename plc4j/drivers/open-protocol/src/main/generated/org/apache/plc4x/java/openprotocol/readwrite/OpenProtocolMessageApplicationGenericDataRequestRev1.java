@@ -96,7 +96,7 @@ public class OpenProtocolMessageApplicationGenericDataRequestRev1
         "requestMid",
         "Mid",
         requestMid,
-        new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
+        writeEnum(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
         WithOption.WithEncoding("ASCII"));
 
     // Simple Field (wantedRevision)
@@ -160,7 +160,7 @@ public class OpenProtocolMessageApplicationGenericDataRequestRev1
         readEnumField(
             "requestMid",
             "Mid",
-            new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
+            readEnum(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithEncoding("ASCII"));
 
     int wantedRevision =

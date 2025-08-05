@@ -114,7 +114,7 @@ public class ModbusPDUWriteFileRecordRequest extends ModbusPDU implements Messag
     List<ModbusPDUWriteFileRecordRequestItem> items =
         readLengthArrayField(
             "items",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ModbusPDUWriteFileRecordRequestItem.staticParse(readBuffer), readBuffer),
             byteCount);
 

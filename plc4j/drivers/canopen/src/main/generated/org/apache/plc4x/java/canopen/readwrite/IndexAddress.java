@@ -89,12 +89,6 @@ public class IndexAddress implements Message {
     return lengthInBits;
   }
 
-  public static IndexAddress staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static IndexAddress staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("IndexAddress");
     PositionAware positionAware = readBuffer;

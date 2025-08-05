@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DoubleComplexNumberType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "12174";
+  public Integer getExtensionId() {
+    return (int) 12174;
   }
 
   // Properties.
@@ -97,7 +97,7 @@ public class DoubleComplexNumberType extends ExtensionObjectDefinition implement
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DoubleComplexNumberType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

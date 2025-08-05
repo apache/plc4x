@@ -129,8 +129,7 @@ public class AlarmMessageObjectPushType implements Message {
         "syntaxId",
         "SyntaxIdType",
         syntaxId,
-        new DataWriterEnumDefault<>(
-            SyntaxIdType::getValue, SyntaxIdType::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(SyntaxIdType::getValue, SyntaxIdType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (numberOfValues)
     writeSimpleField("numberOfValues", numberOfValues, writeUnsignedShort(writeBuffer, 8));
@@ -139,16 +138,16 @@ public class AlarmMessageObjectPushType implements Message {
     writeSimpleField("eventId", eventId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (eventState)
-    writeSimpleField("eventState", eventState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventState", eventState, writeComplex(writeBuffer));
 
     // Simple Field (localState)
-    writeSimpleField("localState", localState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("localState", localState, writeComplex(writeBuffer));
 
     // Simple Field (ackStateGoing)
-    writeSimpleField("ackStateGoing", ackStateGoing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackStateGoing", ackStateGoing, writeComplex(writeBuffer));
 
     // Simple Field (ackStateComing)
-    writeSimpleField("ackStateComing", ackStateComing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackStateComing", ackStateComing, writeComplex(writeBuffer));
 
     // Array Field (AssociatedValues)
     writeComplexTypeArrayField("AssociatedValues", AssociatedValues, writeBuffer);
@@ -206,12 +205,6 @@ public class AlarmMessageObjectPushType implements Message {
     return lengthInBits;
   }
 
-  public static AlarmMessageObjectPushType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AlarmMessageObjectPushType staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AlarmMessageObjectPushType");
@@ -230,38 +223,30 @@ public class AlarmMessageObjectPushType implements Message {
         readEnumField(
             "syntaxId",
             "SyntaxIdType",
-            new DataReaderEnumDefault<>(
-                SyntaxIdType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(SyntaxIdType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     short numberOfValues = readSimpleField("numberOfValues", readUnsignedShort(readBuffer, 8));
 
     long eventId = readSimpleField("eventId", readUnsignedLong(readBuffer, 32));
 
     State eventState =
-        readSimpleField(
-            "eventState",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+        readSimpleField("eventState", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     State localState =
-        readSimpleField(
-            "localState",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+        readSimpleField("localState", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     State ackStateGoing =
         readSimpleField(
-            "ackStateGoing",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+            "ackStateGoing", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     State ackStateComing =
         readSimpleField(
-            "ackStateComing",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+            "ackStateComing", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     List<AssociatedValueType> AssociatedValues =
         readCountArrayField(
             "AssociatedValues",
-            new DataReaderComplexDefault<>(
-                () -> AssociatedValueType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AssociatedValueType.staticParse(readBuffer), readBuffer),
             numberOfValues);
 
     readBuffer.closeContext("AlarmMessageObjectPushType");

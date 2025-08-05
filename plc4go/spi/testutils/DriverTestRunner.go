@@ -24,10 +24,6 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/options/converter"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"runtime/debug"
 	"strconv"
@@ -35,15 +31,19 @@ import (
 	"testing"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
+	"github.com/subchen/go-xmldom"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
-	"github.com/subchen/go-xmldom"
 )
 
 var DriverTestsuiteConnectTimeout = 30 * time.Second
@@ -106,7 +106,6 @@ func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager
 	t.Log("getting a connection")
 	connectionChan := driverManager.GetConnection(m.driverName + ":test://hurz" + optionsString)
 	timer := time.NewTimer(DriverTestsuiteConnectTimeout)
-	t.Cleanup(func() { utils.CleanupTimer(timer) })
 	var connectionResult plc4go.PlcConnectionConnectResult
 	select {
 	case connectionResult = <-connectionChan:
@@ -120,9 +119,6 @@ func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager
 	connection := connectionResult.GetConnection()
 	t.Cleanup(func() {
 		timeout := time.NewTimer(30 * time.Second)
-		t.Cleanup(func() {
-			utils.CleanupTimer(timeout)
-		})
 		select {
 		case result := <-connection.Close():
 			assert.NoError(t, result.GetErr())
@@ -497,8 +493,8 @@ type DriverTestStep struct {
 
 type StepType uint8
 
-//go:generate stringer -type StepType
-//go:generate go run ../../tools/plc4xlicenser/gen.go -type=StepType
+//go:generate go tool stringer -type StepType
+//go:generate go tool plc4xLicencer -type=StepType
 const (
 	StepTypeOutgoingPlcMessage StepType = 0x01
 	StepTypeOutgoingPlcBytes   StepType = 0x02

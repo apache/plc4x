@@ -62,7 +62,7 @@ public class NetworkRoute implements Message {
     writeBuffer.pushContext("NetworkRoute");
 
     // Simple Field (networkPCI)
-    writeSimpleField("networkPCI", networkPCI, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkPCI", networkPCI, writeComplex(writeBuffer));
 
     // Array Field (additionalBridgeAddresses)
     writeComplexTypeArrayField("additionalBridgeAddresses", additionalBridgeAddresses, writeBuffer);
@@ -96,12 +96,6 @@ public class NetworkRoute implements Message {
     return lengthInBits;
   }
 
-  public static NetworkRoute staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static NetworkRoute staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NetworkRoute");
     PositionAware positionAware = readBuffer;
@@ -110,13 +104,13 @@ public class NetworkRoute implements Message {
     NetworkProtocolControlInformation networkPCI =
         readSimpleField(
             "networkPCI",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> NetworkProtocolControlInformation.staticParse(readBuffer), readBuffer));
 
     List<BridgeAddress> additionalBridgeAddresses =
         readCountArrayField(
             "additionalBridgeAddresses",
-            new DataReaderComplexDefault<>(() -> BridgeAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BridgeAddress.staticParse(readBuffer), readBuffer),
             (networkPCI.getStackDepth()) - (1));
 
     readBuffer.closeContext("NetworkRoute");

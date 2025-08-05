@@ -93,25 +93,6 @@ public abstract class NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLM staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Integer apduLength;
-    if (args[0] instanceof Integer) {
-      apduLength = (Integer) args[0];
-    } else if (args[0] instanceof String) {
-      apduLength = Integer.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Integer or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, apduLength);
-  }
-
   public static NLM staticParse(ReadBuffer readBuffer, Integer apduLength) throws ParseException {
     readBuffer.pullContext("NLM");
     PositionAware positionAware = readBuffer;
@@ -130,15 +111,15 @@ public abstract class NLM implements Message {
     } else if (EvaluationHelper.equals(messageType, (short) 0x02)) {
       builder = NLMICouldBeRouterToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x03)) {
-      builder = NLMRejectRouterToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
+      builder = NLMRejectMessageToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x04)) {
       builder = NLMRouterBusyToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x05)) {
       builder = NLMRouterAvailableToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x06)) {
-      builder = NLMInitalizeRoutingTable.staticParseNLMBuilder(readBuffer, apduLength);
+      builder = NLMInitializeRoutingTable.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x07)) {
-      builder = NLMInitalizeRoutingTableAck.staticParseNLMBuilder(readBuffer, apduLength);
+      builder = NLMInitializeRoutingTableAck.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x08)) {
       builder = NLMEstablishConnectionToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x09)) {

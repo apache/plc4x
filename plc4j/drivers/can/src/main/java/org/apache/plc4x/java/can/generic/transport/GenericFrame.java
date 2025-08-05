@@ -18,11 +18,10 @@
  */
 package org.apache.plc4x.java.can.generic.transport;
 
-import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-
-public class GenericFrame implements Message {
+/**
+ * Wrapper for wire level data.
+ */
+public class GenericFrame {
 
     private final int nodeId;
     private final byte[] data;
@@ -39,28 +38,5 @@ public class GenericFrame implements Message {
     public byte[] getData() {
         return data;
     }
-
-    @Override
-    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        // TODO: Is this correct?
-        writeBuffer.writeUnsignedShort("length", 8, (short) data.length);
-        writeBuffer.writeUnsignedInt("nodeId", 32, nodeId);
-        writeBuffer.writeByteArray("data", data);
-    }
-
-    @Override
-    public int getLengthInBytes() {
-        return 0;
-    }
-
-    @Override
-    public int getLengthInBits() {
-        return 0;
-    }
-
-    /*@Override
-    public MessageIO<? extends Message, ? extends Message> getMessageIO() {
-        return null;
-    }*/
 
 }

@@ -91,12 +91,6 @@ public abstract class BACnetPropertyStates implements Message {
     return lengthInBits;
   }
 
-  public static BACnetPropertyStates staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetPropertyStates staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStates");
     PositionAware positionAware = readBuffer;
@@ -105,8 +99,7 @@ public abstract class BACnetPropertyStates implements Message {
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
 
@@ -134,7 +127,7 @@ public abstract class BACnetPropertyStates implements Message {
               readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetPropertyStatesProgramChange.staticParseBACnetPropertyStatesBuilder(
+          BACnetPropertyStatesProgramState.staticParseBACnetPropertyStatesBuilder(
               readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
@@ -158,7 +151,7 @@ public abstract class BACnetPropertyStates implements Message {
               readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 11)) {
       builder =
-          BACnetPropertyStatesExtendedValue.staticParseBACnetPropertyStatesBuilder(
+          BACnetPropertyStatesUnsignedValue.staticParseBACnetPropertyStatesBuilder(
               readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 12)) {
       builder =

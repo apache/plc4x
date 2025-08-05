@@ -45,7 +45,7 @@ func NewDefaultPlcConnectionCloseResultWithTraces(connection plc4go.PlcConnectio
 	}
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=defaultPlcConnectionCloseResult
+//go:generate go tool plc4xGenerator -type=defaultPlcConnectionCloseResult
 type defaultPlcConnectionCloseResult struct {
 	connection plc4go.PlcConnection
 	err        error

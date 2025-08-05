@@ -60,7 +60,7 @@ public class BACnetPropertyStatesEventType extends BACnetPropertyStates implemen
     writeBuffer.pushContext("BACnetPropertyStatesEventType");
 
     // Simple Field (eventType)
-    writeSimpleField("eventType", eventType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventType", eventType, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesEventType");
   }
@@ -91,7 +91,7 @@ public class BACnetPropertyStatesEventType extends BACnetPropertyStates implemen
     BACnetEventTypeTagged eventType =
         readSimpleField(
             "eventType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTypeTagged.staticParse(
                         readBuffer,

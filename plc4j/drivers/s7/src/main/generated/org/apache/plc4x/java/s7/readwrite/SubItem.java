@@ -101,11 +101,6 @@ public class SubItem implements Message {
     return lengthInBits;
   }
 
-  public static SubItem staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SubItem staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SubItem");
     PositionAware positionAware = readBuffer;

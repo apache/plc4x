@@ -62,10 +62,7 @@ public class RegulatingStepCommand implements Message {
 
     // Simple Field (qoc)
     writeSimpleField(
-        "qoc",
-        qoc,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qoc", qoc, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (rcs)
     writeSimpleField(
@@ -97,12 +94,6 @@ public class RegulatingStepCommand implements Message {
     return lengthInBits;
   }
 
-  public static RegulatingStepCommand staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static RegulatingStepCommand staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("RegulatingStepCommand");
     PositionAware positionAware = readBuffer;
@@ -111,8 +102,7 @@ public class RegulatingStepCommand implements Message {
     QualifierOfCommand qoc =
         readSimpleField(
             "qoc",
-            new DataReaderComplexDefault<>(
-                () -> QualifierOfCommand.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifierOfCommand.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     byte rcs =

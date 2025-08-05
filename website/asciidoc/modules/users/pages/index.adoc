@@ -1,0 +1,65 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../images/
+:icons: font
+
+= Users
+
+
+
+This part of the PLC4X website is dedicated to people wanting to use Apache PLC4X.
+
+It will provide information on the features and how to use them as well as documentation on how to use the different integration modules.
+
+Apache PLC4X allows you to communicate directly with your industrial Hardware, without having to retrofit it.
+
+This is possible, as PLC4X implements the protocols for the most common industrial communication protocols and uses these to communicate with the various types of devices. The one thing that separates PLC4X from most other, mostly commercial drivers, is that we don't try to implement each protocol that it would be a certifiable protocol-stack, but concentrate on making a core set of operations available the identical way over all drivers.
+
+This allows users to develop software mostly independent of the actual type of hardware used.
+
+
+## About Apache PLC4X
+
+Apache PLC4X is an effort to create a set of libraries for communicating with industrial grade programmable logic controllers (PLCs) in a uniform way.
+We are planning on shipping libraries for usage in:
+
+1. Java
+2. Go
+3. C (not ready for usage)
+4. Python (not ready for usage)
+5. C# (.Net) (not ready for usage - abandoned)
+
+PLC4X also integrates with other Apache projects, such as:
+
+* https://calcite.apache.org/[Apache Calcite]
+* https://camel.apache.org/[Apache Camel]
+* https://kafka.apache.org[Apache Kafka-Connect]
+* https://karaf.apache.org/[Apache Karaf]
+* https://nifi.apache.org/[Apache NiFi]
+
+And brings stand-alone (Java) utils like:
+
+* OPC-UA Server: Enables you to communicate with legacy devices using PLC4X with OPC-UA.
+* PLC4X Server: Enables you to communicate with a central PLC4X Server which then communicates with devices via PLC4X.
+
+It also provides (Java) tools for usage inside an application:
+
+- link:tools/connection-cache.html[Connection Cache] (Connection Cache for PLC connections)
+- link:tools/opm.html[Object PLC Mapping (OPM)] (Object PLC Mapping - Like JPA for PLC data)
+- link:tools/scraper.html[Scraper] (Util for automating fetching PLC data using a variety of triggers)
+- link:tools/testing.html[Testing-Utils] (Want to build/test an application without having a PLC? ... this is the tool for you)
+

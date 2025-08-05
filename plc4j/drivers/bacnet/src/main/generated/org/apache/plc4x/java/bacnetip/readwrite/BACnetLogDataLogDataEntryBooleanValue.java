@@ -61,7 +61,7 @@ public class BACnetLogDataLogDataEntryBooleanValue extends BACnetLogDataLogDataE
     writeBuffer.pushContext("BACnetLogDataLogDataEntryBooleanValue");
 
     // Simple Field (booleanValue)
-    writeSimpleField("booleanValue", booleanValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("booleanValue", booleanValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogDataLogDataEntryBooleanValue");
   }
@@ -92,7 +92,7 @@ public class BACnetLogDataLogDataEntryBooleanValue extends BACnetLogDataLogDataE
     BACnetContextTagBoolean booleanValue =
         readSimpleField(
             "booleanValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

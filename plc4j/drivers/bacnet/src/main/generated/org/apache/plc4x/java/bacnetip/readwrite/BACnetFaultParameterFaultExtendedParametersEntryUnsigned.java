@@ -61,7 +61,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryUnsigned
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryUnsigned");
 
     // Simple Field (unsignedValue)
-    writeSimpleField("unsignedValue", unsignedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unsignedValue", unsignedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtendedParametersEntryUnsigned");
   }
@@ -93,7 +93,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryUnsigned
     BACnetApplicationTagUnsignedInteger unsignedValue =
         readSimpleField(
             "unsignedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

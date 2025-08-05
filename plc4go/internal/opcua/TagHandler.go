@@ -21,14 +21,14 @@ package opcua
 
 import (
 	"fmt"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	"regexp"
 	"strconv"
 
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	"github.com/pkg/errors"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type TagHandler struct {
@@ -70,13 +70,13 @@ func (m TagHandler) handleTagAddress(match map[string]string) (apiModel.PlcTag, 
 	}
 	identifierType, ok := readWriteModel.OpcuaIdentifierTypeByValue(match["identifierType"])
 	if !ok {
-		return nil, errors.Errorf("No identifier found for " + match["identifierType"])
+		return nil, errors.Errorf("No identifier found for %s", match["identifierType"])
 	}
 	dataType := readWriteModel.OpcuaDataType_NULL
 	if dataTypeMatch := match["dataType"]; dataTypeMatch != "" {
 		dataType, ok = readWriteModel.OpcuaDataTypeByName(dataTypeMatch)
 		if !ok {
-			return nil, errors.Errorf("No identifier found for " + match["dataType"])
+			return nil, errors.Errorf("No identifier found for %s", match["dataType"])
 		}
 	}
 	return NewTag(namespace, identifier, identifierType, dataType), nil

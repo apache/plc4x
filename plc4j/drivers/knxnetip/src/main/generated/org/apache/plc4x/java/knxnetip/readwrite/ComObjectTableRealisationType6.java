@@ -63,8 +63,7 @@ public class ComObjectTableRealisationType6 extends ComObjectTable implements Me
     writeBuffer.pushContext("ComObjectTableRealisationType6");
 
     // Simple Field (comObjectDescriptors)
-    writeSimpleField(
-        "comObjectDescriptors", comObjectDescriptors, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("comObjectDescriptors", comObjectDescriptors, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ComObjectTableRealisationType6");
   }
@@ -95,7 +94,7 @@ public class ComObjectTableRealisationType6 extends ComObjectTable implements Me
     GroupObjectDescriptorRealisationType6 comObjectDescriptors =
         readSimpleField(
             "comObjectDescriptors",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> GroupObjectDescriptorRealisationType6.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ComObjectTableRealisationType6");

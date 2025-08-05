@@ -33,7 +33,7 @@ import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryResponse;
 import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
-import org.apache.plc4x.java.spi.values.PlcValues;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransport;
 import org.pcap4j.core.NotOpenException;
 import org.pcap4j.core.PcapHandle;
@@ -63,7 +63,6 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
     private static final MacAddress PROFINET_BROADCAST_MAC_ADDRESS = new MacAddress(new byte[]{0x01, 0x0E, (byte) 0xCF, 0x00, 0x00, 0x00});
     final private ProfinetChannel channel;
     final List<PlcDiscoveryItem> values = new ArrayList<>();
-    final Set<Timer> periodicTimers = new HashSet<>();
     private final Logger logger = LoggerFactory.getLogger(ProfinetDiscoverer.class);
     private PlcDiscoveryItemHandler handler;
 
@@ -75,35 +74,6 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
     @Override
     public CompletableFuture<PlcDiscoveryResponse> discover(PlcDiscoveryRequest discoveryRequest) {
         return discoverWithHandler(discoveryRequest, null);
-    }
-
-    public CompletableFuture<PlcDiscoveryResponse> setDiscoveryEndTimer(PlcDiscoveryRequest discoveryRequest, long delay) {
-        CompletableFuture<PlcDiscoveryResponse> future = new CompletableFuture<>();
-
-        // Create a timer that completes the future after a given time with all the responses it found till then.
-        Timer timer = new Timer("Discovery Timeout");
-        timer.schedule(new TimerTask() {
-            public void run() {
-                PlcDiscoveryResponse response =
-                    new DefaultPlcDiscoveryResponse(discoveryRequest, PlcResponseCode.OK, values);
-                for (Map.Entry<MacAddress, PcapHandle> entry : channel.getOpenHandles().entrySet()) {
-                    PcapHandle openHandle = entry.getValue();
-                    try {
-                        openHandle.breakLoop();
-                        openHandle.close();
-                    } catch (Exception e) {
-                        logger.error("Error occurred while closing handle");
-                    }
-                }
-                for (Timer timer : periodicTimers) {
-                    timer.cancel();
-                    timer.purge();
-                }
-                future.complete(response);
-            }
-        }, delay);
-
-        return future;
     }
 
     public CompletableFuture<PlcDiscoveryResponse> discoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler) {
@@ -128,10 +98,42 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
             try {
                 Packet packet = EthernetPacket.newPacket(buffer.getBytes(), 0, identificationRequest.getLengthInBytes());
                 handle.sendPacket(packet);
-            } catch (PcapNativeException | NotOpenException | IllegalRawDataException e) {
+            } catch (PcapNativeException e) {
+                // This occurs, if for example the Wi-Fi network is disabled.
+                if(!e.getMessage().contains("Network is down")) {
+                    throw new RuntimeException(e);
+                }
+             } catch (NotOpenException | IllegalRawDataException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public CompletableFuture<PlcDiscoveryResponse> setDiscoveryEndTimer(PlcDiscoveryRequest discoveryRequest, long delay) {
+        CompletableFuture<PlcDiscoveryResponse> future = new CompletableFuture<>();
+
+        // Create a timer that completes the future after a given time with all the responses it found till then.
+        Timer timer = new Timer("Discovery Timeout");
+        timer.schedule(new TimerTask() {
+            public void run() {
+                PlcDiscoveryResponse response =
+                    new DefaultPlcDiscoveryResponse(discoveryRequest, PlcResponseCode.OK, values);
+                for (Map.Entry<MacAddress, PcapHandle> entry : channel.getOpenHandles().entrySet()) {
+                    PcapHandle openHandle = entry.getValue();
+                    try {
+                        openHandle.breakLoop();
+                        openHandle.close();
+                    } catch (Exception e) {
+                        logger.error("Error occurred while closing handle");
+                    }
+                }
+                timer.cancel();
+                timer.purge();
+                future.complete(response);
+            }
+        }, delay);
+
+        return future;
     }
 
     protected void handleIncomingPacket(Ethernet_FramePayload frame, EthernetPacket ethernetPacket) {
@@ -189,25 +191,33 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
                     role += ",DEVICE";
                 }
                 // Cut off the first comma
-                if (role.length() > 0) {
+                if (!role.isEmpty()) {
                     role = role.substring(1);
                 } else {
                     role = "unknown";
                 }
             }
 
-            String remoteIpAddress = "unknown";
+            String remoteAddress = "unknown";
             String remoteSubnetMask = "unknown";
             if (blocks.containsKey(IP_OPTION_IP)) {
                 PnDcp_Block_IpParameter block = (PnDcp_Block_IpParameter) blocks.get(IP_OPTION_IP);
                 try {
                     InetAddress addr = InetAddress.getByAddress(block.getIpAddress());
-                    remoteIpAddress = addr.getHostAddress();
+                    remoteAddress = addr.getHostAddress();
                     InetAddress netMask = InetAddress.getByAddress(block.getSubnetMask());
                     remoteSubnetMask = netMask.getHostAddress();
                 } catch (UnknownHostException e) {
-                    remoteIpAddress = "invalid";
+                    remoteAddress = "invalid";
                 }
+            }
+
+            // Some devices need to get an IP address assigned by the Profinet Master.
+            // In this case we'll use the MAC address as connection address.
+            Map<String, String> options = Collections.emptyMap();
+            if("0.0.0.0".equals(remoteAddress)) {
+                remoteAddress = srcAddr.toString();
+                options = Collections.singletonMap("ip-address", "{some-ip-address}");
             }
 
             // Get the Vendor-Id and the Device-Id
@@ -220,22 +230,22 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
             }
 
             Map<String, PlcValue> attributes = new HashMap<>();
-            attributes.put("ipAddress", PlcValues.of(remoteIpAddress));
-            attributes.put("subnetMask", PlcValues.of(remoteSubnetMask));
-            attributes.put("macAddress", PlcValues.of(srcAddr.toString()));
-            attributes.put("localMacAddress", PlcValues.of(dstAddr.toString()));
-            attributes.put("deviceTypeName", PlcValues.of(deviceTypeName));
-            attributes.put("deviceName", PlcValues.of(deviceName));
-            attributes.put("vendorId", PlcValues.of(vendorId));
-            attributes.put("deviceId", PlcValues.of(deviceId));
-            attributes.put("role", PlcValues.of(role));
-            attributes.put("packetType", PlcValues.of("dcp"));
+            attributes.put("ipAddress", new PlcSTRING(remoteAddress));
+            attributes.put("subnetMask", new PlcSTRING(remoteSubnetMask));
+            attributes.put("macAddress", new PlcSTRING(srcAddr.toString()));
+            attributes.put("localMacAddress", new PlcSTRING(dstAddr.toString()));
+            attributes.put("deviceTypeName", new PlcSTRING(deviceTypeName));
+            attributes.put("deviceName", new PlcSTRING(deviceName));
+            attributes.put("vendorId", new PlcSTRING(vendorId));
+            attributes.put("deviceId", new PlcSTRING(deviceId));
+            attributes.put("role", new PlcSTRING(role));
+            attributes.put("packetType", new PlcSTRING("dcp"));
 
             String name = deviceTypeName + " - " + deviceName;
 
             PlcDiscoveryItem value = new DefaultPlcDiscoveryItem(
                 ProfinetDriver.DRIVER_CODE, RawSocketTransport.TRANSPORT_CODE,
-                remoteIpAddress, Collections.emptyMap(), name, attributes);
+                remoteAddress, options, name, attributes);
             values.add(value);
 
             // If we have a discovery handler, pass it to the handler callback

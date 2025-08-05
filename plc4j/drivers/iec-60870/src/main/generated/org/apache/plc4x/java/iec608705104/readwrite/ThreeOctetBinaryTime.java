@@ -123,12 +123,6 @@ public class ThreeOctetBinaryTime implements Message {
     return lengthInBits;
   }
 
-  public static ThreeOctetBinaryTime staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ThreeOctetBinaryTime staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ThreeOctetBinaryTime");
     PositionAware positionAware = readBuffer;

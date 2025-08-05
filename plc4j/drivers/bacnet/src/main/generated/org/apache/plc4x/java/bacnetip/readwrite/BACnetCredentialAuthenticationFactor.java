@@ -63,11 +63,10 @@ public class BACnetCredentialAuthenticationFactor implements Message {
     writeBuffer.pushContext("BACnetCredentialAuthenticationFactor");
 
     // Simple Field (disable)
-    writeSimpleField("disable", disable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("disable", disable, writeComplex(writeBuffer));
 
     // Simple Field (authenticationFactor)
-    writeSimpleField(
-        "authenticationFactor", authenticationFactor, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("authenticationFactor", authenticationFactor, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetCredentialAuthenticationFactor");
   }
@@ -92,12 +91,6 @@ public class BACnetCredentialAuthenticationFactor implements Message {
     return lengthInBits;
   }
 
-  public static BACnetCredentialAuthenticationFactor staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetCredentialAuthenticationFactor staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetCredentialAuthenticationFactor");
@@ -107,7 +100,7 @@ public class BACnetCredentialAuthenticationFactor implements Message {
     BACnetAccessAuthenticationFactorDisableTagged disable =
         readSimpleField(
             "disable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessAuthenticationFactorDisableTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -116,7 +109,7 @@ public class BACnetCredentialAuthenticationFactor implements Message {
     BACnetAuthenticationFactorEnclosed authenticationFactor =
         readSimpleField(
             "authenticationFactor",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetAuthenticationFactorEnclosed.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 

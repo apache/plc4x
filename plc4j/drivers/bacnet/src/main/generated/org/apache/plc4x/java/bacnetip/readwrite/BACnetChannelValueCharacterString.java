@@ -60,8 +60,7 @@ public class BACnetChannelValueCharacterString extends BACnetChannelValue implem
     writeBuffer.pushContext("BACnetChannelValueCharacterString");
 
     // Simple Field (characterStringValue)
-    writeSimpleField(
-        "characterStringValue", characterStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("characterStringValue", characterStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueCharacterString");
   }
@@ -92,7 +91,7 @@ public class BACnetChannelValueCharacterString extends BACnetChannelValue implem
     BACnetApplicationTagCharacterString characterStringValue =
         readSimpleField(
             "characterStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -63,11 +63,6 @@ public class Index implements Message {
     return lengthInBits;
   }
 
-  public static Index staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Index staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Index");
     PositionAware positionAware = readBuffer;
