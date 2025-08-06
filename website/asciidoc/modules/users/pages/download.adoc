@@ -17,13 +17,75 @@
 
 = Download
 
-
-
 Be sure to verify your downloads by these https://www.apache.org/info/verification[procedures] using these https://downloads.apache.org/plc4x/KEYS[KEYS] for any Apache release.
 
 == Current Releases
 
-=== 0.12.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.12.0/apache-plc4x-0.12.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.12.0/apache-plc4x-0.12.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.12.0/apache-plc4x-0.12.0-source-release.zip.asc[ASC] ]
+[#release-0_13_0]
+=== 0.13.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.13.0/apache-plc4x-0.13.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.13.0/apache-plc4x-0.13.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.13.0/apache-plc4x-0.13.0-source-release.zip.asc[ASC] ]
+
+==== New Features
+
+- The CachedPlcConnectionManager now has a maxIdleTimeout time
+which defaults to 5 minutes. If a connection is not being
+used for that amount of time, the connection is closed and
+removed from the cache.
+- The CachedPlcConnectionManager now has a close method, which
+shuts down all connections.
+- The CachedPlcConnection now implements the EventPlcConnection
+interface which forwards listener registrations to the
+connection.
+- The S7 driver is now able to automatically split up large
+array requests into multiple ones and transparently merge
+them back together. It is now possible to read arrays of
+almost unlimited size.
+- Added an Optimizer to the Modbus driver, that improves read
+performance of multi-item read requests by more than 10 times.
+- Added an optimizer to the Modbus protocol, that allows reading
+multiple fields in one request.
+- Added support for Modbus encodings of BIG_ENDIAN_WORD_SWAP
+and LITTLE_ENDIAN_WORD_SWAP.
+- Modbus tags allow specifying the unit-id in order to address
+multiple devices using one serial modbus connection.
+- Added a new optimizer to the S7 protocol, that ready chunks
+of data instead of individual fields, which allows reading
+a lot more fields in one request.
+- Added a new variant of the S7 driver, called s7-light, which
+doesn't have support for subscriptions, but is less likely
+to cause connection problems.
+- Added auto-discovery to the KNX Driver in PLC4J.
+- Added auto-discovery to EIP in PLC4J.
+- Added auto-discovery to S7 in PLC4J.
+- Improved some things in the SPI, that caused issues with
+drivers under heavy load.
+- The Modbus driver uses the "Single Register Request" if a
+tag fits into one register. This can help communicating with
+devices that don't support "Multi Register Requests".
+
+==== Incompatible changes
+
+- When reading byte arrays with the s7 driver, now the more
+efficient PlcRawByteArray type is used, that gives users
+direct access to the bytes returned from the PLC instead of
+a list of PlcValues.
+- The builders for read-, write- ans subscription.requests now
+process tags and values on a per-field level. If one field
+has an invalid address it will now only fail the one item
+related to that. Same applies to values. Only the tag who's
+value was invalid will be considered failed and no longer an
+exception should be thrown.
+- Subscription-requests now allow registering a handler for
+all fields in the subscription.
+- The addPreRegisteredConsumer method was removed and versions
+of the "addXYZ" methods were added, that allow providing
+individual consumers for each tag.
+
+==== Bug Fixes
+
+== Previous Releases
+
+[#release-0_12_0]
+=== 0.12.0 Official https://archive.apache.org/dist/plc4x/0.12.0/apache-plc4x-0.12.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.12.0/apache-plc4x-0.12.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.12.0/apache-plc4x-0.12.0-source-release.zip.asc[ASC] ]
 
 This release was mainly a release containing many bugfixes. We literally halved the number of open issues. A second major topic would have been another API streamlining in preparation to aiming for the big 1.0.0 release. The API was extended by additional features, that now allow tools to automatically provide support for tool assist when connecting to devices. Now additional information such as:
 - Which transports does a given driver support?
@@ -34,7 +96,7 @@ This release was mainly a release containing many bugfixes. We literally halved 
 - Which of these configuration options are required?
 - The same set of information is also available for the transports a driver is using.
 
-=== New Features
+==== New Features
 
 - API: Made several bits of information available via the API
 allowing tools to provide more content assist when dealing
@@ -47,7 +109,7 @@ and Simulated drivers.
 - The OPC-UA Java driver now support certificate-based
 authentication and encryption.
 
-=== Incompatible changes
+==== Incompatible changes
 
 - Java 8 is no longer officially supported and Java 11 is the
 new base-line.
@@ -62,7 +124,7 @@ new base-line.
 config options in the connection-string was updated to be
 now prefixed with the transport name the option belongs to.
 
-=== Bug Fixes
+==== Bug Fixes
 
 - S7: Several bugs and issues regarding supporting various
 duration, date and time data-types.
@@ -73,15 +135,14 @@ numbers.
 improved.
 - Core: Fixed several leaks of open threads.
 
-== Previous Releases
-
+[#release-0_11_0]
 === 0.11.0 Official https://archive.apache.org/dist/plc4x/0.11.0/apache-plc4x-0.11.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.11.0/apache-plc4x-0.11.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.11.0/apache-plc4x-0.10.0-source-release.zip.asc[ASC] ]
 
 The APIs have been streamlined in a preparation for a hopefully soon 1.0.0 release.
 Many drivers have been re-implemented with much more features.
 Integration modules have been improved.
 
-=== New Features
+==== New Features
 
 - Implemented a `PLC4X-Server` and `PLC4X-Driver` that allows
 using the server as a proxy for communicating with PLCs.
@@ -94,7 +155,7 @@ communication, which however can be tunneled through a
 - The KNX driver in Java now supports reading "knxproj" files
 exported from the new ETS version 6.
 
-=== Bug Fixes
+==== Bug Fixes
 
 - The name of the Modbus TCP driver was changed from "modbus"
 to "modbus-tcp".
@@ -123,7 +184,7 @@ This is a bugfix release aiming at directly fixing CVE-2021-43083 as well as upd
 
 Please note that CVE-2021-43083 only affects the PLC4C part of PLC4X.
 
-=== Bug Fixes
+==== Bug Fixes
 
 CVE-2021-43083 Apache PLC4X 0.9.0 Buffer overflow in PLC4C via crafted server response
 
@@ -134,7 +195,7 @@ This is an ordinary PLC4X release, containing changes that
 accumulated over time. It doesn't have an explicit focus on
 a particular topic.
 
-=== New Features
+==== New Features
 
 - The OPC UA driver has been replaced with a native driver. Previously
 Eclipse Milo was being used.
@@ -145,9 +206,9 @@ Eclipse Milo was being used.
 - Major cleanup of PLC4C
 - S7 Driver now supports event and alarm handling on some S7 models
 
-=== Incompatible changes
+==== Incompatible changes
 
-=== Bug Fixes
+==== Bug Fixes
 
 PLC4X-200   OPC-UA Driver not connecting if params string is not provided
 PLC4X-201   OPC-UA PlcList underlying type not compatible with Eclipse Milo
@@ -170,7 +231,7 @@ This is an ordinary PLC4X release, containing changes that
 accumulated over time. It doesn't have an explicit focus on
 a particular topic.
 
-=== New Features
+==== New Features
 
 - The KNXnet/IP Driver now supports writing of values.
 - The Modbus driver now supports more common notations of Modbus addresses using a pure-numeric notation.
@@ -179,7 +240,7 @@ a particular topic.
 - Integration with the Milo OPC UA Server is now available.
 - Kafka Connect workers have been updated source and sink connectors are now included.
 
-=== Incompatible changes
+==== Incompatible changes
 
 - The syntax of the S7 addresses changed slightly allowing to provide a string length. Without this, a STRING datatype will read 254 characters, by adding the size in round brackets to the type name will use the specified number.
 
@@ -193,7 +254,7 @@ a particular topic.
 
 - The PLCValue types have been refactored to align with the types defined in IEC 61131-3 (https://en.wikipedia.org/wiki/IEC_61131-3) directly using the older Java types (PlcBoolean) is no longer possible.
 
-=== Bug Fixes
+==== Bug Fixes
 
 A lot of testing was done regarding the IEC 61131-3 data-types.
 This resulted in numerous bugfixes in many protocols.
@@ -228,7 +289,7 @@ core. All previous driver versions are now considered deprecated
 and have been replaced by versions using the new driver structure
 and generated driver codebase.
 
-=== New Features
+==== New Features
 
 - Drivers now support structured types using PlcValues
 - The EIP (EtherNet/IP) driver no longer requires an external
@@ -244,7 +305,7 @@ significant performance gains when writing multiple vlaues)
 to be able to use them in an OSGi container.
 - New Firmata protocol driver
 
-=== Incompatible changes
+==== Incompatible changes
 
 - Due to the refactoring of the driver core there might be issues
 running drivers built against older core versions.
@@ -257,7 +318,7 @@ https://plc4x.apache.org/users/protocols/s7.html
 - The karaf-feature modules are removed as the drivers now all
 provide both a feature.xml as well as a `kar` bundled archive
 
-=== Bug Fixes
+==== Bug Fixes
 
 - PLC4X-174  UDP Transport does not accept ports containing 0
 - PLC4X-134  S7 is terminating the connection during handshake
@@ -273,16 +334,16 @@ most users have switched to 0.7 and above (with generated drivers).
 If you are using the S7 Driver you should update to this Version
 as the critical (memory leak) bug PLC4X-163 is fixed.
 
-=== New Features
+==== New Features
 
 - PLC4X-168 A shorter S7 Field Syntax is Introduced.
 This release contains no further features and mostly stabilization.
 
-=== Incompatible changes
+==== Incompatible changes
 
 - Moved the C++, C# and Python drivers into the `sandbox`
 
-=== Bug Fixes
+==== Bug Fixes
 
 - Fixed Promise Chain for InternalPlcWriteRequest
 - PLC4X-45 Add float support to Modbus Protocol
@@ -296,7 +357,7 @@ This release contains no further features and mostly stabilization.
 
 This is the first release containing our new generated drivers (AB-ETH)
 
-=== New Features
+==== New Features
 
 - Implemented a new Apache Kafka Connect integration module
 - Implemented a new Apache NiFi integration module
@@ -309,9 +370,9 @@ Sandbox (Beta-Features)
 - Implemented a new BACnet/IP passive mode driver
 - Implemented a new Serial DF1 driver
 
-=== Incompatible changes
+==== Incompatible changes
 
-=== Bug Fixes
+==== Bug Fixes
 
 - PLC4X-104	S7 Driver Datatype TIME_OF_DAY causes ArrayOutOfBoundException
 - PLC4X-134	S7 is terminating the connection during handshake
@@ -324,7 +385,7 @@ Sandbox (Beta-Features)
 
 This is the first release of Apache PLC4X as top-level project.
 
-=== New Features
+==== New Features
 
 - The PlcConnection now supports a `ping` method to allow checking if an existing connection is still alive.
 - Support of the OPC-UA protocol with the `opc-ua-driver`.
@@ -333,25 +394,26 @@ This is the first release of Apache PLC4X as top-level project.
 -- Added first versions of a Python PLC4X API (`plc4py`)
 - Added an Interop server which allows to relay requests from other languages to a Java Server
 
-=== Incompatible changes
+==== Incompatible changes
 
 - ElasticSearch example was updated to use ElasticSearch 7.0.1, this might cause problems with older Kibana versions.
 
-=== Bug Fixes
+==== Bug Fixes
 
 == Incubating Releases
 
+[#release-0_3_1]
 === 0.3.1 (incubating) Official https://archive.apache.org/dist/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip[source release] [ https://archive.apache.org/dist/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip.asc[ASC] ]
 
-=== New Features
+==== New Features
 
 - No new features
 
-=== Incompatible changes
+==== Incompatible changes
 
 - No incompatible changes.
 
-=== Bug Fixes
+==== Bug Fixes
 
 - The S7 driver didn't correctly handle "fill-bytes" in multi-item read-responses and multi-item write-requests
 - Fixed NPE when reading odd-length array of one-byte base types
@@ -361,7 +423,7 @@ This is the first release of Apache PLC4X as top-level project.
 [#release-0_3_0]
 === 0.3.0 (incubating) Official https://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip[source release] [ https://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip.asc[ASC] ]
 
-=== New Features
+==== New Features
 
 - Object PLC Mapping (OPM) now has a Alias Registry to allow
   variable substitution at runtime and write support
@@ -370,7 +432,7 @@ This is the first release of Apache PLC4X as top-level project.
 - New integration `apache-karaf` to enable plc4j in a karaf
   runtime environment
 
-=== Incompatible changes
+==== Incompatible changes
 
 - The 'plc4j-core' module has been merged into 'plc4j-api'.
   So there is no 'plc4j-core' module anymore. Just remove that
@@ -379,7 +441,7 @@ This is the first release of Apache PLC4X as top-level project.
   a `plc4j-protocol-{name}` you now need to change this to
   `plc4j-driver-{name}`
 
-=== Bug Fixes
+==== Bug Fixes
 
 - Fixing dependency to the wrap url-handler
 - When receiving responses with more than 512 byte, the IsoOnTcp protocol doesn't work
@@ -390,7 +452,7 @@ This is the first release of Apache PLC4X as top-level project.
 [#release-0_2_0]
 === 0.2.0 (incubating) Official https://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip[source release] [ https://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.asc[ASC] ]
 
-=== Changes:
+==== Changes:
 
 * Changed API: instead of passing request object to `read({read-request})`, `write({write-request})` or `subscribe({subscribe-request})` methods now the `execute()` method is called on the request itself
 * New Connection Pool component
