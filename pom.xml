@@ -1010,7 +1010,7 @@
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
-          <version>4.4.7</version>
+          <version>4.4.8</version>
         </plugin>
 
         <plugin>
