@@ -32,7 +32,7 @@ description = "Plc4Py The Python Industrial IOT Adapter"
 version = "0.13"
 readme = "README.md"
 dependencies = [
-        "aenum",
+        "aenum>=3.1.15",
         "bitarray",
         "typing_extensions",
         "pluggy",
