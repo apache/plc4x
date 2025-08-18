@@ -109,7 +109,7 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.81</bouncycastle.version>
-    <byte-buddy.version>1.17.6</byte-buddy.version>
+    <byte-buddy.version>1.17.7</byte-buddy.version>
     <cmake.version>3.31.5-b1</cmake.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.10.0</commons-cli.version>
