@@ -1283,17 +1283,6 @@
         <enabled>true</enabled>
       </snapshots>
     </pluginRepository>
-    <!-- When we release stuff like the site skin or the build tools, syncing to Maven Central usually takes some time -->
-    <pluginRepository>
-      <id>apache-releases</id>
-      <url>https://repository.apache.org/content/repositories/releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
   </pluginRepositories>
 
   <profiles>
