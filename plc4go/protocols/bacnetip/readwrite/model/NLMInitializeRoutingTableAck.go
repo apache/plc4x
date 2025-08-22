@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _NLMInitializeRoutingTableAckBuilder struct {
 
 	parentBuilder *_NLMBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NLMInitializeRoutingTableAckBuilder) = (*_NLMInitializeRoutingTableAckBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_NLMInitializeRoutingTableAckBuilder) WithPortMappings(portMappings ...
 }
 
 func (b *_NLMInitializeRoutingTableAckBuilder) Build() (NLMInitializeRoutingTableAck, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLMInitializeRoutingTableAck.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_NLMInitializeRoutingTableAckBuilder) buildForNLM() (NLM, error) {
 
 func (b *_NLMInitializeRoutingTableAckBuilder) DeepCopy() any {
 	_copy := b.CreateNLMInitializeRoutingTableAckBuilder().(*_NLMInitializeRoutingTableAckBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

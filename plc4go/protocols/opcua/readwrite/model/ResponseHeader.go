@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -142,7 +143,7 @@ type _ResponseHeaderBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ResponseHeaderBuilder) = (*_ResponseHeaderBuilder)(nil)
@@ -176,10 +177,7 @@ func (b *_ResponseHeaderBuilder) WithServiceResultBuilder(builderSupplier func(S
 	var err error
 	b.ServiceResult, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
 	return b
 }
@@ -194,10 +192,7 @@ func (b *_ResponseHeaderBuilder) WithServiceDiagnosticsBuilder(builderSupplier f
 	var err error
 	b.ServiceDiagnostics, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DiagnosticInfoBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DiagnosticInfoBuilder failed"))
 	}
 	return b
 }
@@ -217,35 +212,23 @@ func (b *_ResponseHeaderBuilder) WithAdditionalHeaderBuilder(builderSupplier fun
 	var err error
 	b.AdditionalHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
 
 func (b *_ResponseHeaderBuilder) Build() (ResponseHeader, error) {
 	if b.ServiceResult == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'serviceResult' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'serviceResult' not set"))
 	}
 	if b.ServiceDiagnostics == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'serviceDiagnostics' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'serviceDiagnostics' not set"))
 	}
 	if b.AdditionalHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'additionalHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'additionalHeader' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ResponseHeader.deepCopy(), nil
 }
@@ -271,8 +254,8 @@ func (b *_ResponseHeaderBuilder) buildForExtensionObjectDefinition() (ExtensionO
 
 func (b *_ResponseHeaderBuilder) DeepCopy() any {
 	_copy := b.CreateResponseHeaderBuilder().(*_ResponseHeaderBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

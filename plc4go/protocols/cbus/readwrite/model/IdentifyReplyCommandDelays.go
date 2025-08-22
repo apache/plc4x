@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _IdentifyReplyCommandDelaysBuilder struct {
 
 	parentBuilder *_IdentifyReplyCommandBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (IdentifyReplyCommandDelaysBuilder) = (*_IdentifyReplyCommandDelaysBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_IdentifyReplyCommandDelaysBuilder) WithReStrikeDelay(reStrikeDelay byt
 }
 
 func (b *_IdentifyReplyCommandDelaysBuilder) Build() (IdentifyReplyCommandDelays, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._IdentifyReplyCommandDelays.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_IdentifyReplyCommandDelaysBuilder) buildForIdentifyReplyCommand() (Ide
 
 func (b *_IdentifyReplyCommandDelaysBuilder) DeepCopy() any {
 	_copy := b.CreateIdentifyReplyCommandDelaysBuilder().(*_IdentifyReplyCommandDelaysBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

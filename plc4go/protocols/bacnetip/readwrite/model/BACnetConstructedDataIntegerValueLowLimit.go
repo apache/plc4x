@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataIntegerValueLowLimitBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataIntegerValueLowLimitBuilder) = (*_BACnetConstructedDataIntegerValueLowLimitBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) WithLowLimitBuilder(
 	var err error
 	b.LowLimit, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) Build() (BACnetConstructedDataIntegerValueLowLimit, error) {
 	if b.LowLimit == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'lowLimit' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'lowLimit' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataIntegerValueLowLimit.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) buildForBACnetConstr
 
 func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataIntegerValueLowLimitBuilder().(*_BACnetConstructedDataIntegerValueLowLimitBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

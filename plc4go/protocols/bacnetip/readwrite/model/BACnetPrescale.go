@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewBACnetPrescaleBuilder() BACnetPrescaleBuilder {
 type _BACnetPrescaleBuilder struct {
 	*_BACnetPrescale
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPrescaleBuilder) = (*_BACnetPrescaleBuilder)(nil)
@@ -119,10 +120,7 @@ func (b *_BACnetPrescaleBuilder) WithMultiplierBuilder(builderSupplier func(BACn
 	var err error
 	b.Multiplier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -137,29 +135,20 @@ func (b *_BACnetPrescaleBuilder) WithModuloDivideBuilder(builderSupplier func(BA
 	var err error
 	b.ModuloDivide, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetPrescaleBuilder) Build() (BACnetPrescale, error) {
 	if b.Multiplier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'multiplier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'multiplier' not set"))
 	}
 	if b.ModuloDivide == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'moduloDivide' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'moduloDivide' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPrescale.deepCopy(), nil
 }
@@ -174,8 +163,8 @@ func (b *_BACnetPrescaleBuilder) MustBuild() BACnetPrescale {
 
 func (b *_BACnetPrescaleBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPrescaleBuilder().(*_BACnetPrescaleBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _KnxGroupAddressFreeLevelBuilder struct {
 
 	parentBuilder *_KnxGroupAddressBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (KnxGroupAddressFreeLevelBuilder) = (*_KnxGroupAddressFreeLevelBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_KnxGroupAddressFreeLevelBuilder) WithSubGroup(subGroup uint16) KnxGrou
 }
 
 func (b *_KnxGroupAddressFreeLevelBuilder) Build() (KnxGroupAddressFreeLevel, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._KnxGroupAddressFreeLevel.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_KnxGroupAddressFreeLevelBuilder) buildForKnxGroupAddress() (KnxGroupAd
 
 func (b *_KnxGroupAddressFreeLevelBuilder) DeepCopy() any {
 	_copy := b.CreateKnxGroupAddressFreeLevelBuilder().(*_KnxGroupAddressFreeLevelBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

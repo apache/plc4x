@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataSecuredStatusBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataSecuredStatusBuilder) = (*_BACnetConstructedDataSecuredStatusBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataSecuredStatusBuilder) WithSecuredStatusBuilder(bu
 	var err error
 	b.SecuredStatus, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetDoorSecuredStatusTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetDoorSecuredStatusTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataSecuredStatusBuilder) Build() (BACnetConstructedDataSecuredStatus, error) {
 	if b.SecuredStatus == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'securedStatus' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'securedStatus' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataSecuredStatus.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataSecuredStatusBuilder) buildForBACnetConstructedDa
 
 func (b *_BACnetConstructedDataSecuredStatusBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataSecuredStatusBuilder().(*_BACnetConstructedDataSecuredStatusBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

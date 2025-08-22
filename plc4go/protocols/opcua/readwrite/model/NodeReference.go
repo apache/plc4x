@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -127,7 +128,7 @@ type _NodeReferenceBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NodeReferenceBuilder) = (*_NodeReferenceBuilder)(nil)
@@ -151,10 +152,7 @@ func (b *_NodeReferenceBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBui
 	var err error
 	b.NodeId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -169,10 +167,7 @@ func (b *_NodeReferenceBuilder) WithReferenceTypeIdBuilder(builderSupplier func(
 	var err error
 	b.ReferenceTypeId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -189,19 +184,13 @@ func (b *_NodeReferenceBuilder) WithReferencedNodeIds(referencedNodeIds ...NodeI
 
 func (b *_NodeReferenceBuilder) Build() (NodeReference, error) {
 	if b.NodeId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'nodeId' not set"))
 	}
 	if b.ReferenceTypeId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'referenceTypeId' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NodeReference.deepCopy(), nil
 }
@@ -227,8 +216,8 @@ func (b *_NodeReferenceBuilder) buildForExtensionObjectDefinition() (ExtensionOb
 
 func (b *_NodeReferenceBuilder) DeepCopy() any {
 	_copy := b.CreateNodeReferenceBuilder().(*_NodeReferenceBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

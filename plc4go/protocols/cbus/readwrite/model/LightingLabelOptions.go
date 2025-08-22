@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewLightingLabelOptionsBuilder() LightingLabelOptionsBuilder {
 type _LightingLabelOptionsBuilder struct {
 	*_LightingLabelOptions
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (LightingLabelOptionsBuilder) = (*_LightingLabelOptionsBuilder)(nil)
@@ -115,8 +116,8 @@ func (b *_LightingLabelOptionsBuilder) WithLabelType(labelType LightingLabelType
 }
 
 func (b *_LightingLabelOptionsBuilder) Build() (LightingLabelOptions, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LightingLabelOptions.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_LightingLabelOptionsBuilder) MustBuild() LightingLabelOptions {
 
 func (b *_LightingLabelOptionsBuilder) DeepCopy() any {
 	_copy := b.CreateLightingLabelOptionsBuilder().(*_LightingLabelOptionsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

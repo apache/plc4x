@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _TargetVariablesDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TargetVariablesDataTypeBuilder) = (*_TargetVariablesDataTypeBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_TargetVariablesDataTypeBuilder) WithTargetVariables(targetVariables ..
 }
 
 func (b *_TargetVariablesDataTypeBuilder) Build() (TargetVariablesDataType, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TargetVariablesDataType.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_TargetVariablesDataTypeBuilder) buildForExtensionObjectDefinition() (E
 
 func (b *_TargetVariablesDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateTargetVariablesDataTypeBuilder().(*_TargetVariablesDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

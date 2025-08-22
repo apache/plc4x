@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _SALDataEnableControlBuilder struct {
 
 	parentBuilder *_SALDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SALDataEnableControlBuilder) = (*_SALDataEnableControlBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_SALDataEnableControlBuilder) WithEnableControlDataBuilder(builderSuppl
 	var err error
 	b.EnableControlData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "EnableControlDataBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "EnableControlDataBuilder failed"))
 	}
 	return b
 }
 
 func (b *_SALDataEnableControlBuilder) Build() (SALDataEnableControl, error) {
 	if b.EnableControlData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'enableControlData' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'enableControlData' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALDataEnableControl.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_SALDataEnableControlBuilder) buildForSALData() (SALData, error) {
 
 func (b *_SALDataEnableControlBuilder) DeepCopy() any {
 	_copy := b.CreateSALDataEnableControlBuilder().(*_SALDataEnableControlBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

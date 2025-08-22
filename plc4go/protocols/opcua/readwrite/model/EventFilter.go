@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -108,7 +109,7 @@ type _EventFilterBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (EventFilterBuilder) = (*_EventFilterBuilder)(nil)
@@ -137,23 +138,17 @@ func (b *_EventFilterBuilder) WithWhereClauseBuilder(builderSupplier func(Conten
 	var err error
 	b.WhereClause, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ContentFilterBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ContentFilterBuilder failed"))
 	}
 	return b
 }
 
 func (b *_EventFilterBuilder) Build() (EventFilter, error) {
 	if b.WhereClause == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'whereClause' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'whereClause' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._EventFilter.deepCopy(), nil
 }
@@ -179,8 +174,8 @@ func (b *_EventFilterBuilder) buildForExtensionObjectDefinition() (ExtensionObje
 
 func (b *_EventFilterBuilder) DeepCopy() any {
 	_copy := b.CreateEventFilterBuilder().(*_EventFilterBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -519,7 +520,7 @@ type _SessionDiagnosticsDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SessionDiagnosticsDataTypeBuilder) = (*_SessionDiagnosticsDataTypeBuilder)(nil)
@@ -543,10 +544,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithSessionIdBuilder(builderSupplie
 	var err error
 	b.SessionId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -561,10 +559,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithSessionNameBuilder(builderSuppl
 	var err error
 	b.SessionName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -579,10 +574,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithClientDescriptionBuilder(builde
 	var err error
 	b.ClientDescription, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ApplicationDescriptionBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ApplicationDescriptionBuilder failed"))
 	}
 	return b
 }
@@ -597,10 +589,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithServerUriBuilder(builderSupplie
 	var err error
 	b.ServerUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -615,10 +604,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithEndpointUrlBuilder(builderSuppl
 	var err error
 	b.EndpointUrl, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -673,10 +659,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithTotalRequestCountBuilder(builde
 	var err error
 	b.TotalRequestCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -696,10 +679,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithReadCountBuilder(builderSupplie
 	var err error
 	b.ReadCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -714,10 +694,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithHistoryReadCountBuilder(builder
 	var err error
 	b.HistoryReadCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -732,10 +709,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithWriteCountBuilder(builderSuppli
 	var err error
 	b.WriteCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -750,10 +724,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithHistoryUpdateCountBuilder(build
 	var err error
 	b.HistoryUpdateCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -768,10 +739,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithCallCountBuilder(builderSupplie
 	var err error
 	b.CallCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -786,10 +754,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithCreateMonitoredItemsCountBuilde
 	var err error
 	b.CreateMonitoredItemsCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -804,10 +769,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithModifyMonitoredItemsCountBuilde
 	var err error
 	b.ModifyMonitoredItemsCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -822,10 +784,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithSetMonitoringModeCountBuilder(b
 	var err error
 	b.SetMonitoringModeCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -840,10 +799,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithSetTriggeringCountBuilder(build
 	var err error
 	b.SetTriggeringCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -858,10 +814,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteMonitoredItemsCountBuilde
 	var err error
 	b.DeleteMonitoredItemsCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -876,10 +829,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithCreateSubscriptionCountBuilder(
 	var err error
 	b.CreateSubscriptionCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -894,10 +844,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithModifySubscriptionCountBuilder(
 	var err error
 	b.ModifySubscriptionCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -912,10 +859,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithSetPublishingModeCountBuilder(b
 	var err error
 	b.SetPublishingModeCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -930,10 +874,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithPublishCountBuilder(builderSupp
 	var err error
 	b.PublishCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -948,10 +889,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithRepublishCountBuilder(builderSu
 	var err error
 	b.RepublishCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -966,10 +904,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithTransferSubscriptionsCountBuild
 	var err error
 	b.TransferSubscriptionsCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -984,10 +919,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteSubscriptionsCountBuilder
 	var err error
 	b.DeleteSubscriptionsCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -1002,10 +934,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithAddNodesCountBuilder(builderSup
 	var err error
 	b.AddNodesCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -1020,10 +949,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithAddReferencesCountBuilder(build
 	var err error
 	b.AddReferencesCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -1038,10 +964,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteNodesCountBuilder(builder
 	var err error
 	b.DeleteNodesCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -1056,10 +979,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithDeleteReferencesCountBuilder(bu
 	var err error
 	b.DeleteReferencesCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -1074,10 +994,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithBrowseCountBuilder(builderSuppl
 	var err error
 	b.BrowseCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -1092,10 +1009,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithBrowseNextCountBuilder(builderS
 	var err error
 	b.BrowseNextCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -1110,10 +1024,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithTranslateBrowsePathsToNodeIdsCo
 	var err error
 	b.TranslateBrowsePathsToNodeIdsCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -1128,10 +1039,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithQueryFirstCountBuilder(builderS
 	var err error
 	b.QueryFirstCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -1146,10 +1054,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithQueryNextCountBuilder(builderSu
 	var err error
 	b.QueryNextCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -1164,10 +1069,7 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithRegisterNodesCountBuilder(build
 	var err error
 	b.RegisterNodesCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -1182,221 +1084,116 @@ func (b *_SessionDiagnosticsDataTypeBuilder) WithUnregisterNodesCountBuilder(bui
 	var err error
 	b.UnregisterNodesCount, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ServiceCounterDataTypeBuilder failed"))
 	}
 	return b
 }
 
 func (b *_SessionDiagnosticsDataTypeBuilder) Build() (SessionDiagnosticsDataType, error) {
 	if b.SessionId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'sessionId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'sessionId' not set"))
 	}
 	if b.SessionName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'sessionName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'sessionName' not set"))
 	}
 	if b.ClientDescription == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'clientDescription' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'clientDescription' not set"))
 	}
 	if b.ServerUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'serverUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'serverUri' not set"))
 	}
 	if b.EndpointUrl == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'endpointUrl' not set"))
 	}
 	if b.TotalRequestCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'totalRequestCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'totalRequestCount' not set"))
 	}
 	if b.ReadCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'readCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'readCount' not set"))
 	}
 	if b.HistoryReadCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'historyReadCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'historyReadCount' not set"))
 	}
 	if b.WriteCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'writeCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'writeCount' not set"))
 	}
 	if b.HistoryUpdateCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'historyUpdateCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'historyUpdateCount' not set"))
 	}
 	if b.CallCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'callCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'callCount' not set"))
 	}
 	if b.CreateMonitoredItemsCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'createMonitoredItemsCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'createMonitoredItemsCount' not set"))
 	}
 	if b.ModifyMonitoredItemsCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'modifyMonitoredItemsCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'modifyMonitoredItemsCount' not set"))
 	}
 	if b.SetMonitoringModeCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'setMonitoringModeCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'setMonitoringModeCount' not set"))
 	}
 	if b.SetTriggeringCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'setTriggeringCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'setTriggeringCount' not set"))
 	}
 	if b.DeleteMonitoredItemsCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'deleteMonitoredItemsCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'deleteMonitoredItemsCount' not set"))
 	}
 	if b.CreateSubscriptionCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'createSubscriptionCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'createSubscriptionCount' not set"))
 	}
 	if b.ModifySubscriptionCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'modifySubscriptionCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'modifySubscriptionCount' not set"))
 	}
 	if b.SetPublishingModeCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'setPublishingModeCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'setPublishingModeCount' not set"))
 	}
 	if b.PublishCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'publishCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'publishCount' not set"))
 	}
 	if b.RepublishCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'republishCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'republishCount' not set"))
 	}
 	if b.TransferSubscriptionsCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'transferSubscriptionsCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'transferSubscriptionsCount' not set"))
 	}
 	if b.DeleteSubscriptionsCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'deleteSubscriptionsCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'deleteSubscriptionsCount' not set"))
 	}
 	if b.AddNodesCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'addNodesCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'addNodesCount' not set"))
 	}
 	if b.AddReferencesCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'addReferencesCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'addReferencesCount' not set"))
 	}
 	if b.DeleteNodesCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'deleteNodesCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'deleteNodesCount' not set"))
 	}
 	if b.DeleteReferencesCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'deleteReferencesCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'deleteReferencesCount' not set"))
 	}
 	if b.BrowseCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'browseCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'browseCount' not set"))
 	}
 	if b.BrowseNextCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'browseNextCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'browseNextCount' not set"))
 	}
 	if b.TranslateBrowsePathsToNodeIdsCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'translateBrowsePathsToNodeIdsCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'translateBrowsePathsToNodeIdsCount' not set"))
 	}
 	if b.QueryFirstCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'queryFirstCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'queryFirstCount' not set"))
 	}
 	if b.QueryNextCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'queryNextCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'queryNextCount' not set"))
 	}
 	if b.RegisterNodesCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'registerNodesCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'registerNodesCount' not set"))
 	}
 	if b.UnregisterNodesCount == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'unregisterNodesCount' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'unregisterNodesCount' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SessionDiagnosticsDataType.deepCopy(), nil
 }
@@ -1422,8 +1219,8 @@ func (b *_SessionDiagnosticsDataTypeBuilder) buildForExtensionObjectDefinition()
 
 func (b *_SessionDiagnosticsDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateSessionDiagnosticsDataTypeBuilder().(*_SessionDiagnosticsDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -130,7 +131,7 @@ type _CEMIAdditionalInformationBusmonitorInfoBuilder struct {
 
 	parentBuilder *_CEMIAdditionalInformationBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CEMIAdditionalInformationBusmonitorInfoBuilder) = (*_CEMIAdditionalInformationBusmonitorInfoBuilder)(nil)
@@ -175,8 +176,8 @@ func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithSequenceNumber(seq
 }
 
 func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) Build() (CEMIAdditionalInformationBusmonitorInfo, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CEMIAdditionalInformationBusmonitorInfo.deepCopy(), nil
 }
@@ -202,8 +203,8 @@ func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) buildForCEMIAdditional
 
 func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) DeepCopy() any {
 	_copy := b.CreateCEMIAdditionalInformationBusmonitorInfoBuilder().(*_CEMIAdditionalInformationBusmonitorInfoBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -182,7 +183,7 @@ type _JsonActionRequestMessageBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (JsonActionRequestMessageBuilder) = (*_JsonActionRequestMessageBuilder)(nil)
@@ -216,10 +217,7 @@ func (b *_JsonActionRequestMessageBuilder) WithDataSetWriterNameBuilder(builderS
 	var err error
 	b.DataSetWriterName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -234,10 +232,7 @@ func (b *_JsonActionRequestMessageBuilder) WithWriterGroupNameBuilder(builderSup
 	var err error
 	b.WriterGroupName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -252,10 +247,7 @@ func (b *_JsonActionRequestMessageBuilder) WithMetaDataVersionBuilder(builderSup
 	var err error
 	b.MetaDataVersion, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ConfigurationVersionDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ConfigurationVersionDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -280,10 +272,7 @@ func (b *_JsonActionRequestMessageBuilder) WithMessageTypeBuilder(builderSupplie
 	var err error
 	b.MessageType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -308,47 +297,29 @@ func (b *_JsonActionRequestMessageBuilder) WithPayloadBuilder(builderSupplier fu
 	var err error
 	b.Payload, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
 
 func (b *_JsonActionRequestMessageBuilder) Build() (JsonActionRequestMessage, error) {
 	if b.DataSetWriterName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'dataSetWriterName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dataSetWriterName' not set"))
 	}
 	if b.WriterGroupName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'writerGroupName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'writerGroupName' not set"))
 	}
 	if b.MetaDataVersion == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'metaDataVersion' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'metaDataVersion' not set"))
 	}
 	if b.MessageType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'messageType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'messageType' not set"))
 	}
 	if b.Payload == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'payload' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._JsonActionRequestMessage.deepCopy(), nil
 }
@@ -374,8 +345,8 @@ func (b *_JsonActionRequestMessageBuilder) buildForExtensionObjectDefinition() (
 
 func (b *_JsonActionRequestMessageBuilder) DeepCopy() any {
 	_copy := b.CreateJsonActionRequestMessageBuilder().(*_JsonActionRequestMessageBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

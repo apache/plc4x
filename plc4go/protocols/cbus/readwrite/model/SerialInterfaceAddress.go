@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -85,7 +86,7 @@ func NewSerialInterfaceAddressBuilder() SerialInterfaceAddressBuilder {
 type _SerialInterfaceAddressBuilder struct {
 	*_SerialInterfaceAddress
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SerialInterfaceAddressBuilder) = (*_SerialInterfaceAddressBuilder)(nil)
@@ -100,8 +101,8 @@ func (b *_SerialInterfaceAddressBuilder) WithAddress(address byte) SerialInterfa
 }
 
 func (b *_SerialInterfaceAddressBuilder) Build() (SerialInterfaceAddress, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SerialInterfaceAddress.deepCopy(), nil
 }
@@ -116,8 +117,8 @@ func (b *_SerialInterfaceAddressBuilder) MustBuild() SerialInterfaceAddress {
 
 func (b *_SerialInterfaceAddressBuilder) DeepCopy() any {
 	_copy := b.CreateSerialInterfaceAddressBuilder().(*_SerialInterfaceAddressBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

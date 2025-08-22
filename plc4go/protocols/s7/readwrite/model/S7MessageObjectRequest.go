@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -116,7 +117,7 @@ type _S7MessageObjectRequestBuilder struct {
 
 	parentBuilder *_S7DataAlarmMessageBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7MessageObjectRequestBuilder) = (*_S7MessageObjectRequestBuilder)(nil)
@@ -146,8 +147,8 @@ func (b *_S7MessageObjectRequestBuilder) WithAlarmType(alarmType AlarmType) S7Me
 }
 
 func (b *_S7MessageObjectRequestBuilder) Build() (S7MessageObjectRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7MessageObjectRequest.deepCopy(), nil
 }
@@ -173,8 +174,8 @@ func (b *_S7MessageObjectRequestBuilder) buildForS7DataAlarmMessage() (S7DataAla
 
 func (b *_S7MessageObjectRequestBuilder) DeepCopy() any {
 	_copy := b.CreateS7MessageObjectRequestBuilder().(*_S7MessageObjectRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

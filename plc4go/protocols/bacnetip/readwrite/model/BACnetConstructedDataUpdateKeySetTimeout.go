@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataUpdateKeySetTimeoutBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataUpdateKeySetTimeoutBuilder) = (*_BACnetConstructedDataUpdateKeySetTimeoutBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) WithUpdateKeySetTimeo
 	var err error
 	b.UpdateKeySetTimeout, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) Build() (BACnetConstructedDataUpdateKeySetTimeout, error) {
 	if b.UpdateKeySetTimeout == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'updateKeySetTimeout' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'updateKeySetTimeout' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataUpdateKeySetTimeout.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) buildForBACnetConstru
 
 func (b *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataUpdateKeySetTimeoutBuilder().(*_BACnetConstructedDataUpdateKeySetTimeoutBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -121,7 +122,7 @@ type _ConnectionResponseBuilder struct {
 
 	parentBuilder *_KnxNetIpMessageBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ConnectionResponseBuilder) = (*_ConnectionResponseBuilder)(nil)
@@ -155,10 +156,7 @@ func (b *_ConnectionResponseBuilder) WithOptionalHpaiDataEndpointBuilder(builder
 	var err error
 	b.HpaiDataEndpoint, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "HPAIDataEndpointBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "HPAIDataEndpointBuilder failed"))
 	}
 	return b
 }
@@ -173,17 +171,14 @@ func (b *_ConnectionResponseBuilder) WithOptionalConnectionResponseDataBlockBuil
 	var err error
 	b.ConnectionResponseDataBlock, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ConnectionResponseDataBlockBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ConnectionResponseDataBlockBuilder failed"))
 	}
 	return b
 }
 
 func (b *_ConnectionResponseBuilder) Build() (ConnectionResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ConnectionResponse.deepCopy(), nil
 }
@@ -209,8 +204,8 @@ func (b *_ConnectionResponseBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage,
 
 func (b *_ConnectionResponseBuilder) DeepCopy() any {
 	_copy := b.CreateConnectionResponseBuilder().(*_ConnectionResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -116,7 +117,7 @@ type _NodeTypeDescriptionBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NodeTypeDescriptionBuilder) = (*_NodeTypeDescriptionBuilder)(nil)
@@ -140,10 +141,7 @@ func (b *_NodeTypeDescriptionBuilder) WithTypeDefinitionNodeBuilder(builderSuppl
 	var err error
 	b.TypeDefinitionNode, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
 	return b
 }
@@ -160,13 +158,10 @@ func (b *_NodeTypeDescriptionBuilder) WithDataToReturn(dataToReturn ...QueryData
 
 func (b *_NodeTypeDescriptionBuilder) Build() (NodeTypeDescription, error) {
 	if b.TypeDefinitionNode == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'typeDefinitionNode' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'typeDefinitionNode' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NodeTypeDescription.deepCopy(), nil
 }
@@ -192,8 +187,8 @@ func (b *_NodeTypeDescriptionBuilder) buildForExtensionObjectDefinition() (Exten
 
 func (b *_NodeTypeDescriptionBuilder) DeepCopy() any {
 	_copy := b.CreateNodeTypeDescriptionBuilder().(*_NodeTypeDescriptionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

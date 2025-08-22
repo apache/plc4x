@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -110,7 +111,7 @@ type _ReplyEncodedReplyBuilder struct {
 
 	parentBuilder *_ReplyBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ReplyEncodedReplyBuilder) = (*_ReplyEncodedReplyBuilder)(nil)
@@ -134,10 +135,7 @@ func (b *_ReplyEncodedReplyBuilder) WithEncodedReplyBuilder(builderSupplier func
 	var err error
 	b.EncodedReply, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "EncodedReplyBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "EncodedReplyBuilder failed"))
 	}
 	return b
 }
@@ -152,29 +150,20 @@ func (b *_ReplyEncodedReplyBuilder) WithChksumBuilder(builderSupplier func(Check
 	var err error
 	b.Chksum, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ChecksumBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ChecksumBuilder failed"))
 	}
 	return b
 }
 
 func (b *_ReplyEncodedReplyBuilder) Build() (ReplyEncodedReply, error) {
 	if b.EncodedReply == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'encodedReply' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'encodedReply' not set"))
 	}
 	if b.Chksum == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'chksum' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'chksum' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ReplyEncodedReply.deepCopy(), nil
 }
@@ -200,8 +189,8 @@ func (b *_ReplyEncodedReplyBuilder) buildForReply() (Reply, error) {
 
 func (b *_ReplyEncodedReplyBuilder) DeepCopy() any {
 	_copy := b.CreateReplyEncodedReplyBuilder().(*_ReplyEncodedReplyBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewBACnetTimeValueBuilder() BACnetTimeValueBuilder {
 type _BACnetTimeValueBuilder struct {
 	*_BACnetTimeValue
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetTimeValueBuilder) = (*_BACnetTimeValueBuilder)(nil)
@@ -119,10 +120,7 @@ func (b *_BACnetTimeValueBuilder) WithTimeValueBuilder(builderSupplier func(BACn
 	var err error
 	b.TimeValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
 	}
 	return b
 }
@@ -137,29 +135,20 @@ func (b *_BACnetTimeValueBuilder) WithValueBuilder(builderSupplier func(BACnetCo
 	var err error
 	b.Value, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetConstructedDataElementBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetConstructedDataElementBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetTimeValueBuilder) Build() (BACnetTimeValue, error) {
 	if b.TimeValue == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'timeValue' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeValue' not set"))
 	}
 	if b.Value == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'value' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'value' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetTimeValue.deepCopy(), nil
 }
@@ -174,8 +163,8 @@ func (b *_BACnetTimeValueBuilder) MustBuild() BACnetTimeValue {
 
 func (b *_BACnetTimeValueBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetTimeValueBuilder().(*_BACnetTimeValueBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

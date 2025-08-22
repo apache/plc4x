@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -110,7 +111,7 @@ func NewBACnetAuthenticationFactorBuilder() BACnetAuthenticationFactorBuilder {
 type _BACnetAuthenticationFactorBuilder struct {
 	*_BACnetAuthenticationFactor
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetAuthenticationFactorBuilder) = (*_BACnetAuthenticationFactorBuilder)(nil)
@@ -129,10 +130,7 @@ func (b *_BACnetAuthenticationFactorBuilder) WithFormatTypeBuilder(builderSuppli
 	var err error
 	b.FormatType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorTypeTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetAuthenticationFactorTypeTaggedBuilder failed"))
 	}
 	return b
 }
@@ -147,10 +145,7 @@ func (b *_BACnetAuthenticationFactorBuilder) WithFormatClassBuilder(builderSuppl
 	var err error
 	b.FormatClass, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -165,35 +160,23 @@ func (b *_BACnetAuthenticationFactorBuilder) WithValueBuilder(builderSupplier fu
 	var err error
 	b.Value, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetAuthenticationFactorBuilder) Build() (BACnetAuthenticationFactor, error) {
 	if b.FormatType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'formatType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'formatType' not set"))
 	}
 	if b.FormatClass == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'formatClass' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'formatClass' not set"))
 	}
 	if b.Value == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'value' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'value' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetAuthenticationFactor.deepCopy(), nil
 }
@@ -208,8 +191,8 @@ func (b *_BACnetAuthenticationFactorBuilder) MustBuild() BACnetAuthenticationFac
 
 func (b *_BACnetAuthenticationFactorBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetAuthenticationFactorBuilder().(*_BACnetAuthenticationFactorBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

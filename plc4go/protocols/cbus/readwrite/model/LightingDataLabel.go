@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -120,7 +121,7 @@ type _LightingDataLabelBuilder struct {
 
 	parentBuilder *_LightingDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (LightingDataLabelBuilder) = (*_LightingDataLabelBuilder)(nil)
@@ -149,10 +150,7 @@ func (b *_LightingDataLabelBuilder) WithLabelOptionsBuilder(builderSupplier func
 	var err error
 	b.LabelOptions, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "LightingLabelOptionsBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "LightingLabelOptionsBuilder failed"))
 	}
 	return b
 }
@@ -169,13 +167,10 @@ func (b *_LightingDataLabelBuilder) WithData(data ...byte) LightingDataLabelBuil
 
 func (b *_LightingDataLabelBuilder) Build() (LightingDataLabel, error) {
 	if b.LabelOptions == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'labelOptions' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'labelOptions' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LightingDataLabel.deepCopy(), nil
 }
@@ -201,8 +196,8 @@ func (b *_LightingDataLabelBuilder) buildForLightingData() (LightingData, error)
 
 func (b *_LightingDataLabelBuilder) DeepCopy() any {
 	_copy := b.CreateLightingDataLabelBuilder().(*_LightingDataLabelBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func NewIndexBuilder() IndexBuilder {
 type _IndexBuilder struct {
 	*_Index
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (IndexBuilder) = (*_IndexBuilder)(nil)
@@ -88,8 +89,8 @@ func (b *_IndexBuilder) WithMandatoryFields() IndexBuilder {
 }
 
 func (b *_IndexBuilder) Build() (Index, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Index.deepCopy(), nil
 }
@@ -104,8 +105,8 @@ func (b *_IndexBuilder) MustBuild() Index {
 
 func (b *_IndexBuilder) DeepCopy() any {
 	_copy := b.CreateIndexBuilder().(*_IndexBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

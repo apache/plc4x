@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -131,7 +132,7 @@ type _MonitoredItemCreateResultBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MonitoredItemCreateResultBuilder) = (*_MonitoredItemCreateResultBuilder)(nil)
@@ -155,10 +156,7 @@ func (b *_MonitoredItemCreateResultBuilder) WithStatusCodeBuilder(builderSupplie
 	var err error
 	b.StatusCode, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
 	return b
 }
@@ -188,29 +186,20 @@ func (b *_MonitoredItemCreateResultBuilder) WithFilterResultBuilder(builderSuppl
 	var err error
 	b.FilterResult, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
 
 func (b *_MonitoredItemCreateResultBuilder) Build() (MonitoredItemCreateResult, error) {
 	if b.StatusCode == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'statusCode' not set"))
 	}
 	if b.FilterResult == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'filterResult' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'filterResult' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MonitoredItemCreateResult.deepCopy(), nil
 }
@@ -236,8 +225,8 @@ func (b *_MonitoredItemCreateResultBuilder) buildForExtensionObjectDefinition() 
 
 func (b *_MonitoredItemCreateResultBuilder) DeepCopy() any {
 	_copy := b.CreateMonitoredItemCreateResultBuilder().(*_MonitoredItemCreateResultBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

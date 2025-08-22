@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -116,7 +117,7 @@ func NewBACnetPropertyWriteDefinitionBuilder() BACnetPropertyWriteDefinitionBuil
 type _BACnetPropertyWriteDefinitionBuilder struct {
 	*_BACnetPropertyWriteDefinition
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPropertyWriteDefinitionBuilder) = (*_BACnetPropertyWriteDefinitionBuilder)(nil)
@@ -135,10 +136,7 @@ func (b *_BACnetPropertyWriteDefinitionBuilder) WithPropertyIdentifierBuilder(bu
 	var err error
 	b.PropertyIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
 	}
 	return b
 }
@@ -153,10 +151,7 @@ func (b *_BACnetPropertyWriteDefinitionBuilder) WithOptionalArrayIndexBuilder(bu
 	var err error
 	b.ArrayIndex, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -171,10 +166,7 @@ func (b *_BACnetPropertyWriteDefinitionBuilder) WithOptionalPropertyValueBuilder
 	var err error
 	b.PropertyValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
 	return b
 }
@@ -189,10 +181,7 @@ func (b *_BACnetPropertyWriteDefinitionBuilder) WithOptionalPriorityBuilder(buil
 	var err error
 	b.Priority, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -204,13 +193,10 @@ func (b *_BACnetPropertyWriteDefinitionBuilder) WithArgObjectTypeArgument(object
 
 func (b *_BACnetPropertyWriteDefinitionBuilder) Build() (BACnetPropertyWriteDefinition, error) {
 	if b.PropertyIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'propertyIdentifier' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyWriteDefinition.deepCopy(), nil
 }
@@ -225,8 +211,8 @@ func (b *_BACnetPropertyWriteDefinitionBuilder) MustBuild() BACnetPropertyWriteD
 
 func (b *_BACnetPropertyWriteDefinitionBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPropertyWriteDefinitionBuilder().(*_BACnetPropertyWriteDefinitionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

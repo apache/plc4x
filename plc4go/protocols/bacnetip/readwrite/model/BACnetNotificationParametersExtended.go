@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -146,7 +147,7 @@ type _BACnetNotificationParametersExtendedBuilder struct {
 
 	parentBuilder *_BACnetNotificationParametersBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetNotificationParametersExtendedBuilder) = (*_BACnetNotificationParametersExtendedBuilder)(nil)
@@ -170,10 +171,7 @@ func (b *_BACnetNotificationParametersExtendedBuilder) WithInnerOpeningTagBuilde
 	var err error
 	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
 	return b
 }
@@ -188,10 +186,7 @@ func (b *_BACnetNotificationParametersExtendedBuilder) WithVendorIdBuilder(build
 	var err error
 	b.VendorId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
 	}
 	return b
 }
@@ -206,10 +201,7 @@ func (b *_BACnetNotificationParametersExtendedBuilder) WithExtendedEventTypeBuil
 	var err error
 	b.ExtendedEventType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -224,10 +216,7 @@ func (b *_BACnetNotificationParametersExtendedBuilder) WithParametersBuilder(bui
 	var err error
 	b.Parameters, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetNotificationParametersExtendedParametersBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetNotificationParametersExtendedParametersBuilder failed"))
 	}
 	return b
 }
@@ -242,47 +231,29 @@ func (b *_BACnetNotificationParametersExtendedBuilder) WithInnerClosingTagBuilde
 	var err error
 	b.InnerClosingTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetNotificationParametersExtendedBuilder) Build() (BACnetNotificationParametersExtended, error) {
 	if b.InnerOpeningTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'innerOpeningTag' not set"))
 	}
 	if b.VendorId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'vendorId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'vendorId' not set"))
 	}
 	if b.ExtendedEventType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'extendedEventType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'extendedEventType' not set"))
 	}
 	if b.Parameters == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'parameters' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'parameters' not set"))
 	}
 	if b.InnerClosingTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'innerClosingTag' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetNotificationParametersExtended.deepCopy(), nil
 }
@@ -308,8 +279,8 @@ func (b *_BACnetNotificationParametersExtendedBuilder) buildForBACnetNotificatio
 
 func (b *_BACnetNotificationParametersExtendedBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetNotificationParametersExtendedBuilder().(*_BACnetNotificationParametersExtendedBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

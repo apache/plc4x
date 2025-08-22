@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -118,7 +119,7 @@ type _BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder struct {
 
 	parentBuilder *_BACnetConfirmedServiceRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) = (*_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder)(nil)
@@ -142,10 +143,7 @@ func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithOp
 	var err error
 	b.TimeDuration, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -160,10 +158,7 @@ func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithEn
 	var err error
 	b.EnableDisable, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder failed"))
 	}
 	return b
 }
@@ -178,23 +173,17 @@ func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithOp
 	var err error
 	b.Password, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) Build() (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
 	if b.EnableDisable == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'enableDisable' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'enableDisable' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestDeviceCommunicationControl.deepCopy(), nil
 }
@@ -220,8 +209,8 @@ func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) buildF
 
 func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConfirmedServiceRequestDeviceCommunicationControlBuilder().(*_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

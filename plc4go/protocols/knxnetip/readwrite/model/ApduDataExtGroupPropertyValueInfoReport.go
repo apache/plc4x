@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _ApduDataExtGroupPropertyValueInfoReportBuilder struct {
 
 	parentBuilder *_ApduDataExtBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApduDataExtGroupPropertyValueInfoReportBuilder) = (*_ApduDataExtGroupPropertyValueInfoReportBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_ApduDataExtGroupPropertyValueInfoReportBuilder) WithMandatoryFields() 
 }
 
 func (b *_ApduDataExtGroupPropertyValueInfoReportBuilder) Build() (ApduDataExtGroupPropertyValueInfoReport, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataExtGroupPropertyValueInfoReport.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_ApduDataExtGroupPropertyValueInfoReportBuilder) buildForApduDataExt() 
 
 func (b *_ApduDataExtGroupPropertyValueInfoReportBuilder) DeepCopy() any {
 	_copy := b.CreateApduDataExtGroupPropertyValueInfoReportBuilder().(*_ApduDataExtGroupPropertyValueInfoReportBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -141,7 +142,7 @@ type _UserTokenPolicyBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (UserTokenPolicyBuilder) = (*_UserTokenPolicyBuilder)(nil)
@@ -165,10 +166,7 @@ func (b *_UserTokenPolicyBuilder) WithPolicyIdBuilder(builderSupplier func(Pasca
 	var err error
 	b.PolicyId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -188,10 +186,7 @@ func (b *_UserTokenPolicyBuilder) WithIssuedTokenTypeBuilder(builderSupplier fun
 	var err error
 	b.IssuedTokenType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -206,10 +201,7 @@ func (b *_UserTokenPolicyBuilder) WithIssuerEndpointUrlBuilder(builderSupplier f
 	var err error
 	b.IssuerEndpointUrl, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -224,41 +216,26 @@ func (b *_UserTokenPolicyBuilder) WithSecurityPolicyUriBuilder(builderSupplier f
 	var err error
 	b.SecurityPolicyUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_UserTokenPolicyBuilder) Build() (UserTokenPolicy, error) {
 	if b.PolicyId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'policyId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'policyId' not set"))
 	}
 	if b.IssuedTokenType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'issuedTokenType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'issuedTokenType' not set"))
 	}
 	if b.IssuerEndpointUrl == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'issuerEndpointUrl' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'issuerEndpointUrl' not set"))
 	}
 	if b.SecurityPolicyUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'securityPolicyUri' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._UserTokenPolicy.deepCopy(), nil
 }
@@ -284,8 +261,8 @@ func (b *_UserTokenPolicyBuilder) buildForExtensionObjectDefinition() (Extension
 
 func (b *_UserTokenPolicyBuilder) DeepCopy() any {
 	_copy := b.CreateUserTokenPolicyBuilder().(*_UserTokenPolicyBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -88,7 +89,7 @@ func NewAmsStringBuilder() AmsStringBuilder {
 type _AmsStringBuilder struct {
 	*_AmsString
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AmsStringBuilder) = (*_AmsStringBuilder)(nil)
@@ -103,8 +104,8 @@ func (b *_AmsStringBuilder) WithText(text string) AmsStringBuilder {
 }
 
 func (b *_AmsStringBuilder) Build() (AmsString, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AmsString.deepCopy(), nil
 }
@@ -119,8 +120,8 @@ func (b *_AmsStringBuilder) MustBuild() AmsString {
 
 func (b *_AmsStringBuilder) DeepCopy() any {
 	_copy := b.CreateAmsStringBuilder().(*_AmsStringBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

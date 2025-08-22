@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -110,7 +111,7 @@ type _BACnetConfirmedServiceRequestCreateObjectBuilder struct {
 
 	parentBuilder *_BACnetConfirmedServiceRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConfirmedServiceRequestCreateObjectBuilder) = (*_BACnetConfirmedServiceRequestCreateObjectBuilder)(nil)
@@ -134,10 +135,7 @@ func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) WithObjectSpecifierB
 	var err error
 	b.ObjectSpecifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder failed"))
 	}
 	return b
 }
@@ -152,23 +150,17 @@ func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) WithOptionalListOfVa
 	var err error
 	b.ListOfValues, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetPropertyValuesBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetPropertyValuesBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) Build() (BACnetConfirmedServiceRequestCreateObject, error) {
 	if b.ObjectSpecifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'objectSpecifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'objectSpecifier' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestCreateObject.deepCopy(), nil
 }
@@ -194,8 +186,8 @@ func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) buildForBACnetConfir
 
 func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConfirmedServiceRequestCreateObjectBuilder().(*_BACnetConfirmedServiceRequestCreateObjectBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

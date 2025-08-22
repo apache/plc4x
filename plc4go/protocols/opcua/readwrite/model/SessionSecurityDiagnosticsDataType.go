@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -180,7 +181,7 @@ type _SessionSecurityDiagnosticsDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SessionSecurityDiagnosticsDataTypeBuilder) = (*_SessionSecurityDiagnosticsDataTypeBuilder)(nil)
@@ -204,10 +205,7 @@ func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithSessionIdBuilder(builde
 	var err error
 	b.SessionId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -222,10 +220,7 @@ func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithClientUserIdOfSessionBu
 	var err error
 	b.ClientUserIdOfSession, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -245,10 +240,7 @@ func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithAuthenticationMechanism
 	var err error
 	b.AuthenticationMechanism, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -263,10 +255,7 @@ func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithEncodingBuilder(builder
 	var err error
 	b.Encoding, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -281,10 +270,7 @@ func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithTransportProtocolBuilde
 	var err error
 	b.TransportProtocol, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -304,10 +290,7 @@ func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithSecurityPolicyUriBuilde
 	var err error
 	b.SecurityPolicyUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -322,59 +305,35 @@ func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithClientCertificateBuilde
 	var err error
 	b.ClientCertificate, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_SessionSecurityDiagnosticsDataTypeBuilder) Build() (SessionSecurityDiagnosticsDataType, error) {
 	if b.SessionId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'sessionId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'sessionId' not set"))
 	}
 	if b.ClientUserIdOfSession == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'clientUserIdOfSession' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'clientUserIdOfSession' not set"))
 	}
 	if b.AuthenticationMechanism == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'authenticationMechanism' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'authenticationMechanism' not set"))
 	}
 	if b.Encoding == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'encoding' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'encoding' not set"))
 	}
 	if b.TransportProtocol == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'transportProtocol' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'transportProtocol' not set"))
 	}
 	if b.SecurityPolicyUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'securityPolicyUri' not set"))
 	}
 	if b.ClientCertificate == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'clientCertificate' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'clientCertificate' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SessionSecurityDiagnosticsDataType.deepCopy(), nil
 }
@@ -400,8 +359,8 @@ func (b *_SessionSecurityDiagnosticsDataTypeBuilder) buildForExtensionObjectDefi
 
 func (b *_SessionSecurityDiagnosticsDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateSessionSecurityDiagnosticsDataTypeBuilder().(*_SessionSecurityDiagnosticsDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

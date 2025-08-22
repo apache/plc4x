@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -108,7 +109,7 @@ type _CALDataIdentifyReplyBuilder struct {
 
 	parentBuilder *_CALDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CALDataIdentifyReplyBuilder) = (*_CALDataIdentifyReplyBuilder)(nil)
@@ -137,23 +138,17 @@ func (b *_CALDataIdentifyReplyBuilder) WithIdentifyReplyCommandBuilder(builderSu
 	var err error
 	b.IdentifyReplyCommand, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "IdentifyReplyCommandBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "IdentifyReplyCommandBuilder failed"))
 	}
 	return b
 }
 
 func (b *_CALDataIdentifyReplyBuilder) Build() (CALDataIdentifyReply, error) {
 	if b.IdentifyReplyCommand == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'identifyReplyCommand' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'identifyReplyCommand' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CALDataIdentifyReply.deepCopy(), nil
 }
@@ -179,8 +174,8 @@ func (b *_CALDataIdentifyReplyBuilder) buildForCALData() (CALData, error) {
 
 func (b *_CALDataIdentifyReplyBuilder) DeepCopy() any {
 	_copy := b.CreateCALDataIdentifyReplyBuilder().(*_CALDataIdentifyReplyBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

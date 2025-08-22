@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetLogRecordLogDatumBooleanValueBuilder struct {
 
 	parentBuilder *_BACnetLogRecordLogDatumBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetLogRecordLogDatumBooleanValueBuilder) = (*_BACnetLogRecordLogDatumBooleanValueBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) WithBooleanValueBuilder(bu
 	var err error
 	b.BooleanValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) Build() (BACnetLogRecordLogDatumBooleanValue, error) {
 	if b.BooleanValue == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'booleanValue' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'booleanValue' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetLogRecordLogDatumBooleanValue.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) buildForBACnetLogRecordLog
 
 func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetLogRecordLogDatumBooleanValueBuilder().(*_BACnetLogRecordLogDatumBooleanValueBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

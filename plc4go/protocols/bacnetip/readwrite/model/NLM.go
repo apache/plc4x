@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -169,7 +170,7 @@ type _NLMBuilder struct {
 
 	childBuilder _NLMChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NLMBuilder) = (*_NLMBuilder)(nil)
@@ -184,8 +185,8 @@ func (b *_NLMBuilder) WithArgApduLength(apduLength uint16) NLMBuilder {
 }
 
 func (b *_NLMBuilder) PartialBuild() (NLMContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLM.deepCopy(), nil
 }
@@ -442,8 +443,8 @@ func (b *_NLMBuilder) DeepCopy() any {
 	_copy := b.CreateNLMBuilder().(*_NLMBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_NLMChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

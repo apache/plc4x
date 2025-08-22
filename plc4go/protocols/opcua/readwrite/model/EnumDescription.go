@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -130,7 +131,7 @@ type _EnumDescriptionBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (EnumDescriptionBuilder) = (*_EnumDescriptionBuilder)(nil)
@@ -154,10 +155,7 @@ func (b *_EnumDescriptionBuilder) WithDataTypeIdBuilder(builderSupplier func(Nod
 	var err error
 	b.DataTypeId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -172,10 +170,7 @@ func (b *_EnumDescriptionBuilder) WithNameBuilder(builderSupplier func(Qualified
 	var err error
 	b.Name, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "QualifiedNameBuilder failed"))
 	}
 	return b
 }
@@ -190,10 +185,7 @@ func (b *_EnumDescriptionBuilder) WithEnumDefinitionBuilder(builderSupplier func
 	var err error
 	b.EnumDefinition, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "EnumDefinitionBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "EnumDefinitionBuilder failed"))
 	}
 	return b
 }
@@ -205,25 +197,16 @@ func (b *_EnumDescriptionBuilder) WithBuiltInType(builtInType uint8) EnumDescrip
 
 func (b *_EnumDescriptionBuilder) Build() (EnumDescription, error) {
 	if b.DataTypeId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'dataTypeId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dataTypeId' not set"))
 	}
 	if b.Name == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'name' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
 	if b.EnumDefinition == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'enumDefinition' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'enumDefinition' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._EnumDescription.deepCopy(), nil
 }
@@ -249,8 +232,8 @@ func (b *_EnumDescriptionBuilder) buildForExtensionObjectDefinition() (Extension
 
 func (b *_EnumDescriptionBuilder) DeepCopy() any {
 	_copy := b.CreateEnumDescriptionBuilder().(*_EnumDescriptionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

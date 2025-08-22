@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewHPAIDiscoveryEndpointBuilder() HPAIDiscoveryEndpointBuilder {
 type _HPAIDiscoveryEndpointBuilder struct {
 	*_HPAIDiscoveryEndpoint
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (HPAIDiscoveryEndpointBuilder) = (*_HPAIDiscoveryEndpointBuilder)(nil)
@@ -124,10 +125,7 @@ func (b *_HPAIDiscoveryEndpointBuilder) WithIpAddressBuilder(builderSupplier fun
 	var err error
 	b.IpAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "IPAddressBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "IPAddressBuilder failed"))
 	}
 	return b
 }
@@ -139,13 +137,10 @@ func (b *_HPAIDiscoveryEndpointBuilder) WithIpPort(ipPort uint16) HPAIDiscoveryE
 
 func (b *_HPAIDiscoveryEndpointBuilder) Build() (HPAIDiscoveryEndpoint, error) {
 	if b.IpAddress == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'ipAddress' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'ipAddress' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._HPAIDiscoveryEndpoint.deepCopy(), nil
 }
@@ -160,8 +155,8 @@ func (b *_HPAIDiscoveryEndpointBuilder) MustBuild() HPAIDiscoveryEndpoint {
 
 func (b *_HPAIDiscoveryEndpointBuilder) DeepCopy() any {
 	_copy := b.CreateHPAIDiscoveryEndpointBuilder().(*_HPAIDiscoveryEndpointBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

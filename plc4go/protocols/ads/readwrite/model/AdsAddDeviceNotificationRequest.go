@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -130,7 +131,7 @@ type _AdsAddDeviceNotificationRequestBuilder struct {
 
 	parentBuilder *_AmsPacketBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AdsAddDeviceNotificationRequestBuilder) = (*_AdsAddDeviceNotificationRequestBuilder)(nil)
@@ -175,8 +176,8 @@ func (b *_AdsAddDeviceNotificationRequestBuilder) WithCycleTimeInMs(cycleTimeInM
 }
 
 func (b *_AdsAddDeviceNotificationRequestBuilder) Build() (AdsAddDeviceNotificationRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsAddDeviceNotificationRequest.deepCopy(), nil
 }
@@ -202,8 +203,8 @@ func (b *_AdsAddDeviceNotificationRequestBuilder) buildForAmsPacket() (AmsPacket
 
 func (b *_AdsAddDeviceNotificationRequestBuilder) DeepCopy() any {
 	_copy := b.CreateAdsAddDeviceNotificationRequestBuilder().(*_AdsAddDeviceNotificationRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -123,7 +124,7 @@ type _MeasurementDataBuilder struct {
 
 	childBuilder _MeasurementDataChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MeasurementDataBuilder) = (*_MeasurementDataBuilder)(nil)
@@ -138,8 +139,8 @@ func (b *_MeasurementDataBuilder) WithCommandTypeContainer(commandTypeContainer 
 }
 
 func (b *_MeasurementDataBuilder) PartialBuild() (MeasurementDataContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MeasurementData.deepCopy(), nil
 }
@@ -186,8 +187,8 @@ func (b *_MeasurementDataBuilder) DeepCopy() any {
 	_copy := b.CreateMeasurementDataBuilder().(*_MeasurementDataBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_MeasurementDataChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

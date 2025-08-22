@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -120,7 +121,7 @@ type _DeviceConfigurationRequestBuilder struct {
 
 	parentBuilder *_KnxNetIpMessageBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DeviceConfigurationRequestBuilder) = (*_DeviceConfigurationRequestBuilder)(nil)
@@ -144,10 +145,7 @@ func (b *_DeviceConfigurationRequestBuilder) WithDeviceConfigurationRequestDataB
 	var err error
 	b.DeviceConfigurationRequestDataBlock, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DeviceConfigurationRequestDataBlockBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DeviceConfigurationRequestDataBlockBuilder failed"))
 	}
 	return b
 }
@@ -162,10 +160,7 @@ func (b *_DeviceConfigurationRequestBuilder) WithCemiBuilder(builderSupplier fun
 	var err error
 	b.Cemi, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "CEMIBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CEMIBuilder failed"))
 	}
 	return b
 }
@@ -177,19 +172,13 @@ func (b *_DeviceConfigurationRequestBuilder) WithArgTotalLength(totalLength uint
 
 func (b *_DeviceConfigurationRequestBuilder) Build() (DeviceConfigurationRequest, error) {
 	if b.DeviceConfigurationRequestDataBlock == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'deviceConfigurationRequestDataBlock' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'deviceConfigurationRequestDataBlock' not set"))
 	}
 	if b.Cemi == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'cemi' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'cemi' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DeviceConfigurationRequest.deepCopy(), nil
 }
@@ -215,8 +204,8 @@ func (b *_DeviceConfigurationRequestBuilder) buildForKnxNetIpMessage() (KnxNetIp
 
 func (b *_DeviceConfigurationRequestBuilder) DeepCopy() any {
 	_copy := b.CreateDeviceConfigurationRequestBuilder().(*_DeviceConfigurationRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

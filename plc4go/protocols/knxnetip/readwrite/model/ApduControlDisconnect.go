@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _ApduControlDisconnectBuilder struct {
 
 	parentBuilder *_ApduControlBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApduControlDisconnectBuilder) = (*_ApduControlDisconnectBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_ApduControlDisconnectBuilder) WithMandatoryFields() ApduControlDisconn
 }
 
 func (b *_ApduControlDisconnectBuilder) Build() (ApduControlDisconnect, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduControlDisconnect.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_ApduControlDisconnectBuilder) buildForApduControl() (ApduControl, erro
 
 func (b *_ApduControlDisconnectBuilder) DeepCopy() any {
 	_copy := b.CreateApduControlDisconnectBuilder().(*_ApduControlDisconnectBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func NewImageJPGBuilder() ImageJPGBuilder {
 type _ImageJPGBuilder struct {
 	*_ImageJPG
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ImageJPGBuilder) = (*_ImageJPGBuilder)(nil)
@@ -88,8 +89,8 @@ func (b *_ImageJPGBuilder) WithMandatoryFields() ImageJPGBuilder {
 }
 
 func (b *_ImageJPGBuilder) Build() (ImageJPG, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ImageJPG.deepCopy(), nil
 }
@@ -104,8 +105,8 @@ func (b *_ImageJPGBuilder) MustBuild() ImageJPG {
 
 func (b *_ImageJPGBuilder) DeepCopy() any {
 	_copy := b.CreateImageJPGBuilder().(*_ImageJPGBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

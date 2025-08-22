@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -121,7 +122,7 @@ type _ClockAndTimekeepingDataUpdateDateBuilder struct {
 
 	parentBuilder *_ClockAndTimekeepingDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ClockAndTimekeepingDataUpdateDateBuilder) = (*_ClockAndTimekeepingDataUpdateDateBuilder)(nil)
@@ -161,8 +162,8 @@ func (b *_ClockAndTimekeepingDataUpdateDateBuilder) WithDayOfWeek(dayOfWeek uint
 }
 
 func (b *_ClockAndTimekeepingDataUpdateDateBuilder) Build() (ClockAndTimekeepingDataUpdateDate, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ClockAndTimekeepingDataUpdateDate.deepCopy(), nil
 }
@@ -188,8 +189,8 @@ func (b *_ClockAndTimekeepingDataUpdateDateBuilder) buildForClockAndTimekeepingD
 
 func (b *_ClockAndTimekeepingDataUpdateDateBuilder) DeepCopy() any {
 	_copy := b.CreateClockAndTimekeepingDataUpdateDateBuilder().(*_ClockAndTimekeepingDataUpdateDateBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

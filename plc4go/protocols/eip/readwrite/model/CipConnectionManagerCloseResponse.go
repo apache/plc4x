@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -130,7 +131,7 @@ type _CipConnectionManagerCloseResponseBuilder struct {
 
 	parentBuilder *_CipServiceBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CipConnectionManagerCloseResponseBuilder) = (*_CipConnectionManagerCloseResponseBuilder)(nil)
@@ -175,8 +176,8 @@ func (b *_CipConnectionManagerCloseResponseBuilder) WithApplicationReplySize(app
 }
 
 func (b *_CipConnectionManagerCloseResponseBuilder) Build() (CipConnectionManagerCloseResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CipConnectionManagerCloseResponse.deepCopy(), nil
 }
@@ -202,8 +203,8 @@ func (b *_CipConnectionManagerCloseResponseBuilder) buildForCipService() (CipSer
 
 func (b *_CipConnectionManagerCloseResponseBuilder) DeepCopy() any {
 	_copy := b.CreateCipConnectionManagerCloseResponseBuilder().(*_CipConnectionManagerCloseResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

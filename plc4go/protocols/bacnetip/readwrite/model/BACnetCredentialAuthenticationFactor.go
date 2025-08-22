@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewBACnetCredentialAuthenticationFactorBuilder() BACnetCredentialAuthentica
 type _BACnetCredentialAuthenticationFactorBuilder struct {
 	*_BACnetCredentialAuthenticationFactor
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetCredentialAuthenticationFactorBuilder) = (*_BACnetCredentialAuthenticationFactorBuilder)(nil)
@@ -119,10 +120,7 @@ func (b *_BACnetCredentialAuthenticationFactorBuilder) WithDisableBuilder(builde
 	var err error
 	b.Disable, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetAccessAuthenticationFactorDisableTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetAccessAuthenticationFactorDisableTaggedBuilder failed"))
 	}
 	return b
 }
@@ -137,29 +135,20 @@ func (b *_BACnetCredentialAuthenticationFactorBuilder) WithAuthenticationFactorB
 	var err error
 	b.AuthenticationFactor, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetAuthenticationFactorEnclosedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetCredentialAuthenticationFactorBuilder) Build() (BACnetCredentialAuthenticationFactor, error) {
 	if b.Disable == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'disable' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'disable' not set"))
 	}
 	if b.AuthenticationFactor == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'authenticationFactor' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'authenticationFactor' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetCredentialAuthenticationFactor.deepCopy(), nil
 }
@@ -174,8 +163,8 @@ func (b *_BACnetCredentialAuthenticationFactorBuilder) MustBuild() BACnetCredent
 
 func (b *_BACnetCredentialAuthenticationFactorBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetCredentialAuthenticationFactorBuilder().(*_BACnetCredentialAuthenticationFactorBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

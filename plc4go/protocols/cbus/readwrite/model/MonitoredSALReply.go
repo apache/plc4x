@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _MonitoredSALReplyBuilder struct {
 
 	parentBuilder *_EncodedReplyBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MonitoredSALReplyBuilder) = (*_MonitoredSALReplyBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_MonitoredSALReplyBuilder) WithMonitoredSALBuilder(builderSupplier func
 	var err error
 	b.MonitoredSAL, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "MonitoredSALBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "MonitoredSALBuilder failed"))
 	}
 	return b
 }
 
 func (b *_MonitoredSALReplyBuilder) Build() (MonitoredSALReply, error) {
 	if b.MonitoredSAL == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'monitoredSAL' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'monitoredSAL' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MonitoredSALReply.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_MonitoredSALReplyBuilder) buildForEncodedReply() (EncodedReply, error)
 
 func (b *_MonitoredSALReplyBuilder) DeepCopy() any {
 	_copy := b.CreateMonitoredSALReplyBuilder().(*_MonitoredSALReplyBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

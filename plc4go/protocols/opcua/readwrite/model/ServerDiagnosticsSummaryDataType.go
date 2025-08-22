@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -163,7 +164,7 @@ type _ServerDiagnosticsSummaryDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ServerDiagnosticsSummaryDataTypeBuilder) = (*_ServerDiagnosticsSummaryDataTypeBuilder)(nil)
@@ -238,8 +239,8 @@ func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithRejectedRequestsCount(rej
 }
 
 func (b *_ServerDiagnosticsSummaryDataTypeBuilder) Build() (ServerDiagnosticsSummaryDataType, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ServerDiagnosticsSummaryDataType.deepCopy(), nil
 }
@@ -265,8 +266,8 @@ func (b *_ServerDiagnosticsSummaryDataTypeBuilder) buildForExtensionObjectDefini
 
 func (b *_ServerDiagnosticsSummaryDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateServerDiagnosticsSummaryDataTypeBuilder().(*_ServerDiagnosticsSummaryDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

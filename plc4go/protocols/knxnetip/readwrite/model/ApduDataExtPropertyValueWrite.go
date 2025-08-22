@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -121,7 +122,7 @@ type _ApduDataExtPropertyValueWriteBuilder struct {
 
 	parentBuilder *_ApduDataExtBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApduDataExtPropertyValueWriteBuilder) = (*_ApduDataExtPropertyValueWriteBuilder)(nil)
@@ -161,8 +162,8 @@ func (b *_ApduDataExtPropertyValueWriteBuilder) WithData(data ...byte) ApduDataE
 }
 
 func (b *_ApduDataExtPropertyValueWriteBuilder) Build() (ApduDataExtPropertyValueWrite, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataExtPropertyValueWrite.deepCopy(), nil
 }
@@ -188,8 +189,8 @@ func (b *_ApduDataExtPropertyValueWriteBuilder) buildForApduDataExt() (ApduDataE
 
 func (b *_ApduDataExtPropertyValueWriteBuilder) DeepCopy() any {
 	_copy := b.CreateApduDataExtPropertyValueWriteBuilder().(*_ApduDataExtPropertyValueWriteBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

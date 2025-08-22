@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _LDataFrameACKBuilder struct {
 
 	parentBuilder *_LDataFrameBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (LDataFrameACKBuilder) = (*_LDataFrameACKBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_LDataFrameACKBuilder) WithMandatoryFields() LDataFrameACKBuilder {
 }
 
 func (b *_LDataFrameACKBuilder) Build() (LDataFrameACK, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LDataFrameACK.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_LDataFrameACKBuilder) buildForLDataFrame() (LDataFrame, error) {
 
 func (b *_LDataFrameACKBuilder) DeepCopy() any {
 	_copy := b.CreateLDataFrameACKBuilder().(*_LDataFrameACKBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

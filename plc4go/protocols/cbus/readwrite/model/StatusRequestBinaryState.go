@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ type _StatusRequestBinaryStateBuilder struct {
 
 	parentBuilder *_StatusRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (StatusRequestBinaryStateBuilder) = (*_StatusRequestBinaryStateBuilder)(nil)
@@ -120,8 +121,8 @@ func (b *_StatusRequestBinaryStateBuilder) WithApplication(application Applicati
 }
 
 func (b *_StatusRequestBinaryStateBuilder) Build() (StatusRequestBinaryState, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._StatusRequestBinaryState.deepCopy(), nil
 }
@@ -147,8 +148,8 @@ func (b *_StatusRequestBinaryStateBuilder) buildForStatusRequest() (StatusReques
 
 func (b *_StatusRequestBinaryStateBuilder) DeepCopy() any {
 	_copy := b.CreateStatusRequestBinaryStateBuilder().(*_StatusRequestBinaryStateBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -123,7 +124,7 @@ type _ErrorReportingDataBuilder struct {
 
 	childBuilder _ErrorReportingDataChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ErrorReportingDataBuilder) = (*_ErrorReportingDataBuilder)(nil)
@@ -138,8 +139,8 @@ func (b *_ErrorReportingDataBuilder) WithCommandTypeContainer(commandTypeContain
 }
 
 func (b *_ErrorReportingDataBuilder) PartialBuild() (ErrorReportingDataContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ErrorReportingData.deepCopy(), nil
 }
@@ -186,8 +187,8 @@ func (b *_ErrorReportingDataBuilder) DeepCopy() any {
 	_copy := b.CreateErrorReportingDataBuilder().(*_ErrorReportingDataBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_ErrorReportingDataChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

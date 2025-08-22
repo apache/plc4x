@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _DF1CommandRequestMessageBuilder struct {
 
 	parentBuilder *_DF1RequestMessageBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DF1CommandRequestMessageBuilder) = (*_DF1CommandRequestMessageBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_DF1CommandRequestMessageBuilder) WithCommandBuilder(builderSupplier fu
 	var err error
 	b.Command, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DF1RequestCommandBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DF1RequestCommandBuilder failed"))
 	}
 	return b
 }
 
 func (b *_DF1CommandRequestMessageBuilder) Build() (DF1CommandRequestMessage, error) {
 	if b.Command == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'command' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'command' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DF1CommandRequestMessage.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_DF1CommandRequestMessageBuilder) buildForDF1RequestMessage() (DF1Reque
 
 func (b *_DF1CommandRequestMessageBuilder) DeepCopy() any {
 	_copy := b.CreateDF1CommandRequestMessageBuilder().(*_DF1CommandRequestMessageBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

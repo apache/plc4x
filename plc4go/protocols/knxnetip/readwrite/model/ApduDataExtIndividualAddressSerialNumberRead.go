@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _ApduDataExtIndividualAddressSerialNumberReadBuilder struct {
 
 	parentBuilder *_ApduDataExtBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApduDataExtIndividualAddressSerialNumberReadBuilder) = (*_ApduDataExtIndividualAddressSerialNumberReadBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_ApduDataExtIndividualAddressSerialNumberReadBuilder) WithMandatoryFiel
 }
 
 func (b *_ApduDataExtIndividualAddressSerialNumberReadBuilder) Build() (ApduDataExtIndividualAddressSerialNumberRead, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataExtIndividualAddressSerialNumberRead.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_ApduDataExtIndividualAddressSerialNumberReadBuilder) buildForApduDataE
 
 func (b *_ApduDataExtIndividualAddressSerialNumberReadBuilder) DeepCopy() any {
 	_copy := b.CreateApduDataExtIndividualAddressSerialNumberReadBuilder().(*_ApduDataExtIndividualAddressSerialNumberReadBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -147,7 +148,7 @@ type _APDUComplexAckBuilder struct {
 
 	parentBuilder *_APDUBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (APDUComplexAckBuilder) = (*_APDUComplexAckBuilder)(nil)
@@ -196,10 +197,7 @@ func (b *_APDUComplexAckBuilder) WithOptionalServiceAckBuilder(builderSupplier f
 	var err error
 	b.ServiceAck, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetServiceAckBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetServiceAckBuilder failed"))
 	}
 	return b
 }
@@ -215,8 +213,8 @@ func (b *_APDUComplexAckBuilder) WithSegment(segment ...byte) APDUComplexAckBuil
 }
 
 func (b *_APDUComplexAckBuilder) Build() (APDUComplexAck, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._APDUComplexAck.deepCopy(), nil
 }
@@ -242,8 +240,8 @@ func (b *_APDUComplexAckBuilder) buildForAPDU() (APDU, error) {
 
 func (b *_APDUComplexAckBuilder) DeepCopy() any {
 	_copy := b.CreateAPDUComplexAckBuilder().(*_APDUComplexAckBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

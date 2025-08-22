@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func NewSemanticVersionStringBuilder() SemanticVersionStringBuilder {
 type _SemanticVersionStringBuilder struct {
 	*_SemanticVersionString
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SemanticVersionStringBuilder) = (*_SemanticVersionStringBuilder)(nil)
@@ -88,8 +89,8 @@ func (b *_SemanticVersionStringBuilder) WithMandatoryFields() SemanticVersionStr
 }
 
 func (b *_SemanticVersionStringBuilder) Build() (SemanticVersionString, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SemanticVersionString.deepCopy(), nil
 }
@@ -104,8 +105,8 @@ func (b *_SemanticVersionStringBuilder) MustBuild() SemanticVersionString {
 
 func (b *_SemanticVersionStringBuilder) DeepCopy() any {
 	_copy := b.CreateSemanticVersionStringBuilder().(*_SemanticVersionStringBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

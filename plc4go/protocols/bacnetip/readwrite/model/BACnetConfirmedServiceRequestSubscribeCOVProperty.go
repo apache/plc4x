@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -148,7 +149,7 @@ type _BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder struct {
 
 	parentBuilder *_BACnetConfirmedServiceRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder) = (*_BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder)(nil)
@@ -172,10 +173,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder) WithSubscrib
 	var err error
 	b.SubscriberProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -190,10 +188,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder) WithMonitore
 	var err error
 	b.MonitoredObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
 	return b
 }
@@ -208,10 +203,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder) WithOptional
 	var err error
 	b.IssueConfirmedNotifications, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
 	return b
 }
@@ -226,10 +218,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder) WithOptional
 	var err error
 	b.Lifetime, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -244,10 +233,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder) WithMonitore
 	var err error
 	b.MonitoredPropertyIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetPropertyReferenceEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetPropertyReferenceEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -262,35 +248,23 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder) WithOptional
 	var err error
 	b.CovIncrement, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder) Build() (BACnetConfirmedServiceRequestSubscribeCOVProperty, error) {
 	if b.SubscriberProcessIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
 	}
 	if b.MonitoredObjectIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
 	}
 	if b.MonitoredPropertyIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'monitoredPropertyIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'monitoredPropertyIdentifier' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestSubscribeCOVProperty.deepCopy(), nil
 }
@@ -316,8 +290,8 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder) buildForBACn
 
 func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder().(*_BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

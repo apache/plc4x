@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -118,7 +119,7 @@ type _ConnectionRequestInformationBuilder struct {
 
 	childBuilder _ConnectionRequestInformationChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ConnectionRequestInformationBuilder) = (*_ConnectionRequestInformationBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_ConnectionRequestInformationBuilder) WithMandatoryFields() ConnectionR
 }
 
 func (b *_ConnectionRequestInformationBuilder) PartialBuild() (ConnectionRequestInformationContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ConnectionRequestInformation.deepCopy(), nil
 }
@@ -186,8 +187,8 @@ func (b *_ConnectionRequestInformationBuilder) DeepCopy() any {
 	_copy := b.CreateConnectionRequestInformationBuilder().(*_ConnectionRequestInformationBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_ConnectionRequestInformationChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

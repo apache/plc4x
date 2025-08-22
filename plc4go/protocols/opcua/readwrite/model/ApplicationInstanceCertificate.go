@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func NewApplicationInstanceCertificateBuilder() ApplicationInstanceCertificateBu
 type _ApplicationInstanceCertificateBuilder struct {
 	*_ApplicationInstanceCertificate
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApplicationInstanceCertificateBuilder) = (*_ApplicationInstanceCertificateBuilder)(nil)
@@ -88,8 +89,8 @@ func (b *_ApplicationInstanceCertificateBuilder) WithMandatoryFields() Applicati
 }
 
 func (b *_ApplicationInstanceCertificateBuilder) Build() (ApplicationInstanceCertificate, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApplicationInstanceCertificate.deepCopy(), nil
 }
@@ -104,8 +105,8 @@ func (b *_ApplicationInstanceCertificateBuilder) MustBuild() ApplicationInstance
 
 func (b *_ApplicationInstanceCertificateBuilder) DeepCopy() any {
 	_copy := b.CreateApplicationInstanceCertificateBuilder().(*_ApplicationInstanceCertificateBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

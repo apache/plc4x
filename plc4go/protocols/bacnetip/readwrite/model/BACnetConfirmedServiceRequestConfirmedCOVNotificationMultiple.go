@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -143,7 +144,7 @@ type _BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder struc
 
 	parentBuilder *_BACnetConfirmedServiceRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) = (*_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder)(nil)
@@ -167,10 +168,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) 
 	var err error
 	b.SubscriberProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -185,10 +183,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) 
 	var err error
 	b.InitiatingDeviceIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
 	return b
 }
@@ -203,10 +198,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) 
 	var err error
 	b.TimeRemaining, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -221,10 +213,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) 
 	var err error
 	b.Timestamp, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetTimeStampEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTimeStampEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -239,41 +228,26 @@ func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) 
 	var err error
 	b.ListOfCovNotifications, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ListOfCovNotificationsListBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ListOfCovNotificationsListBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) Build() (BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple, error) {
 	if b.SubscriberProcessIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
 	}
 	if b.InitiatingDeviceIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'initiatingDeviceIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'initiatingDeviceIdentifier' not set"))
 	}
 	if b.TimeRemaining == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'timeRemaining' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeRemaining' not set"))
 	}
 	if b.ListOfCovNotifications == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'listOfCovNotifications' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'listOfCovNotifications' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple.deepCopy(), nil
 }
@@ -299,8 +273,8 @@ func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) 
 
 func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder().(*_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

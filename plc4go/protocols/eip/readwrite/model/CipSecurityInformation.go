@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _CipSecurityInformationBuilder struct {
 
 	parentBuilder *_CommandSpecificDataItemBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CipSecurityInformationBuilder) = (*_CipSecurityInformationBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_CipSecurityInformationBuilder) WithTodoImplement(todoImplement ...uint
 }
 
 func (b *_CipSecurityInformationBuilder) Build() (CipSecurityInformation, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CipSecurityInformation.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_CipSecurityInformationBuilder) buildForCommandSpecificDataItem() (Comm
 
 func (b *_CipSecurityInformationBuilder) DeepCopy() any {
 	_copy := b.CreateCipSecurityInformationBuilder().(*_CipSecurityInformationBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

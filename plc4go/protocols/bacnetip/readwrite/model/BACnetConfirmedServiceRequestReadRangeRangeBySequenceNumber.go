@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -113,7 +114,7 @@ type _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder struct 
 
 	parentBuilder *_BACnetConfirmedServiceRequestReadRangeRangeBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) = (*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder)(nil)
@@ -137,10 +138,7 @@ func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) Wi
 	var err error
 	b.ReferenceSequenceNumber, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -155,29 +153,20 @@ func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) Wi
 	var err error
 	b.Count, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) Build() (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, error) {
 	if b.ReferenceSequenceNumber == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'referenceSequenceNumber' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'referenceSequenceNumber' not set"))
 	}
 	if b.Count == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'count' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'count' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber.deepCopy(), nil
 }
@@ -203,8 +192,8 @@ func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) bu
 
 func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder().(*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

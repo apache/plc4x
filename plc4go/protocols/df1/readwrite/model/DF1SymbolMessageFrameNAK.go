@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -90,7 +91,7 @@ type _DF1SymbolMessageFrameNAKBuilder struct {
 
 	parentBuilder *_DF1SymbolBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DF1SymbolMessageFrameNAKBuilder) = (*_DF1SymbolMessageFrameNAKBuilder)(nil)
@@ -105,8 +106,8 @@ func (b *_DF1SymbolMessageFrameNAKBuilder) WithMandatoryFields() DF1SymbolMessag
 }
 
 func (b *_DF1SymbolMessageFrameNAKBuilder) Build() (DF1SymbolMessageFrameNAK, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DF1SymbolMessageFrameNAK.deepCopy(), nil
 }
@@ -132,8 +133,8 @@ func (b *_DF1SymbolMessageFrameNAKBuilder) buildForDF1Symbol() (DF1Symbol, error
 
 func (b *_DF1SymbolMessageFrameNAKBuilder) DeepCopy() any {
 	_copy := b.CreateDF1SymbolMessageFrameNAKBuilder().(*_DF1SymbolMessageFrameNAKBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

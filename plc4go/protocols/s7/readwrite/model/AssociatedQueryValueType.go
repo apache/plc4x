@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewAssociatedQueryValueTypeBuilder() AssociatedQueryValueTypeBuilder {
 type _AssociatedQueryValueTypeBuilder struct {
 	*_AssociatedQueryValueType
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AssociatedQueryValueTypeBuilder) = (*_AssociatedQueryValueTypeBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_AssociatedQueryValueTypeBuilder) WithData(data ...uint8) AssociatedQue
 }
 
 func (b *_AssociatedQueryValueTypeBuilder) Build() (AssociatedQueryValueType, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AssociatedQueryValueType.deepCopy(), nil
 }
@@ -146,8 +147,8 @@ func (b *_AssociatedQueryValueTypeBuilder) MustBuild() AssociatedQueryValueType 
 
 func (b *_AssociatedQueryValueTypeBuilder) DeepCopy() any {
 	_copy := b.CreateAssociatedQueryValueTypeBuilder().(*_AssociatedQueryValueTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

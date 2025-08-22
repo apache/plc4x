@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _EipListIdentityResponseBuilder struct {
 
 	parentBuilder *_EipPacketBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (EipListIdentityResponseBuilder) = (*_EipListIdentityResponseBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_EipListIdentityResponseBuilder) WithItems(items ...CommandSpecificData
 }
 
 func (b *_EipListIdentityResponseBuilder) Build() (EipListIdentityResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._EipListIdentityResponse.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_EipListIdentityResponseBuilder) buildForEipPacket() (EipPacket, error)
 
 func (b *_EipListIdentityResponseBuilder) DeepCopy() any {
 	_copy := b.CreateEipListIdentityResponseBuilder().(*_EipListIdentityResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

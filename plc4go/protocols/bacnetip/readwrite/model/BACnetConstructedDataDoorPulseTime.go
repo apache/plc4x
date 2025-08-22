@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataDoorPulseTimeBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataDoorPulseTimeBuilder) = (*_BACnetConstructedDataDoorPulseTimeBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataDoorPulseTimeBuilder) WithDoorPulseTimeBuilder(bu
 	var err error
 	b.DoorPulseTime, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataDoorPulseTimeBuilder) Build() (BACnetConstructedDataDoorPulseTime, error) {
 	if b.DoorPulseTime == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'doorPulseTime' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'doorPulseTime' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataDoorPulseTime.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataDoorPulseTimeBuilder) buildForBACnetConstructedDa
 
 func (b *_BACnetConstructedDataDoorPulseTimeBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataDoorPulseTimeBuilder().(*_BACnetConstructedDataDoorPulseTimeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

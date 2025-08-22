@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -131,7 +132,7 @@ type _CycServiceItemTypeBuilder struct {
 
 	childBuilder _CycServiceItemTypeChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CycServiceItemTypeBuilder) = (*_CycServiceItemTypeBuilder)(nil)
@@ -151,8 +152,8 @@ func (b *_CycServiceItemTypeBuilder) WithSyntaxId(syntaxId uint8) CycServiceItem
 }
 
 func (b *_CycServiceItemTypeBuilder) PartialBuild() (CycServiceItemTypeContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CycServiceItemType.deepCopy(), nil
 }
@@ -209,8 +210,8 @@ func (b *_CycServiceItemTypeBuilder) DeepCopy() any {
 	_copy := b.CreateCycServiceItemTypeBuilder().(*_CycServiceItemTypeBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_CycServiceItemTypeChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

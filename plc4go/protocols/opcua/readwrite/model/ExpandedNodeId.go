@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -112,7 +113,7 @@ func NewExpandedNodeIdBuilder() ExpandedNodeIdBuilder {
 type _ExpandedNodeIdBuilder struct {
 	*_ExpandedNodeId
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ExpandedNodeIdBuilder) = (*_ExpandedNodeIdBuilder)(nil)
@@ -141,10 +142,7 @@ func (b *_ExpandedNodeIdBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdTy
 	var err error
 	b.NodeId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdTypeDefinitionBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdTypeDefinitionBuilder failed"))
 	}
 	return b
 }
@@ -159,10 +157,7 @@ func (b *_ExpandedNodeIdBuilder) WithOptionalNamespaceURIBuilder(builderSupplier
 	var err error
 	b.NamespaceURI, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -174,13 +169,10 @@ func (b *_ExpandedNodeIdBuilder) WithOptionalServerIndex(serverIndex uint32) Exp
 
 func (b *_ExpandedNodeIdBuilder) Build() (ExpandedNodeId, error) {
 	if b.NodeId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'nodeId' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ExpandedNodeId.deepCopy(), nil
 }
@@ -195,8 +187,8 @@ func (b *_ExpandedNodeIdBuilder) MustBuild() ExpandedNodeId {
 
 func (b *_ExpandedNodeIdBuilder) DeepCopy() any {
 	_copy := b.CreateExpandedNodeIdBuilder().(*_ExpandedNodeIdBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

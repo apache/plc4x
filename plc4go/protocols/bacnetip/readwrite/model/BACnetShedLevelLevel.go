@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetShedLevelLevelBuilder struct {
 
 	parentBuilder *_BACnetShedLevelBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetShedLevelLevelBuilder) = (*_BACnetShedLevelLevelBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetShedLevelLevelBuilder) WithLevelBuilder(builderSupplier func(BAC
 	var err error
 	b.Level, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetShedLevelLevelBuilder) Build() (BACnetShedLevelLevel, error) {
 	if b.Level == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'level' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'level' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetShedLevelLevel.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetShedLevelLevelBuilder) buildForBACnetShedLevel() (BACnetShedLeve
 
 func (b *_BACnetShedLevelLevelBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetShedLevelLevelBuilder().(*_BACnetShedLevelLevelBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

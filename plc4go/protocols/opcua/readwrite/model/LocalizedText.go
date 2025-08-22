@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -106,7 +107,7 @@ func NewLocalizedTextBuilder() LocalizedTextBuilder {
 type _LocalizedTextBuilder struct {
 	*_LocalizedText
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (LocalizedTextBuilder) = (*_LocalizedTextBuilder)(nil)
@@ -135,10 +136,7 @@ func (b *_LocalizedTextBuilder) WithOptionalLocaleBuilder(builderSupplier func(P
 	var err error
 	b.Locale, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -153,17 +151,14 @@ func (b *_LocalizedTextBuilder) WithOptionalTextBuilder(builderSupplier func(Pas
 	var err error
 	b.Text, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_LocalizedTextBuilder) Build() (LocalizedText, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LocalizedText.deepCopy(), nil
 }
@@ -178,8 +173,8 @@ func (b *_LocalizedTextBuilder) MustBuild() LocalizedText {
 
 func (b *_LocalizedTextBuilder) DeepCopy() any {
 	_copy := b.CreateLocalizedTextBuilder().(*_LocalizedTextBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

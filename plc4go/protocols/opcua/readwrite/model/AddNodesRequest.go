@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -108,7 +109,7 @@ type _AddNodesRequestBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AddNodesRequestBuilder) = (*_AddNodesRequestBuilder)(nil)
@@ -132,10 +133,7 @@ func (b *_AddNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -147,13 +145,10 @@ func (b *_AddNodesRequestBuilder) WithNodesToAdd(nodesToAdd ...AddNodesItem) Add
 
 func (b *_AddNodesRequestBuilder) Build() (AddNodesRequest, error) {
 	if b.RequestHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'requestHeader' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AddNodesRequest.deepCopy(), nil
 }
@@ -179,8 +174,8 @@ func (b *_AddNodesRequestBuilder) buildForExtensionObjectDefinition() (Extension
 
 func (b *_AddNodesRequestBuilder) DeepCopy() any {
 	_copy := b.CreateAddNodesRequestBuilder().(*_AddNodesRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

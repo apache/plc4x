@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetErrorGeneralBuilder struct {
 
 	parentBuilder *_BACnetErrorBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetErrorGeneralBuilder) = (*_BACnetErrorGeneralBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetErrorGeneralBuilder) WithErrorBuilder(builderSupplier func(Error
 	var err error
 	b.Error, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ErrorBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ErrorBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetErrorGeneralBuilder) Build() (BACnetErrorGeneral, error) {
 	if b.Error == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'error' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'error' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetErrorGeneral.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetErrorGeneralBuilder) buildForBACnetError() (BACnetError, error) 
 
 func (b *_BACnetErrorGeneralBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetErrorGeneralBuilder().(*_BACnetErrorGeneralBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

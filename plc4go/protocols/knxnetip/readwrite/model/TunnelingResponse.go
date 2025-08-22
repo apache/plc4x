@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _TunnelingResponseBuilder struct {
 
 	parentBuilder *_KnxNetIpMessageBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TunnelingResponseBuilder) = (*_TunnelingResponseBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_TunnelingResponseBuilder) WithTunnelingResponseDataBlockBuilder(builde
 	var err error
 	b.TunnelingResponseDataBlock, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "TunnelingResponseDataBlockBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "TunnelingResponseDataBlockBuilder failed"))
 	}
 	return b
 }
 
 func (b *_TunnelingResponseBuilder) Build() (TunnelingResponse, error) {
 	if b.TunnelingResponseDataBlock == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'tunnelingResponseDataBlock' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'tunnelingResponseDataBlock' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TunnelingResponse.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_TunnelingResponseBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, 
 
 func (b *_TunnelingResponseBuilder) DeepCopy() any {
 	_copy := b.CreateTunnelingResponseBuilder().(*_TunnelingResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

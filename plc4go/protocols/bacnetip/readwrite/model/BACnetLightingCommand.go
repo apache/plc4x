@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -125,7 +126,7 @@ func NewBACnetLightingCommandBuilder() BACnetLightingCommandBuilder {
 type _BACnetLightingCommandBuilder struct {
 	*_BACnetLightingCommand
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetLightingCommandBuilder) = (*_BACnetLightingCommandBuilder)(nil)
@@ -144,10 +145,7 @@ func (b *_BACnetLightingCommandBuilder) WithLightningOperationBuilder(builderSup
 	var err error
 	b.LightningOperation, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetLightingOperationTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetLightingOperationTaggedBuilder failed"))
 	}
 	return b
 }
@@ -162,10 +160,7 @@ func (b *_BACnetLightingCommandBuilder) WithOptionalTargetLevelBuilder(builderSu
 	var err error
 	b.TargetLevel, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
 	return b
 }
@@ -180,10 +175,7 @@ func (b *_BACnetLightingCommandBuilder) WithOptionalRampRateBuilder(builderSuppl
 	var err error
 	b.RampRate, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
 	return b
 }
@@ -198,10 +190,7 @@ func (b *_BACnetLightingCommandBuilder) WithOptionalStepIncrementBuilder(builder
 	var err error
 	b.StepIncrement, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
 	return b
 }
@@ -216,10 +205,7 @@ func (b *_BACnetLightingCommandBuilder) WithOptionalFadeTimeBuilder(builderSuppl
 	var err error
 	b.FadeTime, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -234,23 +220,17 @@ func (b *_BACnetLightingCommandBuilder) WithOptionalPriorityBuilder(builderSuppl
 	var err error
 	b.Priority, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetLightingCommandBuilder) Build() (BACnetLightingCommand, error) {
 	if b.LightningOperation == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'lightningOperation' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'lightningOperation' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetLightingCommand.deepCopy(), nil
 }
@@ -265,8 +245,8 @@ func (b *_BACnetLightingCommandBuilder) MustBuild() BACnetLightingCommand {
 
 func (b *_BACnetLightingCommandBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetLightingCommandBuilder().(*_BACnetLightingCommandBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

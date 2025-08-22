@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _SecurityDataLineCutAlarmClearedBuilder struct {
 
 	parentBuilder *_SecurityDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SecurityDataLineCutAlarmClearedBuilder) = (*_SecurityDataLineCutAlarmClearedBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_SecurityDataLineCutAlarmClearedBuilder) WithMandatoryFields() Security
 }
 
 func (b *_SecurityDataLineCutAlarmClearedBuilder) Build() (SecurityDataLineCutAlarmCleared, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataLineCutAlarmCleared.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_SecurityDataLineCutAlarmClearedBuilder) buildForSecurityData() (Securi
 
 func (b *_SecurityDataLineCutAlarmClearedBuilder) DeepCopy() any {
 	_copy := b.CreateSecurityDataLineCutAlarmClearedBuilder().(*_SecurityDataLineCutAlarmClearedBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _SetAttributeSingleResponseBuilder struct {
 
 	parentBuilder *_CipServiceBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SetAttributeSingleResponseBuilder) = (*_SetAttributeSingleResponseBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_SetAttributeSingleResponseBuilder) WithMandatoryFields() SetAttributeS
 }
 
 func (b *_SetAttributeSingleResponseBuilder) Build() (SetAttributeSingleResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SetAttributeSingleResponse.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_SetAttributeSingleResponseBuilder) buildForCipService() (CipService, e
 
 func (b *_SetAttributeSingleResponseBuilder) DeepCopy() any {
 	_copy := b.CreateSetAttributeSingleResponseBuilder().(*_SetAttributeSingleResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

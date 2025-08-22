@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -85,7 +86,7 @@ func NewChecksumBuilder() ChecksumBuilder {
 type _ChecksumBuilder struct {
 	*_Checksum
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ChecksumBuilder) = (*_ChecksumBuilder)(nil)
@@ -100,8 +101,8 @@ func (b *_ChecksumBuilder) WithValue(value byte) ChecksumBuilder {
 }
 
 func (b *_ChecksumBuilder) Build() (Checksum, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Checksum.deepCopy(), nil
 }
@@ -116,8 +117,8 @@ func (b *_ChecksumBuilder) MustBuild() Checksum {
 
 func (b *_ChecksumBuilder) DeepCopy() any {
 	_copy := b.CreateChecksumBuilder().(*_ChecksumBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

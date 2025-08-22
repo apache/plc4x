@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _ModbusPDUReadCoilsRequestBuilder struct {
 
 	parentBuilder *_ModbusPDUBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ModbusPDUReadCoilsRequestBuilder) = (*_ModbusPDUReadCoilsRequestBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_ModbusPDUReadCoilsRequestBuilder) WithQuantity(quantity uint16) Modbus
 }
 
 func (b *_ModbusPDUReadCoilsRequestBuilder) Build() (ModbusPDUReadCoilsRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUReadCoilsRequest.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_ModbusPDUReadCoilsRequestBuilder) buildForModbusPDU() (ModbusPDU, erro
 
 func (b *_ModbusPDUReadCoilsRequestBuilder) DeepCopy() any {
 	_copy := b.CreateModbusPDUReadCoilsRequestBuilder().(*_ModbusPDUReadCoilsRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _BACnetConstructedDataDateListBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataDateListBuilder) = (*_BACnetConstructedDataDateListBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_BACnetConstructedDataDateListBuilder) WithDateList(dateList ...BACnetC
 }
 
 func (b *_BACnetConstructedDataDateListBuilder) Build() (BACnetConstructedDataDateList, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataDateList.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_BACnetConstructedDataDateListBuilder) buildForBACnetConstructedData() 
 
 func (b *_BACnetConstructedDataDateListBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataDateListBuilder().(*_BACnetConstructedDataDateListBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

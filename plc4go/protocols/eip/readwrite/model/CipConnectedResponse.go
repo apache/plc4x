@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -113,7 +114,7 @@ type _CipConnectedResponseBuilder struct {
 
 	parentBuilder *_CipServiceBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CipConnectedResponseBuilder) = (*_CipConnectedResponseBuilder)(nil)
@@ -147,17 +148,14 @@ func (b *_CipConnectedResponseBuilder) WithOptionalDataBuilder(builderSupplier f
 	var err error
 	b.Data, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "CIPDataConnectedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CIPDataConnectedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_CipConnectedResponseBuilder) Build() (CipConnectedResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CipConnectedResponse.deepCopy(), nil
 }
@@ -183,8 +181,8 @@ func (b *_CipConnectedResponseBuilder) buildForCipService() (CipService, error) 
 
 func (b *_CipConnectedResponseBuilder) DeepCopy() any {
 	_copy := b.CreateCipConnectedResponseBuilder().(*_CipConnectedResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

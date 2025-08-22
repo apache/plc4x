@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -120,7 +121,7 @@ func NewNLMUpdateKeyUpdateControlFlagsBuilder() NLMUpdateKeyUpdateControlFlagsBu
 type _NLMUpdateKeyUpdateControlFlagsBuilder struct {
 	*_NLMUpdateKeyUpdateControlFlags
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NLMUpdateKeyUpdateControlFlagsBuilder) = (*_NLMUpdateKeyUpdateControlFlagsBuilder)(nil)
@@ -170,8 +171,8 @@ func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) WithRemoveAllKeys(removeAllKeys
 }
 
 func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) Build() (NLMUpdateKeyUpdateControlFlags, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLMUpdateKeyUpdateControlFlags.deepCopy(), nil
 }
@@ -186,8 +187,8 @@ func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) MustBuild() NLMUpdateKeyUpdateC
 
 func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) DeepCopy() any {
 	_copy := b.CreateNLMUpdateKeyUpdateControlFlagsBuilder().(*_NLMUpdateKeyUpdateControlFlagsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

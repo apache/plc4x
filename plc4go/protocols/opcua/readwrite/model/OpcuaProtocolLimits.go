@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewOpcuaProtocolLimitsBuilder() OpcuaProtocolLimitsBuilder {
 type _OpcuaProtocolLimitsBuilder struct {
 	*_OpcuaProtocolLimits
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (OpcuaProtocolLimitsBuilder) = (*_OpcuaProtocolLimitsBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_OpcuaProtocolLimitsBuilder) WithMaxChunkCount(maxChunkCount uint32) Op
 }
 
 func (b *_OpcuaProtocolLimitsBuilder) Build() (OpcuaProtocolLimits, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpcuaProtocolLimits.deepCopy(), nil
 }
@@ -146,8 +147,8 @@ func (b *_OpcuaProtocolLimitsBuilder) MustBuild() OpcuaProtocolLimits {
 
 func (b *_OpcuaProtocolLimitsBuilder) DeepCopy() any {
 	_copy := b.CreateOpcuaProtocolLimitsBuilder().(*_OpcuaProtocolLimitsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

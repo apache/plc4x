@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _AccessControlDataLockAccessPointBuilder struct {
 
 	parentBuilder *_AccessControlDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AccessControlDataLockAccessPointBuilder) = (*_AccessControlDataLockAccessPointBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_AccessControlDataLockAccessPointBuilder) WithMandatoryFields() AccessC
 }
 
 func (b *_AccessControlDataLockAccessPointBuilder) Build() (AccessControlDataLockAccessPoint, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AccessControlDataLockAccessPoint.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_AccessControlDataLockAccessPointBuilder) buildForAccessControlData() (
 
 func (b *_AccessControlDataLockAccessPointBuilder) DeepCopy() any {
 	_copy := b.CreateAccessControlDataLockAccessPointBuilder().(*_AccessControlDataLockAccessPointBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

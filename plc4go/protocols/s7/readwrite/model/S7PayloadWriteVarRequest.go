@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _S7PayloadWriteVarRequestBuilder struct {
 
 	parentBuilder *_S7PayloadBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7PayloadWriteVarRequestBuilder) = (*_S7PayloadWriteVarRequestBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_S7PayloadWriteVarRequestBuilder) WithItems(items ...S7VarPayloadDataIt
 }
 
 func (b *_S7PayloadWriteVarRequestBuilder) Build() (S7PayloadWriteVarRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadWriteVarRequest.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_S7PayloadWriteVarRequestBuilder) buildForS7Payload() (S7Payload, error
 
 func (b *_S7PayloadWriteVarRequestBuilder) DeepCopy() any {
 	_copy := b.CreateS7PayloadWriteVarRequestBuilder().(*_S7PayloadWriteVarRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

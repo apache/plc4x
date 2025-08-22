@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -125,7 +126,7 @@ type _SimpleAttributeOperandBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SimpleAttributeOperandBuilder) = (*_SimpleAttributeOperandBuilder)(nil)
@@ -149,10 +150,7 @@ func (b *_SimpleAttributeOperandBuilder) WithTypeDefinitionIdBuilder(builderSupp
 	var err error
 	b.TypeDefinitionId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -177,29 +175,20 @@ func (b *_SimpleAttributeOperandBuilder) WithIndexRangeBuilder(builderSupplier f
 	var err error
 	b.IndexRange, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_SimpleAttributeOperandBuilder) Build() (SimpleAttributeOperand, error) {
 	if b.TypeDefinitionId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'typeDefinitionId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'typeDefinitionId' not set"))
 	}
 	if b.IndexRange == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'indexRange' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'indexRange' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SimpleAttributeOperand.deepCopy(), nil
 }
@@ -225,8 +214,8 @@ func (b *_SimpleAttributeOperandBuilder) buildForExtensionObjectDefinition() (Ex
 
 func (b *_SimpleAttributeOperandBuilder) DeepCopy() any {
 	_copy := b.CreateSimpleAttributeOperandBuilder().(*_SimpleAttributeOperandBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

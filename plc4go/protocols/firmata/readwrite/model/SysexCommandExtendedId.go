@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _SysexCommandExtendedIdBuilder struct {
 
 	parentBuilder *_SysexCommandBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SysexCommandExtendedIdBuilder) = (*_SysexCommandExtendedIdBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_SysexCommandExtendedIdBuilder) WithId(id ...int8) SysexCommandExtended
 }
 
 func (b *_SysexCommandExtendedIdBuilder) Build() (SysexCommandExtendedId, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SysexCommandExtendedId.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_SysexCommandExtendedIdBuilder) buildForSysexCommand() (SysexCommand, e
 
 func (b *_SysexCommandExtendedIdBuilder) DeepCopy() any {
 	_copy := b.CreateSysexCommandExtendedIdBuilder().(*_SysexCommandExtendedIdBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

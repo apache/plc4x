@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -114,7 +115,7 @@ type _S7PayloadUserDataItemClkResponseBuilder struct {
 
 	parentBuilder *_S7PayloadUserDataItemBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7PayloadUserDataItemClkResponseBuilder) = (*_S7PayloadUserDataItemClkResponseBuilder)(nil)
@@ -148,23 +149,17 @@ func (b *_S7PayloadUserDataItemClkResponseBuilder) WithTimeStampBuilder(builderS
 	var err error
 	b.TimeStamp, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DateAndTimeBuilder failed"))
 	}
 	return b
 }
 
 func (b *_S7PayloadUserDataItemClkResponseBuilder) Build() (S7PayloadUserDataItemClkResponse, error) {
 	if b.TimeStamp == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'timeStamp' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeStamp' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemClkResponse.deepCopy(), nil
 }
@@ -190,8 +185,8 @@ func (b *_S7PayloadUserDataItemClkResponseBuilder) buildForS7PayloadUserDataItem
 
 func (b *_S7PayloadUserDataItemClkResponseBuilder) DeepCopy() any {
 	_copy := b.CreateS7PayloadUserDataItemClkResponseBuilder().(*_S7PayloadUserDataItemClkResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -165,7 +166,7 @@ type _PubSubKeyPushTargetDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (PubSubKeyPushTargetDataTypeBuilder) = (*_PubSubKeyPushTargetDataTypeBuilder)(nil)
@@ -189,10 +190,7 @@ func (b *_PubSubKeyPushTargetDataTypeBuilder) WithApplicationUriBuilder(builderS
 	var err error
 	b.ApplicationUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -212,10 +210,7 @@ func (b *_PubSubKeyPushTargetDataTypeBuilder) WithEndpointUrlBuilder(builderSupp
 	var err error
 	b.EndpointUrl, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -230,10 +225,7 @@ func (b *_PubSubKeyPushTargetDataTypeBuilder) WithSecurityPolicyUriBuilder(build
 	var err error
 	b.SecurityPolicyUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -248,10 +240,7 @@ func (b *_PubSubKeyPushTargetDataTypeBuilder) WithUserTokenTypeBuilder(builderSu
 	var err error
 	b.UserTokenType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "UserTokenPolicyBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "UserTokenPolicyBuilder failed"))
 	}
 	return b
 }
@@ -278,31 +267,19 @@ func (b *_PubSubKeyPushTargetDataTypeBuilder) WithSecurityGroups(securityGroups 
 
 func (b *_PubSubKeyPushTargetDataTypeBuilder) Build() (PubSubKeyPushTargetDataType, error) {
 	if b.ApplicationUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'applicationUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'applicationUri' not set"))
 	}
 	if b.EndpointUrl == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'endpointUrl' not set"))
 	}
 	if b.SecurityPolicyUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'securityPolicyUri' not set"))
 	}
 	if b.UserTokenType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'userTokenType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'userTokenType' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PubSubKeyPushTargetDataType.deepCopy(), nil
 }
@@ -328,8 +305,8 @@ func (b *_PubSubKeyPushTargetDataTypeBuilder) buildForExtensionObjectDefinition(
 
 func (b *_PubSubKeyPushTargetDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreatePubSubKeyPushTargetDataTypeBuilder().(*_PubSubKeyPushTargetDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

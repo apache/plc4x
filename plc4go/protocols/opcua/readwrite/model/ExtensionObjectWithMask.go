@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -147,7 +148,7 @@ type _ExtensionObjectWithMaskBuilder struct {
 
 	childBuilder _ExtensionObjectWithMaskChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ExtensionObjectWithMaskBuilder) = (*_ExtensionObjectWithMaskBuilder)(nil)
@@ -171,10 +172,7 @@ func (b *_ExtensionObjectWithMaskBuilder) WithEncodingMaskBuilder(builderSupplie
 	var err error
 	b.EncodingMask, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectEncodingMaskBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectEncodingMaskBuilder failed"))
 	}
 	return b
 }
@@ -186,13 +184,10 @@ func (b *_ExtensionObjectWithMaskBuilder) WithArgExtensionId(extensionId int32) 
 
 func (b *_ExtensionObjectWithMaskBuilder) PartialBuild() (ExtensionObjectWithMaskContract, error) {
 	if b.EncodingMask == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'encodingMask' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'encodingMask' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ExtensionObjectWithMask.deepCopy(), nil
 }
@@ -260,8 +255,8 @@ func (b *_ExtensionObjectWithMaskBuilder) DeepCopy() any {
 	_copy := b.CreateExtensionObjectWithMaskBuilder().(*_ExtensionObjectWithMaskBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_ExtensionObjectWithMaskChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

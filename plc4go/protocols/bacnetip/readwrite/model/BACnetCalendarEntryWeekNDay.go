@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetCalendarEntryWeekNDayBuilder struct {
 
 	parentBuilder *_BACnetCalendarEntryBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetCalendarEntryWeekNDayBuilder) = (*_BACnetCalendarEntryWeekNDayBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetCalendarEntryWeekNDayBuilder) WithWeekNDayBuilder(builderSupplie
 	var err error
 	b.WeekNDay, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetWeekNDayTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetWeekNDayTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetCalendarEntryWeekNDayBuilder) Build() (BACnetCalendarEntryWeekNDay, error) {
 	if b.WeekNDay == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'weekNDay' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'weekNDay' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetCalendarEntryWeekNDay.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetCalendarEntryWeekNDayBuilder) buildForBACnetCalendarEntry() (BAC
 
 func (b *_BACnetCalendarEntryWeekNDayBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetCalendarEntryWeekNDayBuilder().(*_BACnetCalendarEntryWeekNDayBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

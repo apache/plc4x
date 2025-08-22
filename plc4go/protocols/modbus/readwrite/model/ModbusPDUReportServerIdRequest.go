@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _ModbusPDUReportServerIdRequestBuilder struct {
 
 	parentBuilder *_ModbusPDUBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ModbusPDUReportServerIdRequestBuilder) = (*_ModbusPDUReportServerIdRequestBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_ModbusPDUReportServerIdRequestBuilder) WithMandatoryFields() ModbusPDU
 }
 
 func (b *_ModbusPDUReportServerIdRequestBuilder) Build() (ModbusPDUReportServerIdRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUReportServerIdRequest.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_ModbusPDUReportServerIdRequestBuilder) buildForModbusPDU() (ModbusPDU,
 
 func (b *_ModbusPDUReportServerIdRequestBuilder) DeepCopy() any {
 	_copy := b.CreateModbusPDUReportServerIdRequestBuilder().(*_ModbusPDUReportServerIdRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

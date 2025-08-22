@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _VariantUInt64Builder struct {
 
 	parentBuilder *_VariantBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (VariantUInt64Builder) = (*_VariantUInt64Builder)(nil)
@@ -128,8 +129,8 @@ func (b *_VariantUInt64Builder) WithValue(value ...uint64) VariantUInt64Builder 
 }
 
 func (b *_VariantUInt64Builder) Build() (VariantUInt64, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariantUInt64.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_VariantUInt64Builder) buildForVariant() (Variant, error) {
 
 func (b *_VariantUInt64Builder) DeepCopy() any {
 	_copy := b.CreateVariantUInt64Builder().(*_VariantUInt64Builder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

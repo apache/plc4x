@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewBACnetAssignedAccessRightsBuilder() BACnetAssignedAccessRightsBuilder {
 type _BACnetAssignedAccessRightsBuilder struct {
 	*_BACnetAssignedAccessRights
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetAssignedAccessRightsBuilder) = (*_BACnetAssignedAccessRightsBuilder)(nil)
@@ -119,10 +120,7 @@ func (b *_BACnetAssignedAccessRightsBuilder) WithAssignedAccessRightsBuilder(bui
 	var err error
 	b.AssignedAccessRights, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -137,29 +135,20 @@ func (b *_BACnetAssignedAccessRightsBuilder) WithEnableBuilder(builderSupplier f
 	var err error
 	b.Enable, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetAssignedAccessRightsBuilder) Build() (BACnetAssignedAccessRights, error) {
 	if b.AssignedAccessRights == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'assignedAccessRights' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'assignedAccessRights' not set"))
 	}
 	if b.Enable == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'enable' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'enable' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetAssignedAccessRights.deepCopy(), nil
 }
@@ -174,8 +163,8 @@ func (b *_BACnetAssignedAccessRightsBuilder) MustBuild() BACnetAssignedAccessRig
 
 func (b *_BACnetAssignedAccessRightsBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetAssignedAccessRightsBuilder().(*_BACnetAssignedAccessRightsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -113,7 +114,7 @@ type _WritePropertyMultipleErrorBuilder struct {
 
 	parentBuilder *_BACnetErrorBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (WritePropertyMultipleErrorBuilder) = (*_WritePropertyMultipleErrorBuilder)(nil)
@@ -137,10 +138,7 @@ func (b *_WritePropertyMultipleErrorBuilder) WithErrorTypeBuilder(builderSupplie
 	var err error
 	b.ErrorType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ErrorEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -155,29 +153,20 @@ func (b *_WritePropertyMultipleErrorBuilder) WithFirstFailedWriteAttemptBuilder(
 	var err error
 	b.FirstFailedWriteAttempt, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetObjectPropertyReferenceEnclosedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_WritePropertyMultipleErrorBuilder) Build() (WritePropertyMultipleError, error) {
 	if b.ErrorType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'errorType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'errorType' not set"))
 	}
 	if b.FirstFailedWriteAttempt == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'firstFailedWriteAttempt' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'firstFailedWriteAttempt' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._WritePropertyMultipleError.deepCopy(), nil
 }
@@ -203,8 +192,8 @@ func (b *_WritePropertyMultipleErrorBuilder) buildForBACnetError() (BACnetError,
 
 func (b *_WritePropertyMultipleErrorBuilder) DeepCopy() any {
 	_copy := b.CreateWritePropertyMultipleErrorBuilder().(*_WritePropertyMultipleErrorBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

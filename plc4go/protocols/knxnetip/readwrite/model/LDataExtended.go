@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -137,7 +138,7 @@ type _LDataExtendedBuilder struct {
 
 	parentBuilder *_LDataFrameBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (LDataExtendedBuilder) = (*_LDataExtendedBuilder)(nil)
@@ -176,10 +177,7 @@ func (b *_LDataExtendedBuilder) WithSourceAddressBuilder(builderSupplier func(Kn
 	var err error
 	b.SourceAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "KnxAddressBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "KnxAddressBuilder failed"))
 	}
 	return b
 }
@@ -199,29 +197,20 @@ func (b *_LDataExtendedBuilder) WithApduBuilder(builderSupplier func(ApduBuilder
 	var err error
 	b.Apdu, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ApduBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ApduBuilder failed"))
 	}
 	return b
 }
 
 func (b *_LDataExtendedBuilder) Build() (LDataExtended, error) {
 	if b.SourceAddress == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'sourceAddress' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'sourceAddress' not set"))
 	}
 	if b.Apdu == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'apdu' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'apdu' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LDataExtended.deepCopy(), nil
 }
@@ -247,8 +236,8 @@ func (b *_LDataExtendedBuilder) buildForLDataFrame() (LDataFrame, error) {
 
 func (b *_LDataExtendedBuilder) DeepCopy() any {
 	_copy := b.CreateLDataExtendedBuilder().(*_LDataExtendedBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

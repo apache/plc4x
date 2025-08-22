@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataBACnetIPv6MulticastAddressBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataBACnetIPv6MulticastAddressBuilder) = (*_BACnetConstructedDataBACnetIPv6MulticastAddressBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataBACnetIPv6MulticastAddressBuilder) WithIpv6Multic
 	var err error
 	b.Ipv6MulticastAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataBACnetIPv6MulticastAddressBuilder) Build() (BACnetConstructedDataBACnetIPv6MulticastAddress, error) {
 	if b.Ipv6MulticastAddress == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'ipv6MulticastAddress' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'ipv6MulticastAddress' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataBACnetIPv6MulticastAddress.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataBACnetIPv6MulticastAddressBuilder) buildForBACnet
 
 func (b *_BACnetConstructedDataBACnetIPv6MulticastAddressBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataBACnetIPv6MulticastAddressBuilder().(*_BACnetConstructedDataBACnetIPv6MulticastAddressBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

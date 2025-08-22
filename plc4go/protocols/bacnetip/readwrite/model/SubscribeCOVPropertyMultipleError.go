@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -113,7 +114,7 @@ type _SubscribeCOVPropertyMultipleErrorBuilder struct {
 
 	parentBuilder *_BACnetErrorBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SubscribeCOVPropertyMultipleErrorBuilder) = (*_SubscribeCOVPropertyMultipleErrorBuilder)(nil)
@@ -137,10 +138,7 @@ func (b *_SubscribeCOVPropertyMultipleErrorBuilder) WithErrorTypeBuilder(builder
 	var err error
 	b.ErrorType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ErrorEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -155,29 +153,20 @@ func (b *_SubscribeCOVPropertyMultipleErrorBuilder) WithFirstFailedSubscriptionB
 	var err error
 	b.FirstFailedSubscription, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder failed"))
 	}
 	return b
 }
 
 func (b *_SubscribeCOVPropertyMultipleErrorBuilder) Build() (SubscribeCOVPropertyMultipleError, error) {
 	if b.ErrorType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'errorType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'errorType' not set"))
 	}
 	if b.FirstFailedSubscription == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'firstFailedSubscription' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'firstFailedSubscription' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SubscribeCOVPropertyMultipleError.deepCopy(), nil
 }
@@ -203,8 +192,8 @@ func (b *_SubscribeCOVPropertyMultipleErrorBuilder) buildForBACnetError() (BACne
 
 func (b *_SubscribeCOVPropertyMultipleErrorBuilder) DeepCopy() any {
 	_copy := b.CreateSubscribeCOVPropertyMultipleErrorBuilder().(*_SubscribeCOVPropertyMultipleErrorBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

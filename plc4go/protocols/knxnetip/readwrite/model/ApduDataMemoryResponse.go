@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _ApduDataMemoryResponseBuilder struct {
 
 	parentBuilder *_ApduDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApduDataMemoryResponseBuilder) = (*_ApduDataMemoryResponseBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_ApduDataMemoryResponseBuilder) WithData(data ...byte) ApduDataMemoryRe
 }
 
 func (b *_ApduDataMemoryResponseBuilder) Build() (ApduDataMemoryResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataMemoryResponse.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_ApduDataMemoryResponseBuilder) buildForApduData() (ApduData, error) {
 
 func (b *_ApduDataMemoryResponseBuilder) DeepCopy() any {
 	_copy := b.CreateApduDataMemoryResponseBuilder().(*_ApduDataMemoryResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -92,7 +93,7 @@ type _NullExtensionObjectWithMaskBuilder struct {
 
 	parentBuilder *_ExtensionObjectWithMaskBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NullExtensionObjectWithMaskBuilder) = (*_NullExtensionObjectWithMaskBuilder)(nil)
@@ -107,8 +108,8 @@ func (b *_NullExtensionObjectWithMaskBuilder) WithMandatoryFields() NullExtensio
 }
 
 func (b *_NullExtensionObjectWithMaskBuilder) Build() (NullExtensionObjectWithMask, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NullExtensionObjectWithMask.deepCopy(), nil
 }
@@ -134,8 +135,8 @@ func (b *_NullExtensionObjectWithMaskBuilder) buildForExtensionObjectWithMask() 
 
 func (b *_NullExtensionObjectWithMaskBuilder) DeepCopy() any {
 	_copy := b.CreateNullExtensionObjectWithMaskBuilder().(*_NullExtensionObjectWithMaskBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

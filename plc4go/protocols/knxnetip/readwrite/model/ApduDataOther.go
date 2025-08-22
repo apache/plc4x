@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _ApduDataOtherBuilder struct {
 
 	parentBuilder *_ApduDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApduDataOtherBuilder) = (*_ApduDataOtherBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_ApduDataOtherBuilder) WithExtendedApduBuilder(builderSupplier func(Apd
 	var err error
 	b.ExtendedApdu, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ApduDataExtBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ApduDataExtBuilder failed"))
 	}
 	return b
 }
 
 func (b *_ApduDataOtherBuilder) Build() (ApduDataOther, error) {
 	if b.ExtendedApdu == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'extendedApdu' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'extendedApdu' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataOther.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_ApduDataOtherBuilder) buildForApduData() (ApduData, error) {
 
 func (b *_ApduDataOtherBuilder) DeepCopy() any {
 	_copy := b.CreateApduDataOtherBuilder().(*_ApduDataOtherBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

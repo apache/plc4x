@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func NewUtcTimeBuilder() UtcTimeBuilder {
 type _UtcTimeBuilder struct {
 	*_UtcTime
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (UtcTimeBuilder) = (*_UtcTimeBuilder)(nil)
@@ -88,8 +89,8 @@ func (b *_UtcTimeBuilder) WithMandatoryFields() UtcTimeBuilder {
 }
 
 func (b *_UtcTimeBuilder) Build() (UtcTime, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._UtcTime.deepCopy(), nil
 }
@@ -104,8 +105,8 @@ func (b *_UtcTimeBuilder) MustBuild() UtcTime {
 
 func (b *_UtcTimeBuilder) DeepCopy() any {
 	_copy := b.CreateUtcTimeBuilder().(*_UtcTimeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

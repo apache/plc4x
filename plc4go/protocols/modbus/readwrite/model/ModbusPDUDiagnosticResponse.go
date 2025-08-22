@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _ModbusPDUDiagnosticResponseBuilder struct {
 
 	parentBuilder *_ModbusPDUBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ModbusPDUDiagnosticResponseBuilder) = (*_ModbusPDUDiagnosticResponseBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_ModbusPDUDiagnosticResponseBuilder) WithData(data uint16) ModbusPDUDia
 }
 
 func (b *_ModbusPDUDiagnosticResponseBuilder) Build() (ModbusPDUDiagnosticResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUDiagnosticResponse.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_ModbusPDUDiagnosticResponseBuilder) buildForModbusPDU() (ModbusPDU, er
 
 func (b *_ModbusPDUDiagnosticResponseBuilder) DeepCopy() any {
 	_copy := b.CreateModbusPDUDiagnosticResponseBuilder().(*_ModbusPDUDiagnosticResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

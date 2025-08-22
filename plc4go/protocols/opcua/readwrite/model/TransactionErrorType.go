@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -124,7 +125,7 @@ type _TransactionErrorTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TransactionErrorTypeBuilder) = (*_TransactionErrorTypeBuilder)(nil)
@@ -148,10 +149,7 @@ func (b *_TransactionErrorTypeBuilder) WithTargetIdBuilder(builderSupplier func(
 	var err error
 	b.TargetId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -166,10 +164,7 @@ func (b *_TransactionErrorTypeBuilder) WithErrorBuilder(builderSupplier func(Sta
 	var err error
 	b.Error, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
 	return b
 }
@@ -184,35 +179,23 @@ func (b *_TransactionErrorTypeBuilder) WithMessageBuilder(builderSupplier func(L
 	var err error
 	b.Message, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
 	return b
 }
 
 func (b *_TransactionErrorTypeBuilder) Build() (TransactionErrorType, error) {
 	if b.TargetId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'targetId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'targetId' not set"))
 	}
 	if b.Error == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'error' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'error' not set"))
 	}
 	if b.Message == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'message' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'message' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TransactionErrorType.deepCopy(), nil
 }
@@ -238,8 +221,8 @@ func (b *_TransactionErrorTypeBuilder) buildForExtensionObjectDefinition() (Exte
 
 func (b *_TransactionErrorTypeBuilder) DeepCopy() any {
 	_copy := b.CreateTransactionErrorTypeBuilder().(*_TransactionErrorTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

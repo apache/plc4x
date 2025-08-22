@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -113,7 +114,7 @@ type _SemanticChangeStructureDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SemanticChangeStructureDataTypeBuilder) = (*_SemanticChangeStructureDataTypeBuilder)(nil)
@@ -137,10 +138,7 @@ func (b *_SemanticChangeStructureDataTypeBuilder) WithAffectedBuilder(builderSup
 	var err error
 	b.Affected, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -155,29 +153,20 @@ func (b *_SemanticChangeStructureDataTypeBuilder) WithAffectedTypeBuilder(builde
 	var err error
 	b.AffectedType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
 
 func (b *_SemanticChangeStructureDataTypeBuilder) Build() (SemanticChangeStructureDataType, error) {
 	if b.Affected == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'affected' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'affected' not set"))
 	}
 	if b.AffectedType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'affectedType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'affectedType' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SemanticChangeStructureDataType.deepCopy(), nil
 }
@@ -203,8 +192,8 @@ func (b *_SemanticChangeStructureDataTypeBuilder) buildForExtensionObjectDefinit
 
 func (b *_SemanticChangeStructureDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateSemanticChangeStructureDataTypeBuilder().(*_SemanticChangeStructureDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

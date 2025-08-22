@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _APDUUnknownBuilder struct {
 
 	parentBuilder *_APDUBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (APDUUnknownBuilder) = (*_APDUUnknownBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_APDUUnknownBuilder) WithUnknownBytes(unknownBytes ...byte) APDUUnknown
 }
 
 func (b *_APDUUnknownBuilder) Build() (APDUUnknown, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._APDUUnknown.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_APDUUnknownBuilder) buildForAPDU() (APDU, error) {
 
 func (b *_APDUUnknownBuilder) DeepCopy() any {
 	_copy := b.CreateAPDUUnknownBuilder().(*_APDUUnknownBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

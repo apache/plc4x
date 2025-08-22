@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -151,7 +152,7 @@ type _IdentifyReplyCommandDSIStatusBuilder struct {
 
 	parentBuilder *_IdentifyReplyCommandBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (IdentifyReplyCommandDSIStatusBuilder) = (*_IdentifyReplyCommandDSIStatusBuilder)(nil)
@@ -216,8 +217,8 @@ func (b *_IdentifyReplyCommandDSIStatusBuilder) WithDimmingUCRevisionNumber(dimm
 }
 
 func (b *_IdentifyReplyCommandDSIStatusBuilder) Build() (IdentifyReplyCommandDSIStatus, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._IdentifyReplyCommandDSIStatus.deepCopy(), nil
 }
@@ -243,8 +244,8 @@ func (b *_IdentifyReplyCommandDSIStatusBuilder) buildForIdentifyReplyCommand() (
 
 func (b *_IdentifyReplyCommandDSIStatusBuilder) DeepCopy() any {
 	_copy := b.CreateIdentifyReplyCommandDSIStatusBuilder().(*_IdentifyReplyCommandDSIStatusBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

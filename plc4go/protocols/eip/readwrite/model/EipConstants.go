@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -84,7 +85,7 @@ func NewEipConstantsBuilder() EipConstantsBuilder {
 type _EipConstantsBuilder struct {
 	*_EipConstants
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (EipConstantsBuilder) = (*_EipConstantsBuilder)(nil)
@@ -94,8 +95,8 @@ func (b *_EipConstantsBuilder) WithMandatoryFields() EipConstantsBuilder {
 }
 
 func (b *_EipConstantsBuilder) Build() (EipConstants, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._EipConstants.deepCopy(), nil
 }
@@ -110,8 +111,8 @@ func (b *_EipConstantsBuilder) MustBuild() EipConstants {
 
 func (b *_EipConstantsBuilder) DeepCopy() any {
 	_copy := b.CreateEipConstantsBuilder().(*_EipConstantsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _ApduDataDeviceDescriptorReadBuilder struct {
 
 	parentBuilder *_ApduDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApduDataDeviceDescriptorReadBuilder) = (*_ApduDataDeviceDescriptorReadBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_ApduDataDeviceDescriptorReadBuilder) WithDescriptorType(descriptorType
 }
 
 func (b *_ApduDataDeviceDescriptorReadBuilder) Build() (ApduDataDeviceDescriptorRead, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataDeviceDescriptorRead.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_ApduDataDeviceDescriptorReadBuilder) buildForApduData() (ApduData, err
 
 func (b *_ApduDataDeviceDescriptorReadBuilder) DeepCopy() any {
 	_copy := b.CreateApduDataDeviceDescriptorReadBuilder().(*_ApduDataDeviceDescriptorReadBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

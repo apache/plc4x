@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -150,7 +151,7 @@ func NewDeviceDescriptorType2Builder() DeviceDescriptorType2Builder {
 type _DeviceDescriptorType2Builder struct {
 	*_DeviceDescriptorType2
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DeviceDescriptorType2Builder) = (*_DeviceDescriptorType2Builder)(nil)
@@ -199,10 +200,7 @@ func (b *_DeviceDescriptorType2Builder) WithChannelInfo1Builder(builderSupplier 
 	var err error
 	b.ChannelInfo1, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ChannelInformationBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ChannelInformationBuilder failed"))
 	}
 	return b
 }
@@ -217,10 +215,7 @@ func (b *_DeviceDescriptorType2Builder) WithChannelInfo2Builder(builderSupplier 
 	var err error
 	b.ChannelInfo2, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ChannelInformationBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ChannelInformationBuilder failed"))
 	}
 	return b
 }
@@ -235,10 +230,7 @@ func (b *_DeviceDescriptorType2Builder) WithChannelInfo3Builder(builderSupplier 
 	var err error
 	b.ChannelInfo3, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ChannelInformationBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ChannelInformationBuilder failed"))
 	}
 	return b
 }
@@ -253,41 +245,26 @@ func (b *_DeviceDescriptorType2Builder) WithChannelInfo4Builder(builderSupplier 
 	var err error
 	b.ChannelInfo4, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ChannelInformationBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ChannelInformationBuilder failed"))
 	}
 	return b
 }
 
 func (b *_DeviceDescriptorType2Builder) Build() (DeviceDescriptorType2, error) {
 	if b.ChannelInfo1 == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'channelInfo1' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'channelInfo1' not set"))
 	}
 	if b.ChannelInfo2 == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'channelInfo2' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'channelInfo2' not set"))
 	}
 	if b.ChannelInfo3 == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'channelInfo3' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'channelInfo3' not set"))
 	}
 	if b.ChannelInfo4 == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'channelInfo4' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'channelInfo4' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DeviceDescriptorType2.deepCopy(), nil
 }
@@ -302,8 +279,8 @@ func (b *_DeviceDescriptorType2Builder) MustBuild() DeviceDescriptorType2 {
 
 func (b *_DeviceDescriptorType2Builder) DeepCopy() any {
 	_copy := b.CreateDeviceDescriptorType2Builder().(*_DeviceDescriptorType2Builder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

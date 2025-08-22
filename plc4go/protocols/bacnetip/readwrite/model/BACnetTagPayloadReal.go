@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -85,7 +86,7 @@ func NewBACnetTagPayloadRealBuilder() BACnetTagPayloadRealBuilder {
 type _BACnetTagPayloadRealBuilder struct {
 	*_BACnetTagPayloadReal
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetTagPayloadRealBuilder) = (*_BACnetTagPayloadRealBuilder)(nil)
@@ -100,8 +101,8 @@ func (b *_BACnetTagPayloadRealBuilder) WithValue(value float32) BACnetTagPayload
 }
 
 func (b *_BACnetTagPayloadRealBuilder) Build() (BACnetTagPayloadReal, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetTagPayloadReal.deepCopy(), nil
 }
@@ -116,8 +117,8 @@ func (b *_BACnetTagPayloadRealBuilder) MustBuild() BACnetTagPayloadReal {
 
 func (b *_BACnetTagPayloadRealBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetTagPayloadRealBuilder().(*_BACnetTagPayloadRealBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

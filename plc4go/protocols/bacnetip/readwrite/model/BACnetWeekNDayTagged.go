@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -141,7 +142,7 @@ func NewBACnetWeekNDayTaggedBuilder() BACnetWeekNDayTaggedBuilder {
 type _BACnetWeekNDayTaggedBuilder struct {
 	*_BACnetWeekNDayTagged
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetWeekNDayTaggedBuilder) = (*_BACnetWeekNDayTaggedBuilder)(nil)
@@ -160,10 +161,7 @@ func (b *_BACnetWeekNDayTaggedBuilder) WithHeaderBuilder(builderSupplier func(BA
 	var err error
 	b.Header, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
 	return b
 }
@@ -194,13 +192,10 @@ func (b *_BACnetWeekNDayTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnet
 
 func (b *_BACnetWeekNDayTaggedBuilder) Build() (BACnetWeekNDayTagged, error) {
 	if b.Header == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'header' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'header' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetWeekNDayTagged.deepCopy(), nil
 }
@@ -215,8 +210,8 @@ func (b *_BACnetWeekNDayTaggedBuilder) MustBuild() BACnetWeekNDayTagged {
 
 func (b *_BACnetWeekNDayTaggedBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetWeekNDayTaggedBuilder().(*_BACnetWeekNDayTaggedBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func NewCounterBuilder() CounterBuilder {
 type _CounterBuilder struct {
 	*_Counter
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CounterBuilder) = (*_CounterBuilder)(nil)
@@ -88,8 +89,8 @@ func (b *_CounterBuilder) WithMandatoryFields() CounterBuilder {
 }
 
 func (b *_CounterBuilder) Build() (Counter, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Counter.deepCopy(), nil
 }
@@ -104,8 +105,8 @@ func (b *_CounterBuilder) MustBuild() Counter {
 
 func (b *_CounterBuilder) DeepCopy() any {
 	_copy := b.CreateCounterBuilder().(*_CounterBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

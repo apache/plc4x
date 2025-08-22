@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -167,7 +168,7 @@ func NewAdsDataTypeTableChildEntryBuilder() AdsDataTypeTableChildEntryBuilder {
 type _AdsDataTypeTableChildEntryBuilder struct {
 	*_AdsDataTypeTableChildEntry
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AdsDataTypeTableChildEntryBuilder) = (*_AdsDataTypeTableChildEntryBuilder)(nil)
@@ -257,8 +258,8 @@ func (b *_AdsDataTypeTableChildEntryBuilder) WithRest(rest ...byte) AdsDataTypeT
 }
 
 func (b *_AdsDataTypeTableChildEntryBuilder) Build() (AdsDataTypeTableChildEntry, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsDataTypeTableChildEntry.deepCopy(), nil
 }
@@ -273,8 +274,8 @@ func (b *_AdsDataTypeTableChildEntryBuilder) MustBuild() AdsDataTypeTableChildEn
 
 func (b *_AdsDataTypeTableChildEntryBuilder) DeepCopy() any {
 	_copy := b.CreateAdsDataTypeTableChildEntryBuilder().(*_AdsDataTypeTableChildEntryBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

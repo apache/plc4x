@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _SALDataVentilationBuilder struct {
 
 	parentBuilder *_SALDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SALDataVentilationBuilder) = (*_SALDataVentilationBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_SALDataVentilationBuilder) WithVentilationDataBuilder(builderSupplier 
 	var err error
 	b.VentilationData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "LightingDataBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "LightingDataBuilder failed"))
 	}
 	return b
 }
 
 func (b *_SALDataVentilationBuilder) Build() (SALDataVentilation, error) {
 	if b.VentilationData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'ventilationData' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'ventilationData' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALDataVentilation.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_SALDataVentilationBuilder) buildForSALData() (SALData, error) {
 
 func (b *_SALDataVentilationBuilder) DeepCopy() any {
 	_copy := b.CreateSALDataVentilationBuilder().(*_SALDataVentilationBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

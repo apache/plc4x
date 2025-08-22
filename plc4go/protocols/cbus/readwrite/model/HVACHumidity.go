@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -87,7 +88,7 @@ func NewHVACHumidityBuilder() HVACHumidityBuilder {
 type _HVACHumidityBuilder struct {
 	*_HVACHumidity
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (HVACHumidityBuilder) = (*_HVACHumidityBuilder)(nil)
@@ -102,8 +103,8 @@ func (b *_HVACHumidityBuilder) WithHumidityValue(humidityValue uint16) HVACHumid
 }
 
 func (b *_HVACHumidityBuilder) Build() (HVACHumidity, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._HVACHumidity.deepCopy(), nil
 }
@@ -118,8 +119,8 @@ func (b *_HVACHumidityBuilder) MustBuild() HVACHumidity {
 
 func (b *_HVACHumidityBuilder) DeepCopy() any {
 	_copy := b.CreateHVACHumidityBuilder().(*_HVACHumidityBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

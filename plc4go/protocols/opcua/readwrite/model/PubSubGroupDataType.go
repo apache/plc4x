@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -145,7 +146,7 @@ type _PubSubGroupDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (PubSubGroupDataTypeBuilder) = (*_PubSubGroupDataTypeBuilder)(nil)
@@ -169,10 +170,7 @@ func (b *_PubSubGroupDataTypeBuilder) WithNameBuilder(builderSupplier func(Pasca
 	var err error
 	b.Name, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -197,10 +195,7 @@ func (b *_PubSubGroupDataTypeBuilder) WithSecurityGroupIdBuilder(builderSupplier
 	var err error
 	b.SecurityGroupId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -222,19 +217,13 @@ func (b *_PubSubGroupDataTypeBuilder) WithGroupProperties(groupProperties ...Key
 
 func (b *_PubSubGroupDataTypeBuilder) Build() (PubSubGroupDataType, error) {
 	if b.Name == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'name' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
 	if b.SecurityGroupId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'securityGroupId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'securityGroupId' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PubSubGroupDataType.deepCopy(), nil
 }
@@ -260,8 +249,8 @@ func (b *_PubSubGroupDataTypeBuilder) buildForExtensionObjectDefinition() (Exten
 
 func (b *_PubSubGroupDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreatePubSubGroupDataTypeBuilder().(*_PubSubGroupDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

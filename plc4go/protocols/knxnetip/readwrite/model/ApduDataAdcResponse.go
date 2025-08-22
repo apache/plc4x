@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _ApduDataAdcResponseBuilder struct {
 
 	parentBuilder *_ApduDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApduDataAdcResponseBuilder) = (*_ApduDataAdcResponseBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_ApduDataAdcResponseBuilder) WithMandatoryFields() ApduDataAdcResponseB
 }
 
 func (b *_ApduDataAdcResponseBuilder) Build() (ApduDataAdcResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataAdcResponse.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_ApduDataAdcResponseBuilder) buildForApduData() (ApduData, error) {
 
 func (b *_ApduDataAdcResponseBuilder) DeepCopy() any {
 	_copy := b.CreateApduDataAdcResponseBuilder().(*_ApduDataAdcResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

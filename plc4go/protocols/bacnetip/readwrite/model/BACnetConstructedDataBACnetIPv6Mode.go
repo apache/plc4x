@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataBACnetIPv6ModeBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataBACnetIPv6ModeBuilder) = (*_BACnetConstructedDataBACnetIPv6ModeBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataBACnetIPv6ModeBuilder) WithBacnetIpv6ModeBuilder(
 	var err error
 	b.BacnetIpv6Mode, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetIPModeTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetIPModeTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataBACnetIPv6ModeBuilder) Build() (BACnetConstructedDataBACnetIPv6Mode, error) {
 	if b.BacnetIpv6Mode == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'bacnetIpv6Mode' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'bacnetIpv6Mode' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataBACnetIPv6Mode.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataBACnetIPv6ModeBuilder) buildForBACnetConstructedD
 
 func (b *_BACnetConstructedDataBACnetIPv6ModeBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataBACnetIPv6ModeBuilder().(*_BACnetConstructedDataBACnetIPv6ModeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

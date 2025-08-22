@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _KnxNetObjectServerBuilder struct {
 
 	parentBuilder *_ServiceIdBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (KnxNetObjectServerBuilder) = (*_KnxNetObjectServerBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_KnxNetObjectServerBuilder) WithVersion(version uint8) KnxNetObjectServ
 }
 
 func (b *_KnxNetObjectServerBuilder) Build() (KnxNetObjectServer, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._KnxNetObjectServer.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_KnxNetObjectServerBuilder) buildForServiceId() (ServiceId, error) {
 
 func (b *_KnxNetObjectServerBuilder) DeepCopy() any {
 	_copy := b.CreateKnxNetObjectServerBuilder().(*_KnxNetObjectServerBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

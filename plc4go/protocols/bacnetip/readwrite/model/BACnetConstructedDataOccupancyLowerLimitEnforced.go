@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) = (*_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) WithOccupancy
 	var err error
 	b.OccupancyLowerLimitEnforced, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) Build() (BACnetConstructedDataOccupancyLowerLimitEnforced, error) {
 	if b.OccupancyLowerLimitEnforced == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'occupancyLowerLimitEnforced' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'occupancyLowerLimitEnforced' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataOccupancyLowerLimitEnforced.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) buildForBACne
 
 func (b *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataOccupancyLowerLimitEnforcedBuilder().(*_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

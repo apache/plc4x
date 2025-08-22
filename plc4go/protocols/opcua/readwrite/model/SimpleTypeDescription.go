@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -130,7 +131,7 @@ type _SimpleTypeDescriptionBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SimpleTypeDescriptionBuilder) = (*_SimpleTypeDescriptionBuilder)(nil)
@@ -154,10 +155,7 @@ func (b *_SimpleTypeDescriptionBuilder) WithDataTypeIdBuilder(builderSupplier fu
 	var err error
 	b.DataTypeId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -172,10 +170,7 @@ func (b *_SimpleTypeDescriptionBuilder) WithNameBuilder(builderSupplier func(Qua
 	var err error
 	b.Name, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "QualifiedNameBuilder failed"))
 	}
 	return b
 }
@@ -190,10 +185,7 @@ func (b *_SimpleTypeDescriptionBuilder) WithBaseDataTypeBuilder(builderSupplier 
 	var err error
 	b.BaseDataType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -205,25 +197,16 @@ func (b *_SimpleTypeDescriptionBuilder) WithBuiltInType(builtInType uint8) Simpl
 
 func (b *_SimpleTypeDescriptionBuilder) Build() (SimpleTypeDescription, error) {
 	if b.DataTypeId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'dataTypeId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dataTypeId' not set"))
 	}
 	if b.Name == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'name' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
 	if b.BaseDataType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'baseDataType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'baseDataType' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SimpleTypeDescription.deepCopy(), nil
 }
@@ -249,8 +232,8 @@ func (b *_SimpleTypeDescriptionBuilder) buildForExtensionObjectDefinition() (Ext
 
 func (b *_SimpleTypeDescriptionBuilder) DeepCopy() any {
 	_copy := b.CreateSimpleTypeDescriptionBuilder().(*_SimpleTypeDescriptionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

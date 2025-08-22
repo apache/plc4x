@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _SALDataFreeUsageBuilder struct {
 
 	parentBuilder *_SALDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SALDataFreeUsageBuilder) = (*_SALDataFreeUsageBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_SALDataFreeUsageBuilder) WithMandatoryFields() SALDataFreeUsageBuilder
 }
 
 func (b *_SALDataFreeUsageBuilder) Build() (SALDataFreeUsage, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALDataFreeUsage.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_SALDataFreeUsageBuilder) buildForSALData() (SALData, error) {
 
 func (b *_SALDataFreeUsageBuilder) DeepCopy() any {
 	_copy := b.CreateSALDataFreeUsageBuilder().(*_SALDataFreeUsageBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

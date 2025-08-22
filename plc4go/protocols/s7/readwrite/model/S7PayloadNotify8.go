@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _S7PayloadNotify8Builder struct {
 
 	parentBuilder *_S7PayloadUserDataItemBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7PayloadNotify8Builder) = (*_S7PayloadNotify8Builder)(nil)
@@ -126,23 +127,17 @@ func (b *_S7PayloadNotify8Builder) WithAlarmMessageBuilder(builderSupplier func(
 	var err error
 	b.AlarmMessage, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "AlarmMessagePushTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "AlarmMessagePushTypeBuilder failed"))
 	}
 	return b
 }
 
 func (b *_S7PayloadNotify8Builder) Build() (S7PayloadNotify8, error) {
 	if b.AlarmMessage == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'alarmMessage' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'alarmMessage' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadNotify8.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_S7PayloadNotify8Builder) buildForS7PayloadUserDataItem() (S7PayloadUse
 
 func (b *_S7PayloadNotify8Builder) DeepCopy() any {
 	_copy := b.CreateS7PayloadNotify8Builder().(*_S7PayloadNotify8Builder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

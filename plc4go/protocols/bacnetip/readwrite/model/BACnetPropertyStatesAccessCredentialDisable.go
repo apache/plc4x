@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetPropertyStatesAccessCredentialDisableBuilder struct {
 
 	parentBuilder *_BACnetPropertyStatesBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPropertyStatesAccessCredentialDisableBuilder) = (*_BACnetPropertyStatesAccessCredentialDisableBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetPropertyStatesAccessCredentialDisableBuilder) WithAccessCredenti
 	var err error
 	b.AccessCredentialDisable, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetAccessCredentialDisableTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetAccessCredentialDisableTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetPropertyStatesAccessCredentialDisableBuilder) Build() (BACnetPropertyStatesAccessCredentialDisable, error) {
 	if b.AccessCredentialDisable == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'accessCredentialDisable' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'accessCredentialDisable' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesAccessCredentialDisable.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetPropertyStatesAccessCredentialDisableBuilder) buildForBACnetProp
 
 func (b *_BACnetPropertyStatesAccessCredentialDisableBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPropertyStatesAccessCredentialDisableBuilder().(*_BACnetPropertyStatesAccessCredentialDisableBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -222,7 +223,7 @@ type _BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder struct {
 
 	parentBuilder *_BACnetConfirmedServiceRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) = (*_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder)(nil)
@@ -246,10 +247,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) WithPr
 	var err error
 	b.ProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -264,10 +262,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) WithIn
 	var err error
 	b.InitiatingDeviceIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
 	return b
 }
@@ -282,10 +277,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) WithEv
 	var err error
 	b.EventObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
 	return b
 }
@@ -300,10 +292,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) WithTi
 	var err error
 	b.Timestamp, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetTimeStampEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTimeStampEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -318,10 +307,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) WithNo
 	var err error
 	b.NotificationClass, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -336,10 +322,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) WithPr
 	var err error
 	b.Priority, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -354,10 +337,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) WithEv
 	var err error
 	b.EventType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
 	}
 	return b
 }
@@ -372,10 +352,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) WithOp
 	var err error
 	b.MessageText, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
 	}
 	return b
 }
@@ -390,10 +367,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) WithNo
 	var err error
 	b.NotifyType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetNotifyTypeTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetNotifyTypeTaggedBuilder failed"))
 	}
 	return b
 }
@@ -408,10 +382,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) WithOp
 	var err error
 	b.AckRequired, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
 	return b
 }
@@ -426,10 +397,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) WithOp
 	var err error
 	b.FromState, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
 	}
 	return b
 }
@@ -444,10 +412,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) WithTo
 	var err error
 	b.ToState, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
 	}
 	return b
 }
@@ -462,71 +427,41 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) WithOp
 	var err error
 	b.EventValues, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetNotificationParametersBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetNotificationParametersBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) Build() (BACnetConfirmedServiceRequestConfirmedEventNotification, error) {
 	if b.ProcessIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'processIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'processIdentifier' not set"))
 	}
 	if b.InitiatingDeviceIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'initiatingDeviceIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'initiatingDeviceIdentifier' not set"))
 	}
 	if b.EventObjectIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'eventObjectIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'eventObjectIdentifier' not set"))
 	}
 	if b.Timestamp == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'timestamp' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timestamp' not set"))
 	}
 	if b.NotificationClass == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'notificationClass' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'notificationClass' not set"))
 	}
 	if b.Priority == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'priority' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'priority' not set"))
 	}
 	if b.EventType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'eventType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'eventType' not set"))
 	}
 	if b.NotifyType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'notifyType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'notifyType' not set"))
 	}
 	if b.ToState == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'toState' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'toState' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestConfirmedEventNotification.deepCopy(), nil
 }
@@ -552,8 +487,8 @@ func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) buildF
 
 func (b *_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConfirmedServiceRequestConfirmedEventNotificationBuilder().(*_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

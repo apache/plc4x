@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -150,7 +151,7 @@ type _ApplicationConfigurationDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApplicationConfigurationDataTypeBuilder) = (*_ApplicationConfigurationDataTypeBuilder)(nil)
@@ -184,10 +185,7 @@ func (b *_ApplicationConfigurationDataTypeBuilder) WithApplicationIdentityBuilde
 	var err error
 	b.ApplicationIdentity, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ApplicationIdentityDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ApplicationIdentityDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -224,13 +222,10 @@ func (b *_ApplicationConfigurationDataTypeBuilder) WithAuthorizationServices(aut
 
 func (b *_ApplicationConfigurationDataTypeBuilder) Build() (ApplicationConfigurationDataType, error) {
 	if b.ApplicationIdentity == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'applicationIdentity' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'applicationIdentity' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApplicationConfigurationDataType.deepCopy(), nil
 }
@@ -256,8 +251,8 @@ func (b *_ApplicationConfigurationDataTypeBuilder) buildForExtensionObjectDefini
 
 func (b *_ApplicationConfigurationDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateApplicationConfigurationDataTypeBuilder().(*_ApplicationConfigurationDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

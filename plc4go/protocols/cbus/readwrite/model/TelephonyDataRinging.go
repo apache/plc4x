@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -99,7 +100,7 @@ type _TelephonyDataRingingBuilder struct {
 
 	parentBuilder *_TelephonyDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TelephonyDataRingingBuilder) = (*_TelephonyDataRingingBuilder)(nil)
@@ -119,8 +120,8 @@ func (b *_TelephonyDataRingingBuilder) WithNumber(number string) TelephonyDataRi
 }
 
 func (b *_TelephonyDataRingingBuilder) Build() (TelephonyDataRinging, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TelephonyDataRinging.deepCopy(), nil
 }
@@ -146,8 +147,8 @@ func (b *_TelephonyDataRingingBuilder) buildForTelephonyData() (TelephonyData, e
 
 func (b *_TelephonyDataRingingBuilder) DeepCopy() any {
 	_copy := b.CreateTelephonyDataRingingBuilder().(*_TelephonyDataRingingBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

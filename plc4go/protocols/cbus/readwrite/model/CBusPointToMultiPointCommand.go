@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -130,7 +131,7 @@ type _CBusPointToMultiPointCommandBuilder struct {
 
 	childBuilder _CBusPointToMultiPointCommandChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CBusPointToMultiPointCommandBuilder) = (*_CBusPointToMultiPointCommandBuilder)(nil)
@@ -150,8 +151,8 @@ func (b *_CBusPointToMultiPointCommandBuilder) WithArgCBusOptions(cBusOptions CB
 }
 
 func (b *_CBusPointToMultiPointCommandBuilder) PartialBuild() (CBusPointToMultiPointCommandContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CBusPointToMultiPointCommand.deepCopy(), nil
 }
@@ -208,8 +209,8 @@ func (b *_CBusPointToMultiPointCommandBuilder) DeepCopy() any {
 	_copy := b.CreateCBusPointToMultiPointCommandBuilder().(*_CBusPointToMultiPointCommandBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_CBusPointToMultiPointCommandChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -169,7 +170,7 @@ type _JsonDataSetMetaDataMessageBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (JsonDataSetMetaDataMessageBuilder) = (*_JsonDataSetMetaDataMessageBuilder)(nil)
@@ -193,10 +194,7 @@ func (b *_JsonDataSetMetaDataMessageBuilder) WithMessageIdBuilder(builderSupplie
 	var err error
 	b.MessageId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -211,10 +209,7 @@ func (b *_JsonDataSetMetaDataMessageBuilder) WithMessageTypeBuilder(builderSuppl
 	var err error
 	b.MessageType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -229,10 +224,7 @@ func (b *_JsonDataSetMetaDataMessageBuilder) WithPublisherIdBuilder(builderSuppl
 	var err error
 	b.PublisherId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -252,10 +244,7 @@ func (b *_JsonDataSetMetaDataMessageBuilder) WithWriterGroupNameBuilder(builderS
 	var err error
 	b.WriterGroupName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -270,10 +259,7 @@ func (b *_JsonDataSetMetaDataMessageBuilder) WithDataSetWriterNameBuilder(builde
 	var err error
 	b.DataSetWriterName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -293,53 +279,32 @@ func (b *_JsonDataSetMetaDataMessageBuilder) WithMetaDataBuilder(builderSupplier
 	var err error
 	b.MetaData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DataSetMetaDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DataSetMetaDataTypeBuilder failed"))
 	}
 	return b
 }
 
 func (b *_JsonDataSetMetaDataMessageBuilder) Build() (JsonDataSetMetaDataMessage, error) {
 	if b.MessageId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'messageId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'messageId' not set"))
 	}
 	if b.MessageType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'messageType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'messageType' not set"))
 	}
 	if b.PublisherId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'publisherId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'publisherId' not set"))
 	}
 	if b.WriterGroupName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'writerGroupName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'writerGroupName' not set"))
 	}
 	if b.DataSetWriterName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'dataSetWriterName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dataSetWriterName' not set"))
 	}
 	if b.MetaData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'metaData' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'metaData' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._JsonDataSetMetaDataMessage.deepCopy(), nil
 }
@@ -365,8 +330,8 @@ func (b *_JsonDataSetMetaDataMessageBuilder) buildForExtensionObjectDefinition()
 
 func (b *_JsonDataSetMetaDataMessageBuilder) DeepCopy() any {
 	_copy := b.CreateJsonDataSetMetaDataMessageBuilder().(*_JsonDataSetMetaDataMessageBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func NewNormalizedStringBuilder() NormalizedStringBuilder {
 type _NormalizedStringBuilder struct {
 	*_NormalizedString
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NormalizedStringBuilder) = (*_NormalizedStringBuilder)(nil)
@@ -88,8 +89,8 @@ func (b *_NormalizedStringBuilder) WithMandatoryFields() NormalizedStringBuilder
 }
 
 func (b *_NormalizedStringBuilder) Build() (NormalizedString, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NormalizedString.deepCopy(), nil
 }
@@ -104,8 +105,8 @@ func (b *_NormalizedStringBuilder) MustBuild() NormalizedString {
 
 func (b *_NormalizedStringBuilder) DeepCopy() any {
 	_copy := b.CreateNormalizedStringBuilder().(*_NormalizedStringBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

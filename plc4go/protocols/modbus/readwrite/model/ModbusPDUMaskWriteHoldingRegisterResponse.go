@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -109,7 +110,7 @@ type _ModbusPDUMaskWriteHoldingRegisterResponseBuilder struct {
 
 	parentBuilder *_ModbusPDUBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ModbusPDUMaskWriteHoldingRegisterResponseBuilder) = (*_ModbusPDUMaskWriteHoldingRegisterResponseBuilder)(nil)
@@ -139,8 +140,8 @@ func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) WithOrMask(orMask ui
 }
 
 func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) Build() (ModbusPDUMaskWriteHoldingRegisterResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUMaskWriteHoldingRegisterResponse.deepCopy(), nil
 }
@@ -166,8 +167,8 @@ func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) buildForModbusPDU() 
 
 func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) DeepCopy() any {
 	_copy := b.CreateModbusPDUMaskWriteHoldingRegisterResponseBuilder().(*_ModbusPDUMaskWriteHoldingRegisterResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

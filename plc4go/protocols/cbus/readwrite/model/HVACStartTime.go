@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewHVACStartTimeBuilder() HVACStartTimeBuilder {
 type _HVACStartTimeBuilder struct {
 	*_HVACStartTime
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (HVACStartTimeBuilder) = (*_HVACStartTimeBuilder)(nil)
@@ -110,8 +111,8 @@ func (b *_HVACStartTimeBuilder) WithMinutesSinceSunday12AM(minutesSinceSunday12A
 }
 
 func (b *_HVACStartTimeBuilder) Build() (HVACStartTime, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._HVACStartTime.deepCopy(), nil
 }
@@ -126,8 +127,8 @@ func (b *_HVACStartTimeBuilder) MustBuild() HVACStartTime {
 
 func (b *_HVACStartTimeBuilder) DeepCopy() any {
 	_copy := b.CreateHVACStartTimeBuilder().(*_HVACStartTimeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

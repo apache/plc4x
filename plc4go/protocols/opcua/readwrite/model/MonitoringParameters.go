@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -128,7 +129,7 @@ type _MonitoringParametersBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MonitoringParametersBuilder) = (*_MonitoringParametersBuilder)(nil)
@@ -162,10 +163,7 @@ func (b *_MonitoringParametersBuilder) WithFilterBuilder(builderSupplier func(Ex
 	var err error
 	b.Filter, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
@@ -182,13 +180,10 @@ func (b *_MonitoringParametersBuilder) WithDiscardOldest(discardOldest bool) Mon
 
 func (b *_MonitoringParametersBuilder) Build() (MonitoringParameters, error) {
 	if b.Filter == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'filter' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'filter' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MonitoringParameters.deepCopy(), nil
 }
@@ -214,8 +209,8 @@ func (b *_MonitoringParametersBuilder) buildForExtensionObjectDefinition() (Exte
 
 func (b *_MonitoringParametersBuilder) DeepCopy() any {
 	_copy := b.CreateMonitoringParametersBuilder().(*_MonitoringParametersBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _TriggerControlDataTriggerMinBuilder struct {
 
 	parentBuilder *_TriggerControlDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TriggerControlDataTriggerMinBuilder) = (*_TriggerControlDataTriggerMinBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_TriggerControlDataTriggerMinBuilder) WithMandatoryFields() TriggerCont
 }
 
 func (b *_TriggerControlDataTriggerMinBuilder) Build() (TriggerControlDataTriggerMin, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TriggerControlDataTriggerMin.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_TriggerControlDataTriggerMinBuilder) buildForTriggerControlData() (Tri
 
 func (b *_TriggerControlDataTriggerMinBuilder) DeepCopy() any {
 	_copy := b.CreateTriggerControlDataTriggerMinBuilder().(*_TriggerControlDataTriggerMinBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -113,7 +114,7 @@ type _RepublishResponseBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (RepublishResponseBuilder) = (*_RepublishResponseBuilder)(nil)
@@ -137,10 +138,7 @@ func (b *_RepublishResponseBuilder) WithResponseHeaderBuilder(builderSupplier fu
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -155,29 +153,20 @@ func (b *_RepublishResponseBuilder) WithNotificationMessageBuilder(builderSuppli
 	var err error
 	b.NotificationMessage, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NotificationMessageBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NotificationMessageBuilder failed"))
 	}
 	return b
 }
 
 func (b *_RepublishResponseBuilder) Build() (RepublishResponse, error) {
 	if b.ResponseHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'responseHeader' not set"))
 	}
 	if b.NotificationMessage == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'notificationMessage' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'notificationMessage' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._RepublishResponse.deepCopy(), nil
 }
@@ -203,8 +192,8 @@ func (b *_RepublishResponseBuilder) buildForExtensionObjectDefinition() (Extensi
 
 func (b *_RepublishResponseBuilder) DeepCopy() any {
 	_copy := b.CreateRepublishResponseBuilder().(*_RepublishResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

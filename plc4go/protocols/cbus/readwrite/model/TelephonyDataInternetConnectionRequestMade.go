@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _TelephonyDataInternetConnectionRequestMadeBuilder struct {
 
 	parentBuilder *_TelephonyDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TelephonyDataInternetConnectionRequestMadeBuilder) = (*_TelephonyDataInternetConnectionRequestMadeBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) WithMandatoryFields
 }
 
 func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) Build() (TelephonyDataInternetConnectionRequestMade, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TelephonyDataInternetConnectionRequestMade.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) buildForTelephonyDa
 
 func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) DeepCopy() any {
 	_copy := b.CreateTelephonyDataInternetConnectionRequestMadeBuilder().(*_TelephonyDataInternetConnectionRequestMadeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

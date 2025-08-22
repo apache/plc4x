@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -101,7 +102,7 @@ type _TelephonyDataRecallLastNumberRequestBuilder struct {
 
 	parentBuilder *_TelephonyDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TelephonyDataRecallLastNumberRequestBuilder) = (*_TelephonyDataRecallLastNumberRequestBuilder)(nil)
@@ -121,8 +122,8 @@ func (b *_TelephonyDataRecallLastNumberRequestBuilder) WithRecallLastNumberType(
 }
 
 func (b *_TelephonyDataRecallLastNumberRequestBuilder) Build() (TelephonyDataRecallLastNumberRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TelephonyDataRecallLastNumberRequest.deepCopy(), nil
 }
@@ -148,8 +149,8 @@ func (b *_TelephonyDataRecallLastNumberRequestBuilder) buildForTelephonyData() (
 
 func (b *_TelephonyDataRecallLastNumberRequestBuilder) DeepCopy() any {
 	_copy := b.CreateTelephonyDataRecallLastNumberRequestBuilder().(*_TelephonyDataRecallLastNumberRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

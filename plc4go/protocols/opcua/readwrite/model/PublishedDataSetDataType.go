@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -136,7 +137,7 @@ type _PublishedDataSetDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (PublishedDataSetDataTypeBuilder) = (*_PublishedDataSetDataTypeBuilder)(nil)
@@ -160,10 +161,7 @@ func (b *_PublishedDataSetDataTypeBuilder) WithNameBuilder(builderSupplier func(
 	var err error
 	b.Name, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -183,10 +181,7 @@ func (b *_PublishedDataSetDataTypeBuilder) WithDataSetMetaDataBuilder(builderSup
 	var err error
 	b.DataSetMetaData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DataSetMetaDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DataSetMetaDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -206,35 +201,23 @@ func (b *_PublishedDataSetDataTypeBuilder) WithDataSetSourceBuilder(builderSuppl
 	var err error
 	b.DataSetSource, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
 
 func (b *_PublishedDataSetDataTypeBuilder) Build() (PublishedDataSetDataType, error) {
 	if b.Name == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'name' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
 	if b.DataSetMetaData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'dataSetMetaData' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dataSetMetaData' not set"))
 	}
 	if b.DataSetSource == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'dataSetSource' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dataSetSource' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PublishedDataSetDataType.deepCopy(), nil
 }
@@ -260,8 +243,8 @@ func (b *_PublishedDataSetDataTypeBuilder) buildForExtensionObjectDefinition() (
 
 func (b *_PublishedDataSetDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreatePublishedDataSetDataTypeBuilder().(*_PublishedDataSetDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

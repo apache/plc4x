@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -94,7 +95,7 @@ func NewAdsDataTypeArrayInfoBuilder() AdsDataTypeArrayInfoBuilder {
 type _AdsDataTypeArrayInfoBuilder struct {
 	*_AdsDataTypeArrayInfo
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AdsDataTypeArrayInfoBuilder) = (*_AdsDataTypeArrayInfoBuilder)(nil)
@@ -114,8 +115,8 @@ func (b *_AdsDataTypeArrayInfoBuilder) WithNumElements(numElements uint32) AdsDa
 }
 
 func (b *_AdsDataTypeArrayInfoBuilder) Build() (AdsDataTypeArrayInfo, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsDataTypeArrayInfo.deepCopy(), nil
 }
@@ -130,8 +131,8 @@ func (b *_AdsDataTypeArrayInfoBuilder) MustBuild() AdsDataTypeArrayInfo {
 
 func (b *_AdsDataTypeArrayInfoBuilder) DeepCopy() any {
 	_copy := b.CreateAdsDataTypeArrayInfoBuilder().(*_AdsDataTypeArrayInfoBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

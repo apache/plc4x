@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -148,7 +149,7 @@ type _RequestHeaderBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (RequestHeaderBuilder) = (*_RequestHeaderBuilder)(nil)
@@ -172,10 +173,7 @@ func (b *_RequestHeaderBuilder) WithAuthenticationTokenBuilder(builderSupplier f
 	var err error
 	b.AuthenticationToken, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -205,10 +203,7 @@ func (b *_RequestHeaderBuilder) WithAuditEntryIdBuilder(builderSupplier func(Pas
 	var err error
 	b.AuditEntryId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -228,35 +223,23 @@ func (b *_RequestHeaderBuilder) WithAdditionalHeaderBuilder(builderSupplier func
 	var err error
 	b.AdditionalHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
 
 func (b *_RequestHeaderBuilder) Build() (RequestHeader, error) {
 	if b.AuthenticationToken == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'authenticationToken' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'authenticationToken' not set"))
 	}
 	if b.AuditEntryId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'auditEntryId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'auditEntryId' not set"))
 	}
 	if b.AdditionalHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'additionalHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'additionalHeader' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._RequestHeader.deepCopy(), nil
 }
@@ -282,8 +265,8 @@ func (b *_RequestHeaderBuilder) buildForExtensionObjectDefinition() (ExtensionOb
 
 func (b *_RequestHeaderBuilder) DeepCopy() any {
 	_copy := b.CreateRequestHeaderBuilder().(*_RequestHeaderBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

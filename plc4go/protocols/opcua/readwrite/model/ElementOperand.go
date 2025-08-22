@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _ElementOperandBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ElementOperandBuilder) = (*_ElementOperandBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_ElementOperandBuilder) WithIndex(index uint32) ElementOperandBuilder {
 }
 
 func (b *_ElementOperandBuilder) Build() (ElementOperand, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ElementOperand.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_ElementOperandBuilder) buildForExtensionObjectDefinition() (ExtensionO
 
 func (b *_ElementOperandBuilder) DeepCopy() any {
 	_copy := b.CreateElementOperandBuilder().(*_ElementOperandBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -124,7 +125,7 @@ type _BACnetUnconfirmedServiceRequestIHaveBuilder struct {
 
 	parentBuilder *_BACnetUnconfirmedServiceRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetUnconfirmedServiceRequestIHaveBuilder) = (*_BACnetUnconfirmedServiceRequestIHaveBuilder)(nil)
@@ -148,10 +149,7 @@ func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithDeviceIdentifierBuild
 	var err error
 	b.DeviceIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
 	return b
 }
@@ -166,10 +164,7 @@ func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithObjectIdentifierBuild
 	var err error
 	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
 	return b
 }
@@ -184,35 +179,23 @@ func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithObjectNameBuilder(bui
 	var err error
 	b.ObjectName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) Build() (BACnetUnconfirmedServiceRequestIHave, error) {
 	if b.DeviceIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'deviceIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'deviceIdentifier' not set"))
 	}
 	if b.ObjectIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'objectIdentifier' not set"))
 	}
 	if b.ObjectName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'objectName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'objectName' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetUnconfirmedServiceRequestIHave.deepCopy(), nil
 }
@@ -238,8 +221,8 @@ func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) buildForBACnetUnconfirmed
 
 func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetUnconfirmedServiceRequestIHaveBuilder().(*_BACnetUnconfirmedServiceRequestIHaveBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

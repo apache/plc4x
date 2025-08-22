@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _FirmataCommandSystemResetBuilder struct {
 
 	parentBuilder *_FirmataCommandBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (FirmataCommandSystemResetBuilder) = (*_FirmataCommandSystemResetBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_FirmataCommandSystemResetBuilder) WithMandatoryFields() FirmataCommand
 }
 
 func (b *_FirmataCommandSystemResetBuilder) Build() (FirmataCommandSystemReset, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._FirmataCommandSystemReset.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_FirmataCommandSystemResetBuilder) buildForFirmataCommand() (FirmataCom
 
 func (b *_FirmataCommandSystemResetBuilder) DeepCopy() any {
 	_copy := b.CreateFirmataCommandSystemResetBuilder().(*_FirmataCommandSystemResetBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

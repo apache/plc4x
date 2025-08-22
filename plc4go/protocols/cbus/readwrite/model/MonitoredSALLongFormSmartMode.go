@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -145,7 +146,7 @@ type _MonitoredSALLongFormSmartModeBuilder struct {
 
 	parentBuilder *_MonitoredSALBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MonitoredSALLongFormSmartModeBuilder) = (*_MonitoredSALLongFormSmartModeBuilder)(nil)
@@ -174,10 +175,7 @@ func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalUnitAddressBuilder(b
 	var err error
 	b.UnitAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "UnitAddressBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "UnitAddressBuilder failed"))
 	}
 	return b
 }
@@ -192,10 +190,7 @@ func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalBridgeAddressBuilder
 	var err error
 	b.BridgeAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BridgeAddressBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BridgeAddressBuilder failed"))
 	}
 	return b
 }
@@ -220,10 +215,7 @@ func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalReplyNetworkBuilder(
 	var err error
 	b.ReplyNetwork, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ReplyNetworkBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ReplyNetworkBuilder failed"))
 	}
 	return b
 }
@@ -238,17 +230,14 @@ func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalSalDataBuilder(build
 	var err error
 	b.SalData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "SALDataBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "SALDataBuilder failed"))
 	}
 	return b
 }
 
 func (b *_MonitoredSALLongFormSmartModeBuilder) Build() (MonitoredSALLongFormSmartMode, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MonitoredSALLongFormSmartMode.deepCopy(), nil
 }
@@ -274,8 +263,8 @@ func (b *_MonitoredSALLongFormSmartModeBuilder) buildForMonitoredSAL() (Monitore
 
 func (b *_MonitoredSALLongFormSmartModeBuilder) DeepCopy() any {
 	_copy := b.CreateMonitoredSALLongFormSmartModeBuilder().(*_MonitoredSALLongFormSmartModeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

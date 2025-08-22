@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -84,7 +85,7 @@ func NewPowerUpBuilder() PowerUpBuilder {
 type _PowerUpBuilder struct {
 	*_PowerUp
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (PowerUpBuilder) = (*_PowerUpBuilder)(nil)
@@ -94,8 +95,8 @@ func (b *_PowerUpBuilder) WithMandatoryFields() PowerUpBuilder {
 }
 
 func (b *_PowerUpBuilder) Build() (PowerUp, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PowerUp.deepCopy(), nil
 }
@@ -110,8 +111,8 @@ func (b *_PowerUpBuilder) MustBuild() PowerUp {
 
 func (b *_PowerUpBuilder) DeepCopy() any {
 	_copy := b.CreatePowerUpBuilder().(*_PowerUpBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

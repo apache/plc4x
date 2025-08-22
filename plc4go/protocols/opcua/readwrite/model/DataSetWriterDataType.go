@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -167,7 +168,7 @@ type _DataSetWriterDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DataSetWriterDataTypeBuilder) = (*_DataSetWriterDataTypeBuilder)(nil)
@@ -191,10 +192,7 @@ func (b *_DataSetWriterDataTypeBuilder) WithNameBuilder(builderSupplier func(Pas
 	var err error
 	b.Name, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -229,10 +227,7 @@ func (b *_DataSetWriterDataTypeBuilder) WithDataSetNameBuilder(builderSupplier f
 	var err error
 	b.DataSetName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -252,10 +247,7 @@ func (b *_DataSetWriterDataTypeBuilder) WithTransportSettingsBuilder(builderSupp
 	var err error
 	b.TransportSettings, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
@@ -270,41 +262,26 @@ func (b *_DataSetWriterDataTypeBuilder) WithMessageSettingsBuilder(builderSuppli
 	var err error
 	b.MessageSettings, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
 
 func (b *_DataSetWriterDataTypeBuilder) Build() (DataSetWriterDataType, error) {
 	if b.Name == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'name' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
 	if b.DataSetName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'dataSetName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dataSetName' not set"))
 	}
 	if b.TransportSettings == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'transportSettings' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'transportSettings' not set"))
 	}
 	if b.MessageSettings == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'messageSettings' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'messageSettings' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DataSetWriterDataType.deepCopy(), nil
 }
@@ -330,8 +307,8 @@ func (b *_DataSetWriterDataTypeBuilder) buildForExtensionObjectDefinition() (Ext
 
 func (b *_DataSetWriterDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateDataSetWriterDataTypeBuilder().(*_DataSetWriterDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

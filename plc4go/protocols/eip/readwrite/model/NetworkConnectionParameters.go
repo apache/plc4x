@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -109,7 +110,7 @@ func NewNetworkConnectionParametersBuilder() NetworkConnectionParametersBuilder 
 type _NetworkConnectionParametersBuilder struct {
 	*_NetworkConnectionParameters
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NetworkConnectionParametersBuilder) = (*_NetworkConnectionParametersBuilder)(nil)
@@ -144,8 +145,8 @@ func (b *_NetworkConnectionParametersBuilder) WithConnectionSizeType(connectionS
 }
 
 func (b *_NetworkConnectionParametersBuilder) Build() (NetworkConnectionParameters, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NetworkConnectionParameters.deepCopy(), nil
 }
@@ -160,8 +161,8 @@ func (b *_NetworkConnectionParametersBuilder) MustBuild() NetworkConnectionParam
 
 func (b *_NetworkConnectionParametersBuilder) DeepCopy() any {
 	_copy := b.CreateNetworkConnectionParametersBuilder().(*_NetworkConnectionParametersBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

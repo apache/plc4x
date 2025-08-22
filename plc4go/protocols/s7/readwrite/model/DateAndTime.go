@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -121,7 +122,7 @@ func NewDateAndTimeBuilder() DateAndTimeBuilder {
 type _DateAndTimeBuilder struct {
 	*_DateAndTime
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DateAndTimeBuilder) = (*_DateAndTimeBuilder)(nil)
@@ -171,8 +172,8 @@ func (b *_DateAndTimeBuilder) WithDow(dow uint8) DateAndTimeBuilder {
 }
 
 func (b *_DateAndTimeBuilder) Build() (DateAndTime, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DateAndTime.deepCopy(), nil
 }
@@ -187,8 +188,8 @@ func (b *_DateAndTimeBuilder) MustBuild() DateAndTime {
 
 func (b *_DateAndTimeBuilder) DeepCopy() any {
 	_copy := b.CreateDateAndTimeBuilder().(*_DateAndTimeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

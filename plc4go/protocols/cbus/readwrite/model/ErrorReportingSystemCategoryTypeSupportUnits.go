@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _ErrorReportingSystemCategoryTypeSupportUnitsBuilder struct {
 
 	parentBuilder *_ErrorReportingSystemCategoryTypeBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ErrorReportingSystemCategoryTypeSupportUnitsBuilder) = (*_ErrorReportingSystemCategoryTypeSupportUnitsBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) WithCategoryForTy
 }
 
 func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) Build() (ErrorReportingSystemCategoryTypeSupportUnits, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ErrorReportingSystemCategoryTypeSupportUnits.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) buildForErrorRepo
 
 func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) DeepCopy() any {
 	_copy := b.CreateErrorReportingSystemCategoryTypeSupportUnitsBuilder().(*_ErrorReportingSystemCategoryTypeSupportUnitsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

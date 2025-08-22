@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -96,7 +97,7 @@ type _DF1UnprotectedReadResponseBuilder struct {
 
 	parentBuilder *_DF1CommandBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DF1UnprotectedReadResponseBuilder) = (*_DF1UnprotectedReadResponseBuilder)(nil)
@@ -116,8 +117,8 @@ func (b *_DF1UnprotectedReadResponseBuilder) WithData(data ...byte) DF1Unprotect
 }
 
 func (b *_DF1UnprotectedReadResponseBuilder) Build() (DF1UnprotectedReadResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DF1UnprotectedReadResponse.deepCopy(), nil
 }
@@ -143,8 +144,8 @@ func (b *_DF1UnprotectedReadResponseBuilder) buildForDF1Command() (DF1Command, e
 
 func (b *_DF1UnprotectedReadResponseBuilder) DeepCopy() any {
 	_copy := b.CreateDF1UnprotectedReadResponseBuilder().(*_DF1UnprotectedReadResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

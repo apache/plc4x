@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataProtocolRevisionBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataProtocolRevisionBuilder) = (*_BACnetConstructedDataProtocolRevisionBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataProtocolRevisionBuilder) WithProtocolRevisionBuil
 	var err error
 	b.ProtocolRevision, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataProtocolRevisionBuilder) Build() (BACnetConstructedDataProtocolRevision, error) {
 	if b.ProtocolRevision == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'protocolRevision' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'protocolRevision' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataProtocolRevision.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataProtocolRevisionBuilder) buildForBACnetConstructe
 
 func (b *_BACnetConstructedDataProtocolRevisionBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataProtocolRevisionBuilder().(*_BACnetConstructedDataProtocolRevisionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

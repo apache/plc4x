@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func NewTimeStringBuilder() TimeStringBuilder {
 type _TimeStringBuilder struct {
 	*_TimeString
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TimeStringBuilder) = (*_TimeStringBuilder)(nil)
@@ -88,8 +89,8 @@ func (b *_TimeStringBuilder) WithMandatoryFields() TimeStringBuilder {
 }
 
 func (b *_TimeStringBuilder) Build() (TimeString, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TimeString.deepCopy(), nil
 }
@@ -104,8 +105,8 @@ func (b *_TimeStringBuilder) MustBuild() TimeString {
 
 func (b *_TimeStringBuilder) DeepCopy() any {
 	_copy := b.CreateTimeStringBuilder().(*_TimeStringBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -105,7 +106,7 @@ func NewAlarmMessagePushTypeBuilder() AlarmMessagePushTypeBuilder {
 type _AlarmMessagePushTypeBuilder struct {
 	*_AlarmMessagePushType
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AlarmMessagePushTypeBuilder) = (*_AlarmMessagePushTypeBuilder)(nil)
@@ -124,10 +125,7 @@ func (b *_AlarmMessagePushTypeBuilder) WithTimeStampBuilder(builderSupplier func
 	var err error
 	b.TimeStamp, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DateAndTimeBuilder failed"))
 	}
 	return b
 }
@@ -149,13 +147,10 @@ func (b *_AlarmMessagePushTypeBuilder) WithMessageObjects(messageObjects ...Alar
 
 func (b *_AlarmMessagePushTypeBuilder) Build() (AlarmMessagePushType, error) {
 	if b.TimeStamp == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'timeStamp' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeStamp' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AlarmMessagePushType.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_AlarmMessagePushTypeBuilder) MustBuild() AlarmMessagePushType {
 
 func (b *_AlarmMessagePushTypeBuilder) DeepCopy() any {
 	_copy := b.CreateAlarmMessagePushTypeBuilder().(*_AlarmMessagePushTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

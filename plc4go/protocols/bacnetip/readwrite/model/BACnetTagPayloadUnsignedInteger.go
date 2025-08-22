@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -143,7 +144,7 @@ func NewBACnetTagPayloadUnsignedIntegerBuilder() BACnetTagPayloadUnsignedInteger
 type _BACnetTagPayloadUnsignedIntegerBuilder struct {
 	*_BACnetTagPayloadUnsignedInteger
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetTagPayloadUnsignedIntegerBuilder) = (*_BACnetTagPayloadUnsignedIntegerBuilder)(nil)
@@ -198,8 +199,8 @@ func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithArgActualLength(actualLeng
 }
 
 func (b *_BACnetTagPayloadUnsignedIntegerBuilder) Build() (BACnetTagPayloadUnsignedInteger, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetTagPayloadUnsignedInteger.deepCopy(), nil
 }
@@ -214,8 +215,8 @@ func (b *_BACnetTagPayloadUnsignedIntegerBuilder) MustBuild() BACnetTagPayloadUn
 
 func (b *_BACnetTagPayloadUnsignedIntegerBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetTagPayloadUnsignedIntegerBuilder().(*_BACnetTagPayloadUnsignedIntegerBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -172,7 +173,7 @@ type _PubSubConnectionDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (PubSubConnectionDataTypeBuilder) = (*_PubSubConnectionDataTypeBuilder)(nil)
@@ -196,10 +197,7 @@ func (b *_PubSubConnectionDataTypeBuilder) WithNameBuilder(builderSupplier func(
 	var err error
 	b.Name, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -219,10 +217,7 @@ func (b *_PubSubConnectionDataTypeBuilder) WithPublisherIdBuilder(builderSupplie
 	var err error
 	b.PublisherId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "VariantBuilder failed"))
 	}
 	return b
 }
@@ -237,10 +232,7 @@ func (b *_PubSubConnectionDataTypeBuilder) WithTransportProfileUriBuilder(builde
 	var err error
 	b.TransportProfileUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -255,10 +247,7 @@ func (b *_PubSubConnectionDataTypeBuilder) WithAddressBuilder(builderSupplier fu
 	var err error
 	b.Address, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
@@ -278,10 +267,7 @@ func (b *_PubSubConnectionDataTypeBuilder) WithTransportSettingsBuilder(builderS
 	var err error
 	b.TransportSettings, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
@@ -298,37 +284,22 @@ func (b *_PubSubConnectionDataTypeBuilder) WithReaderGroups(readerGroups ...Read
 
 func (b *_PubSubConnectionDataTypeBuilder) Build() (PubSubConnectionDataType, error) {
 	if b.Name == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'name' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
 	if b.PublisherId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'publisherId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'publisherId' not set"))
 	}
 	if b.TransportProfileUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'transportProfileUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'transportProfileUri' not set"))
 	}
 	if b.Address == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'address' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'address' not set"))
 	}
 	if b.TransportSettings == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'transportSettings' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'transportSettings' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PubSubConnectionDataType.deepCopy(), nil
 }
@@ -354,8 +325,8 @@ func (b *_PubSubConnectionDataTypeBuilder) buildForExtensionObjectDefinition() (
 
 func (b *_PubSubConnectionDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreatePubSubConnectionDataTypeBuilder().(*_PubSubConnectionDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

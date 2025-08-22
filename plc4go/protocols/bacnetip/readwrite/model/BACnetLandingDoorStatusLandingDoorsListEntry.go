@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewBACnetLandingDoorStatusLandingDoorsListEntryBuilder() BACnetLandingDoorS
 type _BACnetLandingDoorStatusLandingDoorsListEntryBuilder struct {
 	*_BACnetLandingDoorStatusLandingDoorsListEntry
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetLandingDoorStatusLandingDoorsListEntryBuilder) = (*_BACnetLandingDoorStatusLandingDoorsListEntryBuilder)(nil)
@@ -119,10 +120,7 @@ func (b *_BACnetLandingDoorStatusLandingDoorsListEntryBuilder) WithFloorNumberBu
 	var err error
 	b.FloorNumber, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -137,29 +135,20 @@ func (b *_BACnetLandingDoorStatusLandingDoorsListEntryBuilder) WithDoorStatusBui
 	var err error
 	b.DoorStatus, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetDoorStatusTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetDoorStatusTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetLandingDoorStatusLandingDoorsListEntryBuilder) Build() (BACnetLandingDoorStatusLandingDoorsListEntry, error) {
 	if b.FloorNumber == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'floorNumber' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'floorNumber' not set"))
 	}
 	if b.DoorStatus == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'doorStatus' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'doorStatus' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetLandingDoorStatusLandingDoorsListEntry.deepCopy(), nil
 }
@@ -174,8 +163,8 @@ func (b *_BACnetLandingDoorStatusLandingDoorsListEntryBuilder) MustBuild() BACne
 
 func (b *_BACnetLandingDoorStatusLandingDoorsListEntryBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetLandingDoorStatusLandingDoorsListEntryBuilder().(*_BACnetLandingDoorStatusLandingDoorsListEntryBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

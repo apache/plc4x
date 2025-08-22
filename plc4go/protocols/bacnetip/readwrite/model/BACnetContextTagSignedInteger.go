@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetContextTagSignedIntegerBuilder struct {
 
 	parentBuilder *_BACnetContextTagBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetContextTagSignedIntegerBuilder) = (*_BACnetContextTagSignedIntegerBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetContextTagSignedIntegerBuilder) WithPayloadBuilder(builderSuppli
 	var err error
 	b.Payload, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetTagPayloadSignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagPayloadSignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetContextTagSignedIntegerBuilder) Build() (BACnetContextTagSignedInteger, error) {
 	if b.Payload == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'payload' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetContextTagSignedInteger.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetContextTagSignedIntegerBuilder) buildForBACnetContextTag() (BACn
 
 func (b *_BACnetContextTagSignedIntegerBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetContextTagSignedIntegerBuilder().(*_BACnetContextTagSignedIntegerBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

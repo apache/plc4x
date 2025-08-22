@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -166,7 +167,7 @@ type _ServerEndpointDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ServerEndpointDataTypeBuilder) = (*_ServerEndpointDataTypeBuilder)(nil)
@@ -190,10 +191,7 @@ func (b *_ServerEndpointDataTypeBuilder) WithNameBuilder(builderSupplier func(Pa
 	var err error
 	b.Name, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -218,10 +216,7 @@ func (b *_ServerEndpointDataTypeBuilder) WithNetworkNameBuilder(builderSupplier 
 	var err error
 	b.NetworkName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -251,10 +246,7 @@ func (b *_ServerEndpointDataTypeBuilder) WithTransportProfileUriBuilder(builderS
 	var err error
 	b.TransportProfileUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -271,25 +263,16 @@ func (b *_ServerEndpointDataTypeBuilder) WithReverseConnectUrls(reverseConnectUr
 
 func (b *_ServerEndpointDataTypeBuilder) Build() (ServerEndpointDataType, error) {
 	if b.Name == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'name' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
 	if b.NetworkName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'networkName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'networkName' not set"))
 	}
 	if b.TransportProfileUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'transportProfileUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'transportProfileUri' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ServerEndpointDataType.deepCopy(), nil
 }
@@ -315,8 +298,8 @@ func (b *_ServerEndpointDataTypeBuilder) buildForExtensionObjectDefinition() (Ex
 
 func (b *_ServerEndpointDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateServerEndpointDataTypeBuilder().(*_ServerEndpointDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

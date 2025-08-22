@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _AdsReadResponseBuilder struct {
 
 	parentBuilder *_AmsPacketBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AdsReadResponseBuilder) = (*_AdsReadResponseBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_AdsReadResponseBuilder) WithData(data ...byte) AdsReadResponseBuilder 
 }
 
 func (b *_AdsReadResponseBuilder) Build() (AdsReadResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsReadResponse.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_AdsReadResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
 
 func (b *_AdsReadResponseBuilder) DeepCopy() any {
 	_copy := b.CreateAdsReadResponseBuilder().(*_AdsReadResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

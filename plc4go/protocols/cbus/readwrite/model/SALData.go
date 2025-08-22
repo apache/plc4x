@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -167,7 +168,7 @@ type _SALDataBuilder struct {
 
 	childBuilder _SALDataChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SALDataBuilder) = (*_SALDataBuilder)(nil)
@@ -186,17 +187,14 @@ func (b *_SALDataBuilder) WithOptionalSalDataBuilder(builderSupplier func(SALDat
 	var err error
 	b.SalData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "SALDataBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "SALDataBuilder failed"))
 	}
 	return b
 }
 
 func (b *_SALDataBuilder) PartialBuild() (SALDataContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALData.deepCopy(), nil
 }
@@ -463,8 +461,8 @@ func (b *_SALDataBuilder) DeepCopy() any {
 	_copy := b.CreateSALDataBuilder().(*_SALDataBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_SALDataChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

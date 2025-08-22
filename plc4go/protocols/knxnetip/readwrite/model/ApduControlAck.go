@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _ApduControlAckBuilder struct {
 
 	parentBuilder *_ApduControlBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApduControlAckBuilder) = (*_ApduControlAckBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_ApduControlAckBuilder) WithMandatoryFields() ApduControlAckBuilder {
 }
 
 func (b *_ApduControlAckBuilder) Build() (ApduControlAck, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduControlAck.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_ApduControlAckBuilder) buildForApduControl() (ApduControl, error) {
 
 func (b *_ApduControlAckBuilder) DeepCopy() any {
 	_copy := b.CreateApduControlAckBuilder().(*_ApduControlAckBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

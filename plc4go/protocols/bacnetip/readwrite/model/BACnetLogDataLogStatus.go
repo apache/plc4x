@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetLogDataLogStatusBuilder struct {
 
 	parentBuilder *_BACnetLogDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetLogDataLogStatusBuilder) = (*_BACnetLogDataLogStatusBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetLogDataLogStatusBuilder) WithLogStatusBuilder(builderSupplier fu
 	var err error
 	b.LogStatus, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetLogStatusTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetLogStatusTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetLogDataLogStatusBuilder) Build() (BACnetLogDataLogStatus, error) {
 	if b.LogStatus == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'logStatus' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'logStatus' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetLogDataLogStatus.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetLogDataLogStatusBuilder) buildForBACnetLogData() (BACnetLogData,
 
 func (b *_BACnetLogDataLogStatusBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetLogDataLogStatusBuilder().(*_BACnetLogDataLogStatusBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

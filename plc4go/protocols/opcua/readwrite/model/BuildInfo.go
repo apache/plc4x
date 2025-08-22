@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -152,7 +153,7 @@ type _BuildInfoBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BuildInfoBuilder) = (*_BuildInfoBuilder)(nil)
@@ -176,10 +177,7 @@ func (b *_BuildInfoBuilder) WithProductUriBuilder(builderSupplier func(PascalStr
 	var err error
 	b.ProductUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -194,10 +192,7 @@ func (b *_BuildInfoBuilder) WithManufacturerNameBuilder(builderSupplier func(Pas
 	var err error
 	b.ManufacturerName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -212,10 +207,7 @@ func (b *_BuildInfoBuilder) WithProductNameBuilder(builderSupplier func(PascalSt
 	var err error
 	b.ProductName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -230,10 +222,7 @@ func (b *_BuildInfoBuilder) WithSoftwareVersionBuilder(builderSupplier func(Pasc
 	var err error
 	b.SoftwareVersion, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -248,10 +237,7 @@ func (b *_BuildInfoBuilder) WithBuildNumberBuilder(builderSupplier func(PascalSt
 	var err error
 	b.BuildNumber, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -263,37 +249,22 @@ func (b *_BuildInfoBuilder) WithBuildDate(buildDate int64) BuildInfoBuilder {
 
 func (b *_BuildInfoBuilder) Build() (BuildInfo, error) {
 	if b.ProductUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'productUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'productUri' not set"))
 	}
 	if b.ManufacturerName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'manufacturerName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'manufacturerName' not set"))
 	}
 	if b.ProductName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'productName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'productName' not set"))
 	}
 	if b.SoftwareVersion == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'softwareVersion' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'softwareVersion' not set"))
 	}
 	if b.BuildNumber == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'buildNumber' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'buildNumber' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BuildInfo.deepCopy(), nil
 }
@@ -319,8 +290,8 @@ func (b *_BuildInfoBuilder) buildForExtensionObjectDefinition() (ExtensionObject
 
 func (b *_BuildInfoBuilder) DeepCopy() any {
 	_copy := b.CreateBuildInfoBuilder().(*_BuildInfoBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

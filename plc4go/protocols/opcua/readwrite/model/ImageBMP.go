@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func NewImageBMPBuilder() ImageBMPBuilder {
 type _ImageBMPBuilder struct {
 	*_ImageBMP
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ImageBMPBuilder) = (*_ImageBMPBuilder)(nil)
@@ -88,8 +89,8 @@ func (b *_ImageBMPBuilder) WithMandatoryFields() ImageBMPBuilder {
 }
 
 func (b *_ImageBMPBuilder) Build() (ImageBMP, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ImageBMP.deepCopy(), nil
 }
@@ -104,8 +105,8 @@ func (b *_ImageBMPBuilder) MustBuild() ImageBMP {
 
 func (b *_ImageBMPBuilder) DeepCopy() any {
 	_copy := b.CreateImageBMPBuilder().(*_ImageBMPBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

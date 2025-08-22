@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -131,7 +132,7 @@ type _ApplicationIdentityDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApplicationIdentityDataTypeBuilder) = (*_ApplicationIdentityDataTypeBuilder)(nil)
@@ -155,10 +156,7 @@ func (b *_ApplicationIdentityDataTypeBuilder) WithNameBuilder(builderSupplier fu
 	var err error
 	b.Name, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -178,10 +176,7 @@ func (b *_ApplicationIdentityDataTypeBuilder) WithApplicationUriBuilder(builderS
 	var err error
 	b.ApplicationUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -198,19 +193,13 @@ func (b *_ApplicationIdentityDataTypeBuilder) WithAdditionalServers(additionalSe
 
 func (b *_ApplicationIdentityDataTypeBuilder) Build() (ApplicationIdentityDataType, error) {
 	if b.Name == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'name' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
 	if b.ApplicationUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'applicationUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'applicationUri' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApplicationIdentityDataType.deepCopy(), nil
 }
@@ -236,8 +225,8 @@ func (b *_ApplicationIdentityDataTypeBuilder) buildForExtensionObjectDefinition(
 
 func (b *_ApplicationIdentityDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateApplicationIdentityDataTypeBuilder().(*_ApplicationIdentityDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

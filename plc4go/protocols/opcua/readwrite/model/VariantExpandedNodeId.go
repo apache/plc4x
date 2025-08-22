@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _VariantExpandedNodeIdBuilder struct {
 
 	parentBuilder *_VariantBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (VariantExpandedNodeIdBuilder) = (*_VariantExpandedNodeIdBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_VariantExpandedNodeIdBuilder) WithValue(value ...ExpandedNodeId) Varia
 }
 
 func (b *_VariantExpandedNodeIdBuilder) Build() (VariantExpandedNodeId, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariantExpandedNodeId.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_VariantExpandedNodeIdBuilder) buildForVariant() (Variant, error) {
 
 func (b *_VariantExpandedNodeIdBuilder) DeepCopy() any {
 	_copy := b.CreateVariantExpandedNodeIdBuilder().(*_VariantExpandedNodeIdBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

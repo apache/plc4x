@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -157,7 +158,7 @@ type _BACnetNotificationParametersChangeOfLifeSafetyBuilder struct {
 
 	parentBuilder *_BACnetNotificationParametersBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetNotificationParametersChangeOfLifeSafetyBuilder) = (*_BACnetNotificationParametersChangeOfLifeSafetyBuilder)(nil)
@@ -181,10 +182,7 @@ func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithInnerOpenin
 	var err error
 	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
 	return b
 }
@@ -199,10 +197,7 @@ func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithNewStateBui
 	var err error
 	b.NewState, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
 	}
 	return b
 }
@@ -217,10 +212,7 @@ func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithNewModeBuil
 	var err error
 	b.NewMode, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyModeTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetLifeSafetyModeTaggedBuilder failed"))
 	}
 	return b
 }
@@ -235,10 +227,7 @@ func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithStatusFlags
 	var err error
 	b.StatusFlags, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
 	}
 	return b
 }
@@ -253,10 +242,7 @@ func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithOperationEx
 	var err error
 	b.OperationExpected, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyOperationTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetLifeSafetyOperationTaggedBuilder failed"))
 	}
 	return b
 }
@@ -271,53 +257,32 @@ func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithInnerClosin
 	var err error
 	b.InnerClosingTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) Build() (BACnetNotificationParametersChangeOfLifeSafety, error) {
 	if b.InnerOpeningTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'innerOpeningTag' not set"))
 	}
 	if b.NewState == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'newState' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'newState' not set"))
 	}
 	if b.NewMode == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'newMode' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'newMode' not set"))
 	}
 	if b.StatusFlags == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'statusFlags' not set"))
 	}
 	if b.OperationExpected == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'operationExpected' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'operationExpected' not set"))
 	}
 	if b.InnerClosingTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'innerClosingTag' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetNotificationParametersChangeOfLifeSafety.deepCopy(), nil
 }
@@ -343,8 +308,8 @@ func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) buildForBACnetN
 
 func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetNotificationParametersChangeOfLifeSafetyBuilder().(*_BACnetNotificationParametersChangeOfLifeSafetyBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

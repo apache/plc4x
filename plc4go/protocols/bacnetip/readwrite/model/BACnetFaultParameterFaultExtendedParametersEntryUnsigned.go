@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder struct {
 
 	parentBuilder *_BACnetFaultParameterFaultExtendedParametersEntryBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) WithU
 	var err error
 	b.UnsignedValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryUnsigned, error) {
 	if b.UnsignedValue == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'unsignedValue' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'unsignedValue' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetFaultParameterFaultExtendedParametersEntryUnsigned.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) build
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetPropertyStatesEscalatorModeBuilder struct {
 
 	parentBuilder *_BACnetPropertyStatesBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPropertyStatesEscalatorModeBuilder) = (*_BACnetPropertyStatesEscalatorModeBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetPropertyStatesEscalatorModeBuilder) WithEscalatorModeBuilder(bui
 	var err error
 	b.EscalatorMode, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetEscalatorModeTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetEscalatorModeTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetPropertyStatesEscalatorModeBuilder) Build() (BACnetPropertyStatesEscalatorMode, error) {
 	if b.EscalatorMode == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'escalatorMode' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'escalatorMode' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesEscalatorMode.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetPropertyStatesEscalatorModeBuilder) buildForBACnetPropertyStates
 
 func (b *_BACnetPropertyStatesEscalatorModeBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPropertyStatesEscalatorModeBuilder().(*_BACnetPropertyStatesEscalatorModeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

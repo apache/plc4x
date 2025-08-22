@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _CipReadRequestBuilder struct {
 
 	parentBuilder *_CipServiceBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CipReadRequestBuilder) = (*_CipReadRequestBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_CipReadRequestBuilder) WithElementNb(elementNb uint16) CipReadRequestB
 }
 
 func (b *_CipReadRequestBuilder) Build() (CipReadRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CipReadRequest.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_CipReadRequestBuilder) buildForCipService() (CipService, error) {
 
 func (b *_CipReadRequestBuilder) DeepCopy() any {
 	_copy := b.CreateCipReadRequestBuilder().(*_CipReadRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

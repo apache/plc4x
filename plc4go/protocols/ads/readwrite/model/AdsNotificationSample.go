@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewAdsNotificationSampleBuilder() AdsNotificationSampleBuilder {
 type _AdsNotificationSampleBuilder struct {
 	*_AdsNotificationSample
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AdsNotificationSampleBuilder) = (*_AdsNotificationSampleBuilder)(nil)
@@ -120,8 +121,8 @@ func (b *_AdsNotificationSampleBuilder) WithData(data ...byte) AdsNotificationSa
 }
 
 func (b *_AdsNotificationSampleBuilder) Build() (AdsNotificationSample, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsNotificationSample.deepCopy(), nil
 }
@@ -136,8 +137,8 @@ func (b *_AdsNotificationSampleBuilder) MustBuild() AdsNotificationSample {
 
 func (b *_AdsNotificationSampleBuilder) DeepCopy() any {
 	_copy := b.CreateAdsNotificationSampleBuilder().(*_AdsNotificationSampleBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

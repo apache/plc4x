@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -113,7 +114,7 @@ type _BACnetServiceAckAtomicReadFileStreamBuilder struct {
 
 	parentBuilder *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetServiceAckAtomicReadFileStreamBuilder) = (*_BACnetServiceAckAtomicReadFileStreamBuilder)(nil)
@@ -137,10 +138,7 @@ func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) WithFileStartPositionBuil
 	var err error
 	b.FileStartPosition, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -155,29 +153,20 @@ func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) WithFileDataBuilder(build
 	var err error
 	b.FileData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) Build() (BACnetServiceAckAtomicReadFileStream, error) {
 	if b.FileStartPosition == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'fileStartPosition' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'fileStartPosition' not set"))
 	}
 	if b.FileData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'fileData' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'fileData' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetServiceAckAtomicReadFileStream.deepCopy(), nil
 }
@@ -203,8 +192,8 @@ func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) buildForBACnetServiceAckA
 
 func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetServiceAckAtomicReadFileStreamBuilder().(*_BACnetServiceAckAtomicReadFileStreamBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

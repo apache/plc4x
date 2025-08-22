@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataLastUseTimeBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataLastUseTimeBuilder) = (*_BACnetConstructedDataLastUseTimeBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataLastUseTimeBuilder) WithLastUseTimeBuilder(builde
 	var err error
 	b.LastUseTime, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataLastUseTimeBuilder) Build() (BACnetConstructedDataLastUseTime, error) {
 	if b.LastUseTime == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'lastUseTime' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'lastUseTime' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataLastUseTime.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataLastUseTimeBuilder) buildForBACnetConstructedData
 
 func (b *_BACnetConstructedDataLastUseTimeBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataLastUseTimeBuilder().(*_BACnetConstructedDataLastUseTimeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

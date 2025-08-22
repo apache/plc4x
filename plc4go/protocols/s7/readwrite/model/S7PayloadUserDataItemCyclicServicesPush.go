@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _S7PayloadUserDataItemCyclicServicesPushBuilder struct {
 
 	parentBuilder *_S7PayloadUserDataItemBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7PayloadUserDataItemCyclicServicesPushBuilder) = (*_S7PayloadUserDataItemCyclicServicesPushBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) WithItems(items ...Ass
 }
 
 func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) Build() (S7PayloadUserDataItemCyclicServicesPush, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemCyclicServicesPush.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) buildForS7PayloadUserD
 
 func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) DeepCopy() any {
 	_copy := b.CreateS7PayloadUserDataItemCyclicServicesPushBuilder().(*_S7PayloadUserDataItemCyclicServicesPushBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

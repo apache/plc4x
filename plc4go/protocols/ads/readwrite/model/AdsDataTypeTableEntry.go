@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -167,7 +168,7 @@ func NewAdsDataTypeTableEntryBuilder() AdsDataTypeTableEntryBuilder {
 type _AdsDataTypeTableEntryBuilder struct {
 	*_AdsDataTypeTableEntry
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AdsDataTypeTableEntryBuilder) = (*_AdsDataTypeTableEntryBuilder)(nil)
@@ -257,8 +258,8 @@ func (b *_AdsDataTypeTableEntryBuilder) WithRest(rest ...byte) AdsDataTypeTableE
 }
 
 func (b *_AdsDataTypeTableEntryBuilder) Build() (AdsDataTypeTableEntry, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsDataTypeTableEntry.deepCopy(), nil
 }
@@ -273,8 +274,8 @@ func (b *_AdsDataTypeTableEntryBuilder) MustBuild() AdsDataTypeTableEntry {
 
 func (b *_AdsDataTypeTableEntryBuilder) DeepCopy() any {
 	_copy := b.CreateAdsDataTypeTableEntryBuilder().(*_AdsDataTypeTableEntryBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

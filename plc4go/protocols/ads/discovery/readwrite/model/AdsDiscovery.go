@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -115,7 +116,7 @@ func NewAdsDiscoveryBuilder() AdsDiscoveryBuilder {
 type _AdsDiscoveryBuilder struct {
 	*_AdsDiscovery
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AdsDiscoveryBuilder) = (*_AdsDiscoveryBuilder)(nil)
@@ -144,10 +145,7 @@ func (b *_AdsDiscoveryBuilder) WithAmsNetIdBuilder(builderSupplier func(AmsNetId
 	var err error
 	b.AmsNetId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "AmsNetIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "AmsNetIdBuilder failed"))
 	}
 	return b
 }
@@ -164,13 +162,10 @@ func (b *_AdsDiscoveryBuilder) WithBlocks(blocks ...AdsDiscoveryBlock) AdsDiscov
 
 func (b *_AdsDiscoveryBuilder) Build() (AdsDiscovery, error) {
 	if b.AmsNetId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'amsNetId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'amsNetId' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsDiscovery.deepCopy(), nil
 }
@@ -185,8 +180,8 @@ func (b *_AdsDiscoveryBuilder) MustBuild() AdsDiscovery {
 
 func (b *_AdsDiscoveryBuilder) DeepCopy() any {
 	_copy := b.CreateAdsDiscoveryBuilder().(*_AdsDiscoveryBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

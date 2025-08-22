@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewCIPDataBuilder() CIPDataBuilder {
 type _CIPDataBuilder struct {
 	*_CIPData
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CIPDataBuilder) = (*_CIPDataBuilder)(nil)
@@ -120,8 +121,8 @@ func (b *_CIPDataBuilder) WithArgPacketLength(packetLength uint16) CIPDataBuilde
 }
 
 func (b *_CIPDataBuilder) Build() (CIPData, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CIPData.deepCopy(), nil
 }
@@ -136,8 +137,8 @@ func (b *_CIPDataBuilder) MustBuild() CIPData {
 
 func (b *_CIPDataBuilder) DeepCopy() any {
 	_copy := b.CreateCIPDataBuilder().(*_CIPDataBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

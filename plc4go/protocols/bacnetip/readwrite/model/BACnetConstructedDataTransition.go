@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataTransitionBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataTransitionBuilder) = (*_BACnetConstructedDataTransitionBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataTransitionBuilder) WithTransitionBuilder(builderS
 	var err error
 	b.Transition, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetLightingTransitionTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetLightingTransitionTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataTransitionBuilder) Build() (BACnetConstructedDataTransition, error) {
 	if b.Transition == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'transition' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'transition' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataTransition.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataTransitionBuilder) buildForBACnetConstructedData(
 
 func (b *_BACnetConstructedDataTransitionBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataTransitionBuilder().(*_BACnetConstructedDataTransitionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

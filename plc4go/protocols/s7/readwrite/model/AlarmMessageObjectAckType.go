@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -119,7 +120,7 @@ func NewAlarmMessageObjectAckTypeBuilder() AlarmMessageObjectAckTypeBuilder {
 type _AlarmMessageObjectAckTypeBuilder struct {
 	*_AlarmMessageObjectAckType
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AlarmMessageObjectAckTypeBuilder) = (*_AlarmMessageObjectAckTypeBuilder)(nil)
@@ -153,10 +154,7 @@ func (b *_AlarmMessageObjectAckTypeBuilder) WithAckStateGoingBuilder(builderSupp
 	var err error
 	b.AckStateGoing, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StateBuilder failed"))
 	}
 	return b
 }
@@ -171,29 +169,20 @@ func (b *_AlarmMessageObjectAckTypeBuilder) WithAckStateComingBuilder(builderSup
 	var err error
 	b.AckStateComing, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StateBuilder failed"))
 	}
 	return b
 }
 
 func (b *_AlarmMessageObjectAckTypeBuilder) Build() (AlarmMessageObjectAckType, error) {
 	if b.AckStateGoing == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'ackStateGoing' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'ackStateGoing' not set"))
 	}
 	if b.AckStateComing == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'ackStateComing' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'ackStateComing' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AlarmMessageObjectAckType.deepCopy(), nil
 }
@@ -208,8 +197,8 @@ func (b *_AlarmMessageObjectAckTypeBuilder) MustBuild() AlarmMessageObjectAckTyp
 
 func (b *_AlarmMessageObjectAckTypeBuilder) DeepCopy() any {
 	_copy := b.CreateAlarmMessageObjectAckTypeBuilder().(*_AlarmMessageObjectAckTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

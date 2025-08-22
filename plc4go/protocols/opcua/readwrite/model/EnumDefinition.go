@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _EnumDefinitionBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (EnumDefinitionBuilder) = (*_EnumDefinitionBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_EnumDefinitionBuilder) WithFields(fields ...EnumField) EnumDefinitionB
 }
 
 func (b *_EnumDefinitionBuilder) Build() (EnumDefinition, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._EnumDefinition.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_EnumDefinitionBuilder) buildForExtensionObjectDefinition() (ExtensionO
 
 func (b *_EnumDefinitionBuilder) DeepCopy() any {
 	_copy := b.CreateEnumDefinitionBuilder().(*_EnumDefinitionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

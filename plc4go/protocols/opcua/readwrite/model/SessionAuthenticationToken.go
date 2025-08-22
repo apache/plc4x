@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func NewSessionAuthenticationTokenBuilder() SessionAuthenticationTokenBuilder {
 type _SessionAuthenticationTokenBuilder struct {
 	*_SessionAuthenticationToken
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SessionAuthenticationTokenBuilder) = (*_SessionAuthenticationTokenBuilder)(nil)
@@ -88,8 +89,8 @@ func (b *_SessionAuthenticationTokenBuilder) WithMandatoryFields() SessionAuthen
 }
 
 func (b *_SessionAuthenticationTokenBuilder) Build() (SessionAuthenticationToken, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SessionAuthenticationToken.deepCopy(), nil
 }
@@ -104,8 +105,8 @@ func (b *_SessionAuthenticationTokenBuilder) MustBuild() SessionAuthenticationTo
 
 func (b *_SessionAuthenticationTokenBuilder) DeepCopy() any {
 	_copy := b.CreateSessionAuthenticationTokenBuilder().(*_SessionAuthenticationTokenBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

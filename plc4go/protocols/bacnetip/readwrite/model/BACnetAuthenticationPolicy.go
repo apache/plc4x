@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -110,7 +111,7 @@ func NewBACnetAuthenticationPolicyBuilder() BACnetAuthenticationPolicyBuilder {
 type _BACnetAuthenticationPolicyBuilder struct {
 	*_BACnetAuthenticationPolicy
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetAuthenticationPolicyBuilder) = (*_BACnetAuthenticationPolicyBuilder)(nil)
@@ -129,10 +130,7 @@ func (b *_BACnetAuthenticationPolicyBuilder) WithPolicyBuilder(builderSupplier f
 	var err error
 	b.Policy, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetAuthenticationPolicyListBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetAuthenticationPolicyListBuilder failed"))
 	}
 	return b
 }
@@ -147,10 +145,7 @@ func (b *_BACnetAuthenticationPolicyBuilder) WithOrderEnforcedBuilder(builderSup
 	var err error
 	b.OrderEnforced, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
 	return b
 }
@@ -165,35 +160,23 @@ func (b *_BACnetAuthenticationPolicyBuilder) WithTimeoutBuilder(builderSupplier 
 	var err error
 	b.Timeout, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetAuthenticationPolicyBuilder) Build() (BACnetAuthenticationPolicy, error) {
 	if b.Policy == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'policy' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'policy' not set"))
 	}
 	if b.OrderEnforced == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'orderEnforced' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'orderEnforced' not set"))
 	}
 	if b.Timeout == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'timeout' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeout' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetAuthenticationPolicy.deepCopy(), nil
 }
@@ -208,8 +191,8 @@ func (b *_BACnetAuthenticationPolicyBuilder) MustBuild() BACnetAuthenticationPol
 
 func (b *_BACnetAuthenticationPolicyBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetAuthenticationPolicyBuilder().(*_BACnetAuthenticationPolicyBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

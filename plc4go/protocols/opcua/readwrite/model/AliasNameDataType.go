@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -108,7 +109,7 @@ type _AliasNameDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AliasNameDataTypeBuilder) = (*_AliasNameDataTypeBuilder)(nil)
@@ -132,10 +133,7 @@ func (b *_AliasNameDataTypeBuilder) WithAliasNameBuilder(builderSupplier func(Qu
 	var err error
 	b.AliasName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "QualifiedNameBuilder failed"))
 	}
 	return b
 }
@@ -147,13 +145,10 @@ func (b *_AliasNameDataTypeBuilder) WithReferencedNodes(referencedNodes ...Expan
 
 func (b *_AliasNameDataTypeBuilder) Build() (AliasNameDataType, error) {
 	if b.AliasName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'aliasName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'aliasName' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AliasNameDataType.deepCopy(), nil
 }
@@ -179,8 +174,8 @@ func (b *_AliasNameDataTypeBuilder) buildForExtensionObjectDefinition() (Extensi
 
 func (b *_AliasNameDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateAliasNameDataTypeBuilder().(*_AliasNameDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

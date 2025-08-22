@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _SecurityDataZoneSealedBuilder struct {
 
 	parentBuilder *_SecurityDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SecurityDataZoneSealedBuilder) = (*_SecurityDataZoneSealedBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_SecurityDataZoneSealedBuilder) WithZoneNumber(zoneNumber uint8) Securi
 }
 
 func (b *_SecurityDataZoneSealedBuilder) Build() (SecurityDataZoneSealed, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataZoneSealed.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_SecurityDataZoneSealedBuilder) buildForSecurityData() (SecurityData, e
 
 func (b *_SecurityDataZoneSealedBuilder) DeepCopy() any {
 	_copy := b.CreateSecurityDataZoneSealedBuilder().(*_SecurityDataZoneSealedBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

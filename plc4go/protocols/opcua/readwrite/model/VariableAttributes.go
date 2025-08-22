@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -191,7 +192,7 @@ type _VariableAttributesBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (VariableAttributesBuilder) = (*_VariableAttributesBuilder)(nil)
@@ -220,10 +221,7 @@ func (b *_VariableAttributesBuilder) WithDisplayNameBuilder(builderSupplier func
 	var err error
 	b.DisplayName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
 	return b
 }
@@ -238,10 +236,7 @@ func (b *_VariableAttributesBuilder) WithDescriptionBuilder(builderSupplier func
 	var err error
 	b.Description, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
 	return b
 }
@@ -266,10 +261,7 @@ func (b *_VariableAttributesBuilder) WithValueBuilder(builderSupplier func(Varia
 	var err error
 	b.Value, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "VariantBuilder failed"))
 	}
 	return b
 }
@@ -284,10 +276,7 @@ func (b *_VariableAttributesBuilder) WithDataTypeBuilder(builderSupplier func(No
 	var err error
 	b.DataType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -324,31 +313,19 @@ func (b *_VariableAttributesBuilder) WithHistorizing(historizing bool) VariableA
 
 func (b *_VariableAttributesBuilder) Build() (VariableAttributes, error) {
 	if b.DisplayName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'displayName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'displayName' not set"))
 	}
 	if b.Description == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'description' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'description' not set"))
 	}
 	if b.Value == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'value' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'value' not set"))
 	}
 	if b.DataType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'dataType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dataType' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariableAttributes.deepCopy(), nil
 }
@@ -374,8 +351,8 @@ func (b *_VariableAttributesBuilder) buildForExtensionObjectDefinition() (Extens
 
 func (b *_VariableAttributesBuilder) DeepCopy() any {
 	_copy := b.CreateVariableAttributesBuilder().(*_VariableAttributesBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

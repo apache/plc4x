@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewGuidNodeIdBuilder() GuidNodeIdBuilder {
 type _GuidNodeIdBuilder struct {
 	*_GuidNodeId
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (GuidNodeIdBuilder) = (*_GuidNodeIdBuilder)(nil)
@@ -119,23 +120,17 @@ func (b *_GuidNodeIdBuilder) WithIdentifierBuilder(builderSupplier func(GuidValu
 	var err error
 	b.Identifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "GuidValueBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "GuidValueBuilder failed"))
 	}
 	return b
 }
 
 func (b *_GuidNodeIdBuilder) Build() (GuidNodeId, error) {
 	if b.Identifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'identifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'identifier' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._GuidNodeId.deepCopy(), nil
 }
@@ -150,8 +145,8 @@ func (b *_GuidNodeIdBuilder) MustBuild() GuidNodeId {
 
 func (b *_GuidNodeIdBuilder) DeepCopy() any {
 	_copy := b.CreateGuidNodeIdBuilder().(*_GuidNodeIdBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

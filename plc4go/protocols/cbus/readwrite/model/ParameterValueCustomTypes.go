@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _ParameterValueCustomTypesBuilder struct {
 
 	parentBuilder *_ParameterValueBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ParameterValueCustomTypesBuilder) = (*_ParameterValueCustomTypesBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_ParameterValueCustomTypesBuilder) WithValueBuilder(builderSupplier fun
 	var err error
 	b.Value, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "CustomTypesBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CustomTypesBuilder failed"))
 	}
 	return b
 }
 
 func (b *_ParameterValueCustomTypesBuilder) Build() (ParameterValueCustomTypes, error) {
 	if b.Value == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'value' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'value' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ParameterValueCustomTypes.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_ParameterValueCustomTypesBuilder) buildForParameterValue() (ParameterV
 
 func (b *_ParameterValueCustomTypesBuilder) DeepCopy() any {
 	_copy := b.CreateParameterValueCustomTypesBuilder().(*_ParameterValueCustomTypesBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

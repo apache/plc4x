@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -107,7 +108,7 @@ type _BACnetUnconfirmedServiceRequestWhoIsBuilder struct {
 
 	parentBuilder *_BACnetUnconfirmedServiceRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetUnconfirmedServiceRequestWhoIsBuilder) = (*_BACnetUnconfirmedServiceRequestWhoIsBuilder)(nil)
@@ -131,10 +132,7 @@ func (b *_BACnetUnconfirmedServiceRequestWhoIsBuilder) WithOptionalDeviceInstanc
 	var err error
 	b.DeviceInstanceRangeLowLimit, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -149,17 +147,14 @@ func (b *_BACnetUnconfirmedServiceRequestWhoIsBuilder) WithOptionalDeviceInstanc
 	var err error
 	b.DeviceInstanceRangeHighLimit, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetUnconfirmedServiceRequestWhoIsBuilder) Build() (BACnetUnconfirmedServiceRequestWhoIs, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetUnconfirmedServiceRequestWhoIs.deepCopy(), nil
 }
@@ -185,8 +180,8 @@ func (b *_BACnetUnconfirmedServiceRequestWhoIsBuilder) buildForBACnetUnconfirmed
 
 func (b *_BACnetUnconfirmedServiceRequestWhoIsBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetUnconfirmedServiceRequestWhoIsBuilder().(*_BACnetUnconfirmedServiceRequestWhoIsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

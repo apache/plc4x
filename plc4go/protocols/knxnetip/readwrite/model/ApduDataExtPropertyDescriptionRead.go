@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -109,7 +110,7 @@ type _ApduDataExtPropertyDescriptionReadBuilder struct {
 
 	parentBuilder *_ApduDataExtBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApduDataExtPropertyDescriptionReadBuilder) = (*_ApduDataExtPropertyDescriptionReadBuilder)(nil)
@@ -139,8 +140,8 @@ func (b *_ApduDataExtPropertyDescriptionReadBuilder) WithIndex(index uint8) Apdu
 }
 
 func (b *_ApduDataExtPropertyDescriptionReadBuilder) Build() (ApduDataExtPropertyDescriptionRead, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataExtPropertyDescriptionRead.deepCopy(), nil
 }
@@ -166,8 +167,8 @@ func (b *_ApduDataExtPropertyDescriptionReadBuilder) buildForApduDataExt() (Apdu
 
 func (b *_ApduDataExtPropertyDescriptionReadBuilder) DeepCopy() any {
 	_copy := b.CreateApduDataExtPropertyDescriptionReadBuilder().(*_ApduDataExtPropertyDescriptionReadBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

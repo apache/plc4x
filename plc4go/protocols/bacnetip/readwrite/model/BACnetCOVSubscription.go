@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -127,7 +128,7 @@ func NewBACnetCOVSubscriptionBuilder() BACnetCOVSubscriptionBuilder {
 type _BACnetCOVSubscriptionBuilder struct {
 	*_BACnetCOVSubscription
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetCOVSubscriptionBuilder) = (*_BACnetCOVSubscriptionBuilder)(nil)
@@ -146,10 +147,7 @@ func (b *_BACnetCOVSubscriptionBuilder) WithRecipientBuilder(builderSupplier fun
 	var err error
 	b.Recipient, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetRecipientProcessEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetRecipientProcessEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -164,10 +162,7 @@ func (b *_BACnetCOVSubscriptionBuilder) WithMonitoredPropertyReferenceBuilder(bu
 	var err error
 	b.MonitoredPropertyReference, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetObjectPropertyReferenceEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -182,10 +177,7 @@ func (b *_BACnetCOVSubscriptionBuilder) WithIssueConfirmedNotificationsBuilder(b
 	var err error
 	b.IssueConfirmedNotifications, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
 	return b
 }
@@ -200,10 +192,7 @@ func (b *_BACnetCOVSubscriptionBuilder) WithTimeRemainingBuilder(builderSupplier
 	var err error
 	b.TimeRemaining, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -218,41 +207,26 @@ func (b *_BACnetCOVSubscriptionBuilder) WithOptionalCovIncrementBuilder(builderS
 	var err error
 	b.CovIncrement, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetCOVSubscriptionBuilder) Build() (BACnetCOVSubscription, error) {
 	if b.Recipient == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'recipient' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'recipient' not set"))
 	}
 	if b.MonitoredPropertyReference == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'monitoredPropertyReference' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'monitoredPropertyReference' not set"))
 	}
 	if b.IssueConfirmedNotifications == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'issueConfirmedNotifications' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'issueConfirmedNotifications' not set"))
 	}
 	if b.TimeRemaining == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'timeRemaining' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeRemaining' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetCOVSubscription.deepCopy(), nil
 }
@@ -267,8 +241,8 @@ func (b *_BACnetCOVSubscriptionBuilder) MustBuild() BACnetCOVSubscription {
 
 func (b *_BACnetCOVSubscriptionBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetCOVSubscriptionBuilder().(*_BACnetCOVSubscriptionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

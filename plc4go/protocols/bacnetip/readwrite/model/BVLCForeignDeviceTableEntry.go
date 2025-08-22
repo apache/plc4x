@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewBVLCForeignDeviceTableEntryBuilder() BVLCForeignDeviceTableEntryBuilder 
 type _BVLCForeignDeviceTableEntryBuilder struct {
 	*_BVLCForeignDeviceTableEntry
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BVLCForeignDeviceTableEntryBuilder) = (*_BVLCForeignDeviceTableEntryBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_BVLCForeignDeviceTableEntryBuilder) WithSecondRemainingBeforePurge(sec
 }
 
 func (b *_BVLCForeignDeviceTableEntryBuilder) Build() (BVLCForeignDeviceTableEntry, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BVLCForeignDeviceTableEntry.deepCopy(), nil
 }
@@ -146,8 +147,8 @@ func (b *_BVLCForeignDeviceTableEntryBuilder) MustBuild() BVLCForeignDeviceTable
 
 func (b *_BVLCForeignDeviceTableEntryBuilder) DeepCopy() any {
 	_copy := b.CreateBVLCForeignDeviceTableEntryBuilder().(*_BVLCForeignDeviceTableEntryBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

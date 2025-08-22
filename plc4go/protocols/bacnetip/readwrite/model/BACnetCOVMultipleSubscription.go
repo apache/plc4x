@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -130,7 +131,7 @@ func NewBACnetCOVMultipleSubscriptionBuilder() BACnetCOVMultipleSubscriptionBuil
 type _BACnetCOVMultipleSubscriptionBuilder struct {
 	*_BACnetCOVMultipleSubscription
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetCOVMultipleSubscriptionBuilder) = (*_BACnetCOVMultipleSubscriptionBuilder)(nil)
@@ -149,10 +150,7 @@ func (b *_BACnetCOVMultipleSubscriptionBuilder) WithRecipientBuilder(builderSupp
 	var err error
 	b.Recipient, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetRecipientProcessEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetRecipientProcessEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -167,10 +165,7 @@ func (b *_BACnetCOVMultipleSubscriptionBuilder) WithIssueConfirmedNotificationsB
 	var err error
 	b.IssueConfirmedNotifications, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
 	return b
 }
@@ -185,10 +180,7 @@ func (b *_BACnetCOVMultipleSubscriptionBuilder) WithTimeRemainingBuilder(builder
 	var err error
 	b.TimeRemaining, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -203,10 +195,7 @@ func (b *_BACnetCOVMultipleSubscriptionBuilder) WithMaxNotificationDelayBuilder(
 	var err error
 	b.MaxNotificationDelay, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -221,47 +210,29 @@ func (b *_BACnetCOVMultipleSubscriptionBuilder) WithListOfCovSubscriptionSpecifi
 	var err error
 	b.ListOfCovSubscriptionSpecification, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetCOVMultipleSubscriptionBuilder) Build() (BACnetCOVMultipleSubscription, error) {
 	if b.Recipient == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'recipient' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'recipient' not set"))
 	}
 	if b.IssueConfirmedNotifications == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'issueConfirmedNotifications' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'issueConfirmedNotifications' not set"))
 	}
 	if b.TimeRemaining == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'timeRemaining' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeRemaining' not set"))
 	}
 	if b.MaxNotificationDelay == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'maxNotificationDelay' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'maxNotificationDelay' not set"))
 	}
 	if b.ListOfCovSubscriptionSpecification == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'listOfCovSubscriptionSpecification' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'listOfCovSubscriptionSpecification' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetCOVMultipleSubscription.deepCopy(), nil
 }
@@ -276,8 +247,8 @@ func (b *_BACnetCOVMultipleSubscriptionBuilder) MustBuild() BACnetCOVMultipleSub
 
 func (b *_BACnetCOVMultipleSubscriptionBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetCOVMultipleSubscriptionBuilder().(*_BACnetCOVMultipleSubscriptionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

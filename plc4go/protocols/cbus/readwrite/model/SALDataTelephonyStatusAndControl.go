@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _SALDataTelephonyStatusAndControlBuilder struct {
 
 	parentBuilder *_SALDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SALDataTelephonyStatusAndControlBuilder) = (*_SALDataTelephonyStatusAndControlBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_SALDataTelephonyStatusAndControlBuilder) WithTelephonyDataBuilder(buil
 	var err error
 	b.TelephonyData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "TelephonyDataBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "TelephonyDataBuilder failed"))
 	}
 	return b
 }
 
 func (b *_SALDataTelephonyStatusAndControlBuilder) Build() (SALDataTelephonyStatusAndControl, error) {
 	if b.TelephonyData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'telephonyData' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'telephonyData' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALDataTelephonyStatusAndControl.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_SALDataTelephonyStatusAndControlBuilder) buildForSALData() (SALData, e
 
 func (b *_SALDataTelephonyStatusAndControlBuilder) DeepCopy() any {
 	_copy := b.CreateSALDataTelephonyStatusAndControlBuilder().(*_SALDataTelephonyStatusAndControlBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

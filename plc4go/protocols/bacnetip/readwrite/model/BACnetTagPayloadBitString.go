@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewBACnetTagPayloadBitStringBuilder() BACnetTagPayloadBitStringBuilder {
 type _BACnetTagPayloadBitStringBuilder struct {
 	*_BACnetTagPayloadBitString
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetTagPayloadBitStringBuilder) = (*_BACnetTagPayloadBitStringBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_BACnetTagPayloadBitStringBuilder) WithArgActualLength(actualLength uin
 }
 
 func (b *_BACnetTagPayloadBitStringBuilder) Build() (BACnetTagPayloadBitString, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetTagPayloadBitString.deepCopy(), nil
 }
@@ -146,8 +147,8 @@ func (b *_BACnetTagPayloadBitStringBuilder) MustBuild() BACnetTagPayloadBitStrin
 
 func (b *_BACnetTagPayloadBitStringBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetTagPayloadBitStringBuilder().(*_BACnetTagPayloadBitStringBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

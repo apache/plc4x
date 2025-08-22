@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -176,7 +177,7 @@ type _BACnetNotificationParametersAccessEventBuilder struct {
 
 	parentBuilder *_BACnetNotificationParametersBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetNotificationParametersAccessEventBuilder) = (*_BACnetNotificationParametersAccessEventBuilder)(nil)
@@ -200,10 +201,7 @@ func (b *_BACnetNotificationParametersAccessEventBuilder) WithInnerOpeningTagBui
 	var err error
 	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
 	return b
 }
@@ -218,10 +216,7 @@ func (b *_BACnetNotificationParametersAccessEventBuilder) WithAccessEventBuilder
 	var err error
 	b.AccessEvent, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetAccessEventTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetAccessEventTaggedBuilder failed"))
 	}
 	return b
 }
@@ -236,10 +231,7 @@ func (b *_BACnetNotificationParametersAccessEventBuilder) WithStatusFlagsBuilder
 	var err error
 	b.StatusFlags, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
 	}
 	return b
 }
@@ -254,10 +246,7 @@ func (b *_BACnetNotificationParametersAccessEventBuilder) WithAccessEventTagBuil
 	var err error
 	b.AccessEventTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -272,10 +261,7 @@ func (b *_BACnetNotificationParametersAccessEventBuilder) WithAccessEventTimeBui
 	var err error
 	b.AccessEventTime, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetTimeStampEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTimeStampEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -290,10 +276,7 @@ func (b *_BACnetNotificationParametersAccessEventBuilder) WithAccessCredentialBu
 	var err error
 	b.AccessCredential, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -308,10 +291,7 @@ func (b *_BACnetNotificationParametersAccessEventBuilder) WithOptionalAuthentica
 	var err error
 	b.AuthenticationFactor, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorTypeTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetAuthenticationFactorTypeTaggedBuilder failed"))
 	}
 	return b
 }
@@ -326,59 +306,35 @@ func (b *_BACnetNotificationParametersAccessEventBuilder) WithInnerClosingTagBui
 	var err error
 	b.InnerClosingTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetNotificationParametersAccessEventBuilder) Build() (BACnetNotificationParametersAccessEvent, error) {
 	if b.InnerOpeningTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'innerOpeningTag' not set"))
 	}
 	if b.AccessEvent == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'accessEvent' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'accessEvent' not set"))
 	}
 	if b.StatusFlags == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'statusFlags' not set"))
 	}
 	if b.AccessEventTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'accessEventTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'accessEventTag' not set"))
 	}
 	if b.AccessEventTime == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'accessEventTime' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'accessEventTime' not set"))
 	}
 	if b.AccessCredential == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'accessCredential' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'accessCredential' not set"))
 	}
 	if b.InnerClosingTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'innerClosingTag' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetNotificationParametersAccessEvent.deepCopy(), nil
 }
@@ -404,8 +360,8 @@ func (b *_BACnetNotificationParametersAccessEventBuilder) buildForBACnetNotifica
 
 func (b *_BACnetNotificationParametersAccessEventBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetNotificationParametersAccessEventBuilder().(*_BACnetNotificationParametersAccessEventBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

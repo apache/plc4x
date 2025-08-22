@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewTunnelingResponseDataBlockBuilder() TunnelingResponseDataBlockBuilder {
 type _TunnelingResponseDataBlockBuilder struct {
 	*_TunnelingResponseDataBlock
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TunnelingResponseDataBlockBuilder) = (*_TunnelingResponseDataBlockBuilder)(nil)
@@ -120,8 +121,8 @@ func (b *_TunnelingResponseDataBlockBuilder) WithStatus(status Status) Tunneling
 }
 
 func (b *_TunnelingResponseDataBlockBuilder) Build() (TunnelingResponseDataBlock, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TunnelingResponseDataBlock.deepCopy(), nil
 }
@@ -136,8 +137,8 @@ func (b *_TunnelingResponseDataBlockBuilder) MustBuild() TunnelingResponseDataBl
 
 func (b *_TunnelingResponseDataBlockBuilder) DeepCopy() any {
 	_copy := b.CreateTunnelingResponseDataBlockBuilder().(*_TunnelingResponseDataBlockBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetPropertyStatesEscalatorOperationDirectionBuilder struct {
 
 	parentBuilder *_BACnetPropertyStatesBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPropertyStatesEscalatorOperationDirectionBuilder) = (*_BACnetPropertyStatesEscalatorOperationDirectionBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) WithEscalatorO
 	var err error
 	b.EscalatorOperationDirection, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetEscalatorOperationDirectionTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetEscalatorOperationDirectionTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) Build() (BACnetPropertyStatesEscalatorOperationDirection, error) {
 	if b.EscalatorOperationDirection == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'escalatorOperationDirection' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'escalatorOperationDirection' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesEscalatorOperationDirection.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) buildForBACnet
 
 func (b *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPropertyStatesEscalatorOperationDirectionBuilder().(*_BACnetPropertyStatesEscalatorOperationDirectionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

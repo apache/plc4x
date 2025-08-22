@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _SetAttributeAllRequestBuilder struct {
 
 	parentBuilder *_CipServiceBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SetAttributeAllRequestBuilder) = (*_SetAttributeAllRequestBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_SetAttributeAllRequestBuilder) WithMandatoryFields() SetAttributeAllRe
 }
 
 func (b *_SetAttributeAllRequestBuilder) Build() (SetAttributeAllRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SetAttributeAllRequest.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_SetAttributeAllRequestBuilder) buildForCipService() (CipService, error
 
 func (b *_SetAttributeAllRequestBuilder) DeepCopy() any {
 	_copy := b.CreateSetAttributeAllRequestBuilder().(*_SetAttributeAllRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

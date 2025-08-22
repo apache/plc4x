@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -142,7 +143,7 @@ type _CALReplyLongBuilder struct {
 
 	parentBuilder *_CALReplyBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CALReplyLongBuilder) = (*_CALReplyLongBuilder)(nil)
@@ -171,10 +172,7 @@ func (b *_CALReplyLongBuilder) WithOptionalUnitAddressBuilder(builderSupplier fu
 	var err error
 	b.UnitAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "UnitAddressBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "UnitAddressBuilder failed"))
 	}
 	return b
 }
@@ -189,10 +187,7 @@ func (b *_CALReplyLongBuilder) WithOptionalBridgeAddressBuilder(builderSupplier 
 	var err error
 	b.BridgeAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BridgeAddressBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BridgeAddressBuilder failed"))
 	}
 	return b
 }
@@ -207,10 +202,7 @@ func (b *_CALReplyLongBuilder) WithSerialInterfaceAddressBuilder(builderSupplier
 	var err error
 	b.SerialInterfaceAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "SerialInterfaceAddressBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "SerialInterfaceAddressBuilder failed"))
 	}
 	return b
 }
@@ -230,23 +222,17 @@ func (b *_CALReplyLongBuilder) WithOptionalReplyNetworkBuilder(builderSupplier f
 	var err error
 	b.ReplyNetwork, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ReplyNetworkBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ReplyNetworkBuilder failed"))
 	}
 	return b
 }
 
 func (b *_CALReplyLongBuilder) Build() (CALReplyLong, error) {
 	if b.SerialInterfaceAddress == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'serialInterfaceAddress' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'serialInterfaceAddress' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CALReplyLong.deepCopy(), nil
 }
@@ -272,8 +258,8 @@ func (b *_CALReplyLongBuilder) buildForCALReply() (CALReply, error) {
 
 func (b *_CALReplyLongBuilder) DeepCopy() any {
 	_copy := b.CreateCALReplyLongBuilder().(*_CALReplyLongBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

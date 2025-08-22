@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -113,7 +114,7 @@ type _BrokerConnectionTransportDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BrokerConnectionTransportDataTypeBuilder) = (*_BrokerConnectionTransportDataTypeBuilder)(nil)
@@ -137,10 +138,7 @@ func (b *_BrokerConnectionTransportDataTypeBuilder) WithResourceUriBuilder(build
 	var err error
 	b.ResourceUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -155,29 +153,20 @@ func (b *_BrokerConnectionTransportDataTypeBuilder) WithAuthenticationProfileUri
 	var err error
 	b.AuthenticationProfileUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BrokerConnectionTransportDataTypeBuilder) Build() (BrokerConnectionTransportDataType, error) {
 	if b.ResourceUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'resourceUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'resourceUri' not set"))
 	}
 	if b.AuthenticationProfileUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'authenticationProfileUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'authenticationProfileUri' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BrokerConnectionTransportDataType.deepCopy(), nil
 }
@@ -203,8 +192,8 @@ func (b *_BrokerConnectionTransportDataTypeBuilder) buildForExtensionObjectDefin
 
 func (b *_BrokerConnectionTransportDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateBrokerConnectionTransportDataTypeBuilder().(*_BrokerConnectionTransportDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

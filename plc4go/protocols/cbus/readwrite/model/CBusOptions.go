@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -125,7 +126,7 @@ func NewCBusOptionsBuilder() CBusOptionsBuilder {
 type _CBusOptionsBuilder struct {
 	*_CBusOptions
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CBusOptionsBuilder) = (*_CBusOptionsBuilder)(nil)
@@ -180,8 +181,8 @@ func (b *_CBusOptionsBuilder) WithSrchk(srchk bool) CBusOptionsBuilder {
 }
 
 func (b *_CBusOptionsBuilder) Build() (CBusOptions, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CBusOptions.deepCopy(), nil
 }
@@ -196,8 +197,8 @@ func (b *_CBusOptionsBuilder) MustBuild() CBusOptions {
 
 func (b *_CBusOptionsBuilder) DeepCopy() any {
 	_copy := b.CreateCBusOptionsBuilder().(*_CBusOptionsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

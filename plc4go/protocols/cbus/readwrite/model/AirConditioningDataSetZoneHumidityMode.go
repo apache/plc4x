@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -149,7 +150,7 @@ type _AirConditioningDataSetZoneHumidityModeBuilder struct {
 
 	parentBuilder *_AirConditioningDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AirConditioningDataSetZoneHumidityModeBuilder) = (*_AirConditioningDataSetZoneHumidityModeBuilder)(nil)
@@ -178,10 +179,7 @@ func (b *_AirConditioningDataSetZoneHumidityModeBuilder) WithZoneListBuilder(bui
 	var err error
 	b.ZoneList, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "HVACZoneListBuilder failed"))
 	}
 	return b
 }
@@ -196,10 +194,7 @@ func (b *_AirConditioningDataSetZoneHumidityModeBuilder) WithHumidityModeAndFlag
 	var err error
 	b.HumidityModeAndFlags, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "HVACHumidityModeAndFlagsBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "HVACHumidityModeAndFlagsBuilder failed"))
 	}
 	return b
 }
@@ -219,10 +214,7 @@ func (b *_AirConditioningDataSetZoneHumidityModeBuilder) WithOptionalLevelBuilde
 	var err error
 	b.Level, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "HVACHumidityBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "HVACHumidityBuilder failed"))
 	}
 	return b
 }
@@ -237,10 +229,7 @@ func (b *_AirConditioningDataSetZoneHumidityModeBuilder) WithOptionalRawLevelBui
 	var err error
 	b.RawLevel, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "HVACRawLevelsBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "HVACRawLevelsBuilder failed"))
 	}
 	return b
 }
@@ -255,29 +244,20 @@ func (b *_AirConditioningDataSetZoneHumidityModeBuilder) WithOptionalAuxLevelBui
 	var err error
 	b.AuxLevel, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "HVACAuxiliaryLevelBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "HVACAuxiliaryLevelBuilder failed"))
 	}
 	return b
 }
 
 func (b *_AirConditioningDataSetZoneHumidityModeBuilder) Build() (AirConditioningDataSetZoneHumidityMode, error) {
 	if b.ZoneList == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'zoneList' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'zoneList' not set"))
 	}
 	if b.HumidityModeAndFlags == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'humidityModeAndFlags' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'humidityModeAndFlags' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AirConditioningDataSetZoneHumidityMode.deepCopy(), nil
 }
@@ -303,8 +283,8 @@ func (b *_AirConditioningDataSetZoneHumidityModeBuilder) buildForAirConditioning
 
 func (b *_AirConditioningDataSetZoneHumidityModeBuilder) DeepCopy() any {
 	_copy := b.CreateAirConditioningDataSetZoneHumidityModeBuilder().(*_AirConditioningDataSetZoneHumidityModeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

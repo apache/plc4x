@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _AccessControlDataValidAccessRequestBuilder struct {
 
 	parentBuilder *_AccessControlDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AccessControlDataValidAccessRequestBuilder) = (*_AccessControlDataValidAccessRequestBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_AccessControlDataValidAccessRequestBuilder) WithData(data ...byte) Acc
 }
 
 func (b *_AccessControlDataValidAccessRequestBuilder) Build() (AccessControlDataValidAccessRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AccessControlDataValidAccessRequest.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_AccessControlDataValidAccessRequestBuilder) buildForAccessControlData(
 
 func (b *_AccessControlDataValidAccessRequestBuilder) DeepCopy() any {
 	_copy := b.CreateAccessControlDataValidAccessRequestBuilder().(*_AccessControlDataValidAccessRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

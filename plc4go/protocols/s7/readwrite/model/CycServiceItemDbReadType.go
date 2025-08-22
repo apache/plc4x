@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _CycServiceItemDbReadTypeBuilder struct {
 
 	parentBuilder *_CycServiceItemTypeBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CycServiceItemDbReadTypeBuilder) = (*_CycServiceItemDbReadTypeBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_CycServiceItemDbReadTypeBuilder) WithItems(items ...SubItem) CycServic
 }
 
 func (b *_CycServiceItemDbReadTypeBuilder) Build() (CycServiceItemDbReadType, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CycServiceItemDbReadType.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_CycServiceItemDbReadTypeBuilder) buildForCycServiceItemType() (CycServ
 
 func (b *_CycServiceItemDbReadTypeBuilder) DeepCopy() any {
 	_copy := b.CreateCycServiceItemDbReadTypeBuilder().(*_CycServiceItemDbReadTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

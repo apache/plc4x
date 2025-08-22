@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewErrorReportingSystemCategoryBuilder() ErrorReportingSystemCategoryBuilde
 type _ErrorReportingSystemCategoryBuilder struct {
 	*_ErrorReportingSystemCategory
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ErrorReportingSystemCategoryBuilder) = (*_ErrorReportingSystemCategoryBuilder)(nil)
@@ -124,10 +125,7 @@ func (b *_ErrorReportingSystemCategoryBuilder) WithSystemCategoryTypeBuilder(bui
 	var err error
 	b.SystemCategoryType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ErrorReportingSystemCategoryTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ErrorReportingSystemCategoryTypeBuilder failed"))
 	}
 	return b
 }
@@ -139,13 +137,10 @@ func (b *_ErrorReportingSystemCategoryBuilder) WithSystemCategoryVariant(systemC
 
 func (b *_ErrorReportingSystemCategoryBuilder) Build() (ErrorReportingSystemCategory, error) {
 	if b.SystemCategoryType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'systemCategoryType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'systemCategoryType' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ErrorReportingSystemCategory.deepCopy(), nil
 }
@@ -160,8 +155,8 @@ func (b *_ErrorReportingSystemCategoryBuilder) MustBuild() ErrorReportingSystemC
 
 func (b *_ErrorReportingSystemCategoryBuilder) DeepCopy() any {
 	_copy := b.CreateErrorReportingSystemCategoryBuilder().(*_ErrorReportingSystemCategoryBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

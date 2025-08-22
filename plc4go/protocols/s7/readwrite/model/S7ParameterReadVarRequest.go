@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _S7ParameterReadVarRequestBuilder struct {
 
 	parentBuilder *_S7ParameterBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7ParameterReadVarRequestBuilder) = (*_S7ParameterReadVarRequestBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_S7ParameterReadVarRequestBuilder) WithItems(items ...S7VarRequestParam
 }
 
 func (b *_S7ParameterReadVarRequestBuilder) Build() (S7ParameterReadVarRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7ParameterReadVarRequest.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_S7ParameterReadVarRequestBuilder) buildForS7Parameter() (S7Parameter, 
 
 func (b *_S7ParameterReadVarRequestBuilder) DeepCopy() any {
 	_copy := b.CreateS7ParameterReadVarRequestBuilder().(*_S7ParameterReadVarRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

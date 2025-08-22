@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -139,7 +140,7 @@ type _S7ParameterUserDataItemCPUFunctionsBuilder struct {
 
 	parentBuilder *_S7ParameterUserDataItemBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7ParameterUserDataItemCPUFunctionsBuilder) = (*_S7ParameterUserDataItemCPUFunctionsBuilder)(nil)
@@ -194,8 +195,8 @@ func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) WithOptionalErrorCode(erro
 }
 
 func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) Build() (S7ParameterUserDataItemCPUFunctions, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7ParameterUserDataItemCPUFunctions.deepCopy(), nil
 }
@@ -221,8 +222,8 @@ func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) buildForS7ParameterUserDat
 
 func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) DeepCopy() any {
 	_copy := b.CreateS7ParameterUserDataItemCPUFunctionsBuilder().(*_S7ParameterUserDataItemCPUFunctionsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

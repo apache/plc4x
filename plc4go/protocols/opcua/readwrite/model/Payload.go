@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -135,7 +136,7 @@ type _PayloadBuilder struct {
 
 	childBuilder _PayloadChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (PayloadBuilder) = (*_PayloadBuilder)(nil)
@@ -154,10 +155,7 @@ func (b *_PayloadBuilder) WithSequenceHeaderBuilder(builderSupplier func(Sequenc
 	var err error
 	b.SequenceHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "SequenceHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "SequenceHeaderBuilder failed"))
 	}
 	return b
 }
@@ -169,13 +167,10 @@ func (b *_PayloadBuilder) WithArgByteCount(byteCount uint32) PayloadBuilder {
 
 func (b *_PayloadBuilder) PartialBuild() (PayloadContract, error) {
 	if b.SequenceHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'sequenceHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'sequenceHeader' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Payload.deepCopy(), nil
 }
@@ -232,8 +227,8 @@ func (b *_PayloadBuilder) DeepCopy() any {
 	_copy := b.CreatePayloadBuilder().(*_PayloadBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_PayloadChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetScaleIntegerScaleBuilder struct {
 
 	parentBuilder *_BACnetScaleBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetScaleIntegerScaleBuilder) = (*_BACnetScaleIntegerScaleBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetScaleIntegerScaleBuilder) WithIntegerScaleBuilder(builderSupplie
 	var err error
 	b.IntegerScale, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetScaleIntegerScaleBuilder) Build() (BACnetScaleIntegerScale, error) {
 	if b.IntegerScale == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'integerScale' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'integerScale' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetScaleIntegerScale.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetScaleIntegerScaleBuilder) buildForBACnetScale() (BACnetScale, er
 
 func (b *_BACnetScaleIntegerScaleBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetScaleIntegerScaleBuilder().(*_BACnetScaleIntegerScaleBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

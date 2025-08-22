@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -181,7 +182,7 @@ type _CreateSessionResponseBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CreateSessionResponseBuilder) = (*_CreateSessionResponseBuilder)(nil)
@@ -205,10 +206,7 @@ func (b *_CreateSessionResponseBuilder) WithResponseHeaderBuilder(builderSupplie
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -223,10 +221,7 @@ func (b *_CreateSessionResponseBuilder) WithSessionIdBuilder(builderSupplier fun
 	var err error
 	b.SessionId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -241,10 +236,7 @@ func (b *_CreateSessionResponseBuilder) WithAuthenticationTokenBuilder(builderSu
 	var err error
 	b.AuthenticationToken, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -264,10 +256,7 @@ func (b *_CreateSessionResponseBuilder) WithServerNonceBuilder(builderSupplier f
 	var err error
 	b.ServerNonce, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
 	return b
 }
@@ -282,10 +271,7 @@ func (b *_CreateSessionResponseBuilder) WithServerCertificateBuilder(builderSupp
 	var err error
 	b.ServerCertificate, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
 	return b
 }
@@ -310,10 +296,7 @@ func (b *_CreateSessionResponseBuilder) WithServerSignatureBuilder(builderSuppli
 	var err error
 	b.ServerSignature, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "SignatureDataBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "SignatureDataBuilder failed"))
 	}
 	return b
 }
@@ -325,43 +308,25 @@ func (b *_CreateSessionResponseBuilder) WithMaxRequestMessageSize(maxRequestMess
 
 func (b *_CreateSessionResponseBuilder) Build() (CreateSessionResponse, error) {
 	if b.ResponseHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'responseHeader' not set"))
 	}
 	if b.SessionId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'sessionId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'sessionId' not set"))
 	}
 	if b.AuthenticationToken == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'authenticationToken' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'authenticationToken' not set"))
 	}
 	if b.ServerNonce == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'serverNonce' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'serverNonce' not set"))
 	}
 	if b.ServerCertificate == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'serverCertificate' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'serverCertificate' not set"))
 	}
 	if b.ServerSignature == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'serverSignature' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'serverSignature' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CreateSessionResponse.deepCopy(), nil
 }
@@ -387,8 +352,8 @@ func (b *_CreateSessionResponseBuilder) buildForExtensionObjectDefinition() (Ext
 
 func (b *_CreateSessionResponseBuilder) DeepCopy() any {
 	_copy := b.CreateCreateSessionResponseBuilder().(*_CreateSessionResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

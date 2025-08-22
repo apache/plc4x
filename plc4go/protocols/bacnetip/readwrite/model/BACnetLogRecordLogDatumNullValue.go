@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetLogRecordLogDatumNullValueBuilder struct {
 
 	parentBuilder *_BACnetLogRecordLogDatumBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetLogRecordLogDatumNullValueBuilder) = (*_BACnetLogRecordLogDatumNullValueBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetLogRecordLogDatumNullValueBuilder) WithNullValueBuilder(builderS
 	var err error
 	b.NullValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetLogRecordLogDatumNullValueBuilder) Build() (BACnetLogRecordLogDatumNullValue, error) {
 	if b.NullValue == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'nullValue' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'nullValue' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetLogRecordLogDatumNullValue.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetLogRecordLogDatumNullValueBuilder) buildForBACnetLogRecordLogDat
 
 func (b *_BACnetLogRecordLogDatumNullValueBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetLogRecordLogDatumNullValueBuilder().(*_BACnetLogRecordLogDatumNullValueBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

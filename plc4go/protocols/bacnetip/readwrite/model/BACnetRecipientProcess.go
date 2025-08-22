@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ func NewBACnetRecipientProcessBuilder() BACnetRecipientProcessBuilder {
 type _BACnetRecipientProcessBuilder struct {
 	*_BACnetRecipientProcess
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetRecipientProcessBuilder) = (*_BACnetRecipientProcessBuilder)(nil)
@@ -116,10 +117,7 @@ func (b *_BACnetRecipientProcessBuilder) WithRecipientBuilder(builderSupplier fu
 	var err error
 	b.Recipient, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetRecipientEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetRecipientEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -134,23 +132,17 @@ func (b *_BACnetRecipientProcessBuilder) WithOptionalProcessIdentifierBuilder(bu
 	var err error
 	b.ProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetRecipientProcessBuilder) Build() (BACnetRecipientProcess, error) {
 	if b.Recipient == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'recipient' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'recipient' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetRecipientProcess.deepCopy(), nil
 }
@@ -165,8 +157,8 @@ func (b *_BACnetRecipientProcessBuilder) MustBuild() BACnetRecipientProcess {
 
 func (b *_BACnetRecipientProcessBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetRecipientProcessBuilder().(*_BACnetRecipientProcessBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

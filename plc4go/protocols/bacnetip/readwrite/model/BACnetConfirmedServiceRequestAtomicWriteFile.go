@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -140,7 +141,7 @@ type _BACnetConfirmedServiceRequestAtomicWriteFileBuilder struct {
 
 	parentBuilder *_BACnetConfirmedServiceRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConfirmedServiceRequestAtomicWriteFileBuilder) = (*_BACnetConfirmedServiceRequestAtomicWriteFileBuilder)(nil)
@@ -164,10 +165,7 @@ func (b *_BACnetConfirmedServiceRequestAtomicWriteFileBuilder) WithDeviceIdentif
 	var err error
 	b.DeviceIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
 	return b
 }
@@ -182,10 +180,7 @@ func (b *_BACnetConfirmedServiceRequestAtomicWriteFileBuilder) WithOptionalOpeni
 	var err error
 	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
 	return b
 }
@@ -200,10 +195,7 @@ func (b *_BACnetConfirmedServiceRequestAtomicWriteFileBuilder) WithFileStartPosi
 	var err error
 	b.FileStartPosition, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -218,10 +210,7 @@ func (b *_BACnetConfirmedServiceRequestAtomicWriteFileBuilder) WithFileDataBuild
 	var err error
 	b.FileData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
 	return b
 }
@@ -236,35 +225,23 @@ func (b *_BACnetConfirmedServiceRequestAtomicWriteFileBuilder) WithOptionalClosi
 	var err error
 	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConfirmedServiceRequestAtomicWriteFileBuilder) Build() (BACnetConfirmedServiceRequestAtomicWriteFile, error) {
 	if b.DeviceIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'deviceIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'deviceIdentifier' not set"))
 	}
 	if b.FileStartPosition == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'fileStartPosition' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'fileStartPosition' not set"))
 	}
 	if b.FileData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'fileData' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'fileData' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestAtomicWriteFile.deepCopy(), nil
 }
@@ -290,8 +267,8 @@ func (b *_BACnetConfirmedServiceRequestAtomicWriteFileBuilder) buildForBACnetCon
 
 func (b *_BACnetConfirmedServiceRequestAtomicWriteFileBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConfirmedServiceRequestAtomicWriteFileBuilder().(*_BACnetConfirmedServiceRequestAtomicWriteFileBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

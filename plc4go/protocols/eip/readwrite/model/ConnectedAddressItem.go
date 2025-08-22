@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -99,7 +100,7 @@ type _ConnectedAddressItemBuilder struct {
 
 	parentBuilder *_TypeIdBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ConnectedAddressItemBuilder) = (*_ConnectedAddressItemBuilder)(nil)
@@ -119,8 +120,8 @@ func (b *_ConnectedAddressItemBuilder) WithConnectionId(connectionId uint32) Con
 }
 
 func (b *_ConnectedAddressItemBuilder) Build() (ConnectedAddressItem, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ConnectedAddressItem.deepCopy(), nil
 }
@@ -146,8 +147,8 @@ func (b *_ConnectedAddressItemBuilder) buildForTypeId() (TypeId, error) {
 
 func (b *_ConnectedAddressItemBuilder) DeepCopy() any {
 	_copy := b.CreateConnectedAddressItemBuilder().(*_ConnectedAddressItemBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

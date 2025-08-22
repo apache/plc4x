@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BVLCReadBroadcastDistributionTableAckBuilder struct {
 
 	parentBuilder *_BVLCBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BVLCReadBroadcastDistributionTableAckBuilder) = (*_BVLCReadBroadcastDistributionTableAckBuilder)(nil)
@@ -129,8 +130,8 @@ func (b *_BVLCReadBroadcastDistributionTableAckBuilder) WithArgBvlcPayloadLength
 }
 
 func (b *_BVLCReadBroadcastDistributionTableAckBuilder) Build() (BVLCReadBroadcastDistributionTableAck, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BVLCReadBroadcastDistributionTableAck.deepCopy(), nil
 }
@@ -156,8 +157,8 @@ func (b *_BVLCReadBroadcastDistributionTableAckBuilder) buildForBVLC() (BVLC, er
 
 func (b *_BVLCReadBroadcastDistributionTableAckBuilder) DeepCopy() any {
 	_copy := b.CreateBVLCReadBroadcastDistributionTableAckBuilder().(*_BVLCReadBroadcastDistributionTableAckBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

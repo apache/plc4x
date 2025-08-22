@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder struct {
 
 	parentBuilder *_S7PayloadUserDataItemBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) WithMan
 }
 
 func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) Build() (S7PayloadUserDataItemCyclicServicesUnsubscribeResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemCyclicServicesUnsubscribeResponse.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) buildFo
 
 func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) DeepCopy() any {
 	_copy := b.CreateS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder().(*_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

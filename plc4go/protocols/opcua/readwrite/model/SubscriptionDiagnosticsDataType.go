@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -284,7 +285,7 @@ type _SubscriptionDiagnosticsDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SubscriptionDiagnosticsDataTypeBuilder) = (*_SubscriptionDiagnosticsDataTypeBuilder)(nil)
@@ -308,10 +309,7 @@ func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithSessionIdBuilder(builderSu
 	var err error
 	b.SessionId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -468,13 +466,10 @@ func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithEventQueueOverflowCount(ev
 
 func (b *_SubscriptionDiagnosticsDataTypeBuilder) Build() (SubscriptionDiagnosticsDataType, error) {
 	if b.SessionId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'sessionId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'sessionId' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SubscriptionDiagnosticsDataType.deepCopy(), nil
 }
@@ -500,8 +495,8 @@ func (b *_SubscriptionDiagnosticsDataTypeBuilder) buildForExtensionObjectDefinit
 
 func (b *_SubscriptionDiagnosticsDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateSubscriptionDiagnosticsDataTypeBuilder().(*_SubscriptionDiagnosticsDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _NLMIAmRouterToNetworkBuilder struct {
 
 	parentBuilder *_NLMBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NLMIAmRouterToNetworkBuilder) = (*_NLMIAmRouterToNetworkBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_NLMIAmRouterToNetworkBuilder) WithDestinationNetworkAddresses(destinat
 }
 
 func (b *_NLMIAmRouterToNetworkBuilder) Build() (NLMIAmRouterToNetwork, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLMIAmRouterToNetwork.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_NLMIAmRouterToNetworkBuilder) buildForNLM() (NLM, error) {
 
 func (b *_NLMIAmRouterToNetworkBuilder) DeepCopy() any {
 	_copy := b.CreateNLMIAmRouterToNetworkBuilder().(*_NLMIAmRouterToNetworkBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

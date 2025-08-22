@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -176,7 +177,7 @@ type _ProgramDiagnosticDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ProgramDiagnosticDataTypeBuilder) = (*_ProgramDiagnosticDataTypeBuilder)(nil)
@@ -200,10 +201,7 @@ func (b *_ProgramDiagnosticDataTypeBuilder) WithCreateSessionIdBuilder(builderSu
 	var err error
 	b.CreateSessionId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -218,10 +216,7 @@ func (b *_ProgramDiagnosticDataTypeBuilder) WithCreateClientNameBuilder(builderS
 	var err error
 	b.CreateClientName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -246,10 +241,7 @@ func (b *_ProgramDiagnosticDataTypeBuilder) WithLastMethodCallBuilder(builderSup
 	var err error
 	b.LastMethodCall, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -264,10 +256,7 @@ func (b *_ProgramDiagnosticDataTypeBuilder) WithLastMethodSessionIdBuilder(build
 	var err error
 	b.LastMethodSessionId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -297,47 +286,29 @@ func (b *_ProgramDiagnosticDataTypeBuilder) WithLastMethodReturnStatusBuilder(bu
 	var err error
 	b.LastMethodReturnStatus, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StatusResultBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StatusResultBuilder failed"))
 	}
 	return b
 }
 
 func (b *_ProgramDiagnosticDataTypeBuilder) Build() (ProgramDiagnosticDataType, error) {
 	if b.CreateSessionId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'createSessionId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'createSessionId' not set"))
 	}
 	if b.CreateClientName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'createClientName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'createClientName' not set"))
 	}
 	if b.LastMethodCall == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'lastMethodCall' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'lastMethodCall' not set"))
 	}
 	if b.LastMethodSessionId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'lastMethodSessionId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'lastMethodSessionId' not set"))
 	}
 	if b.LastMethodReturnStatus == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'lastMethodReturnStatus' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'lastMethodReturnStatus' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ProgramDiagnosticDataType.deepCopy(), nil
 }
@@ -363,8 +334,8 @@ func (b *_ProgramDiagnosticDataTypeBuilder) buildForExtensionObjectDefinition() 
 
 func (b *_ProgramDiagnosticDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateProgramDiagnosticDataTypeBuilder().(*_ProgramDiagnosticDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

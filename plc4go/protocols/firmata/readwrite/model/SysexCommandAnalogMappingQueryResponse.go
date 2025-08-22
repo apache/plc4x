@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _SysexCommandAnalogMappingQueryResponseBuilder struct {
 
 	parentBuilder *_SysexCommandBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SysexCommandAnalogMappingQueryResponseBuilder) = (*_SysexCommandAnalogMappingQueryResponseBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_SysexCommandAnalogMappingQueryResponseBuilder) WithPin(pin uint8) Syse
 }
 
 func (b *_SysexCommandAnalogMappingQueryResponseBuilder) Build() (SysexCommandAnalogMappingQueryResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SysexCommandAnalogMappingQueryResponse.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_SysexCommandAnalogMappingQueryResponseBuilder) buildForSysexCommand() 
 
 func (b *_SysexCommandAnalogMappingQueryResponseBuilder) DeepCopy() any {
 	_copy := b.CreateSysexCommandAnalogMappingQueryResponseBuilder().(*_SysexCommandAnalogMappingQueryResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

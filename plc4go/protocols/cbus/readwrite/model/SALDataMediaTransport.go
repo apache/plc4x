@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _SALDataMediaTransportBuilder struct {
 
 	parentBuilder *_SALDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SALDataMediaTransportBuilder) = (*_SALDataMediaTransportBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_SALDataMediaTransportBuilder) WithMediaTransportControlDataBuilder(bui
 	var err error
 	b.MediaTransportControlData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "MediaTransportControlDataBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "MediaTransportControlDataBuilder failed"))
 	}
 	return b
 }
 
 func (b *_SALDataMediaTransportBuilder) Build() (SALDataMediaTransport, error) {
 	if b.MediaTransportControlData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'mediaTransportControlData' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'mediaTransportControlData' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALDataMediaTransport.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_SALDataMediaTransportBuilder) buildForSALData() (SALData, error) {
 
 func (b *_SALDataMediaTransportBuilder) DeepCopy() any {
 	_copy := b.CreateSALDataMediaTransportBuilder().(*_SALDataMediaTransportBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

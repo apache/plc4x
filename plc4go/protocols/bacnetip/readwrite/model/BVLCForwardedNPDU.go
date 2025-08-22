@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -121,7 +122,7 @@ type _BVLCForwardedNPDUBuilder struct {
 
 	parentBuilder *_BVLCBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BVLCForwardedNPDUBuilder) = (*_BVLCForwardedNPDUBuilder)(nil)
@@ -155,10 +156,7 @@ func (b *_BVLCForwardedNPDUBuilder) WithNpduBuilder(builderSupplier func(NPDUBui
 	var err error
 	b.Npdu, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NPDUBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NPDUBuilder failed"))
 	}
 	return b
 }
@@ -170,13 +168,10 @@ func (b *_BVLCForwardedNPDUBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength u
 
 func (b *_BVLCForwardedNPDUBuilder) Build() (BVLCForwardedNPDU, error) {
 	if b.Npdu == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'npdu' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'npdu' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BVLCForwardedNPDU.deepCopy(), nil
 }
@@ -202,8 +197,8 @@ func (b *_BVLCForwardedNPDUBuilder) buildForBVLC() (BVLC, error) {
 
 func (b *_BVLCForwardedNPDUBuilder) DeepCopy() any {
 	_copy := b.CreateBVLCForwardedNPDUBuilder().(*_BVLCForwardedNPDUBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

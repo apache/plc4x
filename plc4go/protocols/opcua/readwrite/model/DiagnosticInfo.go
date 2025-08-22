@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -158,7 +159,7 @@ func NewDiagnosticInfoBuilder() DiagnosticInfoBuilder {
 type _DiagnosticInfoBuilder struct {
 	*_DiagnosticInfo
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DiagnosticInfoBuilder) = (*_DiagnosticInfoBuilder)(nil)
@@ -232,10 +233,7 @@ func (b *_DiagnosticInfoBuilder) WithOptionalAdditionalInfoBuilder(builderSuppli
 	var err error
 	b.AdditionalInfo, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -250,10 +248,7 @@ func (b *_DiagnosticInfoBuilder) WithOptionalInnerStatusCodeBuilder(builderSuppl
 	var err error
 	b.InnerStatusCode, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
 	return b
 }
@@ -268,17 +263,14 @@ func (b *_DiagnosticInfoBuilder) WithOptionalInnerDiagnosticInfoBuilder(builderS
 	var err error
 	b.InnerDiagnosticInfo, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DiagnosticInfoBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DiagnosticInfoBuilder failed"))
 	}
 	return b
 }
 
 func (b *_DiagnosticInfoBuilder) Build() (DiagnosticInfo, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DiagnosticInfo.deepCopy(), nil
 }
@@ -293,8 +285,8 @@ func (b *_DiagnosticInfoBuilder) MustBuild() DiagnosticInfo {
 
 func (b *_DiagnosticInfoBuilder) DeepCopy() any {
 	_copy := b.CreateDiagnosticInfoBuilder().(*_DiagnosticInfoBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

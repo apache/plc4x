@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetPropertyStatesNetworkTypeBuilder struct {
 
 	parentBuilder *_BACnetPropertyStatesBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPropertyStatesNetworkTypeBuilder) = (*_BACnetPropertyStatesNetworkTypeBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetPropertyStatesNetworkTypeBuilder) WithNetworkTypeBuilder(builder
 	var err error
 	b.NetworkType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetNetworkTypeTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetNetworkTypeTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetPropertyStatesNetworkTypeBuilder) Build() (BACnetPropertyStatesNetworkType, error) {
 	if b.NetworkType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'networkType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'networkType' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesNetworkType.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetPropertyStatesNetworkTypeBuilder) buildForBACnetPropertyStates()
 
 func (b *_BACnetPropertyStatesNetworkTypeBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPropertyStatesNetworkTypeBuilder().(*_BACnetPropertyStatesNetworkTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

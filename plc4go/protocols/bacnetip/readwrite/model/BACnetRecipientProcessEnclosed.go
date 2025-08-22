@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -115,7 +116,7 @@ func NewBACnetRecipientProcessEnclosedBuilder() BACnetRecipientProcessEnclosedBu
 type _BACnetRecipientProcessEnclosedBuilder struct {
 	*_BACnetRecipientProcessEnclosed
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetRecipientProcessEnclosedBuilder) = (*_BACnetRecipientProcessEnclosedBuilder)(nil)
@@ -134,10 +135,7 @@ func (b *_BACnetRecipientProcessEnclosedBuilder) WithOpeningTagBuilder(builderSu
 	var err error
 	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
 	return b
 }
@@ -152,10 +150,7 @@ func (b *_BACnetRecipientProcessEnclosedBuilder) WithRecipientProcessBuilder(bui
 	var err error
 	b.RecipientProcess, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetRecipientProcessBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetRecipientProcessBuilder failed"))
 	}
 	return b
 }
@@ -170,10 +165,7 @@ func (b *_BACnetRecipientProcessEnclosedBuilder) WithClosingTagBuilder(builderSu
 	var err error
 	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
 	return b
 }
@@ -185,25 +177,16 @@ func (b *_BACnetRecipientProcessEnclosedBuilder) WithArgTagNumber(tagNumber uint
 
 func (b *_BACnetRecipientProcessEnclosedBuilder) Build() (BACnetRecipientProcessEnclosed, error) {
 	if b.OpeningTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'openingTag' not set"))
 	}
 	if b.RecipientProcess == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'recipientProcess' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'recipientProcess' not set"))
 	}
 	if b.ClosingTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'closingTag' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetRecipientProcessEnclosed.deepCopy(), nil
 }
@@ -218,8 +201,8 @@ func (b *_BACnetRecipientProcessEnclosedBuilder) MustBuild() BACnetRecipientProc
 
 func (b *_BACnetRecipientProcessEnclosedBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetRecipientProcessEnclosedBuilder().(*_BACnetRecipientProcessEnclosedBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

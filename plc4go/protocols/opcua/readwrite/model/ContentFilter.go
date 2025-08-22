@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _ContentFilterBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ContentFilterBuilder) = (*_ContentFilterBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_ContentFilterBuilder) WithElements(elements ...ContentFilterElement) C
 }
 
 func (b *_ContentFilterBuilder) Build() (ContentFilter, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ContentFilter.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_ContentFilterBuilder) buildForExtensionObjectDefinition() (ExtensionOb
 
 func (b *_ContentFilterBuilder) DeepCopy() any {
 	_copy := b.CreateContentFilterBuilder().(*_ContentFilterBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

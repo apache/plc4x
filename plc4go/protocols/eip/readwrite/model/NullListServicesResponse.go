@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _NullListServicesResponseBuilder struct {
 
 	parentBuilder *_EipPacketBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NullListServicesResponseBuilder) = (*_NullListServicesResponseBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_NullListServicesResponseBuilder) WithMandatoryFields() NullListService
 }
 
 func (b *_NullListServicesResponseBuilder) Build() (NullListServicesResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NullListServicesResponse.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_NullListServicesResponseBuilder) buildForEipPacket() (EipPacket, error
 
 func (b *_NullListServicesResponseBuilder) DeepCopy() any {
 	_copy := b.CreateNullListServicesResponseBuilder().(*_NullListServicesResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -112,7 +113,7 @@ func NewAdsTableSizesBuilder() AdsTableSizesBuilder {
 type _AdsTableSizesBuilder struct {
 	*_AdsTableSizes
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AdsTableSizesBuilder) = (*_AdsTableSizesBuilder)(nil)
@@ -152,8 +153,8 @@ func (b *_AdsTableSizesBuilder) WithExtraLength(extraLength uint32) AdsTableSize
 }
 
 func (b *_AdsTableSizesBuilder) Build() (AdsTableSizes, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsTableSizes.deepCopy(), nil
 }
@@ -168,8 +169,8 @@ func (b *_AdsTableSizesBuilder) MustBuild() AdsTableSizes {
 
 func (b *_AdsTableSizesBuilder) DeepCopy() any {
 	_copy := b.CreateAdsTableSizesBuilder().(*_AdsTableSizesBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

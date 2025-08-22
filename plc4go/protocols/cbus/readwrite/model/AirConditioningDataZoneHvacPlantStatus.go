@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -131,7 +132,7 @@ type _AirConditioningDataZoneHvacPlantStatusBuilder struct {
 
 	parentBuilder *_AirConditioningDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AirConditioningDataZoneHvacPlantStatusBuilder) = (*_AirConditioningDataZoneHvacPlantStatusBuilder)(nil)
@@ -160,10 +161,7 @@ func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) WithZoneListBuilder(bui
 	var err error
 	b.ZoneList, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "HVACZoneListBuilder failed"))
 	}
 	return b
 }
@@ -183,10 +181,7 @@ func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) WithHvacStatusBuilder(b
 	var err error
 	b.HvacStatus, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "HVACStatusFlagsBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "HVACStatusFlagsBuilder failed"))
 	}
 	return b
 }
@@ -198,19 +193,13 @@ func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) WithHvacErrorCode(hvacE
 
 func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) Build() (AirConditioningDataZoneHvacPlantStatus, error) {
 	if b.ZoneList == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'zoneList' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'zoneList' not set"))
 	}
 	if b.HvacStatus == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'hvacStatus' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'hvacStatus' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AirConditioningDataZoneHvacPlantStatus.deepCopy(), nil
 }
@@ -236,8 +225,8 @@ func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) buildForAirConditioning
 
 func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) DeepCopy() any {
 	_copy := b.CreateAirConditioningDataZoneHvacPlantStatusBuilder().(*_AirConditioningDataZoneHvacPlantStatusBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

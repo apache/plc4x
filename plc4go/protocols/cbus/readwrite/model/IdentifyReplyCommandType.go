@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _IdentifyReplyCommandTypeBuilder struct {
 
 	parentBuilder *_IdentifyReplyCommandBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (IdentifyReplyCommandTypeBuilder) = (*_IdentifyReplyCommandTypeBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_IdentifyReplyCommandTypeBuilder) WithUnitType(unitType string) Identif
 }
 
 func (b *_IdentifyReplyCommandTypeBuilder) Build() (IdentifyReplyCommandType, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._IdentifyReplyCommandType.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_IdentifyReplyCommandTypeBuilder) buildForIdentifyReplyCommand() (Ident
 
 func (b *_IdentifyReplyCommandTypeBuilder) DeepCopy() any {
 	_copy := b.CreateIdentifyReplyCommandTypeBuilder().(*_IdentifyReplyCommandTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

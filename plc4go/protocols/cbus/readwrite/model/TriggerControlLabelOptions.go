@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewTriggerControlLabelOptionsBuilder() TriggerControlLabelOptionsBuilder {
 type _TriggerControlLabelOptionsBuilder struct {
 	*_TriggerControlLabelOptions
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TriggerControlLabelOptionsBuilder) = (*_TriggerControlLabelOptionsBuilder)(nil)
@@ -115,8 +116,8 @@ func (b *_TriggerControlLabelOptionsBuilder) WithLabelType(labelType TriggerCont
 }
 
 func (b *_TriggerControlLabelOptionsBuilder) Build() (TriggerControlLabelOptions, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TriggerControlLabelOptions.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_TriggerControlLabelOptionsBuilder) MustBuild() TriggerControlLabelOpti
 
 func (b *_TriggerControlLabelOptionsBuilder) DeepCopy() any {
 	_copy := b.CreateTriggerControlLabelOptionsBuilder().(*_TriggerControlLabelOptionsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

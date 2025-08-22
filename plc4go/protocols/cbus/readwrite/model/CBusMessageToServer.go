@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _CBusMessageToServerBuilder struct {
 
 	parentBuilder *_CBusMessageBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CBusMessageToServerBuilder) = (*_CBusMessageToServerBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_CBusMessageToServerBuilder) WithRequestBuilder(builderSupplier func(Re
 	var err error
 	b.Request, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "RequestBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "RequestBuilder failed"))
 	}
 	return b
 }
 
 func (b *_CBusMessageToServerBuilder) Build() (CBusMessageToServer, error) {
 	if b.Request == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'request' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'request' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CBusMessageToServer.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_CBusMessageToServerBuilder) buildForCBusMessage() (CBusMessage, error)
 
 func (b *_CBusMessageToServerBuilder) DeepCopy() any {
 	_copy := b.CreateCBusMessageToServerBuilder().(*_CBusMessageToServerBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

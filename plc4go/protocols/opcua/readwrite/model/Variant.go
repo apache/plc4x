@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -188,7 +189,7 @@ type _VariantBuilder struct {
 
 	childBuilder _VariantChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (VariantBuilder) = (*_VariantBuilder)(nil)
@@ -218,8 +219,8 @@ func (b *_VariantBuilder) WithArrayDimensions(arrayDimensions ...bool) VariantBu
 }
 
 func (b *_VariantBuilder) PartialBuild() (VariantContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Variant.deepCopy(), nil
 }
@@ -516,8 +517,8 @@ func (b *_VariantBuilder) DeepCopy() any {
 	_copy := b.CreateVariantBuilder().(*_VariantBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_VariantChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

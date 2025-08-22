@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -125,7 +126,7 @@ type _TraceContextDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TraceContextDataTypeBuilder) = (*_TraceContextDataTypeBuilder)(nil)
@@ -149,10 +150,7 @@ func (b *_TraceContextDataTypeBuilder) WithTraceIdBuilder(builderSupplier func(G
 	var err error
 	b.TraceId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "GuidValueBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "GuidValueBuilder failed"))
 	}
 	return b
 }
@@ -177,29 +175,20 @@ func (b *_TraceContextDataTypeBuilder) WithParentIdentifierBuilder(builderSuppli
 	var err error
 	b.ParentIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_TraceContextDataTypeBuilder) Build() (TraceContextDataType, error) {
 	if b.TraceId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'traceId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'traceId' not set"))
 	}
 	if b.ParentIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'parentIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'parentIdentifier' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TraceContextDataType.deepCopy(), nil
 }
@@ -225,8 +214,8 @@ func (b *_TraceContextDataTypeBuilder) buildForExtensionObjectDefinition() (Exte
 
 func (b *_TraceContextDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateTraceContextDataTypeBuilder().(*_TraceContextDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

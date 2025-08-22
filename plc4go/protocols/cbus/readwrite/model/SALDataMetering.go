@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _SALDataMeteringBuilder struct {
 
 	parentBuilder *_SALDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SALDataMeteringBuilder) = (*_SALDataMeteringBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_SALDataMeteringBuilder) WithMeteringDataBuilder(builderSupplier func(M
 	var err error
 	b.MeteringData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "MeteringDataBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "MeteringDataBuilder failed"))
 	}
 	return b
 }
 
 func (b *_SALDataMeteringBuilder) Build() (SALDataMetering, error) {
 	if b.MeteringData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'meteringData' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'meteringData' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALDataMetering.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_SALDataMeteringBuilder) buildForSALData() (SALData, error) {
 
 func (b *_SALDataMeteringBuilder) DeepCopy() any {
 	_copy := b.CreateSALDataMeteringBuilder().(*_SALDataMeteringBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

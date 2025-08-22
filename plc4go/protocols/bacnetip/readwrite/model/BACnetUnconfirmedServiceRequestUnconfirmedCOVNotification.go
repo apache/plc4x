@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -146,7 +147,7 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder struct {
 
 	parentBuilder *_BACnetUnconfirmedServiceRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) = (*_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder)(nil)
@@ -170,10 +171,7 @@ func (b *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) With
 	var err error
 	b.SubscriberProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -188,10 +186,7 @@ func (b *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) With
 	var err error
 	b.InitiatingDeviceIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
 	return b
 }
@@ -206,10 +201,7 @@ func (b *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) With
 	var err error
 	b.MonitoredObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
 	return b
 }
@@ -224,10 +216,7 @@ func (b *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) With
 	var err error
 	b.LifetimeInSeconds, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -242,47 +231,29 @@ func (b *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) With
 	var err error
 	b.ListOfValues, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetPropertyValuesBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetPropertyValuesBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) Build() (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, error) {
 	if b.SubscriberProcessIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
 	}
 	if b.InitiatingDeviceIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'initiatingDeviceIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'initiatingDeviceIdentifier' not set"))
 	}
 	if b.MonitoredObjectIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
 	}
 	if b.LifetimeInSeconds == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'lifetimeInSeconds' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'lifetimeInSeconds' not set"))
 	}
 	if b.ListOfValues == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'listOfValues' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'listOfValues' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification.deepCopy(), nil
 }
@@ -308,8 +279,8 @@ func (b *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) buil
 
 func (b *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder().(*_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }
