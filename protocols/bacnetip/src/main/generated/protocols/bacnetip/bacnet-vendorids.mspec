@@ -1571,6 +1571,13 @@
   ['1557' ZAPHIREAS ['1557', '"Zaphire AS"']]
   ['1558' AJ_MANUFACTURING ['1558', '"AJ Manufacturing"']]
   ['1559' FUTURE_MOTORS_LTD ['1559', '"Future Motors Ltd."']]
+  ['1560' HIMEL_HONG_KONG_LIMITED ['1560', '"Himel Hong Kong Limited"']]
+  ['1561' SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD ['1561', '"Shenzhen Sunricher Technology Co., Ltd."']]
+  ['1562' ACTILITYSA ['1562', '"Actility S.A."']]
+  ['1563' OY_HALTON_GROUP_LTD ['1563', '"Oy Halton Group Ltd."']]
+  ['1564' AVTECH_SOFTWARE_INC ['1564', '"AVTECH Software, Inc."']]
+  ['1565' IN_CONTROL_ENGINEERINGLLC ['1565', '"InControl Engineering LLC"']]
+  ['1566' SOUND_WATER_TECHNOLOGIESLLC ['1566', '"SoundWater Technologies LLC"']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]

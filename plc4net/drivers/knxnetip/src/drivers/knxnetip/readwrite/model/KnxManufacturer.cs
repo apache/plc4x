@@ -775,8 +775,11 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_ALZINGERANDVOGEL_SOFTWAREENTWICKLUNGS_GMBH = 747,
         M_GIANFRANCO_SMART_SOLUTIONS_LTD = 748,
         M_ROGERWELL_CONTROL_SYSTEM_LIMITED = 749,
-        M_ABB___RESERVED = 750,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 751,
+        M_SHANGHAI_YUKON_AUTOMATION_TECHNOLOGIES_CO___LTD_ = 750,
+        M_TECCO_PTY_LTD = 751,
+        M_A_LAN_TECHNOLOGIE = 752,
+        M_ABB___RESERVED = 753,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 754,
     }
 
     public static class KnxManufacturerInfo
@@ -2958,10 +2961,19 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TAPKO_TECHNOLOGIES: { /* '75' */
                     return 114;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '750' */
+                case KnxManufacturer.M_SHANGHAI_YUKON_AUTOMATION_TECHNOLOGIES_CO___LTD_: { /* '750' */
+                    return 811;
+                }
+                case KnxManufacturer.M_TECCO_PTY_LTD: { /* '751' */
+                    return 812;
+                }
+                case KnxManufacturer.M_A_LAN_TECHNOLOGIE: { /* '752' */
+                    return 813;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '753' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '751' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '754' */
                     return 43959;
                 }
                 case KnxManufacturer.M_HDL: { /* '76' */
@@ -5224,10 +5236,19 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TAPKO_TECHNOLOGIES: { /* '75' */
                     return "TAPKO Technologies";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '750' */
+                case KnxManufacturer.M_SHANGHAI_YUKON_AUTOMATION_TECHNOLOGIES_CO___LTD_: { /* '750' */
+                    return "Shanghai YUKON Automation Technologies Co., Ltd.";
+                }
+                case KnxManufacturer.M_TECCO_PTY_LTD: { /* '751' */
+                    return "Tecco Pty Ltd";
+                }
+                case KnxManufacturer.M_A_LAN_TECHNOLOGIE: { /* '752' */
+                    return "A-LAN Technologie";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '753' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '751' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '754' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_HDL: { /* '76' */

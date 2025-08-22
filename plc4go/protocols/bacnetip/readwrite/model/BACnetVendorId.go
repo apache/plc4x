@@ -1593,6 +1593,13 @@ const (
 	BACnetVendorId_ZAPHIREAS                                                                    BACnetVendorId = 1557
 	BACnetVendorId_AJ_MANUFACTURING                                                             BACnetVendorId = 1558
 	BACnetVendorId_FUTURE_MOTORS_LTD                                                            BACnetVendorId = 1559
+	BACnetVendorId_HIMEL_HONG_KONG_LIMITED                                                      BACnetVendorId = 1560
+	BACnetVendorId_SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD                                         BACnetVendorId = 1561
+	BACnetVendorId_ACTILITYSA                                                                   BACnetVendorId = 1562
+	BACnetVendorId_OY_HALTON_GROUP_LTD                                                          BACnetVendorId = 1563
+	BACnetVendorId_AVTECH_SOFTWARE_INC                                                          BACnetVendorId = 1564
+	BACnetVendorId_IN_CONTROL_ENGINEERINGLLC                                                    BACnetVendorId = 1565
+	BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC                                                  BACnetVendorId = 1566
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -3151,6 +3158,13 @@ func init() {
 		BACnetVendorId_ZAPHIREAS,
 		BACnetVendorId_AJ_MANUFACTURING,
 		BACnetVendorId_FUTURE_MOTORS_LTD,
+		BACnetVendorId_HIMEL_HONG_KONG_LIMITED,
+		BACnetVendorId_SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD,
+		BACnetVendorId_ACTILITYSA,
+		BACnetVendorId_OY_HALTON_GROUP_LTD,
+		BACnetVendorId_AVTECH_SOFTWARE_INC,
+		BACnetVendorId_IN_CONTROL_ENGINEERINGLLC,
+		BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5644,6 +5658,34 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 156:
 		{ /* '156' */
 			return 156
+		}
+	case 1560:
+		{ /* '1560' */
+			return 1560
+		}
+	case 1561:
+		{ /* '1561' */
+			return 1561
+		}
+	case 1562:
+		{ /* '1562' */
+			return 1562
+		}
+	case 1563:
+		{ /* '1563' */
+			return 1563
+		}
+	case 1564:
+		{ /* '1564' */
+			return 1564
+		}
+	case 1565:
+		{ /* '1565' */
+			return 1565
+		}
+	case 1566:
+		{ /* '1566' */
+			return 1566
 		}
 	case 157:
 		{ /* '157' */
@@ -11867,6 +11909,34 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '156' */
 			return "Messner Gebäudetechnik GmbH"
 		}
+	case 1560:
+		{ /* '1560' */
+			return "Himel Hong Kong Limited"
+		}
+	case 1561:
+		{ /* '1561' */
+			return "Shenzhen Sunricher Technology Co., Ltd."
+		}
+	case 1562:
+		{ /* '1562' */
+			return "Actility S.A."
+		}
+	case 1563:
+		{ /* '1563' */
+			return "Oy Halton Group Ltd."
+		}
+	case 1564:
+		{ /* '1564' */
+			return "AVTECH Software, Inc."
+		}
+	case 1565:
+		{ /* '1565' */
+			return "InControl Engineering LLC"
+		}
+	case 1566:
+		{ /* '1566' */
+			return "SoundWater Technologies LLC"
+		}
 	case 157:
 		{ /* '157' */
 			return "Integrated.CH"
@@ -16844,6 +16914,20 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_FUTURE_MOTORS_LTD, true
 	case 156:
 		return BACnetVendorId_MESSNER_GEBUDETECHNIK_GMBH, true
+	case 1560:
+		return BACnetVendorId_HIMEL_HONG_KONG_LIMITED, true
+	case 1561:
+		return BACnetVendorId_SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD, true
+	case 1562:
+		return BACnetVendorId_ACTILITYSA, true
+	case 1563:
+		return BACnetVendorId_OY_HALTON_GROUP_LTD, true
+	case 1564:
+		return BACnetVendorId_AVTECH_SOFTWARE_INC, true
+	case 1565:
+		return BACnetVendorId_IN_CONTROL_ENGINEERINGLLC, true
+	case 1566:
+		return BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC, true
 	case 157:
 		return BACnetVendorId_INTEGRATEDCH, true
 	case 158:
@@ -19952,6 +20036,20 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_FUTURE_MOTORS_LTD, true
 	case "MESSNER_GEBUDETECHNIK_GMBH":
 		return BACnetVendorId_MESSNER_GEBUDETECHNIK_GMBH, true
+	case "HIMEL_HONG_KONG_LIMITED":
+		return BACnetVendorId_HIMEL_HONG_KONG_LIMITED, true
+	case "SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD":
+		return BACnetVendorId_SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD, true
+	case "ACTILITYSA":
+		return BACnetVendorId_ACTILITYSA, true
+	case "OY_HALTON_GROUP_LTD":
+		return BACnetVendorId_OY_HALTON_GROUP_LTD, true
+	case "AVTECH_SOFTWARE_INC":
+		return BACnetVendorId_AVTECH_SOFTWARE_INC, true
+	case "IN_CONTROL_ENGINEERINGLLC":
+		return BACnetVendorId_IN_CONTROL_ENGINEERINGLLC, true
+	case "SOUND_WATER_TECHNOLOGIESLLC":
+		return BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC, true
 	case "INTEGRATEDCH":
 		return BACnetVendorId_INTEGRATEDCH, true
 	case "PRICE_INDUSTRIES":
@@ -23132,6 +23230,20 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "FUTURE_MOTORS_LTD"
 	case BACnetVendorId_MESSNER_GEBUDETECHNIK_GMBH:
 		return "MESSNER_GEBUDETECHNIK_GMBH"
+	case BACnetVendorId_HIMEL_HONG_KONG_LIMITED:
+		return "HIMEL_HONG_KONG_LIMITED"
+	case BACnetVendorId_SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD:
+		return "SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD"
+	case BACnetVendorId_ACTILITYSA:
+		return "ACTILITYSA"
+	case BACnetVendorId_OY_HALTON_GROUP_LTD:
+		return "OY_HALTON_GROUP_LTD"
+	case BACnetVendorId_AVTECH_SOFTWARE_INC:
+		return "AVTECH_SOFTWARE_INC"
+	case BACnetVendorId_IN_CONTROL_ENGINEERINGLLC:
+		return "IN_CONTROL_ENGINEERINGLLC"
+	case BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC:
+		return "SOUND_WATER_TECHNOLOGIESLLC"
 	case BACnetVendorId_INTEGRATEDCH:
 		return "INTEGRATEDCH"
 	case BACnetVendorId_PRICE_INDUSTRIES:

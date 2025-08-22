@@ -4463,7 +4463,7 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 750:
 		{ /* '750' */
-			return 43954
+			return 811
 		}
 	case 751:
 		{ /* '751' */
@@ -7501,7 +7501,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 750:
 		{ /* '750' */
-			return "ABB - reserved"
+			return "Shanghai YUKON Automation Technologies Co., Ltd."
 		}
 	case 751:
 		{ /* '751' */
@@ -9089,7 +9089,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 75:
 		return KnxManufacturer_M_TAPKO_TECHNOLOGIES, true
 	case 750:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_SHANGHAI_YUKON_AUTOMATION_TECHNOLOGIES_CO___LTD_, true
 	case 751:
 		return KnxManufacturer_M_TECCO_PTY_LTD, true
 	case 752:
