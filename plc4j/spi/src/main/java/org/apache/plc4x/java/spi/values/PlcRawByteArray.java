@@ -20,8 +20,12 @@ package org.apache.plc4x.java.spi.values;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlcRawByteArray extends PlcIECValue<byte[]> {
 
@@ -57,6 +61,20 @@ public class PlcRawByteArray extends PlcIECValue<byte[]> {
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.writeByteArray(getClass().getSimpleName(), value);
+    }
+
+    @Override
+    public boolean isList() {
+        return true;
+    }
+
+    @Override
+    public List<PlcValue> getList() {
+        List<PlcValue> shortList = new ArrayList<>(value.length);
+        for (byte b : value) {
+            shortList.add(new PlcSINT((short) b));
+        }
+        return shortList;
     }
 
 }

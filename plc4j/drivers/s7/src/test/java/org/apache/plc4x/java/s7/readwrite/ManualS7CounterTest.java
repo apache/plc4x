@@ -52,9 +52,9 @@ public class ManualS7CounterTest {
             writeBuilder.addTagAddress("counter-3", "%C18:COUNTER", Integer.decode("0x0012"));            
             
             final PlcWriteRequest writeRequest = writeBuilder.build();
-            final PlcWriteResponse writeResponse = writeRequest.execute().get();
+            final PlcWriteResponse writeResposne = writeRequest.execute().get();
             
-            if ( writeResponse.getResponseCode("counter-3") == PlcResponseCode.OK ){
+            if ( writeResposne.getResponseCode("counter-3") == PlcResponseCode.OK ){
                 System.out.println("Write the counter");
             } else {
                 System.out.println("Problems....");

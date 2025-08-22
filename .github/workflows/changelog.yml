@@ -20,12 +20,13 @@ name: 'Generate changelog'
 on:
   release:
     types: [created, edited]
+  workflow_dispatch:
 
 jobs:
   generate-changelog:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - uses: BobAnkh/auto-generate-changelog@v1.2.5
@@ -33,3 +34,4 @@ jobs:
           ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
           TYPE: 'feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,perf:Performance Improvements'
           PATH: 'CHANGELOG.md'
+          BRANCH: 'chore/changelog_update'

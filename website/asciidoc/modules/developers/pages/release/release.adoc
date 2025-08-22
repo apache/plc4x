@@ -502,7 +502,7 @@ After this https://dist.apache.org/repos/dist/release/plc4x should only contain 
 
 Probably the simplest part is releasing the Maven artifacts.
 
-In order to do this, the release manager logs into Nexus at https://repository.apache.org/, selects the staging repository and clicks on the `Release` button.
+To do this, the release manager logs into Nexus at https://repository.apache.org/, selects the staging repository and clicks on the `Release` button.
 
 This will move all artifacts into the Apache release repository and delete the staging repository after that.
 
@@ -528,18 +528,13 @@ This has to be done with git
 [subs="verbatim,attributes"]
 ----
 git checkout release
-git merge v{current-full-version}
-----
-
-When there are conflicts it could help to use the `theirs` merge strategy, i.e.,
-
-[subs="verbatim,attributes"]
-----
 git merge -X theirs v{current-full-version}
 ----
 
-Possibly a manual conflict resolution has to be done afterwards. After that, changes need to
-be pushed.
+When there are conflicts the `theirs` merge strategy will most probably help resolve them,
+
+Possibly a manual conflict resolution has to be done afterward.
+After that, changes need to be pushed.
 
 == Updating GitHub Issues
 

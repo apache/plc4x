@@ -403,7 +403,7 @@ type _${type.name}Builder struct {
 	childBuilder _${type.name}ChildBuilder
 </#if>
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (${type.name}Builder) = (*_${type.name}Builder)(nil)
@@ -448,10 +448,7 @@ func (b *_${type.name}Builder) With<#if field.isOptionalField()>Optional</#if>${
 	var err error
 	b.${field.name?cap_first}, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}<@emitImport import="github.com/pkg/errors" />
-		}
-		b.err.Append(errors.Wrap(err, "${helper.getLanguageTypeNameForField(field)}Builder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "${helper.getLanguageTypeNameForField(field)}Builder failed"))
 	}
 	return b
 }
@@ -472,15 +469,12 @@ func (b *_${type.name}Builder) <#if type.isAbstract()>Partial</#if>Build() (${ty
 <#list type.propertyFields?filter(field->!field.isOptionalField()) as field>
 	<#if field.type.isComplexTypeReference() || helper.needsPointerAccess(field)>
 	if b.${field.name?cap_first} == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field '${field.name}' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field '${field.name}' not set"))
 	}
 	</#if>
 </#list>
-	if b.err != nil{
-		return nil, errors.Wrap(b.err, "error occurred during build")<@emitImport import="github.com/pkg/errors" />
+	if err := stdErrors.Join(b.collectedErr...); err != nil {<@emitImportWithAlias alias="stdErrors" import="errors" />
+		return nil, errors.Wrap(err, "error occurred during build")<@emitImport import="github.com/pkg/errors" />
 	}
 	return b._${type.name}.deepCopy(), nil
 }
@@ -551,8 +545,8 @@ func (b *_${type.name}Builder) DeepCopy() any {
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_${type.name}ChildBuilder)
 	_copy.childBuilder.setParent(_copy)
 </#if>
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }
