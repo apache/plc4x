@@ -140,7 +140,7 @@ fi
 
 # Run the main build to re-generate the generated code.
 if ! docker compose -f "$DIRECTORY/tools/docker-compose.yaml" run releaser \
-        bash -c "/ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository clean package -DskipTests"; then
+        bash -c "/ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository clean install -DskipTests"; then
     echo "❌ Got non-0 exit code from running the code-generation inside docker, aborting."
     exit 1
 else
