@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.13.1-SNAPSHOT</version>
+    <version>0.13.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-website</artifactId>
@@ -33,7 +33,7 @@
   <description />
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T14:15:25Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2025-08-23T06:42:02Z</project.build.outputTimestamp>
     <bootstrap.version>5.3.3</bootstrap.version>
     <popper.version>2.8.0</popper.version>
     <jquery.version>3.7.1</jquery.version>
