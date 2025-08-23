@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 DIRECTORY=$(pwd)
-PRE_RELEASE_VERSION=0.13.0-SNAPSHOT
+PRE_RELEASE_VERSION=0.13.1-SNAPSHOT
 
 # Set the local development version back to the initial one.
 docker compose run releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,update-generated-code -Dmaven.repo.local=/ws/out/.repository versions:set -DnewVersion="$PRE_RELEASE_VERSION"

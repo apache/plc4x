@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.13.2-SNAPSHOT</version>
+    <version>0.13.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-driver-open-protocol</artifactId>
@@ -32,7 +32,7 @@
   <description>Implementation of a PLC4X driver for the Open-Protocol protocol.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-23T06:42:02Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2025-08-23T06:48:10Z</project.build.outputTimestamp>
   </properties>
 
   <build>
