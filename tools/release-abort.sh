@@ -19,11 +19,12 @@
 # under the License.
 # ----------------------------------------------------------------------------
 
-DIRECTORY=$(pwd)
+DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 PRE_RELEASE_VERSION=0.13.1-SNAPSHOT
 
 # Set the local development version back to the initial one.
-docker compose run releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,update-generated-code -Dmaven.repo.local=/ws/out/.repository versions:set -DnewVersion="$PRE_RELEASE_VERSION"
+docker compose -f "$DIRECTORY/tools/docker-compose.yaml" run releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,update-generated-code -Dmaven.repo.local=/ws/out/.repository versions:set -DnewVersion="$PRE_RELEASE_VERSION"
 
 # Delete left-over files from the last attempt.
 find .. -type f -name 'release.properties' -delete
