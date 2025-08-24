@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.13.1-SNAPSHOT</version>
+    <version>0.13.1</version>
   </parent>
 
   <artifactId>plc4j-driver-knxnetip</artifactId>
@@ -31,7 +31,7 @@
   <name>PLC4J: Driver: KNXNet/IP</name>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-23T06:48:10Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -89,28 +89,28 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.13.1-SNAPSHOT</version>
+      <version>0.13.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.13.1-SNAPSHOT</version>
+      <version>0.13.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-udp</artifactId>
-      <version>0.13.1-SNAPSHOT</version>
+      <version>0.13.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-raw-socket</artifactId>
-      <version>0.13.1-SNAPSHOT</version>
+      <version>0.13.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-pcap-replay</artifactId>
-      <version>0.13.1-SNAPSHOT</version>
+      <version>0.13.1</version>
     </dependency>
 
     <dependency>
@@ -146,20 +146,20 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.13.1-SNAPSHOT</version>
+      <version>0.13.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.13.1-SNAPSHOT</version>
+      <version>0.13.1</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-knxnetip</artifactId>
-      <version>0.13.1-SNAPSHOT</version>
+      <version>0.13.1</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
@@ -202,7 +202,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-code-generation-language-java</artifactId>
-          <version>0.13.1-SNAPSHOT</version>
+          <version>0.13.1</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -210,7 +210,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-knxnetip</artifactId>
-          <version>0.13.1-SNAPSHOT</version>
+          <version>0.13.1</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
