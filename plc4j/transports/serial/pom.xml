@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-transports</artifactId>
-    <version>0.13.1</version>
+    <version>0.13.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-transport-serial</artifactId>
@@ -32,19 +32,19 @@
   <description>Base classes needed to implement plc4x drivers based on Serial connections.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2025-08-24T18:31:19Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.13.1</version>
+      <version>0.13.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.13.1</version>
+      <version>0.13.2-SNAPSHOT</version>
     </dependency>
 
     <dependency>
