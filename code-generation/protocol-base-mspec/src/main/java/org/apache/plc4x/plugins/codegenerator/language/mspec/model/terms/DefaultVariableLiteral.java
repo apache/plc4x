@@ -98,7 +98,7 @@ public class DefaultVariableLiteral implements VariableLiteral {
         DefaultVariableLiteral that = (DefaultVariableLiteral) o;
         return Objects.equals(index, that.index)
             && name.equals(that.name)
-            && typeReference.equals(that.typeReference)
+            && (typeReference != null) ? typeReference.equals(that.typeReference) : that.typeReference == null
             && Objects.equals(args, that.args)
             && Objects.equals(child, that.child);
     }
