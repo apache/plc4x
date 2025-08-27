@@ -32,6 +32,6 @@ jobs:
       - uses: BobAnkh/auto-generate-changelog@v1.3.0
         with:
           ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          TYPE: 'feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,perf:Performance Improvements'
+          TYPE: 'feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,perf:Performance Improvements,chore(deps):Dependency Updates,chore:Miscellaneous,test:Testing,build:Build System,ci:Continuous Integration,revert:Reverts,style:Style,wip:Work In Progress,release:Release'
           PATH: 'CHANGELOG.md'
           #BRANCH: 'chore/changelog_update'
