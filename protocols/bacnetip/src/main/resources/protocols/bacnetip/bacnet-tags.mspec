@@ -202,6 +202,8 @@
 ]
 
 [type BACnetTagPayloadBoolean(uint 32 actualLength)
+    // TODO: example [state uint 32 actualLength]
+    // [state bit value 'actualLength == 1']
     [virtual bit value   'actualLength == 1'    ]
     [virtual bit isTrue  'value'                ]
     [virtual bit isFalse '!value'               ]

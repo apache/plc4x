@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.java.bacnetip.configuration;
 
-import org.apache.plc4x.java.bacnetip.readwrite.BacnetConstants;
+import org.apache.plc4x.java.bacnetip.readwrite.Constants;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
@@ -45,7 +45,7 @@ public class BacNetRawSocketTransportConfiguration extends DefaultRawSocketTrans
 
     @Override
     public int getDefaultPort() {
-        return BacnetConstants.BACNETUDPDEFAULTPORT;
+        return Constants.BACNETUDPDEFAULTPORT;
     }
 
     /**

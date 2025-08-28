@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.openprotocol.readwrite;
+package org.apache.plc4x.java.plc4x.readwrite;
 
 import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.*;
 import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.*;
@@ -38,5 +38,5 @@ import org.apache.plc4x.java.spi.generation.*;
 public class Constants {
 
   // Constant values.
-  public static final Integer TCPDEFAULTPORT = 4545;
+  public static final Integer PLC4XTCPDEFAULTPORT = 59837;
 }

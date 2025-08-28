@@ -19,14 +19,14 @@
 
 package org.apache.plc4x.java.iec608705104.readwrite.configuration;
 
-import org.apache.plc4x.java.iec608705104.readwrite.IEC608705104Constants;
+import org.apache.plc4x.java.iec608705104.readwrite.Constants;
 import org.apache.plc4x.java.transport.tcp.DefaultTcpTransportConfiguration;
 
 public class Iec608705014TcpTransportConfiguration extends DefaultTcpTransportConfiguration {
 
     @Override
     public int getDefaultPort() {
-        return IEC608705104Constants.DEFAULTPORT;
+        return Constants.DEFAULTPORT;
     }
 
 }

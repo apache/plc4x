@@ -19,14 +19,14 @@
 
 package org.apache.plc4x.java.modbus.tcp.config;
 
-import org.apache.plc4x.java.modbus.readwrite.ModbusConstants;
+import org.apache.plc4x.java.modbus.readwrite.Constants;
 import org.apache.plc4x.java.transport.tcp.DefaultTcpTransportConfiguration;
 
 public class ModbusTcpTransportConfiguration extends DefaultTcpTransportConfiguration {
 
     @Override
     public int getDefaultPort() {
-        return ModbusConstants.MODBUSTCPDEFAULTPORT;
+        return Constants.MODBUSTCPDEFAULTPORT;
     }
 
 }

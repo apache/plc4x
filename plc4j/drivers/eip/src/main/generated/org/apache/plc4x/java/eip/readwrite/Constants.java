@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.openprotocol.readwrite;
+package org.apache.plc4x.java.eip.readwrite;
 
 import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.*;
 import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.*;
@@ -38,5 +38,6 @@ import org.apache.plc4x.java.spi.generation.*;
 public class Constants {
 
   // Constant values.
-  public static final Integer TCPDEFAULTPORT = 4545;
+  public static final Integer EIPUDPDISCOVERYDEFAULTPORT = 44818;
+  public static final Integer EIPTCPDEFAULTPORT = 44818;
 }

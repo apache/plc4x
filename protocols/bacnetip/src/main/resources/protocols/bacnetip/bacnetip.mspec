@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[type BacnetConstants
+[constants
     [const    uint 16     bacnetUdpDefaultPort 47808]
 ]
 

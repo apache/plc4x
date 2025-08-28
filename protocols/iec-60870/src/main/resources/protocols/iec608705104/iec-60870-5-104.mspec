@@ -19,7 +19,7 @@
 
 // https://www.fit.vut.cz/research/publication-file/11570/TR-IEC104.pdf
 
-[type IEC608705104Constants
+[constants
     [const          uint 16     defaultPort 2404]
 ]
 

@@ -19,14 +19,14 @@
 
 package org.apache.plc4x.java.ads.configuration;
 
-import org.apache.plc4x.java.ads.readwrite.AdsConstants;
+import org.apache.plc4x.java.ads.readwrite.Constants;
 import org.apache.plc4x.java.transport.tcp.DefaultTcpTransportConfiguration;
 
 public class AdsTcpTransportConfiguration extends DefaultTcpTransportConfiguration {
 
     @Override
     public int getDefaultPort() {
-        return AdsConstants.ADSTCPDEFAULTPORT;
+        return Constants.ADSTCPDEFAULTPORT;
     }
 
 }

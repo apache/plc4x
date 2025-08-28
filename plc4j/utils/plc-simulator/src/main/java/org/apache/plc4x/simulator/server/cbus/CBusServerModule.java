@@ -27,7 +27,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.apache.plc4x.java.cbus.CBusDriver;
-import org.apache.plc4x.java.cbus.readwrite.CBusConstants;
+import org.apache.plc4x.java.cbus.readwrite.Constants;
 import org.apache.plc4x.java.cbus.readwrite.CBusMessage;
 import org.apache.plc4x.java.cbus.readwrite.CBusOptions;
 import org.apache.plc4x.java.cbus.readwrite.RequestContext;
@@ -95,7 +95,7 @@ public class CBusServerModule implements ServerModule {
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            int port = CBusConstants.CBUSTCPDEFAULTPORT;
+            int port = Constants.CBUSTCPDEFAULTPORT;
             if (config.getCBusPort() != null) {
                 port = Integer.parseInt(config.getCBusPort());
             }

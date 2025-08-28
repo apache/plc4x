@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[type AdsConstants
+[constants
     [const          uint 16     adsTcpDefaultPort 48898]
 ]
 

@@ -867,7 +867,7 @@ public enum KnxManufacturer {
       (int) 739, (int) 800, (String) "Hangzhou Konke Information Technology Co., Ltd."),
   M_SHANGHAI_FANTE_DIGITAL_TECHNOLOGY_CO___LTD(
       (int) 740, (int) 801, (String) "Shanghai Fante Digital Technology Co., Ltd"),
-  M_CONFIO((int) 741, (int) 802, (String) "CONFIO"),
+  M_CONFIO_TECHNOLOGIES_PVT__LTD((int) 741, (int) 802, (String) "Confio Technologies Pvt. Ltd"),
   M_SONIC_TECHNOLOGIES((int) 742, (int) 803, (String) "Sonic Technologies"),
   M_SHANGHAI_INNOVATECH_INFORMATION_TECHNOLOGY_CO___LT(
       (int) 743, (int) 804, (String) "Shanghai Innovatech Information Technology Co., Lt"),
@@ -882,9 +882,13 @@ public enum KnxManufacturer {
   M_SHANGHAI_YUKON_AUTOMATION_TECHNOLOGIES_CO___LTD_(
       (int) 750, (int) 811, (String) "Shanghai YUKON Automation Technologies Co., Ltd."),
   M_TECCO_PTY_LTD((int) 751, (int) 812, (String) "Tecco Pty Ltd"),
-  M_ABB___RESERVED((int) 752, (int) 43954, (String) "ABB - reserved"),
+  M_A_LAN_TECHNOLOGIE((int) 752, (int) 813, (String) "A-LAN Technologie"),
+  M_VOLTAN_TECHNOLOGY((int) 753, (int) 814, (String) "Voltan Technology"),
+  M_BAERWINKEL_AND_STRASSER_GMBH((int) 754, (int) 815, (String) "Baerwinkel & Strasser GmbH"),
+  M_CATERLUX((int) 755, (int) 816, (String) "Caterlux"),
+  M_ABB___RESERVED((int) 756, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 753, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 757, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

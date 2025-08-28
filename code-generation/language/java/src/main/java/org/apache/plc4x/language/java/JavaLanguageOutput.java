@@ -69,6 +69,11 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
+    protected List<Template> getConstantsTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return List.of(freemarkerConfiguration.getTemplate("templates/java/constants-template.java.ftlh"));
+    }
+
+    @Override
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return List.of(freemarkerConfiguration.getTemplate("templates/java/complex-type-template.java.ftlh"));
     }

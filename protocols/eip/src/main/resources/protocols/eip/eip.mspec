@@ -17,7 +17,7 @@
  * under the License.
  */
 
- [type EipConstants
+ [constants
      [const          uint 16     eipUdpDiscoveryDefaultPort 44818]
      [const          uint 16     eipTcpDefaultPort 44818]
  ]

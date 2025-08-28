@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[type CBusConstants
+[constants
     [const    uint 16     cbusTcpDefaultPort 10001]
 ]
 
@@ -25,6 +25,35 @@
     // Useful for response parsing: Set this to true if you send a identify request before. This will change the way the response will be parsed
     [simple   bit       sendIdentifyRequestBefore   ]
 ]
+// TODO: idee
+//[context
+//    Access via "context.sendIdentifyRequestBefore"
+//    // Useful for response parsing: Set this to true if you send a identify request before. This will change the way the response will be parsed
+//    [simple   bit       sendIdentifyRequestBefore   ]
+//]
+
+// TODO: we need global options that can be set
+//[global
+//    Access via "global.srchk"
+//// Defines that SAL messages can occur at any time
+//[simple bit connect]
+//// Disable echo of characters. When used with connect SAL have a long option. Select long from of most CAL replies
+//[simple bit smart  ]
+//// only works with smart. Select long form of CAL messages
+//[simple bit idmon  ]
+//// useful with smart. Select long form, extended format for all monitored and initiated status requests
+//[simple bit exstat ]
+//// monitors all traffic for status requests. Status requests will be returned as CAL. Replies are modified by exstat. Usually used in conjunction with connect.
+//[simple bit monitor]
+//// Same as connect. In addition it will return remote network SAL
+//[simple bit monall ]
+//// Serial interface will emit a power up notification
+//[simple bit pun    ]
+//// causes parameter change notifications to be emitted.
+//[simple bit pcn    ]
+//// enabled the checksum checks
+//[simple bit srchk ]
+//]
 
 [type CBusOptions
     // Defines that SAL messages can occur at any time
