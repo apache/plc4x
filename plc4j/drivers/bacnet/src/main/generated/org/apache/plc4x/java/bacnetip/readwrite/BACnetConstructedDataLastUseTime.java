@@ -49,21 +49,13 @@ public class BACnetConstructedDataLastUseTime extends BACnetConstructedData impl
   // Properties.
   protected final BACnetDateTime lastUseTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLastUseTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDateTime lastUseTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDateTime lastUseTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lastUseTime = lastUseTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDateTime getLastUseTime() {
@@ -128,34 +120,22 @@ public class BACnetConstructedDataLastUseTime extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataLastUseTime");
     // Create the instance
-    return new BACnetConstructedDataLastUseTimeBuilderImpl(
-        lastUseTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLastUseTimeBuilderImpl(lastUseTime);
   }
 
   public static class BACnetConstructedDataLastUseTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime lastUseTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastUseTimeBuilderImpl(
-        BACnetDateTime lastUseTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLastUseTimeBuilderImpl(BACnetDateTime lastUseTime) {
       this.lastUseTime = lastUseTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLastUseTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLastUseTime bACnetConstructedDataLastUseTime =
           new BACnetConstructedDataLastUseTime(
-              openingTag, peekedTagHeader, closingTag, lastUseTime, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, lastUseTime);
       return bACnetConstructedDataLastUseTime;
     }
   }

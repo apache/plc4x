@@ -50,21 +50,13 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
   // Properties.
   protected final BACnetAccessCredentialDisableTagged credentialDisable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCredentialDisable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetAccessCredentialDisableTagged credentialDisable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetAccessCredentialDisableTagged credentialDisable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.credentialDisable = credentialDisable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetAccessCredentialDisableTagged getCredentialDisable() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataCredentialDisable");
     // Create the instance
-    return new BACnetConstructedDataCredentialDisableBuilderImpl(
-        credentialDisable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCredentialDisableBuilderImpl(credentialDisable);
   }
 
   public static class BACnetConstructedDataCredentialDisableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccessCredentialDisableTagged credentialDisable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCredentialDisableBuilderImpl(
-        BACnetAccessCredentialDisableTagged credentialDisable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetAccessCredentialDisableTagged credentialDisable) {
       this.credentialDisable = credentialDisable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCredentialDisable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCredentialDisable bACnetConstructedDataCredentialDisable =
           new BACnetConstructedDataCredentialDisable(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              credentialDisable,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, credentialDisable);
       return bACnetConstructedDataCredentialDisable;
     }
   }

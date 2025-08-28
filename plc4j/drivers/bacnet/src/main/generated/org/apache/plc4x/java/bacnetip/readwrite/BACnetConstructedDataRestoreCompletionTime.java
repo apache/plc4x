@@ -50,21 +50,13 @@ public class BACnetConstructedDataRestoreCompletionTime extends BACnetConstructe
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger completionTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataRestoreCompletionTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger completionTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger completionTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.completionTime = completionTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getCompletionTime() {
@@ -135,39 +127,23 @@ public class BACnetConstructedDataRestoreCompletionTime extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataRestoreCompletionTime");
     // Create the instance
-    return new BACnetConstructedDataRestoreCompletionTimeBuilderImpl(
-        completionTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataRestoreCompletionTimeBuilderImpl(completionTime);
   }
 
   public static class BACnetConstructedDataRestoreCompletionTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger completionTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataRestoreCompletionTimeBuilderImpl(
-        BACnetApplicationTagUnsignedInteger completionTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger completionTime) {
       this.completionTime = completionTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataRestoreCompletionTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataRestoreCompletionTime bACnetConstructedDataRestoreCompletionTime =
           new BACnetConstructedDataRestoreCompletionTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              completionTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, completionTime);
       return bACnetConstructedDataRestoreCompletionTime;
     }
   }

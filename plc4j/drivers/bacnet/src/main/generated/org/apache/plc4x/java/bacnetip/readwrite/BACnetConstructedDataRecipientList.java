@@ -49,21 +49,13 @@ public class BACnetConstructedDataRecipientList extends BACnetConstructedData im
   // Properties.
   protected final List<BACnetDestination> recipientList;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataRecipientList(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetDestination> recipientList,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetDestination> recipientList) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.recipientList = recipientList;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetDestination> getRecipientList() {
@@ -126,39 +118,22 @@ public class BACnetConstructedDataRecipientList extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataRecipientList");
     // Create the instance
-    return new BACnetConstructedDataRecipientListBuilderImpl(
-        recipientList, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataRecipientListBuilderImpl(recipientList);
   }
 
   public static class BACnetConstructedDataRecipientListBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDestination> recipientList;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRecipientListBuilderImpl(
-        List<BACnetDestination> recipientList,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataRecipientListBuilderImpl(List<BACnetDestination> recipientList) {
       this.recipientList = recipientList;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataRecipientList build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataRecipientList bACnetConstructedDataRecipientList =
           new BACnetConstructedDataRecipientList(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              recipientList,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, recipientList);
       return bACnetConstructedDataRecipientList;
     }
   }

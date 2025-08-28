@@ -47,19 +47,9 @@ public class BACnetConstructedDataDatepatternValueAll extends BACnetConstructedD
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDatepatternValueAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,29 +94,18 @@ public class BACnetConstructedDataDatepatternValueAll extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataDatepatternValueAll");
     // Create the instance
-    return new BACnetConstructedDataDatepatternValueAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDatepatternValueAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataDatepatternValueAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDatepatternValueAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataDatepatternValueAllBuilderImpl() {}
 
     public BACnetConstructedDataDatepatternValueAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDatepatternValueAll bACnetConstructedDataDatepatternValueAll =
-          new BACnetConstructedDataDatepatternValueAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataDatepatternValueAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataDatepatternValueAll;
     }
   }

@@ -42,18 +42,13 @@ public class BACnetLogRecordLogDatumNullValue extends BACnetLogRecordLogDatum im
   // Properties.
   protected final BACnetContextTagNull nullValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogRecordLogDatumNullValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagNull nullValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagNull nullValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.nullValue = nullValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagNull getNullValue() {
@@ -108,28 +103,21 @@ public class BACnetLogRecordLogDatumNullValue extends BACnetLogRecordLogDatum im
 
     readBuffer.closeContext("BACnetLogRecordLogDatumNullValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumNullValueBuilderImpl(nullValue, tagNumber);
+    return new BACnetLogRecordLogDatumNullValueBuilderImpl(nullValue);
   }
 
   public static class BACnetLogRecordLogDatumNullValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagNull nullValue;
-    private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumNullValueBuilderImpl(
-        BACnetContextTagNull nullValue, Short tagNumber) {
+    public BACnetLogRecordLogDatumNullValueBuilderImpl(BACnetContextTagNull nullValue) {
       this.nullValue = nullValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetLogRecordLogDatumNullValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetLogRecordLogDatumNullValue bACnetLogRecordLogDatumNullValue =
-          new BACnetLogRecordLogDatumNullValue(
-              openingTag, peekedTagHeader, closingTag, nullValue, tagNumber);
+          new BACnetLogRecordLogDatumNullValue(openingTag, peekedTagHeader, closingTag, nullValue);
       return bACnetLogRecordLogDatumNullValue;
     }
   }

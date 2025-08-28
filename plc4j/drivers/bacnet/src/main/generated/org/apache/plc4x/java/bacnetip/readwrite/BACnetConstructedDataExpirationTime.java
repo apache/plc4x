@@ -49,21 +49,13 @@ public class BACnetConstructedDataExpirationTime extends BACnetConstructedData i
   // Properties.
   protected final BACnetDateTime expirationTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataExpirationTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDateTime expirationTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDateTime expirationTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.expirationTime = expirationTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDateTime getExpirationTime() {
@@ -130,39 +122,22 @@ public class BACnetConstructedDataExpirationTime extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataExpirationTime");
     // Create the instance
-    return new BACnetConstructedDataExpirationTimeBuilderImpl(
-        expirationTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataExpirationTimeBuilderImpl(expirationTime);
   }
 
   public static class BACnetConstructedDataExpirationTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime expirationTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataExpirationTimeBuilderImpl(
-        BACnetDateTime expirationTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataExpirationTimeBuilderImpl(BACnetDateTime expirationTime) {
       this.expirationTime = expirationTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataExpirationTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataExpirationTime bACnetConstructedDataExpirationTime =
           new BACnetConstructedDataExpirationTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              expirationTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, expirationTime);
       return bACnetConstructedDataExpirationTime;
     }
   }

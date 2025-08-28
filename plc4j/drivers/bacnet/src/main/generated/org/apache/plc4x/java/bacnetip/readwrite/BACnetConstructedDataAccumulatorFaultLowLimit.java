@@ -50,21 +50,13 @@ public class BACnetConstructedDataAccumulatorFaultLowLimit extends BACnetConstru
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger faultLowLimit;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAccumulatorFaultLowLimit(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger faultLowLimit,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger faultLowLimit) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.faultLowLimit = faultLowLimit;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getFaultLowLimit() {
@@ -135,39 +127,23 @@ public class BACnetConstructedDataAccumulatorFaultLowLimit extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataAccumulatorFaultLowLimit");
     // Create the instance
-    return new BACnetConstructedDataAccumulatorFaultLowLimitBuilderImpl(
-        faultLowLimit, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccumulatorFaultLowLimitBuilderImpl(faultLowLimit);
   }
 
   public static class BACnetConstructedDataAccumulatorFaultLowLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger faultLowLimit;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAccumulatorFaultLowLimitBuilderImpl(
-        BACnetApplicationTagUnsignedInteger faultLowLimit,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger faultLowLimit) {
       this.faultLowLimit = faultLowLimit;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAccumulatorFaultLowLimit build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAccumulatorFaultLowLimit bACnetConstructedDataAccumulatorFaultLowLimit =
           new BACnetConstructedDataAccumulatorFaultLowLimit(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              faultLowLimit,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, faultLowLimit);
       return bACnetConstructedDataAccumulatorFaultLowLimit;
     }
   }

@@ -42,16 +42,10 @@ public class BACnetPriorityValueTime extends BACnetPriorityValue implements Mess
   // Properties.
   protected final BACnetApplicationTagTime timeValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueTime(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagTime timeValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagTime timeValue) {
+    super(peekedTagHeader);
     this.timeValue = timeValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagTime getTimeValue() {
@@ -103,24 +97,20 @@ public class BACnetPriorityValueTime extends BACnetPriorityValue implements Mess
 
     readBuffer.closeContext("BACnetPriorityValueTime");
     // Create the instance
-    return new BACnetPriorityValueTimeBuilderImpl(timeValue, objectTypeArgument);
+    return new BACnetPriorityValueTimeBuilderImpl(timeValue);
   }
 
   public static class BACnetPriorityValueTimeBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagTime timeValue;
-    private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueTimeBuilderImpl(
-        BACnetApplicationTagTime timeValue, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueTimeBuilderImpl(BACnetApplicationTagTime timeValue) {
       this.timeValue = timeValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueTime build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueTime build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueTime bACnetPriorityValueTime =
-          new BACnetPriorityValueTime(peekedTagHeader, timeValue, objectTypeArgument);
+          new BACnetPriorityValueTime(peekedTagHeader, timeValue);
       return bACnetPriorityValueTime;
     }
   }

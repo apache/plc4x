@@ -42,16 +42,10 @@ public class BACnetPriorityValueUnsigned extends BACnetPriorityValue implements 
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger unsignedValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueUnsigned(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagUnsignedInteger unsignedValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagUnsignedInteger unsignedValue) {
+    super(peekedTagHeader);
     this.unsignedValue = unsignedValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getUnsignedValue() {
@@ -105,24 +99,21 @@ public class BACnetPriorityValueUnsigned extends BACnetPriorityValue implements 
 
     readBuffer.closeContext("BACnetPriorityValueUnsigned");
     // Create the instance
-    return new BACnetPriorityValueUnsignedBuilderImpl(unsignedValue, objectTypeArgument);
+    return new BACnetPriorityValueUnsignedBuilderImpl(unsignedValue);
   }
 
   public static class BACnetPriorityValueUnsignedBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetPriorityValueUnsignedBuilderImpl(
-        BACnetApplicationTagUnsignedInteger unsignedValue, BACnetObjectType objectTypeArgument) {
+        BACnetApplicationTagUnsignedInteger unsignedValue) {
       this.unsignedValue = unsignedValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueUnsigned build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueUnsigned build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueUnsigned bACnetPriorityValueUnsigned =
-          new BACnetPriorityValueUnsigned(peekedTagHeader, unsignedValue, objectTypeArgument);
+          new BACnetPriorityValueUnsigned(peekedTagHeader, unsignedValue);
       return bACnetPriorityValueUnsigned;
     }
   }

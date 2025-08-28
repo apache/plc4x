@@ -49,21 +49,13 @@ public class BACnetConstructedDataLastKeyServer extends BACnetConstructedData im
   // Properties.
   protected final BACnetAddressBinding lastKeyServer;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLastKeyServer(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetAddressBinding lastKeyServer,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetAddressBinding lastKeyServer) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lastKeyServer = lastKeyServer;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetAddressBinding getLastKeyServer() {
@@ -130,39 +122,22 @@ public class BACnetConstructedDataLastKeyServer extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataLastKeyServer");
     // Create the instance
-    return new BACnetConstructedDataLastKeyServerBuilderImpl(
-        lastKeyServer, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLastKeyServerBuilderImpl(lastKeyServer);
   }
 
   public static class BACnetConstructedDataLastKeyServerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAddressBinding lastKeyServer;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastKeyServerBuilderImpl(
-        BACnetAddressBinding lastKeyServer,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLastKeyServerBuilderImpl(BACnetAddressBinding lastKeyServer) {
       this.lastKeyServer = lastKeyServer;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLastKeyServer build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLastKeyServer bACnetConstructedDataLastKeyServer =
           new BACnetConstructedDataLastKeyServer(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              lastKeyServer,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, lastKeyServer);
       return bACnetConstructedDataLastKeyServer;
     }
   }

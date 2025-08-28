@@ -227,7 +227,6 @@ public class IODWriteRequestHeader extends PnIoCm_Block implements Message {
         "userData",
         userData,
         writeComplex(writeBuffer),
-        (getIndex()) < (0x8000),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("IODWriteRequestHeader");

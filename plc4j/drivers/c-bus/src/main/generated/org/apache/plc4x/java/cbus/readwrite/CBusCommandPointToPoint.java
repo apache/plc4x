@@ -42,14 +42,9 @@ public class CBusCommandPointToPoint extends CBusCommand implements Message {
   // Properties.
   protected final CBusPointToPointCommand command;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
-  public CBusCommandPointToPoint(
-      CBusHeader header, CBusPointToPointCommand command, CBusOptions cBusOptions) {
-    super(header, cBusOptions);
+  public CBusCommandPointToPoint(CBusHeader header, CBusPointToPointCommand command) {
+    super(header);
     this.command = command;
-    this.cBusOptions = cBusOptions;
   }
 
   public CBusPointToPointCommand getCommand() {
@@ -100,22 +95,19 @@ public class CBusCommandPointToPoint extends CBusCommand implements Message {
 
     readBuffer.closeContext("CBusCommandPointToPoint");
     // Create the instance
-    return new CBusCommandPointToPointBuilderImpl(command, cBusOptions);
+    return new CBusCommandPointToPointBuilderImpl(command);
   }
 
   public static class CBusCommandPointToPointBuilderImpl implements CBusCommand.CBusCommandBuilder {
     private final CBusPointToPointCommand command;
-    private final CBusOptions cBusOptions;
 
-    public CBusCommandPointToPointBuilderImpl(
-        CBusPointToPointCommand command, CBusOptions cBusOptions) {
+    public CBusCommandPointToPointBuilderImpl(CBusPointToPointCommand command) {
       this.command = command;
-      this.cBusOptions = cBusOptions;
     }
 
-    public CBusCommandPointToPoint build(CBusHeader header, CBusOptions cBusOptions) {
+    public CBusCommandPointToPoint build(CBusHeader header) {
       CBusCommandPointToPoint cBusCommandPointToPoint =
-          new CBusCommandPointToPoint(header, command, cBusOptions);
+          new CBusCommandPointToPoint(header, command);
       return cBusCommandPointToPoint;
     }
   }

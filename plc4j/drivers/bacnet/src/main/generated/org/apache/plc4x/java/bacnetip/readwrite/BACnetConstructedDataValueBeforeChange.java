@@ -50,21 +50,13 @@ public class BACnetConstructedDataValueBeforeChange extends BACnetConstructedDat
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger valuesBeforeChange;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataValueBeforeChange(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger valuesBeforeChange,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger valuesBeforeChange) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.valuesBeforeChange = valuesBeforeChange;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getValuesBeforeChange() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataValueBeforeChange extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataValueBeforeChange");
     // Create the instance
-    return new BACnetConstructedDataValueBeforeChangeBuilderImpl(
-        valuesBeforeChange, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataValueBeforeChangeBuilderImpl(valuesBeforeChange);
   }
 
   public static class BACnetConstructedDataValueBeforeChangeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger valuesBeforeChange;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataValueBeforeChangeBuilderImpl(
-        BACnetApplicationTagUnsignedInteger valuesBeforeChange,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger valuesBeforeChange) {
       this.valuesBeforeChange = valuesBeforeChange;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataValueBeforeChange build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataValueBeforeChange bACnetConstructedDataValueBeforeChange =
           new BACnetConstructedDataValueBeforeChange(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              valuesBeforeChange,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, valuesBeforeChange);
       return bACnetConstructedDataValueBeforeChange;
     }
   }

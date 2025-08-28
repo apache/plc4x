@@ -40,12 +40,8 @@ public abstract class BACnetUnconfirmedServiceRequest implements Message {
   // Abstract accessors for discriminator values.
   public abstract BACnetUnconfirmedServiceChoice getServiceChoice();
 
-  // Arguments.
-  protected final Integer serviceRequestLength;
-
-  public BACnetUnconfirmedServiceRequest(Integer serviceRequestLength) {
+  public BACnetUnconfirmedServiceRequest() {
     super();
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   protected abstract void serializeBACnetUnconfirmedServiceRequestChild(WriteBuffer writeBuffer)
@@ -177,14 +173,12 @@ public abstract class BACnetUnconfirmedServiceRequest implements Message {
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequest");
     // Create the instance
-    BACnetUnconfirmedServiceRequest _bACnetUnconfirmedServiceRequest =
-        builder.build(serviceRequestLength);
-
+    BACnetUnconfirmedServiceRequest _bACnetUnconfirmedServiceRequest = builder.build();
     return _bACnetUnconfirmedServiceRequest;
   }
 
   public interface BACnetUnconfirmedServiceRequestBuilder {
-    BACnetUnconfirmedServiceRequest build(Integer serviceRequestLength);
+    BACnetUnconfirmedServiceRequest build();
   }
 
   @Override

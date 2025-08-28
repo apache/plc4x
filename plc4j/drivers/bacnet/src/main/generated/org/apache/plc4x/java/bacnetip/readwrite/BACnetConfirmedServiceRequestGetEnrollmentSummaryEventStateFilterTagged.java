@@ -42,20 +42,12 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTa
   protected final BACnetTagHeader header;
   protected final BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged(
       BACnetTagHeader header,
-      BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter value,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -146,8 +138,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTa
     BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged
         _bACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged;
     _bACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged =
-        new BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged(
-            header, value, tagNumber, tagClass);
+        new BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged(header, value);
     return _bACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged;
   }
 

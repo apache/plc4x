@@ -42,22 +42,12 @@ public class BACnetPropertyIdentifierTagged implements Message {
   protected final BACnetPropertyIdentifier value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetPropertyIdentifierTagged(
-      BACnetTagHeader header,
-      BACnetPropertyIdentifier value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetPropertyIdentifier value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -181,7 +171,7 @@ public class BACnetPropertyIdentifierTagged implements Message {
     // Create the instance
     BACnetPropertyIdentifierTagged _bACnetPropertyIdentifierTagged;
     _bACnetPropertyIdentifierTagged =
-        new BACnetPropertyIdentifierTagged(header, value, proprietaryValue, tagNumber, tagClass);
+        new BACnetPropertyIdentifierTagged(header, value, proprietaryValue);
     return _bACnetPropertyIdentifierTagged;
   }
 

@@ -49,21 +49,13 @@ public class BACnetConstructedDataFDBBMDAddress extends BACnetConstructedData im
   // Properties.
   protected final BACnetHostNPort fDBBMDAddress;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataFDBBMDAddress(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetHostNPort fDBBMDAddress,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetHostNPort fDBBMDAddress) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.fDBBMDAddress = fDBBMDAddress;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetHostNPort getFDBBMDAddress() {
@@ -130,39 +122,22 @@ public class BACnetConstructedDataFDBBMDAddress extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataFDBBMDAddress");
     // Create the instance
-    return new BACnetConstructedDataFDBBMDAddressBuilderImpl(
-        fDBBMDAddress, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFDBBMDAddressBuilderImpl(fDBBMDAddress);
   }
 
   public static class BACnetConstructedDataFDBBMDAddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetHostNPort fDBBMDAddress;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFDBBMDAddressBuilderImpl(
-        BACnetHostNPort fDBBMDAddress,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataFDBBMDAddressBuilderImpl(BACnetHostNPort fDBBMDAddress) {
       this.fDBBMDAddress = fDBBMDAddress;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataFDBBMDAddress build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataFDBBMDAddress bACnetConstructedDataFDBBMDAddress =
           new BACnetConstructedDataFDBBMDAddress(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              fDBBMDAddress,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, fDBBMDAddress);
       return bACnetConstructedDataFDBBMDAddress;
     }
   }

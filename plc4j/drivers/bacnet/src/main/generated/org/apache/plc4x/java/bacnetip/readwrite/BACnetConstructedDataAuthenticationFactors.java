@@ -52,23 +52,15 @@ public class BACnetConstructedDataAuthenticationFactors extends BACnetConstructe
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetCredentialAuthenticationFactor> authenticationFactors;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAuthenticationFactors(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetCredentialAuthenticationFactor> authenticationFactors,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetCredentialAuthenticationFactor> authenticationFactors) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.authenticationFactors = authenticationFactors;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataAuthenticationFactors extends BACnetConstructe
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (authenticationFactors)
     writeComplexTypeArrayField("authenticationFactors", authenticationFactors, writeBuffer);
@@ -172,42 +160,26 @@ public class BACnetConstructedDataAuthenticationFactors extends BACnetConstructe
     readBuffer.closeContext("BACnetConstructedDataAuthenticationFactors");
     // Create the instance
     return new BACnetConstructedDataAuthenticationFactorsBuilderImpl(
-        numberOfDataElements, authenticationFactors, tagNumber, arrayIndexArgument);
+        numberOfDataElements, authenticationFactors);
   }
 
   public static class BACnetConstructedDataAuthenticationFactorsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetCredentialAuthenticationFactor> authenticationFactors;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAuthenticationFactorsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetCredentialAuthenticationFactor> authenticationFactors,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetCredentialAuthenticationFactor> authenticationFactors) {
       this.numberOfDataElements = numberOfDataElements;
       this.authenticationFactors = authenticationFactors;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAuthenticationFactors build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAuthenticationFactors bACnetConstructedDataAuthenticationFactors =
           new BACnetConstructedDataAuthenticationFactors(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              authenticationFactors,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, authenticationFactors);
       return bACnetConstructedDataAuthenticationFactors;
     }
   }

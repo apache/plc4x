@@ -50,21 +50,13 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
   // Properties.
   protected final BACnetDeviceObjectPropertyReference logDeviceObjectProperty;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTrendLogLogDeviceObjectProperty(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDeviceObjectPropertyReference logDeviceObjectProperty,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDeviceObjectPropertyReference logDeviceObjectProperty) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.logDeviceObjectProperty = logDeviceObjectProperty;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDeviceObjectPropertyReference getLogDeviceObjectProperty() {
@@ -134,39 +126,24 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
     readBuffer.closeContext("BACnetConstructedDataTrendLogLogDeviceObjectProperty");
     // Create the instance
     return new BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilderImpl(
-        logDeviceObjectProperty, tagNumber, arrayIndexArgument);
+        logDeviceObjectProperty);
   }
 
   public static class BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectPropertyReference logDeviceObjectProperty;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilderImpl(
-        BACnetDeviceObjectPropertyReference logDeviceObjectProperty,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetDeviceObjectPropertyReference logDeviceObjectProperty) {
       this.logDeviceObjectProperty = logDeviceObjectProperty;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTrendLogLogDeviceObjectProperty build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTrendLogLogDeviceObjectProperty
           bACnetConstructedDataTrendLogLogDeviceObjectProperty =
               new BACnetConstructedDataTrendLogLogDeviceObjectProperty(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  logDeviceObjectProperty,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, logDeviceObjectProperty);
       return bACnetConstructedDataTrendLogLogDeviceObjectProperty;
     }
   }

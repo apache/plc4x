@@ -43,18 +43,13 @@ public class BACnetEventParameterChangeOfValueCivCriteriaBitmask
   // Properties.
   protected final BACnetContextTagBitString bitmask;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventParameterChangeOfValueCivCriteriaBitmask(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagBitString bitmask,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagBitString bitmask) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.bitmask = bitmask;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagBitString getBitmask() {
@@ -110,30 +105,25 @@ public class BACnetEventParameterChangeOfValueCivCriteriaBitmask
 
     readBuffer.closeContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask");
     // Create the instance
-    return new BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilderImpl(bitmask, tagNumber);
+    return new BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilderImpl(bitmask);
   }
 
   public static class BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilderImpl
       implements BACnetEventParameterChangeOfValueCivCriteria
           .BACnetEventParameterChangeOfValueCivCriteriaBuilder {
     private final BACnetContextTagBitString bitmask;
-    private final Short tagNumber;
 
     public BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilderImpl(
-        BACnetContextTagBitString bitmask, Short tagNumber) {
+        BACnetContextTagBitString bitmask) {
       this.bitmask = bitmask;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetEventParameterChangeOfValueCivCriteriaBitmask build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetEventParameterChangeOfValueCivCriteriaBitmask
           bACnetEventParameterChangeOfValueCivCriteriaBitmask =
               new BACnetEventParameterChangeOfValueCivCriteriaBitmask(
-                  openingTag, peekedTagHeader, closingTag, bitmask, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, bitmask);
       return bACnetEventParameterChangeOfValueCivCriteriaBitmask;
     }
   }

@@ -49,21 +49,13 @@ public class BACnetConstructedDataAlarmValue extends BACnetConstructedData imple
   // Properties.
   protected final BACnetBinaryPVTagged binaryPv;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAlarmValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetBinaryPVTagged binaryPv,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetBinaryPVTagged binaryPv) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.binaryPv = binaryPv;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetBinaryPVTagged getBinaryPv() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataAlarmValue extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataAlarmValue");
     // Create the instance
-    return new BACnetConstructedDataAlarmValueBuilderImpl(binaryPv, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAlarmValueBuilderImpl(binaryPv);
   }
 
   public static class BACnetConstructedDataAlarmValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBinaryPVTagged binaryPv;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAlarmValueBuilderImpl(
-        BACnetBinaryPVTagged binaryPv,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataAlarmValueBuilderImpl(BACnetBinaryPVTagged binaryPv) {
       this.binaryPv = binaryPv;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAlarmValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAlarmValue bACnetConstructedDataAlarmValue =
-          new BACnetConstructedDataAlarmValue(
-              openingTag, peekedTagHeader, closingTag, binaryPv, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataAlarmValue(openingTag, peekedTagHeader, closingTag, binaryPv);
       return bACnetConstructedDataAlarmValue;
     }
   }

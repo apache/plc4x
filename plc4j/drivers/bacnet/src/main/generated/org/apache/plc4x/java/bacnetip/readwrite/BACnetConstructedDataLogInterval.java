@@ -49,21 +49,13 @@ public class BACnetConstructedDataLogInterval extends BACnetConstructedData impl
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger logInterval;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLogInterval(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger logInterval,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger logInterval) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.logInterval = logInterval;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getLogInterval() {
@@ -134,34 +126,23 @@ public class BACnetConstructedDataLogInterval extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataLogInterval");
     // Create the instance
-    return new BACnetConstructedDataLogIntervalBuilderImpl(
-        logInterval, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLogIntervalBuilderImpl(logInterval);
   }
 
   public static class BACnetConstructedDataLogIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger logInterval;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLogIntervalBuilderImpl(
-        BACnetApplicationTagUnsignedInteger logInterval,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger logInterval) {
       this.logInterval = logInterval;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLogInterval build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLogInterval bACnetConstructedDataLogInterval =
           new BACnetConstructedDataLogInterval(
-              openingTag, peekedTagHeader, closingTag, logInterval, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, logInterval);
       return bACnetConstructedDataLogInterval;
     }
   }

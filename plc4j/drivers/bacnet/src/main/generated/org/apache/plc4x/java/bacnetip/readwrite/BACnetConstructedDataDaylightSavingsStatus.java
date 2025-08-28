@@ -50,21 +50,13 @@ public class BACnetConstructedDataDaylightSavingsStatus extends BACnetConstructe
   // Properties.
   protected final BACnetApplicationTagBoolean daylightSavingsStatus;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDaylightSavingsStatus(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean daylightSavingsStatus,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean daylightSavingsStatus) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.daylightSavingsStatus = daylightSavingsStatus;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getDaylightSavingsStatus() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataDaylightSavingsStatus extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataDaylightSavingsStatus");
     // Create the instance
-    return new BACnetConstructedDataDaylightSavingsStatusBuilderImpl(
-        daylightSavingsStatus, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDaylightSavingsStatusBuilderImpl(daylightSavingsStatus);
   }
 
   public static class BACnetConstructedDataDaylightSavingsStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean daylightSavingsStatus;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDaylightSavingsStatusBuilderImpl(
-        BACnetApplicationTagBoolean daylightSavingsStatus,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean daylightSavingsStatus) {
       this.daylightSavingsStatus = daylightSavingsStatus;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDaylightSavingsStatus build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDaylightSavingsStatus bACnetConstructedDataDaylightSavingsStatus =
           new BACnetConstructedDataDaylightSavingsStatus(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              daylightSavingsStatus,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, daylightSavingsStatus);
       return bACnetConstructedDataDaylightSavingsStatus;
     }
   }

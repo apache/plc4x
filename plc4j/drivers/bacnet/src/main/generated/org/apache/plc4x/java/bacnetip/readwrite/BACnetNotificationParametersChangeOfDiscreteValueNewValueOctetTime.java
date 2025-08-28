@@ -43,18 +43,13 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
   // Properties.
   protected final BACnetApplicationTagTime timeValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagTime timeValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetApplicationTagTime timeValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.timeValue = timeValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetApplicationTagTime getTimeValue() {
@@ -108,30 +103,25 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime");
     // Create the instance
     return new BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilderImpl(
-        timeValue, tagNumber);
+        timeValue);
   }
 
   public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilderImpl
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetApplicationTagTime timeValue;
-    private final Short tagNumber;
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilderImpl(
-        BACnetApplicationTagTime timeValue, Short tagNumber) {
+        BACnetApplicationTagTime timeValue) {
       this.timeValue = timeValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
           bACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime =
               new BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime(
-                  openingTag, peekedTagHeader, closingTag, timeValue, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, timeValue);
       return bACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime;
     }
   }

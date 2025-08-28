@@ -42,19 +42,14 @@ public class BACnetAuthenticationPolicyList implements Message {
   protected final List<BACnetAuthenticationPolicyListEntry> entries;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetAuthenticationPolicyList(
       BACnetOpeningTag openingTag,
       List<BACnetAuthenticationPolicyListEntry> entries,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.entries = entries;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -145,7 +140,7 @@ public class BACnetAuthenticationPolicyList implements Message {
     // Create the instance
     BACnetAuthenticationPolicyList _bACnetAuthenticationPolicyList;
     _bACnetAuthenticationPolicyList =
-        new BACnetAuthenticationPolicyList(openingTag, entries, closingTag, tagNumber);
+        new BACnetAuthenticationPolicyList(openingTag, entries, closingTag);
     return _bACnetAuthenticationPolicyList;
   }
 

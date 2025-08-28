@@ -42,22 +42,11 @@ public class BACnetVendorIdTagged implements Message {
   protected final BACnetVendorId value;
   protected final long unknownId;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetVendorIdTagged(
-      BACnetTagHeader header,
-      BACnetVendorId value,
-      long unknownId,
-      Short tagNumber,
-      TagClass tagClass) {
+  public BACnetVendorIdTagged(BACnetTagHeader header, BACnetVendorId value, long unknownId) {
     super();
     this.header = header;
     this.value = value;
     this.unknownId = unknownId;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -176,7 +165,7 @@ public class BACnetVendorIdTagged implements Message {
     readBuffer.closeContext("BACnetVendorIdTagged");
     // Create the instance
     BACnetVendorIdTagged _bACnetVendorIdTagged;
-    _bACnetVendorIdTagged = new BACnetVendorIdTagged(header, value, unknownId, tagNumber, tagClass);
+    _bACnetVendorIdTagged = new BACnetVendorIdTagged(header, value, unknownId);
     return _bACnetVendorIdTagged;
   }
 

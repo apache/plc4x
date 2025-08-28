@@ -41,20 +41,11 @@ public class BACnetNetworkNumberQualityTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetNetworkNumberQuality value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetNetworkNumberQualityTagged(
-      BACnetTagHeader header,
-      BACnetNetworkNumberQuality value,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetNetworkNumberQuality value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -138,8 +129,7 @@ public class BACnetNetworkNumberQualityTagged implements Message {
     readBuffer.closeContext("BACnetNetworkNumberQualityTagged");
     // Create the instance
     BACnetNetworkNumberQualityTagged _bACnetNetworkNumberQualityTagged;
-    _bACnetNetworkNumberQualityTagged =
-        new BACnetNetworkNumberQualityTagged(header, value, tagNumber, tagClass);
+    _bACnetNetworkNumberQualityTagged = new BACnetNetworkNumberQualityTagged(header, value);
     return _bACnetNetworkNumberQualityTagged;
   }
 

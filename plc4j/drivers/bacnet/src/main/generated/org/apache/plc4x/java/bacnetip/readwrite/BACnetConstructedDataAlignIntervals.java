@@ -49,21 +49,13 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
   // Properties.
   protected final BACnetApplicationTagBoolean alignIntervals;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAlignIntervals(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean alignIntervals,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean alignIntervals) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.alignIntervals = alignIntervals;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getAlignIntervals() {
@@ -132,39 +124,23 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataAlignIntervals");
     // Create the instance
-    return new BACnetConstructedDataAlignIntervalsBuilderImpl(
-        alignIntervals, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAlignIntervalsBuilderImpl(alignIntervals);
   }
 
   public static class BACnetConstructedDataAlignIntervalsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean alignIntervals;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAlignIntervalsBuilderImpl(
-        BACnetApplicationTagBoolean alignIntervals,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean alignIntervals) {
       this.alignIntervals = alignIntervals;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAlignIntervals build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAlignIntervals bACnetConstructedDataAlignIntervals =
           new BACnetConstructedDataAlignIntervals(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              alignIntervals,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, alignIntervals);
       return bACnetConstructedDataAlignIntervals;
     }
   }

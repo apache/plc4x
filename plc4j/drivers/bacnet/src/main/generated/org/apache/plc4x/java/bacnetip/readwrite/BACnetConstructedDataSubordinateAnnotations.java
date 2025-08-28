@@ -52,23 +52,15 @@ public class BACnetConstructedDataSubordinateAnnotations extends BACnetConstruct
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetApplicationTagCharacterString> subordinateAnnotations;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSubordinateAnnotations(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetApplicationTagCharacterString> subordinateAnnotations,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetApplicationTagCharacterString> subordinateAnnotations) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.subordinateAnnotations = subordinateAnnotations;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataSubordinateAnnotations extends BACnetConstruct
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (subordinateAnnotations)
     writeComplexTypeArrayField("subordinateAnnotations", subordinateAnnotations, writeBuffer);
@@ -175,42 +163,30 @@ public class BACnetConstructedDataSubordinateAnnotations extends BACnetConstruct
     readBuffer.closeContext("BACnetConstructedDataSubordinateAnnotations");
     // Create the instance
     return new BACnetConstructedDataSubordinateAnnotationsBuilderImpl(
-        numberOfDataElements, subordinateAnnotations, tagNumber, arrayIndexArgument);
+        numberOfDataElements, subordinateAnnotations);
   }
 
   public static class BACnetConstructedDataSubordinateAnnotationsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagCharacterString> subordinateAnnotations;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSubordinateAnnotationsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetApplicationTagCharacterString> subordinateAnnotations,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetApplicationTagCharacterString> subordinateAnnotations) {
       this.numberOfDataElements = numberOfDataElements;
       this.subordinateAnnotations = subordinateAnnotations;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSubordinateAnnotations build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSubordinateAnnotations bACnetConstructedDataSubordinateAnnotations =
           new BACnetConstructedDataSubordinateAnnotations(
               openingTag,
               peekedTagHeader,
               closingTag,
               numberOfDataElements,
-              subordinateAnnotations,
-              tagNumber,
-              arrayIndexArgument);
+              subordinateAnnotations);
       return bACnetConstructedDataSubordinateAnnotations;
     }
   }

@@ -49,21 +49,13 @@ public class BACnetConstructedDataResolution extends BACnetConstructedData imple
   // Properties.
   protected final BACnetApplicationTagReal resolution;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataResolution(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal resolution,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal resolution) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.resolution = resolution;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getResolution() {
@@ -132,34 +124,21 @@ public class BACnetConstructedDataResolution extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataResolution");
     // Create the instance
-    return new BACnetConstructedDataResolutionBuilderImpl(
-        resolution, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataResolutionBuilderImpl(resolution);
   }
 
   public static class BACnetConstructedDataResolutionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal resolution;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataResolutionBuilderImpl(
-        BACnetApplicationTagReal resolution,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataResolutionBuilderImpl(BACnetApplicationTagReal resolution) {
       this.resolution = resolution;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataResolution build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataResolution bACnetConstructedDataResolution =
-          new BACnetConstructedDataResolution(
-              openingTag, peekedTagHeader, closingTag, resolution, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataResolution(openingTag, peekedTagHeader, closingTag, resolution);
       return bACnetConstructedDataResolution;
     }
   }

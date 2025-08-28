@@ -50,21 +50,13 @@ public class BACnetConstructedDataSetpointReference extends BACnetConstructedDat
   // Properties.
   protected final BACnetSetpointReference setpointReference;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSetpointReference(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetSetpointReference setpointReference,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetSetpointReference setpointReference) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.setpointReference = setpointReference;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetSetpointReference getSetpointReference() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataSetpointReference extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataSetpointReference");
     // Create the instance
-    return new BACnetConstructedDataSetpointReferenceBuilderImpl(
-        setpointReference, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataSetpointReferenceBuilderImpl(setpointReference);
   }
 
   public static class BACnetConstructedDataSetpointReferenceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetSetpointReference setpointReference;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSetpointReferenceBuilderImpl(
-        BACnetSetpointReference setpointReference,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetSetpointReference setpointReference) {
       this.setpointReference = setpointReference;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSetpointReference build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSetpointReference bACnetConstructedDataSetpointReference =
           new BACnetConstructedDataSetpointReference(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              setpointReference,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, setpointReference);
       return bACnetConstructedDataSetpointReference;
     }
   }

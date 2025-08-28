@@ -43,16 +43,10 @@ public class BACnetTimerStateChangeValueLightingCommand extends BACnetTimerState
   // Properties.
   protected final BACnetLightingCommandEnclosed ligthingCommandValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetTimerStateChangeValueLightingCommand(
-      BACnetTagHeader peekedTagHeader,
-      BACnetLightingCommandEnclosed ligthingCommandValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetLightingCommandEnclosed ligthingCommandValue) {
+    super(peekedTagHeader);
     this.ligthingCommandValue = ligthingCommandValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetLightingCommandEnclosed getLigthingCommandValue() {
@@ -104,26 +98,21 @@ public class BACnetTimerStateChangeValueLightingCommand extends BACnetTimerState
 
     readBuffer.closeContext("BACnetTimerStateChangeValueLightingCommand");
     // Create the instance
-    return new BACnetTimerStateChangeValueLightingCommandBuilderImpl(
-        ligthingCommandValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueLightingCommandBuilderImpl(ligthingCommandValue);
   }
 
   public static class BACnetTimerStateChangeValueLightingCommandBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetLightingCommandEnclosed ligthingCommandValue;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetTimerStateChangeValueLightingCommandBuilderImpl(
-        BACnetLightingCommandEnclosed ligthingCommandValue, BACnetObjectType objectTypeArgument) {
+        BACnetLightingCommandEnclosed ligthingCommandValue) {
       this.ligthingCommandValue = ligthingCommandValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetTimerStateChangeValueLightingCommand build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueLightingCommand build(BACnetTagHeader peekedTagHeader) {
       BACnetTimerStateChangeValueLightingCommand bACnetTimerStateChangeValueLightingCommand =
-          new BACnetTimerStateChangeValueLightingCommand(
-              peekedTagHeader, ligthingCommandValue, objectTypeArgument);
+          new BACnetTimerStateChangeValueLightingCommand(peekedTagHeader, ligthingCommandValue);
       return bACnetTimerStateChangeValueLightingCommand;
     }
   }

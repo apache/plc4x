@@ -45,14 +45,9 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
   // Properties.
   protected final BACnetTagPayloadOctetString payload;
 
-  // Arguments.
-  protected final Short tagNumberArgument;
-
-  public BACnetContextTagOctetString(
-      BACnetTagHeader header, BACnetTagPayloadOctetString payload, Short tagNumberArgument) {
-    super(header, tagNumberArgument);
+  public BACnetContextTagOctetString(BACnetTagHeader header, BACnetTagPayloadOctetString payload) {
+    super(header);
     this.payload = payload;
-    this.tagNumberArgument = tagNumberArgument;
   }
 
   public BACnetTagPayloadOctetString getPayload() {
@@ -110,23 +105,20 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
 
     readBuffer.closeContext("BACnetContextTagOctetString");
     // Create the instance
-    return new BACnetContextTagOctetStringBuilderImpl(payload, tagNumberArgument);
+    return new BACnetContextTagOctetStringBuilderImpl(payload);
   }
 
   public static class BACnetContextTagOctetStringBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadOctetString payload;
-    private final Short tagNumberArgument;
 
-    public BACnetContextTagOctetStringBuilderImpl(
-        BACnetTagPayloadOctetString payload, Short tagNumberArgument) {
+    public BACnetContextTagOctetStringBuilderImpl(BACnetTagPayloadOctetString payload) {
       this.payload = payload;
-      this.tagNumberArgument = tagNumberArgument;
     }
 
-    public BACnetContextTagOctetString build(BACnetTagHeader header, Short tagNumberArgument) {
+    public BACnetContextTagOctetString build(BACnetTagHeader header) {
       BACnetContextTagOctetString bACnetContextTagOctetString =
-          new BACnetContextTagOctetString(header, payload, tagNumberArgument);
+          new BACnetContextTagOctetString(header, payload);
       return bACnetContextTagOctetString;
     }
   }

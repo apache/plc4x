@@ -49,21 +49,13 @@ public class BACnetConstructedDataInProcess extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagBoolean inProcess;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataInProcess(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean inProcess,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean inProcess) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.inProcess = inProcess;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getInProcess() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataInProcess extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataInProcess");
     // Create the instance
-    return new BACnetConstructedDataInProcessBuilderImpl(inProcess, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataInProcessBuilderImpl(inProcess);
   }
 
   public static class BACnetConstructedDataInProcessBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean inProcess;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataInProcessBuilderImpl(
-        BACnetApplicationTagBoolean inProcess,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataInProcessBuilderImpl(BACnetApplicationTagBoolean inProcess) {
       this.inProcess = inProcess;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataInProcess build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataInProcess bACnetConstructedDataInProcess =
-          new BACnetConstructedDataInProcess(
-              openingTag, peekedTagHeader, closingTag, inProcess, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataInProcess(openingTag, peekedTagHeader, closingTag, inProcess);
       return bACnetConstructedDataInProcess;
     }
   }

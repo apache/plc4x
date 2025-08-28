@@ -49,21 +49,13 @@ public class BACnetConstructedDataPulseRate extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger pulseRate;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPulseRate(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger pulseRate,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger pulseRate) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.pulseRate = pulseRate;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getPulseRate() {
@@ -134,33 +126,22 @@ public class BACnetConstructedDataPulseRate extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataPulseRate");
     // Create the instance
-    return new BACnetConstructedDataPulseRateBuilderImpl(pulseRate, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPulseRateBuilderImpl(pulseRate);
   }
 
   public static class BACnetConstructedDataPulseRateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger pulseRate;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataPulseRateBuilderImpl(
-        BACnetApplicationTagUnsignedInteger pulseRate,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger pulseRate) {
       this.pulseRate = pulseRate;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataPulseRate build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPulseRate bACnetConstructedDataPulseRate =
-          new BACnetConstructedDataPulseRate(
-              openingTag, peekedTagHeader, closingTag, pulseRate, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataPulseRate(openingTag, peekedTagHeader, closingTag, pulseRate);
       return bACnetConstructedDataPulseRate;
     }
   }

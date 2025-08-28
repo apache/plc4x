@@ -52,23 +52,15 @@ public class BACnetConstructedDataValueSourceArray extends BACnetConstructedData
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetValueSource> vtClassesSupported;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataValueSourceArray(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetValueSource> vtClassesSupported,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetValueSource> vtClassesSupported) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.vtClassesSupported = vtClassesSupported;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataValueSourceArray extends BACnetConstructedData
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (vtClassesSupported)
     writeComplexTypeArrayField("vtClassesSupported", vtClassesSupported, writeBuffer);
@@ -175,42 +163,26 @@ public class BACnetConstructedDataValueSourceArray extends BACnetConstructedData
     readBuffer.closeContext("BACnetConstructedDataValueSourceArray");
     // Create the instance
     return new BACnetConstructedDataValueSourceArrayBuilderImpl(
-        numberOfDataElements, vtClassesSupported, tagNumber, arrayIndexArgument);
+        numberOfDataElements, vtClassesSupported);
   }
 
   public static class BACnetConstructedDataValueSourceArrayBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetValueSource> vtClassesSupported;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataValueSourceArrayBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetValueSource> vtClassesSupported,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetValueSource> vtClassesSupported) {
       this.numberOfDataElements = numberOfDataElements;
       this.vtClassesSupported = vtClassesSupported;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataValueSourceArray build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataValueSourceArray bACnetConstructedDataValueSourceArray =
           new BACnetConstructedDataValueSourceArray(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              vtClassesSupported,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, vtClassesSupported);
       return bACnetConstructedDataValueSourceArray;
     }
   }

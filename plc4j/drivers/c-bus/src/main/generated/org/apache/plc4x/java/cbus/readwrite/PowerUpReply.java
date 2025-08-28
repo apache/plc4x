@@ -42,19 +42,9 @@ public class PowerUpReply extends Reply implements Message {
   // Properties.
   protected final PowerUp powerUpIndicator;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-  protected final RequestContext requestContext;
-
-  public PowerUpReply(
-      byte peekedByte,
-      PowerUp powerUpIndicator,
-      CBusOptions cBusOptions,
-      RequestContext requestContext) {
-    super(peekedByte, cBusOptions, requestContext);
+  public PowerUpReply(byte peekedByte, PowerUp powerUpIndicator) {
+    super(peekedByte);
     this.powerUpIndicator = powerUpIndicator;
-    this.cBusOptions = cBusOptions;
-    this.requestContext = requestContext;
   }
 
   public PowerUp getPowerUpIndicator() {
@@ -103,25 +93,18 @@ public class PowerUpReply extends Reply implements Message {
 
     readBuffer.closeContext("PowerUpReply");
     // Create the instance
-    return new PowerUpReplyBuilderImpl(powerUpIndicator, cBusOptions, requestContext);
+    return new PowerUpReplyBuilderImpl(powerUpIndicator);
   }
 
   public static class PowerUpReplyBuilderImpl implements Reply.ReplyBuilder {
     private final PowerUp powerUpIndicator;
-    private final CBusOptions cBusOptions;
-    private final RequestContext requestContext;
 
-    public PowerUpReplyBuilderImpl(
-        PowerUp powerUpIndicator, CBusOptions cBusOptions, RequestContext requestContext) {
+    public PowerUpReplyBuilderImpl(PowerUp powerUpIndicator) {
       this.powerUpIndicator = powerUpIndicator;
-      this.cBusOptions = cBusOptions;
-      this.requestContext = requestContext;
     }
 
-    public PowerUpReply build(
-        byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext) {
-      PowerUpReply powerUpReply =
-          new PowerUpReply(peekedByte, powerUpIndicator, cBusOptions, requestContext);
+    public PowerUpReply build(byte peekedByte) {
+      PowerUpReply powerUpReply = new PowerUpReply(peekedByte, powerUpIndicator);
       return powerUpReply;
     }
   }

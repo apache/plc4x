@@ -49,21 +49,13 @@ public class BACnetConstructedDataHighLimit extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagReal highLimit;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataHighLimit(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal highLimit,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal highLimit) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.highLimit = highLimit;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getHighLimit() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataHighLimit extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataHighLimit");
     // Create the instance
-    return new BACnetConstructedDataHighLimitBuilderImpl(highLimit, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataHighLimitBuilderImpl(highLimit);
   }
 
   public static class BACnetConstructedDataHighLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal highLimit;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataHighLimitBuilderImpl(
-        BACnetApplicationTagReal highLimit,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataHighLimitBuilderImpl(BACnetApplicationTagReal highLimit) {
       this.highLimit = highLimit;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataHighLimit build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataHighLimit bACnetConstructedDataHighLimit =
-          new BACnetConstructedDataHighLimit(
-              openingTag, peekedTagHeader, closingTag, highLimit, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataHighLimit(openingTag, peekedTagHeader, closingTag, highLimit);
       return bACnetConstructedDataHighLimit;
     }
   }

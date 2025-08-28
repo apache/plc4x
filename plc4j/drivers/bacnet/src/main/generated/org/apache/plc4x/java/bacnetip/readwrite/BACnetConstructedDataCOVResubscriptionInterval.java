@@ -50,21 +50,13 @@ public class BACnetConstructedDataCOVResubscriptionInterval extends BACnetConstr
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger covResubscriptionInterval;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCOVResubscriptionInterval(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger covResubscriptionInterval,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger covResubscriptionInterval) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.covResubscriptionInterval = covResubscriptionInterval;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getCovResubscriptionInterval() {
@@ -137,40 +129,24 @@ public class BACnetConstructedDataCOVResubscriptionInterval extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataCOVResubscriptionInterval");
     // Create the instance
-    return new BACnetConstructedDataCOVResubscriptionIntervalBuilderImpl(
-        covResubscriptionInterval, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCOVResubscriptionIntervalBuilderImpl(covResubscriptionInterval);
   }
 
   public static class BACnetConstructedDataCOVResubscriptionIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger covResubscriptionInterval;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCOVResubscriptionIntervalBuilderImpl(
-        BACnetApplicationTagUnsignedInteger covResubscriptionInterval,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger covResubscriptionInterval) {
       this.covResubscriptionInterval = covResubscriptionInterval;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCOVResubscriptionInterval build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCOVResubscriptionInterval
           bACnetConstructedDataCOVResubscriptionInterval =
               new BACnetConstructedDataCOVResubscriptionInterval(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  covResubscriptionInterval,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, covResubscriptionInterval);
       return bACnetConstructedDataCOVResubscriptionInterval;
     }
   }

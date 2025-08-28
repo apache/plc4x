@@ -49,21 +49,13 @@ public class BACnetConstructedDataNetworkType extends BACnetConstructedData impl
   // Properties.
   protected final BACnetNetworkTypeTagged networkType;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataNetworkType(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetNetworkTypeTagged networkType,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetNetworkTypeTagged networkType) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.networkType = networkType;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetNetworkTypeTagged getNetworkType() {
@@ -134,34 +126,22 @@ public class BACnetConstructedDataNetworkType extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataNetworkType");
     // Create the instance
-    return new BACnetConstructedDataNetworkTypeBuilderImpl(
-        networkType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNetworkTypeBuilderImpl(networkType);
   }
 
   public static class BACnetConstructedDataNetworkTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetNetworkTypeTagged networkType;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNetworkTypeBuilderImpl(
-        BACnetNetworkTypeTagged networkType,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataNetworkTypeBuilderImpl(BACnetNetworkTypeTagged networkType) {
       this.networkType = networkType;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataNetworkType build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataNetworkType bACnetConstructedDataNetworkType =
           new BACnetConstructedDataNetworkType(
-              openingTag, peekedTagHeader, closingTag, networkType, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, networkType);
       return bACnetConstructedDataNetworkType;
     }
   }

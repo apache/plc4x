@@ -119,16 +119,13 @@ public class AirConditioningDataSetZoneHvacMode extends AirConditioningData impl
         writeEnum(HVACType::getValue, HVACType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Optional Field (level) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "level", level, writeComplex(writeBuffer), getHvacModeAndFlags().getIsLevelTemperature());
+    writeOptionalField("level", level, writeComplex(writeBuffer));
 
     // Optional Field (rawLevel) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "rawLevel", rawLevel, writeComplex(writeBuffer), getHvacModeAndFlags().getIsLevelRaw());
+    writeOptionalField("rawLevel", rawLevel, writeComplex(writeBuffer));
 
     // Optional Field (auxLevel) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "auxLevel", auxLevel, writeComplex(writeBuffer), getHvacModeAndFlags().getIsAuxLevelUsed());
+    writeOptionalField("auxLevel", auxLevel, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AirConditioningDataSetZoneHvacMode");
   }

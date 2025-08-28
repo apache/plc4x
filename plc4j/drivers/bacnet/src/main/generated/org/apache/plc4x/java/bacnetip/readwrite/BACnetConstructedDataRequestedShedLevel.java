@@ -50,21 +50,13 @@ public class BACnetConstructedDataRequestedShedLevel extends BACnetConstructedDa
   // Properties.
   protected final BACnetShedLevel requestedShedLevel;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataRequestedShedLevel(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetShedLevel requestedShedLevel,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetShedLevel requestedShedLevel) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.requestedShedLevel = requestedShedLevel;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetShedLevel getRequestedShedLevel() {
@@ -131,39 +123,22 @@ public class BACnetConstructedDataRequestedShedLevel extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataRequestedShedLevel");
     // Create the instance
-    return new BACnetConstructedDataRequestedShedLevelBuilderImpl(
-        requestedShedLevel, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataRequestedShedLevelBuilderImpl(requestedShedLevel);
   }
 
   public static class BACnetConstructedDataRequestedShedLevelBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetShedLevel requestedShedLevel;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRequestedShedLevelBuilderImpl(
-        BACnetShedLevel requestedShedLevel,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataRequestedShedLevelBuilderImpl(BACnetShedLevel requestedShedLevel) {
       this.requestedShedLevel = requestedShedLevel;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataRequestedShedLevel build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataRequestedShedLevel bACnetConstructedDataRequestedShedLevel =
           new BACnetConstructedDataRequestedShedLevel(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              requestedShedLevel,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, requestedShedLevel);
       return bACnetConstructedDataRequestedShedLevel;
     }
   }

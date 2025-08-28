@@ -43,24 +43,13 @@ public class BACnetWeekNDayTagged implements Message {
   protected final short weekOfMonth;
   protected final short dayOfWeek;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetWeekNDayTagged(
-      BACnetTagHeader header,
-      short month,
-      short weekOfMonth,
-      short dayOfWeek,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, short month, short weekOfMonth, short dayOfWeek) {
     super();
     this.header = header;
     this.month = month;
     this.weekOfMonth = weekOfMonth;
     this.dayOfWeek = dayOfWeek;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -322,8 +311,7 @@ public class BACnetWeekNDayTagged implements Message {
     readBuffer.closeContext("BACnetWeekNDayTagged");
     // Create the instance
     BACnetWeekNDayTagged _bACnetWeekNDayTagged;
-    _bACnetWeekNDayTagged =
-        new BACnetWeekNDayTagged(header, month, weekOfMonth, dayOfWeek, tagNumber, tagClass);
+    _bACnetWeekNDayTagged = new BACnetWeekNDayTagged(header, month, weekOfMonth, dayOfWeek);
     return _bACnetWeekNDayTagged;
   }
 

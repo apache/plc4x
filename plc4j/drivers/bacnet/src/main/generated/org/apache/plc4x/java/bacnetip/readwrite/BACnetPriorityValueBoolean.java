@@ -42,16 +42,10 @@ public class BACnetPriorityValueBoolean extends BACnetPriorityValue implements M
   // Properties.
   protected final BACnetApplicationTagBoolean booleanValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueBoolean(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagBoolean booleanValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagBoolean booleanValue) {
+    super(peekedTagHeader);
     this.booleanValue = booleanValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagBoolean getBooleanValue() {
@@ -103,24 +97,20 @@ public class BACnetPriorityValueBoolean extends BACnetPriorityValue implements M
 
     readBuffer.closeContext("BACnetPriorityValueBoolean");
     // Create the instance
-    return new BACnetPriorityValueBooleanBuilderImpl(booleanValue, objectTypeArgument);
+    return new BACnetPriorityValueBooleanBuilderImpl(booleanValue);
   }
 
   public static class BACnetPriorityValueBooleanBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagBoolean booleanValue;
-    private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueBooleanBuilderImpl(
-        BACnetApplicationTagBoolean booleanValue, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueBooleanBuilderImpl(BACnetApplicationTagBoolean booleanValue) {
       this.booleanValue = booleanValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueBoolean build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueBoolean build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueBoolean bACnetPriorityValueBoolean =
-          new BACnetPriorityValueBoolean(peekedTagHeader, booleanValue, objectTypeArgument);
+          new BACnetPriorityValueBoolean(peekedTagHeader, booleanValue);
       return bACnetPriorityValueBoolean;
     }
   }

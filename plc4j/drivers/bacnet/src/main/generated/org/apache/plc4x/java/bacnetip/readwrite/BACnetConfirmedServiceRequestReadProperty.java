@@ -48,19 +48,15 @@ public class BACnetConfirmedServiceRequestReadProperty extends BACnetConfirmedSe
   protected final BACnetPropertyIdentifierTagged propertyIdentifier;
   protected final BACnetContextTagUnsignedInteger arrayIndex;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestReadProperty(
+      long serviceRequestLength,
       BACnetContextTagObjectIdentifier objectIdentifier,
       BACnetPropertyIdentifierTagged propertyIdentifier,
-      BACnetContextTagUnsignedInteger arrayIndex,
-      Long serviceRequestLength) {
+      BACnetContextTagUnsignedInteger arrayIndex) {
     super(serviceRequestLength);
     this.objectIdentifier = objectIdentifier;
     this.propertyIdentifier = propertyIdentifier;
     this.arrayIndex = arrayIndex;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagObjectIdentifier getObjectIdentifier() {
@@ -162,7 +158,7 @@ public class BACnetConfirmedServiceRequestReadProperty extends BACnetConfirmedSe
     readBuffer.closeContext("BACnetConfirmedServiceRequestReadProperty");
     // Create the instance
     return new BACnetConfirmedServiceRequestReadPropertyBuilderImpl(
-        objectIdentifier, propertyIdentifier, arrayIndex, serviceRequestLength);
+        objectIdentifier, propertyIdentifier, arrayIndex);
   }
 
   public static class BACnetConfirmedServiceRequestReadPropertyBuilderImpl
@@ -170,24 +166,20 @@ public class BACnetConfirmedServiceRequestReadProperty extends BACnetConfirmedSe
     private final BACnetContextTagObjectIdentifier objectIdentifier;
     private final BACnetPropertyIdentifierTagged propertyIdentifier;
     private final BACnetContextTagUnsignedInteger arrayIndex;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestReadPropertyBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier,
         BACnetPropertyIdentifierTagged propertyIdentifier,
-        BACnetContextTagUnsignedInteger arrayIndex,
-        Long serviceRequestLength) {
+        BACnetContextTagUnsignedInteger arrayIndex) {
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.arrayIndex = arrayIndex;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestReadProperty build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestReadProperty build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestReadProperty bACnetConfirmedServiceRequestReadProperty =
           new BACnetConfirmedServiceRequestReadProperty(
-              objectIdentifier, propertyIdentifier, arrayIndex, serviceRequestLength);
+              serviceRequestLength, objectIdentifier, propertyIdentifier, arrayIndex);
       return bACnetConfirmedServiceRequestReadProperty;
     }
   }

@@ -47,17 +47,13 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
   protected final BACnetConfirmedServiceRequestCreateObjectObjectSpecifier objectSpecifier;
   protected final BACnetPropertyValues listOfValues;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestCreateObject(
+      long serviceRequestLength,
       BACnetConfirmedServiceRequestCreateObjectObjectSpecifier objectSpecifier,
-      BACnetPropertyValues listOfValues,
-      Long serviceRequestLength) {
+      BACnetPropertyValues listOfValues) {
     super(serviceRequestLength);
     this.objectSpecifier = objectSpecifier;
     this.listOfValues = listOfValues;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetConfirmedServiceRequestCreateObjectObjectSpecifier getObjectSpecifier() {
@@ -138,30 +134,25 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestCreateObject");
     // Create the instance
-    return new BACnetConfirmedServiceRequestCreateObjectBuilderImpl(
-        objectSpecifier, listOfValues, serviceRequestLength);
+    return new BACnetConfirmedServiceRequestCreateObjectBuilderImpl(objectSpecifier, listOfValues);
   }
 
   public static class BACnetConfirmedServiceRequestCreateObjectBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetConfirmedServiceRequestCreateObjectObjectSpecifier objectSpecifier;
     private final BACnetPropertyValues listOfValues;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestCreateObjectBuilderImpl(
         BACnetConfirmedServiceRequestCreateObjectObjectSpecifier objectSpecifier,
-        BACnetPropertyValues listOfValues,
-        Long serviceRequestLength) {
+        BACnetPropertyValues listOfValues) {
       this.objectSpecifier = objectSpecifier;
       this.listOfValues = listOfValues;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestCreateObject build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestCreateObject build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestCreateObject bACnetConfirmedServiceRequestCreateObject =
           new BACnetConfirmedServiceRequestCreateObject(
-              objectSpecifier, listOfValues, serviceRequestLength);
+              serviceRequestLength, objectSpecifier, listOfValues);
       return bACnetConfirmedServiceRequestCreateObject;
     }
   }

@@ -49,21 +49,13 @@ public class BACnetConstructedDataCarMode extends BACnetConstructedData implemen
   // Properties.
   protected final BACnetLiftCarModeTagged carMode;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCarMode(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLiftCarModeTagged carMode,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetLiftCarModeTagged carMode) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.carMode = carMode;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetLiftCarModeTagged getCarMode() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataCarMode extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataCarMode");
     // Create the instance
-    return new BACnetConstructedDataCarModeBuilderImpl(carMode, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCarModeBuilderImpl(carMode);
   }
 
   public static class BACnetConstructedDataCarModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLiftCarModeTagged carMode;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCarModeBuilderImpl(
-        BACnetLiftCarModeTagged carMode,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataCarModeBuilderImpl(BACnetLiftCarModeTagged carMode) {
       this.carMode = carMode;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCarMode build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCarMode bACnetConstructedDataCarMode =
-          new BACnetConstructedDataCarMode(
-              openingTag, peekedTagHeader, closingTag, carMode, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataCarMode(openingTag, peekedTagHeader, closingTag, carMode);
       return bACnetConstructedDataCarMode;
     }
   }

@@ -50,21 +50,13 @@ public class BACnetConstructedDataLandingCallControl extends BACnetConstructedDa
   // Properties.
   protected final BACnetLandingCallStatus landingCallControl;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLandingCallControl(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLandingCallStatus landingCallControl,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetLandingCallStatus landingCallControl) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.landingCallControl = landingCallControl;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetLandingCallStatus getLandingCallControl() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataLandingCallControl extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataLandingCallControl");
     // Create the instance
-    return new BACnetConstructedDataLandingCallControlBuilderImpl(
-        landingCallControl, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLandingCallControlBuilderImpl(landingCallControl);
   }
 
   public static class BACnetConstructedDataLandingCallControlBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLandingCallStatus landingCallControl;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLandingCallControlBuilderImpl(
-        BACnetLandingCallStatus landingCallControl,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetLandingCallStatus landingCallControl) {
       this.landingCallControl = landingCallControl;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLandingCallControl build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLandingCallControl bACnetConstructedDataLandingCallControl =
           new BACnetConstructedDataLandingCallControl(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              landingCallControl,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, landingCallControl);
       return bACnetConstructedDataLandingCallControl;
     }
   }

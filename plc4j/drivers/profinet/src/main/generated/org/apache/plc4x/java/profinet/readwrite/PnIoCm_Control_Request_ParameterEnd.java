@@ -48,7 +48,6 @@ public class PnIoCm_Control_Request_ParameterEnd extends PnIoCm_Block implements
   protected final Uuid arUuid;
   protected final int sessionKey;
   protected final int controlCommand;
-
   // Reserved Fields
   private Integer reservedField0;
   private Integer reservedField1;

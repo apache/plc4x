@@ -43,18 +43,13 @@ public class BACnetLogRecordLogDatumUnsignedValue extends BACnetLogRecordLogDatu
   // Properties.
   protected final BACnetContextTagUnsignedInteger unsignedValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogRecordLogDatumUnsignedValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagUnsignedInteger unsignedValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagUnsignedInteger unsignedValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.unsignedValue = unsignedValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagUnsignedInteger getUnsignedValue() {
@@ -111,28 +106,23 @@ public class BACnetLogRecordLogDatumUnsignedValue extends BACnetLogRecordLogDatu
 
     readBuffer.closeContext("BACnetLogRecordLogDatumUnsignedValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumUnsignedValueBuilderImpl(unsignedValue, tagNumber);
+    return new BACnetLogRecordLogDatumUnsignedValueBuilderImpl(unsignedValue);
   }
 
   public static class BACnetLogRecordLogDatumUnsignedValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagUnsignedInteger unsignedValue;
-    private final Short tagNumber;
 
     public BACnetLogRecordLogDatumUnsignedValueBuilderImpl(
-        BACnetContextTagUnsignedInteger unsignedValue, Short tagNumber) {
+        BACnetContextTagUnsignedInteger unsignedValue) {
       this.unsignedValue = unsignedValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetLogRecordLogDatumUnsignedValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetLogRecordLogDatumUnsignedValue bACnetLogRecordLogDatumUnsignedValue =
           new BACnetLogRecordLogDatumUnsignedValue(
-              openingTag, peekedTagHeader, closingTag, unsignedValue, tagNumber);
+              openingTag, peekedTagHeader, closingTag, unsignedValue);
       return bACnetLogRecordLogDatumUnsignedValue;
     }
   }

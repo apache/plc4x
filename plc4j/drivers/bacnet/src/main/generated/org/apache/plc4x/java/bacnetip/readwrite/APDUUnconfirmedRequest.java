@@ -44,17 +44,12 @@ public class APDUUnconfirmedRequest extends APDU implements Message {
 
   // Properties.
   protected final BACnetUnconfirmedServiceRequest serviceRequest;
-
-  // Arguments.
-  protected final Integer apduLength;
   // Reserved Fields
   private Byte reservedField0;
 
-  public APDUUnconfirmedRequest(
-      BACnetUnconfirmedServiceRequest serviceRequest, Integer apduLength) {
-    super(apduLength);
+  public APDUUnconfirmedRequest(BACnetUnconfirmedServiceRequest serviceRequest) {
+    super();
     this.serviceRequest = serviceRequest;
-    this.apduLength = apduLength;
   }
 
   public BACnetUnconfirmedServiceRequest getServiceRequest() {
@@ -118,25 +113,21 @@ public class APDUUnconfirmedRequest extends APDU implements Message {
 
     readBuffer.closeContext("APDUUnconfirmedRequest");
     // Create the instance
-    return new APDUUnconfirmedRequestBuilderImpl(serviceRequest, apduLength, reservedField0);
+    return new APDUUnconfirmedRequestBuilderImpl(serviceRequest, reservedField0);
   }
 
   public static class APDUUnconfirmedRequestBuilderImpl implements APDU.APDUBuilder {
     private final BACnetUnconfirmedServiceRequest serviceRequest;
-    private final Integer apduLength;
     private final Byte reservedField0;
 
     public APDUUnconfirmedRequestBuilderImpl(
-        BACnetUnconfirmedServiceRequest serviceRequest, Integer apduLength, Byte reservedField0) {
+        BACnetUnconfirmedServiceRequest serviceRequest, Byte reservedField0) {
       this.serviceRequest = serviceRequest;
-      this.apduLength = apduLength;
       this.reservedField0 = reservedField0;
     }
 
-    public APDUUnconfirmedRequest build(Integer apduLength) {
-
-      APDUUnconfirmedRequest aPDUUnconfirmedRequest =
-          new APDUUnconfirmedRequest(serviceRequest, apduLength);
+    public APDUUnconfirmedRequest build() {
+      APDUUnconfirmedRequest aPDUUnconfirmedRequest = new APDUUnconfirmedRequest(serviceRequest);
       aPDUUnconfirmedRequest.reservedField0 = reservedField0;
       return aPDUUnconfirmedRequest;
     }

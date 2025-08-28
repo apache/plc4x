@@ -42,19 +42,14 @@ public class BACnetFaultParameterFaultExtendedParameters implements Message {
   protected final List<BACnetFaultParameterFaultExtendedParametersEntry> parameters;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetFaultParameterFaultExtendedParameters(
       BACnetOpeningTag openingTag,
       List<BACnetFaultParameterFaultExtendedParametersEntry> parameters,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.parameters = parameters;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -146,8 +141,7 @@ public class BACnetFaultParameterFaultExtendedParameters implements Message {
     // Create the instance
     BACnetFaultParameterFaultExtendedParameters _bACnetFaultParameterFaultExtendedParameters;
     _bACnetFaultParameterFaultExtendedParameters =
-        new BACnetFaultParameterFaultExtendedParameters(
-            openingTag, parameters, closingTag, tagNumber);
+        new BACnetFaultParameterFaultExtendedParameters(openingTag, parameters, closingTag);
     return _bACnetFaultParameterFaultExtendedParameters;
   }
 

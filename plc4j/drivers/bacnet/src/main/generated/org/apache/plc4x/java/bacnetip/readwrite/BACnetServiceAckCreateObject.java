@@ -45,14 +45,10 @@ public class BACnetServiceAckCreateObject extends BACnetServiceAck implements Me
   // Properties.
   protected final BACnetApplicationTagObjectIdentifier objectIdentifier;
 
-  // Arguments.
-  protected final Long serviceAckLength;
-
   public BACnetServiceAckCreateObject(
-      BACnetApplicationTagObjectIdentifier objectIdentifier, Long serviceAckLength) {
+      long serviceAckLength, BACnetApplicationTagObjectIdentifier objectIdentifier) {
     super(serviceAckLength);
     this.objectIdentifier = objectIdentifier;
-    this.serviceAckLength = serviceAckLength;
   }
 
   public BACnetApplicationTagObjectIdentifier getObjectIdentifier() {
@@ -106,24 +102,21 @@ public class BACnetServiceAckCreateObject extends BACnetServiceAck implements Me
 
     readBuffer.closeContext("BACnetServiceAckCreateObject");
     // Create the instance
-    return new BACnetServiceAckCreateObjectBuilderImpl(objectIdentifier, serviceAckLength);
+    return new BACnetServiceAckCreateObjectBuilderImpl(objectIdentifier);
   }
 
   public static class BACnetServiceAckCreateObjectBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
-    private final Long serviceAckLength;
 
     public BACnetServiceAckCreateObjectBuilderImpl(
-        BACnetApplicationTagObjectIdentifier objectIdentifier, Long serviceAckLength) {
+        BACnetApplicationTagObjectIdentifier objectIdentifier) {
       this.objectIdentifier = objectIdentifier;
-      this.serviceAckLength = serviceAckLength;
     }
 
-    public BACnetServiceAckCreateObject build(Long serviceAckLength) {
-
+    public BACnetServiceAckCreateObject build(long serviceAckLength) {
       BACnetServiceAckCreateObject bACnetServiceAckCreateObject =
-          new BACnetServiceAckCreateObject(objectIdentifier, serviceAckLength);
+          new BACnetServiceAckCreateObject(serviceAckLength, objectIdentifier);
       return bACnetServiceAckCreateObject;
     }
   }

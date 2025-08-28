@@ -49,21 +49,13 @@ public class BACnetConstructedDataUnits extends BACnetConstructedData implements
   // Properties.
   protected final BACnetEngineeringUnitsTagged units;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataUnits(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetEngineeringUnitsTagged units,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetEngineeringUnitsTagged units) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.units = units;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetEngineeringUnitsTagged getUnits() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataUnits extends BACnetConstructedData implements
 
     readBuffer.closeContext("BACnetConstructedDataUnits");
     // Create the instance
-    return new BACnetConstructedDataUnitsBuilderImpl(units, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataUnitsBuilderImpl(units);
   }
 
   public static class BACnetConstructedDataUnitsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEngineeringUnitsTagged units;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUnitsBuilderImpl(
-        BACnetEngineeringUnitsTagged units,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataUnitsBuilderImpl(BACnetEngineeringUnitsTagged units) {
       this.units = units;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataUnits build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataUnits bACnetConstructedDataUnits =
-          new BACnetConstructedDataUnits(
-              openingTag, peekedTagHeader, closingTag, units, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataUnits(openingTag, peekedTagHeader, closingTag, units);
       return bACnetConstructedDataUnits;
     }
   }

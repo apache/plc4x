@@ -50,21 +50,13 @@ public class BACnetConstructedDataStateDescription extends BACnetConstructedData
   // Properties.
   protected final BACnetApplicationTagCharacterString stateDescription;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataStateDescription(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString stateDescription,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString stateDescription) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.stateDescription = stateDescription;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getStateDescription() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataStateDescription extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataStateDescription");
     // Create the instance
-    return new BACnetConstructedDataStateDescriptionBuilderImpl(
-        stateDescription, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataStateDescriptionBuilderImpl(stateDescription);
   }
 
   public static class BACnetConstructedDataStateDescriptionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString stateDescription;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataStateDescriptionBuilderImpl(
-        BACnetApplicationTagCharacterString stateDescription,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString stateDescription) {
       this.stateDescription = stateDescription;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataStateDescription build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataStateDescription bACnetConstructedDataStateDescription =
           new BACnetConstructedDataStateDescription(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              stateDescription,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, stateDescription);
       return bACnetConstructedDataStateDescription;
     }
   }

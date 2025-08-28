@@ -49,19 +49,15 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
       enableDisable;
   protected final BACnetContextTagCharacterString password;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestDeviceCommunicationControl(
+      long serviceRequestLength,
       BACnetContextTagUnsignedInteger timeDuration,
       BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged enableDisable,
-      BACnetContextTagCharacterString password,
-      Long serviceRequestLength) {
+      BACnetContextTagCharacterString password) {
     super(serviceRequestLength);
     this.timeDuration = timeDuration;
     this.enableDisable = enableDisable;
     this.password = password;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagUnsignedInteger getTimeDuration() {
@@ -167,7 +163,7 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
     readBuffer.closeContext("BACnetConfirmedServiceRequestDeviceCommunicationControl");
     // Create the instance
     return new BACnetConfirmedServiceRequestDeviceCommunicationControlBuilderImpl(
-        timeDuration, enableDisable, password, serviceRequestLength);
+        timeDuration, enableDisable, password);
   }
 
   public static class BACnetConfirmedServiceRequestDeviceCommunicationControlBuilderImpl
@@ -176,25 +172,22 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
     private final BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
         enableDisable;
     private final BACnetContextTagCharacterString password;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestDeviceCommunicationControlBuilderImpl(
         BACnetContextTagUnsignedInteger timeDuration,
         BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged enableDisable,
-        BACnetContextTagCharacterString password,
-        Long serviceRequestLength) {
+        BACnetContextTagCharacterString password) {
       this.timeDuration = timeDuration;
       this.enableDisable = enableDisable;
       this.password = password;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
     public BACnetConfirmedServiceRequestDeviceCommunicationControl build(
-        Long serviceRequestLength) {
+        long serviceRequestLength) {
       BACnetConfirmedServiceRequestDeviceCommunicationControl
           bACnetConfirmedServiceRequestDeviceCommunicationControl =
               new BACnetConfirmedServiceRequestDeviceCommunicationControl(
-                  timeDuration, enableDisable, password, serviceRequestLength);
+                  serviceRequestLength, timeDuration, enableDisable, password);
       return bACnetConfirmedServiceRequestDeviceCommunicationControl;
     }
   }

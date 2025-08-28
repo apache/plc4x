@@ -49,21 +49,13 @@ public class BACnetConstructedDataLockStatus extends BACnetConstructedData imple
   // Properties.
   protected final BACnetLockStatusTagged lockStatus;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLockStatus(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLockStatusTagged lockStatus,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetLockStatusTagged lockStatus) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lockStatus = lockStatus;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetLockStatusTagged getLockStatus() {
@@ -134,34 +126,21 @@ public class BACnetConstructedDataLockStatus extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataLockStatus");
     // Create the instance
-    return new BACnetConstructedDataLockStatusBuilderImpl(
-        lockStatus, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLockStatusBuilderImpl(lockStatus);
   }
 
   public static class BACnetConstructedDataLockStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLockStatusTagged lockStatus;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLockStatusBuilderImpl(
-        BACnetLockStatusTagged lockStatus,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLockStatusBuilderImpl(BACnetLockStatusTagged lockStatus) {
       this.lockStatus = lockStatus;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLockStatus build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLockStatus bACnetConstructedDataLockStatus =
-          new BACnetConstructedDataLockStatus(
-              openingTag, peekedTagHeader, closingTag, lockStatus, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataLockStatus(openingTag, peekedTagHeader, closingTag, lockStatus);
       return bACnetConstructedDataLockStatus;
     }
   }

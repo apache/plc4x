@@ -49,21 +49,13 @@ public class BACnetConstructedDataAccompaniment extends BACnetConstructedData im
   // Properties.
   protected final BACnetDeviceObjectReference accompaniment;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAccompaniment(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDeviceObjectReference accompaniment,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDeviceObjectReference accompaniment) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.accompaniment = accompaniment;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDeviceObjectReference getAccompaniment() {
@@ -130,39 +122,23 @@ public class BACnetConstructedDataAccompaniment extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataAccompaniment");
     // Create the instance
-    return new BACnetConstructedDataAccompanimentBuilderImpl(
-        accompaniment, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccompanimentBuilderImpl(accompaniment);
   }
 
   public static class BACnetConstructedDataAccompanimentBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference accompaniment;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAccompanimentBuilderImpl(
-        BACnetDeviceObjectReference accompaniment,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetDeviceObjectReference accompaniment) {
       this.accompaniment = accompaniment;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAccompaniment build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAccompaniment bACnetConstructedDataAccompaniment =
           new BACnetConstructedDataAccompaniment(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              accompaniment,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, accompaniment);
       return bACnetConstructedDataAccompaniment;
     }
   }

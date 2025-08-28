@@ -42,19 +42,9 @@ public class ParameterChangeReply extends Reply implements Message {
   // Properties.
   protected final ParameterChange parameterChange;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-  protected final RequestContext requestContext;
-
-  public ParameterChangeReply(
-      byte peekedByte,
-      ParameterChange parameterChange,
-      CBusOptions cBusOptions,
-      RequestContext requestContext) {
-    super(peekedByte, cBusOptions, requestContext);
+  public ParameterChangeReply(byte peekedByte, ParameterChange parameterChange) {
+    super(peekedByte);
     this.parameterChange = parameterChange;
-    this.cBusOptions = cBusOptions;
-    this.requestContext = requestContext;
   }
 
   public ParameterChange getParameterChange() {
@@ -104,25 +94,19 @@ public class ParameterChangeReply extends Reply implements Message {
 
     readBuffer.closeContext("ParameterChangeReply");
     // Create the instance
-    return new ParameterChangeReplyBuilderImpl(parameterChange, cBusOptions, requestContext);
+    return new ParameterChangeReplyBuilderImpl(parameterChange);
   }
 
   public static class ParameterChangeReplyBuilderImpl implements Reply.ReplyBuilder {
     private final ParameterChange parameterChange;
-    private final CBusOptions cBusOptions;
-    private final RequestContext requestContext;
 
-    public ParameterChangeReplyBuilderImpl(
-        ParameterChange parameterChange, CBusOptions cBusOptions, RequestContext requestContext) {
+    public ParameterChangeReplyBuilderImpl(ParameterChange parameterChange) {
       this.parameterChange = parameterChange;
-      this.cBusOptions = cBusOptions;
-      this.requestContext = requestContext;
     }
 
-    public ParameterChangeReply build(
-        byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext) {
+    public ParameterChangeReply build(byte peekedByte) {
       ParameterChangeReply parameterChangeReply =
-          new ParameterChangeReply(peekedByte, parameterChange, cBusOptions, requestContext);
+          new ParameterChangeReply(peekedByte, parameterChange);
       return parameterChangeReply;
     }
   }

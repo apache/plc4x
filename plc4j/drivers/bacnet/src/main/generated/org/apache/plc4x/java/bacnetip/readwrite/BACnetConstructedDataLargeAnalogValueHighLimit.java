@@ -50,21 +50,13 @@ public class BACnetConstructedDataLargeAnalogValueHighLimit extends BACnetConstr
   // Properties.
   protected final BACnetApplicationTagDouble highLimit;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLargeAnalogValueHighLimit(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagDouble highLimit,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagDouble highLimit) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.highLimit = highLimit;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagDouble getHighLimit() {
@@ -133,40 +125,24 @@ public class BACnetConstructedDataLargeAnalogValueHighLimit extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataLargeAnalogValueHighLimit");
     // Create the instance
-    return new BACnetConstructedDataLargeAnalogValueHighLimitBuilderImpl(
-        highLimit, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLargeAnalogValueHighLimitBuilderImpl(highLimit);
   }
 
   public static class BACnetConstructedDataLargeAnalogValueHighLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagDouble highLimit;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLargeAnalogValueHighLimitBuilderImpl(
-        BACnetApplicationTagDouble highLimit,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagDouble highLimit) {
       this.highLimit = highLimit;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLargeAnalogValueHighLimit build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLargeAnalogValueHighLimit
           bACnetConstructedDataLargeAnalogValueHighLimit =
               new BACnetConstructedDataLargeAnalogValueHighLimit(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  highLimit,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, highLimit);
       return bACnetConstructedDataLargeAnalogValueHighLimit;
     }
   }

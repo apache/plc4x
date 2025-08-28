@@ -50,21 +50,13 @@ public class BACnetConstructedDataIntegerValueResolution extends BACnetConstruct
   // Properties.
   protected final BACnetApplicationTagSignedInteger resolution;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIntegerValueResolution(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagSignedInteger resolution,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagSignedInteger resolution) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.resolution = resolution;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagSignedInteger getResolution() {
@@ -135,34 +127,23 @@ public class BACnetConstructedDataIntegerValueResolution extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataIntegerValueResolution");
     // Create the instance
-    return new BACnetConstructedDataIntegerValueResolutionBuilderImpl(
-        resolution, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIntegerValueResolutionBuilderImpl(resolution);
   }
 
   public static class BACnetConstructedDataIntegerValueResolutionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger resolution;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIntegerValueResolutionBuilderImpl(
-        BACnetApplicationTagSignedInteger resolution,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagSignedInteger resolution) {
       this.resolution = resolution;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIntegerValueResolution build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIntegerValueResolution bACnetConstructedDataIntegerValueResolution =
           new BACnetConstructedDataIntegerValueResolution(
-              openingTag, peekedTagHeader, closingTag, resolution, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, resolution);
       return bACnetConstructedDataIntegerValueResolution;
     }
   }

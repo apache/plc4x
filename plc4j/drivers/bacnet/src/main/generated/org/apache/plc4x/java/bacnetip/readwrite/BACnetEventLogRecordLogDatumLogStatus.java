@@ -43,18 +43,13 @@ public class BACnetEventLogRecordLogDatumLogStatus extends BACnetEventLogRecordL
   // Properties.
   protected final BACnetLogStatusTagged logStatus;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventLogRecordLogDatumLogStatus(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLogStatusTagged logStatus,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetLogStatusTagged logStatus) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.logStatus = logStatus;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetLogStatusTagged getLogStatus() {
@@ -108,28 +103,22 @@ public class BACnetEventLogRecordLogDatumLogStatus extends BACnetEventLogRecordL
 
     readBuffer.closeContext("BACnetEventLogRecordLogDatumLogStatus");
     // Create the instance
-    return new BACnetEventLogRecordLogDatumLogStatusBuilderImpl(logStatus, tagNumber);
+    return new BACnetEventLogRecordLogDatumLogStatusBuilderImpl(logStatus);
   }
 
   public static class BACnetEventLogRecordLogDatumLogStatusBuilderImpl
       implements BACnetEventLogRecordLogDatum.BACnetEventLogRecordLogDatumBuilder {
     private final BACnetLogStatusTagged logStatus;
-    private final Short tagNumber;
 
-    public BACnetEventLogRecordLogDatumLogStatusBuilderImpl(
-        BACnetLogStatusTagged logStatus, Short tagNumber) {
+    public BACnetEventLogRecordLogDatumLogStatusBuilderImpl(BACnetLogStatusTagged logStatus) {
       this.logStatus = logStatus;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetEventLogRecordLogDatumLogStatus build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetEventLogRecordLogDatumLogStatus bACnetEventLogRecordLogDatumLogStatus =
           new BACnetEventLogRecordLogDatumLogStatus(
-              openingTag, peekedTagHeader, closingTag, logStatus, tagNumber);
+              openingTag, peekedTagHeader, closingTag, logStatus);
       return bACnetEventLogRecordLogDatumLogStatus;
     }
   }

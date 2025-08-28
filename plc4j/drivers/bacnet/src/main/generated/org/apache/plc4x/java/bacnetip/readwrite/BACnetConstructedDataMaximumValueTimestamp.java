@@ -50,21 +50,13 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
   // Properties.
   protected final BACnetDateTime maximumValueTimestamp;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMaximumValueTimestamp(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDateTime maximumValueTimestamp,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDateTime maximumValueTimestamp) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.maximumValueTimestamp = maximumValueTimestamp;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDateTime getMaximumValueTimestamp() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataMaximumValueTimestamp");
     // Create the instance
-    return new BACnetConstructedDataMaximumValueTimestampBuilderImpl(
-        maximumValueTimestamp, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMaximumValueTimestampBuilderImpl(maximumValueTimestamp);
   }
 
   public static class BACnetConstructedDataMaximumValueTimestampBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime maximumValueTimestamp;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMaximumValueTimestampBuilderImpl(
-        BACnetDateTime maximumValueTimestamp,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetDateTime maximumValueTimestamp) {
       this.maximumValueTimestamp = maximumValueTimestamp;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMaximumValueTimestamp build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMaximumValueTimestamp bACnetConstructedDataMaximumValueTimestamp =
           new BACnetConstructedDataMaximumValueTimestamp(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              maximumValueTimestamp,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, maximumValueTimestamp);
       return bACnetConstructedDataMaximumValueTimestamp;
     }
   }

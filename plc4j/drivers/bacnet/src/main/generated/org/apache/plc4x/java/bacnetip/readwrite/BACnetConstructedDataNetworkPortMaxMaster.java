@@ -50,21 +50,13 @@ public class BACnetConstructedDataNetworkPortMaxMaster extends BACnetConstructed
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger maxMaster;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataNetworkPortMaxMaster(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger maxMaster,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger maxMaster) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.maxMaster = maxMaster;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getMaxMaster() {
@@ -135,34 +127,23 @@ public class BACnetConstructedDataNetworkPortMaxMaster extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataNetworkPortMaxMaster");
     // Create the instance
-    return new BACnetConstructedDataNetworkPortMaxMasterBuilderImpl(
-        maxMaster, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNetworkPortMaxMasterBuilderImpl(maxMaster);
   }
 
   public static class BACnetConstructedDataNetworkPortMaxMasterBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxMaster;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataNetworkPortMaxMasterBuilderImpl(
-        BACnetApplicationTagUnsignedInteger maxMaster,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger maxMaster) {
       this.maxMaster = maxMaster;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataNetworkPortMaxMaster build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataNetworkPortMaxMaster bACnetConstructedDataNetworkPortMaxMaster =
           new BACnetConstructedDataNetworkPortMaxMaster(
-              openingTag, peekedTagHeader, closingTag, maxMaster, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, maxMaster);
       return bACnetConstructedDataNetworkPortMaxMaster;
     }
   }

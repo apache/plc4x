@@ -50,21 +50,13 @@ public class BACnetConstructedDataPositiveIntegerValueDeadband extends BACnetCon
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger deadband;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPositiveIntegerValueDeadband(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger deadband,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger deadband) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.deadband = deadband;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getDeadband() {
@@ -135,35 +127,24 @@ public class BACnetConstructedDataPositiveIntegerValueDeadband extends BACnetCon
 
     readBuffer.closeContext("BACnetConstructedDataPositiveIntegerValueDeadband");
     // Create the instance
-    return new BACnetConstructedDataPositiveIntegerValueDeadbandBuilderImpl(
-        deadband, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPositiveIntegerValueDeadbandBuilderImpl(deadband);
   }
 
   public static class BACnetConstructedDataPositiveIntegerValueDeadbandBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger deadband;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataPositiveIntegerValueDeadbandBuilderImpl(
-        BACnetApplicationTagUnsignedInteger deadband,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger deadband) {
       this.deadband = deadband;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataPositiveIntegerValueDeadband build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPositiveIntegerValueDeadband
           bACnetConstructedDataPositiveIntegerValueDeadband =
               new BACnetConstructedDataPositiveIntegerValueDeadband(
-                  openingTag, peekedTagHeader, closingTag, deadband, tagNumber, arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, deadband);
       return bACnetConstructedDataPositiveIntegerValueDeadband;
     }
   }

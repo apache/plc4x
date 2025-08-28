@@ -52,23 +52,15 @@ public class BACnetConstructedDataGlobalGroupPresentValue extends BACnetConstruc
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetPropertyAccessResult> presentValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataGlobalGroupPresentValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetPropertyAccessResult> presentValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetPropertyAccessResult> presentValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.presentValue = presentValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataGlobalGroupPresentValue extends BACnetConstruc
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (presentValue)
     writeComplexTypeArrayField("presentValue", presentValue, writeBuffer);
@@ -171,42 +159,26 @@ public class BACnetConstructedDataGlobalGroupPresentValue extends BACnetConstruc
     readBuffer.closeContext("BACnetConstructedDataGlobalGroupPresentValue");
     // Create the instance
     return new BACnetConstructedDataGlobalGroupPresentValueBuilderImpl(
-        numberOfDataElements, presentValue, tagNumber, arrayIndexArgument);
+        numberOfDataElements, presentValue);
   }
 
   public static class BACnetConstructedDataGlobalGroupPresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetPropertyAccessResult> presentValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataGlobalGroupPresentValueBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetPropertyAccessResult> presentValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetPropertyAccessResult> presentValue) {
       this.numberOfDataElements = numberOfDataElements;
       this.presentValue = presentValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataGlobalGroupPresentValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataGlobalGroupPresentValue bACnetConstructedDataGlobalGroupPresentValue =
           new BACnetConstructedDataGlobalGroupPresentValue(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              presentValue,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, presentValue);
       return bACnetConstructedDataGlobalGroupPresentValue;
     }
   }

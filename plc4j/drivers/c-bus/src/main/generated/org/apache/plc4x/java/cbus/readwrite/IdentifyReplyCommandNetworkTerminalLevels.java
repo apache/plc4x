@@ -46,13 +46,9 @@ public class IdentifyReplyCommandNetworkTerminalLevels extends IdentifyReplyComm
   // Properties.
   protected final byte[] networkTerminalLevels;
 
-  // Arguments.
-  protected final Byte numBytes;
-
-  public IdentifyReplyCommandNetworkTerminalLevels(byte[] networkTerminalLevels, Byte numBytes) {
-    super(numBytes);
+  public IdentifyReplyCommandNetworkTerminalLevels(byte[] networkTerminalLevels) {
+    super();
     this.networkTerminalLevels = networkTerminalLevels;
-    this.numBytes = numBytes;
   }
 
   public byte[] getNetworkTerminalLevels() {
@@ -103,25 +99,20 @@ public class IdentifyReplyCommandNetworkTerminalLevels extends IdentifyReplyComm
 
     readBuffer.closeContext("IdentifyReplyCommandNetworkTerminalLevels");
     // Create the instance
-    return new IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl(
-        networkTerminalLevels, numBytes);
+    return new IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl(networkTerminalLevels);
   }
 
   public static class IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] networkTerminalLevels;
-    private final Byte numBytes;
 
-    public IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl(
-        byte[] networkTerminalLevels, Byte numBytes) {
+    public IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl(byte[] networkTerminalLevels) {
       this.networkTerminalLevels = networkTerminalLevels;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandNetworkTerminalLevels build(Byte numBytes) {
-
+    public IdentifyReplyCommandNetworkTerminalLevels build() {
       IdentifyReplyCommandNetworkTerminalLevels identifyReplyCommandNetworkTerminalLevels =
-          new IdentifyReplyCommandNetworkTerminalLevels(networkTerminalLevels, numBytes);
+          new IdentifyReplyCommandNetworkTerminalLevels(networkTerminalLevels);
       return identifyReplyCommandNetworkTerminalLevels;
     }
   }

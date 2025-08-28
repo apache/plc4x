@@ -49,21 +49,13 @@ public class BACnetConstructedDataFailedAttempts extends BACnetConstructedData i
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger failedAttempts;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataFailedAttempts(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger failedAttempts,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger failedAttempts) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.failedAttempts = failedAttempts;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getFailedAttempts() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataFailedAttempts extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataFailedAttempts");
     // Create the instance
-    return new BACnetConstructedDataFailedAttemptsBuilderImpl(
-        failedAttempts, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFailedAttemptsBuilderImpl(failedAttempts);
   }
 
   public static class BACnetConstructedDataFailedAttemptsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger failedAttempts;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataFailedAttemptsBuilderImpl(
-        BACnetApplicationTagUnsignedInteger failedAttempts,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger failedAttempts) {
       this.failedAttempts = failedAttempts;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataFailedAttempts build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataFailedAttempts bACnetConstructedDataFailedAttempts =
           new BACnetConstructedDataFailedAttempts(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              failedAttempts,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, failedAttempts);
       return bACnetConstructedDataFailedAttempts;
     }
   }

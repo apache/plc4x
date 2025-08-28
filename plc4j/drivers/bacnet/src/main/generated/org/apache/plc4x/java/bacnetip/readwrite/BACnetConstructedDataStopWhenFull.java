@@ -49,21 +49,13 @@ public class BACnetConstructedDataStopWhenFull extends BACnetConstructedData imp
   // Properties.
   protected final BACnetApplicationTagBoolean stopWhenFull;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataStopWhenFull(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean stopWhenFull,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean stopWhenFull) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.stopWhenFull = stopWhenFull;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getStopWhenFull() {
@@ -132,34 +124,22 @@ public class BACnetConstructedDataStopWhenFull extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataStopWhenFull");
     // Create the instance
-    return new BACnetConstructedDataStopWhenFullBuilderImpl(
-        stopWhenFull, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataStopWhenFullBuilderImpl(stopWhenFull);
   }
 
   public static class BACnetConstructedDataStopWhenFullBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean stopWhenFull;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataStopWhenFullBuilderImpl(
-        BACnetApplicationTagBoolean stopWhenFull,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataStopWhenFullBuilderImpl(BACnetApplicationTagBoolean stopWhenFull) {
       this.stopWhenFull = stopWhenFull;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataStopWhenFull build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataStopWhenFull bACnetConstructedDataStopWhenFull =
           new BACnetConstructedDataStopWhenFull(
-              openingTag, peekedTagHeader, closingTag, stopWhenFull, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, stopWhenFull);
       return bACnetConstructedDataStopWhenFull;
     }
   }

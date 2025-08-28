@@ -48,10 +48,6 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
   protected final BACnetLifeSafetyOperationTagged operationExpected;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetNotificationParametersChangeOfLifeSafety(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
@@ -61,18 +57,14 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
       BACnetLifeSafetyModeTagged newMode,
       BACnetStatusFlagsTagged statusFlags,
       BACnetLifeSafetyOperationTagged operationExpected,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument);
+      BACnetClosingTag innerClosingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.innerOpeningTag = innerOpeningTag;
     this.newState = newState;
     this.newMode = newMode;
     this.statusFlags = statusFlags;
     this.operationExpected = operationExpected;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -222,14 +214,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     readBuffer.closeContext("BACnetNotificationParametersChangeOfLifeSafety");
     // Create the instance
     return new BACnetNotificationParametersChangeOfLifeSafetyBuilderImpl(
-        innerOpeningTag,
-        newState,
-        newMode,
-        statusFlags,
-        operationExpected,
-        innerClosingTag,
-        tagNumber,
-        objectTypeArgument);
+        innerOpeningTag, newState, newMode, statusFlags, operationExpected, innerClosingTag);
   }
 
   public static class BACnetNotificationParametersChangeOfLifeSafetyBuilderImpl
@@ -240,8 +225,6 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     private final BACnetStatusFlagsTagged statusFlags;
     private final BACnetLifeSafetyOperationTagged operationExpected;
     private final BACnetClosingTag innerClosingTag;
-    private final Short tagNumber;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetNotificationParametersChangeOfLifeSafetyBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
@@ -249,25 +232,17 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
         BACnetLifeSafetyModeTagged newMode,
         BACnetStatusFlagsTagged statusFlags,
         BACnetLifeSafetyOperationTagged operationExpected,
-        BACnetClosingTag innerClosingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetClosingTag innerClosingTag) {
       this.innerOpeningTag = innerOpeningTag;
       this.newState = newState;
       this.newMode = newMode;
       this.statusFlags = statusFlags;
       this.operationExpected = operationExpected;
       this.innerClosingTag = innerClosingTag;
-      this.tagNumber = tagNumber;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
     public BACnetNotificationParametersChangeOfLifeSafety build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersChangeOfLifeSafety
           bACnetNotificationParametersChangeOfLifeSafety =
               new BACnetNotificationParametersChangeOfLifeSafety(
@@ -279,9 +254,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
                   newMode,
                   statusFlags,
                   operationExpected,
-                  innerClosingTag,
-                  tagNumber,
-                  objectTypeArgument);
+                  innerClosingTag);
       return bACnetNotificationParametersChangeOfLifeSafety;
     }
   }

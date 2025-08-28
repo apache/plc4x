@@ -52,23 +52,15 @@ public class BACnetConstructedDataRegisteredCarCall extends BACnetConstructedDat
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetLiftCarCallList> registeredCarCall;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataRegisteredCarCall(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetLiftCarCallList> registeredCarCall,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetLiftCarCallList> registeredCarCall) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.registeredCarCall = registeredCarCall;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataRegisteredCarCall extends BACnetConstructedDat
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (registeredCarCall)
     writeComplexTypeArrayField("registeredCarCall", registeredCarCall, writeBuffer);
@@ -171,42 +159,26 @@ public class BACnetConstructedDataRegisteredCarCall extends BACnetConstructedDat
     readBuffer.closeContext("BACnetConstructedDataRegisteredCarCall");
     // Create the instance
     return new BACnetConstructedDataRegisteredCarCallBuilderImpl(
-        numberOfDataElements, registeredCarCall, tagNumber, arrayIndexArgument);
+        numberOfDataElements, registeredCarCall);
   }
 
   public static class BACnetConstructedDataRegisteredCarCallBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetLiftCarCallList> registeredCarCall;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataRegisteredCarCallBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetLiftCarCallList> registeredCarCall,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetLiftCarCallList> registeredCarCall) {
       this.numberOfDataElements = numberOfDataElements;
       this.registeredCarCall = registeredCarCall;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataRegisteredCarCall build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataRegisteredCarCall bACnetConstructedDataRegisteredCarCall =
           new BACnetConstructedDataRegisteredCarCall(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              registeredCarCall,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, registeredCarCall);
       return bACnetConstructedDataRegisteredCarCall;
     }
   }

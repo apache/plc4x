@@ -43,9 +43,6 @@ public class RequestObsolete extends Request implements Message {
   protected final CALData calData;
   protected final Alpha alpha;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
   public RequestObsolete(
       RequestType peekedByte,
       RequestType startingCR,
@@ -53,12 +50,10 @@ public class RequestObsolete extends Request implements Message {
       RequestType secondPeek,
       RequestTermination termination,
       CALData calData,
-      Alpha alpha,
-      CBusOptions cBusOptions) {
-    super(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions);
+      Alpha alpha) {
+    super(peekedByte, startingCR, resetMode, secondPeek, termination);
     this.calData = calData;
     this.alpha = alpha;
-    this.cBusOptions = cBusOptions;
   }
 
   public CALData getCalData() {
@@ -142,18 +137,16 @@ public class RequestObsolete extends Request implements Message {
 
     readBuffer.closeContext("RequestObsolete");
     // Create the instance
-    return new RequestObsoleteBuilderImpl(calData, alpha, cBusOptions);
+    return new RequestObsoleteBuilderImpl(calData, alpha);
   }
 
   public static class RequestObsoleteBuilderImpl implements Request.RequestBuilder {
     private final CALData calData;
     private final Alpha alpha;
-    private final CBusOptions cBusOptions;
 
-    public RequestObsoleteBuilderImpl(CALData calData, Alpha alpha, CBusOptions cBusOptions) {
+    public RequestObsoleteBuilderImpl(CALData calData, Alpha alpha) {
       this.calData = calData;
       this.alpha = alpha;
-      this.cBusOptions = cBusOptions;
     }
 
     public RequestObsolete build(
@@ -161,18 +154,10 @@ public class RequestObsolete extends Request implements Message {
         RequestType startingCR,
         RequestType resetMode,
         RequestType secondPeek,
-        RequestTermination termination,
-        CBusOptions cBusOptions) {
+        RequestTermination termination) {
       RequestObsolete requestObsolete =
           new RequestObsolete(
-              peekedByte,
-              startingCR,
-              resetMode,
-              secondPeek,
-              termination,
-              calData,
-              alpha,
-              cBusOptions);
+              peekedByte, startingCR, resetMode, secondPeek, termination, calData, alpha);
       return requestObsolete;
     }
   }

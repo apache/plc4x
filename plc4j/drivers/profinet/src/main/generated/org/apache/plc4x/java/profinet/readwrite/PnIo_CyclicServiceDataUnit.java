@@ -40,13 +40,9 @@ public class PnIo_CyclicServiceDataUnit implements Message {
   // Properties.
   protected final byte[] data;
 
-  // Arguments.
-  protected final Short dataUnitLength;
-
-  public PnIo_CyclicServiceDataUnit(byte[] data, Short dataUnitLength) {
+  public PnIo_CyclicServiceDataUnit(byte[] data) {
     super();
     this.data = data;
-    this.dataUnitLength = dataUnitLength;
   }
 
   public byte[] getData() {
@@ -94,7 +90,7 @@ public class PnIo_CyclicServiceDataUnit implements Message {
     readBuffer.closeContext("PnIo_CyclicServiceDataUnit");
     // Create the instance
     PnIo_CyclicServiceDataUnit _pnIo_CyclicServiceDataUnit;
-    _pnIo_CyclicServiceDataUnit = new PnIo_CyclicServiceDataUnit(data, dataUnitLength);
+    _pnIo_CyclicServiceDataUnit = new PnIo_CyclicServiceDataUnit(data);
     return _pnIo_CyclicServiceDataUnit;
   }
 

@@ -50,21 +50,13 @@ public class BACnetConstructedDataTransactionNotificationClass extends BACnetCon
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger transactionNotificationClass;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTransactionNotificationClass(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger transactionNotificationClass,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger transactionNotificationClass) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.transactionNotificationClass = transactionNotificationClass;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getTransactionNotificationClass() {
@@ -138,39 +130,24 @@ public class BACnetConstructedDataTransactionNotificationClass extends BACnetCon
     readBuffer.closeContext("BACnetConstructedDataTransactionNotificationClass");
     // Create the instance
     return new BACnetConstructedDataTransactionNotificationClassBuilderImpl(
-        transactionNotificationClass, tagNumber, arrayIndexArgument);
+        transactionNotificationClass);
   }
 
   public static class BACnetConstructedDataTransactionNotificationClassBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger transactionNotificationClass;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataTransactionNotificationClassBuilderImpl(
-        BACnetApplicationTagUnsignedInteger transactionNotificationClass,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger transactionNotificationClass) {
       this.transactionNotificationClass = transactionNotificationClass;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTransactionNotificationClass build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTransactionNotificationClass
           bACnetConstructedDataTransactionNotificationClass =
               new BACnetConstructedDataTransactionNotificationClass(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  transactionNotificationClass,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, transactionNotificationClass);
       return bACnetConstructedDataTransactionNotificationClass;
     }
   }

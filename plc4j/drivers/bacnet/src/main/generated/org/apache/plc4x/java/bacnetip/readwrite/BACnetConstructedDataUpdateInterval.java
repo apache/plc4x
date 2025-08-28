@@ -49,21 +49,13 @@ public class BACnetConstructedDataUpdateInterval extends BACnetConstructedData i
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger updateInterval;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataUpdateInterval(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger updateInterval,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger updateInterval) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.updateInterval = updateInterval;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getUpdateInterval() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataUpdateInterval extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataUpdateInterval");
     // Create the instance
-    return new BACnetConstructedDataUpdateIntervalBuilderImpl(
-        updateInterval, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataUpdateIntervalBuilderImpl(updateInterval);
   }
 
   public static class BACnetConstructedDataUpdateIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger updateInterval;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataUpdateIntervalBuilderImpl(
-        BACnetApplicationTagUnsignedInteger updateInterval,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger updateInterval) {
       this.updateInterval = updateInterval;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataUpdateInterval build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataUpdateInterval bACnetConstructedDataUpdateInterval =
           new BACnetConstructedDataUpdateInterval(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              updateInterval,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, updateInterval);
       return bACnetConstructedDataUpdateInterval;
     }
   }

@@ -50,21 +50,13 @@ public class BACnetConstructedDataAllowGroupDelayInhibit extends BACnetConstruct
   // Properties.
   protected final BACnetApplicationTagBoolean allowGroupDelayInhibit;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAllowGroupDelayInhibit(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean allowGroupDelayInhibit,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean allowGroupDelayInhibit) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.allowGroupDelayInhibit = allowGroupDelayInhibit;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getAllowGroupDelayInhibit() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataAllowGroupDelayInhibit extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataAllowGroupDelayInhibit");
     // Create the instance
-    return new BACnetConstructedDataAllowGroupDelayInhibitBuilderImpl(
-        allowGroupDelayInhibit, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAllowGroupDelayInhibitBuilderImpl(allowGroupDelayInhibit);
   }
 
   public static class BACnetConstructedDataAllowGroupDelayInhibitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean allowGroupDelayInhibit;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAllowGroupDelayInhibitBuilderImpl(
-        BACnetApplicationTagBoolean allowGroupDelayInhibit,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean allowGroupDelayInhibit) {
       this.allowGroupDelayInhibit = allowGroupDelayInhibit;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAllowGroupDelayInhibit build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAllowGroupDelayInhibit bACnetConstructedDataAllowGroupDelayInhibit =
           new BACnetConstructedDataAllowGroupDelayInhibit(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              allowGroupDelayInhibit,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, allowGroupDelayInhibit);
       return bACnetConstructedDataAllowGroupDelayInhibit;
     }
   }

@@ -50,10 +50,6 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
   protected final BACnetDateTimeEnclosed expirationTime;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetNotificationParametersChangeOfTimer(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
@@ -65,10 +61,8 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
       BACnetTimerTransitionTagged lastStateChange,
       BACnetContextTagUnsignedInteger initialTimeout,
       BACnetDateTimeEnclosed expirationTime,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument);
+      BACnetClosingTag innerClosingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.innerOpeningTag = innerOpeningTag;
     this.newValue = newValue;
     this.statusFlags = statusFlags;
@@ -77,8 +71,6 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
     this.initialTimeout = initialTimeout;
     this.expirationTime = expirationTime;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -276,9 +268,7 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
         lastStateChange,
         initialTimeout,
         expirationTime,
-        innerClosingTag,
-        tagNumber,
-        objectTypeArgument);
+        innerClosingTag);
   }
 
   public static class BACnetNotificationParametersChangeOfTimerBuilderImpl
@@ -291,8 +281,6 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
     private final BACnetContextTagUnsignedInteger initialTimeout;
     private final BACnetDateTimeEnclosed expirationTime;
     private final BACnetClosingTag innerClosingTag;
-    private final Short tagNumber;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetNotificationParametersChangeOfTimerBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
@@ -302,9 +290,7 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
         BACnetTimerTransitionTagged lastStateChange,
         BACnetContextTagUnsignedInteger initialTimeout,
         BACnetDateTimeEnclosed expirationTime,
-        BACnetClosingTag innerClosingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetClosingTag innerClosingTag) {
       this.innerOpeningTag = innerOpeningTag;
       this.newValue = newValue;
       this.statusFlags = statusFlags;
@@ -313,16 +299,10 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
       this.initialTimeout = initialTimeout;
       this.expirationTime = expirationTime;
       this.innerClosingTag = innerClosingTag;
-      this.tagNumber = tagNumber;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
     public BACnetNotificationParametersChangeOfTimer build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersChangeOfTimer bACnetNotificationParametersChangeOfTimer =
           new BACnetNotificationParametersChangeOfTimer(
               openingTag,
@@ -335,9 +315,7 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
               lastStateChange,
               initialTimeout,
               expirationTime,
-              innerClosingTag,
-              tagNumber,
-              objectTypeArgument);
+              innerClosingTag);
       return bACnetNotificationParametersChangeOfTimer;
     }
   }

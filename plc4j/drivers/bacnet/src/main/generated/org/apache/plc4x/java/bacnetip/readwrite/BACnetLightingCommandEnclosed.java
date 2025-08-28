@@ -42,19 +42,14 @@ public class BACnetLightingCommandEnclosed implements Message {
   protected final BACnetLightingCommand lightingCommand;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLightingCommandEnclosed(
       BACnetOpeningTag openingTag,
       BACnetLightingCommand lightingCommand,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.lightingCommand = lightingCommand;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -136,7 +131,7 @@ public class BACnetLightingCommandEnclosed implements Message {
     // Create the instance
     BACnetLightingCommandEnclosed _bACnetLightingCommandEnclosed;
     _bACnetLightingCommandEnclosed =
-        new BACnetLightingCommandEnclosed(openingTag, lightingCommand, closingTag, tagNumber);
+        new BACnetLightingCommandEnclosed(openingTag, lightingCommand, closingTag);
     return _bACnetLightingCommandEnclosed;
   }
 

@@ -42,20 +42,12 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisabl
   protected final BACnetTagHeader header;
   protected final BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged(
       BACnetTagHeader header,
-      BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable value,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -147,7 +139,7 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisabl
         _bACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged;
     _bACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged =
         new BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged(
-            header, value, tagNumber, tagClass);
+            header, value);
     return _bACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged;
   }
 

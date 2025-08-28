@@ -49,21 +49,13 @@ public class BACnetConstructedDataOccupancyCount extends BACnetConstructedData i
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger occupancyCount;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataOccupancyCount(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger occupancyCount,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger occupancyCount) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.occupancyCount = occupancyCount;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getOccupancyCount() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataOccupancyCount extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataOccupancyCount");
     // Create the instance
-    return new BACnetConstructedDataOccupancyCountBuilderImpl(
-        occupancyCount, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataOccupancyCountBuilderImpl(occupancyCount);
   }
 
   public static class BACnetConstructedDataOccupancyCountBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger occupancyCount;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataOccupancyCountBuilderImpl(
-        BACnetApplicationTagUnsignedInteger occupancyCount,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger occupancyCount) {
       this.occupancyCount = occupancyCount;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataOccupancyCount build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataOccupancyCount bACnetConstructedDataOccupancyCount =
           new BACnetConstructedDataOccupancyCount(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              occupancyCount,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, occupancyCount);
       return bACnetConstructedDataOccupancyCount;
     }
   }

@@ -50,21 +50,13 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger priorityForWriting;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPriorityForWriting(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger priorityForWriting,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger priorityForWriting) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.priorityForWriting = priorityForWriting;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getPriorityForWriting() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataPriorityForWriting");
     // Create the instance
-    return new BACnetConstructedDataPriorityForWritingBuilderImpl(
-        priorityForWriting, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPriorityForWritingBuilderImpl(priorityForWriting);
   }
 
   public static class BACnetConstructedDataPriorityForWritingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger priorityForWriting;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataPriorityForWritingBuilderImpl(
-        BACnetApplicationTagUnsignedInteger priorityForWriting,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger priorityForWriting) {
       this.priorityForWriting = priorityForWriting;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataPriorityForWriting build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPriorityForWriting bACnetConstructedDataPriorityForWriting =
           new BACnetConstructedDataPriorityForWriting(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              priorityForWriting,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, priorityForWriting);
       return bACnetConstructedDataPriorityForWriting;
     }
   }

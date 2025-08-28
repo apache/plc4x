@@ -43,19 +43,15 @@ public class CALDataAcknowledge extends CALData implements Message {
   protected final Parameter paramNo;
   protected final short code;
 
-  // Arguments.
-  protected final RequestContext requestContext;
-
   public CALDataAcknowledge(
+      RequestContext requestContext,
       CALCommandTypeContainer commandTypeContainer,
       CALData additionalData,
       Parameter paramNo,
-      short code,
-      RequestContext requestContext) {
-    super(commandTypeContainer, additionalData, requestContext);
+      short code) {
+    super(requestContext, commandTypeContainer, additionalData);
     this.paramNo = paramNo;
     this.code = code;
-    this.requestContext = requestContext;
   }
 
   public Parameter getParamNo() {
@@ -121,28 +117,25 @@ public class CALDataAcknowledge extends CALData implements Message {
 
     readBuffer.closeContext("CALDataAcknowledge");
     // Create the instance
-    return new CALDataAcknowledgeBuilderImpl(paramNo, code, requestContext);
+    return new CALDataAcknowledgeBuilderImpl(paramNo, code);
   }
 
   public static class CALDataAcknowledgeBuilderImpl implements CALData.CALDataBuilder {
     private final Parameter paramNo;
     private final short code;
-    private final RequestContext requestContext;
 
-    public CALDataAcknowledgeBuilderImpl(
-        Parameter paramNo, short code, RequestContext requestContext) {
+    public CALDataAcknowledgeBuilderImpl(Parameter paramNo, short code) {
       this.paramNo = paramNo;
       this.code = code;
-      this.requestContext = requestContext;
     }
 
     public CALDataAcknowledge build(
+        RequestContext requestContext,
         CALCommandTypeContainer commandTypeContainer,
-        CALData additionalData,
-        RequestContext requestContext) {
+        CALData additionalData) {
       CALDataAcknowledge cALDataAcknowledge =
           new CALDataAcknowledge(
-              commandTypeContainer, additionalData, paramNo, code, requestContext);
+              requestContext, commandTypeContainer, additionalData, paramNo, code);
       return cALDataAcknowledge;
     }
   }

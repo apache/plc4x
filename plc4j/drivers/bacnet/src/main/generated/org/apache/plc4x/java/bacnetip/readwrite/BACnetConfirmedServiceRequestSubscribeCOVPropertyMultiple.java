@@ -52,24 +52,20 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
   BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
       listOfCovSubscriptionSpecifications;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(
+      long serviceRequestLength,
       BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
       BACnetContextTagBoolean issueConfirmedNotifications,
       BACnetContextTagUnsignedInteger lifetime,
       BACnetContextTagUnsignedInteger maxNotificationDelay,
       BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
-          listOfCovSubscriptionSpecifications,
-      Long serviceRequestLength) {
+          listOfCovSubscriptionSpecifications) {
     super(serviceRequestLength);
     this.subscriberProcessIdentifier = subscriberProcessIdentifier;
     this.issueConfirmedNotifications = issueConfirmedNotifications;
     this.lifetime = lifetime;
     this.maxNotificationDelay = maxNotificationDelay;
     this.listOfCovSubscriptionSpecifications = listOfCovSubscriptionSpecifications;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagUnsignedInteger getSubscriberProcessIdentifier() {
@@ -229,8 +225,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
         issueConfirmedNotifications,
         lifetime,
         maxNotificationDelay,
-        listOfCovSubscriptionSpecifications,
-        serviceRequestLength);
+        listOfCovSubscriptionSpecifications);
   }
 
   public static class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilderImpl
@@ -242,7 +237,6 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
     private final
     BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
         listOfCovSubscriptionSpecifications;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilderImpl(
         BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
@@ -250,27 +244,25 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
         BACnetContextTagUnsignedInteger lifetime,
         BACnetContextTagUnsignedInteger maxNotificationDelay,
         BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
-            listOfCovSubscriptionSpecifications,
-        Long serviceRequestLength) {
+            listOfCovSubscriptionSpecifications) {
       this.subscriberProcessIdentifier = subscriberProcessIdentifier;
       this.issueConfirmedNotifications = issueConfirmedNotifications;
       this.lifetime = lifetime;
       this.maxNotificationDelay = maxNotificationDelay;
       this.listOfCovSubscriptionSpecifications = listOfCovSubscriptionSpecifications;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
     public BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple build(
-        Long serviceRequestLength) {
+        long serviceRequestLength) {
       BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
           bACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple =
               new BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(
+                  serviceRequestLength,
                   subscriberProcessIdentifier,
                   issueConfirmedNotifications,
                   lifetime,
                   maxNotificationDelay,
-                  listOfCovSubscriptionSpecifications,
-                  serviceRequestLength);
+                  listOfCovSubscriptionSpecifications);
       return bACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple;
     }
   }

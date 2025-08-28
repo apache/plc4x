@@ -49,21 +49,13 @@ public class BACnetConstructedDataReferencePort extends BACnetConstructedData im
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger referencePort;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataReferencePort(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger referencePort,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger referencePort) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.referencePort = referencePort;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getReferencePort() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataReferencePort extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataReferencePort");
     // Create the instance
-    return new BACnetConstructedDataReferencePortBuilderImpl(
-        referencePort, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataReferencePortBuilderImpl(referencePort);
   }
 
   public static class BACnetConstructedDataReferencePortBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger referencePort;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataReferencePortBuilderImpl(
-        BACnetApplicationTagUnsignedInteger referencePort,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger referencePort) {
       this.referencePort = referencePort;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataReferencePort build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataReferencePort bACnetConstructedDataReferencePort =
           new BACnetConstructedDataReferencePort(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              referencePort,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, referencePort);
       return bACnetConstructedDataReferencePort;
     }
   }

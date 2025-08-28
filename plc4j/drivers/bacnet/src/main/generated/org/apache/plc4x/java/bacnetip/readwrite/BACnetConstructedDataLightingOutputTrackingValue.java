@@ -50,21 +50,13 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
   // Properties.
   protected final BACnetApplicationTagReal trackingValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLightingOutputTrackingValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal trackingValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal trackingValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.trackingValue = trackingValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getTrackingValue() {
@@ -133,40 +125,24 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
 
     readBuffer.closeContext("BACnetConstructedDataLightingOutputTrackingValue");
     // Create the instance
-    return new BACnetConstructedDataLightingOutputTrackingValueBuilderImpl(
-        trackingValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLightingOutputTrackingValueBuilderImpl(trackingValue);
   }
 
   public static class BACnetConstructedDataLightingOutputTrackingValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal trackingValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLightingOutputTrackingValueBuilderImpl(
-        BACnetApplicationTagReal trackingValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagReal trackingValue) {
       this.trackingValue = trackingValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLightingOutputTrackingValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLightingOutputTrackingValue
           bACnetConstructedDataLightingOutputTrackingValue =
               new BACnetConstructedDataLightingOutputTrackingValue(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  trackingValue,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, trackingValue);
       return bACnetConstructedDataLightingOutputTrackingValue;
     }
   }

@@ -49,21 +49,13 @@ public class BACnetConstructedDataLocalDate extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagDate localDate;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLocalDate(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagDate localDate,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagDate localDate) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.localDate = localDate;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagDate getLocalDate() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataLocalDate extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataLocalDate");
     // Create the instance
-    return new BACnetConstructedDataLocalDateBuilderImpl(localDate, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLocalDateBuilderImpl(localDate);
   }
 
   public static class BACnetConstructedDataLocalDateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagDate localDate;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLocalDateBuilderImpl(
-        BACnetApplicationTagDate localDate,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLocalDateBuilderImpl(BACnetApplicationTagDate localDate) {
       this.localDate = localDate;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLocalDate build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLocalDate bACnetConstructedDataLocalDate =
-          new BACnetConstructedDataLocalDate(
-              openingTag, peekedTagHeader, closingTag, localDate, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataLocalDate(openingTag, peekedTagHeader, closingTag, localDate);
       return bACnetConstructedDataLocalDate;
     }
   }

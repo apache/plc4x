@@ -45,13 +45,9 @@ public class NLMSetMasterKey extends NLM implements Message {
   // Properties.
   protected final NLMUpdateKeyUpdateKeyEntry key;
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public NLMSetMasterKey(NLMUpdateKeyUpdateKeyEntry key, Integer apduLength) {
-    super(apduLength);
+  public NLMSetMasterKey(NLMUpdateKeyUpdateKeyEntry key) {
+    super();
     this.key = key;
-    this.apduLength = apduLength;
   }
 
   public NLMUpdateKeyUpdateKeyEntry getKey() {
@@ -100,21 +96,18 @@ public class NLMSetMasterKey extends NLM implements Message {
 
     readBuffer.closeContext("NLMSetMasterKey");
     // Create the instance
-    return new NLMSetMasterKeyBuilderImpl(key, apduLength);
+    return new NLMSetMasterKeyBuilderImpl(key);
   }
 
   public static class NLMSetMasterKeyBuilderImpl implements NLM.NLMBuilder {
     private final NLMUpdateKeyUpdateKeyEntry key;
-    private final Integer apduLength;
 
-    public NLMSetMasterKeyBuilderImpl(NLMUpdateKeyUpdateKeyEntry key, Integer apduLength) {
+    public NLMSetMasterKeyBuilderImpl(NLMUpdateKeyUpdateKeyEntry key) {
       this.key = key;
-      this.apduLength = apduLength;
     }
 
-    public NLMSetMasterKey build(Integer apduLength) {
-
-      NLMSetMasterKey nLMSetMasterKey = new NLMSetMasterKey(key, apduLength);
+    public NLMSetMasterKey build() {
+      NLMSetMasterKey nLMSetMasterKey = new NLMSetMasterKey(key);
       return nLMSetMasterKey;
     }
   }

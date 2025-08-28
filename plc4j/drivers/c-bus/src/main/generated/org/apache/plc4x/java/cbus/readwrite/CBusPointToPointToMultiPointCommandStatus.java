@@ -42,9 +42,6 @@ public class CBusPointToPointToMultiPointCommandStatus extends CBusPointToPointT
 
   // Properties.
   protected final StatusRequest statusRequest;
-
-  // Arguments.
-  protected final CBusOptions cBusOptions;
   // Reserved Fields
   private Byte reservedField0;
 
@@ -52,11 +49,9 @@ public class CBusPointToPointToMultiPointCommandStatus extends CBusPointToPointT
       BridgeAddress bridgeAddress,
       NetworkRoute networkRoute,
       byte peekedApplication,
-      StatusRequest statusRequest,
-      CBusOptions cBusOptions) {
-    super(bridgeAddress, networkRoute, peekedApplication, cBusOptions);
+      StatusRequest statusRequest) {
+    super(bridgeAddress, networkRoute, peekedApplication);
     this.statusRequest = statusRequest;
-    this.cBusOptions = cBusOptions;
   }
 
   public StatusRequest getStatusRequest() {
@@ -117,31 +112,25 @@ public class CBusPointToPointToMultiPointCommandStatus extends CBusPointToPointT
 
     readBuffer.closeContext("CBusPointToPointToMultiPointCommandStatus");
     // Create the instance
-    return new CBusPointToPointToMultiPointCommandStatusBuilderImpl(
-        statusRequest, cBusOptions, reservedField0);
+    return new CBusPointToPointToMultiPointCommandStatusBuilderImpl(statusRequest, reservedField0);
   }
 
   public static class CBusPointToPointToMultiPointCommandStatusBuilderImpl
       implements CBusPointToPointToMultiPointCommand.CBusPointToPointToMultiPointCommandBuilder {
     private final StatusRequest statusRequest;
-    private final CBusOptions cBusOptions;
     private final Byte reservedField0;
 
     public CBusPointToPointToMultiPointCommandStatusBuilderImpl(
-        StatusRequest statusRequest, CBusOptions cBusOptions, Byte reservedField0) {
+        StatusRequest statusRequest, Byte reservedField0) {
       this.statusRequest = statusRequest;
-      this.cBusOptions = cBusOptions;
       this.reservedField0 = reservedField0;
     }
 
     public CBusPointToPointToMultiPointCommandStatus build(
-        BridgeAddress bridgeAddress,
-        NetworkRoute networkRoute,
-        byte peekedApplication,
-        CBusOptions cBusOptions) {
+        BridgeAddress bridgeAddress, NetworkRoute networkRoute, byte peekedApplication) {
       CBusPointToPointToMultiPointCommandStatus cBusPointToPointToMultiPointCommandStatus =
           new CBusPointToPointToMultiPointCommandStatus(
-              bridgeAddress, networkRoute, peekedApplication, statusRequest, cBusOptions);
+              bridgeAddress, networkRoute, peekedApplication, statusRequest);
       cBusPointToPointToMultiPointCommandStatus.reservedField0 = reservedField0;
       return cBusPointToPointToMultiPointCommandStatus;
     }

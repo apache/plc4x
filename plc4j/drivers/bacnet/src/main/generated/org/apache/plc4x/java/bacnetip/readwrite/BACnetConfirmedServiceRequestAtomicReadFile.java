@@ -47,17 +47,13 @@ public class BACnetConfirmedServiceRequestAtomicReadFile extends BACnetConfirmed
   protected final BACnetApplicationTagObjectIdentifier fileIdentifier;
   protected final BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestAtomicReadFile(
+      long serviceRequestLength,
       BACnetApplicationTagObjectIdentifier fileIdentifier,
-      BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod,
-      Long serviceRequestLength) {
+      BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod) {
     super(serviceRequestLength);
     this.fileIdentifier = fileIdentifier;
     this.accessMethod = accessMethod;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetApplicationTagObjectIdentifier getFileIdentifier() {
@@ -131,30 +127,25 @@ public class BACnetConfirmedServiceRequestAtomicReadFile extends BACnetConfirmed
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestAtomicReadFile");
     // Create the instance
-    return new BACnetConfirmedServiceRequestAtomicReadFileBuilderImpl(
-        fileIdentifier, accessMethod, serviceRequestLength);
+    return new BACnetConfirmedServiceRequestAtomicReadFileBuilderImpl(fileIdentifier, accessMethod);
   }
 
   public static class BACnetConfirmedServiceRequestAtomicReadFileBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetApplicationTagObjectIdentifier fileIdentifier;
     private final BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestAtomicReadFileBuilderImpl(
         BACnetApplicationTagObjectIdentifier fileIdentifier,
-        BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod,
-        Long serviceRequestLength) {
+        BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod) {
       this.fileIdentifier = fileIdentifier;
       this.accessMethod = accessMethod;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestAtomicReadFile build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestAtomicReadFile build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestAtomicReadFile bACnetConfirmedServiceRequestAtomicReadFile =
           new BACnetConfirmedServiceRequestAtomicReadFile(
-              fileIdentifier, accessMethod, serviceRequestLength);
+              serviceRequestLength, fileIdentifier, accessMethod);
       return bACnetConfirmedServiceRequestAtomicReadFile;
     }
   }

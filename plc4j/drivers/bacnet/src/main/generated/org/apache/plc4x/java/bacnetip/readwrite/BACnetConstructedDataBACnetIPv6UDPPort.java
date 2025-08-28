@@ -50,21 +50,13 @@ public class BACnetConstructedDataBACnetIPv6UDPPort extends BACnetConstructedDat
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger ipv6UdpPort;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBACnetIPv6UDPPort(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger ipv6UdpPort,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger ipv6UdpPort) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.ipv6UdpPort = ipv6UdpPort;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getIpv6UdpPort() {
@@ -135,34 +127,23 @@ public class BACnetConstructedDataBACnetIPv6UDPPort extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataBACnetIPv6UDPPort");
     // Create the instance
-    return new BACnetConstructedDataBACnetIPv6UDPPortBuilderImpl(
-        ipv6UdpPort, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBACnetIPv6UDPPortBuilderImpl(ipv6UdpPort);
   }
 
   public static class BACnetConstructedDataBACnetIPv6UDPPortBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger ipv6UdpPort;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataBACnetIPv6UDPPortBuilderImpl(
-        BACnetApplicationTagUnsignedInteger ipv6UdpPort,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger ipv6UdpPort) {
       this.ipv6UdpPort = ipv6UdpPort;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBACnetIPv6UDPPort build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBACnetIPv6UDPPort bACnetConstructedDataBACnetIPv6UDPPort =
           new BACnetConstructedDataBACnetIPv6UDPPort(
-              openingTag, peekedTagHeader, closingTag, ipv6UdpPort, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, ipv6UdpPort);
       return bACnetConstructedDataBACnetIPv6UDPPort;
     }
   }

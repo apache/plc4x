@@ -49,21 +49,13 @@ public class BACnetConstructedDataInProgress extends BACnetConstructedData imple
   // Properties.
   protected final BACnetLightingInProgressTagged inProgress;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataInProgress(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLightingInProgressTagged inProgress,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetLightingInProgressTagged inProgress) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.inProgress = inProgress;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetLightingInProgressTagged getInProgress() {
@@ -134,34 +126,21 @@ public class BACnetConstructedDataInProgress extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataInProgress");
     // Create the instance
-    return new BACnetConstructedDataInProgressBuilderImpl(
-        inProgress, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataInProgressBuilderImpl(inProgress);
   }
 
   public static class BACnetConstructedDataInProgressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLightingInProgressTagged inProgress;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataInProgressBuilderImpl(
-        BACnetLightingInProgressTagged inProgress,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataInProgressBuilderImpl(BACnetLightingInProgressTagged inProgress) {
       this.inProgress = inProgress;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataInProgress build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataInProgress bACnetConstructedDataInProgress =
-          new BACnetConstructedDataInProgress(
-              openingTag, peekedTagHeader, closingTag, inProgress, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataInProgress(openingTag, peekedTagHeader, closingTag, inProgress);
       return bACnetConstructedDataInProgress;
     }
   }

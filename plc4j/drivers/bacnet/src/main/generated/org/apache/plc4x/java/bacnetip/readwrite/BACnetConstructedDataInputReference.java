@@ -49,21 +49,13 @@ public class BACnetConstructedDataInputReference extends BACnetConstructedData i
   // Properties.
   protected final BACnetObjectPropertyReference inputReference;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataInputReference(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetObjectPropertyReference inputReference,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetObjectPropertyReference inputReference) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.inputReference = inputReference;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetObjectPropertyReference getInputReference() {
@@ -130,39 +122,23 @@ public class BACnetConstructedDataInputReference extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataInputReference");
     // Create the instance
-    return new BACnetConstructedDataInputReferenceBuilderImpl(
-        inputReference, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataInputReferenceBuilderImpl(inputReference);
   }
 
   public static class BACnetConstructedDataInputReferenceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetObjectPropertyReference inputReference;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataInputReferenceBuilderImpl(
-        BACnetObjectPropertyReference inputReference,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetObjectPropertyReference inputReference) {
       this.inputReference = inputReference;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataInputReference build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataInputReference bACnetConstructedDataInputReference =
           new BACnetConstructedDataInputReference(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              inputReference,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, inputReference);
       return bACnetConstructedDataInputReference;
     }
   }

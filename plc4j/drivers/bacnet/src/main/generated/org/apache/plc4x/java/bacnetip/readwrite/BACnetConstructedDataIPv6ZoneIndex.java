@@ -49,21 +49,13 @@ public class BACnetConstructedDataIPv6ZoneIndex extends BACnetConstructedData im
   // Properties.
   protected final BACnetApplicationTagCharacterString ipv6ZoneIndex;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIPv6ZoneIndex(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString ipv6ZoneIndex,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString ipv6ZoneIndex) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.ipv6ZoneIndex = ipv6ZoneIndex;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getIpv6ZoneIndex() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataIPv6ZoneIndex extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataIPv6ZoneIndex");
     // Create the instance
-    return new BACnetConstructedDataIPv6ZoneIndexBuilderImpl(
-        ipv6ZoneIndex, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPv6ZoneIndexBuilderImpl(ipv6ZoneIndex);
   }
 
   public static class BACnetConstructedDataIPv6ZoneIndexBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString ipv6ZoneIndex;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIPv6ZoneIndexBuilderImpl(
-        BACnetApplicationTagCharacterString ipv6ZoneIndex,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString ipv6ZoneIndex) {
       this.ipv6ZoneIndex = ipv6ZoneIndex;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIPv6ZoneIndex build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIPv6ZoneIndex bACnetConstructedDataIPv6ZoneIndex =
           new BACnetConstructedDataIPv6ZoneIndex(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              ipv6ZoneIndex,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, ipv6ZoneIndex);
       return bACnetConstructedDataIPv6ZoneIndex;
     }
   }

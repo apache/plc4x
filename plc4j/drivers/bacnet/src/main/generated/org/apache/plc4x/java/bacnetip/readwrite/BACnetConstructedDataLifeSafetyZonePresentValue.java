@@ -50,21 +50,13 @@ public class BACnetConstructedDataLifeSafetyZonePresentValue extends BACnetConst
   // Properties.
   protected final BACnetLifeSafetyStateTagged presentValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLifeSafetyZonePresentValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLifeSafetyStateTagged presentValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetLifeSafetyStateTagged presentValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.presentValue = presentValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetLifeSafetyStateTagged getPresentValue() {
@@ -135,40 +127,24 @@ public class BACnetConstructedDataLifeSafetyZonePresentValue extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataLifeSafetyZonePresentValue");
     // Create the instance
-    return new BACnetConstructedDataLifeSafetyZonePresentValueBuilderImpl(
-        presentValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLifeSafetyZonePresentValueBuilderImpl(presentValue);
   }
 
   public static class BACnetConstructedDataLifeSafetyZonePresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLifeSafetyStateTagged presentValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLifeSafetyZonePresentValueBuilderImpl(
-        BACnetLifeSafetyStateTagged presentValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetLifeSafetyStateTagged presentValue) {
       this.presentValue = presentValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLifeSafetyZonePresentValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLifeSafetyZonePresentValue
           bACnetConstructedDataLifeSafetyZonePresentValue =
               new BACnetConstructedDataLifeSafetyZonePresentValue(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  presentValue,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, presentValue);
       return bACnetConstructedDataLifeSafetyZonePresentValue;
     }
   }

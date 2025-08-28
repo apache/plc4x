@@ -49,21 +49,13 @@ public class BACnetConstructedDataProfileLocation extends BACnetConstructedData 
   // Properties.
   protected final BACnetApplicationTagCharacterString profileLocation;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataProfileLocation(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString profileLocation,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString profileLocation) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.profileLocation = profileLocation;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getProfileLocation() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataProfileLocation extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataProfileLocation");
     // Create the instance
-    return new BACnetConstructedDataProfileLocationBuilderImpl(
-        profileLocation, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataProfileLocationBuilderImpl(profileLocation);
   }
 
   public static class BACnetConstructedDataProfileLocationBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString profileLocation;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataProfileLocationBuilderImpl(
-        BACnetApplicationTagCharacterString profileLocation,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString profileLocation) {
       this.profileLocation = profileLocation;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataProfileLocation build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataProfileLocation bACnetConstructedDataProfileLocation =
           new BACnetConstructedDataProfileLocation(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              profileLocation,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, profileLocation);
       return bACnetConstructedDataProfileLocation;
     }
   }

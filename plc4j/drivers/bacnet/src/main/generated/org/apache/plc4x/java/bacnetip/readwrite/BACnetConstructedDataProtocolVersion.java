@@ -49,21 +49,13 @@ public class BACnetConstructedDataProtocolVersion extends BACnetConstructedData 
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger protocolVersion;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataProtocolVersion(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger protocolVersion,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger protocolVersion) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.protocolVersion = protocolVersion;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getProtocolVersion() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataProtocolVersion extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataProtocolVersion");
     // Create the instance
-    return new BACnetConstructedDataProtocolVersionBuilderImpl(
-        protocolVersion, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataProtocolVersionBuilderImpl(protocolVersion);
   }
 
   public static class BACnetConstructedDataProtocolVersionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger protocolVersion;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataProtocolVersionBuilderImpl(
-        BACnetApplicationTagUnsignedInteger protocolVersion,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger protocolVersion) {
       this.protocolVersion = protocolVersion;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataProtocolVersion build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataProtocolVersion bACnetConstructedDataProtocolVersion =
           new BACnetConstructedDataProtocolVersion(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              protocolVersion,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, protocolVersion);
       return bACnetConstructedDataProtocolVersion;
     }
   }

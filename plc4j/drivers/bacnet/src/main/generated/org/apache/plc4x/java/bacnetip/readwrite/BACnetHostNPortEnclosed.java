@@ -42,19 +42,12 @@ public class BACnetHostNPortEnclosed implements Message {
   protected final BACnetHostNPort bacnetHostNPort;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetHostNPortEnclosed(
-      BACnetOpeningTag openingTag,
-      BACnetHostNPort bacnetHostNPort,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetOpeningTag openingTag, BACnetHostNPort bacnetHostNPort, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.bacnetHostNPort = bacnetHostNPort;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -135,8 +128,7 @@ public class BACnetHostNPortEnclosed implements Message {
     readBuffer.closeContext("BACnetHostNPortEnclosed");
     // Create the instance
     BACnetHostNPortEnclosed _bACnetHostNPortEnclosed;
-    _bACnetHostNPortEnclosed =
-        new BACnetHostNPortEnclosed(openingTag, bacnetHostNPort, closingTag, tagNumber);
+    _bACnetHostNPortEnclosed = new BACnetHostNPortEnclosed(openingTag, bacnetHostNPort, closingTag);
     return _bACnetHostNPortEnclosed;
   }
 

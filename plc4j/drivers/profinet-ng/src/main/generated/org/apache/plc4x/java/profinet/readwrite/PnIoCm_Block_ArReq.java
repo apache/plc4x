@@ -62,7 +62,6 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
   protected final int cmInitiatorActivityTimeoutFactor;
   protected final int cmInitiatorUdpRtPort;
   protected final String cmInitiatorStationName;
-
   // Reserved Fields
   private Integer reservedField0;
   private Byte reservedField1;

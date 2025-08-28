@@ -50,21 +50,13 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
   // Properties.
   protected final List<BACnetVTClassTagged> vtClassesSupported;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataVTClassesSupported(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetVTClassTagged> vtClassesSupported,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetVTClassTagged> vtClassesSupported) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.vtClassesSupported = vtClassesSupported;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetVTClassTagged> getVtClassesSupported() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataVTClassesSupported");
     // Create the instance
-    return new BACnetConstructedDataVTClassesSupportedBuilderImpl(
-        vtClassesSupported, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataVTClassesSupportedBuilderImpl(vtClassesSupported);
   }
 
   public static class BACnetConstructedDataVTClassesSupportedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetVTClassTagged> vtClassesSupported;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataVTClassesSupportedBuilderImpl(
-        List<BACnetVTClassTagged> vtClassesSupported,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetVTClassTagged> vtClassesSupported) {
       this.vtClassesSupported = vtClassesSupported;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataVTClassesSupported build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataVTClassesSupported bACnetConstructedDataVTClassesSupported =
           new BACnetConstructedDataVTClassesSupported(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              vtClassesSupported,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, vtClassesSupported);
       return bACnetConstructedDataVTClassesSupported;
     }
   }

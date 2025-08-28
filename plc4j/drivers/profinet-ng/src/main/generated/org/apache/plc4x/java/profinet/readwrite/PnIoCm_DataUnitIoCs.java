@@ -41,7 +41,6 @@ public class PnIoCm_DataUnitIoCs implements Message {
   protected final boolean dataState;
   protected final byte instance;
   protected final boolean extension;
-
   // Reserved Fields
   private Byte reservedField0;
 

@@ -50,23 +50,18 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
   protected final BACnetTimeStampEnclosed timestamp;
   protected final ListOfCovNotificationsList listOfCovNotifications;
 
-  // Arguments.
-  protected final Integer serviceRequestLength;
-
   public BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(
       BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
       BACnetContextTagObjectIdentifier initiatingDeviceIdentifier,
       BACnetContextTagUnsignedInteger timeRemaining,
       BACnetTimeStampEnclosed timestamp,
-      ListOfCovNotificationsList listOfCovNotifications,
-      Integer serviceRequestLength) {
-    super(serviceRequestLength);
+      ListOfCovNotificationsList listOfCovNotifications) {
+    super();
     this.subscriberProcessIdentifier = subscriberProcessIdentifier;
     this.initiatingDeviceIdentifier = initiatingDeviceIdentifier;
     this.timeRemaining = timeRemaining;
     this.timestamp = timestamp;
     this.listOfCovNotifications = listOfCovNotifications;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagUnsignedInteger getSubscriberProcessIdentifier() {
@@ -209,8 +204,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
         initiatingDeviceIdentifier,
         timeRemaining,
         timestamp,
-        listOfCovNotifications,
-        serviceRequestLength);
+        listOfCovNotifications);
   }
 
   public static class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilderImpl
@@ -220,25 +214,21 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
     private final BACnetContextTagUnsignedInteger timeRemaining;
     private final BACnetTimeStampEnclosed timestamp;
     private final ListOfCovNotificationsList listOfCovNotifications;
-    private final Integer serviceRequestLength;
 
     public BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilderImpl(
         BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
         BACnetContextTagObjectIdentifier initiatingDeviceIdentifier,
         BACnetContextTagUnsignedInteger timeRemaining,
         BACnetTimeStampEnclosed timestamp,
-        ListOfCovNotificationsList listOfCovNotifications,
-        Integer serviceRequestLength) {
+        ListOfCovNotificationsList listOfCovNotifications) {
       this.subscriberProcessIdentifier = subscriberProcessIdentifier;
       this.initiatingDeviceIdentifier = initiatingDeviceIdentifier;
       this.timeRemaining = timeRemaining;
       this.timestamp = timestamp;
       this.listOfCovNotifications = listOfCovNotifications;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple build(
-        Integer serviceRequestLength) {
+    public BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple build() {
       BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
           bACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple =
               new BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(
@@ -246,8 +236,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
                   initiatingDeviceIdentifier,
                   timeRemaining,
                   timestamp,
-                  listOfCovNotifications,
-                  serviceRequestLength);
+                  listOfCovNotifications);
       return bACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple;
     }
   }

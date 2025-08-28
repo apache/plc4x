@@ -47,19 +47,9 @@ public class BACnetConstructedDataLargeAnalogValueAll extends BACnetConstructedD
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLargeAnalogValueAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,29 +94,18 @@ public class BACnetConstructedDataLargeAnalogValueAll extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataLargeAnalogValueAll");
     // Create the instance
-    return new BACnetConstructedDataLargeAnalogValueAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLargeAnalogValueAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataLargeAnalogValueAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLargeAnalogValueAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataLargeAnalogValueAllBuilderImpl() {}
 
     public BACnetConstructedDataLargeAnalogValueAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLargeAnalogValueAll bACnetConstructedDataLargeAnalogValueAll =
-          new BACnetConstructedDataLargeAnalogValueAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataLargeAnalogValueAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataLargeAnalogValueAll;
     }
   }

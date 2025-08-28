@@ -42,19 +42,14 @@ public class BACnetEventParameterChangeOfCharacterStringListOfAlarmValues implem
   protected final List<BACnetApplicationTagCharacterString> listOfAlarmValues;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventParameterChangeOfCharacterStringListOfAlarmValues(
       BACnetOpeningTag openingTag,
       List<BACnetApplicationTagCharacterString> listOfAlarmValues,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listOfAlarmValues = listOfAlarmValues;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -150,7 +145,7 @@ public class BACnetEventParameterChangeOfCharacterStringListOfAlarmValues implem
         _bACnetEventParameterChangeOfCharacterStringListOfAlarmValues;
     _bACnetEventParameterChangeOfCharacterStringListOfAlarmValues =
         new BACnetEventParameterChangeOfCharacterStringListOfAlarmValues(
-            openingTag, listOfAlarmValues, closingTag, tagNumber);
+            openingTag, listOfAlarmValues, closingTag);
     return _bACnetEventParameterChangeOfCharacterStringListOfAlarmValues;
   }
 

@@ -42,19 +42,12 @@ public class BACnetTimeStampEnclosed implements Message {
   protected final BACnetTimeStamp timestamp;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetTimeStampEnclosed(
-      BACnetOpeningTag openingTag,
-      BACnetTimeStamp timestamp,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetOpeningTag openingTag, BACnetTimeStamp timestamp, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.timestamp = timestamp;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -134,8 +127,7 @@ public class BACnetTimeStampEnclosed implements Message {
     readBuffer.closeContext("BACnetTimeStampEnclosed");
     // Create the instance
     BACnetTimeStampEnclosed _bACnetTimeStampEnclosed;
-    _bACnetTimeStampEnclosed =
-        new BACnetTimeStampEnclosed(openingTag, timestamp, closingTag, tagNumber);
+    _bACnetTimeStampEnclosed = new BACnetTimeStampEnclosed(openingTag, timestamp, closingTag);
     return _bACnetTimeStampEnclosed;
   }
 

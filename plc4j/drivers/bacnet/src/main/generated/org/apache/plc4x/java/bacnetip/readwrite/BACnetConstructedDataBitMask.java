@@ -49,21 +49,13 @@ public class BACnetConstructedDataBitMask extends BACnetConstructedData implemen
   // Properties.
   protected final BACnetApplicationTagBitString bitString;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBitMask(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBitString bitString,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBitString bitString) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.bitString = bitString;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBitString getBitString() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataBitMask extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataBitMask");
     // Create the instance
-    return new BACnetConstructedDataBitMaskBuilderImpl(bitString, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBitMaskBuilderImpl(bitString);
   }
 
   public static class BACnetConstructedDataBitMaskBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBitString bitString;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBitMaskBuilderImpl(
-        BACnetApplicationTagBitString bitString,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataBitMaskBuilderImpl(BACnetApplicationTagBitString bitString) {
       this.bitString = bitString;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBitMask build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBitMask bACnetConstructedDataBitMask =
-          new BACnetConstructedDataBitMask(
-              openingTag, peekedTagHeader, closingTag, bitString, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataBitMask(openingTag, peekedTagHeader, closingTag, bitString);
       return bACnetConstructedDataBitMask;
     }
   }

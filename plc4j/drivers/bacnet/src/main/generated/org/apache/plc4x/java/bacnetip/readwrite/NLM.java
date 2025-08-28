@@ -40,12 +40,8 @@ public abstract class NLM implements Message {
   // Abstract accessors for discriminator values.
   public abstract Short getMessageType();
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public NLM(Integer apduLength) {
+  public NLM() {
     super();
-    this.apduLength = apduLength;
   }
 
   public boolean getIsVendorProprietaryMessage() {
@@ -163,13 +159,12 @@ public abstract class NLM implements Message {
 
     readBuffer.closeContext("NLM");
     // Create the instance
-    NLM _nLM = builder.build(apduLength);
-
+    NLM _nLM = builder.build();
     return _nLM;
   }
 
   public interface NLMBuilder {
-    NLM build(Integer apduLength);
+    NLM build();
   }
 
   @Override

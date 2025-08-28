@@ -45,14 +45,9 @@ public class BVLCReadForeignDeviceTableAck extends BVLC implements Message {
   // Properties.
   protected final List<BVLCForeignDeviceTableEntry> table;
 
-  // Arguments.
-  protected final Integer bvlcPayloadLength;
-
-  public BVLCReadForeignDeviceTableAck(
-      List<BVLCForeignDeviceTableEntry> table, Integer bvlcPayloadLength) {
+  public BVLCReadForeignDeviceTableAck(List<BVLCForeignDeviceTableEntry> table) {
     super();
     this.table = table;
-    this.bvlcPayloadLength = bvlcPayloadLength;
   }
 
   public List<BVLCForeignDeviceTableEntry> getTable() {
@@ -108,22 +103,19 @@ public class BVLCReadForeignDeviceTableAck extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCReadForeignDeviceTableAck");
     // Create the instance
-    return new BVLCReadForeignDeviceTableAckBuilderImpl(table, bvlcPayloadLength);
+    return new BVLCReadForeignDeviceTableAckBuilderImpl(table);
   }
 
   public static class BVLCReadForeignDeviceTableAckBuilderImpl implements BVLC.BVLCBuilder {
     private final List<BVLCForeignDeviceTableEntry> table;
-    private final Integer bvlcPayloadLength;
 
-    public BVLCReadForeignDeviceTableAckBuilderImpl(
-        List<BVLCForeignDeviceTableEntry> table, Integer bvlcPayloadLength) {
+    public BVLCReadForeignDeviceTableAckBuilderImpl(List<BVLCForeignDeviceTableEntry> table) {
       this.table = table;
-      this.bvlcPayloadLength = bvlcPayloadLength;
     }
 
     public BVLCReadForeignDeviceTableAck build() {
       BVLCReadForeignDeviceTableAck bVLCReadForeignDeviceTableAck =
-          new BVLCReadForeignDeviceTableAck(table, bvlcPayloadLength);
+          new BVLCReadForeignDeviceTableAck(table);
       return bVLCReadForeignDeviceTableAck;
     }
   }

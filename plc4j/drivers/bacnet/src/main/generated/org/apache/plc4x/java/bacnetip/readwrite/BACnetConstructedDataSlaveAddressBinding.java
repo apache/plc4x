@@ -50,21 +50,13 @@ public class BACnetConstructedDataSlaveAddressBinding extends BACnetConstructedD
   // Properties.
   protected final List<BACnetAddressBinding> slaveAddressBinding;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSlaveAddressBinding(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetAddressBinding> slaveAddressBinding,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetAddressBinding> slaveAddressBinding) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.slaveAddressBinding = slaveAddressBinding;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetAddressBinding> getSlaveAddressBinding() {
@@ -127,39 +119,23 @@ public class BACnetConstructedDataSlaveAddressBinding extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataSlaveAddressBinding");
     // Create the instance
-    return new BACnetConstructedDataSlaveAddressBindingBuilderImpl(
-        slaveAddressBinding, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataSlaveAddressBindingBuilderImpl(slaveAddressBinding);
   }
 
   public static class BACnetConstructedDataSlaveAddressBindingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAddressBinding> slaveAddressBinding;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSlaveAddressBindingBuilderImpl(
-        List<BACnetAddressBinding> slaveAddressBinding,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetAddressBinding> slaveAddressBinding) {
       this.slaveAddressBinding = slaveAddressBinding;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSlaveAddressBinding build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSlaveAddressBinding bACnetConstructedDataSlaveAddressBinding =
           new BACnetConstructedDataSlaveAddressBinding(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              slaveAddressBinding,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, slaveAddressBinding);
       return bACnetConstructedDataSlaveAddressBinding;
     }
   }

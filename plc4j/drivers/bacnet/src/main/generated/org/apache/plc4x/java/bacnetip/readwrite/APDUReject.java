@@ -45,18 +45,13 @@ public class APDUReject extends APDU implements Message {
   // Properties.
   protected final short originalInvokeId;
   protected final BACnetRejectReasonTagged rejectReason;
-
-  // Arguments.
-  protected final Integer apduLength;
   // Reserved Fields
   private Byte reservedField0;
 
-  public APDUReject(
-      short originalInvokeId, BACnetRejectReasonTagged rejectReason, Integer apduLength) {
-    super(apduLength);
+  public APDUReject(short originalInvokeId, BACnetRejectReasonTagged rejectReason) {
+    super();
     this.originalInvokeId = originalInvokeId;
     this.rejectReason = rejectReason;
-    this.apduLength = apduLength;
   }
 
   public short getOriginalInvokeId() {
@@ -130,29 +125,23 @@ public class APDUReject extends APDU implements Message {
 
     readBuffer.closeContext("APDUReject");
     // Create the instance
-    return new APDURejectBuilderImpl(originalInvokeId, rejectReason, apduLength, reservedField0);
+    return new APDURejectBuilderImpl(originalInvokeId, rejectReason, reservedField0);
   }
 
   public static class APDURejectBuilderImpl implements APDU.APDUBuilder {
     private final short originalInvokeId;
     private final BACnetRejectReasonTagged rejectReason;
-    private final Integer apduLength;
     private final Byte reservedField0;
 
     public APDURejectBuilderImpl(
-        short originalInvokeId,
-        BACnetRejectReasonTagged rejectReason,
-        Integer apduLength,
-        Byte reservedField0) {
+        short originalInvokeId, BACnetRejectReasonTagged rejectReason, Byte reservedField0) {
       this.originalInvokeId = originalInvokeId;
       this.rejectReason = rejectReason;
-      this.apduLength = apduLength;
       this.reservedField0 = reservedField0;
     }
 
-    public APDUReject build(Integer apduLength) {
-
-      APDUReject aPDUReject = new APDUReject(originalInvokeId, rejectReason, apduLength);
+    public APDUReject build() {
+      APDUReject aPDUReject = new APDUReject(originalInvokeId, rejectReason);
       aPDUReject.reservedField0 = reservedField0;
       return aPDUReject;
     }

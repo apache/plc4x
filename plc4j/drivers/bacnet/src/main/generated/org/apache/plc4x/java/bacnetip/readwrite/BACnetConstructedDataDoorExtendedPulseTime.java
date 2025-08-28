@@ -50,21 +50,13 @@ public class BACnetConstructedDataDoorExtendedPulseTime extends BACnetConstructe
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger doorExtendedPulseTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDoorExtendedPulseTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger doorExtendedPulseTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger doorExtendedPulseTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.doorExtendedPulseTime = doorExtendedPulseTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getDoorExtendedPulseTime() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataDoorExtendedPulseTime extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataDoorExtendedPulseTime");
     // Create the instance
-    return new BACnetConstructedDataDoorExtendedPulseTimeBuilderImpl(
-        doorExtendedPulseTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDoorExtendedPulseTimeBuilderImpl(doorExtendedPulseTime);
   }
 
   public static class BACnetConstructedDataDoorExtendedPulseTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger doorExtendedPulseTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDoorExtendedPulseTimeBuilderImpl(
-        BACnetApplicationTagUnsignedInteger doorExtendedPulseTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger doorExtendedPulseTime) {
       this.doorExtendedPulseTime = doorExtendedPulseTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDoorExtendedPulseTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDoorExtendedPulseTime bACnetConstructedDataDoorExtendedPulseTime =
           new BACnetConstructedDataDoorExtendedPulseTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              doorExtendedPulseTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, doorExtendedPulseTime);
       return bACnetConstructedDataDoorExtendedPulseTime;
     }
   }

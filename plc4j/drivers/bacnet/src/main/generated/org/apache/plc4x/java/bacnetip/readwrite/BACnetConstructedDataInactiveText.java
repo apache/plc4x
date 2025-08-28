@@ -49,21 +49,13 @@ public class BACnetConstructedDataInactiveText extends BACnetConstructedData imp
   // Properties.
   protected final BACnetApplicationTagCharacterString inactiveText;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataInactiveText(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString inactiveText,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString inactiveText) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.inactiveText = inactiveText;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getInactiveText() {
@@ -134,34 +126,23 @@ public class BACnetConstructedDataInactiveText extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataInactiveText");
     // Create the instance
-    return new BACnetConstructedDataInactiveTextBuilderImpl(
-        inactiveText, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataInactiveTextBuilderImpl(inactiveText);
   }
 
   public static class BACnetConstructedDataInactiveTextBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString inactiveText;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataInactiveTextBuilderImpl(
-        BACnetApplicationTagCharacterString inactiveText,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString inactiveText) {
       this.inactiveText = inactiveText;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataInactiveText build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataInactiveText bACnetConstructedDataInactiveText =
           new BACnetConstructedDataInactiveText(
-              openingTag, peekedTagHeader, closingTag, inactiveText, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, inactiveText);
       return bACnetConstructedDataInactiveText;
     }
   }

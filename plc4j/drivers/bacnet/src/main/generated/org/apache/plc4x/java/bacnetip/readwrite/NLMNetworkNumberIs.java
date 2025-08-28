@@ -45,18 +45,13 @@ public class NLMNetworkNumberIs extends NLM implements Message {
   // Properties.
   protected final int networkNumber;
   protected final boolean networkNumberConfigured;
-
-  // Arguments.
-  protected final Integer apduLength;
   // Reserved Fields
   private Byte reservedField0;
 
-  public NLMNetworkNumberIs(
-      int networkNumber, boolean networkNumberConfigured, Integer apduLength) {
-    super(apduLength);
+  public NLMNetworkNumberIs(int networkNumber, boolean networkNumberConfigured) {
+    super();
     this.networkNumber = networkNumber;
     this.networkNumberConfigured = networkNumberConfigured;
-    this.apduLength = apduLength;
   }
 
   public int getNetworkNumber() {
@@ -127,30 +122,24 @@ public class NLMNetworkNumberIs extends NLM implements Message {
     readBuffer.closeContext("NLMNetworkNumberIs");
     // Create the instance
     return new NLMNetworkNumberIsBuilderImpl(
-        networkNumber, networkNumberConfigured, apduLength, reservedField0);
+        networkNumber, networkNumberConfigured, reservedField0);
   }
 
   public static class NLMNetworkNumberIsBuilderImpl implements NLM.NLMBuilder {
     private final int networkNumber;
     private final boolean networkNumberConfigured;
-    private final Integer apduLength;
     private final Byte reservedField0;
 
     public NLMNetworkNumberIsBuilderImpl(
-        int networkNumber,
-        boolean networkNumberConfigured,
-        Integer apduLength,
-        Byte reservedField0) {
+        int networkNumber, boolean networkNumberConfigured, Byte reservedField0) {
       this.networkNumber = networkNumber;
       this.networkNumberConfigured = networkNumberConfigured;
-      this.apduLength = apduLength;
       this.reservedField0 = reservedField0;
     }
 
-    public NLMNetworkNumberIs build(Integer apduLength) {
-
+    public NLMNetworkNumberIs build() {
       NLMNetworkNumberIs nLMNetworkNumberIs =
-          new NLMNetworkNumberIs(networkNumber, networkNumberConfigured, apduLength);
+          new NLMNetworkNumberIs(networkNumber, networkNumberConfigured);
       nLMNetworkNumberIs.reservedField0 = reservedField0;
       return nLMNetworkNumberIs;
     }

@@ -49,21 +49,13 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
   // Properties.
   protected final BACnetApplicationTagObjectIdentifier elevatorGroup;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataElevatorGroup(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagObjectIdentifier elevatorGroup,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagObjectIdentifier elevatorGroup) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.elevatorGroup = elevatorGroup;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagObjectIdentifier getElevatorGroup() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataElevatorGroup");
     // Create the instance
-    return new BACnetConstructedDataElevatorGroupBuilderImpl(
-        elevatorGroup, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataElevatorGroupBuilderImpl(elevatorGroup);
   }
 
   public static class BACnetConstructedDataElevatorGroupBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagObjectIdentifier elevatorGroup;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataElevatorGroupBuilderImpl(
-        BACnetApplicationTagObjectIdentifier elevatorGroup,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagObjectIdentifier elevatorGroup) {
       this.elevatorGroup = elevatorGroup;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataElevatorGroup build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataElevatorGroup bACnetConstructedDataElevatorGroup =
           new BACnetConstructedDataElevatorGroup(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              elevatorGroup,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, elevatorGroup);
       return bACnetConstructedDataElevatorGroup;
     }
   }

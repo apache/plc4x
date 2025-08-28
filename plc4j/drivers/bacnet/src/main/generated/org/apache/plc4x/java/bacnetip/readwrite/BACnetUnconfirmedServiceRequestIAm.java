@@ -49,21 +49,16 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
   protected final BACnetSegmentationTagged segmentationSupported;
   protected final BACnetVendorIdTagged vendorId;
 
-  // Arguments.
-  protected final Integer serviceRequestLength;
-
   public BACnetUnconfirmedServiceRequestIAm(
       BACnetApplicationTagObjectIdentifier deviceIdentifier,
       BACnetApplicationTagUnsignedInteger maximumApduLengthAcceptedLength,
       BACnetSegmentationTagged segmentationSupported,
-      BACnetVendorIdTagged vendorId,
-      Integer serviceRequestLength) {
-    super(serviceRequestLength);
+      BACnetVendorIdTagged vendorId) {
+    super();
     this.deviceIdentifier = deviceIdentifier;
     this.maximumApduLengthAcceptedLength = maximumApduLengthAcceptedLength;
     this.segmentationSupported = segmentationSupported;
     this.vendorId = vendorId;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetApplicationTagObjectIdentifier getDeviceIdentifier() {
@@ -179,11 +174,7 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestIAm");
     // Create the instance
     return new BACnetUnconfirmedServiceRequestIAmBuilderImpl(
-        deviceIdentifier,
-        maximumApduLengthAcceptedLength,
-        segmentationSupported,
-        vendorId,
-        serviceRequestLength);
+        deviceIdentifier, maximumApduLengthAcceptedLength, segmentationSupported, vendorId);
   }
 
   public static class BACnetUnconfirmedServiceRequestIAmBuilderImpl
@@ -192,30 +183,22 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
     private final BACnetApplicationTagUnsignedInteger maximumApduLengthAcceptedLength;
     private final BACnetSegmentationTagged segmentationSupported;
     private final BACnetVendorIdTagged vendorId;
-    private final Integer serviceRequestLength;
 
     public BACnetUnconfirmedServiceRequestIAmBuilderImpl(
         BACnetApplicationTagObjectIdentifier deviceIdentifier,
         BACnetApplicationTagUnsignedInteger maximumApduLengthAcceptedLength,
         BACnetSegmentationTagged segmentationSupported,
-        BACnetVendorIdTagged vendorId,
-        Integer serviceRequestLength) {
+        BACnetVendorIdTagged vendorId) {
       this.deviceIdentifier = deviceIdentifier;
       this.maximumApduLengthAcceptedLength = maximumApduLengthAcceptedLength;
       this.segmentationSupported = segmentationSupported;
       this.vendorId = vendorId;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetUnconfirmedServiceRequestIAm build(Integer serviceRequestLength) {
-
+    public BACnetUnconfirmedServiceRequestIAm build() {
       BACnetUnconfirmedServiceRequestIAm bACnetUnconfirmedServiceRequestIAm =
           new BACnetUnconfirmedServiceRequestIAm(
-              deviceIdentifier,
-              maximumApduLengthAcceptedLength,
-              segmentationSupported,
-              vendorId,
-              serviceRequestLength);
+              deviceIdentifier, maximumApduLengthAcceptedLength, segmentationSupported, vendorId);
       return bACnetUnconfirmedServiceRequestIAm;
     }
   }

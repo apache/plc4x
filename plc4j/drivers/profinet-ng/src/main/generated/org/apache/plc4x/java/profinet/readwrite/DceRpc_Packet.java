@@ -66,7 +66,6 @@ public class DceRpc_Packet implements Message {
   protected final DceRpc_Operation operation;
   protected final short serialLow;
   protected final PnIoCm_Packet payload;
-
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;

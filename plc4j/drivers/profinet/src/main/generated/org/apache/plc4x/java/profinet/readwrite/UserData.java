@@ -40,13 +40,9 @@ public class UserData implements Message {
   // Properties.
   protected final byte[] data;
 
-  // Arguments.
-  protected final Long recordDataLength;
-
-  public UserData(byte[] data, Long recordDataLength) {
+  public UserData(byte[] data) {
     super();
     this.data = data;
-    this.recordDataLength = recordDataLength;
   }
 
   public byte[] getData() {
@@ -102,7 +98,7 @@ public class UserData implements Message {
     readBuffer.closeContext("UserData");
     // Create the instance
     UserData _userData;
-    _userData = new UserData(data, recordDataLength);
+    _userData = new UserData(data);
     return _userData;
   }
 

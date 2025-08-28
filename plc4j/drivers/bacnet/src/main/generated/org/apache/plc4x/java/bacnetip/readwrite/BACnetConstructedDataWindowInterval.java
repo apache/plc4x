@@ -49,21 +49,13 @@ public class BACnetConstructedDataWindowInterval extends BACnetConstructedData i
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger windowInterval;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataWindowInterval(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger windowInterval,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger windowInterval) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.windowInterval = windowInterval;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getWindowInterval() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataWindowInterval extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataWindowInterval");
     // Create the instance
-    return new BACnetConstructedDataWindowIntervalBuilderImpl(
-        windowInterval, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataWindowIntervalBuilderImpl(windowInterval);
   }
 
   public static class BACnetConstructedDataWindowIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger windowInterval;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataWindowIntervalBuilderImpl(
-        BACnetApplicationTagUnsignedInteger windowInterval,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger windowInterval) {
       this.windowInterval = windowInterval;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataWindowInterval build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataWindowInterval bACnetConstructedDataWindowInterval =
           new BACnetConstructedDataWindowInterval(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              windowInterval,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, windowInterval);
       return bACnetConstructedDataWindowInterval;
     }
   }

@@ -44,22 +44,12 @@ public abstract class BACnetNotificationParameters implements Message {
   protected final BACnetTagHeader peekedTagHeader;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetNotificationParameters(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.peekedTagHeader = peekedTagHeader;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -257,17 +247,13 @@ public abstract class BACnetNotificationParameters implements Message {
     readBuffer.closeContext("BACnetNotificationParameters");
     // Create the instance
     BACnetNotificationParameters _bACnetNotificationParameters =
-        builder.build(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument);
+        builder.build(openingTag, peekedTagHeader, closingTag);
     return _bACnetNotificationParameters;
   }
 
   public interface BACnetNotificationParametersBuilder {
     BACnetNotificationParameters build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument);
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag);
   }
 
   @Override

@@ -41,17 +41,10 @@ public class BACnetBackupStateTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetBackupState value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetBackupStateTagged(
-      BACnetTagHeader header, BACnetBackupState value, Short tagNumber, TagClass tagClass) {
+  public BACnetBackupStateTagged(BACnetTagHeader header, BACnetBackupState value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -133,7 +126,7 @@ public class BACnetBackupStateTagged implements Message {
     readBuffer.closeContext("BACnetBackupStateTagged");
     // Create the instance
     BACnetBackupStateTagged _bACnetBackupStateTagged;
-    _bACnetBackupStateTagged = new BACnetBackupStateTagged(header, value, tagNumber, tagClass);
+    _bACnetBackupStateTagged = new BACnetBackupStateTagged(header, value);
     return _bACnetBackupStateTagged;
   }
 

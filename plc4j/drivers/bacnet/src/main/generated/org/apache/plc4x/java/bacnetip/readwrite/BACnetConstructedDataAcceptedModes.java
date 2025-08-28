@@ -49,21 +49,13 @@ public class BACnetConstructedDataAcceptedModes extends BACnetConstructedData im
   // Properties.
   protected final List<BACnetLifeSafetyModeTagged> acceptedModes;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAcceptedModes(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetLifeSafetyModeTagged> acceptedModes,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetLifeSafetyModeTagged> acceptedModes) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.acceptedModes = acceptedModes;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetLifeSafetyModeTagged> getAcceptedModes() {
@@ -130,39 +122,23 @@ public class BACnetConstructedDataAcceptedModes extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataAcceptedModes");
     // Create the instance
-    return new BACnetConstructedDataAcceptedModesBuilderImpl(
-        acceptedModes, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAcceptedModesBuilderImpl(acceptedModes);
   }
 
   public static class BACnetConstructedDataAcceptedModesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetLifeSafetyModeTagged> acceptedModes;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAcceptedModesBuilderImpl(
-        List<BACnetLifeSafetyModeTagged> acceptedModes,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetLifeSafetyModeTagged> acceptedModes) {
       this.acceptedModes = acceptedModes;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAcceptedModes build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAcceptedModes bACnetConstructedDataAcceptedModes =
           new BACnetConstructedDataAcceptedModes(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              acceptedModes,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, acceptedModes);
       return bACnetConstructedDataAcceptedModes;
     }
   }

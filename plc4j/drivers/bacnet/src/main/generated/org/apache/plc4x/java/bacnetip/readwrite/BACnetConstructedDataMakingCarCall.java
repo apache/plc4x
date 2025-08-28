@@ -51,23 +51,15 @@ public class BACnetConstructedDataMakingCarCall extends BACnetConstructedData im
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetApplicationTagUnsignedInteger> makingCarCall;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMakingCarCall(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetApplicationTagUnsignedInteger> makingCarCall,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetApplicationTagUnsignedInteger> makingCarCall) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.makingCarCall = makingCarCall;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -96,11 +88,7 @@ public class BACnetConstructedDataMakingCarCall extends BACnetConstructedData im
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (makingCarCall)
     writeComplexTypeArrayField("makingCarCall", makingCarCall, writeBuffer);
@@ -173,43 +161,26 @@ public class BACnetConstructedDataMakingCarCall extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataMakingCarCall");
     // Create the instance
-    return new BACnetConstructedDataMakingCarCallBuilderImpl(
-        numberOfDataElements, makingCarCall, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMakingCarCallBuilderImpl(numberOfDataElements, makingCarCall);
   }
 
   public static class BACnetConstructedDataMakingCarCallBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagUnsignedInteger> makingCarCall;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMakingCarCallBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetApplicationTagUnsignedInteger> makingCarCall,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetApplicationTagUnsignedInteger> makingCarCall) {
       this.numberOfDataElements = numberOfDataElements;
       this.makingCarCall = makingCarCall;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMakingCarCall build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMakingCarCall bACnetConstructedDataMakingCarCall =
           new BACnetConstructedDataMakingCarCall(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              makingCarCall,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, makingCarCall);
       return bACnetConstructedDataMakingCarCall;
     }
   }

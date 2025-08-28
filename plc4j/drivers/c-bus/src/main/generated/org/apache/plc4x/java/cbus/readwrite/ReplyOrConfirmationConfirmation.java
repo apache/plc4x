@@ -43,21 +43,11 @@ public class ReplyOrConfirmationConfirmation extends ReplyOrConfirmation impleme
   protected final Confirmation confirmation;
   protected final ReplyOrConfirmation embeddedReply;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-  protected final RequestContext requestContext;
-
   public ReplyOrConfirmationConfirmation(
-      byte peekedByte,
-      Confirmation confirmation,
-      ReplyOrConfirmation embeddedReply,
-      CBusOptions cBusOptions,
-      RequestContext requestContext) {
-    super(peekedByte, cBusOptions, requestContext);
+      byte peekedByte, Confirmation confirmation, ReplyOrConfirmation embeddedReply) {
+    super(peekedByte);
     this.confirmation = confirmation;
     this.embeddedReply = embeddedReply;
-    this.cBusOptions = cBusOptions;
-    this.requestContext = requestContext;
   }
 
   public Confirmation getConfirmation() {
@@ -128,33 +118,23 @@ public class ReplyOrConfirmationConfirmation extends ReplyOrConfirmation impleme
 
     readBuffer.closeContext("ReplyOrConfirmationConfirmation");
     // Create the instance
-    return new ReplyOrConfirmationConfirmationBuilderImpl(
-        confirmation, embeddedReply, cBusOptions, requestContext);
+    return new ReplyOrConfirmationConfirmationBuilderImpl(confirmation, embeddedReply);
   }
 
   public static class ReplyOrConfirmationConfirmationBuilderImpl
       implements ReplyOrConfirmation.ReplyOrConfirmationBuilder {
     private final Confirmation confirmation;
     private final ReplyOrConfirmation embeddedReply;
-    private final CBusOptions cBusOptions;
-    private final RequestContext requestContext;
 
     public ReplyOrConfirmationConfirmationBuilderImpl(
-        Confirmation confirmation,
-        ReplyOrConfirmation embeddedReply,
-        CBusOptions cBusOptions,
-        RequestContext requestContext) {
+        Confirmation confirmation, ReplyOrConfirmation embeddedReply) {
       this.confirmation = confirmation;
       this.embeddedReply = embeddedReply;
-      this.cBusOptions = cBusOptions;
-      this.requestContext = requestContext;
     }
 
-    public ReplyOrConfirmationConfirmation build(
-        byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext) {
+    public ReplyOrConfirmationConfirmation build(byte peekedByte) {
       ReplyOrConfirmationConfirmation replyOrConfirmationConfirmation =
-          new ReplyOrConfirmationConfirmation(
-              peekedByte, confirmation, embeddedReply, cBusOptions, requestContext);
+          new ReplyOrConfirmationConfirmation(peekedByte, confirmation, embeddedReply);
       return replyOrConfirmationConfirmation;
     }
   }

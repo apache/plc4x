@@ -119,7 +119,8 @@
             [optional Alpha         alpha                                   ]
         ]
         ['REQUEST_COMMAND' *Command
-            [const    byte  initiator 0x5C                                  ] // 0x5C == "\"
+            [state                 cBusOptions                              ]
+            [const    byte         initiator   0x5C                         ] // 0x5C == "\"
             [manual   CBusCommand
                               cbusCommand
                         'STATIC_CALL("readCBusCommand", readBuffer, cBusOptions, cBusOptions.srchk)'
@@ -580,6 +581,7 @@
 ]
 
 [type CALData(RequestContext requestContext)
+    [state                           requestContext                                         ]
     //TODO: golang doesn't like checking for null so we use that static call to check that the enum is known
     [validation 'STATIC_CALL("knowsCALCommandTypeContainer", readBuffer)' "no command type could be found" shouldFail=false]
     [simple  CALCommandTypeContainer commandTypeContainer                                   ]
@@ -1049,7 +1051,8 @@
 ]
 
 [type CustomManufacturer(uint 8 numBytes) // Note 7
-    [simple vstring '8 * numBytes' customString        ]
+    [state                         numBytes     ]
+    [simple vstring '8 * numBytes' customString ]
 ]
 
 [type SerialNumber // Note 8
@@ -1060,7 +1063,8 @@
 ]
 
 [type CustomTypes(uint 8 numBytes) // Note 9
-    [simple vstring '8 * numBytes' customString        ]
+    [state                         numBytes     ]
+    [simple vstring '8 * numBytes' customString ]
 ]
 
 [enum uint 8 Attribute(uint 8 bytesReturned)
@@ -1495,6 +1499,7 @@
             [simple ParameterChange parameterChange                         ]
         ]
         [*      *EncodedReply
+            [state            cBusOptions                                   ]
             [manual   EncodedReply
                               encodedReply
                                     'STATIC_CALL("readEncodedReply", readBuffer, cBusOptions, requestContext, cBusOptions.srchk)'
@@ -1514,7 +1519,8 @@
 ]
 
 [type EncodedReply(CBusOptions cBusOptions, RequestContext requestContext)
-    [peek    byte peekedByte                                                        ]
+    [state                  requestContext                     ]
+    [peek    byte           peekedByte                         ]
     // TODO: if we reliable can detect this with the mask we don't need the request context anymore
     [virtual bit  isMonitoredSAL            '((peekedByte & 0x3F) == 0x05 || peekedByte == 0x00 || (peekedByte & 0xF8) == 0x00) && !requestContext.sendIdentifyRequestBefore'] // First check if it is in long mode, second for short mode, third for bridged short mode
     [typeSwitch isMonitoredSAL

@@ -49,21 +49,17 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
   protected final BACnetContextTagBoolean issueConfirmed;
   protected final BACnetContextTagUnsignedInteger lifetimeInSeconds;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestSubscribeCOV(
+      long serviceRequestLength,
       BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
       BACnetContextTagObjectIdentifier monitoredObjectIdentifier,
       BACnetContextTagBoolean issueConfirmed,
-      BACnetContextTagUnsignedInteger lifetimeInSeconds,
-      Long serviceRequestLength) {
+      BACnetContextTagUnsignedInteger lifetimeInSeconds) {
     super(serviceRequestLength);
     this.subscriberProcessIdentifier = subscriberProcessIdentifier;
     this.monitoredObjectIdentifier = monitoredObjectIdentifier;
     this.issueConfirmed = issueConfirmed;
     this.lifetimeInSeconds = lifetimeInSeconds;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagUnsignedInteger getSubscriberProcessIdentifier() {
@@ -192,11 +188,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
     readBuffer.closeContext("BACnetConfirmedServiceRequestSubscribeCOV");
     // Create the instance
     return new BACnetConfirmedServiceRequestSubscribeCOVBuilderImpl(
-        subscriberProcessIdentifier,
-        monitoredObjectIdentifier,
-        issueConfirmed,
-        lifetimeInSeconds,
-        serviceRequestLength);
+        subscriberProcessIdentifier, monitoredObjectIdentifier, issueConfirmed, lifetimeInSeconds);
   }
 
   public static class BACnetConfirmedServiceRequestSubscribeCOVBuilderImpl
@@ -205,30 +197,26 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
     private final BACnetContextTagObjectIdentifier monitoredObjectIdentifier;
     private final BACnetContextTagBoolean issueConfirmed;
     private final BACnetContextTagUnsignedInteger lifetimeInSeconds;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestSubscribeCOVBuilderImpl(
         BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
         BACnetContextTagObjectIdentifier monitoredObjectIdentifier,
         BACnetContextTagBoolean issueConfirmed,
-        BACnetContextTagUnsignedInteger lifetimeInSeconds,
-        Long serviceRequestLength) {
+        BACnetContextTagUnsignedInteger lifetimeInSeconds) {
       this.subscriberProcessIdentifier = subscriberProcessIdentifier;
       this.monitoredObjectIdentifier = monitoredObjectIdentifier;
       this.issueConfirmed = issueConfirmed;
       this.lifetimeInSeconds = lifetimeInSeconds;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestSubscribeCOV build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestSubscribeCOV build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestSubscribeCOV bACnetConfirmedServiceRequestSubscribeCOV =
           new BACnetConfirmedServiceRequestSubscribeCOV(
+              serviceRequestLength,
               subscriberProcessIdentifier,
               monitoredObjectIdentifier,
               issueConfirmed,
-              lifetimeInSeconds,
-              serviceRequestLength);
+              lifetimeInSeconds);
       return bACnetConfirmedServiceRequestSubscribeCOV;
     }
   }

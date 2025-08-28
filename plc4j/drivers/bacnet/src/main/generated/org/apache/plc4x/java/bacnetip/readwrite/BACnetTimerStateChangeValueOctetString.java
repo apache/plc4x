@@ -43,16 +43,10 @@ public class BACnetTimerStateChangeValueOctetString extends BACnetTimerStateChan
   // Properties.
   protected final BACnetApplicationTagOctetString octetStringValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetTimerStateChangeValueOctetString(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagOctetString octetStringValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagOctetString octetStringValue) {
+    super(peekedTagHeader);
     this.octetStringValue = octetStringValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagOctetString getOctetStringValue() {
@@ -105,26 +99,21 @@ public class BACnetTimerStateChangeValueOctetString extends BACnetTimerStateChan
 
     readBuffer.closeContext("BACnetTimerStateChangeValueOctetString");
     // Create the instance
-    return new BACnetTimerStateChangeValueOctetStringBuilderImpl(
-        octetStringValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueOctetStringBuilderImpl(octetStringValue);
   }
 
   public static class BACnetTimerStateChangeValueOctetStringBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagOctetString octetStringValue;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetTimerStateChangeValueOctetStringBuilderImpl(
-        BACnetApplicationTagOctetString octetStringValue, BACnetObjectType objectTypeArgument) {
+        BACnetApplicationTagOctetString octetStringValue) {
       this.octetStringValue = octetStringValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetTimerStateChangeValueOctetString build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueOctetString build(BACnetTagHeader peekedTagHeader) {
       BACnetTimerStateChangeValueOctetString bACnetTimerStateChangeValueOctetString =
-          new BACnetTimerStateChangeValueOctetString(
-              peekedTagHeader, octetStringValue, objectTypeArgument);
+          new BACnetTimerStateChangeValueOctetString(peekedTagHeader, octetStringValue);
       return bACnetTimerStateChangeValueOctetString;
     }
   }

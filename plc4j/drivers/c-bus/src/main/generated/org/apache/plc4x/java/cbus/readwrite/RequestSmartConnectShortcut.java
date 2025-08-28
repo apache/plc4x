@@ -46,9 +46,6 @@ public class RequestSmartConnectShortcut extends Request implements Message {
   protected final RequestType pipePeek;
   protected final Byte secondPipe;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
   public RequestSmartConnectShortcut(
       RequestType peekedByte,
       RequestType startingCR,
@@ -56,12 +53,10 @@ public class RequestSmartConnectShortcut extends Request implements Message {
       RequestType secondPeek,
       RequestTermination termination,
       RequestType pipePeek,
-      Byte secondPipe,
-      CBusOptions cBusOptions) {
-    super(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions);
+      Byte secondPipe) {
+    super(peekedByte, startingCR, resetMode, secondPeek, termination);
     this.pipePeek = pipePeek;
     this.secondPipe = secondPipe;
-    this.cBusOptions = cBusOptions;
   }
 
   public RequestType getPipePeek() {
@@ -86,11 +81,7 @@ public class RequestSmartConnectShortcut extends Request implements Message {
     writeConstField("pipe", PIPE, writeByte(writeBuffer, 8));
 
     // Optional Field (secondPipe) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "secondPipe",
-        secondPipe,
-        writeByte(writeBuffer, 8),
-        (getPipePeek()) == (RequestType.SMART_CONNECT_SHORTCUT));
+    writeOptionalField("secondPipe", secondPipe, writeByte(writeBuffer, 8));
 
     writeBuffer.popContext("RequestSmartConnectShortcut");
   }
@@ -137,19 +128,16 @@ public class RequestSmartConnectShortcut extends Request implements Message {
 
     readBuffer.closeContext("RequestSmartConnectShortcut");
     // Create the instance
-    return new RequestSmartConnectShortcutBuilderImpl(pipePeek, secondPipe, cBusOptions);
+    return new RequestSmartConnectShortcutBuilderImpl(pipePeek, secondPipe);
   }
 
   public static class RequestSmartConnectShortcutBuilderImpl implements Request.RequestBuilder {
     private final RequestType pipePeek;
     private final Byte secondPipe;
-    private final CBusOptions cBusOptions;
 
-    public RequestSmartConnectShortcutBuilderImpl(
-        RequestType pipePeek, Byte secondPipe, CBusOptions cBusOptions) {
+    public RequestSmartConnectShortcutBuilderImpl(RequestType pipePeek, Byte secondPipe) {
       this.pipePeek = pipePeek;
       this.secondPipe = secondPipe;
-      this.cBusOptions = cBusOptions;
     }
 
     public RequestSmartConnectShortcut build(
@@ -157,18 +145,10 @@ public class RequestSmartConnectShortcut extends Request implements Message {
         RequestType startingCR,
         RequestType resetMode,
         RequestType secondPeek,
-        RequestTermination termination,
-        CBusOptions cBusOptions) {
+        RequestTermination termination) {
       RequestSmartConnectShortcut requestSmartConnectShortcut =
           new RequestSmartConnectShortcut(
-              peekedByte,
-              startingCR,
-              resetMode,
-              secondPeek,
-              termination,
-              pipePeek,
-              secondPipe,
-              cBusOptions);
+              peekedByte, startingCR, resetMode, secondPeek, termination, pipePeek, secondPipe);
       return requestSmartConnectShortcut;
     }
   }

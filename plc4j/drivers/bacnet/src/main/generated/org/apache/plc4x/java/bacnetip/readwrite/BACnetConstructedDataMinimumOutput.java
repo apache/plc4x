@@ -49,21 +49,13 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
   // Properties.
   protected final BACnetApplicationTagReal minimumOutput;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMinimumOutput(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal minimumOutput,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal minimumOutput) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.minimumOutput = minimumOutput;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getMinimumOutput() {
@@ -132,39 +124,22 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataMinimumOutput");
     // Create the instance
-    return new BACnetConstructedDataMinimumOutputBuilderImpl(
-        minimumOutput, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMinimumOutputBuilderImpl(minimumOutput);
   }
 
   public static class BACnetConstructedDataMinimumOutputBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal minimumOutput;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMinimumOutputBuilderImpl(
-        BACnetApplicationTagReal minimumOutput,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataMinimumOutputBuilderImpl(BACnetApplicationTagReal minimumOutput) {
       this.minimumOutput = minimumOutput;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMinimumOutput build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMinimumOutput bACnetConstructedDataMinimumOutput =
           new BACnetConstructedDataMinimumOutput(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              minimumOutput,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, minimumOutput);
       return bACnetConstructedDataMinimumOutput;
     }
   }

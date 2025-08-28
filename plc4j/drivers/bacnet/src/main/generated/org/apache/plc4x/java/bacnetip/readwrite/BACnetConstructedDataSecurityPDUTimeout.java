@@ -50,21 +50,13 @@ public class BACnetConstructedDataSecurityPDUTimeout extends BACnetConstructedDa
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger securityPduTimeout;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSecurityPDUTimeout(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger securityPduTimeout,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger securityPduTimeout) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.securityPduTimeout = securityPduTimeout;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getSecurityPduTimeout() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataSecurityPDUTimeout extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataSecurityPDUTimeout");
     // Create the instance
-    return new BACnetConstructedDataSecurityPDUTimeoutBuilderImpl(
-        securityPduTimeout, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataSecurityPDUTimeoutBuilderImpl(securityPduTimeout);
   }
 
   public static class BACnetConstructedDataSecurityPDUTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger securityPduTimeout;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSecurityPDUTimeoutBuilderImpl(
-        BACnetApplicationTagUnsignedInteger securityPduTimeout,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger securityPduTimeout) {
       this.securityPduTimeout = securityPduTimeout;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSecurityPDUTimeout build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSecurityPDUTimeout bACnetConstructedDataSecurityPDUTimeout =
           new BACnetConstructedDataSecurityPDUTimeout(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              securityPduTimeout,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, securityPduTimeout);
       return bACnetConstructedDataSecurityPDUTimeout;
     }
   }

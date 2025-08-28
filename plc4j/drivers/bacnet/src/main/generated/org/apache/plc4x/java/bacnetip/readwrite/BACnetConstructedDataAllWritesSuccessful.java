@@ -50,21 +50,13 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
   // Properties.
   protected final BACnetApplicationTagBoolean allWritesSuccessful;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAllWritesSuccessful(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean allWritesSuccessful,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean allWritesSuccessful) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.allWritesSuccessful = allWritesSuccessful;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getAllWritesSuccessful() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataAllWritesSuccessful");
     // Create the instance
-    return new BACnetConstructedDataAllWritesSuccessfulBuilderImpl(
-        allWritesSuccessful, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAllWritesSuccessfulBuilderImpl(allWritesSuccessful);
   }
 
   public static class BACnetConstructedDataAllWritesSuccessfulBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean allWritesSuccessful;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAllWritesSuccessfulBuilderImpl(
-        BACnetApplicationTagBoolean allWritesSuccessful,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean allWritesSuccessful) {
       this.allWritesSuccessful = allWritesSuccessful;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAllWritesSuccessful build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAllWritesSuccessful bACnetConstructedDataAllWritesSuccessful =
           new BACnetConstructedDataAllWritesSuccessful(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              allWritesSuccessful,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, allWritesSuccessful);
       return bACnetConstructedDataAllWritesSuccessful;
     }
   }

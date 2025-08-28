@@ -44,21 +44,17 @@ public class CALDataStatus extends CALData implements Message {
   protected final short blockStart;
   protected final List<StatusByte> statusBytes;
 
-  // Arguments.
-  protected final RequestContext requestContext;
-
   public CALDataStatus(
+      RequestContext requestContext,
       CALCommandTypeContainer commandTypeContainer,
       CALData additionalData,
       ApplicationIdContainer application,
       short blockStart,
-      List<StatusByte> statusBytes,
-      RequestContext requestContext) {
-    super(commandTypeContainer, additionalData, requestContext);
+      List<StatusByte> statusBytes) {
+    super(requestContext, commandTypeContainer, additionalData);
     this.application = application;
     this.blockStart = blockStart;
     this.statusBytes = statusBytes;
-    this.requestContext = requestContext;
   }
 
   public ApplicationIdContainer getApplication() {
@@ -152,38 +148,33 @@ public class CALDataStatus extends CALData implements Message {
 
     readBuffer.closeContext("CALDataStatus");
     // Create the instance
-    return new CALDataStatusBuilderImpl(application, blockStart, statusBytes, requestContext);
+    return new CALDataStatusBuilderImpl(application, blockStart, statusBytes);
   }
 
   public static class CALDataStatusBuilderImpl implements CALData.CALDataBuilder {
     private final ApplicationIdContainer application;
     private final short blockStart;
     private final List<StatusByte> statusBytes;
-    private final RequestContext requestContext;
 
     public CALDataStatusBuilderImpl(
-        ApplicationIdContainer application,
-        short blockStart,
-        List<StatusByte> statusBytes,
-        RequestContext requestContext) {
+        ApplicationIdContainer application, short blockStart, List<StatusByte> statusBytes) {
       this.application = application;
       this.blockStart = blockStart;
       this.statusBytes = statusBytes;
-      this.requestContext = requestContext;
     }
 
     public CALDataStatus build(
+        RequestContext requestContext,
         CALCommandTypeContainer commandTypeContainer,
-        CALData additionalData,
-        RequestContext requestContext) {
+        CALData additionalData) {
       CALDataStatus cALDataStatus =
           new CALDataStatus(
+              requestContext,
               commandTypeContainer,
               additionalData,
               application,
               blockStart,
-              statusBytes,
-              requestContext);
+              statusBytes);
       return cALDataStatus;
     }
   }

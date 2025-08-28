@@ -49,21 +49,13 @@ public class BACnetConstructedDataInitialTimeout extends BACnetConstructedData i
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger initialTimeout;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataInitialTimeout(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger initialTimeout,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger initialTimeout) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.initialTimeout = initialTimeout;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getInitialTimeout() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataInitialTimeout extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataInitialTimeout");
     // Create the instance
-    return new BACnetConstructedDataInitialTimeoutBuilderImpl(
-        initialTimeout, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataInitialTimeoutBuilderImpl(initialTimeout);
   }
 
   public static class BACnetConstructedDataInitialTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger initialTimeout;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataInitialTimeoutBuilderImpl(
-        BACnetApplicationTagUnsignedInteger initialTimeout,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger initialTimeout) {
       this.initialTimeout = initialTimeout;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataInitialTimeout build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataInitialTimeout bACnetConstructedDataInitialTimeout =
           new BACnetConstructedDataInitialTimeout(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              initialTimeout,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, initialTimeout);
       return bACnetConstructedDataInitialTimeout;
     }
   }

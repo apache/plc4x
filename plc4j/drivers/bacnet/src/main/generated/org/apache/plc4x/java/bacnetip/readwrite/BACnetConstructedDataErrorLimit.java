@@ -49,21 +49,13 @@ public class BACnetConstructedDataErrorLimit extends BACnetConstructedData imple
   // Properties.
   protected final BACnetApplicationTagReal errorLimit;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataErrorLimit(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal errorLimit,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal errorLimit) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.errorLimit = errorLimit;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getErrorLimit() {
@@ -132,34 +124,21 @@ public class BACnetConstructedDataErrorLimit extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataErrorLimit");
     // Create the instance
-    return new BACnetConstructedDataErrorLimitBuilderImpl(
-        errorLimit, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataErrorLimitBuilderImpl(errorLimit);
   }
 
   public static class BACnetConstructedDataErrorLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal errorLimit;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataErrorLimitBuilderImpl(
-        BACnetApplicationTagReal errorLimit,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataErrorLimitBuilderImpl(BACnetApplicationTagReal errorLimit) {
       this.errorLimit = errorLimit;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataErrorLimit build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataErrorLimit bACnetConstructedDataErrorLimit =
-          new BACnetConstructedDataErrorLimit(
-              openingTag, peekedTagHeader, closingTag, errorLimit, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataErrorLimit(openingTag, peekedTagHeader, closingTag, errorLimit);
       return bACnetConstructedDataErrorLimit;
     }
   }

@@ -42,22 +42,12 @@ public class BACnetDeviceStatusTagged implements Message {
   protected final BACnetDeviceStatus value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetDeviceStatusTagged(
-      BACnetTagHeader header,
-      BACnetDeviceStatus value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetDeviceStatus value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -180,8 +170,7 @@ public class BACnetDeviceStatusTagged implements Message {
     readBuffer.closeContext("BACnetDeviceStatusTagged");
     // Create the instance
     BACnetDeviceStatusTagged _bACnetDeviceStatusTagged;
-    _bACnetDeviceStatusTagged =
-        new BACnetDeviceStatusTagged(header, value, proprietaryValue, tagNumber, tagClass);
+    _bACnetDeviceStatusTagged = new BACnetDeviceStatusTagged(header, value, proprietaryValue);
     return _bACnetDeviceStatusTagged;
   }
 

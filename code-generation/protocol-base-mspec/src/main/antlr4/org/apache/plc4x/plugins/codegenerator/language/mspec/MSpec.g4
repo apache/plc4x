@@ -142,7 +142,7 @@ simpleField
  ;
 
 stateField
- : STATE type=typeReference name=idExpression valueExpression=expression
+ : STATE name=idExpression
  ;
 
 typeSwitchField

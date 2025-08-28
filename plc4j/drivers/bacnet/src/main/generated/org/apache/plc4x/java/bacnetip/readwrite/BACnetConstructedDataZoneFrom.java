@@ -49,21 +49,13 @@ public class BACnetConstructedDataZoneFrom extends BACnetConstructedData impleme
   // Properties.
   protected final BACnetDeviceObjectReference zoneFrom;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataZoneFrom(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDeviceObjectReference zoneFrom,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDeviceObjectReference zoneFrom) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.zoneFrom = zoneFrom;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDeviceObjectReference getZoneFrom() {
@@ -130,33 +122,21 @@ public class BACnetConstructedDataZoneFrom extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataZoneFrom");
     // Create the instance
-    return new BACnetConstructedDataZoneFromBuilderImpl(zoneFrom, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataZoneFromBuilderImpl(zoneFrom);
   }
 
   public static class BACnetConstructedDataZoneFromBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference zoneFrom;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataZoneFromBuilderImpl(
-        BACnetDeviceObjectReference zoneFrom,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataZoneFromBuilderImpl(BACnetDeviceObjectReference zoneFrom) {
       this.zoneFrom = zoneFrom;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataZoneFrom build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataZoneFrom bACnetConstructedDataZoneFrom =
-          new BACnetConstructedDataZoneFrom(
-              openingTag, peekedTagHeader, closingTag, zoneFrom, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataZoneFrom(openingTag, peekedTagHeader, closingTag, zoneFrom);
       return bACnetConstructedDataZoneFrom;
     }
   }

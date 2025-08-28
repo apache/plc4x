@@ -48,19 +48,15 @@ public class BACnetConfirmedServiceRequestVTData extends BACnetConfirmedServiceR
   protected final BACnetApplicationTagOctetString vtNewData;
   protected final BACnetApplicationTagUnsignedInteger vtDataFlag;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestVTData(
+      long serviceRequestLength,
       BACnetApplicationTagUnsignedInteger vtSessionIdentifier,
       BACnetApplicationTagOctetString vtNewData,
-      BACnetApplicationTagUnsignedInteger vtDataFlag,
-      Long serviceRequestLength) {
+      BACnetApplicationTagUnsignedInteger vtDataFlag) {
     super(serviceRequestLength);
     this.vtSessionIdentifier = vtSessionIdentifier;
     this.vtNewData = vtNewData;
     this.vtDataFlag = vtDataFlag;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetApplicationTagUnsignedInteger getVtSessionIdentifier() {
@@ -153,7 +149,7 @@ public class BACnetConfirmedServiceRequestVTData extends BACnetConfirmedServiceR
     readBuffer.closeContext("BACnetConfirmedServiceRequestVTData");
     // Create the instance
     return new BACnetConfirmedServiceRequestVTDataBuilderImpl(
-        vtSessionIdentifier, vtNewData, vtDataFlag, serviceRequestLength);
+        vtSessionIdentifier, vtNewData, vtDataFlag);
   }
 
   public static class BACnetConfirmedServiceRequestVTDataBuilderImpl
@@ -161,24 +157,20 @@ public class BACnetConfirmedServiceRequestVTData extends BACnetConfirmedServiceR
     private final BACnetApplicationTagUnsignedInteger vtSessionIdentifier;
     private final BACnetApplicationTagOctetString vtNewData;
     private final BACnetApplicationTagUnsignedInteger vtDataFlag;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestVTDataBuilderImpl(
         BACnetApplicationTagUnsignedInteger vtSessionIdentifier,
         BACnetApplicationTagOctetString vtNewData,
-        BACnetApplicationTagUnsignedInteger vtDataFlag,
-        Long serviceRequestLength) {
+        BACnetApplicationTagUnsignedInteger vtDataFlag) {
       this.vtSessionIdentifier = vtSessionIdentifier;
       this.vtNewData = vtNewData;
       this.vtDataFlag = vtDataFlag;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestVTData build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestVTData build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestVTData bACnetConfirmedServiceRequestVTData =
           new BACnetConfirmedServiceRequestVTData(
-              vtSessionIdentifier, vtNewData, vtDataFlag, serviceRequestLength);
+              serviceRequestLength, vtSessionIdentifier, vtNewData, vtDataFlag);
       return bACnetConfirmedServiceRequestVTData;
     }
   }

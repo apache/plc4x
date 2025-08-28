@@ -51,9 +51,6 @@ public class APDUComplexAck extends APDU implements Message {
   protected final BACnetServiceAck serviceAck;
   protected final BACnetConfirmedServiceChoice segmentServiceChoice;
   protected final byte[] segment;
-
-  // Arguments.
-  protected final Integer apduLength;
   // Reserved Fields
   private Byte reservedField0;
 
@@ -65,9 +62,8 @@ public class APDUComplexAck extends APDU implements Message {
       Short proposedWindowSize,
       BACnetServiceAck serviceAck,
       BACnetConfirmedServiceChoice segmentServiceChoice,
-      byte[] segment,
-      Integer apduLength) {
-    super(apduLength);
+      byte[] segment) {
+    super();
     this.segmentedMessage = segmentedMessage;
     this.moreFollows = moreFollows;
     this.originalInvokeId = originalInvokeId;
@@ -76,7 +72,6 @@ public class APDUComplexAck extends APDU implements Message {
     this.serviceAck = serviceAck;
     this.segmentServiceChoice = segmentServiceChoice;
     this.segment = segment;
-    this.apduLength = apduLength;
   }
 
   public boolean getSegmentedMessage() {
@@ -144,26 +139,18 @@ public class APDUComplexAck extends APDU implements Message {
     writeSimpleField("originalInvokeId", originalInvokeId, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (sequenceNumber) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "sequenceNumber",
-        sequenceNumber,
-        writeUnsignedShort(writeBuffer, 8),
-        getSegmentedMessage());
+    writeOptionalField("sequenceNumber", sequenceNumber, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
     writeOptionalField(
-        "proposedWindowSize",
-        proposedWindowSize,
-        writeUnsignedShort(writeBuffer, 8),
-        getSegmentedMessage());
+        "proposedWindowSize", proposedWindowSize, writeUnsignedShort(writeBuffer, 8));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     int apduHeaderReduction = getApduHeaderReduction();
     writeBuffer.writeVirtual("apduHeaderReduction", apduHeaderReduction);
 
     // Optional Field (serviceAck) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "serviceAck", serviceAck, writeComplex(writeBuffer), !(getSegmentedMessage()));
+    writeOptionalField("serviceAck", serviceAck, writeComplex(writeBuffer));
 
     // Optional Field (segmentServiceChoice) (Can be skipped, if the value is null)
     writeOptionalEnumField(
@@ -309,7 +296,6 @@ public class APDUComplexAck extends APDU implements Message {
         serviceAck,
         segmentServiceChoice,
         segment,
-        apduLength,
         reservedField0);
   }
 
@@ -322,7 +308,6 @@ public class APDUComplexAck extends APDU implements Message {
     private final BACnetServiceAck serviceAck;
     private final BACnetConfirmedServiceChoice segmentServiceChoice;
     private final byte[] segment;
-    private final Integer apduLength;
     private final Byte reservedField0;
 
     public APDUComplexAckBuilderImpl(
@@ -334,7 +319,6 @@ public class APDUComplexAck extends APDU implements Message {
         BACnetServiceAck serviceAck,
         BACnetConfirmedServiceChoice segmentServiceChoice,
         byte[] segment,
-        Integer apduLength,
         Byte reservedField0) {
       this.segmentedMessage = segmentedMessage;
       this.moreFollows = moreFollows;
@@ -344,12 +328,10 @@ public class APDUComplexAck extends APDU implements Message {
       this.serviceAck = serviceAck;
       this.segmentServiceChoice = segmentServiceChoice;
       this.segment = segment;
-      this.apduLength = apduLength;
       this.reservedField0 = reservedField0;
     }
 
-    public APDUComplexAck build(Integer apduLength) {
-
+    public APDUComplexAck build() {
       APDUComplexAck aPDUComplexAck =
           new APDUComplexAck(
               segmentedMessage,
@@ -359,8 +341,7 @@ public class APDUComplexAck extends APDU implements Message {
               proposedWindowSize,
               serviceAck,
               segmentServiceChoice,
-              segment,
-              apduLength);
+              segment);
       aPDUComplexAck.reservedField0 = reservedField0;
       return aPDUComplexAck;
     }

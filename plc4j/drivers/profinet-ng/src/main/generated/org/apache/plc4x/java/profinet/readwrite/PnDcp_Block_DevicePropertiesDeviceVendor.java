@@ -48,16 +48,12 @@ public class PnDcp_Block_DevicePropertiesDeviceVendor extends PnDcp_Block implem
 
   // Properties.
   protected final byte[] deviceVendorValue;
-
-  // Arguments.
-  protected final Integer blockLength;
   // Reserved Fields
   private Integer reservedField0;
 
-  public PnDcp_Block_DevicePropertiesDeviceVendor(byte[] deviceVendorValue, Integer blockLength) {
+  public PnDcp_Block_DevicePropertiesDeviceVendor(byte[] deviceVendorValue) {
     super();
     this.deviceVendorValue = deviceVendorValue;
-    this.blockLength = blockLength;
   }
 
   public byte[] getDeviceVendorValue() {
@@ -160,25 +156,23 @@ public class PnDcp_Block_DevicePropertiesDeviceVendor extends PnDcp_Block implem
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceVendor");
     // Create the instance
     return new PnDcp_Block_DevicePropertiesDeviceVendorBuilderImpl(
-        deviceVendorValue, blockLength, reservedField0);
+        deviceVendorValue, reservedField0);
   }
 
   public static class PnDcp_Block_DevicePropertiesDeviceVendorBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final byte[] deviceVendorValue;
-    private final Integer blockLength;
     private final Integer reservedField0;
 
     public PnDcp_Block_DevicePropertiesDeviceVendorBuilderImpl(
-        byte[] deviceVendorValue, Integer blockLength, Integer reservedField0) {
+        byte[] deviceVendorValue, Integer reservedField0) {
       this.deviceVendorValue = deviceVendorValue;
-      this.blockLength = blockLength;
       this.reservedField0 = reservedField0;
     }
 
     public PnDcp_Block_DevicePropertiesDeviceVendor build() {
       PnDcp_Block_DevicePropertiesDeviceVendor pnDcp_Block_DevicePropertiesDeviceVendor =
-          new PnDcp_Block_DevicePropertiesDeviceVendor(deviceVendorValue, blockLength);
+          new PnDcp_Block_DevicePropertiesDeviceVendor(deviceVendorValue);
       pnDcp_Block_DevicePropertiesDeviceVendor.reservedField0 = reservedField0;
       return pnDcp_Block_DevicePropertiesDeviceVendor;
     }

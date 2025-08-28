@@ -43,18 +43,13 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedValue
   // Properties.
   protected final BACnetContextTagReal changedValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetNotificationParametersChangeOfValueNewValueChangedValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagReal changedValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagReal changedValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.changedValue = changedValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagReal getChangedValue() {
@@ -111,30 +106,25 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedValue
     readBuffer.closeContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue");
     // Create the instance
     return new BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilderImpl(
-        changedValue, tagNumber);
+        changedValue);
   }
 
   public static class BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilderImpl
       implements BACnetNotificationParametersChangeOfValueNewValue
           .BACnetNotificationParametersChangeOfValueNewValueBuilder {
     private final BACnetContextTagReal changedValue;
-    private final Short tagNumber;
 
     public BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilderImpl(
-        BACnetContextTagReal changedValue, Short tagNumber) {
+        BACnetContextTagReal changedValue) {
       this.changedValue = changedValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetNotificationParametersChangeOfValueNewValueChangedValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersChangeOfValueNewValueChangedValue
           bACnetNotificationParametersChangeOfValueNewValueChangedValue =
               new BACnetNotificationParametersChangeOfValueNewValueChangedValue(
-                  openingTag, peekedTagHeader, closingTag, changedValue, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, changedValue);
       return bACnetNotificationParametersChangeOfValueNewValueChangedValue;
     }
   }

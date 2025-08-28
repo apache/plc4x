@@ -48,21 +48,16 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
   protected final Byte gavStoreEnabledByte2;
   protected final short timeFromLastRecoverOfMainsInSeconds;
 
-  // Arguments.
-  protected final Byte numBytes;
-
   public IdentifyReplyCommandOutputUnitSummary(
       IdentifyReplyCommandUnitSummary unitFlags,
       Byte gavStoreEnabledByte1,
       Byte gavStoreEnabledByte2,
-      short timeFromLastRecoverOfMainsInSeconds,
-      Byte numBytes) {
-    super(numBytes);
+      short timeFromLastRecoverOfMainsInSeconds) {
+    super();
     this.unitFlags = unitFlags;
     this.gavStoreEnabledByte1 = gavStoreEnabledByte1;
     this.gavStoreEnabledByte2 = gavStoreEnabledByte2;
     this.timeFromLastRecoverOfMainsInSeconds = timeFromLastRecoverOfMainsInSeconds;
-    this.numBytes = numBytes;
   }
 
   public IdentifyReplyCommandUnitSummary getUnitFlags() {
@@ -92,12 +87,10 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
     writeSimpleField("unitFlags", unitFlags, writeComplex(writeBuffer));
 
     // Optional Field (gavStoreEnabledByte1) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "gavStoreEnabledByte1", gavStoreEnabledByte1, writeByte(writeBuffer, 8), (numBytes) > (1));
+    writeOptionalField("gavStoreEnabledByte1", gavStoreEnabledByte1, writeByte(writeBuffer, 8));
 
     // Optional Field (gavStoreEnabledByte2) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "gavStoreEnabledByte2", gavStoreEnabledByte2, writeByte(writeBuffer, 8), (numBytes) > (2));
+    writeOptionalField("gavStoreEnabledByte2", gavStoreEnabledByte2, writeByte(writeBuffer, 8));
 
     // Simple Field (timeFromLastRecoverOfMainsInSeconds)
     writeSimpleField(
@@ -161,11 +154,7 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
     readBuffer.closeContext("IdentifyReplyCommandOutputUnitSummary");
     // Create the instance
     return new IdentifyReplyCommandOutputUnitSummaryBuilderImpl(
-        unitFlags,
-        gavStoreEnabledByte1,
-        gavStoreEnabledByte2,
-        timeFromLastRecoverOfMainsInSeconds,
-        numBytes);
+        unitFlags, gavStoreEnabledByte1, gavStoreEnabledByte2, timeFromLastRecoverOfMainsInSeconds);
   }
 
   public static class IdentifyReplyCommandOutputUnitSummaryBuilderImpl
@@ -174,30 +163,25 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
     private final Byte gavStoreEnabledByte1;
     private final Byte gavStoreEnabledByte2;
     private final short timeFromLastRecoverOfMainsInSeconds;
-    private final Byte numBytes;
 
     public IdentifyReplyCommandOutputUnitSummaryBuilderImpl(
         IdentifyReplyCommandUnitSummary unitFlags,
         Byte gavStoreEnabledByte1,
         Byte gavStoreEnabledByte2,
-        short timeFromLastRecoverOfMainsInSeconds,
-        Byte numBytes) {
+        short timeFromLastRecoverOfMainsInSeconds) {
       this.unitFlags = unitFlags;
       this.gavStoreEnabledByte1 = gavStoreEnabledByte1;
       this.gavStoreEnabledByte2 = gavStoreEnabledByte2;
       this.timeFromLastRecoverOfMainsInSeconds = timeFromLastRecoverOfMainsInSeconds;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandOutputUnitSummary build(Byte numBytes) {
-
+    public IdentifyReplyCommandOutputUnitSummary build() {
       IdentifyReplyCommandOutputUnitSummary identifyReplyCommandOutputUnitSummary =
           new IdentifyReplyCommandOutputUnitSummary(
               unitFlags,
               gavStoreEnabledByte1,
               gavStoreEnabledByte2,
-              timeFromLastRecoverOfMainsInSeconds,
-              numBytes);
+              timeFromLastRecoverOfMainsInSeconds);
       return identifyReplyCommandOutputUnitSummary;
     }
   }

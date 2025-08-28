@@ -50,21 +50,13 @@ public class BACnetConstructedDataInstantaneousPower extends BACnetConstructedDa
   // Properties.
   protected final BACnetApplicationTagReal instantaneousPower;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataInstantaneousPower(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal instantaneousPower,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal instantaneousPower) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.instantaneousPower = instantaneousPower;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getInstantaneousPower() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataInstantaneousPower extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataInstantaneousPower");
     // Create the instance
-    return new BACnetConstructedDataInstantaneousPowerBuilderImpl(
-        instantaneousPower, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataInstantaneousPowerBuilderImpl(instantaneousPower);
   }
 
   public static class BACnetConstructedDataInstantaneousPowerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal instantaneousPower;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataInstantaneousPowerBuilderImpl(
-        BACnetApplicationTagReal instantaneousPower,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagReal instantaneousPower) {
       this.instantaneousPower = instantaneousPower;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataInstantaneousPower build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataInstantaneousPower bACnetConstructedDataInstantaneousPower =
           new BACnetConstructedDataInstantaneousPower(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              instantaneousPower,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, instantaneousPower);
       return bACnetConstructedDataInstantaneousPower;
     }
   }

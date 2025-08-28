@@ -49,21 +49,13 @@ public class BACnetConstructedDataIPDHCPServer extends BACnetConstructedData imp
   // Properties.
   protected final BACnetApplicationTagOctetString dhcpServer;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIPDHCPServer(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagOctetString dhcpServer,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagOctetString dhcpServer) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.dhcpServer = dhcpServer;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagOctetString getDhcpServer() {
@@ -133,34 +125,23 @@ public class BACnetConstructedDataIPDHCPServer extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataIPDHCPServer");
     // Create the instance
-    return new BACnetConstructedDataIPDHCPServerBuilderImpl(
-        dhcpServer, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPDHCPServerBuilderImpl(dhcpServer);
   }
 
   public static class BACnetConstructedDataIPDHCPServerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString dhcpServer;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIPDHCPServerBuilderImpl(
-        BACnetApplicationTagOctetString dhcpServer,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagOctetString dhcpServer) {
       this.dhcpServer = dhcpServer;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIPDHCPServer build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIPDHCPServer bACnetConstructedDataIPDHCPServer =
           new BACnetConstructedDataIPDHCPServer(
-              openingTag, peekedTagHeader, closingTag, dhcpServer, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, dhcpServer);
       return bACnetConstructedDataIPDHCPServer;
     }
   }

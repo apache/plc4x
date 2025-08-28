@@ -42,18 +42,13 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
   // Properties.
   protected final ErrorEnclosed failure;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogRecordLogDatumFailure(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      ErrorEnclosed failure,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      ErrorEnclosed failure) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.failure = failure;
-    this.tagNumber = tagNumber;
   }
 
   public ErrorEnclosed getFailure() {
@@ -103,27 +98,21 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
 
     readBuffer.closeContext("BACnetLogRecordLogDatumFailure");
     // Create the instance
-    return new BACnetLogRecordLogDatumFailureBuilderImpl(failure, tagNumber);
+    return new BACnetLogRecordLogDatumFailureBuilderImpl(failure);
   }
 
   public static class BACnetLogRecordLogDatumFailureBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final ErrorEnclosed failure;
-    private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumFailureBuilderImpl(ErrorEnclosed failure, Short tagNumber) {
+    public BACnetLogRecordLogDatumFailureBuilderImpl(ErrorEnclosed failure) {
       this.failure = failure;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetLogRecordLogDatumFailure build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetLogRecordLogDatumFailure bACnetLogRecordLogDatumFailure =
-          new BACnetLogRecordLogDatumFailure(
-              openingTag, peekedTagHeader, closingTag, failure, tagNumber);
+          new BACnetLogRecordLogDatumFailure(openingTag, peekedTagHeader, closingTag, failure);
       return bACnetLogRecordLogDatumFailure;
     }
   }

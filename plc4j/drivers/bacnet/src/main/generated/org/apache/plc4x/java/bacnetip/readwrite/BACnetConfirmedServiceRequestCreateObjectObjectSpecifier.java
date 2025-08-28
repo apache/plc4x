@@ -43,21 +43,16 @@ public class BACnetConfirmedServiceRequestCreateObjectObjectSpecifier implements
   protected final BACnetContextTagObjectIdentifier objectIdentifier;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetConfirmedServiceRequestCreateObjectObjectSpecifier(
       BACnetOpeningTag openingTag,
       BACnetContextTagEnumerated rawObjectType,
       BACnetContextTagObjectIdentifier objectIdentifier,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.rawObjectType = rawObjectType;
     this.objectIdentifier = objectIdentifier;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -218,7 +213,7 @@ public class BACnetConfirmedServiceRequestCreateObjectObjectSpecifier implements
         _bACnetConfirmedServiceRequestCreateObjectObjectSpecifier;
     _bACnetConfirmedServiceRequestCreateObjectObjectSpecifier =
         new BACnetConfirmedServiceRequestCreateObjectObjectSpecifier(
-            openingTag, rawObjectType, objectIdentifier, closingTag, tagNumber);
+            openingTag, rawObjectType, objectIdentifier, closingTag);
     return _bACnetConfirmedServiceRequestCreateObjectObjectSpecifier;
   }
 

@@ -50,21 +50,13 @@ public class BACnetConstructedDataDeviceAddressBinding extends BACnetConstructed
   // Properties.
   protected final List<BACnetAddressBinding> deviceAddressBinding;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDeviceAddressBinding(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetAddressBinding> deviceAddressBinding,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetAddressBinding> deviceAddressBinding) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.deviceAddressBinding = deviceAddressBinding;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetAddressBinding> getDeviceAddressBinding() {
@@ -127,39 +119,23 @@ public class BACnetConstructedDataDeviceAddressBinding extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataDeviceAddressBinding");
     // Create the instance
-    return new BACnetConstructedDataDeviceAddressBindingBuilderImpl(
-        deviceAddressBinding, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDeviceAddressBindingBuilderImpl(deviceAddressBinding);
   }
 
   public static class BACnetConstructedDataDeviceAddressBindingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAddressBinding> deviceAddressBinding;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDeviceAddressBindingBuilderImpl(
-        List<BACnetAddressBinding> deviceAddressBinding,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetAddressBinding> deviceAddressBinding) {
       this.deviceAddressBinding = deviceAddressBinding;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDeviceAddressBinding build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDeviceAddressBinding bACnetConstructedDataDeviceAddressBinding =
           new BACnetConstructedDataDeviceAddressBinding(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              deviceAddressBinding,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, deviceAddressBinding);
       return bACnetConstructedDataDeviceAddressBinding;
     }
   }

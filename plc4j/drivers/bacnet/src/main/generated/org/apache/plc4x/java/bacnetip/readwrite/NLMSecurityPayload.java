@@ -46,14 +46,10 @@ public class NLMSecurityPayload extends NLM implements Message {
   protected final int payloadLength;
   protected final byte[] payload;
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public NLMSecurityPayload(int payloadLength, byte[] payload, Integer apduLength) {
-    super(apduLength);
+  public NLMSecurityPayload(int payloadLength, byte[] payload) {
+    super();
     this.payloadLength = payloadLength;
     this.payload = payload;
-    this.apduLength = apduLength;
   }
 
   public int getPayloadLength() {
@@ -113,24 +109,20 @@ public class NLMSecurityPayload extends NLM implements Message {
 
     readBuffer.closeContext("NLMSecurityPayload");
     // Create the instance
-    return new NLMSecurityPayloadBuilderImpl(payloadLength, payload, apduLength);
+    return new NLMSecurityPayloadBuilderImpl(payloadLength, payload);
   }
 
   public static class NLMSecurityPayloadBuilderImpl implements NLM.NLMBuilder {
     private final int payloadLength;
     private final byte[] payload;
-    private final Integer apduLength;
 
-    public NLMSecurityPayloadBuilderImpl(int payloadLength, byte[] payload, Integer apduLength) {
+    public NLMSecurityPayloadBuilderImpl(int payloadLength, byte[] payload) {
       this.payloadLength = payloadLength;
       this.payload = payload;
-      this.apduLength = apduLength;
     }
 
-    public NLMSecurityPayload build(Integer apduLength) {
-
-      NLMSecurityPayload nLMSecurityPayload =
-          new NLMSecurityPayload(payloadLength, payload, apduLength);
+    public NLMSecurityPayload build() {
+      NLMSecurityPayload nLMSecurityPayload = new NLMSecurityPayload(payloadLength, payload);
       return nLMSecurityPayload;
     }
   }

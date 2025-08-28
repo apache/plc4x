@@ -43,18 +43,13 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
   // Properties.
   protected final BACnetContextTagUnsignedInteger numericValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagUnsignedInteger numericValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagUnsignedInteger numericValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numericValue = numericValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagUnsignedInteger getNumericValue() {
@@ -113,7 +108,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
     readBuffer.closeContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric");
     // Create the instance
     return new BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilderImpl(
-        numericValue, tagNumber);
+        numericValue);
   }
 
   public static
@@ -121,23 +116,18 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
       implements BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
           .BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
     private final BACnetContextTagUnsignedInteger numericValue;
-    private final Short tagNumber;
 
     public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilderImpl(
-        BACnetContextTagUnsignedInteger numericValue, Short tagNumber) {
+        BACnetContextTagUnsignedInteger numericValue) {
       this.numericValue = numericValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
           bACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric =
               new BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric(
-                  openingTag, peekedTagHeader, closingTag, numericValue, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, numericValue);
       return bACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric;
     }
   }

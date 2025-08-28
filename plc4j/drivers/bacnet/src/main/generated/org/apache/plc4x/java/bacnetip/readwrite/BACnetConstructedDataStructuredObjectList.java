@@ -52,23 +52,15 @@ public class BACnetConstructedDataStructuredObjectList extends BACnetConstructed
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetApplicationTagObjectIdentifier> structuredObjectList;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataStructuredObjectList(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetApplicationTagObjectIdentifier> structuredObjectList,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetApplicationTagObjectIdentifier> structuredObjectList) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.structuredObjectList = structuredObjectList;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataStructuredObjectList extends BACnetConstructed
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (structuredObjectList)
     writeComplexTypeArrayField("structuredObjectList", structuredObjectList, writeBuffer);
@@ -175,42 +163,26 @@ public class BACnetConstructedDataStructuredObjectList extends BACnetConstructed
     readBuffer.closeContext("BACnetConstructedDataStructuredObjectList");
     // Create the instance
     return new BACnetConstructedDataStructuredObjectListBuilderImpl(
-        numberOfDataElements, structuredObjectList, tagNumber, arrayIndexArgument);
+        numberOfDataElements, structuredObjectList);
   }
 
   public static class BACnetConstructedDataStructuredObjectListBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagObjectIdentifier> structuredObjectList;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataStructuredObjectListBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetApplicationTagObjectIdentifier> structuredObjectList,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetApplicationTagObjectIdentifier> structuredObjectList) {
       this.numberOfDataElements = numberOfDataElements;
       this.structuredObjectList = structuredObjectList;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataStructuredObjectList build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataStructuredObjectList bACnetConstructedDataStructuredObjectList =
           new BACnetConstructedDataStructuredObjectList(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              structuredObjectList,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, structuredObjectList);
       return bACnetConstructedDataStructuredObjectList;
     }
   }

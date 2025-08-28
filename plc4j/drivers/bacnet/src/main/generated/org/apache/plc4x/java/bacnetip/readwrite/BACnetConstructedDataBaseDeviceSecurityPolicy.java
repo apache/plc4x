@@ -50,21 +50,13 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
   // Properties.
   protected final BACnetSecurityLevelTagged baseDeviceSecurityPolicy;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBaseDeviceSecurityPolicy(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetSecurityLevelTagged baseDeviceSecurityPolicy,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetSecurityLevelTagged baseDeviceSecurityPolicy) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.baseDeviceSecurityPolicy = baseDeviceSecurityPolicy;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetSecurityLevelTagged getBaseDeviceSecurityPolicy() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataBaseDeviceSecurityPolicy");
     // Create the instance
-    return new BACnetConstructedDataBaseDeviceSecurityPolicyBuilderImpl(
-        baseDeviceSecurityPolicy, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBaseDeviceSecurityPolicyBuilderImpl(baseDeviceSecurityPolicy);
   }
 
   public static class BACnetConstructedDataBaseDeviceSecurityPolicyBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetSecurityLevelTagged baseDeviceSecurityPolicy;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataBaseDeviceSecurityPolicyBuilderImpl(
-        BACnetSecurityLevelTagged baseDeviceSecurityPolicy,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetSecurityLevelTagged baseDeviceSecurityPolicy) {
       this.baseDeviceSecurityPolicy = baseDeviceSecurityPolicy;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBaseDeviceSecurityPolicy build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBaseDeviceSecurityPolicy bACnetConstructedDataBaseDeviceSecurityPolicy =
           new BACnetConstructedDataBaseDeviceSecurityPolicy(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              baseDeviceSecurityPolicy,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, baseDeviceSecurityPolicy);
       return bACnetConstructedDataBaseDeviceSecurityPolicy;
     }
   }

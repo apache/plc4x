@@ -45,16 +45,9 @@ public class CBusMessageToServer extends CBusMessage implements Message {
   // Properties.
   protected final Request request;
 
-  // Arguments.
-  protected final RequestContext requestContext;
-  protected final CBusOptions cBusOptions;
-
-  public CBusMessageToServer(
-      Request request, RequestContext requestContext, CBusOptions cBusOptions) {
-    super(requestContext, cBusOptions);
+  public CBusMessageToServer(Request request) {
+    super();
     this.request = request;
-    this.requestContext = requestContext;
-    this.cBusOptions = cBusOptions;
   }
 
   public Request getRequest() {
@@ -108,25 +101,18 @@ public class CBusMessageToServer extends CBusMessage implements Message {
 
     readBuffer.closeContext("CBusMessageToServer");
     // Create the instance
-    return new CBusMessageToServerBuilderImpl(request, requestContext, cBusOptions);
+    return new CBusMessageToServerBuilderImpl(request);
   }
 
   public static class CBusMessageToServerBuilderImpl implements CBusMessage.CBusMessageBuilder {
     private final Request request;
-    private final RequestContext requestContext;
-    private final CBusOptions cBusOptions;
 
-    public CBusMessageToServerBuilderImpl(
-        Request request, RequestContext requestContext, CBusOptions cBusOptions) {
+    public CBusMessageToServerBuilderImpl(Request request) {
       this.request = request;
-      this.requestContext = requestContext;
-      this.cBusOptions = cBusOptions;
     }
 
-    public CBusMessageToServer build(RequestContext requestContext, CBusOptions cBusOptions) {
-
-      CBusMessageToServer cBusMessageToServer =
-          new CBusMessageToServer(request, requestContext, cBusOptions);
+    public CBusMessageToServer build() {
+      CBusMessageToServer cBusMessageToServer = new CBusMessageToServer(request);
       return cBusMessageToServer;
     }
   }

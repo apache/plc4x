@@ -45,19 +45,12 @@ public abstract class BACnetConfirmedServiceRequestConfirmedTextMessageMessageCl
   protected final BACnetTagHeader peekedTagHeader;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.peekedTagHeader = peekedTagHeader;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -176,16 +169,13 @@ public abstract class BACnetConfirmedServiceRequestConfirmedTextMessageMessageCl
     // Create the instance
     BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
         _bACnetConfirmedServiceRequestConfirmedTextMessageMessageClass =
-            builder.build(openingTag, peekedTagHeader, closingTag, tagNumber);
+            builder.build(openingTag, peekedTagHeader, closingTag);
     return _bACnetConfirmedServiceRequestConfirmedTextMessageMessageClass;
   }
 
   public interface BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
     BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber);
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag);
   }
 
   @Override

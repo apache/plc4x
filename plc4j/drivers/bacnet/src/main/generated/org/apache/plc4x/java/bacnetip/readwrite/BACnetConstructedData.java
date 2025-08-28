@@ -47,22 +47,12 @@ public abstract class BACnetConstructedData implements Message {
   protected final BACnetTagHeader peekedTagHeader;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedData(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.peekedTagHeader = peekedTagHeader;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -7069,17 +7059,13 @@ public abstract class BACnetConstructedData implements Message {
     readBuffer.closeContext("BACnetConstructedData");
     // Create the instance
     BACnetConstructedData _bACnetConstructedData =
-        builder.build(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+        builder.build(openingTag, peekedTagHeader, closingTag);
     return _bACnetConstructedData;
   }
 
   public interface BACnetConstructedDataBuilder {
     BACnetConstructedData build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument);
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag);
   }
 
   @Override

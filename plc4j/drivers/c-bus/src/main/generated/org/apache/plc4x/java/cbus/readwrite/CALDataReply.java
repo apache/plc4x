@@ -43,19 +43,15 @@ public class CALDataReply extends CALData implements Message {
   protected final Parameter paramNo;
   protected final ParameterValue parameterValue;
 
-  // Arguments.
-  protected final RequestContext requestContext;
-
   public CALDataReply(
+      RequestContext requestContext,
       CALCommandTypeContainer commandTypeContainer,
       CALData additionalData,
       Parameter paramNo,
-      ParameterValue parameterValue,
-      RequestContext requestContext) {
-    super(commandTypeContainer, additionalData, requestContext);
+      ParameterValue parameterValue) {
+    super(requestContext, commandTypeContainer, additionalData);
     this.paramNo = paramNo;
     this.parameterValue = parameterValue;
-    this.requestContext = requestContext;
   }
 
   public Parameter getParamNo() {
@@ -133,28 +129,25 @@ public class CALDataReply extends CALData implements Message {
 
     readBuffer.closeContext("CALDataReply");
     // Create the instance
-    return new CALDataReplyBuilderImpl(paramNo, parameterValue, requestContext);
+    return new CALDataReplyBuilderImpl(paramNo, parameterValue);
   }
 
   public static class CALDataReplyBuilderImpl implements CALData.CALDataBuilder {
     private final Parameter paramNo;
     private final ParameterValue parameterValue;
-    private final RequestContext requestContext;
 
-    public CALDataReplyBuilderImpl(
-        Parameter paramNo, ParameterValue parameterValue, RequestContext requestContext) {
+    public CALDataReplyBuilderImpl(Parameter paramNo, ParameterValue parameterValue) {
       this.paramNo = paramNo;
       this.parameterValue = parameterValue;
-      this.requestContext = requestContext;
     }
 
     public CALDataReply build(
+        RequestContext requestContext,
         CALCommandTypeContainer commandTypeContainer,
-        CALData additionalData,
-        RequestContext requestContext) {
+        CALData additionalData) {
       CALDataReply cALDataReply =
           new CALDataReply(
-              commandTypeContainer, additionalData, paramNo, parameterValue, requestContext);
+              requestContext, commandTypeContainer, additionalData, paramNo, parameterValue);
       return cALDataReply;
     }
   }

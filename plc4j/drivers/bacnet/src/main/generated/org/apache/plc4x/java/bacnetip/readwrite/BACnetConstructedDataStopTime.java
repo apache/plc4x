@@ -49,21 +49,13 @@ public class BACnetConstructedDataStopTime extends BACnetConstructedData impleme
   // Properties.
   protected final BACnetDateTime stopTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataStopTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDateTime stopTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDateTime stopTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.stopTime = stopTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDateTime getStopTime() {
@@ -128,33 +120,21 @@ public class BACnetConstructedDataStopTime extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataStopTime");
     // Create the instance
-    return new BACnetConstructedDataStopTimeBuilderImpl(stopTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataStopTimeBuilderImpl(stopTime);
   }
 
   public static class BACnetConstructedDataStopTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime stopTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataStopTimeBuilderImpl(
-        BACnetDateTime stopTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataStopTimeBuilderImpl(BACnetDateTime stopTime) {
       this.stopTime = stopTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataStopTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataStopTime bACnetConstructedDataStopTime =
-          new BACnetConstructedDataStopTime(
-              openingTag, peekedTagHeader, closingTag, stopTime, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataStopTime(openingTag, peekedTagHeader, closingTag, stopTime);
       return bACnetConstructedDataStopTime;
     }
   }

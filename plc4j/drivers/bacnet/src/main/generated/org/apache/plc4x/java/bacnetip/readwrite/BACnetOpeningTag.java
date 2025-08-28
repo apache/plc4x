@@ -40,13 +40,9 @@ public class BACnetOpeningTag implements Message {
   // Properties.
   protected final BACnetTagHeader header;
 
-  // Arguments.
-  protected final Short tagNumberArgument;
-
-  public BACnetOpeningTag(BACnetTagHeader header, Short tagNumberArgument) {
+  public BACnetOpeningTag(BACnetTagHeader header) {
     super();
     this.header = header;
-    this.tagNumberArgument = tagNumberArgument;
   }
 
   public BACnetTagHeader getHeader() {
@@ -106,7 +102,7 @@ public class BACnetOpeningTag implements Message {
     readBuffer.closeContext("BACnetOpeningTag");
     // Create the instance
     BACnetOpeningTag _bACnetOpeningTag;
-    _bACnetOpeningTag = new BACnetOpeningTag(header, tagNumberArgument);
+    _bACnetOpeningTag = new BACnetOpeningTag(header);
     return _bACnetOpeningTag;
   }
 

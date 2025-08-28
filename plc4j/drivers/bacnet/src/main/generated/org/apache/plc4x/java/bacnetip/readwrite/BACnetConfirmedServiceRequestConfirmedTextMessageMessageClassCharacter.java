@@ -43,18 +43,13 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
   // Properties.
   protected final BACnetContextTagCharacterString characterValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagCharacterString characterValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagCharacterString characterValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.characterValue = characterValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagCharacterString getCharacterValue() {
@@ -117,7 +112,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
         "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter");
     // Create the instance
     return new BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilderImpl(
-        characterValue, tagNumber);
+        characterValue);
   }
 
   public static
@@ -125,23 +120,18 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
       implements BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
           .BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
     private final BACnetContextTagCharacterString characterValue;
-    private final Short tagNumber;
 
     public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilderImpl(
-        BACnetContextTagCharacterString characterValue, Short tagNumber) {
+        BACnetContextTagCharacterString characterValue) {
       this.characterValue = characterValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
           bACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter =
               new BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(
-                  openingTag, peekedTagHeader, closingTag, characterValue, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, characterValue);
       return bACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter;
     }
   }

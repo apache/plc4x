@@ -46,10 +46,6 @@ public class CALReplyLong extends CALReply implements Message {
   protected final SerialInterfaceAddress serialInterfaceAddress;
   protected final Byte reservedByte;
   protected final ReplyNetwork replyNetwork;
-
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-  protected final RequestContext requestContext;
   // Reserved Fields
   private Byte reservedField0;
 
@@ -61,18 +57,14 @@ public class CALReplyLong extends CALReply implements Message {
       BridgeAddress bridgeAddress,
       SerialInterfaceAddress serialInterfaceAddress,
       Byte reservedByte,
-      ReplyNetwork replyNetwork,
-      CBusOptions cBusOptions,
-      RequestContext requestContext) {
-    super(calType, calData, cBusOptions, requestContext);
+      ReplyNetwork replyNetwork) {
+    super(calType, calData);
     this.terminatingByte = terminatingByte;
     this.unitAddress = unitAddress;
     this.bridgeAddress = bridgeAddress;
     this.serialInterfaceAddress = serialInterfaceAddress;
     this.reservedByte = reservedByte;
     this.replyNetwork = replyNetwork;
-    this.cBusOptions = cBusOptions;
-    this.requestContext = requestContext;
   }
 
   public int getTerminatingByte() {
@@ -120,21 +112,19 @@ public class CALReplyLong extends CALReply implements Message {
     writeBuffer.writeVirtual("isUnitAddress", isUnitAddress);
 
     // Optional Field (unitAddress) (Can be skipped, if the value is null)
-    writeOptionalField("unitAddress", unitAddress, writeComplex(writeBuffer), getIsUnitAddress());
+    writeOptionalField("unitAddress", unitAddress, writeComplex(writeBuffer));
 
     // Optional Field (bridgeAddress) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "bridgeAddress", bridgeAddress, writeComplex(writeBuffer), !(getIsUnitAddress()));
+    writeOptionalField("bridgeAddress", bridgeAddress, writeComplex(writeBuffer));
 
     // Simple Field (serialInterfaceAddress)
     writeSimpleField("serialInterfaceAddress", serialInterfaceAddress, writeComplex(writeBuffer));
 
     // Optional Field (reservedByte) (Can be skipped, if the value is null)
-    writeOptionalField("reservedByte", reservedByte, writeByte(writeBuffer, 8), getIsUnitAddress());
+    writeOptionalField("reservedByte", reservedByte, writeByte(writeBuffer, 8));
 
     // Optional Field (replyNetwork) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "replyNetwork", replyNetwork, writeComplex(writeBuffer), !(getIsUnitAddress()));
+    writeOptionalField("replyNetwork", replyNetwork, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CALReplyLong");
   }
@@ -232,8 +222,6 @@ public class CALReplyLong extends CALReply implements Message {
         serialInterfaceAddress,
         reservedByte,
         replyNetwork,
-        cBusOptions,
-        requestContext,
         reservedField0);
   }
 
@@ -244,8 +232,6 @@ public class CALReplyLong extends CALReply implements Message {
     private final SerialInterfaceAddress serialInterfaceAddress;
     private final Byte reservedByte;
     private final ReplyNetwork replyNetwork;
-    private final CBusOptions cBusOptions;
-    private final RequestContext requestContext;
     private final Byte reservedField0;
 
     public CALReplyLongBuilderImpl(
@@ -255,8 +241,6 @@ public class CALReplyLong extends CALReply implements Message {
         SerialInterfaceAddress serialInterfaceAddress,
         Byte reservedByte,
         ReplyNetwork replyNetwork,
-        CBusOptions cBusOptions,
-        RequestContext requestContext,
         Byte reservedField0) {
       this.terminatingByte = terminatingByte;
       this.unitAddress = unitAddress;
@@ -264,13 +248,10 @@ public class CALReplyLong extends CALReply implements Message {
       this.serialInterfaceAddress = serialInterfaceAddress;
       this.reservedByte = reservedByte;
       this.replyNetwork = replyNetwork;
-      this.cBusOptions = cBusOptions;
-      this.requestContext = requestContext;
       this.reservedField0 = reservedField0;
     }
 
-    public CALReplyLong build(
-        byte calType, CALData calData, CBusOptions cBusOptions, RequestContext requestContext) {
+    public CALReplyLong build(byte calType, CALData calData) {
       CALReplyLong cALReplyLong =
           new CALReplyLong(
               calType,
@@ -280,9 +261,7 @@ public class CALReplyLong extends CALReply implements Message {
               bridgeAddress,
               serialInterfaceAddress,
               reservedByte,
-              replyNetwork,
-              cBusOptions,
-              requestContext);
+              replyNetwork);
       cALReplyLong.reservedField0 = reservedField0;
       return cALReplyLong;
     }

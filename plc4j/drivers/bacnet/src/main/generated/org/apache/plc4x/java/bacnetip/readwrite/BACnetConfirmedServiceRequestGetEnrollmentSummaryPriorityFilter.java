@@ -43,21 +43,16 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
   protected final BACnetContextTagUnsignedInteger maxPriority;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(
       BACnetOpeningTag openingTag,
       BACnetContextTagUnsignedInteger minPriority,
       BACnetContextTagUnsignedInteger maxPriority,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.minPriority = minPriority;
     this.maxPriority = maxPriority;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -170,7 +165,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
         _bACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter;
     _bACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter =
         new BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(
-            openingTag, minPriority, maxPriority, closingTag, tagNumber);
+            openingTag, minPriority, maxPriority, closingTag);
     return _bACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter;
   }
 

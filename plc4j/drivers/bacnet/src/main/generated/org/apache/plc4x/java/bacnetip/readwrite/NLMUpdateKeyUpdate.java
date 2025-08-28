@@ -55,9 +55,6 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
   protected final Short set2KeyCount;
   protected final List<NLMUpdateKeyUpdateKeyEntry> set2Keys;
 
-  // Arguments.
-  protected final Integer apduLength;
-
   public NLMUpdateKeyUpdate(
       NLMUpdateKeyUpdateControlFlags controlFlags,
       Byte set1KeyRevision,
@@ -69,9 +66,8 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
       Long set2ActivationTime,
       Long set2ExpirationTime,
       Short set2KeyCount,
-      List<NLMUpdateKeyUpdateKeyEntry> set2Keys,
-      Integer apduLength) {
-    super(apduLength);
+      List<NLMUpdateKeyUpdateKeyEntry> set2Keys) {
+    super();
     this.controlFlags = controlFlags;
     this.set1KeyRevision = set1KeyRevision;
     this.set1ActivationTime = set1ActivationTime;
@@ -83,7 +79,6 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     this.set2ExpirationTime = set2ExpirationTime;
     this.set2KeyCount = set2KeyCount;
     this.set2Keys = set2Keys;
-    this.apduLength = apduLength;
   }
 
   public NLMUpdateKeyUpdateControlFlags getControlFlags() {
@@ -140,63 +135,35 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     writeSimpleField("controlFlags", controlFlags, writeComplex(writeBuffer));
 
     // Optional Field (set1KeyRevision) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "set1KeyRevision",
-        set1KeyRevision,
-        writeByte(writeBuffer, 8),
-        getControlFlags().getSet1KeyRevisionActivationTimeExpirationTimePresent());
+    writeOptionalField("set1KeyRevision", set1KeyRevision, writeByte(writeBuffer, 8));
 
     // Optional Field (set1ActivationTime) (Can be skipped, if the value is null)
     writeOptionalField(
-        "set1ActivationTime",
-        set1ActivationTime,
-        writeUnsignedLong(writeBuffer, 32),
-        getControlFlags().getSet1KeyRevisionActivationTimeExpirationTimePresent());
+        "set1ActivationTime", set1ActivationTime, writeUnsignedLong(writeBuffer, 32));
 
     // Optional Field (set1ExpirationTime) (Can be skipped, if the value is null)
     writeOptionalField(
-        "set1ExpirationTime",
-        set1ExpirationTime,
-        writeUnsignedLong(writeBuffer, 32),
-        getControlFlags().getSet1KeyCountKeyParametersPresent());
+        "set1ExpirationTime", set1ExpirationTime, writeUnsignedLong(writeBuffer, 32));
 
     // Optional Field (set1KeyCount) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "set1KeyCount",
-        set1KeyCount,
-        writeUnsignedShort(writeBuffer, 8),
-        getControlFlags().getSet1KeyCountKeyParametersPresent());
+    writeOptionalField("set1KeyCount", set1KeyCount, writeUnsignedShort(writeBuffer, 8));
 
     // Array Field (set1Keys)
     writeComplexTypeArrayField("set1Keys", set1Keys, writeBuffer);
 
     // Optional Field (set2KeyRevision) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "set2KeyRevision",
-        set2KeyRevision,
-        writeByte(writeBuffer, 8),
-        getControlFlags().getSet1KeyRevisionActivationTimeExpirationTimePresent());
+    writeOptionalField("set2KeyRevision", set2KeyRevision, writeByte(writeBuffer, 8));
 
     // Optional Field (set2ActivationTime) (Can be skipped, if the value is null)
     writeOptionalField(
-        "set2ActivationTime",
-        set2ActivationTime,
-        writeUnsignedLong(writeBuffer, 32),
-        getControlFlags().getSet1KeyRevisionActivationTimeExpirationTimePresent());
+        "set2ActivationTime", set2ActivationTime, writeUnsignedLong(writeBuffer, 32));
 
     // Optional Field (set2ExpirationTime) (Can be skipped, if the value is null)
     writeOptionalField(
-        "set2ExpirationTime",
-        set2ExpirationTime,
-        writeUnsignedLong(writeBuffer, 32),
-        getControlFlags().getSet1KeyCountKeyParametersPresent());
+        "set2ExpirationTime", set2ExpirationTime, writeUnsignedLong(writeBuffer, 32));
 
     // Optional Field (set2KeyCount) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "set2KeyCount",
-        set2KeyCount,
-        writeUnsignedShort(writeBuffer, 8),
-        getControlFlags().getSet1KeyCountKeyParametersPresent());
+    writeOptionalField("set2KeyCount", set2KeyCount, writeUnsignedShort(writeBuffer, 8));
 
     // Array Field (set2Keys)
     writeComplexTypeArrayField("set2Keys", set2Keys, writeBuffer);
@@ -363,8 +330,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
         set2ActivationTime,
         set2ExpirationTime,
         set2KeyCount,
-        set2Keys,
-        apduLength);
+        set2Keys);
   }
 
   public static class NLMUpdateKeyUpdateBuilderImpl implements NLM.NLMBuilder {
@@ -379,7 +345,6 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     private final Long set2ExpirationTime;
     private final Short set2KeyCount;
     private final List<NLMUpdateKeyUpdateKeyEntry> set2Keys;
-    private final Integer apduLength;
 
     public NLMUpdateKeyUpdateBuilderImpl(
         NLMUpdateKeyUpdateControlFlags controlFlags,
@@ -392,8 +357,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
         Long set2ActivationTime,
         Long set2ExpirationTime,
         Short set2KeyCount,
-        List<NLMUpdateKeyUpdateKeyEntry> set2Keys,
-        Integer apduLength) {
+        List<NLMUpdateKeyUpdateKeyEntry> set2Keys) {
       this.controlFlags = controlFlags;
       this.set1KeyRevision = set1KeyRevision;
       this.set1ActivationTime = set1ActivationTime;
@@ -405,11 +369,9 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
       this.set2ExpirationTime = set2ExpirationTime;
       this.set2KeyCount = set2KeyCount;
       this.set2Keys = set2Keys;
-      this.apduLength = apduLength;
     }
 
-    public NLMUpdateKeyUpdate build(Integer apduLength) {
-
+    public NLMUpdateKeyUpdate build() {
       NLMUpdateKeyUpdate nLMUpdateKeyUpdate =
           new NLMUpdateKeyUpdate(
               controlFlags,
@@ -422,8 +384,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
               set2ActivationTime,
               set2ExpirationTime,
               set2KeyCount,
-              set2Keys,
-              apduLength);
+              set2Keys);
       return nLMUpdateKeyUpdate;
     }
   }

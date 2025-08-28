@@ -50,21 +50,13 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
   // Properties.
   protected final List<BACnetEventNotificationSubscription> subscribedRecipients;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSubscribedRecipients(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetEventNotificationSubscription> subscribedRecipients,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetEventNotificationSubscription> subscribedRecipients) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.subscribedRecipients = subscribedRecipients;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetEventNotificationSubscription> getSubscribedRecipients() {
@@ -128,39 +120,23 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataSubscribedRecipients");
     // Create the instance
-    return new BACnetConstructedDataSubscribedRecipientsBuilderImpl(
-        subscribedRecipients, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataSubscribedRecipientsBuilderImpl(subscribedRecipients);
   }
 
   public static class BACnetConstructedDataSubscribedRecipientsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetEventNotificationSubscription> subscribedRecipients;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSubscribedRecipientsBuilderImpl(
-        List<BACnetEventNotificationSubscription> subscribedRecipients,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetEventNotificationSubscription> subscribedRecipients) {
       this.subscribedRecipients = subscribedRecipients;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSubscribedRecipients build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSubscribedRecipients bACnetConstructedDataSubscribedRecipients =
           new BACnetConstructedDataSubscribedRecipients(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              subscribedRecipients,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, subscribedRecipients);
       return bACnetConstructedDataSubscribedRecipients;
     }
   }

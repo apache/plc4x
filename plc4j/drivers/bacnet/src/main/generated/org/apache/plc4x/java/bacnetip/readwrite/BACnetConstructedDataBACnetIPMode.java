@@ -49,21 +49,13 @@ public class BACnetConstructedDataBACnetIPMode extends BACnetConstructedData imp
   // Properties.
   protected final BACnetIPModeTagged bacnetIpMode;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBACnetIPMode(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetIPModeTagged bacnetIpMode,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetIPModeTagged bacnetIpMode) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.bacnetIpMode = bacnetIpMode;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetIPModeTagged getBacnetIpMode() {
@@ -134,34 +126,22 @@ public class BACnetConstructedDataBACnetIPMode extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataBACnetIPMode");
     // Create the instance
-    return new BACnetConstructedDataBACnetIPModeBuilderImpl(
-        bacnetIpMode, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBACnetIPModeBuilderImpl(bacnetIpMode);
   }
 
   public static class BACnetConstructedDataBACnetIPModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetIPModeTagged bacnetIpMode;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBACnetIPModeBuilderImpl(
-        BACnetIPModeTagged bacnetIpMode,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataBACnetIPModeBuilderImpl(BACnetIPModeTagged bacnetIpMode) {
       this.bacnetIpMode = bacnetIpMode;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBACnetIPMode build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBACnetIPMode bACnetConstructedDataBACnetIPMode =
           new BACnetConstructedDataBACnetIPMode(
-              openingTag, peekedTagHeader, closingTag, bacnetIpMode, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, bacnetIpMode);
       return bACnetConstructedDataBACnetIPMode;
     }
   }

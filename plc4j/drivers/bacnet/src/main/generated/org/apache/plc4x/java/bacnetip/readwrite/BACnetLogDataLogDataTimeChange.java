@@ -42,18 +42,13 @@ public class BACnetLogDataLogDataTimeChange extends BACnetLogData implements Mes
   // Properties.
   protected final BACnetContextTagReal timeChange;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogDataLogDataTimeChange(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagReal timeChange,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagReal timeChange) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.timeChange = timeChange;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagReal getTimeChange() {
@@ -108,28 +103,21 @@ public class BACnetLogDataLogDataTimeChange extends BACnetLogData implements Mes
 
     readBuffer.closeContext("BACnetLogDataLogDataTimeChange");
     // Create the instance
-    return new BACnetLogDataLogDataTimeChangeBuilderImpl(timeChange, tagNumber);
+    return new BACnetLogDataLogDataTimeChangeBuilderImpl(timeChange);
   }
 
   public static class BACnetLogDataLogDataTimeChangeBuilderImpl
       implements BACnetLogData.BACnetLogDataBuilder {
     private final BACnetContextTagReal timeChange;
-    private final Short tagNumber;
 
-    public BACnetLogDataLogDataTimeChangeBuilderImpl(
-        BACnetContextTagReal timeChange, Short tagNumber) {
+    public BACnetLogDataLogDataTimeChangeBuilderImpl(BACnetContextTagReal timeChange) {
       this.timeChange = timeChange;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetLogDataLogDataTimeChange build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetLogDataLogDataTimeChange bACnetLogDataLogDataTimeChange =
-          new BACnetLogDataLogDataTimeChange(
-              openingTag, peekedTagHeader, closingTag, timeChange, tagNumber);
+          new BACnetLogDataLogDataTimeChange(openingTag, peekedTagHeader, closingTag, timeChange);
       return bACnetLogDataLogDataTimeChange;
     }
   }

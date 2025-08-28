@@ -202,14 +202,14 @@
 ]
 
 [type BACnetTagPayloadBoolean(uint 32 actualLength)
-    // TODO: example [state uint 32 actualLength]
-    // [state bit value 'actualLength == 1']
-    [virtual bit value   'actualLength == 1'    ]
-    [virtual bit isTrue  'value'                ]
-    [virtual bit isFalse '!value'               ]
+    [state       actualLength                       ]
+    [virtual bit value          'actualLength == 1' ]
+    [virtual bit isTrue         'value'             ]
+    [virtual bit isFalse        '!value'            ]
 ]
 
 [type BACnetTagPayloadUnsignedInteger(uint 32 actualLength)
+    [state                  actualLength                         ]
     [virtual    bit         isUint8         'actualLength == 1'  ]
     [optional   uint  8     valueUint8      'isUint8'            ]
     [virtual    bit         isUint16        'actualLength == 2'  ]
@@ -231,6 +231,7 @@
 ]
 
 [type BACnetTagPayloadSignedInteger(uint 32 actualLength)
+    [state                  actualLength                         ]
     [virtual    bit         isInt8          'actualLength == 1'  ]
     [optional   int 8       valueInt8       'isInt8'             ]
     [virtual    bit         isInt16         'actualLength == 2'  ]
@@ -264,11 +265,12 @@
 ]
 
 [type BACnetTagPayloadCharacterString(uint 32 actualLength)
-    [simple     BACnetCharacterEncoding      encoding]
+    [state                                   actualLength                            ]
+    [simple     BACnetCharacterEncoding      encoding                                ]
     // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
     [virtual    uint     16                  actualLengthInBit 'actualLength * 8 - 8']
     // TODO: call to string on encoding or add type conversion so we can use the enum above
-    [simple     vstring 'actualLengthInBit'  value encoding='"UTF-8"']
+    [simple     vstring 'actualLengthInBit'  value                 encoding='"UTF-8"']
 ]
 
 [type BACnetTagPayloadBitString(uint 32 actualLength)

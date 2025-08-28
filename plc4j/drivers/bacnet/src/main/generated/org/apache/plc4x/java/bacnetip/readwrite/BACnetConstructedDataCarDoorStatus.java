@@ -51,23 +51,15 @@ public class BACnetConstructedDataCarDoorStatus extends BACnetConstructedData im
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetDoorStatusTagged> carDoorStatus;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCarDoorStatus(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetDoorStatusTagged> carDoorStatus,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetDoorStatusTagged> carDoorStatus) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.carDoorStatus = carDoorStatus;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -96,11 +88,7 @@ public class BACnetConstructedDataCarDoorStatus extends BACnetConstructedData im
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (carDoorStatus)
     writeComplexTypeArrayField("carDoorStatus", carDoorStatus, writeBuffer);
@@ -173,43 +161,26 @@ public class BACnetConstructedDataCarDoorStatus extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataCarDoorStatus");
     // Create the instance
-    return new BACnetConstructedDataCarDoorStatusBuilderImpl(
-        numberOfDataElements, carDoorStatus, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCarDoorStatusBuilderImpl(numberOfDataElements, carDoorStatus);
   }
 
   public static class BACnetConstructedDataCarDoorStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetDoorStatusTagged> carDoorStatus;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCarDoorStatusBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetDoorStatusTagged> carDoorStatus,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetDoorStatusTagged> carDoorStatus) {
       this.numberOfDataElements = numberOfDataElements;
       this.carDoorStatus = carDoorStatus;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCarDoorStatus build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCarDoorStatus bACnetConstructedDataCarDoorStatus =
           new BACnetConstructedDataCarDoorStatus(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              carDoorStatus,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, carDoorStatus);
       return bACnetConstructedDataCarDoorStatus;
     }
   }

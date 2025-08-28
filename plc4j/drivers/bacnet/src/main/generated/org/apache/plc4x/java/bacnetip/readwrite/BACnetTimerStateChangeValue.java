@@ -42,14 +42,9 @@ public abstract class BACnetTimerStateChangeValue implements Message {
   // Properties.
   protected final BACnetTagHeader peekedTagHeader;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
-  public BACnetTimerStateChangeValue(
-      BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+  public BACnetTimerStateChangeValue(BACnetTagHeader peekedTagHeader) {
     super();
     this.peekedTagHeader = peekedTagHeader;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetTagHeader getPeekedTagHeader() {
@@ -232,14 +227,12 @@ public abstract class BACnetTimerStateChangeValue implements Message {
 
     readBuffer.closeContext("BACnetTimerStateChangeValue");
     // Create the instance
-    BACnetTimerStateChangeValue _bACnetTimerStateChangeValue =
-        builder.build(peekedTagHeader, objectTypeArgument);
+    BACnetTimerStateChangeValue _bACnetTimerStateChangeValue = builder.build(peekedTagHeader);
     return _bACnetTimerStateChangeValue;
   }
 
   public interface BACnetTimerStateChangeValueBuilder {
-    BACnetTimerStateChangeValue build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument);
+    BACnetTimerStateChangeValue build(BACnetTagHeader peekedTagHeader);
   }
 
   @Override

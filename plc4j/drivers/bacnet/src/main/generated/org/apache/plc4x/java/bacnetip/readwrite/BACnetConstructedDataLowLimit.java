@@ -49,21 +49,13 @@ public class BACnetConstructedDataLowLimit extends BACnetConstructedData impleme
   // Properties.
   protected final BACnetApplicationTagReal lowLimit;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLowLimit(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal lowLimit,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal lowLimit) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lowLimit = lowLimit;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getLowLimit() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataLowLimit extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataLowLimit");
     // Create the instance
-    return new BACnetConstructedDataLowLimitBuilderImpl(lowLimit, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLowLimitBuilderImpl(lowLimit);
   }
 
   public static class BACnetConstructedDataLowLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal lowLimit;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLowLimitBuilderImpl(
-        BACnetApplicationTagReal lowLimit,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLowLimitBuilderImpl(BACnetApplicationTagReal lowLimit) {
       this.lowLimit = lowLimit;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLowLimit build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLowLimit bACnetConstructedDataLowLimit =
-          new BACnetConstructedDataLowLimit(
-              openingTag, peekedTagHeader, closingTag, lowLimit, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataLowLimit(openingTag, peekedTagHeader, closingTag, lowLimit);
       return bACnetConstructedDataLowLimit;
     }
   }

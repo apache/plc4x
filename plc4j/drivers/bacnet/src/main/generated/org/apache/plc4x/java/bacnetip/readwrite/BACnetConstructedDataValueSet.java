@@ -49,21 +49,13 @@ public class BACnetConstructedDataValueSet extends BACnetConstructedData impleme
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger valueSet;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataValueSet(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger valueSet,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger valueSet) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.valueSet = valueSet;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getValueSet() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataValueSet extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataValueSet");
     // Create the instance
-    return new BACnetConstructedDataValueSetBuilderImpl(valueSet, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataValueSetBuilderImpl(valueSet);
   }
 
   public static class BACnetConstructedDataValueSetBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger valueSet;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataValueSetBuilderImpl(
-        BACnetApplicationTagUnsignedInteger valueSet,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataValueSetBuilderImpl(BACnetApplicationTagUnsignedInteger valueSet) {
       this.valueSet = valueSet;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataValueSet build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataValueSet bACnetConstructedDataValueSet =
-          new BACnetConstructedDataValueSet(
-              openingTag, peekedTagHeader, closingTag, valueSet, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataValueSet(openingTag, peekedTagHeader, closingTag, valueSet);
       return bACnetConstructedDataValueSet;
     }
   }

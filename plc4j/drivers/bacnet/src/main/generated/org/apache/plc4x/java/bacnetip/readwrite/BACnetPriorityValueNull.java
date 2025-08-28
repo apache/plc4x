@@ -42,16 +42,10 @@ public class BACnetPriorityValueNull extends BACnetPriorityValue implements Mess
   // Properties.
   protected final BACnetApplicationTagNull nullValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueNull(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagNull nullValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagNull nullValue) {
+    super(peekedTagHeader);
     this.nullValue = nullValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagNull getNullValue() {
@@ -103,24 +97,20 @@ public class BACnetPriorityValueNull extends BACnetPriorityValue implements Mess
 
     readBuffer.closeContext("BACnetPriorityValueNull");
     // Create the instance
-    return new BACnetPriorityValueNullBuilderImpl(nullValue, objectTypeArgument);
+    return new BACnetPriorityValueNullBuilderImpl(nullValue);
   }
 
   public static class BACnetPriorityValueNullBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagNull nullValue;
-    private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueNullBuilderImpl(
-        BACnetApplicationTagNull nullValue, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueNullBuilderImpl(BACnetApplicationTagNull nullValue) {
       this.nullValue = nullValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueNull build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueNull build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueNull bACnetPriorityValueNull =
-          new BACnetPriorityValueNull(peekedTagHeader, nullValue, objectTypeArgument);
+          new BACnetPriorityValueNull(peekedTagHeader, nullValue);
       return bACnetPriorityValueNull;
     }
   }

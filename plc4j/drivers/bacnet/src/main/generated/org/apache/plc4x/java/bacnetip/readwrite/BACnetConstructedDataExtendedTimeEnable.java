@@ -50,21 +50,13 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
   // Properties.
   protected final BACnetApplicationTagBoolean extendedTimeEnable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataExtendedTimeEnable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean extendedTimeEnable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean extendedTimeEnable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.extendedTimeEnable = extendedTimeEnable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getExtendedTimeEnable() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataExtendedTimeEnable");
     // Create the instance
-    return new BACnetConstructedDataExtendedTimeEnableBuilderImpl(
-        extendedTimeEnable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataExtendedTimeEnableBuilderImpl(extendedTimeEnable);
   }
 
   public static class BACnetConstructedDataExtendedTimeEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean extendedTimeEnable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataExtendedTimeEnableBuilderImpl(
-        BACnetApplicationTagBoolean extendedTimeEnable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean extendedTimeEnable) {
       this.extendedTimeEnable = extendedTimeEnable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataExtendedTimeEnable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataExtendedTimeEnable bACnetConstructedDataExtendedTimeEnable =
           new BACnetConstructedDataExtendedTimeEnable(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              extendedTimeEnable,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, extendedTimeEnable);
       return bACnetConstructedDataExtendedTimeEnable;
     }
   }

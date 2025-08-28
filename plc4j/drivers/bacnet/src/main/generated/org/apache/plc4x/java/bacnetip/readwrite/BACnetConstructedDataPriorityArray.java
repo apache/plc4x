@@ -49,21 +49,13 @@ public class BACnetConstructedDataPriorityArray extends BACnetConstructedData im
   // Properties.
   protected final BACnetPriorityArray priorityArray;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPriorityArray(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetPriorityArray priorityArray,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetPriorityArray priorityArray) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.priorityArray = priorityArray;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetPriorityArray getPriorityArray() {
@@ -137,39 +129,22 @@ public class BACnetConstructedDataPriorityArray extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataPriorityArray");
     // Create the instance
-    return new BACnetConstructedDataPriorityArrayBuilderImpl(
-        priorityArray, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPriorityArrayBuilderImpl(priorityArray);
   }
 
   public static class BACnetConstructedDataPriorityArrayBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetPriorityArray priorityArray;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPriorityArrayBuilderImpl(
-        BACnetPriorityArray priorityArray,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataPriorityArrayBuilderImpl(BACnetPriorityArray priorityArray) {
       this.priorityArray = priorityArray;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataPriorityArray build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPriorityArray bACnetConstructedDataPriorityArray =
           new BACnetConstructedDataPriorityArray(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              priorityArray,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, priorityArray);
       return bACnetConstructedDataPriorityArray;
     }
   }

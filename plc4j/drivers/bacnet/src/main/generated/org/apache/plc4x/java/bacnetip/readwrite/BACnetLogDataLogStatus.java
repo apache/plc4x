@@ -42,18 +42,13 @@ public class BACnetLogDataLogStatus extends BACnetLogData implements Message {
   // Properties.
   protected final BACnetLogStatusTagged logStatus;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogDataLogStatus(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLogStatusTagged logStatus,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetLogStatusTagged logStatus) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.logStatus = logStatus;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetLogStatusTagged getLogStatus() {
@@ -107,26 +102,21 @@ public class BACnetLogDataLogStatus extends BACnetLogData implements Message {
 
     readBuffer.closeContext("BACnetLogDataLogStatus");
     // Create the instance
-    return new BACnetLogDataLogStatusBuilderImpl(logStatus, tagNumber);
+    return new BACnetLogDataLogStatusBuilderImpl(logStatus);
   }
 
   public static class BACnetLogDataLogStatusBuilderImpl
       implements BACnetLogData.BACnetLogDataBuilder {
     private final BACnetLogStatusTagged logStatus;
-    private final Short tagNumber;
 
-    public BACnetLogDataLogStatusBuilderImpl(BACnetLogStatusTagged logStatus, Short tagNumber) {
+    public BACnetLogDataLogStatusBuilderImpl(BACnetLogStatusTagged logStatus) {
       this.logStatus = logStatus;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetLogDataLogStatus build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetLogDataLogStatus bACnetLogDataLogStatus =
-          new BACnetLogDataLogStatus(openingTag, peekedTagHeader, closingTag, logStatus, tagNumber);
+          new BACnetLogDataLogStatus(openingTag, peekedTagHeader, closingTag, logStatus);
       return bACnetLogDataLogStatus;
     }
   }

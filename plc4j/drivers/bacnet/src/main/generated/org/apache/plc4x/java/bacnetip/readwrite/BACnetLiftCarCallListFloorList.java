@@ -42,19 +42,14 @@ public class BACnetLiftCarCallListFloorList implements Message {
   protected final List<BACnetApplicationTagUnsignedInteger> floorNumbers;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLiftCarCallListFloorList(
       BACnetOpeningTag openingTag,
       List<BACnetApplicationTagUnsignedInteger> floorNumbers,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.floorNumbers = floorNumbers;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -148,7 +143,7 @@ public class BACnetLiftCarCallListFloorList implements Message {
     // Create the instance
     BACnetLiftCarCallListFloorList _bACnetLiftCarCallListFloorList;
     _bACnetLiftCarCallListFloorList =
-        new BACnetLiftCarCallListFloorList(openingTag, floorNumbers, closingTag, tagNumber);
+        new BACnetLiftCarCallListFloorList(openingTag, floorNumbers, closingTag);
     return _bACnetLiftCarCallListFloorList;
   }
 

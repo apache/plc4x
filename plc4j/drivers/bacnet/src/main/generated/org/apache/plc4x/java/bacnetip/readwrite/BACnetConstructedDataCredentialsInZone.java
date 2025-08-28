@@ -50,21 +50,13 @@ public class BACnetConstructedDataCredentialsInZone extends BACnetConstructedDat
   // Properties.
   protected final List<BACnetDeviceObjectReference> credentialsInZone;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCredentialsInZone(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetDeviceObjectReference> credentialsInZone,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetDeviceObjectReference> credentialsInZone) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.credentialsInZone = credentialsInZone;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetDeviceObjectReference> getCredentialsInZone() {
@@ -127,39 +119,23 @@ public class BACnetConstructedDataCredentialsInZone extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataCredentialsInZone");
     // Create the instance
-    return new BACnetConstructedDataCredentialsInZoneBuilderImpl(
-        credentialsInZone, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCredentialsInZoneBuilderImpl(credentialsInZone);
   }
 
   public static class BACnetConstructedDataCredentialsInZoneBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDeviceObjectReference> credentialsInZone;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCredentialsInZoneBuilderImpl(
-        List<BACnetDeviceObjectReference> credentialsInZone,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetDeviceObjectReference> credentialsInZone) {
       this.credentialsInZone = credentialsInZone;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCredentialsInZone build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCredentialsInZone bACnetConstructedDataCredentialsInZone =
           new BACnetConstructedDataCredentialsInZone(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              credentialsInZone,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, credentialsInZone);
       return bACnetConstructedDataCredentialsInZone;
     }
   }

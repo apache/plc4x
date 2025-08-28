@@ -43,21 +43,14 @@ public class CBusPointToMultiPointCommandNormal extends CBusPointToMultiPointCom
   // Properties.
   protected final ApplicationIdContainer application;
   protected final SALData salData;
-
-  // Arguments.
-  protected final CBusOptions cBusOptions;
   // Reserved Fields
   private Byte reservedField0;
 
   public CBusPointToMultiPointCommandNormal(
-      byte peekedApplication,
-      ApplicationIdContainer application,
-      SALData salData,
-      CBusOptions cBusOptions) {
-    super(peekedApplication, cBusOptions);
+      byte peekedApplication, ApplicationIdContainer application, SALData salData) {
+    super(peekedApplication);
     this.application = application;
     this.salData = salData;
-    this.cBusOptions = cBusOptions;
   }
 
   public ApplicationIdContainer getApplication() {
@@ -145,33 +138,25 @@ public class CBusPointToMultiPointCommandNormal extends CBusPointToMultiPointCom
 
     readBuffer.closeContext("CBusPointToMultiPointCommandNormal");
     // Create the instance
-    return new CBusPointToMultiPointCommandNormalBuilderImpl(
-        application, salData, cBusOptions, reservedField0);
+    return new CBusPointToMultiPointCommandNormalBuilderImpl(application, salData, reservedField0);
   }
 
   public static class CBusPointToMultiPointCommandNormalBuilderImpl
       implements CBusPointToMultiPointCommand.CBusPointToMultiPointCommandBuilder {
     private final ApplicationIdContainer application;
     private final SALData salData;
-    private final CBusOptions cBusOptions;
     private final Byte reservedField0;
 
     public CBusPointToMultiPointCommandNormalBuilderImpl(
-        ApplicationIdContainer application,
-        SALData salData,
-        CBusOptions cBusOptions,
-        Byte reservedField0) {
+        ApplicationIdContainer application, SALData salData, Byte reservedField0) {
       this.application = application;
       this.salData = salData;
-      this.cBusOptions = cBusOptions;
       this.reservedField0 = reservedField0;
     }
 
-    public CBusPointToMultiPointCommandNormal build(
-        byte peekedApplication, CBusOptions cBusOptions) {
+    public CBusPointToMultiPointCommandNormal build(byte peekedApplication) {
       CBusPointToMultiPointCommandNormal cBusPointToMultiPointCommandNormal =
-          new CBusPointToMultiPointCommandNormal(
-              peekedApplication, application, salData, cBusOptions);
+          new CBusPointToMultiPointCommandNormal(peekedApplication, application, salData);
       cBusPointToMultiPointCommandNormal.reservedField0 = reservedField0;
       return cBusPointToMultiPointCommandNormal;
     }

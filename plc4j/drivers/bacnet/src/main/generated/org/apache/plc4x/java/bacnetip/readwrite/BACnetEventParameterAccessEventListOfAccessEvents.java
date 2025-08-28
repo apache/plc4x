@@ -42,19 +42,14 @@ public class BACnetEventParameterAccessEventListOfAccessEvents implements Messag
   protected final List<BACnetDeviceObjectPropertyReference> listOfAccessEvents;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventParameterAccessEventListOfAccessEvents(
       BACnetOpeningTag openingTag,
       List<BACnetDeviceObjectPropertyReference> listOfAccessEvents,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listOfAccessEvents = listOfAccessEvents;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -147,7 +142,7 @@ public class BACnetEventParameterAccessEventListOfAccessEvents implements Messag
         _bACnetEventParameterAccessEventListOfAccessEvents;
     _bACnetEventParameterAccessEventListOfAccessEvents =
         new BACnetEventParameterAccessEventListOfAccessEvents(
-            openingTag, listOfAccessEvents, closingTag, tagNumber);
+            openingTag, listOfAccessEvents, closingTag);
     return _bACnetEventParameterAccessEventListOfAccessEvents;
   }
 

@@ -45,7 +45,6 @@ public class HVACStatusFlags implements Message {
   protected final boolean fanActive;
   protected final boolean heatingPlant;
   protected final boolean coolingPlant;
-
   // Reserved Fields
   private Boolean reservedField0;
 

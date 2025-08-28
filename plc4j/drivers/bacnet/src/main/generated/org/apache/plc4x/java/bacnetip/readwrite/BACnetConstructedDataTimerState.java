@@ -49,21 +49,13 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
   // Properties.
   protected final BACnetTimerStateTagged timerState;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTimerState(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetTimerStateTagged timerState,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetTimerStateTagged timerState) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.timerState = timerState;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetTimerStateTagged getTimerState() {
@@ -134,34 +126,21 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataTimerState");
     // Create the instance
-    return new BACnetConstructedDataTimerStateBuilderImpl(
-        timerState, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTimerStateBuilderImpl(timerState);
   }
 
   public static class BACnetConstructedDataTimerStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimerStateTagged timerState;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimerStateBuilderImpl(
-        BACnetTimerStateTagged timerState,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataTimerStateBuilderImpl(BACnetTimerStateTagged timerState) {
       this.timerState = timerState;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTimerState build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTimerState bACnetConstructedDataTimerState =
-          new BACnetConstructedDataTimerState(
-              openingTag, peekedTagHeader, closingTag, timerState, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataTimerState(openingTag, peekedTagHeader, closingTag, timerState);
       return bACnetConstructedDataTimerState;
     }
   }

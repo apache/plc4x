@@ -49,21 +49,13 @@ public class BACnetConstructedDataAckRequired extends BACnetConstructedData impl
   // Properties.
   protected final BACnetEventTransitionBitsTagged ackRequired;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAckRequired(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetEventTransitionBitsTagged ackRequired,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetEventTransitionBitsTagged ackRequired) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.ackRequired = ackRequired;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetEventTransitionBitsTagged getAckRequired() {
@@ -134,34 +126,23 @@ public class BACnetConstructedDataAckRequired extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataAckRequired");
     // Create the instance
-    return new BACnetConstructedDataAckRequiredBuilderImpl(
-        ackRequired, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAckRequiredBuilderImpl(ackRequired);
   }
 
   public static class BACnetConstructedDataAckRequiredBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEventTransitionBitsTagged ackRequired;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAckRequiredBuilderImpl(
-        BACnetEventTransitionBitsTagged ackRequired,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetEventTransitionBitsTagged ackRequired) {
       this.ackRequired = ackRequired;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAckRequired build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAckRequired bACnetConstructedDataAckRequired =
           new BACnetConstructedDataAckRequired(
-              openingTag, peekedTagHeader, closingTag, ackRequired, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, ackRequired);
       return bACnetConstructedDataAckRequired;
     }
   }

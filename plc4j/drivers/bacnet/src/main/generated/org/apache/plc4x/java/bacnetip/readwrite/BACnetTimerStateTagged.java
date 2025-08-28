@@ -41,17 +41,10 @@ public class BACnetTimerStateTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetTimerState value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetTimerStateTagged(
-      BACnetTagHeader header, BACnetTimerState value, Short tagNumber, TagClass tagClass) {
+  public BACnetTimerStateTagged(BACnetTagHeader header, BACnetTimerState value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -133,7 +126,7 @@ public class BACnetTimerStateTagged implements Message {
     readBuffer.closeContext("BACnetTimerStateTagged");
     // Create the instance
     BACnetTimerStateTagged _bACnetTimerStateTagged;
-    _bACnetTimerStateTagged = new BACnetTimerStateTagged(header, value, tagNumber, tagClass);
+    _bACnetTimerStateTagged = new BACnetTimerStateTagged(header, value);
     return _bACnetTimerStateTagged;
   }
 

@@ -47,17 +47,13 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
   protected final BACnetVTClassTagged vtClass;
   protected final BACnetApplicationTagUnsignedInteger localVtSessionIdentifier;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestVTOpen(
+      long serviceRequestLength,
       BACnetVTClassTagged vtClass,
-      BACnetApplicationTagUnsignedInteger localVtSessionIdentifier,
-      Long serviceRequestLength) {
+      BACnetApplicationTagUnsignedInteger localVtSessionIdentifier) {
     super(serviceRequestLength);
     this.vtClass = vtClass;
     this.localVtSessionIdentifier = localVtSessionIdentifier;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetVTClassTagged getVtClass() {
@@ -132,30 +128,24 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestVTOpen");
     // Create the instance
-    return new BACnetConfirmedServiceRequestVTOpenBuilderImpl(
-        vtClass, localVtSessionIdentifier, serviceRequestLength);
+    return new BACnetConfirmedServiceRequestVTOpenBuilderImpl(vtClass, localVtSessionIdentifier);
   }
 
   public static class BACnetConfirmedServiceRequestVTOpenBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetVTClassTagged vtClass;
     private final BACnetApplicationTagUnsignedInteger localVtSessionIdentifier;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestVTOpenBuilderImpl(
-        BACnetVTClassTagged vtClass,
-        BACnetApplicationTagUnsignedInteger localVtSessionIdentifier,
-        Long serviceRequestLength) {
+        BACnetVTClassTagged vtClass, BACnetApplicationTagUnsignedInteger localVtSessionIdentifier) {
       this.vtClass = vtClass;
       this.localVtSessionIdentifier = localVtSessionIdentifier;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestVTOpen build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestVTOpen build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestVTOpen bACnetConfirmedServiceRequestVTOpen =
           new BACnetConfirmedServiceRequestVTOpen(
-              vtClass, localVtSessionIdentifier, serviceRequestLength);
+              serviceRequestLength, vtClass, localVtSessionIdentifier);
       return bACnetConfirmedServiceRequestVTOpen;
     }
   }

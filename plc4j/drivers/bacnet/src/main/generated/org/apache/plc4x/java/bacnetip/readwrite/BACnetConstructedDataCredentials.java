@@ -49,21 +49,13 @@ public class BACnetConstructedDataCredentials extends BACnetConstructedData impl
   // Properties.
   protected final List<BACnetDeviceObjectReference> credentials;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCredentials(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetDeviceObjectReference> credentials,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetDeviceObjectReference> credentials) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.credentials = credentials;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetDeviceObjectReference> getCredentials() {
@@ -126,34 +118,23 @@ public class BACnetConstructedDataCredentials extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataCredentials");
     // Create the instance
-    return new BACnetConstructedDataCredentialsBuilderImpl(
-        credentials, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCredentialsBuilderImpl(credentials);
   }
 
   public static class BACnetConstructedDataCredentialsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDeviceObjectReference> credentials;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCredentialsBuilderImpl(
-        List<BACnetDeviceObjectReference> credentials,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetDeviceObjectReference> credentials) {
       this.credentials = credentials;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCredentials build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCredentials bACnetConstructedDataCredentials =
           new BACnetConstructedDataCredentials(
-              openingTag, peekedTagHeader, closingTag, credentials, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, credentials);
       return bACnetConstructedDataCredentials;
     }
   }

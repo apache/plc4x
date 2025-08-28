@@ -50,21 +50,13 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
   // Properties.
   protected final BACnetApplicationTagBoolean linkSpeedAutonegotiate;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLinkSpeedAutonegotiate(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean linkSpeedAutonegotiate,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean linkSpeedAutonegotiate) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.linkSpeedAutonegotiate = linkSpeedAutonegotiate;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getLinkSpeedAutonegotiate() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataLinkSpeedAutonegotiate");
     // Create the instance
-    return new BACnetConstructedDataLinkSpeedAutonegotiateBuilderImpl(
-        linkSpeedAutonegotiate, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLinkSpeedAutonegotiateBuilderImpl(linkSpeedAutonegotiate);
   }
 
   public static class BACnetConstructedDataLinkSpeedAutonegotiateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean linkSpeedAutonegotiate;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLinkSpeedAutonegotiateBuilderImpl(
-        BACnetApplicationTagBoolean linkSpeedAutonegotiate,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean linkSpeedAutonegotiate) {
       this.linkSpeedAutonegotiate = linkSpeedAutonegotiate;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLinkSpeedAutonegotiate build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLinkSpeedAutonegotiate bACnetConstructedDataLinkSpeedAutonegotiate =
           new BACnetConstructedDataLinkSpeedAutonegotiate(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              linkSpeedAutonegotiate,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, linkSpeedAutonegotiate);
       return bACnetConstructedDataLinkSpeedAutonegotiate;
     }
   }

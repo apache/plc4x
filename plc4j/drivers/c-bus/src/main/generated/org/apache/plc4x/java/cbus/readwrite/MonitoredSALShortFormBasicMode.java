@@ -47,9 +47,6 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
   protected final ApplicationIdContainer application;
   protected final SALData salData;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
   public MonitoredSALShortFormBasicMode(
       byte salType,
       byte counts,
@@ -57,16 +54,14 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
       Short networkNumber,
       Byte noCounts,
       ApplicationIdContainer application,
-      SALData salData,
-      CBusOptions cBusOptions) {
-    super(salType, cBusOptions);
+      SALData salData) {
+    super(salType);
     this.counts = counts;
     this.bridgeCount = bridgeCount;
     this.networkNumber = networkNumber;
     this.noCounts = noCounts;
     this.application = application;
     this.salData = salData;
-    this.cBusOptions = cBusOptions;
   }
 
   public byte getCounts() {
@@ -100,18 +95,13 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
     writeBuffer.pushContext("MonitoredSALShortFormBasicMode");
 
     // Optional Field (bridgeCount) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "bridgeCount", bridgeCount, writeUnsignedShort(writeBuffer, 8), (getCounts()) != (0x00));
+    writeOptionalField("bridgeCount", bridgeCount, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (networkNumber) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "networkNumber",
-        networkNumber,
-        writeUnsignedShort(writeBuffer, 8),
-        (getCounts()) != (0x00));
+    writeOptionalField("networkNumber", networkNumber, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (noCounts) (Can be skipped, if the value is null)
-    writeOptionalField("noCounts", noCounts, writeByte(writeBuffer, 8), (getCounts()) == (0x00));
+    writeOptionalField("noCounts", noCounts, writeByte(writeBuffer, 8));
 
     // Simple Field (application)
     writeSimpleEnumField(
@@ -200,7 +190,7 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
     readBuffer.closeContext("MonitoredSALShortFormBasicMode");
     // Create the instance
     return new MonitoredSALShortFormBasicModeBuilderImpl(
-        counts, bridgeCount, networkNumber, noCounts, application, salData, cBusOptions);
+        counts, bridgeCount, networkNumber, noCounts, application, salData);
   }
 
   public static class MonitoredSALShortFormBasicModeBuilderImpl
@@ -211,7 +201,6 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
     private final Byte noCounts;
     private final ApplicationIdContainer application;
     private final SALData salData;
-    private final CBusOptions cBusOptions;
 
     public MonitoredSALShortFormBasicModeBuilderImpl(
         byte counts,
@@ -219,28 +208,19 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
         Short networkNumber,
         Byte noCounts,
         ApplicationIdContainer application,
-        SALData salData,
-        CBusOptions cBusOptions) {
+        SALData salData) {
       this.counts = counts;
       this.bridgeCount = bridgeCount;
       this.networkNumber = networkNumber;
       this.noCounts = noCounts;
       this.application = application;
       this.salData = salData;
-      this.cBusOptions = cBusOptions;
     }
 
-    public MonitoredSALShortFormBasicMode build(byte salType, CBusOptions cBusOptions) {
+    public MonitoredSALShortFormBasicMode build(byte salType) {
       MonitoredSALShortFormBasicMode monitoredSALShortFormBasicMode =
           new MonitoredSALShortFormBasicMode(
-              salType,
-              counts,
-              bridgeCount,
-              networkNumber,
-              noCounts,
-              application,
-              salData,
-              cBusOptions);
+              salType, counts, bridgeCount, networkNumber, noCounts, application, salData);
       return monitoredSALShortFormBasicMode;
     }
   }

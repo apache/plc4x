@@ -49,21 +49,13 @@ public class BACnetConstructedDataLastCommandTime extends BACnetConstructedData 
   // Properties.
   protected final BACnetTimeStamp lastCommandTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLastCommandTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetTimeStamp lastCommandTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetTimeStamp lastCommandTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lastCommandTime = lastCommandTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetTimeStamp getLastCommandTime() {
@@ -130,39 +122,22 @@ public class BACnetConstructedDataLastCommandTime extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataLastCommandTime");
     // Create the instance
-    return new BACnetConstructedDataLastCommandTimeBuilderImpl(
-        lastCommandTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLastCommandTimeBuilderImpl(lastCommandTime);
   }
 
   public static class BACnetConstructedDataLastCommandTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimeStamp lastCommandTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastCommandTimeBuilderImpl(
-        BACnetTimeStamp lastCommandTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLastCommandTimeBuilderImpl(BACnetTimeStamp lastCommandTime) {
       this.lastCommandTime = lastCommandTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLastCommandTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLastCommandTime bACnetConstructedDataLastCommandTime =
           new BACnetConstructedDataLastCommandTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              lastCommandTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, lastCommandTime);
       return bACnetConstructedDataLastCommandTime;
     }
   }

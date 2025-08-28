@@ -42,19 +42,12 @@ public class BACnetSecurityKeySetKeyIds implements Message {
   protected final List<BACnetKeyIdentifier> keyIds;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetSecurityKeySetKeyIds(
-      BACnetOpeningTag openingTag,
-      List<BACnetKeyIdentifier> keyIds,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetOpeningTag openingTag, List<BACnetKeyIdentifier> keyIds, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.keyIds = keyIds;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -143,8 +136,7 @@ public class BACnetSecurityKeySetKeyIds implements Message {
     readBuffer.closeContext("BACnetSecurityKeySetKeyIds");
     // Create the instance
     BACnetSecurityKeySetKeyIds _bACnetSecurityKeySetKeyIds;
-    _bACnetSecurityKeySetKeyIds =
-        new BACnetSecurityKeySetKeyIds(openingTag, keyIds, closingTag, tagNumber);
+    _bACnetSecurityKeySetKeyIds = new BACnetSecurityKeySetKeyIds(openingTag, keyIds, closingTag);
     return _bACnetSecurityKeySetKeyIds;
   }
 

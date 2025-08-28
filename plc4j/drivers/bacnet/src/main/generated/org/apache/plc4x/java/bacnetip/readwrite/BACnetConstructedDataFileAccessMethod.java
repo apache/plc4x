@@ -50,21 +50,13 @@ public class BACnetConstructedDataFileAccessMethod extends BACnetConstructedData
   // Properties.
   protected final BACnetFileAccessMethodTagged fileAccessMethod;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataFileAccessMethod(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetFileAccessMethodTagged fileAccessMethod,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetFileAccessMethodTagged fileAccessMethod) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.fileAccessMethod = fileAccessMethod;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetFileAccessMethodTagged getFileAccessMethod() {
@@ -135,39 +127,23 @@ public class BACnetConstructedDataFileAccessMethod extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataFileAccessMethod");
     // Create the instance
-    return new BACnetConstructedDataFileAccessMethodBuilderImpl(
-        fileAccessMethod, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFileAccessMethodBuilderImpl(fileAccessMethod);
   }
 
   public static class BACnetConstructedDataFileAccessMethodBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetFileAccessMethodTagged fileAccessMethod;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataFileAccessMethodBuilderImpl(
-        BACnetFileAccessMethodTagged fileAccessMethod,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetFileAccessMethodTagged fileAccessMethod) {
       this.fileAccessMethod = fileAccessMethod;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataFileAccessMethod build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataFileAccessMethod bACnetConstructedDataFileAccessMethod =
           new BACnetConstructedDataFileAccessMethod(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              fileAccessMethod,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, fileAccessMethod);
       return bACnetConstructedDataFileAccessMethod;
     }
   }

@@ -50,21 +50,13 @@ public class BACnetConstructedDataAccessEventCredential extends BACnetConstructe
   // Properties.
   protected final BACnetDeviceObjectReference accessEventCredential;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAccessEventCredential(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDeviceObjectReference accessEventCredential,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDeviceObjectReference accessEventCredential) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.accessEventCredential = accessEventCredential;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDeviceObjectReference getAccessEventCredential() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataAccessEventCredential extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataAccessEventCredential");
     // Create the instance
-    return new BACnetConstructedDataAccessEventCredentialBuilderImpl(
-        accessEventCredential, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccessEventCredentialBuilderImpl(accessEventCredential);
   }
 
   public static class BACnetConstructedDataAccessEventCredentialBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference accessEventCredential;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAccessEventCredentialBuilderImpl(
-        BACnetDeviceObjectReference accessEventCredential,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetDeviceObjectReference accessEventCredential) {
       this.accessEventCredential = accessEventCredential;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAccessEventCredential build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAccessEventCredential bACnetConstructedDataAccessEventCredential =
           new BACnetConstructedDataAccessEventCredential(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              accessEventCredential,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, accessEventCredential);
       return bACnetConstructedDataAccessEventCredential;
     }
   }

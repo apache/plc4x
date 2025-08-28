@@ -50,21 +50,13 @@ public class BACnetConstructedDataBBMDBroadcastDistributionTable extends BACnetC
   // Properties.
   protected final List<BACnetBDTEntry> bbmdBroadcastDistributionTable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBBMDBroadcastDistributionTable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetBDTEntry> bbmdBroadcastDistributionTable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetBDTEntry> bbmdBroadcastDistributionTable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.bbmdBroadcastDistributionTable = bbmdBroadcastDistributionTable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetBDTEntry> getBbmdBroadcastDistributionTable() {
@@ -129,39 +121,24 @@ public class BACnetConstructedDataBBMDBroadcastDistributionTable extends BACnetC
     readBuffer.closeContext("BACnetConstructedDataBBMDBroadcastDistributionTable");
     // Create the instance
     return new BACnetConstructedDataBBMDBroadcastDistributionTableBuilderImpl(
-        bbmdBroadcastDistributionTable, tagNumber, arrayIndexArgument);
+        bbmdBroadcastDistributionTable);
   }
 
   public static class BACnetConstructedDataBBMDBroadcastDistributionTableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetBDTEntry> bbmdBroadcastDistributionTable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataBBMDBroadcastDistributionTableBuilderImpl(
-        List<BACnetBDTEntry> bbmdBroadcastDistributionTable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetBDTEntry> bbmdBroadcastDistributionTable) {
       this.bbmdBroadcastDistributionTable = bbmdBroadcastDistributionTable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBBMDBroadcastDistributionTable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBBMDBroadcastDistributionTable
           bACnetConstructedDataBBMDBroadcastDistributionTable =
               new BACnetConstructedDataBBMDBroadcastDistributionTable(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  bbmdBroadcastDistributionTable,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, bbmdBroadcastDistributionTable);
       return bACnetConstructedDataBBMDBroadcastDistributionTable;
     }
   }

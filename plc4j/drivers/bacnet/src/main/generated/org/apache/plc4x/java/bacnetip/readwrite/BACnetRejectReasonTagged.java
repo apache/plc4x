@@ -38,18 +38,20 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BACnetRejectReasonTagged implements Message {
 
   // Properties.
+  protected final long actualLength;
   protected final BACnetRejectReason value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Long actualLength;
-
   public BACnetRejectReasonTagged(
-      BACnetRejectReason value, long proprietaryValue, Long actualLength) {
+      long actualLength, BACnetRejectReason value, long proprietaryValue) {
     super();
+    this.actualLength = actualLength;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.actualLength = actualLength;
+  }
+
+  public long getActualLength() {
+    return actualLength;
   }
 
   public BACnetRejectReason getValue() {
@@ -146,7 +148,7 @@ public class BACnetRejectReasonTagged implements Message {
     readBuffer.closeContext("BACnetRejectReasonTagged");
     // Create the instance
     BACnetRejectReasonTagged _bACnetRejectReasonTagged;
-    _bACnetRejectReasonTagged = new BACnetRejectReasonTagged(value, proprietaryValue, actualLength);
+    _bACnetRejectReasonTagged = new BACnetRejectReasonTagged(actualLength, value, proprietaryValue);
     return _bACnetRejectReasonTagged;
   }
 
@@ -159,14 +161,15 @@ public class BACnetRejectReasonTagged implements Message {
       return false;
     }
     BACnetRejectReasonTagged that = (BACnetRejectReasonTagged) o;
-    return (getValue() == that.getValue())
+    return (getActualLength() == that.getActualLength())
+        && (getValue() == that.getValue())
         && (getProprietaryValue() == that.getProprietaryValue())
         && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getValue(), getProprietaryValue());
+    return Objects.hash(getActualLength(), getValue(), getProprietaryValue());
   }
 
   @Override

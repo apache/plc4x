@@ -49,21 +49,13 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
   // Properties.
   protected final BACnetApplicationTagBoolean changesPending;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataChangesPending(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean changesPending,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean changesPending) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.changesPending = changesPending;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getChangesPending() {
@@ -132,39 +124,23 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataChangesPending");
     // Create the instance
-    return new BACnetConstructedDataChangesPendingBuilderImpl(
-        changesPending, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataChangesPendingBuilderImpl(changesPending);
   }
 
   public static class BACnetConstructedDataChangesPendingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean changesPending;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataChangesPendingBuilderImpl(
-        BACnetApplicationTagBoolean changesPending,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean changesPending) {
       this.changesPending = changesPending;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataChangesPending build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataChangesPending bACnetConstructedDataChangesPending =
           new BACnetConstructedDataChangesPending(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              changesPending,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, changesPending);
       return bACnetConstructedDataChangesPending;
     }
   }

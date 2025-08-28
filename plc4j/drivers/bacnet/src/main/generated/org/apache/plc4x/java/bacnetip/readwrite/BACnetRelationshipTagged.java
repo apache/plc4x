@@ -42,22 +42,12 @@ public class BACnetRelationshipTagged implements Message {
   protected final BACnetRelationship value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetRelationshipTagged(
-      BACnetTagHeader header,
-      BACnetRelationship value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetRelationship value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -180,8 +170,7 @@ public class BACnetRelationshipTagged implements Message {
     readBuffer.closeContext("BACnetRelationshipTagged");
     // Create the instance
     BACnetRelationshipTagged _bACnetRelationshipTagged;
-    _bACnetRelationshipTagged =
-        new BACnetRelationshipTagged(header, value, proprietaryValue, tagNumber, tagClass);
+    _bACnetRelationshipTagged = new BACnetRelationshipTagged(header, value, proprietaryValue);
     return _bACnetRelationshipTagged;
   }
 

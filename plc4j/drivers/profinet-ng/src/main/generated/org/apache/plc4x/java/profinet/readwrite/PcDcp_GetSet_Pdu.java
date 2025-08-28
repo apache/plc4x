@@ -47,7 +47,6 @@ public class PcDcp_GetSet_Pdu extends PnDcp_Pdu implements Message {
   protected final boolean response;
   protected final long xid;
   protected final List<PnDcp_Block> blocks;
-
   // Reserved Fields
   private Byte reservedField0;
   private Byte reservedField1;

@@ -50,21 +50,13 @@ public class BACnetConstructedDataRecordsSinceNotification extends BACnetConstru
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger recordsSinceNotifications;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataRecordsSinceNotification(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger recordsSinceNotifications,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger recordsSinceNotifications) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.recordsSinceNotifications = recordsSinceNotifications;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getRecordsSinceNotifications() {
@@ -137,39 +129,23 @@ public class BACnetConstructedDataRecordsSinceNotification extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataRecordsSinceNotification");
     // Create the instance
-    return new BACnetConstructedDataRecordsSinceNotificationBuilderImpl(
-        recordsSinceNotifications, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataRecordsSinceNotificationBuilderImpl(recordsSinceNotifications);
   }
 
   public static class BACnetConstructedDataRecordsSinceNotificationBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger recordsSinceNotifications;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataRecordsSinceNotificationBuilderImpl(
-        BACnetApplicationTagUnsignedInteger recordsSinceNotifications,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger recordsSinceNotifications) {
       this.recordsSinceNotifications = recordsSinceNotifications;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataRecordsSinceNotification build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataRecordsSinceNotification bACnetConstructedDataRecordsSinceNotification =
           new BACnetConstructedDataRecordsSinceNotification(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              recordsSinceNotifications,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, recordsSinceNotifications);
       return bACnetConstructedDataRecordsSinceNotification;
     }
   }

@@ -42,18 +42,13 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
   // Properties.
   protected final BACnetConstructedData anyValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogRecordLogDatumAnyValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetConstructedData anyValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetConstructedData anyValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.anyValue = anyValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetConstructedData getAnyValue() {
@@ -114,28 +109,21 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
 
     readBuffer.closeContext("BACnetLogRecordLogDatumAnyValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumAnyValueBuilderImpl(anyValue, tagNumber);
+    return new BACnetLogRecordLogDatumAnyValueBuilderImpl(anyValue);
   }
 
   public static class BACnetLogRecordLogDatumAnyValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetConstructedData anyValue;
-    private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumAnyValueBuilderImpl(
-        BACnetConstructedData anyValue, Short tagNumber) {
+    public BACnetLogRecordLogDatumAnyValueBuilderImpl(BACnetConstructedData anyValue) {
       this.anyValue = anyValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetLogRecordLogDatumAnyValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetLogRecordLogDatumAnyValue bACnetLogRecordLogDatumAnyValue =
-          new BACnetLogRecordLogDatumAnyValue(
-              openingTag, peekedTagHeader, closingTag, anyValue, tagNumber);
+          new BACnetLogRecordLogDatumAnyValue(openingTag, peekedTagHeader, closingTag, anyValue);
       return bACnetLogRecordLogDatumAnyValue;
     }
   }

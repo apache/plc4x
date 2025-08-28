@@ -50,21 +50,13 @@ public class BACnetConstructedDataUTCTimeSynchronizationRecipients extends BACne
   // Properties.
   protected final List<BACnetRecipient> utcTimeSynchronizationRecipients;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataUTCTimeSynchronizationRecipients(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetRecipient> utcTimeSynchronizationRecipients,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetRecipient> utcTimeSynchronizationRecipients) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.utcTimeSynchronizationRecipients = utcTimeSynchronizationRecipients;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetRecipient> getUtcTimeSynchronizationRecipients() {
@@ -129,39 +121,24 @@ public class BACnetConstructedDataUTCTimeSynchronizationRecipients extends BACne
     readBuffer.closeContext("BACnetConstructedDataUTCTimeSynchronizationRecipients");
     // Create the instance
     return new BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilderImpl(
-        utcTimeSynchronizationRecipients, tagNumber, arrayIndexArgument);
+        utcTimeSynchronizationRecipients);
   }
 
   public static class BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetRecipient> utcTimeSynchronizationRecipients;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilderImpl(
-        List<BACnetRecipient> utcTimeSynchronizationRecipients,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetRecipient> utcTimeSynchronizationRecipients) {
       this.utcTimeSynchronizationRecipients = utcTimeSynchronizationRecipients;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataUTCTimeSynchronizationRecipients build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataUTCTimeSynchronizationRecipients
           bACnetConstructedDataUTCTimeSynchronizationRecipients =
               new BACnetConstructedDataUTCTimeSynchronizationRecipients(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  utcTimeSynchronizationRecipients,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, utcTimeSynchronizationRecipients);
       return bACnetConstructedDataUTCTimeSynchronizationRecipients;
     }
   }

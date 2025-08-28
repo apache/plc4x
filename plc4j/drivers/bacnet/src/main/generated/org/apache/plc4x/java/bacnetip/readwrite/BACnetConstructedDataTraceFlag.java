@@ -49,21 +49,13 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagBoolean traceFlag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTraceFlag(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean traceFlag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean traceFlag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.traceFlag = traceFlag;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getTraceFlag() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataTraceFlag");
     // Create the instance
-    return new BACnetConstructedDataTraceFlagBuilderImpl(traceFlag, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTraceFlagBuilderImpl(traceFlag);
   }
 
   public static class BACnetConstructedDataTraceFlagBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean traceFlag;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTraceFlagBuilderImpl(
-        BACnetApplicationTagBoolean traceFlag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataTraceFlagBuilderImpl(BACnetApplicationTagBoolean traceFlag) {
       this.traceFlag = traceFlag;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTraceFlag build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTraceFlag bACnetConstructedDataTraceFlag =
-          new BACnetConstructedDataTraceFlag(
-              openingTag, peekedTagHeader, closingTag, traceFlag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataTraceFlag(openingTag, peekedTagHeader, closingTag, traceFlag);
       return bACnetConstructedDataTraceFlag;
     }
   }

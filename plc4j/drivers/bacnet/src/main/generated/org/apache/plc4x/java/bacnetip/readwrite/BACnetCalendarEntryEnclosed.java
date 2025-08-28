@@ -42,19 +42,12 @@ public class BACnetCalendarEntryEnclosed implements Message {
   protected final BACnetCalendarEntry calendarEntry;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetCalendarEntryEnclosed(
-      BACnetOpeningTag openingTag,
-      BACnetCalendarEntry calendarEntry,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetOpeningTag openingTag, BACnetCalendarEntry calendarEntry, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.calendarEntry = calendarEntry;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -136,7 +129,7 @@ public class BACnetCalendarEntryEnclosed implements Message {
     // Create the instance
     BACnetCalendarEntryEnclosed _bACnetCalendarEntryEnclosed;
     _bACnetCalendarEntryEnclosed =
-        new BACnetCalendarEntryEnclosed(openingTag, calendarEntry, closingTag, tagNumber);
+        new BACnetCalendarEntryEnclosed(openingTag, calendarEntry, closingTag);
     return _bACnetCalendarEntryEnclosed;
   }
 

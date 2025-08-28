@@ -47,19 +47,9 @@ public class BACnetConstructedDataNotificationForwarderAll extends BACnetConstru
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataNotificationForwarderAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,30 +94,19 @@ public class BACnetConstructedDataNotificationForwarderAll extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataNotificationForwarderAll");
     // Create the instance
-    return new BACnetConstructedDataNotificationForwarderAllBuilderImpl(
-        tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNotificationForwarderAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataNotificationForwarderAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNotificationForwarderAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataNotificationForwarderAllBuilderImpl() {}
 
     public BACnetConstructedDataNotificationForwarderAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataNotificationForwarderAll bACnetConstructedDataNotificationForwarderAll =
           new BACnetConstructedDataNotificationForwarderAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataNotificationForwarderAll;
     }
   }

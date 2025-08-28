@@ -49,21 +49,13 @@ public class BACnetConstructedDataFileType extends BACnetConstructedData impleme
   // Properties.
   protected final BACnetApplicationTagCharacterString fileType;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataFileType(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString fileType,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString fileType) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.fileType = fileType;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getFileType() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataFileType extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataFileType");
     // Create the instance
-    return new BACnetConstructedDataFileTypeBuilderImpl(fileType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFileTypeBuilderImpl(fileType);
   }
 
   public static class BACnetConstructedDataFileTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString fileType;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFileTypeBuilderImpl(
-        BACnetApplicationTagCharacterString fileType,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataFileTypeBuilderImpl(BACnetApplicationTagCharacterString fileType) {
       this.fileType = fileType;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataFileType build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataFileType bACnetConstructedDataFileType =
-          new BACnetConstructedDataFileType(
-              openingTag, peekedTagHeader, closingTag, fileType, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataFileType(openingTag, peekedTagHeader, closingTag, fileType);
       return bACnetConstructedDataFileType;
     }
   }

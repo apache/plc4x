@@ -63,9 +63,6 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
   protected final boolean commsTxError;
   protected final boolean internalStackOverflow;
   protected final boolean microPowerReset;
-
-  // Arguments.
-  protected final Byte numBytes;
   // Reserved Fields
   private Byte reservedField0;
   private Byte reservedField1;
@@ -90,9 +87,8 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
       boolean microReset,
       boolean commsTxError,
       boolean internalStackOverflow,
-      boolean microPowerReset,
-      Byte numBytes) {
-    super(numBytes);
+      boolean microPowerReset) {
+    super();
     this.lowApplication = lowApplication;
     this.highApplication = highApplication;
     this.area = area;
@@ -112,7 +108,6 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
     this.commsTxError = commsTxError;
     this.internalStackOverflow = internalStackOverflow;
     this.microPowerReset = microPowerReset;
-    this.numBytes = numBytes;
   }
 
   public ApplicationIdContainer getLowApplication() {
@@ -464,7 +459,6 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
         commsTxError,
         internalStackOverflow,
         microPowerReset,
-        numBytes,
         reservedField0,
         reservedField1,
         reservedField2);
@@ -491,7 +485,6 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
     private final boolean commsTxError;
     private final boolean internalStackOverflow;
     private final boolean microPowerReset;
-    private final Byte numBytes;
     private final Byte reservedField0;
     private final Byte reservedField1;
     private final Byte reservedField2;
@@ -516,7 +509,6 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
         boolean commsTxError,
         boolean internalStackOverflow,
         boolean microPowerReset,
-        Byte numBytes,
         Byte reservedField0,
         Byte reservedField1,
         Byte reservedField2) {
@@ -539,14 +531,12 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
       this.commsTxError = commsTxError;
       this.internalStackOverflow = internalStackOverflow;
       this.microPowerReset = microPowerReset;
-      this.numBytes = numBytes;
       this.reservedField0 = reservedField0;
       this.reservedField1 = reservedField1;
       this.reservedField2 = reservedField2;
     }
 
-    public IdentifyReplyCommandExtendedDiagnosticSummary build(Byte numBytes) {
-
+    public IdentifyReplyCommandExtendedDiagnosticSummary build() {
       IdentifyReplyCommandExtendedDiagnosticSummary identifyReplyCommandExtendedDiagnosticSummary =
           new IdentifyReplyCommandExtendedDiagnosticSummary(
               lowApplication,
@@ -567,8 +557,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
               microReset,
               commsTxError,
               internalStackOverflow,
-              microPowerReset,
-              numBytes);
+              microPowerReset);
       identifyReplyCommandExtendedDiagnosticSummary.reservedField0 = reservedField0;
       identifyReplyCommandExtendedDiagnosticSummary.reservedField1 = reservedField1;
       identifyReplyCommandExtendedDiagnosticSummary.reservedField2 = reservedField2;

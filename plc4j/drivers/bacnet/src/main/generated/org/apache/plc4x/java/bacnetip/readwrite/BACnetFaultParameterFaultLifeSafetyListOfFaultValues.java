@@ -42,19 +42,14 @@ public class BACnetFaultParameterFaultLifeSafetyListOfFaultValues implements Mes
   protected final List<BACnetLifeSafetyStateTagged> listIfFaultValues;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetFaultParameterFaultLifeSafetyListOfFaultValues(
       BACnetOpeningTag openingTag,
       List<BACnetLifeSafetyStateTagged> listIfFaultValues,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listIfFaultValues = listIfFaultValues;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -150,7 +145,7 @@ public class BACnetFaultParameterFaultLifeSafetyListOfFaultValues implements Mes
         _bACnetFaultParameterFaultLifeSafetyListOfFaultValues;
     _bACnetFaultParameterFaultLifeSafetyListOfFaultValues =
         new BACnetFaultParameterFaultLifeSafetyListOfFaultValues(
-            openingTag, listIfFaultValues, closingTag, tagNumber);
+            openingTag, listIfFaultValues, closingTag);
     return _bACnetFaultParameterFaultLifeSafetyListOfFaultValues;
   }
 

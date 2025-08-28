@@ -50,21 +50,13 @@ public class BACnetConstructedDataMultiStateInputFaultValues extends BACnetConst
   // Properties.
   protected final List<BACnetApplicationTagUnsignedInteger> faultValues;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMultiStateInputFaultValues(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetApplicationTagUnsignedInteger> faultValues,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetApplicationTagUnsignedInteger> faultValues) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.faultValues = faultValues;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetApplicationTagUnsignedInteger> getFaultValues() {
@@ -131,40 +123,24 @@ public class BACnetConstructedDataMultiStateInputFaultValues extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataMultiStateInputFaultValues");
     // Create the instance
-    return new BACnetConstructedDataMultiStateInputFaultValuesBuilderImpl(
-        faultValues, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMultiStateInputFaultValuesBuilderImpl(faultValues);
   }
 
   public static class BACnetConstructedDataMultiStateInputFaultValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetApplicationTagUnsignedInteger> faultValues;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMultiStateInputFaultValuesBuilderImpl(
-        List<BACnetApplicationTagUnsignedInteger> faultValues,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetApplicationTagUnsignedInteger> faultValues) {
       this.faultValues = faultValues;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMultiStateInputFaultValues build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMultiStateInputFaultValues
           bACnetConstructedDataMultiStateInputFaultValues =
               new BACnetConstructedDataMultiStateInputFaultValues(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  faultValues,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, faultValues);
       return bACnetConstructedDataMultiStateInputFaultValues;
     }
   }

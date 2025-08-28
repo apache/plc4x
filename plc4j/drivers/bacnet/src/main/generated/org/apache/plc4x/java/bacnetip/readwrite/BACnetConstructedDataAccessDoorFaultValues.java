@@ -50,21 +50,13 @@ public class BACnetConstructedDataAccessDoorFaultValues extends BACnetConstructe
   // Properties.
   protected final List<BACnetDoorAlarmStateTagged> faultValues;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAccessDoorFaultValues(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetDoorAlarmStateTagged> faultValues,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetDoorAlarmStateTagged> faultValues) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.faultValues = faultValues;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetDoorAlarmStateTagged> getFaultValues() {
@@ -131,34 +123,23 @@ public class BACnetConstructedDataAccessDoorFaultValues extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataAccessDoorFaultValues");
     // Create the instance
-    return new BACnetConstructedDataAccessDoorFaultValuesBuilderImpl(
-        faultValues, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccessDoorFaultValuesBuilderImpl(faultValues);
   }
 
   public static class BACnetConstructedDataAccessDoorFaultValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDoorAlarmStateTagged> faultValues;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAccessDoorFaultValuesBuilderImpl(
-        List<BACnetDoorAlarmStateTagged> faultValues,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetDoorAlarmStateTagged> faultValues) {
       this.faultValues = faultValues;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAccessDoorFaultValues build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAccessDoorFaultValues bACnetConstructedDataAccessDoorFaultValues =
           new BACnetConstructedDataAccessDoorFaultValues(
-              openingTag, peekedTagHeader, closingTag, faultValues, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, faultValues);
       return bACnetConstructedDataAccessDoorFaultValues;
     }
   }

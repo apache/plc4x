@@ -167,9 +167,6 @@
                   <languageName>java</languageName>
                   <outputFlavor>read-write</outputFlavor>
                   <outputDir>src/main/generated</outputDir>
-                  <!--options>
-                    <generate-properties-for-parser-arguments>true</generate-properties-for-parser-arguments>
-                  </options-->
                 </configuration>
               </execution>
             </executions>

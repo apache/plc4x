@@ -50,21 +50,13 @@ public class BACnetConstructedDataTimeOfStateCountReset extends BACnetConstructe
   // Properties.
   protected final BACnetDateTime timeOfStateCountReset;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTimeOfStateCountReset(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDateTime timeOfStateCountReset,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDateTime timeOfStateCountReset) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.timeOfStateCountReset = timeOfStateCountReset;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDateTime getTimeOfStateCountReset() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataTimeOfStateCountReset extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataTimeOfStateCountReset");
     // Create the instance
-    return new BACnetConstructedDataTimeOfStateCountResetBuilderImpl(
-        timeOfStateCountReset, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTimeOfStateCountResetBuilderImpl(timeOfStateCountReset);
   }
 
   public static class BACnetConstructedDataTimeOfStateCountResetBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime timeOfStateCountReset;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataTimeOfStateCountResetBuilderImpl(
-        BACnetDateTime timeOfStateCountReset,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetDateTime timeOfStateCountReset) {
       this.timeOfStateCountReset = timeOfStateCountReset;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTimeOfStateCountReset build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTimeOfStateCountReset bACnetConstructedDataTimeOfStateCountReset =
           new BACnetConstructedDataTimeOfStateCountReset(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              timeOfStateCountReset,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, timeOfStateCountReset);
       return bACnetConstructedDataTimeOfStateCountReset;
     }
   }

@@ -42,16 +42,10 @@ public class BACnetPriorityValueEnumerated extends BACnetPriorityValue implement
   // Properties.
   protected final BACnetApplicationTagEnumerated enumeratedValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueEnumerated(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagEnumerated enumeratedValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagEnumerated enumeratedValue) {
+    super(peekedTagHeader);
     this.enumeratedValue = enumeratedValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagEnumerated getEnumeratedValue() {
@@ -103,24 +97,21 @@ public class BACnetPriorityValueEnumerated extends BACnetPriorityValue implement
 
     readBuffer.closeContext("BACnetPriorityValueEnumerated");
     // Create the instance
-    return new BACnetPriorityValueEnumeratedBuilderImpl(enumeratedValue, objectTypeArgument);
+    return new BACnetPriorityValueEnumeratedBuilderImpl(enumeratedValue);
   }
 
   public static class BACnetPriorityValueEnumeratedBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagEnumerated enumeratedValue;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetPriorityValueEnumeratedBuilderImpl(
-        BACnetApplicationTagEnumerated enumeratedValue, BACnetObjectType objectTypeArgument) {
+        BACnetApplicationTagEnumerated enumeratedValue) {
       this.enumeratedValue = enumeratedValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueEnumerated build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueEnumerated build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueEnumerated bACnetPriorityValueEnumerated =
-          new BACnetPriorityValueEnumerated(peekedTagHeader, enumeratedValue, objectTypeArgument);
+          new BACnetPriorityValueEnumerated(peekedTagHeader, enumeratedValue);
       return bACnetPriorityValueEnumerated;
     }
   }

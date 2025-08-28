@@ -47,7 +47,6 @@ public abstract class PnIoCm_Submodule implements Message {
   protected final boolean reduceOutputModuleDataLength;
   protected final boolean reduceInputModuleDataLength;
   protected final boolean sharedInput;
-
   // Reserved Fields
   private Short reservedField0;
 

@@ -50,21 +50,13 @@ public class BACnetConstructedDataChangeOfStateTime extends BACnetConstructedDat
   // Properties.
   protected final BACnetDateTime changeOfStateTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataChangeOfStateTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDateTime changeOfStateTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDateTime changeOfStateTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.changeOfStateTime = changeOfStateTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDateTime getChangeOfStateTime() {
@@ -131,39 +123,22 @@ public class BACnetConstructedDataChangeOfStateTime extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataChangeOfStateTime");
     // Create the instance
-    return new BACnetConstructedDataChangeOfStateTimeBuilderImpl(
-        changeOfStateTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataChangeOfStateTimeBuilderImpl(changeOfStateTime);
   }
 
   public static class BACnetConstructedDataChangeOfStateTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime changeOfStateTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataChangeOfStateTimeBuilderImpl(
-        BACnetDateTime changeOfStateTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataChangeOfStateTimeBuilderImpl(BACnetDateTime changeOfStateTime) {
       this.changeOfStateTime = changeOfStateTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataChangeOfStateTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataChangeOfStateTime bACnetConstructedDataChangeOfStateTime =
           new BACnetConstructedDataChangeOfStateTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              changeOfStateTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, changeOfStateTime);
       return bACnetConstructedDataChangeOfStateTime;
     }
   }

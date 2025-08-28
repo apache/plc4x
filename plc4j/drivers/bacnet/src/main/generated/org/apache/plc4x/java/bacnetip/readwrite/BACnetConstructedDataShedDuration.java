@@ -49,21 +49,13 @@ public class BACnetConstructedDataShedDuration extends BACnetConstructedData imp
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger shedDuration;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataShedDuration(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger shedDuration,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger shedDuration) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.shedDuration = shedDuration;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getShedDuration() {
@@ -134,34 +126,23 @@ public class BACnetConstructedDataShedDuration extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataShedDuration");
     // Create the instance
-    return new BACnetConstructedDataShedDurationBuilderImpl(
-        shedDuration, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataShedDurationBuilderImpl(shedDuration);
   }
 
   public static class BACnetConstructedDataShedDurationBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger shedDuration;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataShedDurationBuilderImpl(
-        BACnetApplicationTagUnsignedInteger shedDuration,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger shedDuration) {
       this.shedDuration = shedDuration;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataShedDuration build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataShedDuration bACnetConstructedDataShedDuration =
           new BACnetConstructedDataShedDuration(
-              openingTag, peekedTagHeader, closingTag, shedDuration, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, shedDuration);
       return bACnetConstructedDataShedDuration;
     }
   }

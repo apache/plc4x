@@ -45,13 +45,9 @@ public class ParameterValueCustomTypes extends ParameterValue implements Message
   // Properties.
   protected final CustomTypes value;
 
-  // Arguments.
-  protected final Short numBytes;
-
-  public ParameterValueCustomTypes(CustomTypes value, Short numBytes) {
-    super(numBytes);
+  public ParameterValueCustomTypes(CustomTypes value) {
+    super();
     this.value = value;
-    this.numBytes = numBytes;
   }
 
   public CustomTypes getValue() {
@@ -101,23 +97,19 @@ public class ParameterValueCustomTypes extends ParameterValue implements Message
 
     readBuffer.closeContext("ParameterValueCustomTypes");
     // Create the instance
-    return new ParameterValueCustomTypesBuilderImpl(value, numBytes);
+    return new ParameterValueCustomTypesBuilderImpl(value);
   }
 
   public static class ParameterValueCustomTypesBuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final CustomTypes value;
-    private final Short numBytes;
 
-    public ParameterValueCustomTypesBuilderImpl(CustomTypes value, Short numBytes) {
+    public ParameterValueCustomTypesBuilderImpl(CustomTypes value) {
       this.value = value;
-      this.numBytes = numBytes;
     }
 
-    public ParameterValueCustomTypes build(Short numBytes) {
-
-      ParameterValueCustomTypes parameterValueCustomTypes =
-          new ParameterValueCustomTypes(value, numBytes);
+    public ParameterValueCustomTypes build() {
+      ParameterValueCustomTypes parameterValueCustomTypes = new ParameterValueCustomTypes(value);
       return parameterValueCustomTypes;
     }
   }

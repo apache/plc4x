@@ -49,21 +49,13 @@ public class BACnetConstructedDataValueChangeTime extends BACnetConstructedData 
   // Properties.
   protected final BACnetDateTime valueChangeTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataValueChangeTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDateTime valueChangeTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDateTime valueChangeTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.valueChangeTime = valueChangeTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDateTime getValueChangeTime() {
@@ -130,39 +122,22 @@ public class BACnetConstructedDataValueChangeTime extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataValueChangeTime");
     // Create the instance
-    return new BACnetConstructedDataValueChangeTimeBuilderImpl(
-        valueChangeTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataValueChangeTimeBuilderImpl(valueChangeTime);
   }
 
   public static class BACnetConstructedDataValueChangeTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime valueChangeTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataValueChangeTimeBuilderImpl(
-        BACnetDateTime valueChangeTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataValueChangeTimeBuilderImpl(BACnetDateTime valueChangeTime) {
       this.valueChangeTime = valueChangeTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataValueChangeTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataValueChangeTime bACnetConstructedDataValueChangeTime =
           new BACnetConstructedDataValueChangeTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              valueChangeTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, valueChangeTime);
       return bACnetConstructedDataValueChangeTime;
     }
   }

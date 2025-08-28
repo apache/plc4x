@@ -49,21 +49,13 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
   // Properties.
   protected final BACnetDeviceObjectReference energyMeterRef;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataEnergyMeterRef(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDeviceObjectReference energyMeterRef,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDeviceObjectReference energyMeterRef) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.energyMeterRef = energyMeterRef;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDeviceObjectReference getEnergyMeterRef() {
@@ -130,39 +122,23 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataEnergyMeterRef");
     // Create the instance
-    return new BACnetConstructedDataEnergyMeterRefBuilderImpl(
-        energyMeterRef, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEnergyMeterRefBuilderImpl(energyMeterRef);
   }
 
   public static class BACnetConstructedDataEnergyMeterRefBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference energyMeterRef;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataEnergyMeterRefBuilderImpl(
-        BACnetDeviceObjectReference energyMeterRef,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetDeviceObjectReference energyMeterRef) {
       this.energyMeterRef = energyMeterRef;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataEnergyMeterRef build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataEnergyMeterRef bACnetConstructedDataEnergyMeterRef =
           new BACnetConstructedDataEnergyMeterRef(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              energyMeterRef,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, energyMeterRef);
       return bACnetConstructedDataEnergyMeterRef;
     }
   }

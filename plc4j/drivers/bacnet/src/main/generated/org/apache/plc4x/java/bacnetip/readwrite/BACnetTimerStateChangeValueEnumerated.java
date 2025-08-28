@@ -43,16 +43,10 @@ public class BACnetTimerStateChangeValueEnumerated extends BACnetTimerStateChang
   // Properties.
   protected final BACnetApplicationTagEnumerated enumeratedValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetTimerStateChangeValueEnumerated(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagEnumerated enumeratedValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagEnumerated enumeratedValue) {
+    super(peekedTagHeader);
     this.enumeratedValue = enumeratedValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagEnumerated getEnumeratedValue() {
@@ -104,26 +98,21 @@ public class BACnetTimerStateChangeValueEnumerated extends BACnetTimerStateChang
 
     readBuffer.closeContext("BACnetTimerStateChangeValueEnumerated");
     // Create the instance
-    return new BACnetTimerStateChangeValueEnumeratedBuilderImpl(
-        enumeratedValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueEnumeratedBuilderImpl(enumeratedValue);
   }
 
   public static class BACnetTimerStateChangeValueEnumeratedBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagEnumerated enumeratedValue;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetTimerStateChangeValueEnumeratedBuilderImpl(
-        BACnetApplicationTagEnumerated enumeratedValue, BACnetObjectType objectTypeArgument) {
+        BACnetApplicationTagEnumerated enumeratedValue) {
       this.enumeratedValue = enumeratedValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetTimerStateChangeValueEnumerated build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueEnumerated build(BACnetTagHeader peekedTagHeader) {
       BACnetTimerStateChangeValueEnumerated bACnetTimerStateChangeValueEnumerated =
-          new BACnetTimerStateChangeValueEnumerated(
-              peekedTagHeader, enumeratedValue, objectTypeArgument);
+          new BACnetTimerStateChangeValueEnumerated(peekedTagHeader, enumeratedValue);
       return bACnetTimerStateChangeValueEnumerated;
     }
   }

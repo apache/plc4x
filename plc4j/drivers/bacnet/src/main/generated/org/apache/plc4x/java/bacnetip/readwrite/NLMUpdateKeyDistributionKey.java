@@ -46,15 +46,10 @@ public class NLMUpdateKeyDistributionKey extends NLM implements Message {
   protected final byte keyRevision;
   protected final NLMUpdateKeyUpdateKeyEntry key;
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public NLMUpdateKeyDistributionKey(
-      byte keyRevision, NLMUpdateKeyUpdateKeyEntry key, Integer apduLength) {
-    super(apduLength);
+  public NLMUpdateKeyDistributionKey(byte keyRevision, NLMUpdateKeyUpdateKeyEntry key) {
+    super();
     this.keyRevision = keyRevision;
     this.key = key;
-    this.apduLength = apduLength;
   }
 
   public byte getKeyRevision() {
@@ -115,25 +110,22 @@ public class NLMUpdateKeyDistributionKey extends NLM implements Message {
 
     readBuffer.closeContext("NLMUpdateKeyDistributionKey");
     // Create the instance
-    return new NLMUpdateKeyDistributionKeyBuilderImpl(keyRevision, key, apduLength);
+    return new NLMUpdateKeyDistributionKeyBuilderImpl(keyRevision, key);
   }
 
   public static class NLMUpdateKeyDistributionKeyBuilderImpl implements NLM.NLMBuilder {
     private final byte keyRevision;
     private final NLMUpdateKeyUpdateKeyEntry key;
-    private final Integer apduLength;
 
     public NLMUpdateKeyDistributionKeyBuilderImpl(
-        byte keyRevision, NLMUpdateKeyUpdateKeyEntry key, Integer apduLength) {
+        byte keyRevision, NLMUpdateKeyUpdateKeyEntry key) {
       this.keyRevision = keyRevision;
       this.key = key;
-      this.apduLength = apduLength;
     }
 
-    public NLMUpdateKeyDistributionKey build(Integer apduLength) {
-
+    public NLMUpdateKeyDistributionKey build() {
       NLMUpdateKeyDistributionKey nLMUpdateKeyDistributionKey =
-          new NLMUpdateKeyDistributionKey(keyRevision, key, apduLength);
+          new NLMUpdateKeyDistributionKey(keyRevision, key);
       return nLMUpdateKeyDistributionKey;
     }
   }

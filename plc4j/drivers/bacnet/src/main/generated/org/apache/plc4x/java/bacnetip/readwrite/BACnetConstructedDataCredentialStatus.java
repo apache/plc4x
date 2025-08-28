@@ -50,21 +50,13 @@ public class BACnetConstructedDataCredentialStatus extends BACnetConstructedData
   // Properties.
   protected final BACnetBinaryPVTagged binaryPv;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCredentialStatus(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetBinaryPVTagged binaryPv,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetBinaryPVTagged binaryPv) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.binaryPv = binaryPv;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetBinaryPVTagged getBinaryPv() {
@@ -135,34 +127,22 @@ public class BACnetConstructedDataCredentialStatus extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataCredentialStatus");
     // Create the instance
-    return new BACnetConstructedDataCredentialStatusBuilderImpl(
-        binaryPv, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCredentialStatusBuilderImpl(binaryPv);
   }
 
   public static class BACnetConstructedDataCredentialStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBinaryPVTagged binaryPv;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCredentialStatusBuilderImpl(
-        BACnetBinaryPVTagged binaryPv,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataCredentialStatusBuilderImpl(BACnetBinaryPVTagged binaryPv) {
       this.binaryPv = binaryPv;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCredentialStatus build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCredentialStatus bACnetConstructedDataCredentialStatus =
           new BACnetConstructedDataCredentialStatus(
-              openingTag, peekedTagHeader, closingTag, binaryPv, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, binaryPv);
       return bACnetConstructedDataCredentialStatus;
     }
   }

@@ -45,14 +45,9 @@ public class BVLCWriteBroadcastDistributionTable extends BVLC implements Message
   // Properties.
   protected final List<BVLCBroadcastDistributionTableEntry> table;
 
-  // Arguments.
-  protected final Integer bvlcPayloadLength;
-
-  public BVLCWriteBroadcastDistributionTable(
-      List<BVLCBroadcastDistributionTableEntry> table, Integer bvlcPayloadLength) {
+  public BVLCWriteBroadcastDistributionTable(List<BVLCBroadcastDistributionTableEntry> table) {
     super();
     this.table = table;
-    this.bvlcPayloadLength = bvlcPayloadLength;
   }
 
   public List<BVLCBroadcastDistributionTableEntry> getTable() {
@@ -109,22 +104,20 @@ public class BVLCWriteBroadcastDistributionTable extends BVLC implements Message
 
     readBuffer.closeContext("BVLCWriteBroadcastDistributionTable");
     // Create the instance
-    return new BVLCWriteBroadcastDistributionTableBuilderImpl(table, bvlcPayloadLength);
+    return new BVLCWriteBroadcastDistributionTableBuilderImpl(table);
   }
 
   public static class BVLCWriteBroadcastDistributionTableBuilderImpl implements BVLC.BVLCBuilder {
     private final List<BVLCBroadcastDistributionTableEntry> table;
-    private final Integer bvlcPayloadLength;
 
     public BVLCWriteBroadcastDistributionTableBuilderImpl(
-        List<BVLCBroadcastDistributionTableEntry> table, Integer bvlcPayloadLength) {
+        List<BVLCBroadcastDistributionTableEntry> table) {
       this.table = table;
-      this.bvlcPayloadLength = bvlcPayloadLength;
     }
 
     public BVLCWriteBroadcastDistributionTable build() {
       BVLCWriteBroadcastDistributionTable bVLCWriteBroadcastDistributionTable =
-          new BVLCWriteBroadcastDistributionTable(table, bvlcPayloadLength);
+          new BVLCWriteBroadcastDistributionTable(table);
       return bVLCWriteBroadcastDistributionTable;
     }
   }

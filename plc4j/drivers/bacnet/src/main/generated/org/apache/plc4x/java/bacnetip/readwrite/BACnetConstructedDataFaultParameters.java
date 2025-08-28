@@ -49,21 +49,13 @@ public class BACnetConstructedDataFaultParameters extends BACnetConstructedData 
   // Properties.
   protected final BACnetFaultParameter faultParameters;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataFaultParameters(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetFaultParameter faultParameters,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetFaultParameter faultParameters) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.faultParameters = faultParameters;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetFaultParameter getFaultParameters() {
@@ -130,39 +122,22 @@ public class BACnetConstructedDataFaultParameters extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataFaultParameters");
     // Create the instance
-    return new BACnetConstructedDataFaultParametersBuilderImpl(
-        faultParameters, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFaultParametersBuilderImpl(faultParameters);
   }
 
   public static class BACnetConstructedDataFaultParametersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetFaultParameter faultParameters;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFaultParametersBuilderImpl(
-        BACnetFaultParameter faultParameters,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataFaultParametersBuilderImpl(BACnetFaultParameter faultParameters) {
       this.faultParameters = faultParameters;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataFaultParameters build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataFaultParameters bACnetConstructedDataFaultParameters =
           new BACnetConstructedDataFaultParameters(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              faultParameters,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, faultParameters);
       return bACnetConstructedDataFaultParameters;
     }
   }

@@ -49,21 +49,13 @@ public class BACnetConstructedDataThreatLevel extends BACnetConstructedData impl
   // Properties.
   protected final BACnetAccessThreatLevel threatLevel;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataThreatLevel(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetAccessThreatLevel threatLevel,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetAccessThreatLevel threatLevel) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.threatLevel = threatLevel;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetAccessThreatLevel getThreatLevel() {
@@ -130,34 +122,22 @@ public class BACnetConstructedDataThreatLevel extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataThreatLevel");
     // Create the instance
-    return new BACnetConstructedDataThreatLevelBuilderImpl(
-        threatLevel, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataThreatLevelBuilderImpl(threatLevel);
   }
 
   public static class BACnetConstructedDataThreatLevelBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccessThreatLevel threatLevel;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataThreatLevelBuilderImpl(
-        BACnetAccessThreatLevel threatLevel,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataThreatLevelBuilderImpl(BACnetAccessThreatLevel threatLevel) {
       this.threatLevel = threatLevel;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataThreatLevel build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataThreatLevel bACnetConstructedDataThreatLevel =
           new BACnetConstructedDataThreatLevel(
-              openingTag, peekedTagHeader, closingTag, threatLevel, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, threatLevel);
       return bACnetConstructedDataThreatLevel;
     }
   }

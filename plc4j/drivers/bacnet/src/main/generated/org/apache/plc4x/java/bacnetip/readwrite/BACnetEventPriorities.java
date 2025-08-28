@@ -44,23 +44,18 @@ public class BACnetEventPriorities implements Message {
   protected final BACnetApplicationTagUnsignedInteger toNormal;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventPriorities(
       BACnetOpeningTag openingTag,
       BACnetApplicationTagUnsignedInteger toOffnormal,
       BACnetApplicationTagUnsignedInteger toFault,
       BACnetApplicationTagUnsignedInteger toNormal,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.toOffnormal = toOffnormal;
     this.toFault = toFault;
     this.toNormal = toNormal;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -184,8 +179,7 @@ public class BACnetEventPriorities implements Message {
     // Create the instance
     BACnetEventPriorities _bACnetEventPriorities;
     _bACnetEventPriorities =
-        new BACnetEventPriorities(
-            openingTag, toOffnormal, toFault, toNormal, closingTag, tagNumber);
+        new BACnetEventPriorities(openingTag, toOffnormal, toFault, toNormal, closingTag);
     return _bACnetEventPriorities;
   }
 

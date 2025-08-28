@@ -45,14 +45,9 @@ public class BACnetContextTagTime extends BACnetContextTag implements Message {
   // Properties.
   protected final BACnetTagPayloadTime payload;
 
-  // Arguments.
-  protected final Short tagNumberArgument;
-
-  public BACnetContextTagTime(
-      BACnetTagHeader header, BACnetTagPayloadTime payload, Short tagNumberArgument) {
-    super(header, tagNumberArgument);
+  public BACnetContextTagTime(BACnetTagHeader header, BACnetTagPayloadTime payload) {
+    super(header);
     this.payload = payload;
-    this.tagNumberArgument = tagNumberArgument;
   }
 
   public BACnetTagPayloadTime getPayload() {
@@ -102,22 +97,19 @@ public class BACnetContextTagTime extends BACnetContextTag implements Message {
 
     readBuffer.closeContext("BACnetContextTagTime");
     // Create the instance
-    return new BACnetContextTagTimeBuilderImpl(payload, tagNumberArgument);
+    return new BACnetContextTagTimeBuilderImpl(payload);
   }
 
   public static class BACnetContextTagTimeBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadTime payload;
-    private final Short tagNumberArgument;
 
-    public BACnetContextTagTimeBuilderImpl(BACnetTagPayloadTime payload, Short tagNumberArgument) {
+    public BACnetContextTagTimeBuilderImpl(BACnetTagPayloadTime payload) {
       this.payload = payload;
-      this.tagNumberArgument = tagNumberArgument;
     }
 
-    public BACnetContextTagTime build(BACnetTagHeader header, Short tagNumberArgument) {
-      BACnetContextTagTime bACnetContextTagTime =
-          new BACnetContextTagTime(header, payload, tagNumberArgument);
+    public BACnetContextTagTime build(BACnetTagHeader header) {
+      BACnetContextTagTime bACnetContextTagTime = new BACnetContextTagTime(header, payload);
       return bACnetContextTagTime;
     }
   }

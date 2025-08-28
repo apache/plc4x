@@ -49,21 +49,13 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger windowSamples;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataWindowSamples(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger windowSamples,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger windowSamples) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.windowSamples = windowSamples;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getWindowSamples() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataWindowSamples");
     // Create the instance
-    return new BACnetConstructedDataWindowSamplesBuilderImpl(
-        windowSamples, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataWindowSamplesBuilderImpl(windowSamples);
   }
 
   public static class BACnetConstructedDataWindowSamplesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger windowSamples;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataWindowSamplesBuilderImpl(
-        BACnetApplicationTagUnsignedInteger windowSamples,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger windowSamples) {
       this.windowSamples = windowSamples;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataWindowSamples build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataWindowSamples bACnetConstructedDataWindowSamples =
           new BACnetConstructedDataWindowSamples(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              windowSamples,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, windowSamples);
       return bACnetConstructedDataWindowSamples;
     }
   }

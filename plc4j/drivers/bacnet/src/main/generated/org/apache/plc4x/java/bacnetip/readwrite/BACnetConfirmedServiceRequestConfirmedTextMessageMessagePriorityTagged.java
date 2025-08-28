@@ -42,20 +42,12 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTag
   protected final BACnetTagHeader header;
   protected final BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(
       BACnetTagHeader header,
-      BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority value,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -146,8 +138,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTag
     BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
         _bACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged;
     _bACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged =
-        new BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(
-            header, value, tagNumber, tagClass);
+        new BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(header, value);
     return _bACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged;
   }
 

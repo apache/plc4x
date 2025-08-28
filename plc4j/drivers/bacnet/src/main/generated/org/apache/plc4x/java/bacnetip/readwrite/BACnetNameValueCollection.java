@@ -42,19 +42,12 @@ public class BACnetNameValueCollection implements Message {
   protected final List<BACnetNameValue> members;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetNameValueCollection(
-      BACnetOpeningTag openingTag,
-      List<BACnetNameValue> members,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetOpeningTag openingTag, List<BACnetNameValue> members, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.members = members;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -143,8 +136,7 @@ public class BACnetNameValueCollection implements Message {
     readBuffer.closeContext("BACnetNameValueCollection");
     // Create the instance
     BACnetNameValueCollection _bACnetNameValueCollection;
-    _bACnetNameValueCollection =
-        new BACnetNameValueCollection(openingTag, members, closingTag, tagNumber);
+    _bACnetNameValueCollection = new BACnetNameValueCollection(openingTag, members, closingTag);
     return _bACnetNameValueCollection;
   }
 

@@ -45,13 +45,9 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
   // Properties.
   protected final CustomManufacturer value;
 
-  // Arguments.
-  protected final Short numBytes;
-
-  public ParameterValueCustomManufacturer(CustomManufacturer value, Short numBytes) {
-    super(numBytes);
+  public ParameterValueCustomManufacturer(CustomManufacturer value) {
+    super();
     this.value = value;
-    this.numBytes = numBytes;
   }
 
   public CustomManufacturer getValue() {
@@ -102,23 +98,20 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
 
     readBuffer.closeContext("ParameterValueCustomManufacturer");
     // Create the instance
-    return new ParameterValueCustomManufacturerBuilderImpl(value, numBytes);
+    return new ParameterValueCustomManufacturerBuilderImpl(value);
   }
 
   public static class ParameterValueCustomManufacturerBuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final CustomManufacturer value;
-    private final Short numBytes;
 
-    public ParameterValueCustomManufacturerBuilderImpl(CustomManufacturer value, Short numBytes) {
+    public ParameterValueCustomManufacturerBuilderImpl(CustomManufacturer value) {
       this.value = value;
-      this.numBytes = numBytes;
     }
 
-    public ParameterValueCustomManufacturer build(Short numBytes) {
-
+    public ParameterValueCustomManufacturer build() {
       ParameterValueCustomManufacturer parameterValueCustomManufacturer =
-          new ParameterValueCustomManufacturer(value, numBytes);
+          new ParameterValueCustomManufacturer(value);
       return parameterValueCustomManufacturer;
     }
   }

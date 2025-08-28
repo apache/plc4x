@@ -49,21 +49,13 @@ public class BACnetConstructedDataFileRecordCount extends BACnetConstructedData 
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger recordCount;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataFileRecordCount(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger recordCount,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger recordCount) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.recordCount = recordCount;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getRecordCount() {
@@ -134,34 +126,23 @@ public class BACnetConstructedDataFileRecordCount extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataFileRecordCount");
     // Create the instance
-    return new BACnetConstructedDataFileRecordCountBuilderImpl(
-        recordCount, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFileRecordCountBuilderImpl(recordCount);
   }
 
   public static class BACnetConstructedDataFileRecordCountBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger recordCount;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataFileRecordCountBuilderImpl(
-        BACnetApplicationTagUnsignedInteger recordCount,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger recordCount) {
       this.recordCount = recordCount;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataFileRecordCount build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataFileRecordCount bACnetConstructedDataFileRecordCount =
           new BACnetConstructedDataFileRecordCount(
-              openingTag, peekedTagHeader, closingTag, recordCount, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, recordCount);
       return bACnetConstructedDataFileRecordCount;
     }
   }

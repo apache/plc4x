@@ -47,17 +47,11 @@ public class BACnetUnconfirmedServiceRequestUTCTimeSynchronization
   protected final BACnetApplicationTagDate synchronizedDate;
   protected final BACnetApplicationTagTime synchronizedTime;
 
-  // Arguments.
-  protected final Integer serviceRequestLength;
-
   public BACnetUnconfirmedServiceRequestUTCTimeSynchronization(
-      BACnetApplicationTagDate synchronizedDate,
-      BACnetApplicationTagTime synchronizedTime,
-      Integer serviceRequestLength) {
-    super(serviceRequestLength);
+      BACnetApplicationTagDate synchronizedDate, BACnetApplicationTagTime synchronizedTime) {
+    super();
     this.synchronizedDate = synchronizedDate;
     this.synchronizedTime = synchronizedTime;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetApplicationTagDate getSynchronizedDate() {
@@ -128,30 +122,25 @@ public class BACnetUnconfirmedServiceRequestUTCTimeSynchronization
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization");
     // Create the instance
     return new BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilderImpl(
-        synchronizedDate, synchronizedTime, serviceRequestLength);
+        synchronizedDate, synchronizedTime);
   }
 
   public static class BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final BACnetApplicationTagDate synchronizedDate;
     private final BACnetApplicationTagTime synchronizedTime;
-    private final Integer serviceRequestLength;
 
     public BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilderImpl(
-        BACnetApplicationTagDate synchronizedDate,
-        BACnetApplicationTagTime synchronizedTime,
-        Integer serviceRequestLength) {
+        BACnetApplicationTagDate synchronizedDate, BACnetApplicationTagTime synchronizedTime) {
       this.synchronizedDate = synchronizedDate;
       this.synchronizedTime = synchronizedTime;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetUnconfirmedServiceRequestUTCTimeSynchronization build(
-        Integer serviceRequestLength) {
+    public BACnetUnconfirmedServiceRequestUTCTimeSynchronization build() {
       BACnetUnconfirmedServiceRequestUTCTimeSynchronization
           bACnetUnconfirmedServiceRequestUTCTimeSynchronization =
               new BACnetUnconfirmedServiceRequestUTCTimeSynchronization(
-                  synchronizedDate, synchronizedTime, serviceRequestLength);
+                  synchronizedDate, synchronizedTime);
       return bACnetUnconfirmedServiceRequestUTCTimeSynchronization;
     }
   }

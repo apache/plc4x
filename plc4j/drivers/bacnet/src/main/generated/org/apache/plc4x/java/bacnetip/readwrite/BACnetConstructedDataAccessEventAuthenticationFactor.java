@@ -50,21 +50,13 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
   // Properties.
   protected final BACnetAuthenticationFactor accessEventAuthenticationFactor;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAccessEventAuthenticationFactor(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetAuthenticationFactor accessEventAuthenticationFactor,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetAuthenticationFactor accessEventAuthenticationFactor) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.accessEventAuthenticationFactor = accessEventAuthenticationFactor;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetAuthenticationFactor getAccessEventAuthenticationFactor() {
@@ -136,39 +128,24 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
     readBuffer.closeContext("BACnetConstructedDataAccessEventAuthenticationFactor");
     // Create the instance
     return new BACnetConstructedDataAccessEventAuthenticationFactorBuilderImpl(
-        accessEventAuthenticationFactor, tagNumber, arrayIndexArgument);
+        accessEventAuthenticationFactor);
   }
 
   public static class BACnetConstructedDataAccessEventAuthenticationFactorBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAuthenticationFactor accessEventAuthenticationFactor;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAccessEventAuthenticationFactorBuilderImpl(
-        BACnetAuthenticationFactor accessEventAuthenticationFactor,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetAuthenticationFactor accessEventAuthenticationFactor) {
       this.accessEventAuthenticationFactor = accessEventAuthenticationFactor;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAccessEventAuthenticationFactor build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAccessEventAuthenticationFactor
           bACnetConstructedDataAccessEventAuthenticationFactor =
               new BACnetConstructedDataAccessEventAuthenticationFactor(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  accessEventAuthenticationFactor,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, accessEventAuthenticationFactor);
       return bACnetConstructedDataAccessEventAuthenticationFactor;
     }
   }

@@ -49,21 +49,13 @@ public class BACnetConstructedDataEgressTime extends BACnetConstructedData imple
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger egressTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataEgressTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger egressTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger egressTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.egressTime = egressTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getEgressTime() {
@@ -134,34 +126,22 @@ public class BACnetConstructedDataEgressTime extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataEgressTime");
     // Create the instance
-    return new BACnetConstructedDataEgressTimeBuilderImpl(
-        egressTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEgressTimeBuilderImpl(egressTime);
   }
 
   public static class BACnetConstructedDataEgressTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger egressTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataEgressTimeBuilderImpl(
-        BACnetApplicationTagUnsignedInteger egressTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger egressTime) {
       this.egressTime = egressTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataEgressTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataEgressTime bACnetConstructedDataEgressTime =
-          new BACnetConstructedDataEgressTime(
-              openingTag, peekedTagHeader, closingTag, egressTime, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataEgressTime(openingTag, peekedTagHeader, closingTag, egressTime);
       return bACnetConstructedDataEgressTime;
     }
   }

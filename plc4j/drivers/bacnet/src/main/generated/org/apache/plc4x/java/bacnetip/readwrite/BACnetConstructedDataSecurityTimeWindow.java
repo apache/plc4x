@@ -50,21 +50,13 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger securityTimeWindow;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSecurityTimeWindow(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger securityTimeWindow,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger securityTimeWindow) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.securityTimeWindow = securityTimeWindow;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getSecurityTimeWindow() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataSecurityTimeWindow");
     // Create the instance
-    return new BACnetConstructedDataSecurityTimeWindowBuilderImpl(
-        securityTimeWindow, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataSecurityTimeWindowBuilderImpl(securityTimeWindow);
   }
 
   public static class BACnetConstructedDataSecurityTimeWindowBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger securityTimeWindow;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSecurityTimeWindowBuilderImpl(
-        BACnetApplicationTagUnsignedInteger securityTimeWindow,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger securityTimeWindow) {
       this.securityTimeWindow = securityTimeWindow;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSecurityTimeWindow build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSecurityTimeWindow bACnetConstructedDataSecurityTimeWindow =
           new BACnetConstructedDataSecurityTimeWindow(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              securityTimeWindow,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, securityTimeWindow);
       return bACnetConstructedDataSecurityTimeWindow;
     }
   }

@@ -45,13 +45,9 @@ public class BVLCSecureBVLL extends BVLC implements Message {
   // Properties.
   protected final byte[] securityWrapper;
 
-  // Arguments.
-  protected final Integer bvlcPayloadLength;
-
-  public BVLCSecureBVLL(byte[] securityWrapper, Integer bvlcPayloadLength) {
+  public BVLCSecureBVLL(byte[] securityWrapper) {
     super();
     this.securityWrapper = securityWrapper;
-    this.bvlcPayloadLength = bvlcPayloadLength;
   }
 
   public byte[] getSecurityWrapper() {
@@ -107,20 +103,18 @@ public class BVLCSecureBVLL extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCSecureBVLL");
     // Create the instance
-    return new BVLCSecureBVLLBuilderImpl(securityWrapper, bvlcPayloadLength);
+    return new BVLCSecureBVLLBuilderImpl(securityWrapper);
   }
 
   public static class BVLCSecureBVLLBuilderImpl implements BVLC.BVLCBuilder {
     private final byte[] securityWrapper;
-    private final Integer bvlcPayloadLength;
 
-    public BVLCSecureBVLLBuilderImpl(byte[] securityWrapper, Integer bvlcPayloadLength) {
+    public BVLCSecureBVLLBuilderImpl(byte[] securityWrapper) {
       this.securityWrapper = securityWrapper;
-      this.bvlcPayloadLength = bvlcPayloadLength;
     }
 
     public BVLCSecureBVLL build() {
-      BVLCSecureBVLL bVLCSecureBVLL = new BVLCSecureBVLL(securityWrapper, bvlcPayloadLength);
+      BVLCSecureBVLL bVLCSecureBVLL = new BVLCSecureBVLL(securityWrapper);
       return bVLCSecureBVLL;
     }
   }

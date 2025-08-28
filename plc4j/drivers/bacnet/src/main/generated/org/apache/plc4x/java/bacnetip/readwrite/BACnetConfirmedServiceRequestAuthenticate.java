@@ -46,16 +46,10 @@ public class BACnetConfirmedServiceRequestAuthenticate extends BACnetConfirmedSe
   // Properties.
   protected final byte[] bytesOfRemovedService;
 
-  // Arguments.
-  protected final Long serviceRequestPayloadLength;
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestAuthenticate(
-      byte[] bytesOfRemovedService, Long serviceRequestPayloadLength, Long serviceRequestLength) {
+      long serviceRequestLength, byte[] bytesOfRemovedService) {
     super(serviceRequestLength);
     this.bytesOfRemovedService = bytesOfRemovedService;
-    this.serviceRequestPayloadLength = serviceRequestPayloadLength;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public byte[] getBytesOfRemovedService() {
@@ -109,28 +103,21 @@ public class BACnetConfirmedServiceRequestAuthenticate extends BACnetConfirmedSe
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestAuthenticate");
     // Create the instance
-    return new BACnetConfirmedServiceRequestAuthenticateBuilderImpl(
-        bytesOfRemovedService, serviceRequestPayloadLength, serviceRequestLength);
+    return new BACnetConfirmedServiceRequestAuthenticateBuilderImpl(bytesOfRemovedService);
   }
 
   public static class BACnetConfirmedServiceRequestAuthenticateBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final byte[] bytesOfRemovedService;
-    private final Long serviceRequestPayloadLength;
-    private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestAuthenticateBuilderImpl(
-        byte[] bytesOfRemovedService, Long serviceRequestPayloadLength, Long serviceRequestLength) {
+    public BACnetConfirmedServiceRequestAuthenticateBuilderImpl(byte[] bytesOfRemovedService) {
       this.bytesOfRemovedService = bytesOfRemovedService;
-      this.serviceRequestPayloadLength = serviceRequestPayloadLength;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestAuthenticate build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestAuthenticate build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestAuthenticate bACnetConfirmedServiceRequestAuthenticate =
           new BACnetConfirmedServiceRequestAuthenticate(
-              bytesOfRemovedService, serviceRequestPayloadLength, serviceRequestLength);
+              serviceRequestLength, bytesOfRemovedService);
       return bACnetConfirmedServiceRequestAuthenticate;
     }
   }

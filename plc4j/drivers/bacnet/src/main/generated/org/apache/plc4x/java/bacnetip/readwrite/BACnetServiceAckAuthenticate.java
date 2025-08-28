@@ -45,16 +45,9 @@ public class BACnetServiceAckAuthenticate extends BACnetServiceAck implements Me
   // Properties.
   protected final byte[] bytesOfRemovedService;
 
-  // Arguments.
-  protected final Long serviceAckPayloadLength;
-  protected final Long serviceAckLength;
-
-  public BACnetServiceAckAuthenticate(
-      byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
+  public BACnetServiceAckAuthenticate(long serviceAckLength, byte[] bytesOfRemovedService) {
     super(serviceAckLength);
     this.bytesOfRemovedService = bytesOfRemovedService;
-    this.serviceAckPayloadLength = serviceAckPayloadLength;
-    this.serviceAckLength = serviceAckLength;
   }
 
   public byte[] getBytesOfRemovedService() {
@@ -106,28 +99,20 @@ public class BACnetServiceAckAuthenticate extends BACnetServiceAck implements Me
 
     readBuffer.closeContext("BACnetServiceAckAuthenticate");
     // Create the instance
-    return new BACnetServiceAckAuthenticateBuilderImpl(
-        bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
+    return new BACnetServiceAckAuthenticateBuilderImpl(bytesOfRemovedService);
   }
 
   public static class BACnetServiceAckAuthenticateBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final byte[] bytesOfRemovedService;
-    private final Long serviceAckPayloadLength;
-    private final Long serviceAckLength;
 
-    public BACnetServiceAckAuthenticateBuilderImpl(
-        byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
+    public BACnetServiceAckAuthenticateBuilderImpl(byte[] bytesOfRemovedService) {
       this.bytesOfRemovedService = bytesOfRemovedService;
-      this.serviceAckPayloadLength = serviceAckPayloadLength;
-      this.serviceAckLength = serviceAckLength;
     }
 
-    public BACnetServiceAckAuthenticate build(Long serviceAckLength) {
-
+    public BACnetServiceAckAuthenticate build(long serviceAckLength) {
       BACnetServiceAckAuthenticate bACnetServiceAckAuthenticate =
-          new BACnetServiceAckAuthenticate(
-              bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
+          new BACnetServiceAckAuthenticate(serviceAckLength, bytesOfRemovedService);
       return bACnetServiceAckAuthenticate;
     }
   }

@@ -42,19 +42,10 @@ public class MonitoredSALReply extends EncodedReply implements Message {
   // Properties.
   protected final MonitoredSAL monitoredSAL;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-  protected final RequestContext requestContext;
-
   public MonitoredSALReply(
-      byte peekedByte,
-      MonitoredSAL monitoredSAL,
-      CBusOptions cBusOptions,
-      RequestContext requestContext) {
-    super(peekedByte, cBusOptions, requestContext);
+      RequestContext requestContext, byte peekedByte, MonitoredSAL monitoredSAL) {
+    super(requestContext, peekedByte);
     this.monitoredSAL = monitoredSAL;
-    this.cBusOptions = cBusOptions;
-    this.requestContext = requestContext;
   }
 
   public MonitoredSAL getMonitoredSAL() {
@@ -106,25 +97,19 @@ public class MonitoredSALReply extends EncodedReply implements Message {
 
     readBuffer.closeContext("MonitoredSALReply");
     // Create the instance
-    return new MonitoredSALReplyBuilderImpl(monitoredSAL, cBusOptions, requestContext);
+    return new MonitoredSALReplyBuilderImpl(monitoredSAL);
   }
 
   public static class MonitoredSALReplyBuilderImpl implements EncodedReply.EncodedReplyBuilder {
     private final MonitoredSAL monitoredSAL;
-    private final CBusOptions cBusOptions;
-    private final RequestContext requestContext;
 
-    public MonitoredSALReplyBuilderImpl(
-        MonitoredSAL monitoredSAL, CBusOptions cBusOptions, RequestContext requestContext) {
+    public MonitoredSALReplyBuilderImpl(MonitoredSAL monitoredSAL) {
       this.monitoredSAL = monitoredSAL;
-      this.cBusOptions = cBusOptions;
-      this.requestContext = requestContext;
     }
 
-    public MonitoredSALReply build(
-        byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext) {
+    public MonitoredSALReply build(RequestContext requestContext, byte peekedByte) {
       MonitoredSALReply monitoredSALReply =
-          new MonitoredSALReply(peekedByte, monitoredSAL, cBusOptions, requestContext);
+          new MonitoredSALReply(requestContext, peekedByte, monitoredSAL);
       return monitoredSALReply;
     }
   }

@@ -49,21 +49,17 @@ public class BACnetConfirmedServiceRequestRemoveListElement extends BACnetConfir
   protected final BACnetContextTagUnsignedInteger arrayIndex;
   protected final BACnetConstructedData listOfElements;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestRemoveListElement(
+      long serviceRequestLength,
       BACnetContextTagObjectIdentifier objectIdentifier,
       BACnetPropertyIdentifierTagged propertyIdentifier,
       BACnetContextTagUnsignedInteger arrayIndex,
-      BACnetConstructedData listOfElements,
-      Long serviceRequestLength) {
+      BACnetConstructedData listOfElements) {
     super(serviceRequestLength);
     this.objectIdentifier = objectIdentifier;
     this.propertyIdentifier = propertyIdentifier;
     this.arrayIndex = arrayIndex;
     this.listOfElements = listOfElements;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagObjectIdentifier getObjectIdentifier() {
@@ -191,7 +187,7 @@ public class BACnetConfirmedServiceRequestRemoveListElement extends BACnetConfir
     readBuffer.closeContext("BACnetConfirmedServiceRequestRemoveListElement");
     // Create the instance
     return new BACnetConfirmedServiceRequestRemoveListElementBuilderImpl(
-        objectIdentifier, propertyIdentifier, arrayIndex, listOfElements, serviceRequestLength);
+        objectIdentifier, propertyIdentifier, arrayIndex, listOfElements);
   }
 
   public static class BACnetConfirmedServiceRequestRemoveListElementBuilderImpl
@@ -200,31 +196,27 @@ public class BACnetConfirmedServiceRequestRemoveListElement extends BACnetConfir
     private final BACnetPropertyIdentifierTagged propertyIdentifier;
     private final BACnetContextTagUnsignedInteger arrayIndex;
     private final BACnetConstructedData listOfElements;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestRemoveListElementBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier,
         BACnetPropertyIdentifierTagged propertyIdentifier,
         BACnetContextTagUnsignedInteger arrayIndex,
-        BACnetConstructedData listOfElements,
-        Long serviceRequestLength) {
+        BACnetConstructedData listOfElements) {
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.arrayIndex = arrayIndex;
       this.listOfElements = listOfElements;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestRemoveListElement build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestRemoveListElement build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestRemoveListElement
           bACnetConfirmedServiceRequestRemoveListElement =
               new BACnetConfirmedServiceRequestRemoveListElement(
+                  serviceRequestLength,
                   objectIdentifier,
                   propertyIdentifier,
                   arrayIndex,
-                  listOfElements,
-                  serviceRequestLength);
+                  listOfElements);
       return bACnetConfirmedServiceRequestRemoveListElement;
     }
   }

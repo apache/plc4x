@@ -58,9 +58,6 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
   protected final BACnetEventStateTagged toState;
   protected final BACnetNotificationParameters eventValues;
 
-  // Arguments.
-  protected final Integer serviceRequestLength;
-
   public BACnetUnconfirmedServiceRequestUnconfirmedEventNotification(
       BACnetContextTagUnsignedInteger processIdentifier,
       BACnetContextTagObjectIdentifier initiatingDeviceIdentifier,
@@ -74,9 +71,8 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
       BACnetContextTagBoolean ackRequired,
       BACnetEventStateTagged fromState,
       BACnetEventStateTagged toState,
-      BACnetNotificationParameters eventValues,
-      Integer serviceRequestLength) {
-    super(serviceRequestLength);
+      BACnetNotificationParameters eventValues) {
+    super();
     this.processIdentifier = processIdentifier;
     this.initiatingDeviceIdentifier = initiatingDeviceIdentifier;
     this.eventObjectIdentifier = eventObjectIdentifier;
@@ -90,7 +86,6 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
     this.fromState = fromState;
     this.toState = toState;
     this.eventValues = eventValues;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagUnsignedInteger getProcessIdentifier() {
@@ -413,8 +408,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
         ackRequired,
         fromState,
         toState,
-        eventValues,
-        serviceRequestLength);
+        eventValues);
   }
 
   public static class BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilderImpl
@@ -432,7 +426,6 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
     private final BACnetEventStateTagged fromState;
     private final BACnetEventStateTagged toState;
     private final BACnetNotificationParameters eventValues;
-    private final Integer serviceRequestLength;
 
     public BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilderImpl(
         BACnetContextTagUnsignedInteger processIdentifier,
@@ -447,8 +440,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
         BACnetContextTagBoolean ackRequired,
         BACnetEventStateTagged fromState,
         BACnetEventStateTagged toState,
-        BACnetNotificationParameters eventValues,
-        Integer serviceRequestLength) {
+        BACnetNotificationParameters eventValues) {
       this.processIdentifier = processIdentifier;
       this.initiatingDeviceIdentifier = initiatingDeviceIdentifier;
       this.eventObjectIdentifier = eventObjectIdentifier;
@@ -462,11 +454,9 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
       this.fromState = fromState;
       this.toState = toState;
       this.eventValues = eventValues;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetUnconfirmedServiceRequestUnconfirmedEventNotification build(
-        Integer serviceRequestLength) {
+    public BACnetUnconfirmedServiceRequestUnconfirmedEventNotification build() {
       BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
           bACnetUnconfirmedServiceRequestUnconfirmedEventNotification =
               new BACnetUnconfirmedServiceRequestUnconfirmedEventNotification(
@@ -482,8 +472,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
                   ackRequired,
                   fromState,
                   toState,
-                  eventValues,
-                  serviceRequestLength);
+                  eventValues);
       return bACnetUnconfirmedServiceRequestUnconfirmedEventNotification;
     }
   }

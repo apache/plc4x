@@ -50,21 +50,13 @@ public class BACnetConstructedDataIPv6PrefixLength extends BACnetConstructedData
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger ipv6PrefixLength;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIPv6PrefixLength(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger ipv6PrefixLength,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger ipv6PrefixLength) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.ipv6PrefixLength = ipv6PrefixLength;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getIpv6PrefixLength() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataIPv6PrefixLength extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataIPv6PrefixLength");
     // Create the instance
-    return new BACnetConstructedDataIPv6PrefixLengthBuilderImpl(
-        ipv6PrefixLength, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPv6PrefixLengthBuilderImpl(ipv6PrefixLength);
   }
 
   public static class BACnetConstructedDataIPv6PrefixLengthBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger ipv6PrefixLength;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIPv6PrefixLengthBuilderImpl(
-        BACnetApplicationTagUnsignedInteger ipv6PrefixLength,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger ipv6PrefixLength) {
       this.ipv6PrefixLength = ipv6PrefixLength;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIPv6PrefixLength build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIPv6PrefixLength bACnetConstructedDataIPv6PrefixLength =
           new BACnetConstructedDataIPv6PrefixLength(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              ipv6PrefixLength,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, ipv6PrefixLength);
       return bACnetConstructedDataIPv6PrefixLength;
     }
   }

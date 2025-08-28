@@ -50,21 +50,13 @@ public class BACnetConstructedDataUpdateKeySetTimeout extends BACnetConstructedD
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger updateKeySetTimeout;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataUpdateKeySetTimeout(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger updateKeySetTimeout,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger updateKeySetTimeout) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.updateKeySetTimeout = updateKeySetTimeout;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getUpdateKeySetTimeout() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataUpdateKeySetTimeout extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataUpdateKeySetTimeout");
     // Create the instance
-    return new BACnetConstructedDataUpdateKeySetTimeoutBuilderImpl(
-        updateKeySetTimeout, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataUpdateKeySetTimeoutBuilderImpl(updateKeySetTimeout);
   }
 
   public static class BACnetConstructedDataUpdateKeySetTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger updateKeySetTimeout;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataUpdateKeySetTimeoutBuilderImpl(
-        BACnetApplicationTagUnsignedInteger updateKeySetTimeout,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger updateKeySetTimeout) {
       this.updateKeySetTimeout = updateKeySetTimeout;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataUpdateKeySetTimeout build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataUpdateKeySetTimeout bACnetConstructedDataUpdateKeySetTimeout =
           new BACnetConstructedDataUpdateKeySetTimeout(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              updateKeySetTimeout,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, updateKeySetTimeout);
       return bACnetConstructedDataUpdateKeySetTimeout;
     }
   }

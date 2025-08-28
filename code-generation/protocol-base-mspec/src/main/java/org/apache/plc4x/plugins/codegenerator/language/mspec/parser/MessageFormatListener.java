@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.parser;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.LazyTypeDefinitionConsumer;
@@ -27,6 +28,7 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.expression.Expressi
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultVariableLiteral;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.WildcardTerm;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
@@ -513,9 +515,31 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     @Override
     public void enterStateField(MSpecParser.StateFieldContext ctx) {
         String name = getIdString(ctx.name);
-        Term valueExpression = getExpressionTerm(ctx.valueExpression);
+        // Get the type information from the parents arguments.
+        ParserRuleContext parent = ctx.getParent().getParent().getParent();
+        if (!(parent instanceof MSpecParser.ComplexTypeContext) && !(parent instanceof MSpecParser.CaseStatementContext)) {
+            throw new RuntimeException("state fields must only be defined in complex types");
+        }
+        Optional<MSpecParser.ArgumentContext> argumentContext;
+        if (parent instanceof MSpecParser.ComplexTypeContext) {
+            MSpecParser.ComplexTypeContext complexTypeContext = (MSpecParser.ComplexTypeContext) parent;
+            argumentContext = complexTypeContext.params.argument().stream().filter(argContext -> argContext.name.getText().equalsIgnoreCase(name)).findFirst();
+        } else {
+            RuleContext curContext = parent;
+            while((curContext.parent != null) && !(curContext.parent instanceof MSpecParser.ComplexTypeContext)) {
+                curContext = curContext.parent;
+            }
+            if (curContext.parent == null) {
+                throw new RuntimeException("state fields must refer to arguments by using the same name. Parent context is null.");
+            }
+            MSpecParser.ComplexTypeContext complexTypeContext = (MSpecParser.ComplexTypeContext) curContext.parent;
+            argumentContext = complexTypeContext.params.argument().stream().filter(argContext -> argContext.name.getText().equalsIgnoreCase(name)).findFirst();
+        }
+        MSpecParser.TypeReferenceContext type = argumentContext.orElseThrow(() -> new RuntimeException("state fields must refer to arguments by using the same name.")).type;
+        // The variable term is always just a direct reference to the parser argument.
+        Term valueExpression = new DefaultVariableLiteral(name, null, null, null);
         DefaultStateField field = new DefaultStateField(getAttributes(ctx), name, valueExpression);
-        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+        getTypeReference(type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
                 LOGGER.debug("Error setting type for {}", field, throwable);

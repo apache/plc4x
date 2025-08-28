@@ -51,7 +51,6 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
   protected final boolean pnioMultidevive;
   protected final boolean pnioController;
   protected final boolean pnioDevice;
-
   // Reserved Fields
   private Integer reservedField0;
   private Short reservedField1;

@@ -50,21 +50,13 @@ public class BACnetConstructedDataAPDUSegmentTimeout extends BACnetConstructedDa
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger apduSegmentTimeout;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAPDUSegmentTimeout(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger apduSegmentTimeout,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger apduSegmentTimeout) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.apduSegmentTimeout = apduSegmentTimeout;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getApduSegmentTimeout() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataAPDUSegmentTimeout extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataAPDUSegmentTimeout");
     // Create the instance
-    return new BACnetConstructedDataAPDUSegmentTimeoutBuilderImpl(
-        apduSegmentTimeout, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAPDUSegmentTimeoutBuilderImpl(apduSegmentTimeout);
   }
 
   public static class BACnetConstructedDataAPDUSegmentTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger apduSegmentTimeout;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAPDUSegmentTimeoutBuilderImpl(
-        BACnetApplicationTagUnsignedInteger apduSegmentTimeout,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger apduSegmentTimeout) {
       this.apduSegmentTimeout = apduSegmentTimeout;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAPDUSegmentTimeout build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAPDUSegmentTimeout bACnetConstructedDataAPDUSegmentTimeout =
           new BACnetConstructedDataAPDUSegmentTimeout(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              apduSegmentTimeout,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, apduSegmentTimeout);
       return bACnetConstructedDataAPDUSegmentTimeout;
     }
   }

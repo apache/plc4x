@@ -46,14 +46,10 @@ public class ParameterValueApplicationAddress2 extends ParameterValue implements
   protected final ApplicationAddress2 value;
   protected final byte[] data;
 
-  // Arguments.
-  protected final Short numBytes;
-
-  public ParameterValueApplicationAddress2(ApplicationAddress2 value, byte[] data, Short numBytes) {
-    super(numBytes);
+  public ParameterValueApplicationAddress2(ApplicationAddress2 value, byte[] data) {
+    super();
     this.value = value;
     this.data = data;
-    this.numBytes = numBytes;
   }
 
   public ApplicationAddress2 getValue() {
@@ -120,26 +116,22 @@ public class ParameterValueApplicationAddress2 extends ParameterValue implements
 
     readBuffer.closeContext("ParameterValueApplicationAddress2");
     // Create the instance
-    return new ParameterValueApplicationAddress2BuilderImpl(value, data, numBytes);
+    return new ParameterValueApplicationAddress2BuilderImpl(value, data);
   }
 
   public static class ParameterValueApplicationAddress2BuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final ApplicationAddress2 value;
     private final byte[] data;
-    private final Short numBytes;
 
-    public ParameterValueApplicationAddress2BuilderImpl(
-        ApplicationAddress2 value, byte[] data, Short numBytes) {
+    public ParameterValueApplicationAddress2BuilderImpl(ApplicationAddress2 value, byte[] data) {
       this.value = value;
       this.data = data;
-      this.numBytes = numBytes;
     }
 
-    public ParameterValueApplicationAddress2 build(Short numBytes) {
-
+    public ParameterValueApplicationAddress2 build() {
       ParameterValueApplicationAddress2 parameterValueApplicationAddress2 =
-          new ParameterValueApplicationAddress2(value, data, numBytes);
+          new ParameterValueApplicationAddress2(value, data);
       return parameterValueApplicationAddress2;
     }
   }

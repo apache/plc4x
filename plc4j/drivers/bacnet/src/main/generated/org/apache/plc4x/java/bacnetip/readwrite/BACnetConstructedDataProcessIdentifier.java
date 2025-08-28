@@ -50,21 +50,13 @@ public class BACnetConstructedDataProcessIdentifier extends BACnetConstructedDat
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger processIdentifier;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataProcessIdentifier(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger processIdentifier,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger processIdentifier) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.processIdentifier = processIdentifier;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getProcessIdentifier() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataProcessIdentifier extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataProcessIdentifier");
     // Create the instance
-    return new BACnetConstructedDataProcessIdentifierBuilderImpl(
-        processIdentifier, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataProcessIdentifierBuilderImpl(processIdentifier);
   }
 
   public static class BACnetConstructedDataProcessIdentifierBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger processIdentifier;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataProcessIdentifierBuilderImpl(
-        BACnetApplicationTagUnsignedInteger processIdentifier,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger processIdentifier) {
       this.processIdentifier = processIdentifier;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataProcessIdentifier build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataProcessIdentifier bACnetConstructedDataProcessIdentifier =
           new BACnetConstructedDataProcessIdentifier(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              processIdentifier,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, processIdentifier);
       return bACnetConstructedDataProcessIdentifier;
     }
   }

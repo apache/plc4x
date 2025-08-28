@@ -50,21 +50,13 @@ public class BACnetConstructedDataIntegralConstant extends BACnetConstructedData
   // Properties.
   protected final BACnetApplicationTagReal integralConstant;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIntegralConstant(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal integralConstant,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal integralConstant) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.integralConstant = integralConstant;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getIntegralConstant() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataIntegralConstant extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataIntegralConstant");
     // Create the instance
-    return new BACnetConstructedDataIntegralConstantBuilderImpl(
-        integralConstant, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIntegralConstantBuilderImpl(integralConstant);
   }
 
   public static class BACnetConstructedDataIntegralConstantBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal integralConstant;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIntegralConstantBuilderImpl(
-        BACnetApplicationTagReal integralConstant,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagReal integralConstant) {
       this.integralConstant = integralConstant;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIntegralConstant build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIntegralConstant bACnetConstructedDataIntegralConstant =
           new BACnetConstructedDataIntegralConstant(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              integralConstant,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, integralConstant);
       return bACnetConstructedDataIntegralConstant;
     }
   }

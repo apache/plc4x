@@ -45,16 +45,9 @@ public class BACnetContextTagUnknown extends BACnetContextTag implements Message
   // Properties.
   protected final byte[] unknownData;
 
-  // Arguments.
-  protected final Long actualLength;
-  protected final Short tagNumberArgument;
-
-  public BACnetContextTagUnknown(
-      BACnetTagHeader header, byte[] unknownData, Long actualLength, Short tagNumberArgument) {
-    super(header, tagNumberArgument);
+  public BACnetContextTagUnknown(BACnetTagHeader header, byte[] unknownData) {
+    super(header);
     this.unknownData = unknownData;
-    this.actualLength = actualLength;
-    this.tagNumberArgument = tagNumberArgument;
   }
 
   public byte[] getUnknownData() {
@@ -104,25 +97,20 @@ public class BACnetContextTagUnknown extends BACnetContextTag implements Message
 
     readBuffer.closeContext("BACnetContextTagUnknown");
     // Create the instance
-    return new BACnetContextTagUnknownBuilderImpl(unknownData, actualLength, tagNumberArgument);
+    return new BACnetContextTagUnknownBuilderImpl(unknownData);
   }
 
   public static class BACnetContextTagUnknownBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final byte[] unknownData;
-    private final Long actualLength;
-    private final Short tagNumberArgument;
 
-    public BACnetContextTagUnknownBuilderImpl(
-        byte[] unknownData, Long actualLength, Short tagNumberArgument) {
+    public BACnetContextTagUnknownBuilderImpl(byte[] unknownData) {
       this.unknownData = unknownData;
-      this.actualLength = actualLength;
-      this.tagNumberArgument = tagNumberArgument;
     }
 
-    public BACnetContextTagUnknown build(BACnetTagHeader header, Short tagNumberArgument) {
+    public BACnetContextTagUnknown build(BACnetTagHeader header) {
       BACnetContextTagUnknown bACnetContextTagUnknown =
-          new BACnetContextTagUnknown(header, unknownData, actualLength, tagNumberArgument);
+          new BACnetContextTagUnknown(header, unknownData);
       return bACnetContextTagUnknown;
     }
   }

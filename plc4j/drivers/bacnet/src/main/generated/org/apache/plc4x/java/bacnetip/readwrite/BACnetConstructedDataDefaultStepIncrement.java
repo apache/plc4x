@@ -50,21 +50,13 @@ public class BACnetConstructedDataDefaultStepIncrement extends BACnetConstructed
   // Properties.
   protected final BACnetApplicationTagReal defaultStepIncrement;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDefaultStepIncrement(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal defaultStepIncrement,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal defaultStepIncrement) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.defaultStepIncrement = defaultStepIncrement;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getDefaultStepIncrement() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataDefaultStepIncrement extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataDefaultStepIncrement");
     // Create the instance
-    return new BACnetConstructedDataDefaultStepIncrementBuilderImpl(
-        defaultStepIncrement, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDefaultStepIncrementBuilderImpl(defaultStepIncrement);
   }
 
   public static class BACnetConstructedDataDefaultStepIncrementBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal defaultStepIncrement;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDefaultStepIncrementBuilderImpl(
-        BACnetApplicationTagReal defaultStepIncrement,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagReal defaultStepIncrement) {
       this.defaultStepIncrement = defaultStepIncrement;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDefaultStepIncrement build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDefaultStepIncrement bACnetConstructedDataDefaultStepIncrement =
           new BACnetConstructedDataDefaultStepIncrement(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              defaultStepIncrement,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, defaultStepIncrement);
       return bACnetConstructedDataDefaultStepIncrement;
     }
   }

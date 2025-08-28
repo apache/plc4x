@@ -41,17 +41,10 @@ public class BACnetProgramRequestTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetProgramRequest value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetProgramRequestTagged(
-      BACnetTagHeader header, BACnetProgramRequest value, Short tagNumber, TagClass tagClass) {
+  public BACnetProgramRequestTagged(BACnetTagHeader header, BACnetProgramRequest value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -133,8 +126,7 @@ public class BACnetProgramRequestTagged implements Message {
     readBuffer.closeContext("BACnetProgramRequestTagged");
     // Create the instance
     BACnetProgramRequestTagged _bACnetProgramRequestTagged;
-    _bACnetProgramRequestTagged =
-        new BACnetProgramRequestTagged(header, value, tagNumber, tagClass);
+    _bACnetProgramRequestTagged = new BACnetProgramRequestTagged(header, value);
     return _bACnetProgramRequestTagged;
   }
 

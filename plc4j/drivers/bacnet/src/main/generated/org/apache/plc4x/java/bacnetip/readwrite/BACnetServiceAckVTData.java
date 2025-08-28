@@ -47,19 +47,15 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
   protected final BACnetApplicationTagOctetString vtNewData;
   protected final BACnetApplicationTagUnsignedInteger vtDataFlag;
 
-  // Arguments.
-  protected final Long serviceAckLength;
-
   public BACnetServiceAckVTData(
+      long serviceAckLength,
       BACnetApplicationTagUnsignedInteger vtSessionIdentifier,
       BACnetApplicationTagOctetString vtNewData,
-      BACnetApplicationTagUnsignedInteger vtDataFlag,
-      Long serviceAckLength) {
+      BACnetApplicationTagUnsignedInteger vtDataFlag) {
     super(serviceAckLength);
     this.vtSessionIdentifier = vtSessionIdentifier;
     this.vtNewData = vtNewData;
     this.vtDataFlag = vtDataFlag;
-    this.serviceAckLength = serviceAckLength;
   }
 
   public BACnetApplicationTagUnsignedInteger getVtSessionIdentifier() {
@@ -150,8 +146,7 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
 
     readBuffer.closeContext("BACnetServiceAckVTData");
     // Create the instance
-    return new BACnetServiceAckVTDataBuilderImpl(
-        vtSessionIdentifier, vtNewData, vtDataFlag, serviceAckLength);
+    return new BACnetServiceAckVTDataBuilderImpl(vtSessionIdentifier, vtNewData, vtDataFlag);
   }
 
   public static class BACnetServiceAckVTDataBuilderImpl
@@ -159,23 +154,19 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
     private final BACnetApplicationTagUnsignedInteger vtSessionIdentifier;
     private final BACnetApplicationTagOctetString vtNewData;
     private final BACnetApplicationTagUnsignedInteger vtDataFlag;
-    private final Long serviceAckLength;
 
     public BACnetServiceAckVTDataBuilderImpl(
         BACnetApplicationTagUnsignedInteger vtSessionIdentifier,
         BACnetApplicationTagOctetString vtNewData,
-        BACnetApplicationTagUnsignedInteger vtDataFlag,
-        Long serviceAckLength) {
+        BACnetApplicationTagUnsignedInteger vtDataFlag) {
       this.vtSessionIdentifier = vtSessionIdentifier;
       this.vtNewData = vtNewData;
       this.vtDataFlag = vtDataFlag;
-      this.serviceAckLength = serviceAckLength;
     }
 
-    public BACnetServiceAckVTData build(Long serviceAckLength) {
-
+    public BACnetServiceAckVTData build(long serviceAckLength) {
       BACnetServiceAckVTData bACnetServiceAckVTData =
-          new BACnetServiceAckVTData(vtSessionIdentifier, vtNewData, vtDataFlag, serviceAckLength);
+          new BACnetServiceAckVTData(serviceAckLength, vtSessionIdentifier, vtNewData, vtDataFlag);
       return bACnetServiceAckVTData;
     }
   }

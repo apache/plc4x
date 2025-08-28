@@ -40,12 +40,8 @@ public abstract class ParameterValue implements Message {
   // Abstract accessors for discriminator values.
   public abstract ParameterType getParameterType();
 
-  // Arguments.
-  protected final Short numBytes;
-
-  public ParameterValue(Short numBytes) {
+  public ParameterValue() {
     super();
-    this.numBytes = numBytes;
   }
 
   protected abstract void serializeParameterValueChild(WriteBuffer writeBuffer)
@@ -142,13 +138,12 @@ public abstract class ParameterValue implements Message {
 
     readBuffer.closeContext("ParameterValue");
     // Create the instance
-    ParameterValue _parameterValue = builder.build(numBytes);
-
+    ParameterValue _parameterValue = builder.build();
     return _parameterValue;
   }
 
   public interface ParameterValueBuilder {
-    ParameterValue build(Short numBytes);
+    ParameterValue build();
   }
 
   @Override

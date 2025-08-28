@@ -43,18 +43,13 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger unsignedValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger unsignedValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetApplicationTagUnsignedInteger unsignedValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.unsignedValue = unsignedValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetApplicationTagUnsignedInteger getUnsignedValue() {
@@ -110,30 +105,25 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned");
     // Create the instance
     return new BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilderImpl(
-        unsignedValue, tagNumber);
+        unsignedValue);
   }
 
   public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilderImpl
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
-    private final Short tagNumber;
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilderImpl(
-        BACnetApplicationTagUnsignedInteger unsignedValue, Short tagNumber) {
+        BACnetApplicationTagUnsignedInteger unsignedValue) {
       this.unsignedValue = unsignedValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
           bACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned =
               new BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned(
-                  openingTag, peekedTagHeader, closingTag, unsignedValue, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, unsignedValue);
       return bACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned;
     }
   }

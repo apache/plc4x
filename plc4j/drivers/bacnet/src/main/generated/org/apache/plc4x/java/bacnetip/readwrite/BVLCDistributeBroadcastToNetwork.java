@@ -45,13 +45,9 @@ public class BVLCDistributeBroadcastToNetwork extends BVLC implements Message {
   // Properties.
   protected final NPDU npdu;
 
-  // Arguments.
-  protected final Integer bvlcPayloadLength;
-
-  public BVLCDistributeBroadcastToNetwork(NPDU npdu, Integer bvlcPayloadLength) {
+  public BVLCDistributeBroadcastToNetwork(NPDU npdu) {
     super();
     this.npdu = npdu;
-    this.bvlcPayloadLength = bvlcPayloadLength;
   }
 
   public NPDU getNpdu() {
@@ -102,21 +98,19 @@ public class BVLCDistributeBroadcastToNetwork extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCDistributeBroadcastToNetwork");
     // Create the instance
-    return new BVLCDistributeBroadcastToNetworkBuilderImpl(npdu, bvlcPayloadLength);
+    return new BVLCDistributeBroadcastToNetworkBuilderImpl(npdu);
   }
 
   public static class BVLCDistributeBroadcastToNetworkBuilderImpl implements BVLC.BVLCBuilder {
     private final NPDU npdu;
-    private final Integer bvlcPayloadLength;
 
-    public BVLCDistributeBroadcastToNetworkBuilderImpl(NPDU npdu, Integer bvlcPayloadLength) {
+    public BVLCDistributeBroadcastToNetworkBuilderImpl(NPDU npdu) {
       this.npdu = npdu;
-      this.bvlcPayloadLength = bvlcPayloadLength;
     }
 
     public BVLCDistributeBroadcastToNetwork build() {
       BVLCDistributeBroadcastToNetwork bVLCDistributeBroadcastToNetwork =
-          new BVLCDistributeBroadcastToNetwork(npdu, bvlcPayloadLength);
+          new BVLCDistributeBroadcastToNetwork(npdu);
       return bVLCDistributeBroadcastToNetwork;
     }
   }

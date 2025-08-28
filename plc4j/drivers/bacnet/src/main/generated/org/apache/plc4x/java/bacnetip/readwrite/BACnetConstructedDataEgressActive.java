@@ -49,21 +49,13 @@ public class BACnetConstructedDataEgressActive extends BACnetConstructedData imp
   // Properties.
   protected final BACnetApplicationTagBoolean egressActive;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataEgressActive(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean egressActive,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean egressActive) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.egressActive = egressActive;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getEgressActive() {
@@ -132,34 +124,22 @@ public class BACnetConstructedDataEgressActive extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataEgressActive");
     // Create the instance
-    return new BACnetConstructedDataEgressActiveBuilderImpl(
-        egressActive, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEgressActiveBuilderImpl(egressActive);
   }
 
   public static class BACnetConstructedDataEgressActiveBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean egressActive;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEgressActiveBuilderImpl(
-        BACnetApplicationTagBoolean egressActive,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataEgressActiveBuilderImpl(BACnetApplicationTagBoolean egressActive) {
       this.egressActive = egressActive;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataEgressActive build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataEgressActive bACnetConstructedDataEgressActive =
           new BACnetConstructedDataEgressActive(
-              openingTag, peekedTagHeader, closingTag, egressActive, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, egressActive);
       return bACnetConstructedDataEgressActive;
     }
   }

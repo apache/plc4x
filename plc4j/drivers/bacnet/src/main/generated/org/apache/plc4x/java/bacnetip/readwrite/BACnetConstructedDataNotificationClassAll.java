@@ -47,19 +47,9 @@ public class BACnetConstructedDataNotificationClassAll extends BACnetConstructed
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataNotificationClassAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,29 +94,18 @@ public class BACnetConstructedDataNotificationClassAll extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataNotificationClassAll");
     // Create the instance
-    return new BACnetConstructedDataNotificationClassAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNotificationClassAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataNotificationClassAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNotificationClassAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataNotificationClassAllBuilderImpl() {}
 
     public BACnetConstructedDataNotificationClassAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataNotificationClassAll bACnetConstructedDataNotificationClassAll =
-          new BACnetConstructedDataNotificationClassAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataNotificationClassAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataNotificationClassAll;
     }
   }

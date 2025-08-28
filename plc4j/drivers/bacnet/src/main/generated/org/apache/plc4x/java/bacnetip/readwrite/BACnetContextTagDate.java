@@ -45,14 +45,9 @@ public class BACnetContextTagDate extends BACnetContextTag implements Message {
   // Properties.
   protected final BACnetTagPayloadDate payload;
 
-  // Arguments.
-  protected final Short tagNumberArgument;
-
-  public BACnetContextTagDate(
-      BACnetTagHeader header, BACnetTagPayloadDate payload, Short tagNumberArgument) {
-    super(header, tagNumberArgument);
+  public BACnetContextTagDate(BACnetTagHeader header, BACnetTagPayloadDate payload) {
+    super(header);
     this.payload = payload;
-    this.tagNumberArgument = tagNumberArgument;
   }
 
   public BACnetTagPayloadDate getPayload() {
@@ -102,22 +97,19 @@ public class BACnetContextTagDate extends BACnetContextTag implements Message {
 
     readBuffer.closeContext("BACnetContextTagDate");
     // Create the instance
-    return new BACnetContextTagDateBuilderImpl(payload, tagNumberArgument);
+    return new BACnetContextTagDateBuilderImpl(payload);
   }
 
   public static class BACnetContextTagDateBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadDate payload;
-    private final Short tagNumberArgument;
 
-    public BACnetContextTagDateBuilderImpl(BACnetTagPayloadDate payload, Short tagNumberArgument) {
+    public BACnetContextTagDateBuilderImpl(BACnetTagPayloadDate payload) {
       this.payload = payload;
-      this.tagNumberArgument = tagNumberArgument;
     }
 
-    public BACnetContextTagDate build(BACnetTagHeader header, Short tagNumberArgument) {
-      BACnetContextTagDate bACnetContextTagDate =
-          new BACnetContextTagDate(header, payload, tagNumberArgument);
+    public BACnetContextTagDate build(BACnetTagHeader header) {
+      BACnetContextTagDate bACnetContextTagDate = new BACnetContextTagDate(header, payload);
       return bACnetContextTagDate;
     }
   }

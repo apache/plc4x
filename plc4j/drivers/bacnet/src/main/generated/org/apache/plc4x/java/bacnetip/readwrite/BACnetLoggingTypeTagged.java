@@ -42,22 +42,12 @@ public class BACnetLoggingTypeTagged implements Message {
   protected final BACnetLoggingType value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetLoggingTypeTagged(
-      BACnetTagHeader header,
-      BACnetLoggingType value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetLoggingType value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -180,8 +170,7 @@ public class BACnetLoggingTypeTagged implements Message {
     readBuffer.closeContext("BACnetLoggingTypeTagged");
     // Create the instance
     BACnetLoggingTypeTagged _bACnetLoggingTypeTagged;
-    _bACnetLoggingTypeTagged =
-        new BACnetLoggingTypeTagged(header, value, proprietaryValue, tagNumber, tagClass);
+    _bACnetLoggingTypeTagged = new BACnetLoggingTypeTagged(header, value, proprietaryValue);
     return _bACnetLoggingTypeTagged;
   }
 

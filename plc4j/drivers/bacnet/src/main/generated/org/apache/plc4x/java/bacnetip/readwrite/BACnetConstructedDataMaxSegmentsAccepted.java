@@ -50,21 +50,13 @@ public class BACnetConstructedDataMaxSegmentsAccepted extends BACnetConstructedD
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger maxSegmentsAccepted;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMaxSegmentsAccepted(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger maxSegmentsAccepted,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger maxSegmentsAccepted) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.maxSegmentsAccepted = maxSegmentsAccepted;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getMaxSegmentsAccepted() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataMaxSegmentsAccepted extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataMaxSegmentsAccepted");
     // Create the instance
-    return new BACnetConstructedDataMaxSegmentsAcceptedBuilderImpl(
-        maxSegmentsAccepted, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMaxSegmentsAcceptedBuilderImpl(maxSegmentsAccepted);
   }
 
   public static class BACnetConstructedDataMaxSegmentsAcceptedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxSegmentsAccepted;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMaxSegmentsAcceptedBuilderImpl(
-        BACnetApplicationTagUnsignedInteger maxSegmentsAccepted,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger maxSegmentsAccepted) {
       this.maxSegmentsAccepted = maxSegmentsAccepted;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMaxSegmentsAccepted build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMaxSegmentsAccepted bACnetConstructedDataMaxSegmentsAccepted =
           new BACnetConstructedDataMaxSegmentsAccepted(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              maxSegmentsAccepted,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, maxSegmentsAccepted);
       return bACnetConstructedDataMaxSegmentsAccepted;
     }
   }

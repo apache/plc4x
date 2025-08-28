@@ -45,18 +45,13 @@ public class APDUSimpleAck extends APDU implements Message {
   // Properties.
   protected final short originalInvokeId;
   protected final BACnetConfirmedServiceChoice serviceChoice;
-
-  // Arguments.
-  protected final Integer apduLength;
   // Reserved Fields
   private Byte reservedField0;
 
-  public APDUSimpleAck(
-      short originalInvokeId, BACnetConfirmedServiceChoice serviceChoice, Integer apduLength) {
-    super(apduLength);
+  public APDUSimpleAck(short originalInvokeId, BACnetConfirmedServiceChoice serviceChoice) {
+    super();
     this.originalInvokeId = originalInvokeId;
     this.serviceChoice = serviceChoice;
-    this.apduLength = apduLength;
   }
 
   public short getOriginalInvokeId() {
@@ -136,30 +131,23 @@ public class APDUSimpleAck extends APDU implements Message {
 
     readBuffer.closeContext("APDUSimpleAck");
     // Create the instance
-    return new APDUSimpleAckBuilderImpl(
-        originalInvokeId, serviceChoice, apduLength, reservedField0);
+    return new APDUSimpleAckBuilderImpl(originalInvokeId, serviceChoice, reservedField0);
   }
 
   public static class APDUSimpleAckBuilderImpl implements APDU.APDUBuilder {
     private final short originalInvokeId;
     private final BACnetConfirmedServiceChoice serviceChoice;
-    private final Integer apduLength;
     private final Byte reservedField0;
 
     public APDUSimpleAckBuilderImpl(
-        short originalInvokeId,
-        BACnetConfirmedServiceChoice serviceChoice,
-        Integer apduLength,
-        Byte reservedField0) {
+        short originalInvokeId, BACnetConfirmedServiceChoice serviceChoice, Byte reservedField0) {
       this.originalInvokeId = originalInvokeId;
       this.serviceChoice = serviceChoice;
-      this.apduLength = apduLength;
       this.reservedField0 = reservedField0;
     }
 
-    public APDUSimpleAck build(Integer apduLength) {
-
-      APDUSimpleAck aPDUSimpleAck = new APDUSimpleAck(originalInvokeId, serviceChoice, apduLength);
+    public APDUSimpleAck build() {
+      APDUSimpleAck aPDUSimpleAck = new APDUSimpleAck(originalInvokeId, serviceChoice);
       aPDUSimpleAck.reservedField0 = reservedField0;
       return aPDUSimpleAck;
     }

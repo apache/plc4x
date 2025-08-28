@@ -40,12 +40,16 @@ public abstract class BACnetConfirmedServiceRequest implements Message {
   // Abstract accessors for discriminator values.
   public abstract BACnetConfirmedServiceChoice getServiceChoice();
 
-  // Arguments.
-  protected final Long serviceRequestLength;
+  // Properties.
+  protected final long serviceRequestLength;
 
-  public BACnetConfirmedServiceRequest(Long serviceRequestLength) {
+  public BACnetConfirmedServiceRequest(long serviceRequestLength) {
     super();
     this.serviceRequestLength = serviceRequestLength;
+  }
+
+  public long getServiceRequestLength() {
+    return serviceRequestLength;
   }
 
   public long getServiceRequestPayloadLength() {
@@ -285,12 +289,11 @@ public abstract class BACnetConfirmedServiceRequest implements Message {
     // Create the instance
     BACnetConfirmedServiceRequest _bACnetConfirmedServiceRequest =
         builder.build(serviceRequestLength);
-
     return _bACnetConfirmedServiceRequest;
   }
 
   public interface BACnetConfirmedServiceRequestBuilder {
-    BACnetConfirmedServiceRequest build(Long serviceRequestLength);
+    BACnetConfirmedServiceRequest build(long serviceRequestLength);
   }
 
   @Override
@@ -302,12 +305,12 @@ public abstract class BACnetConfirmedServiceRequest implements Message {
       return false;
     }
     BACnetConfirmedServiceRequest that = (BACnetConfirmedServiceRequest) o;
-    return true;
+    return (getServiceRequestLength() == that.getServiceRequestLength()) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash();
+    return Objects.hash(getServiceRequestLength());
   }
 
   @Override

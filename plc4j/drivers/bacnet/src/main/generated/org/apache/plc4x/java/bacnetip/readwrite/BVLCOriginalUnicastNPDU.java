@@ -45,13 +45,9 @@ public class BVLCOriginalUnicastNPDU extends BVLC implements Message {
   // Properties.
   protected final NPDU npdu;
 
-  // Arguments.
-  protected final Integer bvlcPayloadLength;
-
-  public BVLCOriginalUnicastNPDU(NPDU npdu, Integer bvlcPayloadLength) {
+  public BVLCOriginalUnicastNPDU(NPDU npdu) {
     super();
     this.npdu = npdu;
-    this.bvlcPayloadLength = bvlcPayloadLength;
   }
 
   public NPDU getNpdu() {
@@ -102,21 +98,18 @@ public class BVLCOriginalUnicastNPDU extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCOriginalUnicastNPDU");
     // Create the instance
-    return new BVLCOriginalUnicastNPDUBuilderImpl(npdu, bvlcPayloadLength);
+    return new BVLCOriginalUnicastNPDUBuilderImpl(npdu);
   }
 
   public static class BVLCOriginalUnicastNPDUBuilderImpl implements BVLC.BVLCBuilder {
     private final NPDU npdu;
-    private final Integer bvlcPayloadLength;
 
-    public BVLCOriginalUnicastNPDUBuilderImpl(NPDU npdu, Integer bvlcPayloadLength) {
+    public BVLCOriginalUnicastNPDUBuilderImpl(NPDU npdu) {
       this.npdu = npdu;
-      this.bvlcPayloadLength = bvlcPayloadLength;
     }
 
     public BVLCOriginalUnicastNPDU build() {
-      BVLCOriginalUnicastNPDU bVLCOriginalUnicastNPDU =
-          new BVLCOriginalUnicastNPDU(npdu, bvlcPayloadLength);
+      BVLCOriginalUnicastNPDU bVLCOriginalUnicastNPDU = new BVLCOriginalUnicastNPDU(npdu);
       return bVLCOriginalUnicastNPDU;
     }
   }

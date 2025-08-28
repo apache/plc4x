@@ -49,21 +49,13 @@ public class BACnetConstructedDataMaxMaster extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger maxMaster;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMaxMaster(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger maxMaster,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger maxMaster) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.maxMaster = maxMaster;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getMaxMaster() {
@@ -134,33 +126,22 @@ public class BACnetConstructedDataMaxMaster extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataMaxMaster");
     // Create the instance
-    return new BACnetConstructedDataMaxMasterBuilderImpl(maxMaster, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMaxMasterBuilderImpl(maxMaster);
   }
 
   public static class BACnetConstructedDataMaxMasterBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxMaster;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMaxMasterBuilderImpl(
-        BACnetApplicationTagUnsignedInteger maxMaster,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger maxMaster) {
       this.maxMaster = maxMaster;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMaxMaster build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMaxMaster bACnetConstructedDataMaxMaster =
-          new BACnetConstructedDataMaxMaster(
-              openingTag, peekedTagHeader, closingTag, maxMaster, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataMaxMaster(openingTag, peekedTagHeader, closingTag, maxMaster);
       return bACnetConstructedDataMaxMaster;
     }
   }

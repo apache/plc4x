@@ -49,21 +49,13 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
   // Properties.
   protected final BACnetDeviceObjectReference represents;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataRepresents(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDeviceObjectReference represents,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDeviceObjectReference represents) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.represents = represents;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDeviceObjectReference getRepresents() {
@@ -130,34 +122,21 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataRepresents");
     // Create the instance
-    return new BACnetConstructedDataRepresentsBuilderImpl(
-        represents, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataRepresentsBuilderImpl(represents);
   }
 
   public static class BACnetConstructedDataRepresentsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference represents;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRepresentsBuilderImpl(
-        BACnetDeviceObjectReference represents,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataRepresentsBuilderImpl(BACnetDeviceObjectReference represents) {
       this.represents = represents;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataRepresents build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataRepresents bACnetConstructedDataRepresents =
-          new BACnetConstructedDataRepresents(
-              openingTag, peekedTagHeader, closingTag, represents, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataRepresents(openingTag, peekedTagHeader, closingTag, represents);
       return bACnetConstructedDataRepresents;
     }
   }

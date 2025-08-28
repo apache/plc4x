@@ -49,7 +49,6 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
   protected final int sequenceId;
   protected final long delayInNs;
   protected final MacAddress portMacAddress;
-
   // Reserved Fields
   private Long reservedField0;
   private Long reservedField1;

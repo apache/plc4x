@@ -43,18 +43,13 @@ public class BACnetLogRecordLogDatumEnumeratedValue extends BACnetLogRecordLogDa
   // Properties.
   protected final BACnetContextTagEnumerated enumeratedValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogRecordLogDatumEnumeratedValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagEnumerated enumeratedValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagEnumerated enumeratedValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.enumeratedValue = enumeratedValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagEnumerated getEnumeratedValue() {
@@ -109,28 +104,23 @@ public class BACnetLogRecordLogDatumEnumeratedValue extends BACnetLogRecordLogDa
 
     readBuffer.closeContext("BACnetLogRecordLogDatumEnumeratedValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumEnumeratedValueBuilderImpl(enumeratedValue, tagNumber);
+    return new BACnetLogRecordLogDatumEnumeratedValueBuilderImpl(enumeratedValue);
   }
 
   public static class BACnetLogRecordLogDatumEnumeratedValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagEnumerated enumeratedValue;
-    private final Short tagNumber;
 
     public BACnetLogRecordLogDatumEnumeratedValueBuilderImpl(
-        BACnetContextTagEnumerated enumeratedValue, Short tagNumber) {
+        BACnetContextTagEnumerated enumeratedValue) {
       this.enumeratedValue = enumeratedValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetLogRecordLogDatumEnumeratedValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetLogRecordLogDatumEnumeratedValue bACnetLogRecordLogDatumEnumeratedValue =
           new BACnetLogRecordLogDatumEnumeratedValue(
-              openingTag, peekedTagHeader, closingTag, enumeratedValue, tagNumber);
+              openingTag, peekedTagHeader, closingTag, enumeratedValue);
       return bACnetLogRecordLogDatumEnumeratedValue;
     }
   }

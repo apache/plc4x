@@ -49,21 +49,13 @@ public class BACnetConstructedDataIPv6Address extends BACnetConstructedData impl
   // Properties.
   protected final BACnetApplicationTagOctetString ipv6Address;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIPv6Address(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagOctetString ipv6Address,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagOctetString ipv6Address) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.ipv6Address = ipv6Address;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagOctetString getIpv6Address() {
@@ -133,34 +125,23 @@ public class BACnetConstructedDataIPv6Address extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataIPv6Address");
     // Create the instance
-    return new BACnetConstructedDataIPv6AddressBuilderImpl(
-        ipv6Address, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPv6AddressBuilderImpl(ipv6Address);
   }
 
   public static class BACnetConstructedDataIPv6AddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString ipv6Address;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIPv6AddressBuilderImpl(
-        BACnetApplicationTagOctetString ipv6Address,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagOctetString ipv6Address) {
       this.ipv6Address = ipv6Address;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIPv6Address build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIPv6Address bACnetConstructedDataIPv6Address =
           new BACnetConstructedDataIPv6Address(
-              openingTag, peekedTagHeader, closingTag, ipv6Address, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, ipv6Address);
       return bACnetConstructedDataIPv6Address;
     }
   }

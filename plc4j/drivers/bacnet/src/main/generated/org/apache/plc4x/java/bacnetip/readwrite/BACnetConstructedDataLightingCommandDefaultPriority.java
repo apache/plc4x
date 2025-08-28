@@ -50,21 +50,13 @@ public class BACnetConstructedDataLightingCommandDefaultPriority extends BACnetC
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger lightingCommandDefaultPriority;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLightingCommandDefaultPriority(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger lightingCommandDefaultPriority,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger lightingCommandDefaultPriority) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lightingCommandDefaultPriority = lightingCommandDefaultPriority;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getLightingCommandDefaultPriority() {
@@ -142,39 +134,24 @@ public class BACnetConstructedDataLightingCommandDefaultPriority extends BACnetC
     readBuffer.closeContext("BACnetConstructedDataLightingCommandDefaultPriority");
     // Create the instance
     return new BACnetConstructedDataLightingCommandDefaultPriorityBuilderImpl(
-        lightingCommandDefaultPriority, tagNumber, arrayIndexArgument);
+        lightingCommandDefaultPriority);
   }
 
   public static class BACnetConstructedDataLightingCommandDefaultPriorityBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger lightingCommandDefaultPriority;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLightingCommandDefaultPriorityBuilderImpl(
-        BACnetApplicationTagUnsignedInteger lightingCommandDefaultPriority,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger lightingCommandDefaultPriority) {
       this.lightingCommandDefaultPriority = lightingCommandDefaultPriority;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLightingCommandDefaultPriority build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLightingCommandDefaultPriority
           bACnetConstructedDataLightingCommandDefaultPriority =
               new BACnetConstructedDataLightingCommandDefaultPriority(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  lightingCommandDefaultPriority,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, lightingCommandDefaultPriority);
       return bACnetConstructedDataLightingCommandDefaultPriority;
     }
   }

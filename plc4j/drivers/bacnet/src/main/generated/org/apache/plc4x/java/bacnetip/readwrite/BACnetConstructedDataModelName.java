@@ -49,21 +49,13 @@ public class BACnetConstructedDataModelName extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagCharacterString modelName;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataModelName(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString modelName,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString modelName) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.modelName = modelName;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getModelName() {
@@ -134,33 +126,22 @@ public class BACnetConstructedDataModelName extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataModelName");
     // Create the instance
-    return new BACnetConstructedDataModelNameBuilderImpl(modelName, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataModelNameBuilderImpl(modelName);
   }
 
   public static class BACnetConstructedDataModelNameBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString modelName;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataModelNameBuilderImpl(
-        BACnetApplicationTagCharacterString modelName,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString modelName) {
       this.modelName = modelName;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataModelName build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataModelName bACnetConstructedDataModelName =
-          new BACnetConstructedDataModelName(
-              openingTag, peekedTagHeader, closingTag, modelName, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataModelName(openingTag, peekedTagHeader, closingTag, modelName);
       return bACnetConstructedDataModelName;
     }
   }

@@ -45,13 +45,9 @@ public class NLMDisconnectConnectionToNetwork extends NLM implements Message {
   // Properties.
   protected final int destinationNetworkAddress;
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public NLMDisconnectConnectionToNetwork(int destinationNetworkAddress, Integer apduLength) {
-    super(apduLength);
+  public NLMDisconnectConnectionToNetwork(int destinationNetworkAddress) {
+    super();
     this.destinationNetworkAddress = destinationNetworkAddress;
-    this.apduLength = apduLength;
   }
 
   public int getDestinationNetworkAddress() {
@@ -99,23 +95,19 @@ public class NLMDisconnectConnectionToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMDisconnectConnectionToNetwork");
     // Create the instance
-    return new NLMDisconnectConnectionToNetworkBuilderImpl(destinationNetworkAddress, apduLength);
+    return new NLMDisconnectConnectionToNetworkBuilderImpl(destinationNetworkAddress);
   }
 
   public static class NLMDisconnectConnectionToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final int destinationNetworkAddress;
-    private final Integer apduLength;
 
-    public NLMDisconnectConnectionToNetworkBuilderImpl(
-        int destinationNetworkAddress, Integer apduLength) {
+    public NLMDisconnectConnectionToNetworkBuilderImpl(int destinationNetworkAddress) {
       this.destinationNetworkAddress = destinationNetworkAddress;
-      this.apduLength = apduLength;
     }
 
-    public NLMDisconnectConnectionToNetwork build(Integer apduLength) {
-
+    public NLMDisconnectConnectionToNetwork build() {
       NLMDisconnectConnectionToNetwork nLMDisconnectConnectionToNetwork =
-          new NLMDisconnectConnectionToNetwork(destinationNetworkAddress, apduLength);
+          new NLMDisconnectConnectionToNetwork(destinationNetworkAddress);
       return nLMDisconnectConnectionToNetwork;
     }
   }

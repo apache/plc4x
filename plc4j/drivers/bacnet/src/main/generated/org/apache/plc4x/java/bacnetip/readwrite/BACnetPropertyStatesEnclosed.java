@@ -42,19 +42,14 @@ public class BACnetPropertyStatesEnclosed implements Message {
   protected final BACnetPropertyStates propertyState;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetPropertyStatesEnclosed(
       BACnetOpeningTag openingTag,
       BACnetPropertyStates propertyState,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.propertyState = propertyState;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -136,7 +131,7 @@ public class BACnetPropertyStatesEnclosed implements Message {
     // Create the instance
     BACnetPropertyStatesEnclosed _bACnetPropertyStatesEnclosed;
     _bACnetPropertyStatesEnclosed =
-        new BACnetPropertyStatesEnclosed(openingTag, propertyState, closingTag, tagNumber);
+        new BACnetPropertyStatesEnclosed(openingTag, propertyState, closingTag);
     return _bACnetPropertyStatesEnclosed;
   }
 

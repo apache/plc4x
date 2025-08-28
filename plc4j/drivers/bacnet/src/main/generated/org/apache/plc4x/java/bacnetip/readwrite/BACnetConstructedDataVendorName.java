@@ -49,21 +49,13 @@ public class BACnetConstructedDataVendorName extends BACnetConstructedData imple
   // Properties.
   protected final BACnetApplicationTagCharacterString vendorName;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataVendorName(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString vendorName,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString vendorName) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.vendorName = vendorName;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getVendorName() {
@@ -134,34 +126,22 @@ public class BACnetConstructedDataVendorName extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataVendorName");
     // Create the instance
-    return new BACnetConstructedDataVendorNameBuilderImpl(
-        vendorName, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataVendorNameBuilderImpl(vendorName);
   }
 
   public static class BACnetConstructedDataVendorNameBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString vendorName;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataVendorNameBuilderImpl(
-        BACnetApplicationTagCharacterString vendorName,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString vendorName) {
       this.vendorName = vendorName;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataVendorName build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataVendorName bACnetConstructedDataVendorName =
-          new BACnetConstructedDataVendorName(
-              openingTag, peekedTagHeader, closingTag, vendorName, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataVendorName(openingTag, peekedTagHeader, closingTag, vendorName);
       return bACnetConstructedDataVendorName;
     }
   }

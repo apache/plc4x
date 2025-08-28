@@ -47,19 +47,15 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
   protected final BACnetEventStateTagged eventState;
   protected final BACnetEventTransitionBitsTagged acknowledgedTransitions;
 
-  // Arguments.
-  protected final Long serviceAckLength;
-
   public BACnetServiceAckGetAlarmSummary(
+      long serviceAckLength,
       BACnetApplicationTagObjectIdentifier objectIdentifier,
       BACnetEventStateTagged eventState,
-      BACnetEventTransitionBitsTagged acknowledgedTransitions,
-      Long serviceAckLength) {
+      BACnetEventTransitionBitsTagged acknowledgedTransitions) {
     super(serviceAckLength);
     this.objectIdentifier = objectIdentifier;
     this.eventState = eventState;
     this.acknowledgedTransitions = acknowledgedTransitions;
-    this.serviceAckLength = serviceAckLength;
   }
 
   public BACnetApplicationTagObjectIdentifier getObjectIdentifier() {
@@ -152,7 +148,7 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
     readBuffer.closeContext("BACnetServiceAckGetAlarmSummary");
     // Create the instance
     return new BACnetServiceAckGetAlarmSummaryBuilderImpl(
-        objectIdentifier, eventState, acknowledgedTransitions, serviceAckLength);
+        objectIdentifier, eventState, acknowledgedTransitions);
   }
 
   public static class BACnetServiceAckGetAlarmSummaryBuilderImpl
@@ -160,24 +156,20 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
     private final BACnetEventStateTagged eventState;
     private final BACnetEventTransitionBitsTagged acknowledgedTransitions;
-    private final Long serviceAckLength;
 
     public BACnetServiceAckGetAlarmSummaryBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectIdentifier,
         BACnetEventStateTagged eventState,
-        BACnetEventTransitionBitsTagged acknowledgedTransitions,
-        Long serviceAckLength) {
+        BACnetEventTransitionBitsTagged acknowledgedTransitions) {
       this.objectIdentifier = objectIdentifier;
       this.eventState = eventState;
       this.acknowledgedTransitions = acknowledgedTransitions;
-      this.serviceAckLength = serviceAckLength;
     }
 
-    public BACnetServiceAckGetAlarmSummary build(Long serviceAckLength) {
-
+    public BACnetServiceAckGetAlarmSummary build(long serviceAckLength) {
       BACnetServiceAckGetAlarmSummary bACnetServiceAckGetAlarmSummary =
           new BACnetServiceAckGetAlarmSummary(
-              objectIdentifier, eventState, acknowledgedTransitions, serviceAckLength);
+              serviceAckLength, objectIdentifier, eventState, acknowledgedTransitions);
       return bACnetServiceAckGetAlarmSummary;
     }
   }

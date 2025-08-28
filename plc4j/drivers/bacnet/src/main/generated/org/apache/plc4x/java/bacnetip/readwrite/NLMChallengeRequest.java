@@ -47,16 +47,12 @@ public class NLMChallengeRequest extends NLM implements Message {
   protected final long originalMessageId;
   protected final long originalTimestamp;
 
-  // Arguments.
-  protected final Integer apduLength;
-
   public NLMChallengeRequest(
-      byte messageChallenge, long originalMessageId, long originalTimestamp, Integer apduLength) {
-    super(apduLength);
+      byte messageChallenge, long originalMessageId, long originalTimestamp) {
+    super();
     this.messageChallenge = messageChallenge;
     this.originalMessageId = originalMessageId;
     this.originalTimestamp = originalTimestamp;
-    this.apduLength = apduLength;
   }
 
   public byte getMessageChallenge() {
@@ -127,28 +123,24 @@ public class NLMChallengeRequest extends NLM implements Message {
     readBuffer.closeContext("NLMChallengeRequest");
     // Create the instance
     return new NLMChallengeRequestBuilderImpl(
-        messageChallenge, originalMessageId, originalTimestamp, apduLength);
+        messageChallenge, originalMessageId, originalTimestamp);
   }
 
   public static class NLMChallengeRequestBuilderImpl implements NLM.NLMBuilder {
     private final byte messageChallenge;
     private final long originalMessageId;
     private final long originalTimestamp;
-    private final Integer apduLength;
 
     public NLMChallengeRequestBuilderImpl(
-        byte messageChallenge, long originalMessageId, long originalTimestamp, Integer apduLength) {
+        byte messageChallenge, long originalMessageId, long originalTimestamp) {
       this.messageChallenge = messageChallenge;
       this.originalMessageId = originalMessageId;
       this.originalTimestamp = originalTimestamp;
-      this.apduLength = apduLength;
     }
 
-    public NLMChallengeRequest build(Integer apduLength) {
-
+    public NLMChallengeRequest build() {
       NLMChallengeRequest nLMChallengeRequest =
-          new NLMChallengeRequest(
-              messageChallenge, originalMessageId, originalTimestamp, apduLength);
+          new NLMChallengeRequest(messageChallenge, originalMessageId, originalTimestamp);
       return nLMChallengeRequest;
     }
   }

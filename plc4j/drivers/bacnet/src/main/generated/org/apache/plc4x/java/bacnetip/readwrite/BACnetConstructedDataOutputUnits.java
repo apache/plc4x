@@ -49,21 +49,13 @@ public class BACnetConstructedDataOutputUnits extends BACnetConstructedData impl
   // Properties.
   protected final BACnetEngineeringUnitsTagged units;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataOutputUnits(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetEngineeringUnitsTagged units,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetEngineeringUnitsTagged units) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.units = units;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetEngineeringUnitsTagged getUnits() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataOutputUnits extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataOutputUnits");
     // Create the instance
-    return new BACnetConstructedDataOutputUnitsBuilderImpl(units, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataOutputUnitsBuilderImpl(units);
   }
 
   public static class BACnetConstructedDataOutputUnitsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEngineeringUnitsTagged units;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOutputUnitsBuilderImpl(
-        BACnetEngineeringUnitsTagged units,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataOutputUnitsBuilderImpl(BACnetEngineeringUnitsTagged units) {
       this.units = units;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataOutputUnits build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataOutputUnits bACnetConstructedDataOutputUnits =
-          new BACnetConstructedDataOutputUnits(
-              openingTag, peekedTagHeader, closingTag, units, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataOutputUnits(openingTag, peekedTagHeader, closingTag, units);
       return bACnetConstructedDataOutputUnits;
     }
   }

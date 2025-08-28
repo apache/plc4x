@@ -49,21 +49,13 @@ public class BACnetConstructedDataBlinkWarnEnable extends BACnetConstructedData 
   // Properties.
   protected final BACnetApplicationTagBoolean blinkWarnEnable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBlinkWarnEnable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean blinkWarnEnable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean blinkWarnEnable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.blinkWarnEnable = blinkWarnEnable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getBlinkWarnEnable() {
@@ -132,39 +124,23 @@ public class BACnetConstructedDataBlinkWarnEnable extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataBlinkWarnEnable");
     // Create the instance
-    return new BACnetConstructedDataBlinkWarnEnableBuilderImpl(
-        blinkWarnEnable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBlinkWarnEnableBuilderImpl(blinkWarnEnable);
   }
 
   public static class BACnetConstructedDataBlinkWarnEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean blinkWarnEnable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataBlinkWarnEnableBuilderImpl(
-        BACnetApplicationTagBoolean blinkWarnEnable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean blinkWarnEnable) {
       this.blinkWarnEnable = blinkWarnEnable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBlinkWarnEnable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBlinkWarnEnable bACnetConstructedDataBlinkWarnEnable =
           new BACnetConstructedDataBlinkWarnEnable(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              blinkWarnEnable,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, blinkWarnEnable);
       return bACnetConstructedDataBlinkWarnEnable;
     }
   }

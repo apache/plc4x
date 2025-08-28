@@ -46,17 +46,11 @@ public class NLMInitializeRoutingTable extends NLM implements Message {
   protected final short numberOfPorts;
   protected final List<NLMInitializeRoutingTablePortMapping> portMappings;
 
-  // Arguments.
-  protected final Integer apduLength;
-
   public NLMInitializeRoutingTable(
-      short numberOfPorts,
-      List<NLMInitializeRoutingTablePortMapping> portMappings,
-      Integer apduLength) {
-    super(apduLength);
+      short numberOfPorts, List<NLMInitializeRoutingTablePortMapping> portMappings) {
+    super();
     this.numberOfPorts = numberOfPorts;
     this.portMappings = portMappings;
-    this.apduLength = apduLength;
   }
 
   public short getNumberOfPorts() {
@@ -125,27 +119,22 @@ public class NLMInitializeRoutingTable extends NLM implements Message {
 
     readBuffer.closeContext("NLMInitializeRoutingTable");
     // Create the instance
-    return new NLMInitializeRoutingTableBuilderImpl(numberOfPorts, portMappings, apduLength);
+    return new NLMInitializeRoutingTableBuilderImpl(numberOfPorts, portMappings);
   }
 
   public static class NLMInitializeRoutingTableBuilderImpl implements NLM.NLMBuilder {
     private final short numberOfPorts;
     private final List<NLMInitializeRoutingTablePortMapping> portMappings;
-    private final Integer apduLength;
 
     public NLMInitializeRoutingTableBuilderImpl(
-        short numberOfPorts,
-        List<NLMInitializeRoutingTablePortMapping> portMappings,
-        Integer apduLength) {
+        short numberOfPorts, List<NLMInitializeRoutingTablePortMapping> portMappings) {
       this.numberOfPorts = numberOfPorts;
       this.portMappings = portMappings;
-      this.apduLength = apduLength;
     }
 
-    public NLMInitializeRoutingTable build(Integer apduLength) {
-
+    public NLMInitializeRoutingTable build() {
       NLMInitializeRoutingTable nLMInitializeRoutingTable =
-          new NLMInitializeRoutingTable(numberOfPorts, portMappings, apduLength);
+          new NLMInitializeRoutingTable(numberOfPorts, portMappings);
       return nLMInitializeRoutingTable;
     }
   }

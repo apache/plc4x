@@ -42,19 +42,14 @@ public class BACnetGroupChannelValueList implements Message {
   protected final List<BACnetEventSummary> listOfEventSummaries;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetGroupChannelValueList(
       BACnetOpeningTag openingTag,
       List<BACnetEventSummary> listOfEventSummaries,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listOfEventSummaries = listOfEventSummaries;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -144,7 +139,7 @@ public class BACnetGroupChannelValueList implements Message {
     // Create the instance
     BACnetGroupChannelValueList _bACnetGroupChannelValueList;
     _bACnetGroupChannelValueList =
-        new BACnetGroupChannelValueList(openingTag, listOfEventSummaries, closingTag, tagNumber);
+        new BACnetGroupChannelValueList(openingTag, listOfEventSummaries, closingTag);
     return _bACnetGroupChannelValueList;
   }
 

@@ -50,21 +50,13 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
   // Properties.
   protected final BACnetDeviceObjectReference lastCredentialRemoved;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLastCredentialRemoved(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDeviceObjectReference lastCredentialRemoved,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDeviceObjectReference lastCredentialRemoved) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lastCredentialRemoved = lastCredentialRemoved;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDeviceObjectReference getLastCredentialRemoved() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataLastCredentialRemoved");
     // Create the instance
-    return new BACnetConstructedDataLastCredentialRemovedBuilderImpl(
-        lastCredentialRemoved, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLastCredentialRemovedBuilderImpl(lastCredentialRemoved);
   }
 
   public static class BACnetConstructedDataLastCredentialRemovedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference lastCredentialRemoved;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLastCredentialRemovedBuilderImpl(
-        BACnetDeviceObjectReference lastCredentialRemoved,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetDeviceObjectReference lastCredentialRemoved) {
       this.lastCredentialRemoved = lastCredentialRemoved;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLastCredentialRemoved build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLastCredentialRemoved bACnetConstructedDataLastCredentialRemoved =
           new BACnetConstructedDataLastCredentialRemoved(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              lastCredentialRemoved,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, lastCredentialRemoved);
       return bACnetConstructedDataLastCredentialRemoved;
     }
   }

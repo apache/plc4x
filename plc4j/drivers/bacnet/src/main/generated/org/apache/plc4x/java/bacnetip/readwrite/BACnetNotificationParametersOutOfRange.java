@@ -48,10 +48,6 @@ public class BACnetNotificationParametersOutOfRange extends BACnetNotificationPa
   protected final BACnetContextTagReal exceededLimit;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetNotificationParametersOutOfRange(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
@@ -61,18 +57,14 @@ public class BACnetNotificationParametersOutOfRange extends BACnetNotificationPa
       BACnetStatusFlagsTagged statusFlags,
       BACnetContextTagReal deadband,
       BACnetContextTagReal exceededLimit,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument);
+      BACnetClosingTag innerClosingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.innerOpeningTag = innerOpeningTag;
     this.exceedingValue = exceedingValue;
     this.statusFlags = statusFlags;
     this.deadband = deadband;
     this.exceededLimit = exceededLimit;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -225,14 +217,7 @@ public class BACnetNotificationParametersOutOfRange extends BACnetNotificationPa
     readBuffer.closeContext("BACnetNotificationParametersOutOfRange");
     // Create the instance
     return new BACnetNotificationParametersOutOfRangeBuilderImpl(
-        innerOpeningTag,
-        exceedingValue,
-        statusFlags,
-        deadband,
-        exceededLimit,
-        innerClosingTag,
-        tagNumber,
-        objectTypeArgument);
+        innerOpeningTag, exceedingValue, statusFlags, deadband, exceededLimit, innerClosingTag);
   }
 
   public static class BACnetNotificationParametersOutOfRangeBuilderImpl
@@ -243,8 +228,6 @@ public class BACnetNotificationParametersOutOfRange extends BACnetNotificationPa
     private final BACnetContextTagReal deadband;
     private final BACnetContextTagReal exceededLimit;
     private final BACnetClosingTag innerClosingTag;
-    private final Short tagNumber;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetNotificationParametersOutOfRangeBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
@@ -252,25 +235,17 @@ public class BACnetNotificationParametersOutOfRange extends BACnetNotificationPa
         BACnetStatusFlagsTagged statusFlags,
         BACnetContextTagReal deadband,
         BACnetContextTagReal exceededLimit,
-        BACnetClosingTag innerClosingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetClosingTag innerClosingTag) {
       this.innerOpeningTag = innerOpeningTag;
       this.exceedingValue = exceedingValue;
       this.statusFlags = statusFlags;
       this.deadband = deadband;
       this.exceededLimit = exceededLimit;
       this.innerClosingTag = innerClosingTag;
-      this.tagNumber = tagNumber;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
     public BACnetNotificationParametersOutOfRange build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersOutOfRange bACnetNotificationParametersOutOfRange =
           new BACnetNotificationParametersOutOfRange(
               openingTag,
@@ -281,9 +256,7 @@ public class BACnetNotificationParametersOutOfRange extends BACnetNotificationPa
               statusFlags,
               deadband,
               exceededLimit,
-              innerClosingTag,
-              tagNumber,
-              objectTypeArgument);
+              innerClosingTag);
       return bACnetNotificationParametersOutOfRange;
     }
   }

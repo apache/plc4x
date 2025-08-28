@@ -42,13 +42,9 @@ public abstract class BACnetPriorityValue implements Message {
   // Properties.
   protected final BACnetTagHeader peekedTagHeader;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
-  public BACnetPriorityValue(BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+  public BACnetPriorityValue(BACnetTagHeader peekedTagHeader) {
     super();
     this.peekedTagHeader = peekedTagHeader;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetTagHeader getPeekedTagHeader() {
@@ -221,12 +217,12 @@ public abstract class BACnetPriorityValue implements Message {
 
     readBuffer.closeContext("BACnetPriorityValue");
     // Create the instance
-    BACnetPriorityValue _bACnetPriorityValue = builder.build(peekedTagHeader, objectTypeArgument);
+    BACnetPriorityValue _bACnetPriorityValue = builder.build(peekedTagHeader);
     return _bACnetPriorityValue;
   }
 
   public interface BACnetPriorityValueBuilder {
-    BACnetPriorityValue build(BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument);
+    BACnetPriorityValue build(BACnetTagHeader peekedTagHeader);
   }
 
   @Override

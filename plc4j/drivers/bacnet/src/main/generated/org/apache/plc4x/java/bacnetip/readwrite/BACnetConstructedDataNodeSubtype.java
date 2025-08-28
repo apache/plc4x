@@ -49,21 +49,13 @@ public class BACnetConstructedDataNodeSubtype extends BACnetConstructedData impl
   // Properties.
   protected final BACnetApplicationTagCharacterString nodeSubType;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataNodeSubtype(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString nodeSubType,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString nodeSubType) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.nodeSubType = nodeSubType;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getNodeSubType() {
@@ -134,34 +126,23 @@ public class BACnetConstructedDataNodeSubtype extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataNodeSubtype");
     // Create the instance
-    return new BACnetConstructedDataNodeSubtypeBuilderImpl(
-        nodeSubType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNodeSubtypeBuilderImpl(nodeSubType);
   }
 
   public static class BACnetConstructedDataNodeSubtypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString nodeSubType;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataNodeSubtypeBuilderImpl(
-        BACnetApplicationTagCharacterString nodeSubType,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString nodeSubType) {
       this.nodeSubType = nodeSubType;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataNodeSubtype build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataNodeSubtype bACnetConstructedDataNodeSubtype =
           new BACnetConstructedDataNodeSubtype(
-              openingTag, peekedTagHeader, closingTag, nodeSubType, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, nodeSubType);
       return bACnetConstructedDataNodeSubtype;
     }
   }

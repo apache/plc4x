@@ -44,19 +44,12 @@ public abstract class BACnetLogData implements Message {
   protected final BACnetTagHeader peekedTagHeader;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogData(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.peekedTagHeader = peekedTagHeader;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -169,17 +162,13 @@ public abstract class BACnetLogData implements Message {
 
     readBuffer.closeContext("BACnetLogData");
     // Create the instance
-    BACnetLogData _bACnetLogData =
-        builder.build(openingTag, peekedTagHeader, closingTag, tagNumber);
+    BACnetLogData _bACnetLogData = builder.build(openingTag, peekedTagHeader, closingTag);
     return _bACnetLogData;
   }
 
   public interface BACnetLogDataBuilder {
     BACnetLogData build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber);
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag);
   }
 
   @Override

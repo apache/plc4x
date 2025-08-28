@@ -49,21 +49,13 @@ public class BACnetConstructedDataAPDULength extends BACnetConstructedData imple
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger apduLength;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAPDULength(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger apduLength,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger apduLength) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.apduLength = apduLength;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getApduLength() {
@@ -134,34 +126,22 @@ public class BACnetConstructedDataAPDULength extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataAPDULength");
     // Create the instance
-    return new BACnetConstructedDataAPDULengthBuilderImpl(
-        apduLength, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAPDULengthBuilderImpl(apduLength);
   }
 
   public static class BACnetConstructedDataAPDULengthBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger apduLength;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAPDULengthBuilderImpl(
-        BACnetApplicationTagUnsignedInteger apduLength,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger apduLength) {
       this.apduLength = apduLength;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAPDULength build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAPDULength bACnetConstructedDataAPDULength =
-          new BACnetConstructedDataAPDULength(
-              openingTag, peekedTagHeader, closingTag, apduLength, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataAPDULength(openingTag, peekedTagHeader, closingTag, apduLength);
       return bACnetConstructedDataAPDULength;
     }
   }

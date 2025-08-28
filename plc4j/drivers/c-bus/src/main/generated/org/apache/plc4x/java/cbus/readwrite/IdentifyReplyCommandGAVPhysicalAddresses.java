@@ -46,13 +46,9 @@ public class IdentifyReplyCommandGAVPhysicalAddresses extends IdentifyReplyComma
   // Properties.
   protected final byte[] values;
 
-  // Arguments.
-  protected final Byte numBytes;
-
-  public IdentifyReplyCommandGAVPhysicalAddresses(byte[] values, Byte numBytes) {
-    super(numBytes);
+  public IdentifyReplyCommandGAVPhysicalAddresses(byte[] values) {
+    super();
     this.values = values;
-    this.numBytes = numBytes;
   }
 
   public byte[] getValues() {
@@ -101,23 +97,20 @@ public class IdentifyReplyCommandGAVPhysicalAddresses extends IdentifyReplyComma
 
     readBuffer.closeContext("IdentifyReplyCommandGAVPhysicalAddresses");
     // Create the instance
-    return new IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl(values, numBytes);
+    return new IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl(values);
   }
 
   public static class IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] values;
-    private final Byte numBytes;
 
-    public IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl(byte[] values, Byte numBytes) {
+    public IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl(byte[] values) {
       this.values = values;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandGAVPhysicalAddresses build(Byte numBytes) {
-
+    public IdentifyReplyCommandGAVPhysicalAddresses build() {
       IdentifyReplyCommandGAVPhysicalAddresses identifyReplyCommandGAVPhysicalAddresses =
-          new IdentifyReplyCommandGAVPhysicalAddresses(values, numBytes);
+          new IdentifyReplyCommandGAVPhysicalAddresses(values);
       return identifyReplyCommandGAVPhysicalAddresses;
     }
   }

@@ -50,21 +50,13 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
   // Properties.
   protected final BACnetEventTransitionBitsTagged ackedTransitions;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAckedTransitions(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetEventTransitionBitsTagged ackedTransitions,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetEventTransitionBitsTagged ackedTransitions) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.ackedTransitions = ackedTransitions;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetEventTransitionBitsTagged getAckedTransitions() {
@@ -135,39 +127,23 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataAckedTransitions");
     // Create the instance
-    return new BACnetConstructedDataAckedTransitionsBuilderImpl(
-        ackedTransitions, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAckedTransitionsBuilderImpl(ackedTransitions);
   }
 
   public static class BACnetConstructedDataAckedTransitionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEventTransitionBitsTagged ackedTransitions;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAckedTransitionsBuilderImpl(
-        BACnetEventTransitionBitsTagged ackedTransitions,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetEventTransitionBitsTagged ackedTransitions) {
       this.ackedTransitions = ackedTransitions;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAckedTransitions build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAckedTransitions bACnetConstructedDataAckedTransitions =
           new BACnetConstructedDataAckedTransitions(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              ackedTransitions,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, ackedTransitions);
       return bACnetConstructedDataAckedTransitions;
     }
   }

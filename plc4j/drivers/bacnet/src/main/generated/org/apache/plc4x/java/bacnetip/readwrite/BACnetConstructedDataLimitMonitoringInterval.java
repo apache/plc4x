@@ -50,21 +50,13 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger limitMonitoringInterval;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLimitMonitoringInterval(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger limitMonitoringInterval,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger limitMonitoringInterval) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.limitMonitoringInterval = limitMonitoringInterval;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getLimitMonitoringInterval() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataLimitMonitoringInterval");
     // Create the instance
-    return new BACnetConstructedDataLimitMonitoringIntervalBuilderImpl(
-        limitMonitoringInterval, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLimitMonitoringIntervalBuilderImpl(limitMonitoringInterval);
   }
 
   public static class BACnetConstructedDataLimitMonitoringIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger limitMonitoringInterval;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLimitMonitoringIntervalBuilderImpl(
-        BACnetApplicationTagUnsignedInteger limitMonitoringInterval,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger limitMonitoringInterval) {
       this.limitMonitoringInterval = limitMonitoringInterval;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLimitMonitoringInterval build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLimitMonitoringInterval bACnetConstructedDataLimitMonitoringInterval =
           new BACnetConstructedDataLimitMonitoringInterval(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              limitMonitoringInterval,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, limitMonitoringInterval);
       return bACnetConstructedDataLimitMonitoringInterval;
     }
   }

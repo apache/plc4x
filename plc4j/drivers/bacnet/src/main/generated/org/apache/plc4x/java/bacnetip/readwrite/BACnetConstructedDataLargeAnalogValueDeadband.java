@@ -50,21 +50,13 @@ public class BACnetConstructedDataLargeAnalogValueDeadband extends BACnetConstru
   // Properties.
   protected final BACnetApplicationTagDouble deadband;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLargeAnalogValueDeadband(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagDouble deadband,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagDouble deadband) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.deadband = deadband;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagDouble getDeadband() {
@@ -133,34 +125,23 @@ public class BACnetConstructedDataLargeAnalogValueDeadband extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataLargeAnalogValueDeadband");
     // Create the instance
-    return new BACnetConstructedDataLargeAnalogValueDeadbandBuilderImpl(
-        deadband, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLargeAnalogValueDeadbandBuilderImpl(deadband);
   }
 
   public static class BACnetConstructedDataLargeAnalogValueDeadbandBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagDouble deadband;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLargeAnalogValueDeadbandBuilderImpl(
-        BACnetApplicationTagDouble deadband,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagDouble deadband) {
       this.deadband = deadband;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLargeAnalogValueDeadband build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLargeAnalogValueDeadband bACnetConstructedDataLargeAnalogValueDeadband =
           new BACnetConstructedDataLargeAnalogValueDeadband(
-              openingTag, peekedTagHeader, closingTag, deadband, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, deadband);
       return bACnetConstructedDataLargeAnalogValueDeadband;
     }
   }

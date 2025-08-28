@@ -41,20 +41,10 @@ public class BACnetLimitEnableTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetTagPayloadBitString payload;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetLimitEnableTagged(
-      BACnetTagHeader header,
-      BACnetTagPayloadBitString payload,
-      Short tagNumber,
-      TagClass tagClass) {
+  public BACnetLimitEnableTagged(BACnetTagHeader header, BACnetTagPayloadBitString payload) {
     super();
     this.header = header;
     this.payload = payload;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -162,7 +152,7 @@ public class BACnetLimitEnableTagged implements Message {
     readBuffer.closeContext("BACnetLimitEnableTagged");
     // Create the instance
     BACnetLimitEnableTagged _bACnetLimitEnableTagged;
-    _bACnetLimitEnableTagged = new BACnetLimitEnableTagged(header, payload, tagNumber, tagClass);
+    _bACnetLimitEnableTagged = new BACnetLimitEnableTagged(header, payload);
     return _bACnetLimitEnableTagged;
   }
 

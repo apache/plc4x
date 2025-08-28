@@ -411,6 +411,7 @@
 
 // Not really tagged as it has no header but is consistent with naming schema enum+Tagged
 [type BACnetRejectReasonTagged(uint 32 actualLength)
+    [state          actualLength                                                        ]
     [manual   BACnetRejectReason
                     value
                         'STATIC_CALL("readEnumGeneric", readBuffer, actualLength, BACnetRejectReason.VENDOR_PROPRIETARY_VALUE)'
@@ -427,6 +428,7 @@
 
 // Not really tagged as it has no header but is consistent with naming schema enum+Tagged
 [type BACnetAbortReasonTagged(uint 32 actualLength)
+    [state          actualLength                                                        ]
     [manual   BACnetAbortReason
                     value
                         'STATIC_CALL("readEnumGeneric", readBuffer, actualLength, BACnetAbortReason.VENDOR_PROPRIETARY_VALUE)'
@@ -443,7 +445,8 @@
 
 [discriminatedType BACnetConfirmedServiceRequest(uint 32 serviceRequestLength)
     [discriminator BACnetConfirmedServiceChoice serviceChoice]
-    // we substract serviceChoice from our payload
+    // we subtract serviceChoice from our payload
+    [state                  serviceRequestLength                                                                   ]
     [virtual       uint 32  serviceRequestPayloadLength '(serviceRequestLength>0)?(serviceRequestLength - 1):0'    ]
     [typeSwitch serviceChoice
         ////
@@ -1050,9 +1053,10 @@
 ]
 
 [discriminatedType BACnetServiceAck(uint 32 serviceAckLength)
+    [state              serviceAckLength                                                               ]
     [discriminator   BACnetConfirmedServiceChoice
                         serviceChoice                   ]
-    // we substract serviceChoice from our payload
+    // we subtract serviceChoice from our payload
     [virtual       uint 32  serviceAckPayloadLength '(serviceAckLength>0)?(serviceAckLength - 1):0'    ]
     [typeSwitch serviceChoice
         ////

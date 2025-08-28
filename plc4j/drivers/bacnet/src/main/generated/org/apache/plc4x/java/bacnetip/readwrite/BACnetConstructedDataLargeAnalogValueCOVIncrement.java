@@ -50,21 +50,13 @@ public class BACnetConstructedDataLargeAnalogValueCOVIncrement extends BACnetCon
   // Properties.
   protected final BACnetApplicationTagDouble covIncrement;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLargeAnalogValueCOVIncrement(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagDouble covIncrement,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagDouble covIncrement) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.covIncrement = covIncrement;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagDouble getCovIncrement() {
@@ -133,40 +125,24 @@ public class BACnetConstructedDataLargeAnalogValueCOVIncrement extends BACnetCon
 
     readBuffer.closeContext("BACnetConstructedDataLargeAnalogValueCOVIncrement");
     // Create the instance
-    return new BACnetConstructedDataLargeAnalogValueCOVIncrementBuilderImpl(
-        covIncrement, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLargeAnalogValueCOVIncrementBuilderImpl(covIncrement);
   }
 
   public static class BACnetConstructedDataLargeAnalogValueCOVIncrementBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagDouble covIncrement;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLargeAnalogValueCOVIncrementBuilderImpl(
-        BACnetApplicationTagDouble covIncrement,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagDouble covIncrement) {
       this.covIncrement = covIncrement;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLargeAnalogValueCOVIncrement build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLargeAnalogValueCOVIncrement
           bACnetConstructedDataLargeAnalogValueCOVIncrement =
               new BACnetConstructedDataLargeAnalogValueCOVIncrement(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  covIncrement,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, covIncrement);
       return bACnetConstructedDataLargeAnalogValueCOVIncrement;
     }
   }

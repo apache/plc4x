@@ -50,21 +50,13 @@ public class BACnetConstructedDataAutoSlaveDiscovery extends BACnetConstructedDa
   // Properties.
   protected final BACnetApplicationTagBoolean autoSlaveDiscovery;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAutoSlaveDiscovery(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean autoSlaveDiscovery,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean autoSlaveDiscovery) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.autoSlaveDiscovery = autoSlaveDiscovery;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getAutoSlaveDiscovery() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataAutoSlaveDiscovery extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataAutoSlaveDiscovery");
     // Create the instance
-    return new BACnetConstructedDataAutoSlaveDiscoveryBuilderImpl(
-        autoSlaveDiscovery, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAutoSlaveDiscoveryBuilderImpl(autoSlaveDiscovery);
   }
 
   public static class BACnetConstructedDataAutoSlaveDiscoveryBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean autoSlaveDiscovery;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAutoSlaveDiscoveryBuilderImpl(
-        BACnetApplicationTagBoolean autoSlaveDiscovery,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean autoSlaveDiscovery) {
       this.autoSlaveDiscovery = autoSlaveDiscovery;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAutoSlaveDiscovery build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAutoSlaveDiscovery bACnetConstructedDataAutoSlaveDiscovery =
           new BACnetConstructedDataAutoSlaveDiscovery(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              autoSlaveDiscovery,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, autoSlaveDiscovery);
       return bACnetConstructedDataAutoSlaveDiscovery;
     }
   }

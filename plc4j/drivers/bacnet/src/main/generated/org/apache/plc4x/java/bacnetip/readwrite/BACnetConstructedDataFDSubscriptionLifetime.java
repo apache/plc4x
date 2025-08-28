@@ -50,21 +50,13 @@ public class BACnetConstructedDataFDSubscriptionLifetime extends BACnetConstruct
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger fdSubscriptionLifetime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataFDSubscriptionLifetime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger fdSubscriptionLifetime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger fdSubscriptionLifetime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.fdSubscriptionLifetime = fdSubscriptionLifetime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getFdSubscriptionLifetime() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataFDSubscriptionLifetime extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataFDSubscriptionLifetime");
     // Create the instance
-    return new BACnetConstructedDataFDSubscriptionLifetimeBuilderImpl(
-        fdSubscriptionLifetime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFDSubscriptionLifetimeBuilderImpl(fdSubscriptionLifetime);
   }
 
   public static class BACnetConstructedDataFDSubscriptionLifetimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger fdSubscriptionLifetime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataFDSubscriptionLifetimeBuilderImpl(
-        BACnetApplicationTagUnsignedInteger fdSubscriptionLifetime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger fdSubscriptionLifetime) {
       this.fdSubscriptionLifetime = fdSubscriptionLifetime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataFDSubscriptionLifetime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataFDSubscriptionLifetime bACnetConstructedDataFDSubscriptionLifetime =
           new BACnetConstructedDataFDSubscriptionLifetime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              fdSubscriptionLifetime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, fdSubscriptionLifetime);
       return bACnetConstructedDataFDSubscriptionLifetime;
     }
   }

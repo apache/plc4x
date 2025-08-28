@@ -49,21 +49,13 @@ public class BACnetConstructedDataThreatAuthority extends BACnetConstructedData 
   // Properties.
   protected final BACnetAccessThreatLevel threatAuthority;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataThreatAuthority(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetAccessThreatLevel threatAuthority,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetAccessThreatLevel threatAuthority) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.threatAuthority = threatAuthority;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetAccessThreatLevel getThreatAuthority() {
@@ -130,39 +122,23 @@ public class BACnetConstructedDataThreatAuthority extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataThreatAuthority");
     // Create the instance
-    return new BACnetConstructedDataThreatAuthorityBuilderImpl(
-        threatAuthority, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataThreatAuthorityBuilderImpl(threatAuthority);
   }
 
   public static class BACnetConstructedDataThreatAuthorityBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccessThreatLevel threatAuthority;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataThreatAuthorityBuilderImpl(
-        BACnetAccessThreatLevel threatAuthority,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetAccessThreatLevel threatAuthority) {
       this.threatAuthority = threatAuthority;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataThreatAuthority build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataThreatAuthority bACnetConstructedDataThreatAuthority =
           new BACnetConstructedDataThreatAuthority(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              threatAuthority,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, threatAuthority);
       return bACnetConstructedDataThreatAuthority;
     }
   }

@@ -49,23 +49,19 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
   protected final BACnetApplicationTagUnsignedInteger priority;
   protected final BACnetApplicationTagUnsignedInteger notificationClass;
 
-  // Arguments.
-  protected final Long serviceAckLength;
-
   public BACnetServiceAckGetEnrollmentSummary(
+      long serviceAckLength,
       BACnetApplicationTagObjectIdentifier objectIdentifier,
       BACnetEventTypeTagged eventType,
       BACnetEventStateTagged eventState,
       BACnetApplicationTagUnsignedInteger priority,
-      BACnetApplicationTagUnsignedInteger notificationClass,
-      Long serviceAckLength) {
+      BACnetApplicationTagUnsignedInteger notificationClass) {
     super(serviceAckLength);
     this.objectIdentifier = objectIdentifier;
     this.eventType = eventType;
     this.eventState = eventState;
     this.priority = priority;
     this.notificationClass = notificationClass;
-    this.serviceAckLength = serviceAckLength;
   }
 
   public BACnetApplicationTagObjectIdentifier getObjectIdentifier() {
@@ -198,7 +194,7 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     readBuffer.closeContext("BACnetServiceAckGetEnrollmentSummary");
     // Create the instance
     return new BACnetServiceAckGetEnrollmentSummaryBuilderImpl(
-        objectIdentifier, eventType, eventState, priority, notificationClass, serviceAckLength);
+        objectIdentifier, eventType, eventState, priority, notificationClass);
   }
 
   public static class BACnetServiceAckGetEnrollmentSummaryBuilderImpl
@@ -208,33 +204,29 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     private final BACnetEventStateTagged eventState;
     private final BACnetApplicationTagUnsignedInteger priority;
     private final BACnetApplicationTagUnsignedInteger notificationClass;
-    private final Long serviceAckLength;
 
     public BACnetServiceAckGetEnrollmentSummaryBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectIdentifier,
         BACnetEventTypeTagged eventType,
         BACnetEventStateTagged eventState,
         BACnetApplicationTagUnsignedInteger priority,
-        BACnetApplicationTagUnsignedInteger notificationClass,
-        Long serviceAckLength) {
+        BACnetApplicationTagUnsignedInteger notificationClass) {
       this.objectIdentifier = objectIdentifier;
       this.eventType = eventType;
       this.eventState = eventState;
       this.priority = priority;
       this.notificationClass = notificationClass;
-      this.serviceAckLength = serviceAckLength;
     }
 
-    public BACnetServiceAckGetEnrollmentSummary build(Long serviceAckLength) {
-
+    public BACnetServiceAckGetEnrollmentSummary build(long serviceAckLength) {
       BACnetServiceAckGetEnrollmentSummary bACnetServiceAckGetEnrollmentSummary =
           new BACnetServiceAckGetEnrollmentSummary(
+              serviceAckLength,
               objectIdentifier,
               eventType,
               eventState,
               priority,
-              notificationClass,
-              serviceAckLength);
+              notificationClass);
       return bACnetServiceAckGetEnrollmentSummary;
     }
   }

@@ -45,13 +45,9 @@ public class IdentifyReplyCommandFirmwareVersion extends IdentifyReplyCommand im
   // Properties.
   protected final String firmwareVersion;
 
-  // Arguments.
-  protected final Byte numBytes;
-
-  public IdentifyReplyCommandFirmwareVersion(String firmwareVersion, Byte numBytes) {
-    super(numBytes);
+  public IdentifyReplyCommandFirmwareVersion(String firmwareVersion) {
+    super();
     this.firmwareVersion = firmwareVersion;
-    this.numBytes = numBytes;
   }
 
   public String getFirmwareVersion() {
@@ -98,23 +94,20 @@ public class IdentifyReplyCommandFirmwareVersion extends IdentifyReplyCommand im
 
     readBuffer.closeContext("IdentifyReplyCommandFirmwareVersion");
     // Create the instance
-    return new IdentifyReplyCommandFirmwareVersionBuilderImpl(firmwareVersion, numBytes);
+    return new IdentifyReplyCommandFirmwareVersionBuilderImpl(firmwareVersion);
   }
 
   public static class IdentifyReplyCommandFirmwareVersionBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final String firmwareVersion;
-    private final Byte numBytes;
 
-    public IdentifyReplyCommandFirmwareVersionBuilderImpl(String firmwareVersion, Byte numBytes) {
+    public IdentifyReplyCommandFirmwareVersionBuilderImpl(String firmwareVersion) {
       this.firmwareVersion = firmwareVersion;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandFirmwareVersion build(Byte numBytes) {
-
+    public IdentifyReplyCommandFirmwareVersion build() {
       IdentifyReplyCommandFirmwareVersion identifyReplyCommandFirmwareVersion =
-          new IdentifyReplyCommandFirmwareVersion(firmwareVersion, numBytes);
+          new IdentifyReplyCommandFirmwareVersion(firmwareVersion);
       return identifyReplyCommandFirmwareVersion;
     }
   }

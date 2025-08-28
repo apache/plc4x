@@ -42,22 +42,12 @@ public class BACnetLiftFaultTagged implements Message {
   protected final BACnetLiftFault value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetLiftFaultTagged(
-      BACnetTagHeader header,
-      BACnetLiftFault value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetLiftFault value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -178,8 +168,7 @@ public class BACnetLiftFaultTagged implements Message {
     readBuffer.closeContext("BACnetLiftFaultTagged");
     // Create the instance
     BACnetLiftFaultTagged _bACnetLiftFaultTagged;
-    _bACnetLiftFaultTagged =
-        new BACnetLiftFaultTagged(header, value, proprietaryValue, tagNumber, tagClass);
+    _bACnetLiftFaultTagged = new BACnetLiftFaultTagged(header, value, proprietaryValue);
     return _bACnetLiftFaultTagged;
   }
 

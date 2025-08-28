@@ -42,19 +42,14 @@ public class BACnetSpecialEventListOfTimeValues implements Message {
   protected final List<BACnetTimeValue> listOfTimeValues;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetSpecialEventListOfTimeValues(
       BACnetOpeningTag openingTag,
       List<BACnetTimeValue> listOfTimeValues,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listOfTimeValues = listOfTimeValues;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -144,7 +139,7 @@ public class BACnetSpecialEventListOfTimeValues implements Message {
     // Create the instance
     BACnetSpecialEventListOfTimeValues _bACnetSpecialEventListOfTimeValues;
     _bACnetSpecialEventListOfTimeValues =
-        new BACnetSpecialEventListOfTimeValues(openingTag, listOfTimeValues, closingTag, tagNumber);
+        new BACnetSpecialEventListOfTimeValues(openingTag, listOfTimeValues, closingTag);
     return _bACnetSpecialEventListOfTimeValues;
   }
 

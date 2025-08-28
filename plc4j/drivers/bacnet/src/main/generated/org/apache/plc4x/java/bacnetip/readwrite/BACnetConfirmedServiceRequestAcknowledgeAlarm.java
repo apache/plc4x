@@ -51,17 +51,14 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
   protected final BACnetContextTagCharacterString acknowledgmentSource;
   protected final BACnetTimeStampEnclosed timeOfAcknowledgment;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestAcknowledgeAlarm(
+      long serviceRequestLength,
       BACnetContextTagUnsignedInteger acknowledgingProcessIdentifier,
       BACnetContextTagObjectIdentifier eventObjectIdentifier,
       BACnetEventStateTagged eventStateAcknowledged,
       BACnetTimeStampEnclosed timestamp,
       BACnetContextTagCharacterString acknowledgmentSource,
-      BACnetTimeStampEnclosed timeOfAcknowledgment,
-      Long serviceRequestLength) {
+      BACnetTimeStampEnclosed timeOfAcknowledgment) {
     super(serviceRequestLength);
     this.acknowledgingProcessIdentifier = acknowledgingProcessIdentifier;
     this.eventObjectIdentifier = eventObjectIdentifier;
@@ -69,7 +66,6 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
     this.timestamp = timestamp;
     this.acknowledgmentSource = acknowledgmentSource;
     this.timeOfAcknowledgment = timeOfAcknowledgment;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagUnsignedInteger getAcknowledgingProcessIdentifier() {
@@ -231,8 +227,7 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
         eventStateAcknowledged,
         timestamp,
         acknowledgmentSource,
-        timeOfAcknowledgment,
-        serviceRequestLength);
+        timeOfAcknowledgment);
   }
 
   public static class BACnetConfirmedServiceRequestAcknowledgeAlarmBuilderImpl
@@ -243,7 +238,6 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
     private final BACnetTimeStampEnclosed timestamp;
     private final BACnetContextTagCharacterString acknowledgmentSource;
     private final BACnetTimeStampEnclosed timeOfAcknowledgment;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestAcknowledgeAlarmBuilderImpl(
         BACnetContextTagUnsignedInteger acknowledgingProcessIdentifier,
@@ -251,28 +245,25 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
         BACnetEventStateTagged eventStateAcknowledged,
         BACnetTimeStampEnclosed timestamp,
         BACnetContextTagCharacterString acknowledgmentSource,
-        BACnetTimeStampEnclosed timeOfAcknowledgment,
-        Long serviceRequestLength) {
+        BACnetTimeStampEnclosed timeOfAcknowledgment) {
       this.acknowledgingProcessIdentifier = acknowledgingProcessIdentifier;
       this.eventObjectIdentifier = eventObjectIdentifier;
       this.eventStateAcknowledged = eventStateAcknowledged;
       this.timestamp = timestamp;
       this.acknowledgmentSource = acknowledgmentSource;
       this.timeOfAcknowledgment = timeOfAcknowledgment;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestAcknowledgeAlarm build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestAcknowledgeAlarm build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestAcknowledgeAlarm bACnetConfirmedServiceRequestAcknowledgeAlarm =
           new BACnetConfirmedServiceRequestAcknowledgeAlarm(
+              serviceRequestLength,
               acknowledgingProcessIdentifier,
               eventObjectIdentifier,
               eventStateAcknowledged,
               timestamp,
               acknowledgmentSource,
-              timeOfAcknowledgment,
-              serviceRequestLength);
+              timeOfAcknowledgment);
       return bACnetConfirmedServiceRequestAcknowledgeAlarm;
     }
   }

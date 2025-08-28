@@ -41,20 +41,11 @@ public class BACnetAccumulatorRecordAccumulatorStatusTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetAccumulatorRecordAccumulatorStatus value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetAccumulatorRecordAccumulatorStatusTagged(
-      BACnetTagHeader header,
-      BACnetAccumulatorRecordAccumulatorStatus value,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetAccumulatorRecordAccumulatorStatus value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -139,7 +130,7 @@ public class BACnetAccumulatorRecordAccumulatorStatusTagged implements Message {
     // Create the instance
     BACnetAccumulatorRecordAccumulatorStatusTagged _bACnetAccumulatorRecordAccumulatorStatusTagged;
     _bACnetAccumulatorRecordAccumulatorStatusTagged =
-        new BACnetAccumulatorRecordAccumulatorStatusTagged(header, value, tagNumber, tagClass);
+        new BACnetAccumulatorRecordAccumulatorStatusTagged(header, value);
     return _bACnetAccumulatorRecordAccumulatorStatusTagged;
   }
 

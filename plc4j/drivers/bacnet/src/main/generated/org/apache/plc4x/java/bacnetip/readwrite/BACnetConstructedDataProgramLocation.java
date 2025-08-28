@@ -49,21 +49,13 @@ public class BACnetConstructedDataProgramLocation extends BACnetConstructedData 
   // Properties.
   protected final BACnetApplicationTagCharacterString programLocation;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataProgramLocation(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString programLocation,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString programLocation) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.programLocation = programLocation;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getProgramLocation() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataProgramLocation extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataProgramLocation");
     // Create the instance
-    return new BACnetConstructedDataProgramLocationBuilderImpl(
-        programLocation, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataProgramLocationBuilderImpl(programLocation);
   }
 
   public static class BACnetConstructedDataProgramLocationBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString programLocation;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataProgramLocationBuilderImpl(
-        BACnetApplicationTagCharacterString programLocation,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString programLocation) {
       this.programLocation = programLocation;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataProgramLocation build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataProgramLocation bACnetConstructedDataProgramLocation =
           new BACnetConstructedDataProgramLocation(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              programLocation,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, programLocation);
       return bACnetConstructedDataProgramLocation;
     }
   }

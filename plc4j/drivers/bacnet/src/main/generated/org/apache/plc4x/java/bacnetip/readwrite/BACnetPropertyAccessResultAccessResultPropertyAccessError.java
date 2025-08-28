@@ -43,26 +43,10 @@ public class BACnetPropertyAccessResultAccessResultPropertyAccessError
   // Properties.
   protected final ErrorEnclosed propertyAccessError;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-  protected final BACnetPropertyIdentifier propertyIdentifierArgument;
-  protected final BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument;
-
   public BACnetPropertyAccessResultAccessResultPropertyAccessError(
-      BACnetTagHeader peekedTagHeader,
-      ErrorEnclosed propertyAccessError,
-      BACnetObjectType objectTypeArgument,
-      BACnetPropertyIdentifier propertyIdentifierArgument,
-      BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument) {
-    super(
-        peekedTagHeader,
-        objectTypeArgument,
-        propertyIdentifierArgument,
-        propertyArrayIndexArgument);
+      BACnetTagHeader peekedTagHeader, ErrorEnclosed propertyAccessError) {
+    super(peekedTagHeader);
     this.propertyAccessError = propertyAccessError;
-    this.objectTypeArgument = objectTypeArgument;
-    this.propertyIdentifierArgument = propertyIdentifierArgument;
-    this.propertyArrayIndexArgument = propertyArrayIndexArgument;
   }
 
   public ErrorEnclosed getPropertyAccessError() {
@@ -118,44 +102,25 @@ public class BACnetPropertyAccessResultAccessResultPropertyAccessError
     readBuffer.closeContext("BACnetPropertyAccessResultAccessResultPropertyAccessError");
     // Create the instance
     return new BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilderImpl(
-        propertyAccessError,
-        objectTypeArgument,
-        propertyIdentifierArgument,
-        propertyArrayIndexArgument);
+        propertyAccessError);
   }
 
   public static class BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilderImpl
       implements BACnetPropertyAccessResultAccessResult
           .BACnetPropertyAccessResultAccessResultBuilder {
     private final ErrorEnclosed propertyAccessError;
-    private final BACnetObjectType objectTypeArgument;
-    private final BACnetPropertyIdentifier propertyIdentifierArgument;
-    private final BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument;
 
     public BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilderImpl(
-        ErrorEnclosed propertyAccessError,
-        BACnetObjectType objectTypeArgument,
-        BACnetPropertyIdentifier propertyIdentifierArgument,
-        BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument) {
+        ErrorEnclosed propertyAccessError) {
       this.propertyAccessError = propertyAccessError;
-      this.objectTypeArgument = objectTypeArgument;
-      this.propertyIdentifierArgument = propertyIdentifierArgument;
-      this.propertyArrayIndexArgument = propertyArrayIndexArgument;
     }
 
     public BACnetPropertyAccessResultAccessResultPropertyAccessError build(
-        BACnetTagHeader peekedTagHeader,
-        BACnetObjectType objectTypeArgument,
-        BACnetPropertyIdentifier propertyIdentifierArgument,
-        BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument) {
+        BACnetTagHeader peekedTagHeader) {
       BACnetPropertyAccessResultAccessResultPropertyAccessError
           bACnetPropertyAccessResultAccessResultPropertyAccessError =
               new BACnetPropertyAccessResultAccessResultPropertyAccessError(
-                  peekedTagHeader,
-                  propertyAccessError,
-                  objectTypeArgument,
-                  propertyIdentifierArgument,
-                  propertyArrayIndexArgument);
+                  peekedTagHeader, propertyAccessError);
       return bACnetPropertyAccessResultAccessResultPropertyAccessError;
     }
   }

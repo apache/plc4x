@@ -42,13 +42,9 @@ public abstract class CBusCommand implements Message {
   // Properties.
   protected final CBusHeader header;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
-  public CBusCommand(CBusHeader header, CBusOptions cBusOptions) {
+  public CBusCommand(CBusHeader header) {
     super();
     this.header = header;
-    this.cBusOptions = cBusOptions;
   }
 
   public CBusHeader getHeader() {
@@ -158,12 +154,12 @@ public abstract class CBusCommand implements Message {
 
     readBuffer.closeContext("CBusCommand");
     // Create the instance
-    CBusCommand _cBusCommand = builder.build(header, cBusOptions);
+    CBusCommand _cBusCommand = builder.build(header);
     return _cBusCommand;
   }
 
   public interface CBusCommandBuilder {
-    CBusCommand build(CBusHeader header, CBusOptions cBusOptions);
+    CBusCommand build(CBusHeader header);
   }
 
   @Override

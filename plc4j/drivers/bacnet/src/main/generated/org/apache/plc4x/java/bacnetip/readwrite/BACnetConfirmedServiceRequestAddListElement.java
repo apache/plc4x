@@ -49,21 +49,17 @@ public class BACnetConfirmedServiceRequestAddListElement extends BACnetConfirmed
   protected final BACnetContextTagUnsignedInteger arrayIndex;
   protected final BACnetConstructedData listOfElements;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestAddListElement(
+      long serviceRequestLength,
       BACnetContextTagObjectIdentifier objectIdentifier,
       BACnetPropertyIdentifierTagged propertyIdentifier,
       BACnetContextTagUnsignedInteger arrayIndex,
-      BACnetConstructedData listOfElements,
-      Long serviceRequestLength) {
+      BACnetConstructedData listOfElements) {
     super(serviceRequestLength);
     this.objectIdentifier = objectIdentifier;
     this.propertyIdentifier = propertyIdentifier;
     this.arrayIndex = arrayIndex;
     this.listOfElements = listOfElements;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagObjectIdentifier getObjectIdentifier() {
@@ -191,7 +187,7 @@ public class BACnetConfirmedServiceRequestAddListElement extends BACnetConfirmed
     readBuffer.closeContext("BACnetConfirmedServiceRequestAddListElement");
     // Create the instance
     return new BACnetConfirmedServiceRequestAddListElementBuilderImpl(
-        objectIdentifier, propertyIdentifier, arrayIndex, listOfElements, serviceRequestLength);
+        objectIdentifier, propertyIdentifier, arrayIndex, listOfElements);
   }
 
   public static class BACnetConfirmedServiceRequestAddListElementBuilderImpl
@@ -200,30 +196,26 @@ public class BACnetConfirmedServiceRequestAddListElement extends BACnetConfirmed
     private final BACnetPropertyIdentifierTagged propertyIdentifier;
     private final BACnetContextTagUnsignedInteger arrayIndex;
     private final BACnetConstructedData listOfElements;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestAddListElementBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier,
         BACnetPropertyIdentifierTagged propertyIdentifier,
         BACnetContextTagUnsignedInteger arrayIndex,
-        BACnetConstructedData listOfElements,
-        Long serviceRequestLength) {
+        BACnetConstructedData listOfElements) {
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.arrayIndex = arrayIndex;
       this.listOfElements = listOfElements;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestAddListElement build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestAddListElement build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestAddListElement bACnetConfirmedServiceRequestAddListElement =
           new BACnetConfirmedServiceRequestAddListElement(
+              serviceRequestLength,
               objectIdentifier,
               propertyIdentifier,
               arrayIndex,
-              listOfElements,
-              serviceRequestLength);
+              listOfElements);
       return bACnetConfirmedServiceRequestAddListElement;
     }
   }

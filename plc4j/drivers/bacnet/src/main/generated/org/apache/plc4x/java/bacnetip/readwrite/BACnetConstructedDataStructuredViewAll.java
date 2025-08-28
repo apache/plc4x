@@ -47,19 +47,9 @@ public class BACnetConstructedDataStructuredViewAll extends BACnetConstructedDat
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataStructuredViewAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,29 +94,18 @@ public class BACnetConstructedDataStructuredViewAll extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataStructuredViewAll");
     // Create the instance
-    return new BACnetConstructedDataStructuredViewAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataStructuredViewAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataStructuredViewAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataStructuredViewAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataStructuredViewAllBuilderImpl() {}
 
     public BACnetConstructedDataStructuredViewAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataStructuredViewAll bACnetConstructedDataStructuredViewAll =
-          new BACnetConstructedDataStructuredViewAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataStructuredViewAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataStructuredViewAll;
     }
   }

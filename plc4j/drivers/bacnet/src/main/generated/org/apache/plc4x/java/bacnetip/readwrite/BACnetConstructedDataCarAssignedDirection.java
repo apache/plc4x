@@ -50,21 +50,13 @@ public class BACnetConstructedDataCarAssignedDirection extends BACnetConstructed
   // Properties.
   protected final BACnetLiftCarDirectionTagged assignedDirection;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCarAssignedDirection(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLiftCarDirectionTagged assignedDirection,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetLiftCarDirectionTagged assignedDirection) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.assignedDirection = assignedDirection;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetLiftCarDirectionTagged getAssignedDirection() {
@@ -135,39 +127,23 @@ public class BACnetConstructedDataCarAssignedDirection extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataCarAssignedDirection");
     // Create the instance
-    return new BACnetConstructedDataCarAssignedDirectionBuilderImpl(
-        assignedDirection, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCarAssignedDirectionBuilderImpl(assignedDirection);
   }
 
   public static class BACnetConstructedDataCarAssignedDirectionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLiftCarDirectionTagged assignedDirection;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCarAssignedDirectionBuilderImpl(
-        BACnetLiftCarDirectionTagged assignedDirection,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetLiftCarDirectionTagged assignedDirection) {
       this.assignedDirection = assignedDirection;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCarAssignedDirection build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCarAssignedDirection bACnetConstructedDataCarAssignedDirection =
           new BACnetConstructedDataCarAssignedDirection(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              assignedDirection,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, assignedDirection);
       return bACnetConstructedDataCarAssignedDirection;
     }
   }

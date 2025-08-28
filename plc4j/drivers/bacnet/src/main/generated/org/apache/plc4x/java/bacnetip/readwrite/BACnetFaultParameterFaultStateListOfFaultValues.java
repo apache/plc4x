@@ -42,19 +42,14 @@ public class BACnetFaultParameterFaultStateListOfFaultValues implements Message 
   protected final List<BACnetPropertyStates> listIfFaultValues;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetFaultParameterFaultStateListOfFaultValues(
       BACnetOpeningTag openingTag,
       List<BACnetPropertyStates> listIfFaultValues,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listIfFaultValues = listIfFaultValues;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -146,7 +141,7 @@ public class BACnetFaultParameterFaultStateListOfFaultValues implements Message 
         _bACnetFaultParameterFaultStateListOfFaultValues;
     _bACnetFaultParameterFaultStateListOfFaultValues =
         new BACnetFaultParameterFaultStateListOfFaultValues(
-            openingTag, listIfFaultValues, closingTag, tagNumber);
+            openingTag, listIfFaultValues, closingTag);
     return _bACnetFaultParameterFaultStateListOfFaultValues;
   }
 

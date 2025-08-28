@@ -49,21 +49,13 @@ public class BACnetConstructedDataNodeType extends BACnetConstructedData impleme
   // Properties.
   protected final BACnetNodeTypeTagged nodeType;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataNodeType(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetNodeTypeTagged nodeType,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetNodeTypeTagged nodeType) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.nodeType = nodeType;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetNodeTypeTagged getNodeType() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataNodeType extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataNodeType");
     // Create the instance
-    return new BACnetConstructedDataNodeTypeBuilderImpl(nodeType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNodeTypeBuilderImpl(nodeType);
   }
 
   public static class BACnetConstructedDataNodeTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetNodeTypeTagged nodeType;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNodeTypeBuilderImpl(
-        BACnetNodeTypeTagged nodeType,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataNodeTypeBuilderImpl(BACnetNodeTypeTagged nodeType) {
       this.nodeType = nodeType;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataNodeType build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataNodeType bACnetConstructedDataNodeType =
-          new BACnetConstructedDataNodeType(
-              openingTag, peekedTagHeader, closingTag, nodeType, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataNodeType(openingTag, peekedTagHeader, closingTag, nodeType);
       return bACnetConstructedDataNodeType;
     }
   }

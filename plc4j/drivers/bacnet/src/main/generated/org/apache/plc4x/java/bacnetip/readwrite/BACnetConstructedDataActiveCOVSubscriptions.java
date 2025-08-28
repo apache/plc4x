@@ -50,21 +50,13 @@ public class BACnetConstructedDataActiveCOVSubscriptions extends BACnetConstruct
   // Properties.
   protected final List<BACnetCOVSubscription> activeCOVSubscriptions;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataActiveCOVSubscriptions(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetCOVSubscription> activeCOVSubscriptions,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetCOVSubscription> activeCOVSubscriptions) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.activeCOVSubscriptions = activeCOVSubscriptions;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetCOVSubscription> getActiveCOVSubscriptions() {
@@ -127,39 +119,23 @@ public class BACnetConstructedDataActiveCOVSubscriptions extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataActiveCOVSubscriptions");
     // Create the instance
-    return new BACnetConstructedDataActiveCOVSubscriptionsBuilderImpl(
-        activeCOVSubscriptions, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataActiveCOVSubscriptionsBuilderImpl(activeCOVSubscriptions);
   }
 
   public static class BACnetConstructedDataActiveCOVSubscriptionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetCOVSubscription> activeCOVSubscriptions;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataActiveCOVSubscriptionsBuilderImpl(
-        List<BACnetCOVSubscription> activeCOVSubscriptions,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetCOVSubscription> activeCOVSubscriptions) {
       this.activeCOVSubscriptions = activeCOVSubscriptions;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataActiveCOVSubscriptions build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataActiveCOVSubscriptions bACnetConstructedDataActiveCOVSubscriptions =
           new BACnetConstructedDataActiveCOVSubscriptions(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              activeCOVSubscriptions,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, activeCOVSubscriptions);
       return bACnetConstructedDataActiveCOVSubscriptions;
     }
   }

@@ -40,13 +40,9 @@ public class BACnetTagPayloadOctetString implements Message {
   // Properties.
   protected final byte[] octets;
 
-  // Arguments.
-  protected final Long actualLength;
-
-  public BACnetTagPayloadOctetString(byte[] octets, Long actualLength) {
+  public BACnetTagPayloadOctetString(byte[] octets) {
     super();
     this.octets = octets;
-    this.actualLength = actualLength;
   }
 
   public byte[] getOctets() {
@@ -94,7 +90,7 @@ public class BACnetTagPayloadOctetString implements Message {
     readBuffer.closeContext("BACnetTagPayloadOctetString");
     // Create the instance
     BACnetTagPayloadOctetString _bACnetTagPayloadOctetString;
-    _bACnetTagPayloadOctetString = new BACnetTagPayloadOctetString(octets, actualLength);
+    _bACnetTagPayloadOctetString = new BACnetTagPayloadOctetString(octets);
     return _bACnetTagPayloadOctetString;
   }
 

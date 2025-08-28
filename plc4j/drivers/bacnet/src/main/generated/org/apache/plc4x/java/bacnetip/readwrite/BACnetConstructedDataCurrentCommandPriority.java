@@ -50,21 +50,13 @@ public class BACnetConstructedDataCurrentCommandPriority extends BACnetConstruct
   // Properties.
   protected final BACnetOptionalUnsigned currentCommandPriority;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCurrentCommandPriority(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetOptionalUnsigned currentCommandPriority,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetOptionalUnsigned currentCommandPriority) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.currentCommandPriority = currentCommandPriority;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetOptionalUnsigned getCurrentCommandPriority() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataCurrentCommandPriority extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataCurrentCommandPriority");
     // Create the instance
-    return new BACnetConstructedDataCurrentCommandPriorityBuilderImpl(
-        currentCommandPriority, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCurrentCommandPriorityBuilderImpl(currentCommandPriority);
   }
 
   public static class BACnetConstructedDataCurrentCommandPriorityBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetOptionalUnsigned currentCommandPriority;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCurrentCommandPriorityBuilderImpl(
-        BACnetOptionalUnsigned currentCommandPriority,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOptionalUnsigned currentCommandPriority) {
       this.currentCommandPriority = currentCommandPriority;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCurrentCommandPriority build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCurrentCommandPriority bACnetConstructedDataCurrentCommandPriority =
           new BACnetConstructedDataCurrentCommandPriority(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              currentCommandPriority,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, currentCommandPriority);
       return bACnetConstructedDataCurrentCommandPriority;
     }
   }

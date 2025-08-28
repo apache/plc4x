@@ -49,21 +49,13 @@ public class BACnetConstructedDataLinkSpeed extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagReal linkSpeed;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLinkSpeed(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal linkSpeed,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal linkSpeed) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.linkSpeed = linkSpeed;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getLinkSpeed() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataLinkSpeed extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataLinkSpeed");
     // Create the instance
-    return new BACnetConstructedDataLinkSpeedBuilderImpl(linkSpeed, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLinkSpeedBuilderImpl(linkSpeed);
   }
 
   public static class BACnetConstructedDataLinkSpeedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal linkSpeed;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLinkSpeedBuilderImpl(
-        BACnetApplicationTagReal linkSpeed,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLinkSpeedBuilderImpl(BACnetApplicationTagReal linkSpeed) {
       this.linkSpeed = linkSpeed;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLinkSpeed build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLinkSpeed bACnetConstructedDataLinkSpeed =
-          new BACnetConstructedDataLinkSpeed(
-              openingTag, peekedTagHeader, closingTag, linkSpeed, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataLinkSpeed(openingTag, peekedTagHeader, closingTag, linkSpeed);
       return bACnetConstructedDataLinkSpeed;
     }
   }

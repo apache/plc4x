@@ -42,16 +42,10 @@ public class BACnetPriorityValueBitString extends BACnetPriorityValue implements
   // Properties.
   protected final BACnetApplicationTagBitString bitStringValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueBitString(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagBitString bitStringValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagBitString bitStringValue) {
+    super(peekedTagHeader);
     this.bitStringValue = bitStringValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagBitString getBitStringValue() {
@@ -103,24 +97,20 @@ public class BACnetPriorityValueBitString extends BACnetPriorityValue implements
 
     readBuffer.closeContext("BACnetPriorityValueBitString");
     // Create the instance
-    return new BACnetPriorityValueBitStringBuilderImpl(bitStringValue, objectTypeArgument);
+    return new BACnetPriorityValueBitStringBuilderImpl(bitStringValue);
   }
 
   public static class BACnetPriorityValueBitStringBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagBitString bitStringValue;
-    private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueBitStringBuilderImpl(
-        BACnetApplicationTagBitString bitStringValue, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueBitStringBuilderImpl(BACnetApplicationTagBitString bitStringValue) {
       this.bitStringValue = bitStringValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueBitString build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueBitString build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueBitString bACnetPriorityValueBitString =
-          new BACnetPriorityValueBitString(peekedTagHeader, bitStringValue, objectTypeArgument);
+          new BACnetPriorityValueBitString(peekedTagHeader, bitStringValue);
       return bACnetPriorityValueBitString;
     }
   }

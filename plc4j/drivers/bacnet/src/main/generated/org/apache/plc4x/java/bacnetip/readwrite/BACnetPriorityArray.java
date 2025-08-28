@@ -42,23 +42,11 @@ public class BACnetPriorityArray implements Message {
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetPriorityValue> data;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetPriorityArray(
-      BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetPriorityValue> data,
-      BACnetObjectType objectTypeArgument,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+      BACnetApplicationTagUnsignedInteger numberOfDataElements, List<BACnetPriorityValue> data) {
     super();
     this.numberOfDataElements = numberOfDataElements;
     this.data = data;
-    this.objectTypeArgument = objectTypeArgument;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -157,11 +145,7 @@ public class BACnetPriorityArray implements Message {
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (data)
     writeComplexTypeArrayField("data", data, writeBuffer);
@@ -430,9 +414,7 @@ public class BACnetPriorityArray implements Message {
     readBuffer.closeContext("BACnetPriorityArray");
     // Create the instance
     BACnetPriorityArray _bACnetPriorityArray;
-    _bACnetPriorityArray =
-        new BACnetPriorityArray(
-            numberOfDataElements, data, objectTypeArgument, tagNumber, arrayIndexArgument);
+    _bACnetPriorityArray = new BACnetPriorityArray(numberOfDataElements, data);
     return _bACnetPriorityArray;
   }
 

@@ -49,21 +49,13 @@ public class BACnetConstructedDataMaximumValue extends BACnetConstructedData imp
   // Properties.
   protected final BACnetApplicationTagReal maximumValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMaximumValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal maximumValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal maximumValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.maximumValue = maximumValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getMaximumValue() {
@@ -132,34 +124,22 @@ public class BACnetConstructedDataMaximumValue extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataMaximumValue");
     // Create the instance
-    return new BACnetConstructedDataMaximumValueBuilderImpl(
-        maximumValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMaximumValueBuilderImpl(maximumValue);
   }
 
   public static class BACnetConstructedDataMaximumValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal maximumValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMaximumValueBuilderImpl(
-        BACnetApplicationTagReal maximumValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataMaximumValueBuilderImpl(BACnetApplicationTagReal maximumValue) {
       this.maximumValue = maximumValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMaximumValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMaximumValue bACnetConstructedDataMaximumValue =
           new BACnetConstructedDataMaximumValue(
-              openingTag, peekedTagHeader, closingTag, maximumValue, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, maximumValue);
       return bACnetConstructedDataMaximumValue;
     }
   }

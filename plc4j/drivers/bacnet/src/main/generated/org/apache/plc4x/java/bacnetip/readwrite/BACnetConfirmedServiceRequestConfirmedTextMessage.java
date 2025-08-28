@@ -50,21 +50,17 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessage extends BACnetCon
       messagePriority;
   protected final BACnetContextTagCharacterString message;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestConfirmedTextMessage(
+      long serviceRequestLength,
       BACnetContextTagObjectIdentifier textMessageSourceDevice,
       BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass messageClass,
       BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged messagePriority,
-      BACnetContextTagCharacterString message,
-      Long serviceRequestLength) {
+      BACnetContextTagCharacterString message) {
     super(serviceRequestLength);
     this.textMessageSourceDevice = textMessageSourceDevice;
     this.messageClass = messageClass;
     this.messagePriority = messagePriority;
     this.message = message;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagObjectIdentifier getTextMessageSourceDevice() {
@@ -187,7 +183,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessage extends BACnetCon
     readBuffer.closeContext("BACnetConfirmedServiceRequestConfirmedTextMessage");
     // Create the instance
     return new BACnetConfirmedServiceRequestConfirmedTextMessageBuilderImpl(
-        textMessageSourceDevice, messageClass, messagePriority, message, serviceRequestLength);
+        textMessageSourceDevice, messageClass, messagePriority, message);
   }
 
   public static class BACnetConfirmedServiceRequestConfirmedTextMessageBuilderImpl
@@ -197,31 +193,27 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessage extends BACnetCon
     private final BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
         messagePriority;
     private final BACnetContextTagCharacterString message;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestConfirmedTextMessageBuilderImpl(
         BACnetContextTagObjectIdentifier textMessageSourceDevice,
         BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass messageClass,
         BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged messagePriority,
-        BACnetContextTagCharacterString message,
-        Long serviceRequestLength) {
+        BACnetContextTagCharacterString message) {
       this.textMessageSourceDevice = textMessageSourceDevice;
       this.messageClass = messageClass;
       this.messagePriority = messagePriority;
       this.message = message;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestConfirmedTextMessage build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestConfirmedTextMessage build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestConfirmedTextMessage
           bACnetConfirmedServiceRequestConfirmedTextMessage =
               new BACnetConfirmedServiceRequestConfirmedTextMessage(
+                  serviceRequestLength,
                   textMessageSourceDevice,
                   messageClass,
                   messagePriority,
-                  message,
-                  serviceRequestLength);
+                  message);
       return bACnetConfirmedServiceRequestConfirmedTextMessage;
     }
   }

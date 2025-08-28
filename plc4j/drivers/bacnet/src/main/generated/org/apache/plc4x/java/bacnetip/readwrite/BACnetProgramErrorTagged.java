@@ -42,22 +42,12 @@ public class BACnetProgramErrorTagged implements Message {
   protected final BACnetProgramError value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetProgramErrorTagged(
-      BACnetTagHeader header,
-      BACnetProgramError value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetProgramError value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -180,8 +170,7 @@ public class BACnetProgramErrorTagged implements Message {
     readBuffer.closeContext("BACnetProgramErrorTagged");
     // Create the instance
     BACnetProgramErrorTagged _bACnetProgramErrorTagged;
-    _bACnetProgramErrorTagged =
-        new BACnetProgramErrorTagged(header, value, proprietaryValue, tagNumber, tagClass);
+    _bACnetProgramErrorTagged = new BACnetProgramErrorTagged(header, value, proprietaryValue);
     return _bACnetProgramErrorTagged;
   }
 

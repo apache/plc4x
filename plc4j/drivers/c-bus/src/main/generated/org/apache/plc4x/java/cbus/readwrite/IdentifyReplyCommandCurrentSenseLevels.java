@@ -46,13 +46,9 @@ public class IdentifyReplyCommandCurrentSenseLevels extends IdentifyReplyCommand
   // Properties.
   protected final byte[] currentSenseLevels;
 
-  // Arguments.
-  protected final Byte numBytes;
-
-  public IdentifyReplyCommandCurrentSenseLevels(byte[] currentSenseLevels, Byte numBytes) {
-    super(numBytes);
+  public IdentifyReplyCommandCurrentSenseLevels(byte[] currentSenseLevels) {
+    super();
     this.currentSenseLevels = currentSenseLevels;
-    this.numBytes = numBytes;
   }
 
   public byte[] getCurrentSenseLevels() {
@@ -102,24 +98,20 @@ public class IdentifyReplyCommandCurrentSenseLevels extends IdentifyReplyCommand
 
     readBuffer.closeContext("IdentifyReplyCommandCurrentSenseLevels");
     // Create the instance
-    return new IdentifyReplyCommandCurrentSenseLevelsBuilderImpl(currentSenseLevels, numBytes);
+    return new IdentifyReplyCommandCurrentSenseLevelsBuilderImpl(currentSenseLevels);
   }
 
   public static class IdentifyReplyCommandCurrentSenseLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] currentSenseLevels;
-    private final Byte numBytes;
 
-    public IdentifyReplyCommandCurrentSenseLevelsBuilderImpl(
-        byte[] currentSenseLevels, Byte numBytes) {
+    public IdentifyReplyCommandCurrentSenseLevelsBuilderImpl(byte[] currentSenseLevels) {
       this.currentSenseLevels = currentSenseLevels;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandCurrentSenseLevels build(Byte numBytes) {
-
+    public IdentifyReplyCommandCurrentSenseLevels build() {
       IdentifyReplyCommandCurrentSenseLevels identifyReplyCommandCurrentSenseLevels =
-          new IdentifyReplyCommandCurrentSenseLevels(currentSenseLevels, numBytes);
+          new IdentifyReplyCommandCurrentSenseLevels(currentSenseLevels);
       return identifyReplyCommandCurrentSenseLevels;
     }
   }

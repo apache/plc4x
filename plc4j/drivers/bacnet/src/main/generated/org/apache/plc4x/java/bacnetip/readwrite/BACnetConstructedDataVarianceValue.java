@@ -49,21 +49,13 @@ public class BACnetConstructedDataVarianceValue extends BACnetConstructedData im
   // Properties.
   protected final BACnetApplicationTagReal varianceValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataVarianceValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal varianceValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal varianceValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.varianceValue = varianceValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getVarianceValue() {
@@ -132,39 +124,22 @@ public class BACnetConstructedDataVarianceValue extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataVarianceValue");
     // Create the instance
-    return new BACnetConstructedDataVarianceValueBuilderImpl(
-        varianceValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataVarianceValueBuilderImpl(varianceValue);
   }
 
   public static class BACnetConstructedDataVarianceValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal varianceValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataVarianceValueBuilderImpl(
-        BACnetApplicationTagReal varianceValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataVarianceValueBuilderImpl(BACnetApplicationTagReal varianceValue) {
       this.varianceValue = varianceValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataVarianceValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataVarianceValue bACnetConstructedDataVarianceValue =
           new BACnetConstructedDataVarianceValue(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              varianceValue,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, varianceValue);
       return bACnetConstructedDataVarianceValue;
     }
   }

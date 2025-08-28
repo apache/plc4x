@@ -49,21 +49,13 @@ public class BACnetConstructedDataGroupMode extends BACnetConstructedData implem
   // Properties.
   protected final BACnetLiftGroupModeTagged groupMode;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataGroupMode(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLiftGroupModeTagged groupMode,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetLiftGroupModeTagged groupMode) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.groupMode = groupMode;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetLiftGroupModeTagged getGroupMode() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataGroupMode extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataGroupMode");
     // Create the instance
-    return new BACnetConstructedDataGroupModeBuilderImpl(groupMode, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataGroupModeBuilderImpl(groupMode);
   }
 
   public static class BACnetConstructedDataGroupModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLiftGroupModeTagged groupMode;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataGroupModeBuilderImpl(
-        BACnetLiftGroupModeTagged groupMode,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataGroupModeBuilderImpl(BACnetLiftGroupModeTagged groupMode) {
       this.groupMode = groupMode;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataGroupMode build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataGroupMode bACnetConstructedDataGroupMode =
-          new BACnetConstructedDataGroupMode(
-              openingTag, peekedTagHeader, closingTag, groupMode, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataGroupMode(openingTag, peekedTagHeader, closingTag, groupMode);
       return bACnetConstructedDataGroupMode;
     }
   }

@@ -49,21 +49,13 @@ public class BACnetConstructedDataStatusFlags extends BACnetConstructedData impl
   // Properties.
   protected final BACnetStatusFlagsTagged statusFlags;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataStatusFlags(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetStatusFlagsTagged statusFlags,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetStatusFlagsTagged statusFlags) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.statusFlags = statusFlags;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetStatusFlagsTagged getStatusFlags() {
@@ -134,34 +126,22 @@ public class BACnetConstructedDataStatusFlags extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataStatusFlags");
     // Create the instance
-    return new BACnetConstructedDataStatusFlagsBuilderImpl(
-        statusFlags, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataStatusFlagsBuilderImpl(statusFlags);
   }
 
   public static class BACnetConstructedDataStatusFlagsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetStatusFlagsTagged statusFlags;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataStatusFlagsBuilderImpl(
-        BACnetStatusFlagsTagged statusFlags,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataStatusFlagsBuilderImpl(BACnetStatusFlagsTagged statusFlags) {
       this.statusFlags = statusFlags;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataStatusFlags build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataStatusFlags bACnetConstructedDataStatusFlags =
           new BACnetConstructedDataStatusFlags(
-              openingTag, peekedTagHeader, closingTag, statusFlags, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, statusFlags);
       return bACnetConstructedDataStatusFlags;
     }
   }

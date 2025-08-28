@@ -48,17 +48,13 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
 
   // Properties.
   protected final List<PnDcp_SupportedDeviceOption> supportedOptions;
-
-  // Arguments.
-  protected final Integer blockLength;
   // Reserved Fields
   private Integer reservedField0;
 
   public PnDcp_Block_DevicePropertiesDeviceOptions(
-      List<PnDcp_SupportedDeviceOption> supportedOptions, Integer blockLength) {
+      List<PnDcp_SupportedDeviceOption> supportedOptions) {
     super();
     this.supportedOptions = supportedOptions;
-    this.blockLength = blockLength;
   }
 
   public List<PnDcp_SupportedDeviceOption> getSupportedOptions() {
@@ -135,27 +131,23 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceOptions");
     // Create the instance
     return new PnDcp_Block_DevicePropertiesDeviceOptionsBuilderImpl(
-        supportedOptions, blockLength, reservedField0);
+        supportedOptions, reservedField0);
   }
 
   public static class PnDcp_Block_DevicePropertiesDeviceOptionsBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final List<PnDcp_SupportedDeviceOption> supportedOptions;
-    private final Integer blockLength;
     private final Integer reservedField0;
 
     public PnDcp_Block_DevicePropertiesDeviceOptionsBuilderImpl(
-        List<PnDcp_SupportedDeviceOption> supportedOptions,
-        Integer blockLength,
-        Integer reservedField0) {
+        List<PnDcp_SupportedDeviceOption> supportedOptions, Integer reservedField0) {
       this.supportedOptions = supportedOptions;
-      this.blockLength = blockLength;
       this.reservedField0 = reservedField0;
     }
 
     public PnDcp_Block_DevicePropertiesDeviceOptions build() {
       PnDcp_Block_DevicePropertiesDeviceOptions pnDcp_Block_DevicePropertiesDeviceOptions =
-          new PnDcp_Block_DevicePropertiesDeviceOptions(supportedOptions, blockLength);
+          new PnDcp_Block_DevicePropertiesDeviceOptions(supportedOptions);
       pnDcp_Block_DevicePropertiesDeviceOptions.reservedField0 = reservedField0;
       return pnDcp_Block_DevicePropertiesDeviceOptions;
     }

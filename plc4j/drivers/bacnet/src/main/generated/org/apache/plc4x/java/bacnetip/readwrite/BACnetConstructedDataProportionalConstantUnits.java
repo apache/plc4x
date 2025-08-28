@@ -50,21 +50,13 @@ public class BACnetConstructedDataProportionalConstantUnits extends BACnetConstr
   // Properties.
   protected final BACnetEngineeringUnitsTagged units;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataProportionalConstantUnits(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetEngineeringUnitsTagged units,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetEngineeringUnitsTagged units) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.units = units;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetEngineeringUnitsTagged getUnits() {
@@ -135,35 +127,24 @@ public class BACnetConstructedDataProportionalConstantUnits extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataProportionalConstantUnits");
     // Create the instance
-    return new BACnetConstructedDataProportionalConstantUnitsBuilderImpl(
-        units, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataProportionalConstantUnitsBuilderImpl(units);
   }
 
   public static class BACnetConstructedDataProportionalConstantUnitsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEngineeringUnitsTagged units;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataProportionalConstantUnitsBuilderImpl(
-        BACnetEngineeringUnitsTagged units,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetEngineeringUnitsTagged units) {
       this.units = units;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataProportionalConstantUnits build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataProportionalConstantUnits
           bACnetConstructedDataProportionalConstantUnits =
               new BACnetConstructedDataProportionalConstantUnits(
-                  openingTag, peekedTagHeader, closingTag, units, tagNumber, arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, units);
       return bACnetConstructedDataProportionalConstantUnits;
     }
   }

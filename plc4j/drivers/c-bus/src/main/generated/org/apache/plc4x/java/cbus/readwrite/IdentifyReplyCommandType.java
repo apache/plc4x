@@ -45,13 +45,9 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
   // Properties.
   protected final String unitType;
 
-  // Arguments.
-  protected final Byte numBytes;
-
-  public IdentifyReplyCommandType(String unitType, Byte numBytes) {
-    super(numBytes);
+  public IdentifyReplyCommandType(String unitType) {
+    super();
     this.unitType = unitType;
-    this.numBytes = numBytes;
   }
 
   public String getUnitType() {
@@ -98,23 +94,19 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
 
     readBuffer.closeContext("IdentifyReplyCommandType");
     // Create the instance
-    return new IdentifyReplyCommandTypeBuilderImpl(unitType, numBytes);
+    return new IdentifyReplyCommandTypeBuilderImpl(unitType);
   }
 
   public static class IdentifyReplyCommandTypeBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final String unitType;
-    private final Byte numBytes;
 
-    public IdentifyReplyCommandTypeBuilderImpl(String unitType, Byte numBytes) {
+    public IdentifyReplyCommandTypeBuilderImpl(String unitType) {
       this.unitType = unitType;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandType build(Byte numBytes) {
-
-      IdentifyReplyCommandType identifyReplyCommandType =
-          new IdentifyReplyCommandType(unitType, numBytes);
+    public IdentifyReplyCommandType build() {
+      IdentifyReplyCommandType identifyReplyCommandType = new IdentifyReplyCommandType(unitType);
       return identifyReplyCommandType;
     }
   }

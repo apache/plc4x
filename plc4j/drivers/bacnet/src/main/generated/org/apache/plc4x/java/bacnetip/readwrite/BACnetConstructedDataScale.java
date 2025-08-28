@@ -49,21 +49,13 @@ public class BACnetConstructedDataScale extends BACnetConstructedData implements
   // Properties.
   protected final BACnetScale scale;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataScale(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetScale scale,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetScale scale) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.scale = scale;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetScale getScale() {
@@ -128,31 +120,21 @@ public class BACnetConstructedDataScale extends BACnetConstructedData implements
 
     readBuffer.closeContext("BACnetConstructedDataScale");
     // Create the instance
-    return new BACnetConstructedDataScaleBuilderImpl(scale, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataScaleBuilderImpl(scale);
   }
 
   public static class BACnetConstructedDataScaleBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetScale scale;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataScaleBuilderImpl(
-        BACnetScale scale, Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataScaleBuilderImpl(BACnetScale scale) {
       this.scale = scale;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataScale build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataScale bACnetConstructedDataScale =
-          new BACnetConstructedDataScale(
-              openingTag, peekedTagHeader, closingTag, scale, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataScale(openingTag, peekedTagHeader, closingTag, scale);
       return bACnetConstructedDataScale;
     }
   }

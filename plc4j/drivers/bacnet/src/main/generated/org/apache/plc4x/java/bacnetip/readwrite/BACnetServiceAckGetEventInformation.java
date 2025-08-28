@@ -46,17 +46,13 @@ public class BACnetServiceAckGetEventInformation extends BACnetServiceAck implem
   protected final BACnetEventSummariesList listOfEventSummaries;
   protected final BACnetContextTagBoolean moreEvents;
 
-  // Arguments.
-  protected final Long serviceAckLength;
-
   public BACnetServiceAckGetEventInformation(
+      long serviceAckLength,
       BACnetEventSummariesList listOfEventSummaries,
-      BACnetContextTagBoolean moreEvents,
-      Long serviceAckLength) {
+      BACnetContextTagBoolean moreEvents) {
     super(serviceAckLength);
     this.listOfEventSummaries = listOfEventSummaries;
     this.moreEvents = moreEvents;
-    this.serviceAckLength = serviceAckLength;
   }
 
   public BACnetEventSummariesList getListOfEventSummaries() {
@@ -127,30 +123,24 @@ public class BACnetServiceAckGetEventInformation extends BACnetServiceAck implem
 
     readBuffer.closeContext("BACnetServiceAckGetEventInformation");
     // Create the instance
-    return new BACnetServiceAckGetEventInformationBuilderImpl(
-        listOfEventSummaries, moreEvents, serviceAckLength);
+    return new BACnetServiceAckGetEventInformationBuilderImpl(listOfEventSummaries, moreEvents);
   }
 
   public static class BACnetServiceAckGetEventInformationBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetEventSummariesList listOfEventSummaries;
     private final BACnetContextTagBoolean moreEvents;
-    private final Long serviceAckLength;
 
     public BACnetServiceAckGetEventInformationBuilderImpl(
-        BACnetEventSummariesList listOfEventSummaries,
-        BACnetContextTagBoolean moreEvents,
-        Long serviceAckLength) {
+        BACnetEventSummariesList listOfEventSummaries, BACnetContextTagBoolean moreEvents) {
       this.listOfEventSummaries = listOfEventSummaries;
       this.moreEvents = moreEvents;
-      this.serviceAckLength = serviceAckLength;
     }
 
-    public BACnetServiceAckGetEventInformation build(Long serviceAckLength) {
-
+    public BACnetServiceAckGetEventInformation build(long serviceAckLength) {
       BACnetServiceAckGetEventInformation bACnetServiceAckGetEventInformation =
           new BACnetServiceAckGetEventInformation(
-              listOfEventSummaries, moreEvents, serviceAckLength);
+              serviceAckLength, listOfEventSummaries, moreEvents);
       return bACnetServiceAckGetEventInformation;
     }
   }

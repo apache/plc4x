@@ -49,21 +49,13 @@ public class BACnetConstructedDataInstallationID extends BACnetConstructedData i
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger installationId;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataInstallationID(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger installationId,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger installationId) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.installationId = installationId;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getInstallationId() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataInstallationID extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataInstallationID");
     // Create the instance
-    return new BACnetConstructedDataInstallationIDBuilderImpl(
-        installationId, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataInstallationIDBuilderImpl(installationId);
   }
 
   public static class BACnetConstructedDataInstallationIDBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger installationId;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataInstallationIDBuilderImpl(
-        BACnetApplicationTagUnsignedInteger installationId,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger installationId) {
       this.installationId = installationId;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataInstallationID build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataInstallationID bACnetConstructedDataInstallationID =
           new BACnetConstructedDataInstallationID(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              installationId,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, installationId);
       return bACnetConstructedDataInstallationID;
     }
   }

@@ -42,18 +42,13 @@ public class CBusPointToMultiPointCommandStatus extends CBusPointToMultiPointCom
 
   // Properties.
   protected final StatusRequest statusRequest;
-
-  // Arguments.
-  protected final CBusOptions cBusOptions;
   // Reserved Fields
   private Byte reservedField0;
   private Byte reservedField1;
 
-  public CBusPointToMultiPointCommandStatus(
-      byte peekedApplication, StatusRequest statusRequest, CBusOptions cBusOptions) {
-    super(peekedApplication, cBusOptions);
+  public CBusPointToMultiPointCommandStatus(byte peekedApplication, StatusRequest statusRequest) {
+    super(peekedApplication);
     this.statusRequest = statusRequest;
-    this.cBusOptions = cBusOptions;
   }
 
   public StatusRequest getStatusRequest() {
@@ -125,31 +120,25 @@ public class CBusPointToMultiPointCommandStatus extends CBusPointToMultiPointCom
     readBuffer.closeContext("CBusPointToMultiPointCommandStatus");
     // Create the instance
     return new CBusPointToMultiPointCommandStatusBuilderImpl(
-        statusRequest, cBusOptions, reservedField0, reservedField1);
+        statusRequest, reservedField0, reservedField1);
   }
 
   public static class CBusPointToMultiPointCommandStatusBuilderImpl
       implements CBusPointToMultiPointCommand.CBusPointToMultiPointCommandBuilder {
     private final StatusRequest statusRequest;
-    private final CBusOptions cBusOptions;
     private final Byte reservedField0;
     private final Byte reservedField1;
 
     public CBusPointToMultiPointCommandStatusBuilderImpl(
-        StatusRequest statusRequest,
-        CBusOptions cBusOptions,
-        Byte reservedField0,
-        Byte reservedField1) {
+        StatusRequest statusRequest, Byte reservedField0, Byte reservedField1) {
       this.statusRequest = statusRequest;
-      this.cBusOptions = cBusOptions;
       this.reservedField0 = reservedField0;
       this.reservedField1 = reservedField1;
     }
 
-    public CBusPointToMultiPointCommandStatus build(
-        byte peekedApplication, CBusOptions cBusOptions) {
+    public CBusPointToMultiPointCommandStatus build(byte peekedApplication) {
       CBusPointToMultiPointCommandStatus cBusPointToMultiPointCommandStatus =
-          new CBusPointToMultiPointCommandStatus(peekedApplication, statusRequest, cBusOptions);
+          new CBusPointToMultiPointCommandStatus(peekedApplication, statusRequest);
       cBusPointToMultiPointCommandStatus.reservedField0 = reservedField0;
       cBusPointToMultiPointCommandStatus.reservedField1 = reservedField1;
       return cBusPointToMultiPointCommandStatus;

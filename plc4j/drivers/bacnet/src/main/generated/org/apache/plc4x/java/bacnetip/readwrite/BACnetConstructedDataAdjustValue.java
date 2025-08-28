@@ -49,21 +49,13 @@ public class BACnetConstructedDataAdjustValue extends BACnetConstructedData impl
   // Properties.
   protected final BACnetApplicationTagSignedInteger adjustValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAdjustValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagSignedInteger adjustValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagSignedInteger adjustValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.adjustValue = adjustValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagSignedInteger getAdjustValue() {
@@ -134,34 +126,23 @@ public class BACnetConstructedDataAdjustValue extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataAdjustValue");
     // Create the instance
-    return new BACnetConstructedDataAdjustValueBuilderImpl(
-        adjustValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAdjustValueBuilderImpl(adjustValue);
   }
 
   public static class BACnetConstructedDataAdjustValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger adjustValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAdjustValueBuilderImpl(
-        BACnetApplicationTagSignedInteger adjustValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagSignedInteger adjustValue) {
       this.adjustValue = adjustValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAdjustValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAdjustValue bACnetConstructedDataAdjustValue =
           new BACnetConstructedDataAdjustValue(
-              openingTag, peekedTagHeader, closingTag, adjustValue, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, adjustValue);
       return bACnetConstructedDataAdjustValue;
     }
   }

@@ -46,14 +46,10 @@ public class ParameterValueInterfaceOptions3 extends ParameterValue implements M
   protected final InterfaceOptions3 value;
   protected final byte[] data;
 
-  // Arguments.
-  protected final Short numBytes;
-
-  public ParameterValueInterfaceOptions3(InterfaceOptions3 value, byte[] data, Short numBytes) {
-    super(numBytes);
+  public ParameterValueInterfaceOptions3(InterfaceOptions3 value, byte[] data) {
+    super();
     this.value = value;
     this.data = data;
-    this.numBytes = numBytes;
   }
 
   public InterfaceOptions3 getValue() {
@@ -120,26 +116,22 @@ public class ParameterValueInterfaceOptions3 extends ParameterValue implements M
 
     readBuffer.closeContext("ParameterValueInterfaceOptions3");
     // Create the instance
-    return new ParameterValueInterfaceOptions3BuilderImpl(value, data, numBytes);
+    return new ParameterValueInterfaceOptions3BuilderImpl(value, data);
   }
 
   public static class ParameterValueInterfaceOptions3BuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final InterfaceOptions3 value;
     private final byte[] data;
-    private final Short numBytes;
 
-    public ParameterValueInterfaceOptions3BuilderImpl(
-        InterfaceOptions3 value, byte[] data, Short numBytes) {
+    public ParameterValueInterfaceOptions3BuilderImpl(InterfaceOptions3 value, byte[] data) {
       this.value = value;
       this.data = data;
-      this.numBytes = numBytes;
     }
 
-    public ParameterValueInterfaceOptions3 build(Short numBytes) {
-
+    public ParameterValueInterfaceOptions3 build() {
       ParameterValueInterfaceOptions3 parameterValueInterfaceOptions3 =
-          new ParameterValueInterfaceOptions3(value, data, numBytes);
+          new ParameterValueInterfaceOptions3(value, data);
       return parameterValueInterfaceOptions3;
     }
   }

@@ -42,22 +42,12 @@ public class BACnetEventStateTagged implements Message {
   protected final BACnetEventState value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetEventStateTagged(
-      BACnetTagHeader header,
-      BACnetEventState value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetEventState value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -178,8 +168,7 @@ public class BACnetEventStateTagged implements Message {
     readBuffer.closeContext("BACnetEventStateTagged");
     // Create the instance
     BACnetEventStateTagged _bACnetEventStateTagged;
-    _bACnetEventStateTagged =
-        new BACnetEventStateTagged(header, value, proprietaryValue, tagNumber, tagClass);
+    _bACnetEventStateTagged = new BACnetEventStateTagged(header, value, proprietaryValue);
     return _bACnetEventStateTagged;
   }
 

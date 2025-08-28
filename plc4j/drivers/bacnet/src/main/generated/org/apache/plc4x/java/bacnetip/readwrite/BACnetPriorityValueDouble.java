@@ -42,16 +42,10 @@ public class BACnetPriorityValueDouble extends BACnetPriorityValue implements Me
   // Properties.
   protected final BACnetApplicationTagDouble doubleValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueDouble(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagDouble doubleValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagDouble doubleValue) {
+    super(peekedTagHeader);
     this.doubleValue = doubleValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagDouble getDoubleValue() {
@@ -103,24 +97,20 @@ public class BACnetPriorityValueDouble extends BACnetPriorityValue implements Me
 
     readBuffer.closeContext("BACnetPriorityValueDouble");
     // Create the instance
-    return new BACnetPriorityValueDoubleBuilderImpl(doubleValue, objectTypeArgument);
+    return new BACnetPriorityValueDoubleBuilderImpl(doubleValue);
   }
 
   public static class BACnetPriorityValueDoubleBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagDouble doubleValue;
-    private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueDoubleBuilderImpl(
-        BACnetApplicationTagDouble doubleValue, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueDoubleBuilderImpl(BACnetApplicationTagDouble doubleValue) {
       this.doubleValue = doubleValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueDouble build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueDouble build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueDouble bACnetPriorityValueDouble =
-          new BACnetPriorityValueDouble(peekedTagHeader, doubleValue, objectTypeArgument);
+          new BACnetPriorityValueDouble(peekedTagHeader, doubleValue);
       return bACnetPriorityValueDouble;
     }
   }

@@ -42,17 +42,13 @@ public class CALDataIdentify extends CALData implements Message {
   // Properties.
   protected final Attribute attribute;
 
-  // Arguments.
-  protected final RequestContext requestContext;
-
   public CALDataIdentify(
+      RequestContext requestContext,
       CALCommandTypeContainer commandTypeContainer,
       CALData additionalData,
-      Attribute attribute,
-      RequestContext requestContext) {
-    super(commandTypeContainer, additionalData, requestContext);
+      Attribute attribute) {
+    super(requestContext, commandTypeContainer, additionalData);
     this.attribute = attribute;
-    this.requestContext = requestContext;
   }
 
   public Attribute getAttribute() {
@@ -106,24 +102,22 @@ public class CALDataIdentify extends CALData implements Message {
 
     readBuffer.closeContext("CALDataIdentify");
     // Create the instance
-    return new CALDataIdentifyBuilderImpl(attribute, requestContext);
+    return new CALDataIdentifyBuilderImpl(attribute);
   }
 
   public static class CALDataIdentifyBuilderImpl implements CALData.CALDataBuilder {
     private final Attribute attribute;
-    private final RequestContext requestContext;
 
-    public CALDataIdentifyBuilderImpl(Attribute attribute, RequestContext requestContext) {
+    public CALDataIdentifyBuilderImpl(Attribute attribute) {
       this.attribute = attribute;
-      this.requestContext = requestContext;
     }
 
     public CALDataIdentify build(
+        RequestContext requestContext,
         CALCommandTypeContainer commandTypeContainer,
-        CALData additionalData,
-        RequestContext requestContext) {
+        CALData additionalData) {
       CALDataIdentify cALDataIdentify =
-          new CALDataIdentify(commandTypeContainer, additionalData, attribute, requestContext);
+          new CALDataIdentify(requestContext, commandTypeContainer, additionalData, attribute);
       return cALDataIdentify;
     }
   }

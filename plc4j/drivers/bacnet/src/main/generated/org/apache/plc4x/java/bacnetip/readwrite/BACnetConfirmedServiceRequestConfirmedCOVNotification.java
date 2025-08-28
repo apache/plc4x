@@ -50,23 +50,19 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotification
   protected final BACnetContextTagUnsignedInteger lifetimeInSeconds;
   protected final BACnetPropertyValues listOfValues;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestConfirmedCOVNotification(
+      long serviceRequestLength,
       BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
       BACnetContextTagObjectIdentifier initiatingDeviceIdentifier,
       BACnetContextTagObjectIdentifier monitoredObjectIdentifier,
       BACnetContextTagUnsignedInteger lifetimeInSeconds,
-      BACnetPropertyValues listOfValues,
-      Long serviceRequestLength) {
+      BACnetPropertyValues listOfValues) {
     super(serviceRequestLength);
     this.subscriberProcessIdentifier = subscriberProcessIdentifier;
     this.initiatingDeviceIdentifier = initiatingDeviceIdentifier;
     this.monitoredObjectIdentifier = monitoredObjectIdentifier;
     this.lifetimeInSeconds = lifetimeInSeconds;
     this.listOfValues = listOfValues;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagUnsignedInteger getSubscriberProcessIdentifier() {
@@ -219,8 +215,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotification
         initiatingDeviceIdentifier,
         monitoredObjectIdentifier,
         lifetimeInSeconds,
-        listOfValues,
-        serviceRequestLength);
+        listOfValues);
   }
 
   public static class BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilderImpl
@@ -230,34 +225,30 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotification
     private final BACnetContextTagObjectIdentifier monitoredObjectIdentifier;
     private final BACnetContextTagUnsignedInteger lifetimeInSeconds;
     private final BACnetPropertyValues listOfValues;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilderImpl(
         BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
         BACnetContextTagObjectIdentifier initiatingDeviceIdentifier,
         BACnetContextTagObjectIdentifier monitoredObjectIdentifier,
         BACnetContextTagUnsignedInteger lifetimeInSeconds,
-        BACnetPropertyValues listOfValues,
-        Long serviceRequestLength) {
+        BACnetPropertyValues listOfValues) {
       this.subscriberProcessIdentifier = subscriberProcessIdentifier;
       this.initiatingDeviceIdentifier = initiatingDeviceIdentifier;
       this.monitoredObjectIdentifier = monitoredObjectIdentifier;
       this.lifetimeInSeconds = lifetimeInSeconds;
       this.listOfValues = listOfValues;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestConfirmedCOVNotification build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestConfirmedCOVNotification build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestConfirmedCOVNotification
           bACnetConfirmedServiceRequestConfirmedCOVNotification =
               new BACnetConfirmedServiceRequestConfirmedCOVNotification(
+                  serviceRequestLength,
                   subscriberProcessIdentifier,
                   initiatingDeviceIdentifier,
                   monitoredObjectIdentifier,
                   lifetimeInSeconds,
-                  listOfValues,
-                  serviceRequestLength);
+                  listOfValues);
       return bACnetConfirmedServiceRequestConfirmedCOVNotification;
     }
   }

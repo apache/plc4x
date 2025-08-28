@@ -46,14 +46,10 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
   // Properties.
   protected final BACnetTagPayloadSignedInteger payload;
 
-  // Arguments.
-  protected final Short tagNumberArgument;
-
   public BACnetContextTagSignedInteger(
-      BACnetTagHeader header, BACnetTagPayloadSignedInteger payload, Short tagNumberArgument) {
-    super(header, tagNumberArgument);
+      BACnetTagHeader header, BACnetTagPayloadSignedInteger payload) {
+    super(header);
     this.payload = payload;
-    this.tagNumberArgument = tagNumberArgument;
   }
 
   public BACnetTagPayloadSignedInteger getPayload() {
@@ -125,23 +121,20 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
 
     readBuffer.closeContext("BACnetContextTagSignedInteger");
     // Create the instance
-    return new BACnetContextTagSignedIntegerBuilderImpl(payload, tagNumberArgument);
+    return new BACnetContextTagSignedIntegerBuilderImpl(payload);
   }
 
   public static class BACnetContextTagSignedIntegerBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadSignedInteger payload;
-    private final Short tagNumberArgument;
 
-    public BACnetContextTagSignedIntegerBuilderImpl(
-        BACnetTagPayloadSignedInteger payload, Short tagNumberArgument) {
+    public BACnetContextTagSignedIntegerBuilderImpl(BACnetTagPayloadSignedInteger payload) {
       this.payload = payload;
-      this.tagNumberArgument = tagNumberArgument;
     }
 
-    public BACnetContextTagSignedInteger build(BACnetTagHeader header, Short tagNumberArgument) {
+    public BACnetContextTagSignedInteger build(BACnetTagHeader header) {
       BACnetContextTagSignedInteger bACnetContextTagSignedInteger =
-          new BACnetContextTagSignedInteger(header, payload, tagNumberArgument);
+          new BACnetContextTagSignedInteger(header, payload);
       return bACnetContextTagSignedInteger;
     }
   }

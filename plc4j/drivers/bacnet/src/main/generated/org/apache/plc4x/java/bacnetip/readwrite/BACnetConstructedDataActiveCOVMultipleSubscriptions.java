@@ -50,21 +50,13 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
   // Properties.
   protected final List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataActiveCOVMultipleSubscriptions(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.activeCOVMultipleSubscriptions = activeCOVMultipleSubscriptions;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetCOVMultipleSubscription> getActiveCOVMultipleSubscriptions() {
@@ -129,39 +121,24 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
     readBuffer.closeContext("BACnetConstructedDataActiveCOVMultipleSubscriptions");
     // Create the instance
     return new BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilderImpl(
-        activeCOVMultipleSubscriptions, tagNumber, arrayIndexArgument);
+        activeCOVMultipleSubscriptions);
   }
 
   public static class BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilderImpl(
-        List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions) {
       this.activeCOVMultipleSubscriptions = activeCOVMultipleSubscriptions;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataActiveCOVMultipleSubscriptions build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataActiveCOVMultipleSubscriptions
           bACnetConstructedDataActiveCOVMultipleSubscriptions =
               new BACnetConstructedDataActiveCOVMultipleSubscriptions(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  activeCOVMultipleSubscriptions,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, activeCOVMultipleSubscriptions);
       return bACnetConstructedDataActiveCOVMultipleSubscriptions;
     }
   }

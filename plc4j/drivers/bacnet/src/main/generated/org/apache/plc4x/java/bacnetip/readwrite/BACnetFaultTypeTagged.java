@@ -41,17 +41,10 @@ public class BACnetFaultTypeTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetFaultType value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetFaultTypeTagged(
-      BACnetTagHeader header, BACnetFaultType value, Short tagNumber, TagClass tagClass) {
+  public BACnetFaultTypeTagged(BACnetTagHeader header, BACnetFaultType value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -133,7 +126,7 @@ public class BACnetFaultTypeTagged implements Message {
     readBuffer.closeContext("BACnetFaultTypeTagged");
     // Create the instance
     BACnetFaultTypeTagged _bACnetFaultTypeTagged;
-    _bACnetFaultTypeTagged = new BACnetFaultTypeTagged(header, value, tagNumber, tagClass);
+    _bACnetFaultTypeTagged = new BACnetFaultTypeTagged(header, value);
     return _bACnetFaultTypeTagged;
   }
 

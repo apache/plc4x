@@ -48,10 +48,6 @@ public class BACnetNotificationParametersDoubleOutOfRange extends BACnetNotifica
   protected final BACnetContextTagDouble exceededLimit;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetNotificationParametersDoubleOutOfRange(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
@@ -61,18 +57,14 @@ public class BACnetNotificationParametersDoubleOutOfRange extends BACnetNotifica
       BACnetStatusFlagsTagged statusFlags,
       BACnetContextTagDouble deadband,
       BACnetContextTagDouble exceededLimit,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument);
+      BACnetClosingTag innerClosingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.innerOpeningTag = innerOpeningTag;
     this.exceedingValue = exceedingValue;
     this.statusFlags = statusFlags;
     this.deadband = deadband;
     this.exceededLimit = exceededLimit;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -225,14 +217,7 @@ public class BACnetNotificationParametersDoubleOutOfRange extends BACnetNotifica
     readBuffer.closeContext("BACnetNotificationParametersDoubleOutOfRange");
     // Create the instance
     return new BACnetNotificationParametersDoubleOutOfRangeBuilderImpl(
-        innerOpeningTag,
-        exceedingValue,
-        statusFlags,
-        deadband,
-        exceededLimit,
-        innerClosingTag,
-        tagNumber,
-        objectTypeArgument);
+        innerOpeningTag, exceedingValue, statusFlags, deadband, exceededLimit, innerClosingTag);
   }
 
   public static class BACnetNotificationParametersDoubleOutOfRangeBuilderImpl
@@ -243,8 +228,6 @@ public class BACnetNotificationParametersDoubleOutOfRange extends BACnetNotifica
     private final BACnetContextTagDouble deadband;
     private final BACnetContextTagDouble exceededLimit;
     private final BACnetClosingTag innerClosingTag;
-    private final Short tagNumber;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetNotificationParametersDoubleOutOfRangeBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
@@ -252,25 +235,17 @@ public class BACnetNotificationParametersDoubleOutOfRange extends BACnetNotifica
         BACnetStatusFlagsTagged statusFlags,
         BACnetContextTagDouble deadband,
         BACnetContextTagDouble exceededLimit,
-        BACnetClosingTag innerClosingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetClosingTag innerClosingTag) {
       this.innerOpeningTag = innerOpeningTag;
       this.exceedingValue = exceedingValue;
       this.statusFlags = statusFlags;
       this.deadband = deadband;
       this.exceededLimit = exceededLimit;
       this.innerClosingTag = innerClosingTag;
-      this.tagNumber = tagNumber;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
     public BACnetNotificationParametersDoubleOutOfRange build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersDoubleOutOfRange bACnetNotificationParametersDoubleOutOfRange =
           new BACnetNotificationParametersDoubleOutOfRange(
               openingTag,
@@ -281,9 +256,7 @@ public class BACnetNotificationParametersDoubleOutOfRange extends BACnetNotifica
               statusFlags,
               deadband,
               exceededLimit,
-              innerClosingTag,
-              tagNumber,
-              objectTypeArgument);
+              innerClosingTag);
       return bACnetNotificationParametersDoubleOutOfRange;
     }
   }

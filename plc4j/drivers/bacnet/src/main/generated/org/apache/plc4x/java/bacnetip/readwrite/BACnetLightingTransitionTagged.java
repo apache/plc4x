@@ -42,22 +42,12 @@ public class BACnetLightingTransitionTagged implements Message {
   protected final BACnetLightingTransition value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetLightingTransitionTagged(
-      BACnetTagHeader header,
-      BACnetLightingTransition value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetLightingTransition value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -181,7 +171,7 @@ public class BACnetLightingTransitionTagged implements Message {
     // Create the instance
     BACnetLightingTransitionTagged _bACnetLightingTransitionTagged;
     _bACnetLightingTransitionTagged =
-        new BACnetLightingTransitionTagged(header, value, proprietaryValue, tagNumber, tagClass);
+        new BACnetLightingTransitionTagged(header, value, proprietaryValue);
     return _bACnetLightingTransitionTagged;
   }
 

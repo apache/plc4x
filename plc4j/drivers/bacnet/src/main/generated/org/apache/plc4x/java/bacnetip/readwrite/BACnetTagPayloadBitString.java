@@ -42,16 +42,11 @@ public class BACnetTagPayloadBitString implements Message {
   protected final List<Boolean> data;
   protected final List<Boolean> unused;
 
-  // Arguments.
-  protected final Long actualLength;
-
-  public BACnetTagPayloadBitString(
-      short unusedBits, List<Boolean> data, List<Boolean> unused, Long actualLength) {
+  public BACnetTagPayloadBitString(short unusedBits, List<Boolean> data, List<Boolean> unused) {
     super();
     this.unusedBits = unusedBits;
     this.data = data;
     this.unused = unused;
-    this.actualLength = actualLength;
   }
 
   public short getUnusedBits() {
@@ -127,8 +122,7 @@ public class BACnetTagPayloadBitString implements Message {
     readBuffer.closeContext("BACnetTagPayloadBitString");
     // Create the instance
     BACnetTagPayloadBitString _bACnetTagPayloadBitString;
-    _bACnetTagPayloadBitString =
-        new BACnetTagPayloadBitString(unusedBits, data, unused, actualLength);
+    _bACnetTagPayloadBitString = new BACnetTagPayloadBitString(unusedBits, data, unused);
     return _bACnetTagPayloadBitString;
   }
 

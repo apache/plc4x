@@ -49,21 +49,13 @@ public class BACnetConstructedDataDateList extends BACnetConstructedData impleme
   // Properties.
   protected final List<BACnetCalendarEntry> dateList;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDateList(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetCalendarEntry> dateList,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetCalendarEntry> dateList) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.dateList = dateList;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetCalendarEntry> getDateList() {
@@ -126,33 +118,21 @@ public class BACnetConstructedDataDateList extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataDateList");
     // Create the instance
-    return new BACnetConstructedDataDateListBuilderImpl(dateList, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDateListBuilderImpl(dateList);
   }
 
   public static class BACnetConstructedDataDateListBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetCalendarEntry> dateList;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDateListBuilderImpl(
-        List<BACnetCalendarEntry> dateList,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataDateListBuilderImpl(List<BACnetCalendarEntry> dateList) {
       this.dateList = dateList;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDateList build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDateList bACnetConstructedDataDateList =
-          new BACnetConstructedDataDateList(
-              openingTag, peekedTagHeader, closingTag, dateList, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataDateList(openingTag, peekedTagHeader, closingTag, dateList);
       return bACnetConstructedDataDateList;
     }
   }

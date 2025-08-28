@@ -40,13 +40,9 @@ public class BACnetClosingTag implements Message {
   // Properties.
   protected final BACnetTagHeader header;
 
-  // Arguments.
-  protected final Short tagNumberArgument;
-
-  public BACnetClosingTag(BACnetTagHeader header, Short tagNumberArgument) {
+  public BACnetClosingTag(BACnetTagHeader header) {
     super();
     this.header = header;
-    this.tagNumberArgument = tagNumberArgument;
   }
 
   public BACnetTagHeader getHeader() {
@@ -106,7 +102,7 @@ public class BACnetClosingTag implements Message {
     readBuffer.closeContext("BACnetClosingTag");
     // Create the instance
     BACnetClosingTag _bACnetClosingTag;
-    _bACnetClosingTag = new BACnetClosingTag(header, tagNumberArgument);
+    _bACnetClosingTag = new BACnetClosingTag(header);
     return _bACnetClosingTag;
   }
 

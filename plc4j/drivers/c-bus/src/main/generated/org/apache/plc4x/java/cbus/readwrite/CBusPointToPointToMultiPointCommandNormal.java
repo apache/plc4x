@@ -44,20 +44,15 @@ public class CBusPointToPointToMultiPointCommandNormal extends CBusPointToPointT
   protected final ApplicationIdContainer application;
   protected final SALData salData;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
   public CBusPointToPointToMultiPointCommandNormal(
       BridgeAddress bridgeAddress,
       NetworkRoute networkRoute,
       byte peekedApplication,
       ApplicationIdContainer application,
-      SALData salData,
-      CBusOptions cBusOptions) {
-    super(bridgeAddress, networkRoute, peekedApplication, cBusOptions);
+      SALData salData) {
+    super(bridgeAddress, networkRoute, peekedApplication);
     this.application = application;
     this.salData = salData;
-    this.cBusOptions = cBusOptions;
   }
 
   public ApplicationIdContainer getApplication() {
@@ -135,31 +130,25 @@ public class CBusPointToPointToMultiPointCommandNormal extends CBusPointToPointT
 
     readBuffer.closeContext("CBusPointToPointToMultiPointCommandNormal");
     // Create the instance
-    return new CBusPointToPointToMultiPointCommandNormalBuilderImpl(
-        application, salData, cBusOptions);
+    return new CBusPointToPointToMultiPointCommandNormalBuilderImpl(application, salData);
   }
 
   public static class CBusPointToPointToMultiPointCommandNormalBuilderImpl
       implements CBusPointToPointToMultiPointCommand.CBusPointToPointToMultiPointCommandBuilder {
     private final ApplicationIdContainer application;
     private final SALData salData;
-    private final CBusOptions cBusOptions;
 
     public CBusPointToPointToMultiPointCommandNormalBuilderImpl(
-        ApplicationIdContainer application, SALData salData, CBusOptions cBusOptions) {
+        ApplicationIdContainer application, SALData salData) {
       this.application = application;
       this.salData = salData;
-      this.cBusOptions = cBusOptions;
     }
 
     public CBusPointToPointToMultiPointCommandNormal build(
-        BridgeAddress bridgeAddress,
-        NetworkRoute networkRoute,
-        byte peekedApplication,
-        CBusOptions cBusOptions) {
+        BridgeAddress bridgeAddress, NetworkRoute networkRoute, byte peekedApplication) {
       CBusPointToPointToMultiPointCommandNormal cBusPointToPointToMultiPointCommandNormal =
           new CBusPointToPointToMultiPointCommandNormal(
-              bridgeAddress, networkRoute, peekedApplication, application, salData, cBusOptions);
+              bridgeAddress, networkRoute, peekedApplication, application, salData);
       return cBusPointToPointToMultiPointCommandNormal;
     }
   }

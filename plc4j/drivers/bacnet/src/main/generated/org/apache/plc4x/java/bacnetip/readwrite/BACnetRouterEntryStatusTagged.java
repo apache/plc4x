@@ -41,17 +41,10 @@ public class BACnetRouterEntryStatusTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetRouterEntryStatus value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetRouterEntryStatusTagged(
-      BACnetTagHeader header, BACnetRouterEntryStatus value, Short tagNumber, TagClass tagClass) {
+  public BACnetRouterEntryStatusTagged(BACnetTagHeader header, BACnetRouterEntryStatus value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -135,8 +128,7 @@ public class BACnetRouterEntryStatusTagged implements Message {
     readBuffer.closeContext("BACnetRouterEntryStatusTagged");
     // Create the instance
     BACnetRouterEntryStatusTagged _bACnetRouterEntryStatusTagged;
-    _bACnetRouterEntryStatusTagged =
-        new BACnetRouterEntryStatusTagged(header, value, tagNumber, tagClass);
+    _bACnetRouterEntryStatusTagged = new BACnetRouterEntryStatusTagged(header, value);
     return _bACnetRouterEntryStatusTagged;
   }
 

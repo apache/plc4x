@@ -50,21 +50,13 @@ public class BACnetConstructedDataTimerAlarmValues extends BACnetConstructedData
   // Properties.
   protected final List<BACnetTimerStateTagged> alarmValues;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTimerAlarmValues(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetTimerStateTagged> alarmValues,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetTimerStateTagged> alarmValues) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.alarmValues = alarmValues;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetTimerStateTagged> getAlarmValues() {
@@ -131,34 +123,23 @@ public class BACnetConstructedDataTimerAlarmValues extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataTimerAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataTimerAlarmValuesBuilderImpl(
-        alarmValues, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTimerAlarmValuesBuilderImpl(alarmValues);
   }
 
   public static class BACnetConstructedDataTimerAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetTimerStateTagged> alarmValues;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataTimerAlarmValuesBuilderImpl(
-        List<BACnetTimerStateTagged> alarmValues,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetTimerStateTagged> alarmValues) {
       this.alarmValues = alarmValues;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTimerAlarmValues build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTimerAlarmValues bACnetConstructedDataTimerAlarmValues =
           new BACnetConstructedDataTimerAlarmValues(
-              openingTag, peekedTagHeader, closingTag, alarmValues, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, alarmValues);
       return bACnetConstructedDataTimerAlarmValues;
     }
   }

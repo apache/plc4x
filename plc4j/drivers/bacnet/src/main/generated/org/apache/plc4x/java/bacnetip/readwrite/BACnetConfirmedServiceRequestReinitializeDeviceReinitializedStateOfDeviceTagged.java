@@ -42,20 +42,12 @@ public class BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOf
   protected final BACnetTagHeader header;
   protected final BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(
       BACnetTagHeader header,
-      BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice value,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -147,7 +139,7 @@ public class BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOf
         _bACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged;
     _bACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged =
         new BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(
-            header, value, tagNumber, tagClass);
+            header, value);
     return _bACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged;
   }
 

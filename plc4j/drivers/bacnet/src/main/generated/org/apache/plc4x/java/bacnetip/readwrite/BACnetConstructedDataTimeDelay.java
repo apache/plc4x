@@ -49,21 +49,13 @@ public class BACnetConstructedDataTimeDelay extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger timeDelay;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTimeDelay(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger timeDelay,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger timeDelay) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.timeDelay = timeDelay;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getTimeDelay() {
@@ -134,33 +126,22 @@ public class BACnetConstructedDataTimeDelay extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataTimeDelay");
     // Create the instance
-    return new BACnetConstructedDataTimeDelayBuilderImpl(timeDelay, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTimeDelayBuilderImpl(timeDelay);
   }
 
   public static class BACnetConstructedDataTimeDelayBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger timeDelay;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataTimeDelayBuilderImpl(
-        BACnetApplicationTagUnsignedInteger timeDelay,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger timeDelay) {
       this.timeDelay = timeDelay;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTimeDelay build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTimeDelay bACnetConstructedDataTimeDelay =
-          new BACnetConstructedDataTimeDelay(
-              openingTag, peekedTagHeader, closingTag, timeDelay, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataTimeDelay(openingTag, peekedTagHeader, closingTag, timeDelay);
       return bACnetConstructedDataTimeDelay;
     }
   }

@@ -50,21 +50,13 @@ public class BACnetConstructedDataUserExternalIdentifier extends BACnetConstruct
   // Properties.
   protected final BACnetApplicationTagCharacterString userExternalIdentifier;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataUserExternalIdentifier(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString userExternalIdentifier,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString userExternalIdentifier) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.userExternalIdentifier = userExternalIdentifier;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getUserExternalIdentifier() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataUserExternalIdentifier extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataUserExternalIdentifier");
     // Create the instance
-    return new BACnetConstructedDataUserExternalIdentifierBuilderImpl(
-        userExternalIdentifier, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataUserExternalIdentifierBuilderImpl(userExternalIdentifier);
   }
 
   public static class BACnetConstructedDataUserExternalIdentifierBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString userExternalIdentifier;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataUserExternalIdentifierBuilderImpl(
-        BACnetApplicationTagCharacterString userExternalIdentifier,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString userExternalIdentifier) {
       this.userExternalIdentifier = userExternalIdentifier;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataUserExternalIdentifier build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataUserExternalIdentifier bACnetConstructedDataUserExternalIdentifier =
           new BACnetConstructedDataUserExternalIdentifier(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              userExternalIdentifier,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, userExternalIdentifier);
       return bACnetConstructedDataUserExternalIdentifier;
     }
   }

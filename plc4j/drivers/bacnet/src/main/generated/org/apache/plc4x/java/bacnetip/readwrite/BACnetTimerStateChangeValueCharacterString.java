@@ -43,16 +43,10 @@ public class BACnetTimerStateChangeValueCharacterString extends BACnetTimerState
   // Properties.
   protected final BACnetApplicationTagCharacterString characterStringValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetTimerStateChangeValueCharacterString(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagCharacterString characterStringValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagCharacterString characterStringValue) {
+    super(peekedTagHeader);
     this.characterStringValue = characterStringValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagCharacterString getCharacterStringValue() {
@@ -106,27 +100,21 @@ public class BACnetTimerStateChangeValueCharacterString extends BACnetTimerState
 
     readBuffer.closeContext("BACnetTimerStateChangeValueCharacterString");
     // Create the instance
-    return new BACnetTimerStateChangeValueCharacterStringBuilderImpl(
-        characterStringValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueCharacterStringBuilderImpl(characterStringValue);
   }
 
   public static class BACnetTimerStateChangeValueCharacterStringBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagCharacterString characterStringValue;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetTimerStateChangeValueCharacterStringBuilderImpl(
-        BACnetApplicationTagCharacterString characterStringValue,
-        BACnetObjectType objectTypeArgument) {
+        BACnetApplicationTagCharacterString characterStringValue) {
       this.characterStringValue = characterStringValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetTimerStateChangeValueCharacterString build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueCharacterString build(BACnetTagHeader peekedTagHeader) {
       BACnetTimerStateChangeValueCharacterString bACnetTimerStateChangeValueCharacterString =
-          new BACnetTimerStateChangeValueCharacterString(
-              peekedTagHeader, characterStringValue, objectTypeArgument);
+          new BACnetTimerStateChangeValueCharacterString(peekedTagHeader, characterStringValue);
       return bACnetTimerStateChangeValueCharacterString;
     }
   }

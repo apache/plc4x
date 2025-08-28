@@ -49,21 +49,13 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
   // Properties.
   protected final BACnetApplicationTagReal bias;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBias(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal bias,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal bias) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.bias = bias;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getBias() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
 
     readBuffer.closeContext("BACnetConstructedDataBias");
     // Create the instance
-    return new BACnetConstructedDataBiasBuilderImpl(bias, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBiasBuilderImpl(bias);
   }
 
   public static class BACnetConstructedDataBiasBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal bias;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBiasBuilderImpl(
-        BACnetApplicationTagReal bias,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataBiasBuilderImpl(BACnetApplicationTagReal bias) {
       this.bias = bias;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBias build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBias bACnetConstructedDataBias =
-          new BACnetConstructedDataBias(
-              openingTag, peekedTagHeader, closingTag, bias, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataBias(openingTag, peekedTagHeader, closingTag, bias);
       return bACnetConstructedDataBias;
     }
   }

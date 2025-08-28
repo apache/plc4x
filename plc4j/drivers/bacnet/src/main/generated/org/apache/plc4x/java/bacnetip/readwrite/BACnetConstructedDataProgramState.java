@@ -49,21 +49,13 @@ public class BACnetConstructedDataProgramState extends BACnetConstructedData imp
   // Properties.
   protected final BACnetProgramStateTagged programState;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataProgramState(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetProgramStateTagged programState,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetProgramStateTagged programState) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.programState = programState;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetProgramStateTagged getProgramState() {
@@ -134,34 +126,22 @@ public class BACnetConstructedDataProgramState extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataProgramState");
     // Create the instance
-    return new BACnetConstructedDataProgramStateBuilderImpl(
-        programState, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataProgramStateBuilderImpl(programState);
   }
 
   public static class BACnetConstructedDataProgramStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetProgramStateTagged programState;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProgramStateBuilderImpl(
-        BACnetProgramStateTagged programState,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataProgramStateBuilderImpl(BACnetProgramStateTagged programState) {
       this.programState = programState;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataProgramState build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataProgramState bACnetConstructedDataProgramState =
           new BACnetConstructedDataProgramState(
-              openingTag, peekedTagHeader, closingTag, programState, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, programState);
       return bACnetConstructedDataProgramState;
     }
   }

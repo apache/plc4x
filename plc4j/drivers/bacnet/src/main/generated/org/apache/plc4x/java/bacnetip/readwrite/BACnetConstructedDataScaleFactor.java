@@ -49,21 +49,13 @@ public class BACnetConstructedDataScaleFactor extends BACnetConstructedData impl
   // Properties.
   protected final BACnetApplicationTagReal scaleFactor;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataScaleFactor(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal scaleFactor,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal scaleFactor) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.scaleFactor = scaleFactor;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getScaleFactor() {
@@ -132,34 +124,22 @@ public class BACnetConstructedDataScaleFactor extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataScaleFactor");
     // Create the instance
-    return new BACnetConstructedDataScaleFactorBuilderImpl(
-        scaleFactor, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataScaleFactorBuilderImpl(scaleFactor);
   }
 
   public static class BACnetConstructedDataScaleFactorBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal scaleFactor;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataScaleFactorBuilderImpl(
-        BACnetApplicationTagReal scaleFactor,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataScaleFactorBuilderImpl(BACnetApplicationTagReal scaleFactor) {
       this.scaleFactor = scaleFactor;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataScaleFactor build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataScaleFactor bACnetConstructedDataScaleFactor =
           new BACnetConstructedDataScaleFactor(
-              openingTag, peekedTagHeader, closingTag, scaleFactor, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, scaleFactor);
       return bACnetConstructedDataScaleFactor;
     }
   }

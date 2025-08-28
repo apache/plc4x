@@ -49,21 +49,13 @@ public class BACnetConstructedDataEnable extends BACnetConstructedData implement
   // Properties.
   protected final BACnetApplicationTagBoolean enable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataEnable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean enable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean enable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.enable = enable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getEnable() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataEnable extends BACnetConstructedData implement
 
     readBuffer.closeContext("BACnetConstructedDataEnable");
     // Create the instance
-    return new BACnetConstructedDataEnableBuilderImpl(enable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEnableBuilderImpl(enable);
   }
 
   public static class BACnetConstructedDataEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean enable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEnableBuilderImpl(
-        BACnetApplicationTagBoolean enable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataEnableBuilderImpl(BACnetApplicationTagBoolean enable) {
       this.enable = enable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataEnable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataEnable bACnetConstructedDataEnable =
-          new BACnetConstructedDataEnable(
-              openingTag, peekedTagHeader, closingTag, enable, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataEnable(openingTag, peekedTagHeader, closingTag, enable);
       return bACnetConstructedDataEnable;
     }
   }

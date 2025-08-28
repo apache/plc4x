@@ -43,16 +43,10 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
   // Properties.
   protected final BACnetDateTimeEnclosed dateTimeValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetTimerStateChangeValueDateTime(
-      BACnetTagHeader peekedTagHeader,
-      BACnetDateTimeEnclosed dateTimeValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetDateTimeEnclosed dateTimeValue) {
+    super(peekedTagHeader);
     this.dateTimeValue = dateTimeValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetDateTimeEnclosed getDateTimeValue() {
@@ -103,25 +97,20 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
 
     readBuffer.closeContext("BACnetTimerStateChangeValueDateTime");
     // Create the instance
-    return new BACnetTimerStateChangeValueDateTimeBuilderImpl(dateTimeValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueDateTimeBuilderImpl(dateTimeValue);
   }
 
   public static class BACnetTimerStateChangeValueDateTimeBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetDateTimeEnclosed dateTimeValue;
-    private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueDateTimeBuilderImpl(
-        BACnetDateTimeEnclosed dateTimeValue, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueDateTimeBuilderImpl(BACnetDateTimeEnclosed dateTimeValue) {
       this.dateTimeValue = dateTimeValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetTimerStateChangeValueDateTime build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueDateTime build(BACnetTagHeader peekedTagHeader) {
       BACnetTimerStateChangeValueDateTime bACnetTimerStateChangeValueDateTime =
-          new BACnetTimerStateChangeValueDateTime(
-              peekedTagHeader, dateTimeValue, objectTypeArgument);
+          new BACnetTimerStateChangeValueDateTime(peekedTagHeader, dateTimeValue);
       return bACnetTimerStateChangeValueDateTime;
     }
   }

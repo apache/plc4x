@@ -45,14 +45,10 @@ public class BACnetContextTagCharacterString extends BACnetContextTag implements
   // Properties.
   protected final BACnetTagPayloadCharacterString payload;
 
-  // Arguments.
-  protected final Short tagNumberArgument;
-
   public BACnetContextTagCharacterString(
-      BACnetTagHeader header, BACnetTagPayloadCharacterString payload, Short tagNumberArgument) {
-    super(header, tagNumberArgument);
+      BACnetTagHeader header, BACnetTagPayloadCharacterString payload) {
+    super(header);
     this.payload = payload;
-    this.tagNumberArgument = tagNumberArgument;
   }
 
   public BACnetTagPayloadCharacterString getPayload() {
@@ -121,23 +117,20 @@ public class BACnetContextTagCharacterString extends BACnetContextTag implements
 
     readBuffer.closeContext("BACnetContextTagCharacterString");
     // Create the instance
-    return new BACnetContextTagCharacterStringBuilderImpl(payload, tagNumberArgument);
+    return new BACnetContextTagCharacterStringBuilderImpl(payload);
   }
 
   public static class BACnetContextTagCharacterStringBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadCharacterString payload;
-    private final Short tagNumberArgument;
 
-    public BACnetContextTagCharacterStringBuilderImpl(
-        BACnetTagPayloadCharacterString payload, Short tagNumberArgument) {
+    public BACnetContextTagCharacterStringBuilderImpl(BACnetTagPayloadCharacterString payload) {
       this.payload = payload;
-      this.tagNumberArgument = tagNumberArgument;
     }
 
-    public BACnetContextTagCharacterString build(BACnetTagHeader header, Short tagNumberArgument) {
+    public BACnetContextTagCharacterString build(BACnetTagHeader header) {
       BACnetContextTagCharacterString bACnetContextTagCharacterString =
-          new BACnetContextTagCharacterString(header, payload, tagNumberArgument);
+          new BACnetContextTagCharacterString(header, payload);
       return bACnetContextTagCharacterString;
     }
   }

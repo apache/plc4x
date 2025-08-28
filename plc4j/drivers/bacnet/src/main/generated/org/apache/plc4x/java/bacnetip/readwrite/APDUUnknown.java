@@ -46,14 +46,10 @@ public class APDUUnknown extends APDU implements Message {
   protected final byte unknownTypeRest;
   protected final byte[] unknownBytes;
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public APDUUnknown(byte unknownTypeRest, byte[] unknownBytes, Integer apduLength) {
-    super(apduLength);
+  public APDUUnknown(byte unknownTypeRest, byte[] unknownBytes) {
+    super();
     this.unknownTypeRest = unknownTypeRest;
     this.unknownBytes = unknownBytes;
-    this.apduLength = apduLength;
   }
 
   public byte getUnknownTypeRest() {
@@ -115,23 +111,20 @@ public class APDUUnknown extends APDU implements Message {
 
     readBuffer.closeContext("APDUUnknown");
     // Create the instance
-    return new APDUUnknownBuilderImpl(unknownTypeRest, unknownBytes, apduLength);
+    return new APDUUnknownBuilderImpl(unknownTypeRest, unknownBytes);
   }
 
   public static class APDUUnknownBuilderImpl implements APDU.APDUBuilder {
     private final byte unknownTypeRest;
     private final byte[] unknownBytes;
-    private final Integer apduLength;
 
-    public APDUUnknownBuilderImpl(byte unknownTypeRest, byte[] unknownBytes, Integer apduLength) {
+    public APDUUnknownBuilderImpl(byte unknownTypeRest, byte[] unknownBytes) {
       this.unknownTypeRest = unknownTypeRest;
       this.unknownBytes = unknownBytes;
-      this.apduLength = apduLength;
     }
 
-    public APDUUnknown build(Integer apduLength) {
-
-      APDUUnknown aPDUUnknown = new APDUUnknown(unknownTypeRest, unknownBytes, apduLength);
+    public APDUUnknown build() {
+      APDUUnknown aPDUUnknown = new APDUUnknown(unknownTypeRest, unknownBytes);
       return aPDUUnknown;
     }
   }

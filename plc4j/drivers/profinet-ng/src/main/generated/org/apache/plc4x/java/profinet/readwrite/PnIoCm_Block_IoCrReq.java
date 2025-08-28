@@ -65,7 +65,6 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
   protected final int ioCrTagHeader;
   protected final MacAddress ioCrMulticastMacAdr;
   protected final List<PnIoCm_IoCrBlockReqApi> apis;
-
   // Reserved Fields
   private Integer reservedField0;
   private Byte reservedField1;

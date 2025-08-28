@@ -50,21 +50,13 @@ public class BACnetConstructedDataAccessTransactionEvents extends BACnetConstruc
   // Properties.
   protected final List<BACnetAccessEventTagged> accessTransactionEvents;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAccessTransactionEvents(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetAccessEventTagged> accessTransactionEvents,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetAccessEventTagged> accessTransactionEvents) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.accessTransactionEvents = accessTransactionEvents;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetAccessEventTagged> getAccessTransactionEvents() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataAccessTransactionEvents extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataAccessTransactionEvents");
     // Create the instance
-    return new BACnetConstructedDataAccessTransactionEventsBuilderImpl(
-        accessTransactionEvents, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccessTransactionEventsBuilderImpl(accessTransactionEvents);
   }
 
   public static class BACnetConstructedDataAccessTransactionEventsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAccessEventTagged> accessTransactionEvents;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAccessTransactionEventsBuilderImpl(
-        List<BACnetAccessEventTagged> accessTransactionEvents,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetAccessEventTagged> accessTransactionEvents) {
       this.accessTransactionEvents = accessTransactionEvents;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAccessTransactionEvents build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAccessTransactionEvents bACnetConstructedDataAccessTransactionEvents =
           new BACnetConstructedDataAccessTransactionEvents(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              accessTransactionEvents,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, accessTransactionEvents);
       return bACnetConstructedDataAccessTransactionEvents;
     }
   }

@@ -43,18 +43,13 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
   // Properties.
   protected final BACnetApplicationTagSignedInteger integerValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagSignedInteger integerValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetApplicationTagSignedInteger integerValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.integerValue = integerValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetApplicationTagSignedInteger getIntegerValue() {
@@ -109,31 +104,25 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
 
     readBuffer.closeContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger");
     // Create the instance
-    return new BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilderImpl(
-        integerValue, tagNumber);
+    return new BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilderImpl(integerValue);
   }
 
   public static class BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilderImpl
       implements BACnetFaultParameterFaultOutOfRangeMaxNormalValue
           .BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder {
     private final BACnetApplicationTagSignedInteger integerValue;
-    private final Short tagNumber;
 
     public BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilderImpl(
-        BACnetApplicationTagSignedInteger integerValue, Short tagNumber) {
+        BACnetApplicationTagSignedInteger integerValue) {
       this.integerValue = integerValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
           bACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger =
               new BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(
-                  openingTag, peekedTagHeader, closingTag, integerValue, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, integerValue);
       return bACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger;
     }
   }

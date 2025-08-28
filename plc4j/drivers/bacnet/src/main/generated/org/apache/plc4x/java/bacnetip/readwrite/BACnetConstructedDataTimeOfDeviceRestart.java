@@ -50,21 +50,13 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
   // Properties.
   protected final BACnetTimeStamp timeOfDeviceRestart;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTimeOfDeviceRestart(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetTimeStamp timeOfDeviceRestart,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetTimeStamp timeOfDeviceRestart) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.timeOfDeviceRestart = timeOfDeviceRestart;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetTimeStamp getTimeOfDeviceRestart() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataTimeOfDeviceRestart");
     // Create the instance
-    return new BACnetConstructedDataTimeOfDeviceRestartBuilderImpl(
-        timeOfDeviceRestart, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTimeOfDeviceRestartBuilderImpl(timeOfDeviceRestart);
   }
 
   public static class BACnetConstructedDataTimeOfDeviceRestartBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimeStamp timeOfDeviceRestart;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataTimeOfDeviceRestartBuilderImpl(
-        BACnetTimeStamp timeOfDeviceRestart,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetTimeStamp timeOfDeviceRestart) {
       this.timeOfDeviceRestart = timeOfDeviceRestart;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTimeOfDeviceRestart build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTimeOfDeviceRestart bACnetConstructedDataTimeOfDeviceRestart =
           new BACnetConstructedDataTimeOfDeviceRestart(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              timeOfDeviceRestart,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, timeOfDeviceRestart);
       return bACnetConstructedDataTimeOfDeviceRestart;
     }
   }

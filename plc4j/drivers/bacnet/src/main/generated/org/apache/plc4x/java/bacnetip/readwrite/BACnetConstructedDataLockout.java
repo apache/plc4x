@@ -49,21 +49,13 @@ public class BACnetConstructedDataLockout extends BACnetConstructedData implemen
   // Properties.
   protected final BACnetApplicationTagBoolean lockout;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLockout(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean lockout,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean lockout) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lockout = lockout;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getLockout() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataLockout extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataLockout");
     // Create the instance
-    return new BACnetConstructedDataLockoutBuilderImpl(lockout, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLockoutBuilderImpl(lockout);
   }
 
   public static class BACnetConstructedDataLockoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean lockout;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLockoutBuilderImpl(
-        BACnetApplicationTagBoolean lockout,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLockoutBuilderImpl(BACnetApplicationTagBoolean lockout) {
       this.lockout = lockout;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLockout build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLockout bACnetConstructedDataLockout =
-          new BACnetConstructedDataLockout(
-              openingTag, peekedTagHeader, closingTag, lockout, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataLockout(openingTag, peekedTagHeader, closingTag, lockout);
       return bACnetConstructedDataLockout;
     }
   }

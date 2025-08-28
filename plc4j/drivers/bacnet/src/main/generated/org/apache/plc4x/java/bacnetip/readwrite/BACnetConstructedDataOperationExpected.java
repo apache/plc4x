@@ -50,21 +50,13 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
   // Properties.
   protected final BACnetLifeSafetyOperationTagged lifeSafetyOperations;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataOperationExpected(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLifeSafetyOperationTagged lifeSafetyOperations,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetLifeSafetyOperationTagged lifeSafetyOperations) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lifeSafetyOperations = lifeSafetyOperations;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetLifeSafetyOperationTagged getLifeSafetyOperations() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataOperationExpected");
     // Create the instance
-    return new BACnetConstructedDataOperationExpectedBuilderImpl(
-        lifeSafetyOperations, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataOperationExpectedBuilderImpl(lifeSafetyOperations);
   }
 
   public static class BACnetConstructedDataOperationExpectedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLifeSafetyOperationTagged lifeSafetyOperations;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataOperationExpectedBuilderImpl(
-        BACnetLifeSafetyOperationTagged lifeSafetyOperations,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetLifeSafetyOperationTagged lifeSafetyOperations) {
       this.lifeSafetyOperations = lifeSafetyOperations;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataOperationExpected build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataOperationExpected bACnetConstructedDataOperationExpected =
           new BACnetConstructedDataOperationExpected(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              lifeSafetyOperations,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, lifeSafetyOperations);
       return bACnetConstructedDataOperationExpected;
     }
   }

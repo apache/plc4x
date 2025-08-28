@@ -50,21 +50,13 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
   // Properties.
   protected final BACnetApplicationTagSignedInteger adjustValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAccessZoneAdjustValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagSignedInteger adjustValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagSignedInteger adjustValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.adjustValue = adjustValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagSignedInteger getAdjustValue() {
@@ -135,34 +127,23 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataAccessZoneAdjustValue");
     // Create the instance
-    return new BACnetConstructedDataAccessZoneAdjustValueBuilderImpl(
-        adjustValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccessZoneAdjustValueBuilderImpl(adjustValue);
   }
 
   public static class BACnetConstructedDataAccessZoneAdjustValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger adjustValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAccessZoneAdjustValueBuilderImpl(
-        BACnetApplicationTagSignedInteger adjustValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagSignedInteger adjustValue) {
       this.adjustValue = adjustValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAccessZoneAdjustValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAccessZoneAdjustValue bACnetConstructedDataAccessZoneAdjustValue =
           new BACnetConstructedDataAccessZoneAdjustValue(
-              openingTag, peekedTagHeader, closingTag, adjustValue, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, adjustValue);
       return bACnetConstructedDataAccessZoneAdjustValue;
     }
   }

@@ -50,21 +50,13 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
   // Properties.
   protected final BACnetBackupStateTagged backupAndRestoreState;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBackupAndRestoreState(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetBackupStateTagged backupAndRestoreState,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetBackupStateTagged backupAndRestoreState) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.backupAndRestoreState = backupAndRestoreState;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetBackupStateTagged getBackupAndRestoreState() {
@@ -135,39 +127,23 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataBackupAndRestoreState");
     // Create the instance
-    return new BACnetConstructedDataBackupAndRestoreStateBuilderImpl(
-        backupAndRestoreState, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBackupAndRestoreStateBuilderImpl(backupAndRestoreState);
   }
 
   public static class BACnetConstructedDataBackupAndRestoreStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBackupStateTagged backupAndRestoreState;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataBackupAndRestoreStateBuilderImpl(
-        BACnetBackupStateTagged backupAndRestoreState,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetBackupStateTagged backupAndRestoreState) {
       this.backupAndRestoreState = backupAndRestoreState;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBackupAndRestoreState build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBackupAndRestoreState bACnetConstructedDataBackupAndRestoreState =
           new BACnetConstructedDataBackupAndRestoreState(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              backupAndRestoreState,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, backupAndRestoreState);
       return bACnetConstructedDataBackupAndRestoreState;
     }
   }

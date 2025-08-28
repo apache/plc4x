@@ -42,16 +42,10 @@ public class BACnetPriorityValueCharacterString extends BACnetPriorityValue impl
   // Properties.
   protected final BACnetApplicationTagCharacterString characterStringValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueCharacterString(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagCharacterString characterStringValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagCharacterString characterStringValue) {
+    super(peekedTagHeader);
     this.characterStringValue = characterStringValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagCharacterString getCharacterStringValue() {
@@ -105,27 +99,21 @@ public class BACnetPriorityValueCharacterString extends BACnetPriorityValue impl
 
     readBuffer.closeContext("BACnetPriorityValueCharacterString");
     // Create the instance
-    return new BACnetPriorityValueCharacterStringBuilderImpl(
-        characterStringValue, objectTypeArgument);
+    return new BACnetPriorityValueCharacterStringBuilderImpl(characterStringValue);
   }
 
   public static class BACnetPriorityValueCharacterStringBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagCharacterString characterStringValue;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetPriorityValueCharacterStringBuilderImpl(
-        BACnetApplicationTagCharacterString characterStringValue,
-        BACnetObjectType objectTypeArgument) {
+        BACnetApplicationTagCharacterString characterStringValue) {
       this.characterStringValue = characterStringValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueCharacterString build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueCharacterString build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueCharacterString bACnetPriorityValueCharacterString =
-          new BACnetPriorityValueCharacterString(
-              peekedTagHeader, characterStringValue, objectTypeArgument);
+          new BACnetPriorityValueCharacterString(peekedTagHeader, characterStringValue);
       return bACnetPriorityValueCharacterString;
     }
   }

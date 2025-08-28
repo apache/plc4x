@@ -50,21 +50,13 @@ public class BACnetConstructedDataLifeSafetyPointFaultValues extends BACnetConst
   // Properties.
   protected final List<BACnetLifeSafetyStateTagged> faultValues;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLifeSafetyPointFaultValues(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetLifeSafetyStateTagged> faultValues,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetLifeSafetyStateTagged> faultValues) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.faultValues = faultValues;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetLifeSafetyStateTagged> getFaultValues() {
@@ -131,40 +123,24 @@ public class BACnetConstructedDataLifeSafetyPointFaultValues extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataLifeSafetyPointFaultValues");
     // Create the instance
-    return new BACnetConstructedDataLifeSafetyPointFaultValuesBuilderImpl(
-        faultValues, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLifeSafetyPointFaultValuesBuilderImpl(faultValues);
   }
 
   public static class BACnetConstructedDataLifeSafetyPointFaultValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetLifeSafetyStateTagged> faultValues;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLifeSafetyPointFaultValuesBuilderImpl(
-        List<BACnetLifeSafetyStateTagged> faultValues,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetLifeSafetyStateTagged> faultValues) {
       this.faultValues = faultValues;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLifeSafetyPointFaultValues build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLifeSafetyPointFaultValues
           bACnetConstructedDataLifeSafetyPointFaultValues =
               new BACnetConstructedDataLifeSafetyPointFaultValues(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  faultValues,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, faultValues);
       return bACnetConstructedDataLifeSafetyPointFaultValues;
     }
   }

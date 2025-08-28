@@ -49,21 +49,13 @@ public class BACnetConstructedDataLastAccessPoint extends BACnetConstructedData 
   // Properties.
   protected final BACnetDeviceObjectReference lastAccessPoint;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLastAccessPoint(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDeviceObjectReference lastAccessPoint,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDeviceObjectReference lastAccessPoint) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lastAccessPoint = lastAccessPoint;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDeviceObjectReference getLastAccessPoint() {
@@ -130,39 +122,23 @@ public class BACnetConstructedDataLastAccessPoint extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataLastAccessPoint");
     // Create the instance
-    return new BACnetConstructedDataLastAccessPointBuilderImpl(
-        lastAccessPoint, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLastAccessPointBuilderImpl(lastAccessPoint);
   }
 
   public static class BACnetConstructedDataLastAccessPointBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference lastAccessPoint;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLastAccessPointBuilderImpl(
-        BACnetDeviceObjectReference lastAccessPoint,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetDeviceObjectReference lastAccessPoint) {
       this.lastAccessPoint = lastAccessPoint;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLastAccessPoint build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLastAccessPoint bACnetConstructedDataLastAccessPoint =
           new BACnetConstructedDataLastAccessPoint(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              lastAccessPoint,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, lastAccessPoint);
       return bACnetConstructedDataLastAccessPoint;
     }
   }

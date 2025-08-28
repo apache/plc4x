@@ -50,21 +50,13 @@ public class BACnetConstructedDataNetworkInterfaceName extends BACnetConstructed
   // Properties.
   protected final BACnetApplicationTagCharacterString networkInterfaceName;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataNetworkInterfaceName(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString networkInterfaceName,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString networkInterfaceName) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.networkInterfaceName = networkInterfaceName;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getNetworkInterfaceName() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataNetworkInterfaceName extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataNetworkInterfaceName");
     // Create the instance
-    return new BACnetConstructedDataNetworkInterfaceNameBuilderImpl(
-        networkInterfaceName, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNetworkInterfaceNameBuilderImpl(networkInterfaceName);
   }
 
   public static class BACnetConstructedDataNetworkInterfaceNameBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString networkInterfaceName;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataNetworkInterfaceNameBuilderImpl(
-        BACnetApplicationTagCharacterString networkInterfaceName,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString networkInterfaceName) {
       this.networkInterfaceName = networkInterfaceName;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataNetworkInterfaceName build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataNetworkInterfaceName bACnetConstructedDataNetworkInterfaceName =
           new BACnetConstructedDataNetworkInterfaceName(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              networkInterfaceName,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, networkInterfaceName);
       return bACnetConstructedDataNetworkInterfaceName;
     }
   }

@@ -51,23 +51,15 @@ public class BACnetConstructedDataKeySets extends BACnetConstructedData implemen
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetSecurityKeySet> keySets;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataKeySets(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetSecurityKeySet> keySets,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetSecurityKeySet> keySets) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.keySets = keySets;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -96,11 +88,7 @@ public class BACnetConstructedDataKeySets extends BACnetConstructedData implemen
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (keySets)
     writeComplexTypeArrayField("keySets", keySets, writeBuffer);
@@ -173,43 +161,26 @@ public class BACnetConstructedDataKeySets extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataKeySets");
     // Create the instance
-    return new BACnetConstructedDataKeySetsBuilderImpl(
-        numberOfDataElements, keySets, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataKeySetsBuilderImpl(numberOfDataElements, keySets);
   }
 
   public static class BACnetConstructedDataKeySetsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetSecurityKeySet> keySets;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataKeySetsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetSecurityKeySet> keySets,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetSecurityKeySet> keySets) {
       this.numberOfDataElements = numberOfDataElements;
       this.keySets = keySets;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataKeySets build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataKeySets bACnetConstructedDataKeySets =
           new BACnetConstructedDataKeySets(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              keySets,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, keySets);
       return bACnetConstructedDataKeySets;
     }
   }

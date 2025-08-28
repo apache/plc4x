@@ -43,21 +43,13 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
   // Properties.
   protected final BACnetPropertyValues listOfValues;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetNotificationParametersComplexEventType(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetPropertyValues listOfValues,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument);
+      BACnetPropertyValues listOfValues) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.listOfValues = listOfValues;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetPropertyValues getListOfValues() {
@@ -117,32 +109,23 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
 
     readBuffer.closeContext("BACnetNotificationParametersComplexEventType");
     // Create the instance
-    return new BACnetNotificationParametersComplexEventTypeBuilderImpl(
-        listOfValues, tagNumber, objectTypeArgument);
+    return new BACnetNotificationParametersComplexEventTypeBuilderImpl(listOfValues);
   }
 
   public static class BACnetNotificationParametersComplexEventTypeBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetPropertyValues listOfValues;
-    private final Short tagNumber;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetNotificationParametersComplexEventTypeBuilderImpl(
-        BACnetPropertyValues listOfValues, Short tagNumber, BACnetObjectType objectTypeArgument) {
+        BACnetPropertyValues listOfValues) {
       this.listOfValues = listOfValues;
-      this.tagNumber = tagNumber;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
     public BACnetNotificationParametersComplexEventType build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersComplexEventType bACnetNotificationParametersComplexEventType =
           new BACnetNotificationParametersComplexEventType(
-              openingTag, peekedTagHeader, closingTag, listOfValues, tagNumber, objectTypeArgument);
+              openingTag, peekedTagHeader, closingTag, listOfValues);
       return bACnetNotificationParametersComplexEventType;
     }
   }

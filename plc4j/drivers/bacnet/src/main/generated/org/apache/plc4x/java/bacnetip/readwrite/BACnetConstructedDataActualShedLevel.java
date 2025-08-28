@@ -49,21 +49,13 @@ public class BACnetConstructedDataActualShedLevel extends BACnetConstructedData 
   // Properties.
   protected final BACnetShedLevel actualShedLevel;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataActualShedLevel(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetShedLevel actualShedLevel,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetShedLevel actualShedLevel) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.actualShedLevel = actualShedLevel;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetShedLevel getActualShedLevel() {
@@ -130,39 +122,22 @@ public class BACnetConstructedDataActualShedLevel extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataActualShedLevel");
     // Create the instance
-    return new BACnetConstructedDataActualShedLevelBuilderImpl(
-        actualShedLevel, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataActualShedLevelBuilderImpl(actualShedLevel);
   }
 
   public static class BACnetConstructedDataActualShedLevelBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetShedLevel actualShedLevel;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataActualShedLevelBuilderImpl(
-        BACnetShedLevel actualShedLevel,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataActualShedLevelBuilderImpl(BACnetShedLevel actualShedLevel) {
       this.actualShedLevel = actualShedLevel;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataActualShedLevel build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataActualShedLevel bACnetConstructedDataActualShedLevel =
           new BACnetConstructedDataActualShedLevel(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              actualShedLevel,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, actualShedLevel);
       return bACnetConstructedDataActualShedLevel;
     }
   }

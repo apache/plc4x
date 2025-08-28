@@ -49,21 +49,13 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
   // Properties.
   protected final BACnetActionTagged action;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLoopAction(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetActionTagged action,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetActionTagged action) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.action = action;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetActionTagged getAction() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataLoopAction");
     // Create the instance
-    return new BACnetConstructedDataLoopActionBuilderImpl(action, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLoopActionBuilderImpl(action);
   }
 
   public static class BACnetConstructedDataLoopActionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetActionTagged action;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLoopActionBuilderImpl(
-        BACnetActionTagged action,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLoopActionBuilderImpl(BACnetActionTagged action) {
       this.action = action;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLoopAction build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLoopAction bACnetConstructedDataLoopAction =
-          new BACnetConstructedDataLoopAction(
-              openingTag, peekedTagHeader, closingTag, action, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataLoopAction(openingTag, peekedTagHeader, closingTag, action);
       return bACnetConstructedDataLoopAction;
     }
   }

@@ -49,21 +49,13 @@ public class BACnetConstructedDataTimerRunning extends BACnetConstructedData imp
   // Properties.
   protected final BACnetApplicationTagBoolean timerRunning;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTimerRunning(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean timerRunning,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean timerRunning) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.timerRunning = timerRunning;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getTimerRunning() {
@@ -132,34 +124,22 @@ public class BACnetConstructedDataTimerRunning extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataTimerRunning");
     // Create the instance
-    return new BACnetConstructedDataTimerRunningBuilderImpl(
-        timerRunning, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTimerRunningBuilderImpl(timerRunning);
   }
 
   public static class BACnetConstructedDataTimerRunningBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean timerRunning;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimerRunningBuilderImpl(
-        BACnetApplicationTagBoolean timerRunning,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataTimerRunningBuilderImpl(BACnetApplicationTagBoolean timerRunning) {
       this.timerRunning = timerRunning;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTimerRunning build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTimerRunning bACnetConstructedDataTimerRunning =
           new BACnetConstructedDataTimerRunning(
-              openingTag, peekedTagHeader, closingTag, timerRunning, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, timerRunning);
       return bACnetConstructedDataTimerRunning;
     }
   }

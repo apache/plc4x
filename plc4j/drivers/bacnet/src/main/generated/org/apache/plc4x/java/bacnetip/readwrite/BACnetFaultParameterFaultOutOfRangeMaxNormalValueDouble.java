@@ -43,18 +43,13 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
   // Properties.
   protected final BACnetApplicationTagDouble doubleValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagDouble doubleValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetApplicationTagDouble doubleValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.doubleValue = doubleValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetApplicationTagDouble getDoubleValue() {
@@ -107,31 +102,25 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
 
     readBuffer.closeContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble");
     // Create the instance
-    return new BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilderImpl(
-        doubleValue, tagNumber);
+    return new BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilderImpl(doubleValue);
   }
 
   public static class BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilderImpl
       implements BACnetFaultParameterFaultOutOfRangeMaxNormalValue
           .BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder {
     private final BACnetApplicationTagDouble doubleValue;
-    private final Short tagNumber;
 
     public BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilderImpl(
-        BACnetApplicationTagDouble doubleValue, Short tagNumber) {
+        BACnetApplicationTagDouble doubleValue) {
       this.doubleValue = doubleValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
           bACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble =
               new BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble(
-                  openingTag, peekedTagHeader, closingTag, doubleValue, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, doubleValue);
       return bACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble;
     }
   }

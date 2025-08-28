@@ -43,17 +43,10 @@ public abstract class CALReply implements Message {
   protected final byte calType;
   protected final CALData calData;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-  protected final RequestContext requestContext;
-
-  public CALReply(
-      byte calType, CALData calData, CBusOptions cBusOptions, RequestContext requestContext) {
+  public CALReply(byte calType, CALData calData) {
     super();
     this.calType = calType;
     this.calData = calData;
-    this.cBusOptions = cBusOptions;
-    this.requestContext = requestContext;
   }
 
   public byte getCalType() {
@@ -130,13 +123,12 @@ public abstract class CALReply implements Message {
 
     readBuffer.closeContext("CALReply");
     // Create the instance
-    CALReply _cALReply = builder.build(calType, calData, cBusOptions, requestContext);
+    CALReply _cALReply = builder.build(calType, calData);
     return _cALReply;
   }
 
   public interface CALReplyBuilder {
-    CALReply build(
-        byte calType, CALData calData, CBusOptions cBusOptions, RequestContext requestContext);
+    CALReply build(byte calType, CALData calData);
   }
 
   @Override

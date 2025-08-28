@@ -42,16 +42,10 @@ public class BACnetPriorityValueInteger extends BACnetPriorityValue implements M
   // Properties.
   protected final BACnetApplicationTagSignedInteger integerValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueInteger(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagSignedInteger integerValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagSignedInteger integerValue) {
+    super(peekedTagHeader);
     this.integerValue = integerValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagSignedInteger getIntegerValue() {
@@ -105,24 +99,20 @@ public class BACnetPriorityValueInteger extends BACnetPriorityValue implements M
 
     readBuffer.closeContext("BACnetPriorityValueInteger");
     // Create the instance
-    return new BACnetPriorityValueIntegerBuilderImpl(integerValue, objectTypeArgument);
+    return new BACnetPriorityValueIntegerBuilderImpl(integerValue);
   }
 
   public static class BACnetPriorityValueIntegerBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagSignedInteger integerValue;
-    private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueIntegerBuilderImpl(
-        BACnetApplicationTagSignedInteger integerValue, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueIntegerBuilderImpl(BACnetApplicationTagSignedInteger integerValue) {
       this.integerValue = integerValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueInteger build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueInteger build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueInteger bACnetPriorityValueInteger =
-          new BACnetPriorityValueInteger(peekedTagHeader, integerValue, objectTypeArgument);
+          new BACnetPriorityValueInteger(peekedTagHeader, integerValue);
       return bACnetPriorityValueInteger;
     }
   }

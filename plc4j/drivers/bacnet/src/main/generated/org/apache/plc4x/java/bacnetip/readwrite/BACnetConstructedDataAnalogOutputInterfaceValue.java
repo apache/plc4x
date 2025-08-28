@@ -50,21 +50,13 @@ public class BACnetConstructedDataAnalogOutputInterfaceValue extends BACnetConst
   // Properties.
   protected final BACnetOptionalREAL interfaceValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAnalogOutputInterfaceValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetOptionalREAL interfaceValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetOptionalREAL interfaceValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.interfaceValue = interfaceValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetOptionalREAL getInterfaceValue() {
@@ -131,40 +123,24 @@ public class BACnetConstructedDataAnalogOutputInterfaceValue extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataAnalogOutputInterfaceValue");
     // Create the instance
-    return new BACnetConstructedDataAnalogOutputInterfaceValueBuilderImpl(
-        interfaceValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAnalogOutputInterfaceValueBuilderImpl(interfaceValue);
   }
 
   public static class BACnetConstructedDataAnalogOutputInterfaceValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetOptionalREAL interfaceValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAnalogOutputInterfaceValueBuilderImpl(
-        BACnetOptionalREAL interfaceValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOptionalREAL interfaceValue) {
       this.interfaceValue = interfaceValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAnalogOutputInterfaceValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAnalogOutputInterfaceValue
           bACnetConstructedDataAnalogOutputInterfaceValue =
               new BACnetConstructedDataAnalogOutputInterfaceValue(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  interfaceValue,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, interfaceValue);
       return bACnetConstructedDataAnalogOutputInterfaceValue;
     }
   }

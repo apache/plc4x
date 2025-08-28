@@ -50,21 +50,13 @@ public class BACnetConstructedDataReliabilityEvaluationInhibit extends BACnetCon
   // Properties.
   protected final BACnetApplicationTagBoolean reliabilityEvaluationInhibit;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataReliabilityEvaluationInhibit(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean reliabilityEvaluationInhibit,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean reliabilityEvaluationInhibit) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.reliabilityEvaluationInhibit = reliabilityEvaluationInhibit;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getReliabilityEvaluationInhibit() {
@@ -136,39 +128,24 @@ public class BACnetConstructedDataReliabilityEvaluationInhibit extends BACnetCon
     readBuffer.closeContext("BACnetConstructedDataReliabilityEvaluationInhibit");
     // Create the instance
     return new BACnetConstructedDataReliabilityEvaluationInhibitBuilderImpl(
-        reliabilityEvaluationInhibit, tagNumber, arrayIndexArgument);
+        reliabilityEvaluationInhibit);
   }
 
   public static class BACnetConstructedDataReliabilityEvaluationInhibitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean reliabilityEvaluationInhibit;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataReliabilityEvaluationInhibitBuilderImpl(
-        BACnetApplicationTagBoolean reliabilityEvaluationInhibit,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean reliabilityEvaluationInhibit) {
       this.reliabilityEvaluationInhibit = reliabilityEvaluationInhibit;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataReliabilityEvaluationInhibit build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataReliabilityEvaluationInhibit
           bACnetConstructedDataReliabilityEvaluationInhibit =
               new BACnetConstructedDataReliabilityEvaluationInhibit(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  reliabilityEvaluationInhibit,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, reliabilityEvaluationInhibit);
       return bACnetConstructedDataReliabilityEvaluationInhibit;
     }
   }

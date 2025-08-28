@@ -49,21 +49,13 @@ public class BACnetConstructedDataTimeDelayNormal extends BACnetConstructedData 
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger timeDelayNormal;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTimeDelayNormal(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger timeDelayNormal,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger timeDelayNormal) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.timeDelayNormal = timeDelayNormal;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getTimeDelayNormal() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataTimeDelayNormal extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataTimeDelayNormal");
     // Create the instance
-    return new BACnetConstructedDataTimeDelayNormalBuilderImpl(
-        timeDelayNormal, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTimeDelayNormalBuilderImpl(timeDelayNormal);
   }
 
   public static class BACnetConstructedDataTimeDelayNormalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger timeDelayNormal;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataTimeDelayNormalBuilderImpl(
-        BACnetApplicationTagUnsignedInteger timeDelayNormal,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger timeDelayNormal) {
       this.timeDelayNormal = timeDelayNormal;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTimeDelayNormal build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTimeDelayNormal bACnetConstructedDataTimeDelayNormal =
           new BACnetConstructedDataTimeDelayNormal(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              timeDelayNormal,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, timeDelayNormal);
       return bACnetConstructedDataTimeDelayNormal;
     }
   }

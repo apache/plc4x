@@ -49,21 +49,13 @@ public class BACnetConstructedDataEventEnable extends BACnetConstructedData impl
   // Properties.
   protected final BACnetEventTransitionBitsTagged eventEnable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataEventEnable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetEventTransitionBitsTagged eventEnable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetEventTransitionBitsTagged eventEnable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.eventEnable = eventEnable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetEventTransitionBitsTagged getEventEnable() {
@@ -134,34 +126,23 @@ public class BACnetConstructedDataEventEnable extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataEventEnable");
     // Create the instance
-    return new BACnetConstructedDataEventEnableBuilderImpl(
-        eventEnable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEventEnableBuilderImpl(eventEnable);
   }
 
   public static class BACnetConstructedDataEventEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEventTransitionBitsTagged eventEnable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataEventEnableBuilderImpl(
-        BACnetEventTransitionBitsTagged eventEnable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetEventTransitionBitsTagged eventEnable) {
       this.eventEnable = eventEnable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataEventEnable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataEventEnable bACnetConstructedDataEventEnable =
           new BACnetConstructedDataEventEnable(
-              openingTag, peekedTagHeader, closingTag, eventEnable, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, eventEnable);
       return bACnetConstructedDataEventEnable;
     }
   }

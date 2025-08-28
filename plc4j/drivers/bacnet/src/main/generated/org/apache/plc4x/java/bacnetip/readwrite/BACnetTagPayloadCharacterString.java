@@ -38,18 +38,20 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BACnetTagPayloadCharacterString implements Message {
 
   // Properties.
+  protected final long actualLength;
   protected final BACnetCharacterEncoding encoding;
   protected final String value;
 
-  // Arguments.
-  protected final Long actualLength;
-
   public BACnetTagPayloadCharacterString(
-      BACnetCharacterEncoding encoding, String value, Long actualLength) {
+      long actualLength, BACnetCharacterEncoding encoding, String value) {
     super();
+    this.actualLength = actualLength;
     this.encoding = encoding;
     this.value = value;
-    this.actualLength = actualLength;
+  }
+
+  public long getActualLength() {
+    return actualLength;
   }
 
   public BACnetCharacterEncoding getEncoding() {
@@ -137,7 +139,7 @@ public class BACnetTagPayloadCharacterString implements Message {
     // Create the instance
     BACnetTagPayloadCharacterString _bACnetTagPayloadCharacterString;
     _bACnetTagPayloadCharacterString =
-        new BACnetTagPayloadCharacterString(encoding, value, actualLength);
+        new BACnetTagPayloadCharacterString(actualLength, encoding, value);
     return _bACnetTagPayloadCharacterString;
   }
 
@@ -150,12 +152,15 @@ public class BACnetTagPayloadCharacterString implements Message {
       return false;
     }
     BACnetTagPayloadCharacterString that = (BACnetTagPayloadCharacterString) o;
-    return (getEncoding() == that.getEncoding()) && (getValue() == that.getValue()) && true;
+    return (getActualLength() == that.getActualLength())
+        && (getEncoding() == that.getEncoding())
+        && (getValue() == that.getValue())
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getEncoding(), getValue());
+    return Objects.hash(getActualLength(), getEncoding(), getValue());
   }
 
   @Override

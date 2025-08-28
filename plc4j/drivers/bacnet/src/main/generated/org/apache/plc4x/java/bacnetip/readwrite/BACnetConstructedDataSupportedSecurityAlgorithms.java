@@ -50,21 +50,13 @@ public class BACnetConstructedDataSupportedSecurityAlgorithms extends BACnetCons
   // Properties.
   protected final List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSupportedSecurityAlgorithms(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.supportedSecurityAlgorithms = supportedSecurityAlgorithms;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetApplicationTagUnsignedInteger> getSupportedSecurityAlgorithms() {
@@ -133,39 +125,24 @@ public class BACnetConstructedDataSupportedSecurityAlgorithms extends BACnetCons
     readBuffer.closeContext("BACnetConstructedDataSupportedSecurityAlgorithms");
     // Create the instance
     return new BACnetConstructedDataSupportedSecurityAlgorithmsBuilderImpl(
-        supportedSecurityAlgorithms, tagNumber, arrayIndexArgument);
+        supportedSecurityAlgorithms);
   }
 
   public static class BACnetConstructedDataSupportedSecurityAlgorithmsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSupportedSecurityAlgorithmsBuilderImpl(
-        List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms) {
       this.supportedSecurityAlgorithms = supportedSecurityAlgorithms;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSupportedSecurityAlgorithms build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSupportedSecurityAlgorithms
           bACnetConstructedDataSupportedSecurityAlgorithms =
               new BACnetConstructedDataSupportedSecurityAlgorithms(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  supportedSecurityAlgorithms,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, supportedSecurityAlgorithms);
       return bACnetConstructedDataSupportedSecurityAlgorithms;
     }
   }

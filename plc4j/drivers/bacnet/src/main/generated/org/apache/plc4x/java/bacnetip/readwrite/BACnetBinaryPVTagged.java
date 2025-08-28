@@ -41,17 +41,10 @@ public class BACnetBinaryPVTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetBinaryPV value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetBinaryPVTagged(
-      BACnetTagHeader header, BACnetBinaryPV value, Short tagNumber, TagClass tagClass) {
+  public BACnetBinaryPVTagged(BACnetTagHeader header, BACnetBinaryPV value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -133,7 +126,7 @@ public class BACnetBinaryPVTagged implements Message {
     readBuffer.closeContext("BACnetBinaryPVTagged");
     // Create the instance
     BACnetBinaryPVTagged _bACnetBinaryPVTagged;
-    _bACnetBinaryPVTagged = new BACnetBinaryPVTagged(header, value, tagNumber, tagClass);
+    _bACnetBinaryPVTagged = new BACnetBinaryPVTagged(header, value);
     return _bACnetBinaryPVTagged;
   }
 

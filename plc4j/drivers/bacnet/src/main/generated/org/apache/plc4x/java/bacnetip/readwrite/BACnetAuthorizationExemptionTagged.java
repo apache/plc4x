@@ -42,22 +42,12 @@ public class BACnetAuthorizationExemptionTagged implements Message {
   protected final BACnetAuthorizationExemption value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetAuthorizationExemptionTagged(
-      BACnetTagHeader header,
-      BACnetAuthorizationExemption value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetAuthorizationExemption value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -181,8 +171,7 @@ public class BACnetAuthorizationExemptionTagged implements Message {
     // Create the instance
     BACnetAuthorizationExemptionTagged _bACnetAuthorizationExemptionTagged;
     _bACnetAuthorizationExemptionTagged =
-        new BACnetAuthorizationExemptionTagged(
-            header, value, proprietaryValue, tagNumber, tagClass);
+        new BACnetAuthorizationExemptionTagged(header, value, proprietaryValue);
     return _bACnetAuthorizationExemptionTagged;
   }
 

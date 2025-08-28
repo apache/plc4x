@@ -39,18 +39,13 @@ public class RequestEmpty extends Request implements Message {
 
   // Accessors for discriminator values.
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
   public RequestEmpty(
       RequestType peekedByte,
       RequestType startingCR,
       RequestType resetMode,
       RequestType secondPeek,
-      RequestTermination termination,
-      CBusOptions cBusOptions) {
-    super(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions);
-    this.cBusOptions = cBusOptions;
+      RequestTermination termination) {
+    super(peekedByte, startingCR, resetMode, secondPeek, termination);
   }
 
   @Override
@@ -84,25 +79,21 @@ public class RequestEmpty extends Request implements Message {
 
     readBuffer.closeContext("RequestEmpty");
     // Create the instance
-    return new RequestEmptyBuilderImpl(cBusOptions);
+    return new RequestEmptyBuilderImpl();
   }
 
   public static class RequestEmptyBuilderImpl implements Request.RequestBuilder {
-    private final CBusOptions cBusOptions;
 
-    public RequestEmptyBuilderImpl(CBusOptions cBusOptions) {
-      this.cBusOptions = cBusOptions;
-    }
+    public RequestEmptyBuilderImpl() {}
 
     public RequestEmpty build(
         RequestType peekedByte,
         RequestType startingCR,
         RequestType resetMode,
         RequestType secondPeek,
-        RequestTermination termination,
-        CBusOptions cBusOptions) {
+        RequestTermination termination) {
       RequestEmpty requestEmpty =
-          new RequestEmpty(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions);
+          new RequestEmpty(peekedByte, startingCR, resetMode, secondPeek, termination);
       return requestEmpty;
     }
   }
