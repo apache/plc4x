@@ -97,7 +97,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             typeContext.put("outputFlavor", outputFlavor);
             typeContext.put("typeName", typeDefinition.getName());
             typeContext.put("type", typeDefinition);
-            typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types, options));
+            typeContext.put("helper", getHelper(typeDefinition, protocolName, outputFlavor, types, options));
             typeContext.put("tracer", Tracer.start("global"));
             typeContext.putAll(options);
 

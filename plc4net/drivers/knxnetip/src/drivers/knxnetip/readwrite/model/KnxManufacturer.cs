@@ -766,7 +766,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD = 738,
         M_HANGZHOU_KONKE_INFORMATION_TECHNOLOGY_CO___LTD_ = 739,
         M_SHANGHAI_FANTE_DIGITAL_TECHNOLOGY_CO___LTD = 740,
-        M_CONFIO = 741,
+        M_CONFIO_TECHNOLOGIES_PVT__LTD = 741,
         M_SONIC_TECHNOLOGIES = 742,
         M_SHANGHAI_INNOVATECH_INFORMATION_TECHNOLOGY_CO___LT = 743,
         M_ABI_SICHERHEITSSYSTEME_GMBH = 744,
@@ -777,8 +777,12 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_ROGERWELL_CONTROL_SYSTEM_LIMITED = 749,
         M_SHANGHAI_YUKON_AUTOMATION_TECHNOLOGIES_CO___LTD_ = 750,
         M_TECCO_PTY_LTD = 751,
-        M_ABB___RESERVED = 752,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 753,
+        M_A_LAN_TECHNOLOGIE = 752,
+        M_VOLTAN_TECHNOLOGY = 753,
+        M_BAERWINKEL_AND_STRASSER_GMBH = 754,
+        M_CATERLUX = 755,
+        M_ABB___RESERVED = 756,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 757,
     }
 
     public static class KnxManufacturerInfo
@@ -2930,7 +2934,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_SHANGHAI_FANTE_DIGITAL_TECHNOLOGY_CO___LTD: { /* '740' */
                     return 801;
                 }
-                case KnxManufacturer.M_CONFIO: { /* '741' */
+                case KnxManufacturer.M_CONFIO_TECHNOLOGIES_PVT__LTD: { /* '741' */
                     return 802;
                 }
                 case KnxManufacturer.M_SONIC_TECHNOLOGIES: { /* '742' */
@@ -2966,10 +2970,22 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TECCO_PTY_LTD: { /* '751' */
                     return 812;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '752' */
+                case KnxManufacturer.M_A_LAN_TECHNOLOGIE: { /* '752' */
+                    return 813;
+                }
+                case KnxManufacturer.M_VOLTAN_TECHNOLOGY: { /* '753' */
+                    return 814;
+                }
+                case KnxManufacturer.M_BAERWINKEL_AND_STRASSER_GMBH: { /* '754' */
+                    return 815;
+                }
+                case KnxManufacturer.M_CATERLUX: { /* '755' */
+                    return 816;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '756' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '753' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '757' */
                     return 43959;
                 }
                 case KnxManufacturer.M_HDL: { /* '76' */
@@ -5202,8 +5218,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_SHANGHAI_FANTE_DIGITAL_TECHNOLOGY_CO___LTD: { /* '740' */
                     return "Shanghai Fante Digital Technology Co., Ltd";
                 }
-                case KnxManufacturer.M_CONFIO: { /* '741' */
-                    return "CONFIO";
+                case KnxManufacturer.M_CONFIO_TECHNOLOGIES_PVT__LTD: { /* '741' */
+                    return "Confio Technologies Pvt. Ltd";
                 }
                 case KnxManufacturer.M_SONIC_TECHNOLOGIES: { /* '742' */
                     return "Sonic Technologies";
@@ -5238,10 +5254,22 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TECCO_PTY_LTD: { /* '751' */
                     return "Tecco Pty Ltd";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '752' */
+                case KnxManufacturer.M_A_LAN_TECHNOLOGIE: { /* '752' */
+                    return "A-LAN Technologie";
+                }
+                case KnxManufacturer.M_VOLTAN_TECHNOLOGY: { /* '753' */
+                    return "Voltan Technology";
+                }
+                case KnxManufacturer.M_BAERWINKEL_AND_STRASSER_GMBH: { /* '754' */
+                    return "Baerwinkel & Strasser GmbH";
+                }
+                case KnxManufacturer.M_CATERLUX: { /* '755' */
+                    return "Caterlux";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '756' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '753' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '757' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_HDL: { /* '76' */

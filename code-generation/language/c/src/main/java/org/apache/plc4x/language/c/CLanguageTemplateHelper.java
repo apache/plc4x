@@ -137,19 +137,25 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         return getLanguageTypeNameForTypeReference(typeReference);
     }
 
-    public List<Pair<ConstField, ComplexTypeDefinition>> getAllConstFields() {
+    public List<Pair<ConstField, String>> getAllConstFields() {
         // Note: a map is not an option here as ConstFields are duplicated
-        List<Pair<ConstField, ComplexTypeDefinition>> constFields = new LinkedList<>();
-        ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
-        complexTypeDefinition.getConstFields()
-            .forEach(constField -> constFields.add(Pair.of(constField, complexTypeDefinition)));
-        complexTypeDefinition.getSwitchField()
-            .map(SwitchField::getCases)
-            .ifPresent(discriminatedComplexTypeDefinitions ->
-                discriminatedComplexTypeDefinitions.forEach(switchCase ->
-                    switchCase.getConstFields().forEach(constField -> constFields.add(Pair.of(constField, switchCase)))
-                )
-            );
+        List<Pair<ConstField, String>> constFields = new LinkedList<>();
+        if(this.thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
+            complexTypeDefinition.getConstFields()
+                .forEach(constField -> constFields.add(Pair.of(constField, complexTypeDefinition.getName())));
+            complexTypeDefinition.getSwitchField()
+                .map(SwitchField::getCases)
+                .ifPresent(discriminatedComplexTypeDefinitions ->
+                    discriminatedComplexTypeDefinitions.forEach(switchCase ->
+                        switchCase.getConstFields().forEach(constField -> constFields.add(Pair.of(constField, switchCase.getName())))
+                    )
+                );
+        } else if (this.thisType instanceof ConstantsTypeDefinition) {
+            ConstantsTypeDefinition constantsTypeDefinition = (ConstantsTypeDefinition) this.thisType;
+            constantsTypeDefinition.getConstFields()
+                .forEach(constField -> constFields.add(Pair.of(constField, constantsTypeDefinition.getName())));
+        }
         return constFields;
     }
 
