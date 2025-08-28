@@ -16,23 +16,10 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from plc4py.protocols.umas.readwrite.Constants import Constants
-from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
+
+from dataclasses import dataclass
 
 
-class UmasConfiguration(PlcConfiguration):
-    """
-    Specific Umas Configuration
-    """
-
-    def __init__(self, url):
-        super().__init__(url)
-
-        if self.transport is None:
-            self.transport = "tcp"
-
-        if self.port is None:
-            self.port = UmasConstants.UMAS_TCP_DEFAULT_PORT
-
-        if "unit_identifier" not in self.parameters:
-            self.unit_identifier = 1
+@dataclass
+class Constants:
+    MODBUS_TCP_DEFAULT_PORT: int = int(502)
