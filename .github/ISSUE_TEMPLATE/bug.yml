@@ -45,7 +45,7 @@ body:
     attributes:
       label: Version
       description: "Which version are you using?"
-      placeholder: "v0.10.0"
+      placeholder: "v0.13.1"
     validations:
       required: true
   - type: checkboxes
