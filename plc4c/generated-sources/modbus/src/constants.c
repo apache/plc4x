@@ -17,9 +17,6 @@
  * under the License.
  */
 
-#ifndef PLC4C_MODBUS_READ_WRITE_CONSTANTS_H_
-#define PLC4C_MODBUS_READ_WRITE_CONSTANTS_H_
-
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/spi/context.h>

@@ -47,9 +47,6 @@ ${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(t
  * under the License.
  */
 
-#ifndef ${helper.getCTypeName(type.name)?upper_case}_H_
-#define ${helper.getCTypeName(type.name)?upper_case}_H_
-
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/spi/context.h>
