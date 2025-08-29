@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLockoutRelinquishTime = (*_BACnetConstructedDataLocko
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLockoutRelinquishTime)(nil)
 
 // NewBACnetConstructedDataLockoutRelinquishTime factory function for _BACnetConstructedDataLockoutRelinquishTime
-func NewBACnetConstructedDataLockoutRelinquishTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lockoutRelinquishTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockoutRelinquishTime {
+func NewBACnetConstructedDataLockoutRelinquishTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lockoutRelinquishTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataLockoutRelinquishTime {
 	if lockoutRelinquishTime == nil {
 		panic("lockoutRelinquishTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLockoutRelinquishTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataLockoutRelinquishTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LockoutRelinquishTime:         lockoutRelinquishTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -823,7 +823,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 				ctx:            context.Background(),
 				ch:             make(chan plc4go.PlcConnectionConnectResult, 1),
 				paramNo:        readWriteModel.Parameter_APPLICATION_ADDRESS_2,
-				parameterValue: readWriteModel.NewParameterValueApplicationAddress2(readWriteModel.NewApplicationAddress2(1), nil, 0),
+				parameterValue: readWriteModel.NewParameterValueApplicationAddress2(readWriteModel.NewApplicationAddress2(1), nil),
 				requestContext: func() *readWriteModel.RequestContext {
 					var requestContext readWriteModel.RequestContext = readWriteModel.NewRequestContext(false)
 					return &requestContext
@@ -1689,7 +1689,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				t.Cleanup(dispatchWg.Wait)
 				go func() {
 					defer dispatchWg.Done()
-					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
+					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil)
 					codec.monitoredSALs <- readWriteModel.NewMonitoredSALShortFormBasicMode(
 						0,
 						0,
@@ -1697,7 +1697,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 						nil,
 						nil,
 						readWriteModel.ApplicationIdContainer_ACCESS_CONTROL_D5,
-						nil,
 						nil,
 					)
 				}()
@@ -1723,7 +1722,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				t.Cleanup(dispatchWg.Wait)
 				go func() {
 					defer dispatchWg.Done()
-					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
+					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil)
 					codec.monitoredSALs <- readWriteModel.NewMonitoredSALShortFormBasicMode(
 						0,
 						0,
@@ -1731,7 +1730,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 						nil,
 						nil,
 						readWriteModel.ApplicationIdContainer_ACCESS_CONTROL_D5,
-						nil,
 						nil,
 					)
 					close(written)

@@ -40,6 +40,8 @@ type CustomManufacturer interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
+	// GetNumBytes returns NumBytes (property field)
+	GetNumBytes() uint8
 	// GetCustomString returns CustomString (property field)
 	GetCustomString() string
 	// IsCustomManufacturer is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,17 +52,15 @@ type CustomManufacturer interface {
 
 // _CustomManufacturer is the data-structure of this message
 type _CustomManufacturer struct {
+	NumBytes     uint8
 	CustomString string
-
-	// Arguments.
-	NumBytes uint8
 }
 
 var _ CustomManufacturer = (*_CustomManufacturer)(nil)
 
 // NewCustomManufacturer factory function for _CustomManufacturer
-func NewCustomManufacturer(customString string, numBytes uint8) *_CustomManufacturer {
-	return &_CustomManufacturer{CustomString: customString, NumBytes: numBytes}
+func NewCustomManufacturer(numBytes uint8, customString string) *_CustomManufacturer {
+	return &_CustomManufacturer{NumBytes: numBytes, CustomString: customString}
 }
 
 ///////////////////////////////////////////////////////////
@@ -72,11 +72,11 @@ func NewCustomManufacturer(customString string, numBytes uint8) *_CustomManufact
 type CustomManufacturerBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(customString string) CustomManufacturerBuilder
+	WithMandatoryFields(numBytes uint8, customString string) CustomManufacturerBuilder
+	// WithNumBytes adds NumBytes (property field)
+	WithNumBytes(uint8) CustomManufacturerBuilder
 	// WithCustomString adds CustomString (property field)
 	WithCustomString(string) CustomManufacturerBuilder
-	// WithArgNumBytes sets a parser argument
-	WithArgNumBytes(uint8) CustomManufacturerBuilder
 	// Build builds the CustomManufacturer or returns an error if something is wrong
 	Build() (CustomManufacturer, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,17 +96,17 @@ type _CustomManufacturerBuilder struct {
 
 var _ (CustomManufacturerBuilder) = (*_CustomManufacturerBuilder)(nil)
 
-func (b *_CustomManufacturerBuilder) WithMandatoryFields(customString string) CustomManufacturerBuilder {
-	return b.WithCustomString(customString)
+func (b *_CustomManufacturerBuilder) WithMandatoryFields(numBytes uint8, customString string) CustomManufacturerBuilder {
+	return b.WithNumBytes(numBytes).WithCustomString(customString)
+}
+
+func (b *_CustomManufacturerBuilder) WithNumBytes(numBytes uint8) CustomManufacturerBuilder {
+	b.NumBytes = numBytes
+	return b
 }
 
 func (b *_CustomManufacturerBuilder) WithCustomString(customString string) CustomManufacturerBuilder {
 	b.CustomString = customString
-	return b
-}
-
-func (b *_CustomManufacturerBuilder) WithArgNumBytes(numBytes uint8) CustomManufacturerBuilder {
-	b.NumBytes = numBytes
 	return b
 }
 
@@ -150,6 +150,10 @@ func (b *_CustomManufacturer) CreateCustomManufacturerBuilder() CustomManufactur
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
+func (m *_CustomManufacturer) GetNumBytes() uint8 {
+	return m.NumBytes
+}
 
 func (m *_CustomManufacturer) GetCustomString() string {
 	return m.CustomString
@@ -199,7 +203,7 @@ func CustomManufacturerParseWithBufferProducer(numBytes uint8) func(ctx context.
 }
 
 func CustomManufacturerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numBytes uint8) (CustomManufacturer, error) {
-	v, err := (&_CustomManufacturer{NumBytes: numBytes}).parse(ctx, readBuffer, numBytes)
+	v, err := (new(_CustomManufacturer)).parse(ctx, readBuffer, numBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -214,6 +218,7 @@ func (m *_CustomManufacturer) parse(ctx context.Context, readBuffer utils.ReadBu
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	m.NumBytes = numBytes
 
 	customString, err := ReadSimpleField(ctx, "customString", ReadString(readBuffer, uint32(int32(int32(8))*int32(numBytes))))
 	if err != nil {
@@ -255,16 +260,6 @@ func (m *_CustomManufacturer) SerializeWithWriteBuffer(ctx context.Context, writ
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_CustomManufacturer) GetNumBytes() uint8 {
-	return m.NumBytes
-}
-
-//
-////
-
 func (m *_CustomManufacturer) IsCustomManufacturer() {}
 
 func (m *_CustomManufacturer) DeepCopy() any {
@@ -276,8 +271,8 @@ func (m *_CustomManufacturer) deepCopy() *_CustomManufacturer {
 		return nil
 	}
 	_CustomManufacturerCopy := &_CustomManufacturer{
-		m.CustomString,
 		m.NumBytes,
+		m.CustomString,
 	}
 	return _CustomManufacturerCopy
 }

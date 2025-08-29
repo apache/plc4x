@@ -70,12 +70,12 @@ var _ ModbusTcpADU = (*_ModbusTcpADU)(nil)
 var _ ModbusADURequirements = (*_ModbusTcpADU)(nil)
 
 // NewModbusTcpADU factory function for _ModbusTcpADU
-func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU, response bool) *_ModbusTcpADU {
+func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU) *_ModbusTcpADU {
 	if pdu == nil {
 		panic("pdu of type ModbusPDU for ModbusTcpADU must not be nil")
 	}
 	_result := &_ModbusTcpADU{
-		ModbusADUContract:     NewModbusADU(response),
+		ModbusADUContract:     NewModbusADU(),
 		TransactionIdentifier: transactionIdentifier,
 		UnitIdentifier:        unitIdentifier,
 		Pdu:                   pdu,

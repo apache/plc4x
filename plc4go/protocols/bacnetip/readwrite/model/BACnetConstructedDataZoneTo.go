@@ -61,12 +61,12 @@ var _ BACnetConstructedDataZoneTo = (*_BACnetConstructedDataZoneTo)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataZoneTo)(nil)
 
 // NewBACnetConstructedDataZoneTo factory function for _BACnetConstructedDataZoneTo
-func NewBACnetConstructedDataZoneTo(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zoneTo BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneTo {
+func NewBACnetConstructedDataZoneTo(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zoneTo BACnetDeviceObjectReference) *_BACnetConstructedDataZoneTo {
 	if zoneTo == nil {
 		panic("zoneTo of type BACnetDeviceObjectReference for BACnetConstructedDataZoneTo must not be nil")
 	}
 	_result := &_BACnetConstructedDataZoneTo{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ZoneTo:                        zoneTo,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

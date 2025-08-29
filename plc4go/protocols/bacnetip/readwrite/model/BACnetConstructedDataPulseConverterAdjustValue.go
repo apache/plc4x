@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPulseConverterAdjustValue = (*_BACnetConstructedDataP
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPulseConverterAdjustValue)(nil)
 
 // NewBACnetConstructedDataPulseConverterAdjustValue factory function for _BACnetConstructedDataPulseConverterAdjustValue
-func NewBACnetConstructedDataPulseConverterAdjustValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, adjustValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseConverterAdjustValue {
+func NewBACnetConstructedDataPulseConverterAdjustValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, adjustValue BACnetApplicationTagReal) *_BACnetConstructedDataPulseConverterAdjustValue {
 	if adjustValue == nil {
 		panic("adjustValue of type BACnetApplicationTagReal for BACnetConstructedDataPulseConverterAdjustValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataPulseConverterAdjustValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AdjustValue:                   adjustValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

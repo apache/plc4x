@@ -68,7 +68,7 @@ var _ BACnetNotificationParametersChangeOfState = (*_BACnetNotificationParameter
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersChangeOfState)(nil)
 
 // NewBACnetNotificationParametersChangeOfState factory function for _BACnetNotificationParametersChangeOfState
-func NewBACnetNotificationParametersChangeOfState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, changeOfState BACnetPropertyStatesEnclosed, statusFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfState {
+func NewBACnetNotificationParametersChangeOfState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, changeOfState BACnetPropertyStatesEnclosed, statusFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersChangeOfState {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfState must not be nil")
 	}
@@ -82,7 +82,7 @@ func NewBACnetNotificationParametersChangeOfState(openingTag BACnetOpeningTag, p
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfState must not be nil")
 	}
 	_result := &_BACnetNotificationParametersChangeOfState{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		ChangeOfState:                        changeOfState,
 		StatusFlags:                          statusFlags,

@@ -189,7 +189,7 @@ func BACnetTagPayloadRealParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func BACnetTagPayloadRealParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadReal, error) {
-	v, err := (&_BACnetTagPayloadReal{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetTagPayloadReal)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

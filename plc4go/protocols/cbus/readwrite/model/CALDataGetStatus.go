@@ -62,9 +62,9 @@ var _ CALDataGetStatus = (*_CALDataGetStatus)(nil)
 var _ CALDataRequirements = (*_CALDataGetStatus)(nil)
 
 // NewCALDataGetStatus factory function for _CALDataGetStatus
-func NewCALDataGetStatus(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, count uint8, requestContext RequestContext) *_CALDataGetStatus {
+func NewCALDataGetStatus(requestContext RequestContext, commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, count uint8) *_CALDataGetStatus {
 	_result := &_CALDataGetStatus{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract: NewCALData(requestContext, commandTypeContainer, additionalData),
 		ParamNo:         paramNo,
 		Count:           count,
 	}

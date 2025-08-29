@@ -61,12 +61,12 @@ var _ BACnetConstructedDataWindowSamples = (*_BACnetConstructedDataWindowSamples
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWindowSamples)(nil)
 
 // NewBACnetConstructedDataWindowSamples factory function for _BACnetConstructedDataWindowSamples
-func NewBACnetConstructedDataWindowSamples(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, windowSamples BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWindowSamples {
+func NewBACnetConstructedDataWindowSamples(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, windowSamples BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataWindowSamples {
 	if windowSamples == nil {
 		panic("windowSamples of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataWindowSamples must not be nil")
 	}
 	_result := &_BACnetConstructedDataWindowSamples{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		WindowSamples:                 windowSamples,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

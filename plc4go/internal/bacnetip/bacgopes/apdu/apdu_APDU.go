@@ -126,15 +126,6 @@ func (a *__APDU) GetApduType() readWriteModel.ApduType {
 	}
 }
 
-func (a *__APDU) GetApduLength() uint16 {
-	switch rm := a.GetRootMessage().(type) {
-	case readWriteModel.APDU:
-		return rm.GetApduLength()
-	default:
-		return 0 // TODO: what is a good fallback
-	}
-}
-
 func (a *__APDU) IsAPDU() {
 }
 

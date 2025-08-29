@@ -54,9 +54,9 @@ var _ BACnetConstructedDataNetworkPortAll = (*_BACnetConstructedDataNetworkPortA
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkPortAll)(nil)
 
 // NewBACnetConstructedDataNetworkPortAll factory function for _BACnetConstructedDataNetworkPortAll
-func NewBACnetConstructedDataNetworkPortAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkPortAll {
+func NewBACnetConstructedDataNetworkPortAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataNetworkPortAll {
 	_result := &_BACnetConstructedDataNetworkPortAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

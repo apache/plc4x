@@ -57,9 +57,9 @@ var _ NullExtensionObjectWithMask = (*_NullExtensionObjectWithMask)(nil)
 var _ ExtensionObjectWithMaskRequirements = (*_NullExtensionObjectWithMask)(nil)
 
 // NewNullExtensionObjectWithMask factory function for _NullExtensionObjectWithMask
-func NewNullExtensionObjectWithMask(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask, extensionId int32, includeEncodingMask bool) *_NullExtensionObjectWithMask {
+func NewNullExtensionObjectWithMask(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask) *_NullExtensionObjectWithMask {
 	_result := &_NullExtensionObjectWithMask{
-		ExtensionObjectWithMaskContract: NewExtensionObjectWithMask(typeId, encodingMask, extensionId),
+		ExtensionObjectWithMaskContract: NewExtensionObjectWithMask(typeId, encodingMask),
 	}
 	_result.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask)._SubType = _result
 	return _result

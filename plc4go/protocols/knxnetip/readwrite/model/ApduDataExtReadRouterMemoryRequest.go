@@ -54,9 +54,9 @@ var _ ApduDataExtReadRouterMemoryRequest = (*_ApduDataExtReadRouterMemoryRequest
 var _ ApduDataExtRequirements = (*_ApduDataExtReadRouterMemoryRequest)(nil)
 
 // NewApduDataExtReadRouterMemoryRequest factory function for _ApduDataExtReadRouterMemoryRequest
-func NewApduDataExtReadRouterMemoryRequest(length uint8) *_ApduDataExtReadRouterMemoryRequest {
+func NewApduDataExtReadRouterMemoryRequest() *_ApduDataExtReadRouterMemoryRequest {
 	_result := &_ApduDataExtReadRouterMemoryRequest{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

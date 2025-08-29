@@ -203,9 +203,7 @@ func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message 
 					nil,
 					nil,
 					response.GetRootMessage().(model.APDU),
-					0,
 				),
-				0,
 			)
 			if acceptsMessage(tempBVLC) {
 				if err := handleMessage(

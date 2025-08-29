@@ -54,9 +54,9 @@ var _ BACnetContextTagNull = (*_BACnetContextTagNull)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagNull)(nil)
 
 // NewBACnetContextTagNull factory function for _BACnetContextTagNull
-func NewBACnetContextTagNull(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagNull {
+func NewBACnetContextTagNull(header BACnetTagHeader) *_BACnetContextTagNull {
 	_result := &_BACnetContextTagNull{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 	}
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result

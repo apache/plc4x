@@ -64,9 +64,9 @@ var _ BACnetConstructedDataNegativeAccessRules = (*_BACnetConstructedDataNegativ
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNegativeAccessRules)(nil)
 
 // NewBACnetConstructedDataNegativeAccessRules factory function for _BACnetConstructedDataNegativeAccessRules
-func NewBACnetConstructedDataNegativeAccessRules(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, negativeAccessRules []BACnetAccessRule, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNegativeAccessRules {
+func NewBACnetConstructedDataNegativeAccessRules(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, negativeAccessRules []BACnetAccessRule) *_BACnetConstructedDataNegativeAccessRules {
 	_result := &_BACnetConstructedDataNegativeAccessRules{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		NegativeAccessRules:           negativeAccessRules,
 	}

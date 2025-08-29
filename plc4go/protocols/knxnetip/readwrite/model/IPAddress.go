@@ -191,7 +191,7 @@ func IPAddressParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 }
 
 func IPAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IPAddress, error) {
-	v, err := (&_IPAddress{}).parse(ctx, readBuffer)
+	v, err := (new(_IPAddress)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

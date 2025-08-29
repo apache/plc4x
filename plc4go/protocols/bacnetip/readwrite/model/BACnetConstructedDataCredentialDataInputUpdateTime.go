@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCredentialDataInputUpdateTime = (*_BACnetConstructedD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialDataInputUpdateTime)(nil)
 
 // NewBACnetConstructedDataCredentialDataInputUpdateTime factory function for _BACnetConstructedDataCredentialDataInputUpdateTime
-func NewBACnetConstructedDataCredentialDataInputUpdateTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateTime BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputUpdateTime {
+func NewBACnetConstructedDataCredentialDataInputUpdateTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateTime BACnetTimeStamp) *_BACnetConstructedDataCredentialDataInputUpdateTime {
 	if updateTime == nil {
 		panic("updateTime of type BACnetTimeStamp for BACnetConstructedDataCredentialDataInputUpdateTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataCredentialDataInputUpdateTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		UpdateTime:                    updateTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

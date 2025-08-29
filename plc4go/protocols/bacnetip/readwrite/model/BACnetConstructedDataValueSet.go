@@ -61,12 +61,12 @@ var _ BACnetConstructedDataValueSet = (*_BACnetConstructedDataValueSet)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueSet)(nil)
 
 // NewBACnetConstructedDataValueSet factory function for _BACnetConstructedDataValueSet
-func NewBACnetConstructedDataValueSet(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valueSet BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSet {
+func NewBACnetConstructedDataValueSet(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valueSet BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataValueSet {
 	if valueSet == nil {
 		panic("valueSet of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataValueSet must not be nil")
 	}
 	_result := &_BACnetConstructedDataValueSet{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ValueSet:                      valueSet,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

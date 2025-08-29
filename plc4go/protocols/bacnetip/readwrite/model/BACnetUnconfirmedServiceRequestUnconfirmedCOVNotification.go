@@ -71,7 +71,7 @@ var _ BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification = (*_BACnetUncon
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification)(nil)
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification factory function for _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
-func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, lifetimeInSeconds BACnetContextTagUnsignedInteger, listOfValues BACnetPropertyValues, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, lifetimeInSeconds BACnetContextTagUnsignedInteger, listOfValues BACnetPropertyValues) *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
 	if subscriberProcessIdentifier == nil {
 		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification must not be nil")
 	}
@@ -88,7 +88,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProc
 		panic("listOfValues of type BACnetPropertyValues for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		SubscriberProcessIdentifier:             subscriberProcessIdentifier,
 		InitiatingDeviceIdentifier:              initiatingDeviceIdentifier,
 		MonitoredObjectIdentifier:               monitoredObjectIdentifier,

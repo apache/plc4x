@@ -238,7 +238,7 @@ func BACnetReadAccessResultParseWithBufferProducer() func(ctx context.Context, r
 }
 
 func BACnetReadAccessResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetReadAccessResult, error) {
-	v, err := (&_BACnetReadAccessResult{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetReadAccessResult)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

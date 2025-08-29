@@ -61,12 +61,12 @@ var _ BACnetConstructedDataInstallationID = (*_BACnetConstructedDataInstallation
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInstallationID)(nil)
 
 // NewBACnetConstructedDataInstallationID factory function for _BACnetConstructedDataInstallationID
-func NewBACnetConstructedDataInstallationID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, installationId BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstallationID {
+func NewBACnetConstructedDataInstallationID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, installationId BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataInstallationID {
 	if installationId == nil {
 		panic("installationId of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataInstallationID must not be nil")
 	}
 	_result := &_BACnetConstructedDataInstallationID{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		InstallationId:                installationId,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -59,9 +59,9 @@ var _ BACnetConstructedDataEntryPoints = (*_BACnetConstructedDataEntryPoints)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEntryPoints)(nil)
 
 // NewBACnetConstructedDataEntryPoints factory function for _BACnetConstructedDataEntryPoints
-func NewBACnetConstructedDataEntryPoints(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, entryPoints []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEntryPoints {
+func NewBACnetConstructedDataEntryPoints(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, entryPoints []BACnetDeviceObjectReference) *_BACnetConstructedDataEntryPoints {
 	_result := &_BACnetConstructedDataEntryPoints{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		EntryPoints:                   entryPoints,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

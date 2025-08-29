@@ -77,9 +77,9 @@ var _ NLMRequestKeyUpdate = (*_NLMRequestKeyUpdate)(nil)
 var _ NLMRequirements = (*_NLMRequestKeyUpdate)(nil)
 
 // NewNLMRequestKeyUpdate factory function for _NLMRequestKeyUpdate
-func NewNLMRequestKeyUpdate(set1KeyRevision byte, set1ActivationTime uint32, set1ExpirationTime uint32, set2KeyRevision byte, set2ActivationTime uint32, set2ExpirationTime uint32, distributionKeyRevision byte, apduLength uint16) *_NLMRequestKeyUpdate {
+func NewNLMRequestKeyUpdate(set1KeyRevision byte, set1ActivationTime uint32, set1ExpirationTime uint32, set2KeyRevision byte, set2ActivationTime uint32, set2ExpirationTime uint32, distributionKeyRevision byte) *_NLMRequestKeyUpdate {
 	_result := &_NLMRequestKeyUpdate{
-		NLMContract:             NewNLM(apduLength),
+		NLMContract:             NewNLM(),
 		Set1KeyRevision:         set1KeyRevision,
 		Set1ActivationTime:      set1ActivationTime,
 		Set1ExpirationTime:      set1ExpirationTime,

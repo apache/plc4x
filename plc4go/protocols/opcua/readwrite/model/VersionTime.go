@@ -160,7 +160,7 @@ func VersionTimeParseWithBufferProducer() func(ctx context.Context, readBuffer u
 }
 
 func VersionTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (VersionTime, error) {
-	v, err := (&_VersionTime{}).parse(ctx, readBuffer)
+	v, err := (new(_VersionTime)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -253,7 +253,7 @@ func CommandSpecificDataItemParseWithBufferProducer[T CommandSpecificDataItem]()
 }
 
 func CommandSpecificDataItemParseWithBuffer[T CommandSpecificDataItem](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_CommandSpecificDataItem{}).parse(ctx, readBuffer)
+	v, err := (new(_CommandSpecificDataItem)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

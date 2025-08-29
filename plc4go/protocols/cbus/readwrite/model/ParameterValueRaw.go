@@ -59,9 +59,9 @@ var _ ParameterValueRaw = (*_ParameterValueRaw)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueRaw)(nil)
 
 // NewParameterValueRaw factory function for _ParameterValueRaw
-func NewParameterValueRaw(data []byte, numBytes uint8) *_ParameterValueRaw {
+func NewParameterValueRaw(data []byte) *_ParameterValueRaw {
 	_result := &_ParameterValueRaw{
-		ParameterValueContract: NewParameterValue(numBytes),
+		ParameterValueContract: NewParameterValue(),
 		Data:                   data,
 	}
 	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result

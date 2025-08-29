@@ -52,8 +52,6 @@ type MessagePDU interface {
 type MessagePDUContract interface {
 	// GetChunk returns Chunk (property field)
 	GetChunk() ChunkType
-	// GetBinary() returns a parser argument
-	GetBinary() bool
 	// IsMessagePDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMessagePDU()
 	// CreateBuilder creates a MessagePDUBuilder
@@ -77,16 +75,13 @@ type _MessagePDU struct {
 		MessagePDURequirements
 	}
 	Chunk ChunkType
-
-	// Arguments.
-	Binary bool
 }
 
 var _ MessagePDUContract = (*_MessagePDU)(nil)
 
 // NewMessagePDU factory function for _MessagePDU
-func NewMessagePDU(chunk ChunkType, binary bool) *_MessagePDU {
-	return &_MessagePDU{Chunk: chunk, Binary: binary}
+func NewMessagePDU(chunk ChunkType) *_MessagePDU {
+	return &_MessagePDU{Chunk: chunk}
 }
 
 ///////////////////////////////////////////////////////////
@@ -101,8 +96,6 @@ type MessagePDUBuilder interface {
 	WithMandatoryFields(chunk ChunkType) MessagePDUBuilder
 	// WithChunk adds Chunk (property field)
 	WithChunk(ChunkType) MessagePDUBuilder
-	// WithArgBinary sets a parser argument
-	WithArgBinary(bool) MessagePDUBuilder
 	// AsOpcuaHelloRequest converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
 	AsOpcuaHelloRequest() OpcuaHelloRequestBuilder
 	// AsOpcuaAcknowledgeResponse converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
@@ -156,11 +149,6 @@ func (b *_MessagePDUBuilder) WithMandatoryFields(chunk ChunkType) MessagePDUBuil
 
 func (b *_MessagePDUBuilder) WithChunk(chunk ChunkType) MessagePDUBuilder {
 	b.Chunk = chunk
-	return b
-}
-
-func (b *_MessagePDUBuilder) WithArgBinary(binary bool) MessagePDUBuilder {
-	b.Binary = binary
 	return b
 }
 
@@ -369,7 +357,7 @@ func MessagePDUParseWithBufferProducer[T MessagePDU](response bool, binary bool)
 }
 
 func MessagePDUParseWithBuffer[T MessagePDU](ctx context.Context, readBuffer utils.ReadBuffer, response bool, binary bool) (T, error) {
-	v, err := (&_MessagePDU{Binary: binary}).parse(ctx, readBuffer, response, binary)
+	v, err := (new(_MessagePDU)).parse(ctx, readBuffer, response, binary)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -489,16 +477,6 @@ func (pm *_MessagePDU) serializeParent(ctx context.Context, writeBuffer utils.Wr
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_MessagePDU) GetBinary() bool {
-	return m.Binary
-}
-
-//
-////
-
 func (m *_MessagePDU) IsMessagePDU() {}
 
 func (m *_MessagePDU) DeepCopy() any {
@@ -512,7 +490,6 @@ func (m *_MessagePDU) deepCopy() *_MessagePDU {
 	_MessagePDUCopy := &_MessagePDU{
 		nil, // will be set by child
 		m.Chunk,
-		m.Binary,
 	}
 	return _MessagePDUCopy
 }

@@ -65,9 +65,9 @@ var _ CBusCommandDeviceManagement = (*_CBusCommandDeviceManagement)(nil)
 var _ CBusCommandRequirements = (*_CBusCommandDeviceManagement)(nil)
 
 // NewCBusCommandDeviceManagement factory function for _CBusCommandDeviceManagement
-func NewCBusCommandDeviceManagement(header CBusHeader, paramNo Parameter, parameterValue byte, cBusOptions CBusOptions) *_CBusCommandDeviceManagement {
+func NewCBusCommandDeviceManagement(header CBusHeader, paramNo Parameter, parameterValue byte) *_CBusCommandDeviceManagement {
 	_result := &_CBusCommandDeviceManagement{
-		CBusCommandContract: NewCBusCommand(header, cBusOptions),
+		CBusCommandContract: NewCBusCommand(header),
 		ParamNo:             paramNo,
 		ParameterValue:      parameterValue,
 	}

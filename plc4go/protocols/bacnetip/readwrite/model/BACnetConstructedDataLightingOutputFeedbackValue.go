@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLightingOutputFeedbackValue = (*_BACnetConstructedDat
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingOutputFeedbackValue)(nil)
 
 // NewBACnetConstructedDataLightingOutputFeedbackValue factory function for _BACnetConstructedDataLightingOutputFeedbackValue
-func NewBACnetConstructedDataLightingOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputFeedbackValue {
+func NewBACnetConstructedDataLightingOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetApplicationTagReal) *_BACnetConstructedDataLightingOutputFeedbackValue {
 	if feedbackValue == nil {
 		panic("feedbackValue of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputFeedbackValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataLightingOutputFeedbackValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FeedbackValue:                 feedbackValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

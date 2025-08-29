@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBackupFailureTimeout = (*_BACnetConstructedDataBackup
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBackupFailureTimeout)(nil)
 
 // NewBACnetConstructedDataBackupFailureTimeout factory function for _BACnetConstructedDataBackupFailureTimeout
-func NewBACnetConstructedDataBackupFailureTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupFailureTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupFailureTimeout {
+func NewBACnetConstructedDataBackupFailureTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupFailureTimeout BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataBackupFailureTimeout {
 	if backupFailureTimeout == nil {
 		panic("backupFailureTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBackupFailureTimeout must not be nil")
 	}
 	_result := &_BACnetConstructedDataBackupFailureTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BackupFailureTimeout:          backupFailureTimeout,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

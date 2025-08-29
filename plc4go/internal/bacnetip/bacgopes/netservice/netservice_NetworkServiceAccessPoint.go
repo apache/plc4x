@@ -785,7 +785,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 		}
 
 		// try to find a path to the network
-		xnpdu := model.NewNLMWhoIsRouterToNetwork(dnet, 0)
+		xnpdu := model.NewNLMWhoIsRouterToNetwork(dnet)
 		pduDestination := NewLocalBroadcast(nil)
 
 		// send it to all the connected adapters

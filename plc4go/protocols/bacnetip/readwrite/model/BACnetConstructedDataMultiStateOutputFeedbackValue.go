@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMultiStateOutputFeedbackValue = (*_BACnetConstructedD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateOutputFeedbackValue)(nil)
 
 // NewBACnetConstructedDataMultiStateOutputFeedbackValue factory function for _BACnetConstructedDataMultiStateOutputFeedbackValue
-func NewBACnetConstructedDataMultiStateOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputFeedbackValue {
+func NewBACnetConstructedDataMultiStateOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataMultiStateOutputFeedbackValue {
 	if feedbackValue == nil {
 		panic("feedbackValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMultiStateOutputFeedbackValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataMultiStateOutputFeedbackValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FeedbackValue:                 feedbackValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

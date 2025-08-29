@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAckedTransitions = (*_BACnetConstructedDataAckedTrans
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAckedTransitions)(nil)
 
 // NewBACnetConstructedDataAckedTransitions factory function for _BACnetConstructedDataAckedTransitions
-func NewBACnetConstructedDataAckedTransitions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ackedTransitions BACnetEventTransitionBitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAckedTransitions {
+func NewBACnetConstructedDataAckedTransitions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ackedTransitions BACnetEventTransitionBitsTagged) *_BACnetConstructedDataAckedTransitions {
 	if ackedTransitions == nil {
 		panic("ackedTransitions of type BACnetEventTransitionBitsTagged for BACnetConstructedDataAckedTransitions must not be nil")
 	}
 	_result := &_BACnetConstructedDataAckedTransitions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AckedTransitions:              ackedTransitions,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

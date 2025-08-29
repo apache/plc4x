@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPositiveIntegerValueCOVIncrement = (*_BACnetConstruct
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueCOVIncrement)(nil)
 
 // NewBACnetConstructedDataPositiveIntegerValueCOVIncrement factory function for _BACnetConstructedDataPositiveIntegerValueCOVIncrement
-func NewBACnetConstructedDataPositiveIntegerValueCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueCOVIncrement {
+func NewBACnetConstructedDataPositiveIntegerValueCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueCOVIncrement {
 	if covIncrement == nil {
 		panic("covIncrement of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueCOVIncrement must not be nil")
 	}
 	_result := &_BACnetConstructedDataPositiveIntegerValueCOVIncrement{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CovIncrement:                  covIncrement,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

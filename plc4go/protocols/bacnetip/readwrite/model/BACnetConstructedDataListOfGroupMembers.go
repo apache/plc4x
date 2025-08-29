@@ -59,9 +59,9 @@ var _ BACnetConstructedDataListOfGroupMembers = (*_BACnetConstructedDataListOfGr
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataListOfGroupMembers)(nil)
 
 // NewBACnetConstructedDataListOfGroupMembers factory function for _BACnetConstructedDataListOfGroupMembers
-func NewBACnetConstructedDataListOfGroupMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, listOfGroupMembers []BACnetReadAccessSpecification, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataListOfGroupMembers {
+func NewBACnetConstructedDataListOfGroupMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, listOfGroupMembers []BACnetReadAccessSpecification) *_BACnetConstructedDataListOfGroupMembers {
 	_result := &_BACnetConstructedDataListOfGroupMembers{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ListOfGroupMembers:            listOfGroupMembers,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

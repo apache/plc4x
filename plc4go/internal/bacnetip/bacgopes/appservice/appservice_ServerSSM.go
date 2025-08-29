@@ -284,7 +284,7 @@ func (s *ServerSSM) abort(reason readWriteModel.BACnetAbortReason) (PDU, error) 
 	}
 
 	// build an abort _PDU to return
-	abortApdu := readWriteModel.NewAPDUAbort(true, s.invokeId, readWriteModel.NewBACnetAbortReasonTagged(reason, uint32(reason), 0), 0)
+	abortApdu := readWriteModel.NewAPDUAbort(true, s.invokeId, readWriteModel.NewBACnetAbortReasonTagged(0, reason, uint32(reason)))
 	// return it
 	return NewPDU(NoArgs, NoKWArgs(), WithRootMessage(abortApdu)), nil
 }
@@ -388,7 +388,7 @@ func (s *ServerSSM) idle(apdu PDU) error {
 	}
 
 	// send back a segment ack
-	segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize, 0)
+	segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize)
 	s.log.Debug().Stringer("segack", segack).Msg("segAck")
 	return s.Response(NA(NewPDU(NoArgs, NoKWArgs(), WithRootMessage(segack))), NoKWArgs())
 }
@@ -446,7 +446,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 		s.RestartTimer(s.segmentTimeout)
 
 		// send back a segment ack
-		segack := readWriteModel.NewAPDUSegmentAck(true, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize, 0)
+		segack := readWriteModel.NewAPDUSegmentAck(true, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize)
 		return s.Response(NA(NewPDU(NoArgs, NoKWArgs(), WithRootMessage(segack))), NoKWArgs())
 	}
 
@@ -463,7 +463,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 		s.log.Debug().Msg("No more follows")
 
 		// send back the final segment ack
-		segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.lastSequenceNumber, *s.actualWindowSize, 0)
+		segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.lastSequenceNumber, *s.actualWindowSize)
 		if err := s.Response(NA(NewPDU(NoArgs, NoKWArgs(), WithRootMessage(segack))), NoKWArgs()); err != nil {
 			s.log.Debug().Err(err).Msg("error sending response")
 		}
@@ -491,7 +491,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 		s.RestartTimer(s.segmentTimeout)
 
 		// send back a segment ack
-		segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize, 0)
+		segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize)
 		if err := s.Response(NA(NewPDU(NoArgs, NoKWArgs(), WithRootMessage(segack))), NoKWArgs()); err != nil {
 			s.log.Debug().Err(err).Msg("error sending response")
 		}

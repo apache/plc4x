@@ -395,7 +395,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeParseWithBufferProducer[T BACnet
 }
 
 func BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer[T BACnetConfirmedServiceRequestReadRangeRange](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetConfirmedServiceRequestReadRangeRange{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetConfirmedServiceRequestReadRangeRange)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

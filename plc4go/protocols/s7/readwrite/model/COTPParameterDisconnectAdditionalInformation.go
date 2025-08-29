@@ -59,9 +59,9 @@ var _ COTPParameterDisconnectAdditionalInformation = (*_COTPParameterDisconnectA
 var _ COTPParameterRequirements = (*_COTPParameterDisconnectAdditionalInformation)(nil)
 
 // NewCOTPParameterDisconnectAdditionalInformation factory function for _COTPParameterDisconnectAdditionalInformation
-func NewCOTPParameterDisconnectAdditionalInformation(data []byte, rest uint8) *_COTPParameterDisconnectAdditionalInformation {
+func NewCOTPParameterDisconnectAdditionalInformation(data []byte) *_COTPParameterDisconnectAdditionalInformation {
 	_result := &_COTPParameterDisconnectAdditionalInformation{
-		COTPParameterContract: NewCOTPParameter(rest),
+		COTPParameterContract: NewCOTPParameter(),
 		Data:                  data,
 	}
 	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result

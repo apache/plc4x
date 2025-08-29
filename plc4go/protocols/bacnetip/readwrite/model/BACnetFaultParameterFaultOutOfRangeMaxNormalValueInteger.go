@@ -59,12 +59,12 @@ var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger = (*_BACnetFaultP
 var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueRequirements = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger)(nil)
 
 // NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger factory function for _BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
-func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, integerValue BACnetApplicationTagSignedInteger, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger {
+func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, integerValue BACnetApplicationTagSignedInteger) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger {
 	if integerValue == nil {
 		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger must not be nil")
 	}
 	_result := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger{
-		BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag),
 		IntegerValue: integerValue,
 	}
 	_result.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = _result

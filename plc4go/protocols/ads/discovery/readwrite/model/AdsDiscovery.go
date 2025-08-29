@@ -304,7 +304,7 @@ func AdsDiscoveryParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
-	v, err := (&_AdsDiscovery{}).parse(ctx, readBuffer)
+	v, err := (new(_AdsDiscovery)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

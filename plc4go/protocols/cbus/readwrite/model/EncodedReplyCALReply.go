@@ -59,12 +59,12 @@ var _ EncodedReplyCALReply = (*_EncodedReplyCALReply)(nil)
 var _ EncodedReplyRequirements = (*_EncodedReplyCALReply)(nil)
 
 // NewEncodedReplyCALReply factory function for _EncodedReplyCALReply
-func NewEncodedReplyCALReply(peekedByte byte, calReply CALReply, cBusOptions CBusOptions, requestContext RequestContext) *_EncodedReplyCALReply {
+func NewEncodedReplyCALReply(requestContext RequestContext, peekedByte byte, calReply CALReply) *_EncodedReplyCALReply {
 	if calReply == nil {
 		panic("calReply of type CALReply for EncodedReplyCALReply must not be nil")
 	}
 	_result := &_EncodedReplyCALReply{
-		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
+		EncodedReplyContract: NewEncodedReply(requestContext, peekedByte),
 		CalReply:             calReply,
 	}
 	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result

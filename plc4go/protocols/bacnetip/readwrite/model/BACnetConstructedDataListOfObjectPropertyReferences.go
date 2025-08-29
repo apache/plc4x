@@ -59,9 +59,9 @@ var _ BACnetConstructedDataListOfObjectPropertyReferences = (*_BACnetConstructed
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataListOfObjectPropertyReferences)(nil)
 
 // NewBACnetConstructedDataListOfObjectPropertyReferences factory function for _BACnetConstructedDataListOfObjectPropertyReferences
-func NewBACnetConstructedDataListOfObjectPropertyReferences(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, references []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataListOfObjectPropertyReferences {
+func NewBACnetConstructedDataListOfObjectPropertyReferences(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, references []BACnetDeviceObjectPropertyReference) *_BACnetConstructedDataListOfObjectPropertyReferences {
 	_result := &_BACnetConstructedDataListOfObjectPropertyReferences{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		References:                    references,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

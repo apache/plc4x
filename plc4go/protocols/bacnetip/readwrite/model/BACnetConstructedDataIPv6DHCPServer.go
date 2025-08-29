@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPv6DHCPServer = (*_BACnetConstructedDataIPv6DHCPServ
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6DHCPServer)(nil)
 
 // NewBACnetConstructedDataIPv6DHCPServer factory function for _BACnetConstructedDataIPv6DHCPServer
-func NewBACnetConstructedDataIPv6DHCPServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dhcpServer BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DHCPServer {
+func NewBACnetConstructedDataIPv6DHCPServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dhcpServer BACnetApplicationTagOctetString) *_BACnetConstructedDataIPv6DHCPServer {
 	if dhcpServer == nil {
 		panic("dhcpServer of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6DHCPServer must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPv6DHCPServer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DhcpServer:                    dhcpServer,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

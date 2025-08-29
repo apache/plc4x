@@ -68,9 +68,9 @@ var _ ApduDataExtPropertyValueRead = (*_ApduDataExtPropertyValueRead)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyValueRead)(nil)
 
 // NewApduDataExtPropertyValueRead factory function for _ApduDataExtPropertyValueRead
-func NewApduDataExtPropertyValueRead(objectIndex uint8, propertyId uint8, count uint8, index uint16, length uint8) *_ApduDataExtPropertyValueRead {
+func NewApduDataExtPropertyValueRead(objectIndex uint8, propertyId uint8, count uint8, index uint16) *_ApduDataExtPropertyValueRead {
 	_result := &_ApduDataExtPropertyValueRead{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 		ObjectIndex:         objectIndex,
 		PropertyId:          propertyId,
 		Count:               count,

@@ -59,12 +59,12 @@ var _ BACnetPropertyAccessResultAccessResultPropertyValue = (*_BACnetPropertyAcc
 var _ BACnetPropertyAccessResultAccessResultRequirements = (*_BACnetPropertyAccessResultAccessResultPropertyValue)(nil)
 
 // NewBACnetPropertyAccessResultAccessResultPropertyValue factory function for _BACnetPropertyAccessResultAccessResultPropertyValue
-func NewBACnetPropertyAccessResultAccessResultPropertyValue(peekedTagHeader BACnetTagHeader, propertyValue BACnetConstructedData, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResultPropertyValue {
+func NewBACnetPropertyAccessResultAccessResultPropertyValue(peekedTagHeader BACnetTagHeader, propertyValue BACnetConstructedData) *_BACnetPropertyAccessResultAccessResultPropertyValue {
 	if propertyValue == nil {
 		panic("propertyValue of type BACnetConstructedData for BACnetPropertyAccessResultAccessResultPropertyValue must not be nil")
 	}
 	_result := &_BACnetPropertyAccessResultAccessResultPropertyValue{
-		BACnetPropertyAccessResultAccessResultContract: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
+		BACnetPropertyAccessResultAccessResultContract: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader),
 		PropertyValue: propertyValue,
 	}
 	_result.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = _result

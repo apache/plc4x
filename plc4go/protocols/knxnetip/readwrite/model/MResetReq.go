@@ -54,9 +54,9 @@ var _ MResetReq = (*_MResetReq)(nil)
 var _ CEMIRequirements = (*_MResetReq)(nil)
 
 // NewMResetReq factory function for _MResetReq
-func NewMResetReq(size uint16) *_MResetReq {
+func NewMResetReq() *_MResetReq {
 	_result := &_MResetReq{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result

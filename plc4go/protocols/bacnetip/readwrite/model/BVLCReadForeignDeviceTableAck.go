@@ -55,16 +55,13 @@ type BVLCReadForeignDeviceTableAck interface {
 type _BVLCReadForeignDeviceTableAck struct {
 	BVLCContract
 	Table []BVLCForeignDeviceTableEntry
-
-	// Arguments.
-	BvlcPayloadLength uint16
 }
 
 var _ BVLCReadForeignDeviceTableAck = (*_BVLCReadForeignDeviceTableAck)(nil)
 var _ BVLCRequirements = (*_BVLCReadForeignDeviceTableAck)(nil)
 
 // NewBVLCReadForeignDeviceTableAck factory function for _BVLCReadForeignDeviceTableAck
-func NewBVLCReadForeignDeviceTableAck(table []BVLCForeignDeviceTableEntry, bvlcPayloadLength uint16) *_BVLCReadForeignDeviceTableAck {
+func NewBVLCReadForeignDeviceTableAck(table []BVLCForeignDeviceTableEntry) *_BVLCReadForeignDeviceTableAck {
 	_result := &_BVLCReadForeignDeviceTableAck{
 		BVLCContract: NewBVLC(),
 		Table:        table,
@@ -85,8 +82,6 @@ type BVLCReadForeignDeviceTableAckBuilder interface {
 	WithMandatoryFields(table []BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder
 	// WithTable adds Table (property field)
 	WithTable(...BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder
-	// WithArgBvlcPayloadLength sets a parser argument
-	WithArgBvlcPayloadLength(uint16) BVLCReadForeignDeviceTableAckBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BVLCBuilder
 	// Build builds the BVLCReadForeignDeviceTableAck or returns an error if something is wrong
@@ -121,11 +116,6 @@ func (b *_BVLCReadForeignDeviceTableAckBuilder) WithMandatoryFields(table []BVLC
 
 func (b *_BVLCReadForeignDeviceTableAckBuilder) WithTable(table ...BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder {
 	b.Table = table
-	return b
-}
-
-func (b *_BVLCReadForeignDeviceTableAckBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength uint16) BVLCReadForeignDeviceTableAckBuilder {
-	b.BvlcPayloadLength = bvlcPayloadLength
 	return b
 }
 
@@ -294,16 +284,6 @@ func (m *_BVLCReadForeignDeviceTableAck) SerializeWithWriteBuffer(ctx context.Co
 	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_BVLCReadForeignDeviceTableAck) GetBvlcPayloadLength() uint16 {
-	return m.BvlcPayloadLength
-}
-
-//
-////
-
 func (m *_BVLCReadForeignDeviceTableAck) IsBVLCReadForeignDeviceTableAck() {}
 
 func (m *_BVLCReadForeignDeviceTableAck) DeepCopy() any {
@@ -317,7 +297,6 @@ func (m *_BVLCReadForeignDeviceTableAck) deepCopy() *_BVLCReadForeignDeviceTable
 	_BVLCReadForeignDeviceTableAckCopy := &_BVLCReadForeignDeviceTableAck{
 		m.BVLCContract.(*_BVLC).deepCopy(),
 		utils.DeepCopySlice[BVLCForeignDeviceTableEntry, BVLCForeignDeviceTableEntry](m.Table),
-		m.BvlcPayloadLength,
 	}
 	_BVLCReadForeignDeviceTableAckCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCReadForeignDeviceTableAckCopy

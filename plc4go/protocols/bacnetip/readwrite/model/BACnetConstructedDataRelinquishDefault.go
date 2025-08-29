@@ -61,12 +61,12 @@ var _ BACnetConstructedDataRelinquishDefault = (*_BACnetConstructedDataRelinquis
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRelinquishDefault)(nil)
 
 // NewBACnetConstructedDataRelinquishDefault factory function for _BACnetConstructedDataRelinquishDefault
-func NewBACnetConstructedDataRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRelinquishDefault {
+func NewBACnetConstructedDataRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataRelinquishDefault {
 	if relinquishDefault == nil {
 		panic("relinquishDefault of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRelinquishDefault must not be nil")
 	}
 	_result := &_BACnetConstructedDataRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RelinquishDefault:             relinquishDefault,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

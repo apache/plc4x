@@ -54,9 +54,9 @@ var _ ApduDataIndividualAddressResponse = (*_ApduDataIndividualAddressResponse)(
 var _ ApduDataRequirements = (*_ApduDataIndividualAddressResponse)(nil)
 
 // NewApduDataIndividualAddressResponse factory function for _ApduDataIndividualAddressResponse
-func NewApduDataIndividualAddressResponse(dataLength uint8) *_ApduDataIndividualAddressResponse {
+func NewApduDataIndividualAddressResponse() *_ApduDataIndividualAddressResponse {
 	_result := &_ApduDataIndividualAddressResponse{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result

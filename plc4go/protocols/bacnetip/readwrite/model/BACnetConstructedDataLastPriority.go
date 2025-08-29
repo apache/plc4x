@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLastPriority = (*_BACnetConstructedDataLastPriority)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastPriority)(nil)
 
 // NewBACnetConstructedDataLastPriority factory function for _BACnetConstructedDataLastPriority
-func NewBACnetConstructedDataLastPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastPriority BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastPriority {
+func NewBACnetConstructedDataLastPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastPriority BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataLastPriority {
 	if lastPriority == nil {
 		panic("lastPriority of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLastPriority must not be nil")
 	}
 	_result := &_BACnetConstructedDataLastPriority{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LastPriority:                  lastPriority,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

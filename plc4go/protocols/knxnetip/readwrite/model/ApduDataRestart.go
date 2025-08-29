@@ -54,9 +54,9 @@ var _ ApduDataRestart = (*_ApduDataRestart)(nil)
 var _ ApduDataRequirements = (*_ApduDataRestart)(nil)
 
 // NewApduDataRestart factory function for _ApduDataRestart
-func NewApduDataRestart(dataLength uint8) *_ApduDataRestart {
+func NewApduDataRestart() *_ApduDataRestart {
 	_result := &_ApduDataRestart{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result

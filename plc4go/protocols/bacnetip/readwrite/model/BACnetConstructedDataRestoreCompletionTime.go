@@ -61,12 +61,12 @@ var _ BACnetConstructedDataRestoreCompletionTime = (*_BACnetConstructedDataResto
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRestoreCompletionTime)(nil)
 
 // NewBACnetConstructedDataRestoreCompletionTime factory function for _BACnetConstructedDataRestoreCompletionTime
-func NewBACnetConstructedDataRestoreCompletionTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, completionTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestoreCompletionTime {
+func NewBACnetConstructedDataRestoreCompletionTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, completionTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataRestoreCompletionTime {
 	if completionTime == nil {
 		panic("completionTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRestoreCompletionTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataRestoreCompletionTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CompletionTime:                completionTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDateTimeValuePresentValue = (*_BACnetConstructedDataD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDateTimeValuePresentValue)(nil)
 
 // NewBACnetConstructedDataDateTimeValuePresentValue factory function for _BACnetConstructedDataDateTimeValuePresentValue
-func NewBACnetConstructedDataDateTimeValuePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateTimeValuePresentValue {
+func NewBACnetConstructedDataDateTimeValuePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetDateTime) *_BACnetConstructedDataDateTimeValuePresentValue {
 	if presentValue == nil {
 		panic("presentValue of type BACnetDateTime for BACnetConstructedDataDateTimeValuePresentValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataDateTimeValuePresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PresentValue:                  presentValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

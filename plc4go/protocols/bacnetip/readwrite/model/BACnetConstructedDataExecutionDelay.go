@@ -64,9 +64,9 @@ var _ BACnetConstructedDataExecutionDelay = (*_BACnetConstructedDataExecutionDel
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExecutionDelay)(nil)
 
 // NewBACnetConstructedDataExecutionDelay factory function for _BACnetConstructedDataExecutionDelay
-func NewBACnetConstructedDataExecutionDelay(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, executionDelay []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExecutionDelay {
+func NewBACnetConstructedDataExecutionDelay(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, executionDelay []BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataExecutionDelay {
 	_result := &_BACnetConstructedDataExecutionDelay{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		ExecutionDelay:                executionDelay,
 	}

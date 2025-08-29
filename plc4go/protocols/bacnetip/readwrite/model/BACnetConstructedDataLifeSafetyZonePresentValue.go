@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLifeSafetyZonePresentValue = (*_BACnetConstructedData
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLifeSafetyZonePresentValue)(nil)
 
 // NewBACnetConstructedDataLifeSafetyZonePresentValue factory function for _BACnetConstructedDataLifeSafetyZonePresentValue
-func NewBACnetConstructedDataLifeSafetyZonePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetLifeSafetyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyZonePresentValue {
+func NewBACnetConstructedDataLifeSafetyZonePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetLifeSafetyStateTagged) *_BACnetConstructedDataLifeSafetyZonePresentValue {
 	if presentValue == nil {
 		panic("presentValue of type BACnetLifeSafetyStateTagged for BACnetConstructedDataLifeSafetyZonePresentValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataLifeSafetyZonePresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PresentValue:                  presentValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

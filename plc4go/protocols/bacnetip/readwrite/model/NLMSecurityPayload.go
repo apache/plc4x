@@ -62,9 +62,9 @@ var _ NLMSecurityPayload = (*_NLMSecurityPayload)(nil)
 var _ NLMRequirements = (*_NLMSecurityPayload)(nil)
 
 // NewNLMSecurityPayload factory function for _NLMSecurityPayload
-func NewNLMSecurityPayload(payloadLength uint16, payload []byte, apduLength uint16) *_NLMSecurityPayload {
+func NewNLMSecurityPayload(payloadLength uint16, payload []byte) *_NLMSecurityPayload {
 	_result := &_NLMSecurityPayload{
-		NLMContract:   NewNLM(apduLength),
+		NLMContract:   NewNLM(),
 		PayloadLength: payloadLength,
 		Payload:       payload,
 	}

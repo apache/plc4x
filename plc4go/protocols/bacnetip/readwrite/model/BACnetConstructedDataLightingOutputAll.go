@@ -54,9 +54,9 @@ var _ BACnetConstructedDataLightingOutputAll = (*_BACnetConstructedDataLightingO
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingOutputAll)(nil)
 
 // NewBACnetConstructedDataLightingOutputAll factory function for _BACnetConstructedDataLightingOutputAll
-func NewBACnetConstructedDataLightingOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputAll {
+func NewBACnetConstructedDataLightingOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataLightingOutputAll {
 	_result := &_BACnetConstructedDataLightingOutputAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

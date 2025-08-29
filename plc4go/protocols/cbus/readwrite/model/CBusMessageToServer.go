@@ -59,12 +59,12 @@ var _ CBusMessageToServer = (*_CBusMessageToServer)(nil)
 var _ CBusMessageRequirements = (*_CBusMessageToServer)(nil)
 
 // NewCBusMessageToServer factory function for _CBusMessageToServer
-func NewCBusMessageToServer(request Request, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToServer {
+func NewCBusMessageToServer(request Request) *_CBusMessageToServer {
 	if request == nil {
 		panic("request of type Request for CBusMessageToServer must not be nil")
 	}
 	_result := &_CBusMessageToServer{
-		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
+		CBusMessageContract: NewCBusMessage(),
 		Request:             request,
 	}
 	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result

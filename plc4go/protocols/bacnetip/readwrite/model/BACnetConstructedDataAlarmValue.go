@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAlarmValue = (*_BACnetConstructedDataAlarmValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAlarmValue)(nil)
 
 // NewBACnetConstructedDataAlarmValue factory function for _BACnetConstructedDataAlarmValue
-func NewBACnetConstructedDataAlarmValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, binaryPv BACnetBinaryPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlarmValue {
+func NewBACnetConstructedDataAlarmValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, binaryPv BACnetBinaryPVTagged) *_BACnetConstructedDataAlarmValue {
 	if binaryPv == nil {
 		panic("binaryPv of type BACnetBinaryPVTagged for BACnetConstructedDataAlarmValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataAlarmValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BinaryPv:                      binaryPv,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTrendLogLogDeviceObjectProperty = (*_BACnetConstructe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogLogDeviceObjectProperty)(nil)
 
 // NewBACnetConstructedDataTrendLogLogDeviceObjectProperty factory function for _BACnetConstructedDataTrendLogLogDeviceObjectProperty
-func NewBACnetConstructedDataTrendLogLogDeviceObjectProperty(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logDeviceObjectProperty BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogLogDeviceObjectProperty {
+func NewBACnetConstructedDataTrendLogLogDeviceObjectProperty(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logDeviceObjectProperty BACnetDeviceObjectPropertyReference) *_BACnetConstructedDataTrendLogLogDeviceObjectProperty {
 	if logDeviceObjectProperty == nil {
 		panic("logDeviceObjectProperty of type BACnetDeviceObjectPropertyReference for BACnetConstructedDataTrendLogLogDeviceObjectProperty must not be nil")
 	}
 	_result := &_BACnetConstructedDataTrendLogLogDeviceObjectProperty{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LogDeviceObjectProperty:       logDeviceObjectProperty,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

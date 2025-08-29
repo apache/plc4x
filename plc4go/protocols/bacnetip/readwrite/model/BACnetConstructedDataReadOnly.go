@@ -61,12 +61,12 @@ var _ BACnetConstructedDataReadOnly = (*_BACnetConstructedDataReadOnly)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReadOnly)(nil)
 
 // NewBACnetConstructedDataReadOnly factory function for _BACnetConstructedDataReadOnly
-func NewBACnetConstructedDataReadOnly(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, readOnly BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReadOnly {
+func NewBACnetConstructedDataReadOnly(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, readOnly BACnetApplicationTagBoolean) *_BACnetConstructedDataReadOnly {
 	if readOnly == nil {
 		panic("readOnly of type BACnetApplicationTagBoolean for BACnetConstructedDataReadOnly must not be nil")
 	}
 	_result := &_BACnetConstructedDataReadOnly{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ReadOnly:                      readOnly,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

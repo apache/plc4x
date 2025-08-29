@@ -83,9 +83,9 @@ var _ ApduDataExtPropertyDescriptionResponse = (*_ApduDataExtPropertyDescription
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyDescriptionResponse)(nil)
 
 // NewApduDataExtPropertyDescriptionResponse factory function for _ApduDataExtPropertyDescriptionResponse
-func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel, length uint8) *_ApduDataExtPropertyDescriptionResponse {
+func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel) *_ApduDataExtPropertyDescriptionResponse {
 	_result := &_ApduDataExtPropertyDescriptionResponse{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 		ObjectIndex:         objectIndex,
 		PropertyId:          propertyId,
 		Index:               index,

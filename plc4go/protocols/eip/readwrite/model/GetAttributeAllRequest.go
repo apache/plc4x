@@ -62,7 +62,7 @@ var _ GetAttributeAllRequest = (*_GetAttributeAllRequest)(nil)
 var _ CipServiceRequirements = (*_GetAttributeAllRequest)(nil)
 
 // NewGetAttributeAllRequest factory function for _GetAttributeAllRequest
-func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSegment, serviceLen uint16) *_GetAttributeAllRequest {
+func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSegment) *_GetAttributeAllRequest {
 	if classSegment == nil {
 		panic("classSegment of type PathSegment for GetAttributeAllRequest must not be nil")
 	}
@@ -70,7 +70,7 @@ func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSeg
 		panic("instanceSegment of type PathSegment for GetAttributeAllRequest must not be nil")
 	}
 	_result := &_GetAttributeAllRequest{
-		CipServiceContract: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(),
 		ClassSegment:       classSegment,
 		InstanceSegment:    instanceSegment,
 	}

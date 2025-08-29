@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAccumulatorLowLimit = (*_BACnetConstructedDataAccumul
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccumulatorLowLimit)(nil)
 
 // NewBACnetConstructedDataAccumulatorLowLimit factory function for _BACnetConstructedDataAccumulatorLowLimit
-func NewBACnetConstructedDataAccumulatorLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorLowLimit {
+func NewBACnetConstructedDataAccumulatorLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowLimit BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataAccumulatorLowLimit {
 	if lowLimit == nil {
 		panic("lowLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccumulatorLowLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataAccumulatorLowLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LowLimit:                      lowLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

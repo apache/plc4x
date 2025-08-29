@@ -54,20 +54,16 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged 
 type _BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged = (*_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged)(nil)
 
 // NewBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged factory function for _BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
-func NewBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, tagNumber uint8, tagClass TagClass) *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged {
+func NewBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged must not be nil")
 	}
-	return &_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedB
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder
 	// Build builds the BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTa
 
 func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedP
 }
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged, error) {
-	v, err := (&_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTa
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) IsBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged() {
 }
 
@@ -344,8 +314,6 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTa
 	_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedCopy := &_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedCopy
 }

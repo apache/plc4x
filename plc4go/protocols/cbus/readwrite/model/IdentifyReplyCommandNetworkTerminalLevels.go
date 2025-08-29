@@ -59,9 +59,9 @@ var _ IdentifyReplyCommandNetworkTerminalLevels = (*_IdentifyReplyCommandNetwork
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandNetworkTerminalLevels)(nil)
 
 // NewIdentifyReplyCommandNetworkTerminalLevels factory function for _IdentifyReplyCommandNetworkTerminalLevels
-func NewIdentifyReplyCommandNetworkTerminalLevels(networkTerminalLevels []byte, numBytes uint8) *_IdentifyReplyCommandNetworkTerminalLevels {
+func NewIdentifyReplyCommandNetworkTerminalLevels(networkTerminalLevels []byte) *_IdentifyReplyCommandNetworkTerminalLevels {
 	_result := &_IdentifyReplyCommandNetworkTerminalLevels{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		NetworkTerminalLevels:        networkTerminalLevels,
 	}
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result

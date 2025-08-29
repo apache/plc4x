@@ -206,7 +206,7 @@ func CIPDataConnectedParseWithBufferProducer() func(ctx context.Context, readBuf
 }
 
 func CIPDataConnectedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPDataConnected, error) {
-	v, err := (&_CIPDataConnected{}).parse(ctx, readBuffer)
+	v, err := (new(_CIPDataConnected)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

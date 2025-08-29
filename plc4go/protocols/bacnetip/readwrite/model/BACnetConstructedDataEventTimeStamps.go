@@ -70,9 +70,9 @@ var _ BACnetConstructedDataEventTimeStamps = (*_BACnetConstructedDataEventTimeSt
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventTimeStamps)(nil)
 
 // NewBACnetConstructedDataEventTimeStamps factory function for _BACnetConstructedDataEventTimeStamps
-func NewBACnetConstructedDataEventTimeStamps(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, eventTimeStamps []BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventTimeStamps {
+func NewBACnetConstructedDataEventTimeStamps(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, eventTimeStamps []BACnetTimeStamp) *_BACnetConstructedDataEventTimeStamps {
 	_result := &_BACnetConstructedDataEventTimeStamps{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		EventTimeStamps:               eventTimeStamps,
 	}

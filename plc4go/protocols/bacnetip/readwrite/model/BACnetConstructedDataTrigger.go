@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTrigger = (*_BACnetConstructedDataTrigger)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrigger)(nil)
 
 // NewBACnetConstructedDataTrigger factory function for _BACnetConstructedDataTrigger
-func NewBACnetConstructedDataTrigger(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, trigger BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrigger {
+func NewBACnetConstructedDataTrigger(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, trigger BACnetApplicationTagBoolean) *_BACnetConstructedDataTrigger {
 	if trigger == nil {
 		panic("trigger of type BACnetApplicationTagBoolean for BACnetConstructedDataTrigger must not be nil")
 	}
 	_result := &_BACnetConstructedDataTrigger{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Trigger:                       trigger,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

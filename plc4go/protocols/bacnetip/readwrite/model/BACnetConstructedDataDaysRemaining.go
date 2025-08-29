@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDaysRemaining = (*_BACnetConstructedDataDaysRemaining
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDaysRemaining)(nil)
 
 // NewBACnetConstructedDataDaysRemaining factory function for _BACnetConstructedDataDaysRemaining
-func NewBACnetConstructedDataDaysRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, daysRemaining BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaysRemaining {
+func NewBACnetConstructedDataDaysRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, daysRemaining BACnetApplicationTagSignedInteger) *_BACnetConstructedDataDaysRemaining {
 	if daysRemaining == nil {
 		panic("daysRemaining of type BACnetApplicationTagSignedInteger for BACnetConstructedDataDaysRemaining must not be nil")
 	}
 	_result := &_BACnetConstructedDataDaysRemaining{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DaysRemaining:                 daysRemaining,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

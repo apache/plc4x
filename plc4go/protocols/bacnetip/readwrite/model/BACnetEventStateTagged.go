@@ -59,20 +59,16 @@ type _BACnetEventStateTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetEventState
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetEventStateTagged = (*_BACnetEventStateTagged)(nil)
 
 // NewBACnetEventStateTagged factory function for _BACnetEventStateTagged
-func NewBACnetEventStateTagged(header BACnetTagHeader, value BACnetEventState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEventStateTagged {
+func NewBACnetEventStateTagged(header BACnetTagHeader, value BACnetEventState, proprietaryValue uint32) *_BACnetEventStateTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetEventStateTagged must not be nil")
 	}
-	return &_BACnetEventStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetEventStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetEventStateTaggedBuilder interface {
 	WithValue(BACnetEventState) BACnetEventStateTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetEventStateTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetEventStateTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetEventStateTaggedBuilder
 	// Build builds the BACnetEventStateTagged or returns an error if something is wrong
 	Build() (BACnetEventStateTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetEventStateTaggedBuilder) WithValue(value BACnetEventState) BACne
 
 func (b *_BACnetEventStateTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetEventStateTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetEventStateTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventStateTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetEventStateTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetEventStateTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetEventStateTaggedParseWithBufferProducer(tagNumber uint8, tagClass Tag
 }
 
 func BACnetEventStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetEventStateTagged, error) {
-	v, err := (&_BACnetEventStateTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetEventStateTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetEventStateTagged) SerializeWithWriteBuffer(ctx context.Context, 
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetEventStateTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetEventStateTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetEventStateTagged) IsBACnetEventStateTagged() {}
 
 func (m *_BACnetEventStateTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetEventStateTagged) deepCopy() *_BACnetEventStateTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetEventStateTaggedCopy
 }

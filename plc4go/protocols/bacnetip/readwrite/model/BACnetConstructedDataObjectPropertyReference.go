@@ -61,12 +61,12 @@ var _ BACnetConstructedDataObjectPropertyReference = (*_BACnetConstructedDataObj
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataObjectPropertyReference)(nil)
 
 // NewBACnetConstructedDataObjectPropertyReference factory function for _BACnetConstructedDataObjectPropertyReference
-func NewBACnetConstructedDataObjectPropertyReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, propertyReference BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectPropertyReference {
+func NewBACnetConstructedDataObjectPropertyReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, propertyReference BACnetDeviceObjectPropertyReference) *_BACnetConstructedDataObjectPropertyReference {
 	if propertyReference == nil {
 		panic("propertyReference of type BACnetDeviceObjectPropertyReference for BACnetConstructedDataObjectPropertyReference must not be nil")
 	}
 	_result := &_BACnetConstructedDataObjectPropertyReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PropertyReference:             propertyReference,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

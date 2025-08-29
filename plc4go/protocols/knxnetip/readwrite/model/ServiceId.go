@@ -313,7 +313,7 @@ func ServiceIdParseWithBufferProducer[T ServiceId]() func(ctx context.Context, r
 }
 
 func ServiceIdParseWithBuffer[T ServiceId](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_ServiceId{}).parse(ctx, readBuffer)
+	v, err := (new(_ServiceId)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

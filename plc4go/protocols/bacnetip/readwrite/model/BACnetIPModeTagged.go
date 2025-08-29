@@ -54,20 +54,16 @@ type BACnetIPModeTagged interface {
 type _BACnetIPModeTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetIPMode
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetIPModeTagged = (*_BACnetIPModeTagged)(nil)
 
 // NewBACnetIPModeTagged factory function for _BACnetIPModeTagged
-func NewBACnetIPModeTagged(header BACnetTagHeader, value BACnetIPMode, tagNumber uint8, tagClass TagClass) *_BACnetIPModeTagged {
+func NewBACnetIPModeTagged(header BACnetTagHeader, value BACnetIPMode) *_BACnetIPModeTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetIPModeTagged must not be nil")
 	}
-	return &_BACnetIPModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetIPModeTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetIPModeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetIPModeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetIPMode) BACnetIPModeTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetIPModeTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetIPModeTaggedBuilder
 	// Build builds the BACnetIPModeTagged or returns an error if something is wrong
 	Build() (BACnetIPModeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetIPModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACn
 
 func (b *_BACnetIPModeTaggedBuilder) WithValue(value BACnetIPMode) BACnetIPModeTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetIPModeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetIPModeTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetIPModeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetIPModeTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetIPModeTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClas
 }
 
 func BACnetIPModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetIPModeTagged, error) {
-	v, err := (&_BACnetIPModeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetIPModeTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetIPModeTagged) SerializeWithWriteBuffer(ctx context.Context, writ
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetIPModeTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetIPModeTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetIPModeTagged) IsBACnetIPModeTagged() {}
 
 func (m *_BACnetIPModeTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetIPModeTagged) deepCopy() *_BACnetIPModeTagged {
 	_BACnetIPModeTaggedCopy := &_BACnetIPModeTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetIPModeTaggedCopy
 }

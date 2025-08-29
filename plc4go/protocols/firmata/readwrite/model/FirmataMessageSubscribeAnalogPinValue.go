@@ -66,9 +66,9 @@ var _ FirmataMessageSubscribeAnalogPinValue = (*_FirmataMessageSubscribeAnalogPi
 var _ FirmataMessageRequirements = (*_FirmataMessageSubscribeAnalogPinValue)(nil)
 
 // NewFirmataMessageSubscribeAnalogPinValue factory function for _FirmataMessageSubscribeAnalogPinValue
-func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool, response bool) *_FirmataMessageSubscribeAnalogPinValue {
+func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool) *_FirmataMessageSubscribeAnalogPinValue {
 	_result := &_FirmataMessageSubscribeAnalogPinValue{
-		FirmataMessageContract: NewFirmataMessage(response),
+		FirmataMessageContract: NewFirmataMessage(),
 		Pin:                    pin,
 		Enable:                 enable,
 	}

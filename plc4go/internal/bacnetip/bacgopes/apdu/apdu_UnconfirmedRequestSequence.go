@@ -74,7 +74,7 @@ func NewUnconfirmedRequestSequence(args Args, kwArgs KWArgs, options ...Option) 
 		panic("this should be set by NewConfirmedRequestPDU")
 		serviceRequest, _ := GAO[model.BACnetConfirmedServiceRequest](args, 0, nil)
 		if serviceRequest != nil {
-			apduConfirmedRequest := model.NewAPDUConfirmedRequest(false, false, false, model.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, model.MaxApduLengthAccepted_NUM_OCTETS_1476, 0, nil, nil, serviceRequest, nil, nil, 0)
+			apduConfirmedRequest := model.NewAPDUConfirmedRequest(false, false, false, model.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, model.MaxApduLengthAccepted_NUM_OCTETS_1476, 0, nil, nil, serviceRequest, nil, nil)
 			u.SetRootMessage(apduConfirmedRequest)
 		}
 	}

@@ -50,8 +50,6 @@ type COTPParameter interface {
 
 // COTPParameterContract provides a set of functions which can be overwritten by a sub struct
 type COTPParameterContract interface {
-	// GetRest() returns a parser argument
-	GetRest() uint8
 	// IsCOTPParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPParameter()
 	// CreateBuilder creates a COTPParameterBuilder
@@ -72,16 +70,13 @@ type _COTPParameter struct {
 		COTPParameterContract
 		COTPParameterRequirements
 	}
-
-	// Arguments.
-	Rest uint8
 }
 
 var _ COTPParameterContract = (*_COTPParameter)(nil)
 
 // NewCOTPParameter factory function for _COTPParameter
-func NewCOTPParameter(rest uint8) *_COTPParameter {
-	return &_COTPParameter{Rest: rest}
+func NewCOTPParameter() *_COTPParameter {
+	return &_COTPParameter{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,8 +89,6 @@ type COTPParameterBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() COTPParameterBuilder
-	// WithArgRest sets a parser argument
-	WithArgRest(uint8) COTPParameterBuilder
 	// AsCOTPParameterTpduSize converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
 	AsCOTPParameterTpduSize() COTPParameterTpduSizeBuilder
 	// AsCOTPParameterCallingTsap converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
@@ -138,11 +131,6 @@ type _COTPParameterBuilder struct {
 var _ (COTPParameterBuilder) = (*_COTPParameterBuilder)(nil)
 
 func (b *_COTPParameterBuilder) WithMandatoryFields() COTPParameterBuilder {
-	return b
-}
-
-func (b *_COTPParameterBuilder) WithArgRest(rest uint8) COTPParameterBuilder {
-	b.Rest = rest
 	return b
 }
 
@@ -304,7 +292,7 @@ func COTPParameterParseWithBufferProducer[T COTPParameter](rest uint8) func(ctx 
 }
 
 func COTPParameterParseWithBuffer[T COTPParameter](ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (T, error) {
-	v, err := (&_COTPParameter{Rest: rest}).parse(ctx, readBuffer, rest)
+	v, err := (new(_COTPParameter)).parse(ctx, readBuffer, rest)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -402,16 +390,6 @@ func (pm *_COTPParameter) serializeParent(ctx context.Context, writeBuffer utils
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_COTPParameter) GetRest() uint8 {
-	return m.Rest
-}
-
-//
-////
-
 func (m *_COTPParameter) IsCOTPParameter() {}
 
 func (m *_COTPParameter) DeepCopy() any {
@@ -424,7 +402,6 @@ func (m *_COTPParameter) deepCopy() *_COTPParameter {
 	}
 	_COTPParameterCopy := &_COTPParameter{
 		nil, // will be set by child
-		m.Rest,
 	}
 	return _COTPParameterCopy
 }

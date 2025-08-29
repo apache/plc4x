@@ -70,9 +70,9 @@ var _ BACnetConstructedDataEventMessageTexts = (*_BACnetConstructedDataEventMess
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventMessageTexts)(nil)
 
 // NewBACnetConstructedDataEventMessageTexts factory function for _BACnetConstructedDataEventMessageTexts
-func NewBACnetConstructedDataEventMessageTexts(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, eventMessageTexts []BACnetOptionalCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventMessageTexts {
+func NewBACnetConstructedDataEventMessageTexts(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, eventMessageTexts []BACnetOptionalCharacterString) *_BACnetConstructedDataEventMessageTexts {
 	_result := &_BACnetConstructedDataEventMessageTexts{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		EventMessageTexts:             eventMessageTexts,
 	}

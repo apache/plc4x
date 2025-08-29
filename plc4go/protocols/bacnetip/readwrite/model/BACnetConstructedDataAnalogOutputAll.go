@@ -54,9 +54,9 @@ var _ BACnetConstructedDataAnalogOutputAll = (*_BACnetConstructedDataAnalogOutpu
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogOutputAll)(nil)
 
 // NewBACnetConstructedDataAnalogOutputAll factory function for _BACnetConstructedDataAnalogOutputAll
-func NewBACnetConstructedDataAnalogOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogOutputAll {
+func NewBACnetConstructedDataAnalogOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataAnalogOutputAll {
 	_result := &_BACnetConstructedDataAnalogOutputAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

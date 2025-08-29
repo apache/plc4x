@@ -55,16 +55,13 @@ type BVLCDistributeBroadcastToNetwork interface {
 type _BVLCDistributeBroadcastToNetwork struct {
 	BVLCContract
 	Npdu NPDU
-
-	// Arguments.
-	BvlcPayloadLength uint16
 }
 
 var _ BVLCDistributeBroadcastToNetwork = (*_BVLCDistributeBroadcastToNetwork)(nil)
 var _ BVLCRequirements = (*_BVLCDistributeBroadcastToNetwork)(nil)
 
 // NewBVLCDistributeBroadcastToNetwork factory function for _BVLCDistributeBroadcastToNetwork
-func NewBVLCDistributeBroadcastToNetwork(npdu NPDU, bvlcPayloadLength uint16) *_BVLCDistributeBroadcastToNetwork {
+func NewBVLCDistributeBroadcastToNetwork(npdu NPDU) *_BVLCDistributeBroadcastToNetwork {
 	if npdu == nil {
 		panic("npdu of type NPDU for BVLCDistributeBroadcastToNetwork must not be nil")
 	}
@@ -90,8 +87,6 @@ type BVLCDistributeBroadcastToNetworkBuilder interface {
 	WithNpdu(NPDU) BVLCDistributeBroadcastToNetworkBuilder
 	// WithNpduBuilder adds Npdu (property field) which is build by the builder
 	WithNpduBuilder(func(NPDUBuilder) NPDUBuilder) BVLCDistributeBroadcastToNetworkBuilder
-	// WithArgBvlcPayloadLength sets a parser argument
-	WithArgBvlcPayloadLength(uint16) BVLCDistributeBroadcastToNetworkBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BVLCBuilder
 	// Build builds the BVLCDistributeBroadcastToNetwork or returns an error if something is wrong
@@ -136,11 +131,6 @@ func (b *_BVLCDistributeBroadcastToNetworkBuilder) WithNpduBuilder(builderSuppli
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NPDUBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BVLCDistributeBroadcastToNetworkBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength uint16) BVLCDistributeBroadcastToNetworkBuilder {
-	b.BvlcPayloadLength = bvlcPayloadLength
 	return b
 }
 
@@ -308,16 +298,6 @@ func (m *_BVLCDistributeBroadcastToNetwork) SerializeWithWriteBuffer(ctx context
 	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_BVLCDistributeBroadcastToNetwork) GetBvlcPayloadLength() uint16 {
-	return m.BvlcPayloadLength
-}
-
-//
-////
-
 func (m *_BVLCDistributeBroadcastToNetwork) IsBVLCDistributeBroadcastToNetwork() {}
 
 func (m *_BVLCDistributeBroadcastToNetwork) DeepCopy() any {
@@ -331,7 +311,6 @@ func (m *_BVLCDistributeBroadcastToNetwork) deepCopy() *_BVLCDistributeBroadcast
 	_BVLCDistributeBroadcastToNetworkCopy := &_BVLCDistributeBroadcastToNetwork{
 		m.BVLCContract.(*_BVLC).deepCopy(),
 		utils.DeepCopy[NPDU](m.Npdu),
-		m.BvlcPayloadLength,
 	}
 	_BVLCDistributeBroadcastToNetworkCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCDistributeBroadcastToNetworkCopy

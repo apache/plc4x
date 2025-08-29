@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDoorStatus = (*_BACnetConstructedDataDoorStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorStatus)(nil)
 
 // NewBACnetConstructedDataDoorStatus factory function for _BACnetConstructedDataDoorStatus
-func NewBACnetConstructedDataDoorStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorStatus BACnetDoorStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorStatus {
+func NewBACnetConstructedDataDoorStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorStatus BACnetDoorStatusTagged) *_BACnetConstructedDataDoorStatus {
 	if doorStatus == nil {
 		panic("doorStatus of type BACnetDoorStatusTagged for BACnetConstructedDataDoorStatus must not be nil")
 	}
 	_result := &_BACnetConstructedDataDoorStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DoorStatus:                    doorStatus,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

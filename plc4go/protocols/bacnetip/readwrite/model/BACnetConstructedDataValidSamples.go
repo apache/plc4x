@@ -61,12 +61,12 @@ var _ BACnetConstructedDataValidSamples = (*_BACnetConstructedDataValidSamples)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValidSamples)(nil)
 
 // NewBACnetConstructedDataValidSamples factory function for _BACnetConstructedDataValidSamples
-func NewBACnetConstructedDataValidSamples(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, validSamples BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValidSamples {
+func NewBACnetConstructedDataValidSamples(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, validSamples BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataValidSamples {
 	if validSamples == nil {
 		panic("validSamples of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataValidSamples must not be nil")
 	}
 	_result := &_BACnetConstructedDataValidSamples{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ValidSamples:                  validSamples,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -66,9 +66,9 @@ var _ FirmataMessageSubscribeDigitalPinValue = (*_FirmataMessageSubscribeDigital
 var _ FirmataMessageRequirements = (*_FirmataMessageSubscribeDigitalPinValue)(nil)
 
 // NewFirmataMessageSubscribeDigitalPinValue factory function for _FirmataMessageSubscribeDigitalPinValue
-func NewFirmataMessageSubscribeDigitalPinValue(pin uint8, enable bool, response bool) *_FirmataMessageSubscribeDigitalPinValue {
+func NewFirmataMessageSubscribeDigitalPinValue(pin uint8, enable bool) *_FirmataMessageSubscribeDigitalPinValue {
 	_result := &_FirmataMessageSubscribeDigitalPinValue{
-		FirmataMessageContract: NewFirmataMessage(response),
+		FirmataMessageContract: NewFirmataMessage(),
 		Pin:                    pin,
 		Enable:                 enable,
 	}

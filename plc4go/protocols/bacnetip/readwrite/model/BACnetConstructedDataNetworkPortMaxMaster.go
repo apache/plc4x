@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNetworkPortMaxMaster = (*_BACnetConstructedDataNetwor
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkPortMaxMaster)(nil)
 
 // NewBACnetConstructedDataNetworkPortMaxMaster factory function for _BACnetConstructedDataNetworkPortMaxMaster
-func NewBACnetConstructedDataNetworkPortMaxMaster(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxMaster BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkPortMaxMaster {
+func NewBACnetConstructedDataNetworkPortMaxMaster(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxMaster BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataNetworkPortMaxMaster {
 	if maxMaster == nil {
 		panic("maxMaster of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNetworkPortMaxMaster must not be nil")
 	}
 	_result := &_BACnetConstructedDataNetworkPortMaxMaster{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaxMaster:                     maxMaster,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

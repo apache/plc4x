@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCurrentCommandPriority = (*_BACnetConstructedDataCurr
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCurrentCommandPriority)(nil)
 
 // NewBACnetConstructedDataCurrentCommandPriority factory function for _BACnetConstructedDataCurrentCommandPriority
-func NewBACnetConstructedDataCurrentCommandPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, currentCommandPriority BACnetOptionalUnsigned, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCurrentCommandPriority {
+func NewBACnetConstructedDataCurrentCommandPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, currentCommandPriority BACnetOptionalUnsigned) *_BACnetConstructedDataCurrentCommandPriority {
 	if currentCommandPriority == nil {
 		panic("currentCommandPriority of type BACnetOptionalUnsigned for BACnetConstructedDataCurrentCommandPriority must not be nil")
 	}
 	_result := &_BACnetConstructedDataCurrentCommandPriority{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CurrentCommandPriority:        currentCommandPriority,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

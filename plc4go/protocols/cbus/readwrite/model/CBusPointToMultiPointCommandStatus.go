@@ -62,12 +62,12 @@ var _ CBusPointToMultiPointCommandStatus = (*_CBusPointToMultiPointCommandStatus
 var _ CBusPointToMultiPointCommandRequirements = (*_CBusPointToMultiPointCommandStatus)(nil)
 
 // NewCBusPointToMultiPointCommandStatus factory function for _CBusPointToMultiPointCommandStatus
-func NewCBusPointToMultiPointCommandStatus(peekedApplication byte, statusRequest StatusRequest, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandStatus {
+func NewCBusPointToMultiPointCommandStatus(peekedApplication byte, statusRequest StatusRequest) *_CBusPointToMultiPointCommandStatus {
 	if statusRequest == nil {
 		panic("statusRequest of type StatusRequest for CBusPointToMultiPointCommandStatus must not be nil")
 	}
 	_result := &_CBusPointToMultiPointCommandStatus{
-		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
+		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication),
 		StatusRequest:                        statusRequest,
 	}
 	_result.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = _result

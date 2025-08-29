@@ -241,7 +241,7 @@ func ErrorReportingSystemCategoryParseWithBufferProducer() func(ctx context.Cont
 }
 
 func ErrorReportingSystemCategoryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategory, error) {
-	v, err := (&_ErrorReportingSystemCategory{}).parse(ctx, readBuffer)
+	v, err := (new(_ErrorReportingSystemCategory)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -39,8 +39,6 @@ func (m AdsDiscoveryParserHelper) Parse(typeName string, arguments []string, io 
 		return AdsDiscoveryParseWithBuffer(context.Background(), io)
 	case "AdsDiscoveryBlock":
 		return AdsDiscoveryBlockParseWithBuffer[AdsDiscoveryBlock](context.Background(), io)
-	case "AdsDiscoveryConstants":
-		return AdsDiscoveryConstantsParseWithBuffer(context.Background(), io)
 	case "AmsNetId":
 		return AmsNetIdParseWithBuffer(context.Background(), io)
 	case "AmsString":

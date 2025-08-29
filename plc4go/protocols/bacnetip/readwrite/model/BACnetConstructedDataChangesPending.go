@@ -61,12 +61,12 @@ var _ BACnetConstructedDataChangesPending = (*_BACnetConstructedDataChangesPendi
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChangesPending)(nil)
 
 // NewBACnetConstructedDataChangesPending factory function for _BACnetConstructedDataChangesPending
-func NewBACnetConstructedDataChangesPending(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changesPending BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangesPending {
+func NewBACnetConstructedDataChangesPending(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changesPending BACnetApplicationTagBoolean) *_BACnetConstructedDataChangesPending {
 	if changesPending == nil {
 		panic("changesPending of type BACnetApplicationTagBoolean for BACnetConstructedDataChangesPending must not be nil")
 	}
 	_result := &_BACnetConstructedDataChangesPending{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ChangesPending:                changesPending,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

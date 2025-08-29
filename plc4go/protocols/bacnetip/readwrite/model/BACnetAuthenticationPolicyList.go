@@ -57,22 +57,19 @@ type _BACnetAuthenticationPolicyList struct {
 	OpeningTag BACnetOpeningTag
 	Entries    []BACnetAuthenticationPolicyListEntry
 	ClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetAuthenticationPolicyList = (*_BACnetAuthenticationPolicyList)(nil)
 
 // NewBACnetAuthenticationPolicyList factory function for _BACnetAuthenticationPolicyList
-func NewBACnetAuthenticationPolicyList(openingTag BACnetOpeningTag, entries []BACnetAuthenticationPolicyListEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAuthenticationPolicyList {
+func NewBACnetAuthenticationPolicyList(openingTag BACnetOpeningTag, entries []BACnetAuthenticationPolicyListEntry, closingTag BACnetClosingTag) *_BACnetAuthenticationPolicyList {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetAuthenticationPolicyList must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetAuthenticationPolicyList must not be nil")
 	}
-	return &_BACnetAuthenticationPolicyList{OpeningTag: openingTag, Entries: entries, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetAuthenticationPolicyList{OpeningTag: openingTag, Entries: entries, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type BACnetAuthenticationPolicyListBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetAuthenticationPolicyListBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAuthenticationPolicyListBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetAuthenticationPolicyListBuilder
 	// Build builds the BACnetAuthenticationPolicyList or returns an error if something is wrong
 	Build() (BACnetAuthenticationPolicyList, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_BACnetAuthenticationPolicyListBuilder) WithClosingTagBuilder(builderSu
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetAuthenticationPolicyListBuilder) WithArgTagNumber(tagNumber uint8) BACnetAuthenticationPolicyListBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -273,7 +263,7 @@ func BACnetAuthenticationPolicyListParseWithBufferProducer(tagNumber uint8) func
 }
 
 func BACnetAuthenticationPolicyListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetAuthenticationPolicyList, error) {
-	v, err := (&_BACnetAuthenticationPolicyList{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetAuthenticationPolicyList)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_BACnetAuthenticationPolicyList) SerializeWithWriteBuffer(ctx context.C
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetAuthenticationPolicyList) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetAuthenticationPolicyList) IsBACnetAuthenticationPolicyList() {}
 
 func (m *_BACnetAuthenticationPolicyList) DeepCopy() any {
@@ -373,7 +353,6 @@ func (m *_BACnetAuthenticationPolicyList) deepCopy() *_BACnetAuthenticationPolic
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetAuthenticationPolicyListEntry, BACnetAuthenticationPolicyListEntry](m.Entries),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetAuthenticationPolicyListCopy
 }

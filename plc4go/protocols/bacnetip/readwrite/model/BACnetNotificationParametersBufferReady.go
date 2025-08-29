@@ -71,7 +71,7 @@ var _ BACnetNotificationParametersBufferReady = (*_BACnetNotificationParametersB
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersBufferReady)(nil)
 
 // NewBACnetNotificationParametersBufferReady factory function for _BACnetNotificationParametersBufferReady
-func NewBACnetNotificationParametersBufferReady(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, bufferProperty BACnetDeviceObjectPropertyReferenceEnclosed, previousNotification BACnetContextTagUnsignedInteger, currentNotification BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersBufferReady {
+func NewBACnetNotificationParametersBufferReady(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, bufferProperty BACnetDeviceObjectPropertyReferenceEnclosed, previousNotification BACnetContextTagUnsignedInteger, currentNotification BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersBufferReady {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersBufferReady must not be nil")
 	}
@@ -88,7 +88,7 @@ func NewBACnetNotificationParametersBufferReady(openingTag BACnetOpeningTag, pee
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersBufferReady must not be nil")
 	}
 	_result := &_BACnetNotificationParametersBufferReady{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		BufferProperty:                       bufferProperty,
 		PreviousNotification:                 previousNotification,

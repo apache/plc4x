@@ -61,12 +61,12 @@ var _ BACnetConstructedDataErrorLimit = (*_BACnetConstructedDataErrorLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataErrorLimit)(nil)
 
 // NewBACnetConstructedDataErrorLimit factory function for _BACnetConstructedDataErrorLimit
-func NewBACnetConstructedDataErrorLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, errorLimit BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataErrorLimit {
+func NewBACnetConstructedDataErrorLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, errorLimit BACnetApplicationTagReal) *_BACnetConstructedDataErrorLimit {
 	if errorLimit == nil {
 		panic("errorLimit of type BACnetApplicationTagReal for BACnetConstructedDataErrorLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataErrorLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ErrorLimit:                    errorLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

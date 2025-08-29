@@ -59,9 +59,9 @@ var _ BACnetConstructedDataSlaveAddressBinding = (*_BACnetConstructedDataSlaveAd
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSlaveAddressBinding)(nil)
 
 // NewBACnetConstructedDataSlaveAddressBinding factory function for _BACnetConstructedDataSlaveAddressBinding
-func NewBACnetConstructedDataSlaveAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, slaveAddressBinding []BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSlaveAddressBinding {
+func NewBACnetConstructedDataSlaveAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, slaveAddressBinding []BACnetAddressBinding) *_BACnetConstructedDataSlaveAddressBinding {
 	_result := &_BACnetConstructedDataSlaveAddressBinding{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SlaveAddressBinding:           slaveAddressBinding,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

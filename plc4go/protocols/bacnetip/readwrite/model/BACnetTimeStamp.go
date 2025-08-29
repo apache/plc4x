@@ -325,7 +325,7 @@ func BACnetTimeStampParseWithBufferProducer[T BACnetTimeStamp]() func(ctx contex
 }
 
 func BACnetTimeStampParseWithBuffer[T BACnetTimeStamp](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetTimeStamp{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetTimeStamp)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

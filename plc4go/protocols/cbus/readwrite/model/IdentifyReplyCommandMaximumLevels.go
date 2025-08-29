@@ -59,9 +59,9 @@ var _ IdentifyReplyCommandMaximumLevels = (*_IdentifyReplyCommandMaximumLevels)(
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandMaximumLevels)(nil)
 
 // NewIdentifyReplyCommandMaximumLevels factory function for _IdentifyReplyCommandMaximumLevels
-func NewIdentifyReplyCommandMaximumLevels(maximumLevels []byte, numBytes uint8) *_IdentifyReplyCommandMaximumLevels {
+func NewIdentifyReplyCommandMaximumLevels(maximumLevels []byte) *_IdentifyReplyCommandMaximumLevels {
 	_result := &_IdentifyReplyCommandMaximumLevels{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		MaximumLevels:                maximumLevels,
 	}
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result

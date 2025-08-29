@@ -59,20 +59,16 @@ type _BACnetDoorStatusTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetDoorStatus
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetDoorStatusTagged = (*_BACnetDoorStatusTagged)(nil)
 
 // NewBACnetDoorStatusTagged factory function for _BACnetDoorStatusTagged
-func NewBACnetDoorStatusTagged(header BACnetTagHeader, value BACnetDoorStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetDoorStatusTagged {
+func NewBACnetDoorStatusTagged(header BACnetTagHeader, value BACnetDoorStatus, proprietaryValue uint32) *_BACnetDoorStatusTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetDoorStatusTagged must not be nil")
 	}
-	return &_BACnetDoorStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetDoorStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetDoorStatusTaggedBuilder interface {
 	WithValue(BACnetDoorStatus) BACnetDoorStatusTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetDoorStatusTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetDoorStatusTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetDoorStatusTaggedBuilder
 	// Build builds the BACnetDoorStatusTagged or returns an error if something is wrong
 	Build() (BACnetDoorStatusTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetDoorStatusTaggedBuilder) WithValue(value BACnetDoorStatus) BACne
 
 func (b *_BACnetDoorStatusTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetDoorStatusTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetDoorStatusTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetDoorStatusTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetDoorStatusTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetDoorStatusTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetDoorStatusTaggedParseWithBufferProducer(tagNumber uint8, tagClass Tag
 }
 
 func BACnetDoorStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDoorStatusTagged, error) {
-	v, err := (&_BACnetDoorStatusTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetDoorStatusTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetDoorStatusTagged) SerializeWithWriteBuffer(ctx context.Context, 
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetDoorStatusTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetDoorStatusTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetDoorStatusTagged) IsBACnetDoorStatusTagged() {}
 
 func (m *_BACnetDoorStatusTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetDoorStatusTagged) deepCopy() *_BACnetDoorStatusTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetDoorStatusTaggedCopy
 }

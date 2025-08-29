@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPrescale = (*_BACnetConstructedDataPrescale)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPrescale)(nil)
 
 // NewBACnetConstructedDataPrescale factory function for _BACnetConstructedDataPrescale
-func NewBACnetConstructedDataPrescale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, prescale BACnetPrescale, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPrescale {
+func NewBACnetConstructedDataPrescale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, prescale BACnetPrescale) *_BACnetConstructedDataPrescale {
 	if prescale == nil {
 		panic("prescale of type BACnetPrescale for BACnetConstructedDataPrescale must not be nil")
 	}
 	_result := &_BACnetConstructedDataPrescale{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Prescale:                      prescale,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

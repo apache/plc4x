@@ -160,7 +160,7 @@ func NormalizedStringParseWithBufferProducer() func(ctx context.Context, readBuf
 }
 
 func NormalizedStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NormalizedString, error) {
-	v, err := (&_NormalizedString{}).parse(ctx, readBuffer)
+	v, err := (new(_NormalizedString)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

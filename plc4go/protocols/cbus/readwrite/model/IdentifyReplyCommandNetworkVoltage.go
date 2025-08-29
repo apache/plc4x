@@ -66,9 +66,9 @@ var _ IdentifyReplyCommandNetworkVoltage = (*_IdentifyReplyCommandNetworkVoltage
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandNetworkVoltage)(nil)
 
 // NewIdentifyReplyCommandNetworkVoltage factory function for _IdentifyReplyCommandNetworkVoltage
-func NewIdentifyReplyCommandNetworkVoltage(volts string, voltsDecimalPlace string, numBytes uint8) *_IdentifyReplyCommandNetworkVoltage {
+func NewIdentifyReplyCommandNetworkVoltage(volts string, voltsDecimalPlace string) *_IdentifyReplyCommandNetworkVoltage {
 	_result := &_IdentifyReplyCommandNetworkVoltage{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		Volts:                        volts,
 		VoltsDecimalPlace:            voltsDecimalPlace,
 	}

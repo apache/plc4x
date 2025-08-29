@@ -79,8 +79,6 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		return AmsSerialResetFrameParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsDataTypeTableChildEntry":
 		return AdsDataTypeTableChildEntryParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "AdsConstants":
-		return AdsConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsNotificationSample":
 		return AdsNotificationSampleParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsSymbolTableEntry":

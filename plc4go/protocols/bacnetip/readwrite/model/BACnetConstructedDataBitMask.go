@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBitMask = (*_BACnetConstructedDataBitMask)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBitMask)(nil)
 
 // NewBACnetConstructedDataBitMask factory function for _BACnetConstructedDataBitMask
-func NewBACnetConstructedDataBitMask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitString BACnetApplicationTagBitString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitMask {
+func NewBACnetConstructedDataBitMask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitString BACnetApplicationTagBitString) *_BACnetConstructedDataBitMask {
 	if bitString == nil {
 		panic("bitString of type BACnetApplicationTagBitString for BACnetConstructedDataBitMask must not be nil")
 	}
 	_result := &_BACnetConstructedDataBitMask{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BitString:                     bitString,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

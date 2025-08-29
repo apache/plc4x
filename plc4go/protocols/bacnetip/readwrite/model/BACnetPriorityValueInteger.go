@@ -59,12 +59,12 @@ var _ BACnetPriorityValueInteger = (*_BACnetPriorityValueInteger)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueInteger)(nil)
 
 // NewBACnetPriorityValueInteger factory function for _BACnetPriorityValueInteger
-func NewBACnetPriorityValueInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueInteger {
+func NewBACnetPriorityValueInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger) *_BACnetPriorityValueInteger {
 	if integerValue == nil {
 		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetPriorityValueInteger must not be nil")
 	}
 	_result := &_BACnetPriorityValueInteger{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		IntegerValue:                integerValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result

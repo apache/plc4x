@@ -59,9 +59,9 @@ var _ IdentifyReplyCommandTerminalLevels = (*_IdentifyReplyCommandTerminalLevels
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandTerminalLevels)(nil)
 
 // NewIdentifyReplyCommandTerminalLevels factory function for _IdentifyReplyCommandTerminalLevels
-func NewIdentifyReplyCommandTerminalLevels(terminalLevels []byte, numBytes uint8) *_IdentifyReplyCommandTerminalLevels {
+func NewIdentifyReplyCommandTerminalLevels(terminalLevels []byte) *_IdentifyReplyCommandTerminalLevels {
 	_result := &_IdentifyReplyCommandTerminalLevels{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		TerminalLevels:               terminalLevels,
 	}
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result

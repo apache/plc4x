@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLargeAnalogValueResolution = (*_BACnetConstructedData
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueResolution)(nil)
 
 // NewBACnetConstructedDataLargeAnalogValueResolution factory function for _BACnetConstructedDataLargeAnalogValueResolution
-func NewBACnetConstructedDataLargeAnalogValueResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueResolution {
+func NewBACnetConstructedDataLargeAnalogValueResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagDouble) *_BACnetConstructedDataLargeAnalogValueResolution {
 	if resolution == nil {
 		panic("resolution of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueResolution must not be nil")
 	}
 	_result := &_BACnetConstructedDataLargeAnalogValueResolution{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Resolution:                    resolution,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

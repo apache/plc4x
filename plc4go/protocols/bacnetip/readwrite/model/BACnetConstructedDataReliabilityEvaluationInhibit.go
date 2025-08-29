@@ -61,12 +61,12 @@ var _ BACnetConstructedDataReliabilityEvaluationInhibit = (*_BACnetConstructedDa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReliabilityEvaluationInhibit)(nil)
 
 // NewBACnetConstructedDataReliabilityEvaluationInhibit factory function for _BACnetConstructedDataReliabilityEvaluationInhibit
-func NewBACnetConstructedDataReliabilityEvaluationInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reliabilityEvaluationInhibit BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliabilityEvaluationInhibit {
+func NewBACnetConstructedDataReliabilityEvaluationInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reliabilityEvaluationInhibit BACnetApplicationTagBoolean) *_BACnetConstructedDataReliabilityEvaluationInhibit {
 	if reliabilityEvaluationInhibit == nil {
 		panic("reliabilityEvaluationInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataReliabilityEvaluationInhibit must not be nil")
 	}
 	_result := &_BACnetConstructedDataReliabilityEvaluationInhibit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ReliabilityEvaluationInhibit:  reliabilityEvaluationInhibit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -54,9 +54,9 @@ var _ ApduDataExtLinkResponse = (*_ApduDataExtLinkResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtLinkResponse)(nil)
 
 // NewApduDataExtLinkResponse factory function for _ApduDataExtLinkResponse
-func NewApduDataExtLinkResponse(length uint8) *_ApduDataExtLinkResponse {
+func NewApduDataExtLinkResponse() *_ApduDataExtLinkResponse {
 	_result := &_ApduDataExtLinkResponse{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

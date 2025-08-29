@@ -64,9 +64,9 @@ var _ BACnetConstructedDataSubordinateList = (*_BACnetConstructedDataSubordinate
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSubordinateList)(nil)
 
 // NewBACnetConstructedDataSubordinateList factory function for _BACnetConstructedDataSubordinateList
-func NewBACnetConstructedDataSubordinateList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateList []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubordinateList {
+func NewBACnetConstructedDataSubordinateList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateList []BACnetDeviceObjectReference) *_BACnetConstructedDataSubordinateList {
 	_result := &_BACnetConstructedDataSubordinateList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		SubordinateList:               subordinateList,
 	}

@@ -61,12 +61,12 @@ var _ FirmataMessageCommand = (*_FirmataMessageCommand)(nil)
 var _ FirmataMessageRequirements = (*_FirmataMessageCommand)(nil)
 
 // NewFirmataMessageCommand factory function for _FirmataMessageCommand
-func NewFirmataMessageCommand(command FirmataCommand, response bool) *_FirmataMessageCommand {
+func NewFirmataMessageCommand(command FirmataCommand) *_FirmataMessageCommand {
 	if command == nil {
 		panic("command of type FirmataCommand for FirmataMessageCommand must not be nil")
 	}
 	_result := &_FirmataMessageCommand{
-		FirmataMessageContract: NewFirmataMessage(response),
+		FirmataMessageContract: NewFirmataMessage(),
 		Command:                command,
 	}
 	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result

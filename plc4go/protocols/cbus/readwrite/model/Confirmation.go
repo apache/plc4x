@@ -276,7 +276,7 @@ func ConfirmationParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func ConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Confirmation, error) {
-	v, err := (&_Confirmation{}).parse(ctx, readBuffer)
+	v, err := (new(_Confirmation)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -68,7 +68,7 @@ var _ BACnetConfirmedServiceRequestRemoveListElement = (*_BACnetConfirmedService
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestRemoveListElement)(nil)
 
 // NewBACnetConfirmedServiceRequestRemoveListElement factory function for _BACnetConfirmedServiceRequestRemoveListElement
-func NewBACnetConfirmedServiceRequestRemoveListElement(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, listOfElements BACnetConstructedData, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestRemoveListElement {
+func NewBACnetConfirmedServiceRequestRemoveListElement(serviceRequestLength uint32, objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, listOfElements BACnetConstructedData) *_BACnetConfirmedServiceRequestRemoveListElement {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestRemoveListElement must not be nil")
 	}

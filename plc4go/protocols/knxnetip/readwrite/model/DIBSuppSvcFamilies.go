@@ -213,7 +213,7 @@ func DIBSuppSvcFamiliesParseWithBufferProducer() func(ctx context.Context, readB
 }
 
 func DIBSuppSvcFamiliesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, error) {
-	v, err := (&_DIBSuppSvcFamilies{}).parse(ctx, readBuffer)
+	v, err := (new(_DIBSuppSvcFamilies)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCarDoorZone = (*_BACnetConstructedDataCarDoorZone)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarDoorZone)(nil)
 
 // NewBACnetConstructedDataCarDoorZone factory function for _BACnetConstructedDataCarDoorZone
-func NewBACnetConstructedDataCarDoorZone(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carDoorZone BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorZone {
+func NewBACnetConstructedDataCarDoorZone(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carDoorZone BACnetApplicationTagBoolean) *_BACnetConstructedDataCarDoorZone {
 	if carDoorZone == nil {
 		panic("carDoorZone of type BACnetApplicationTagBoolean for BACnetConstructedDataCarDoorZone must not be nil")
 	}
 	_result := &_BACnetConstructedDataCarDoorZone{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CarDoorZone:                   carDoorZone,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

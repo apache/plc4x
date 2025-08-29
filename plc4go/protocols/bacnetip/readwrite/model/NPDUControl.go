@@ -266,7 +266,7 @@ func NPDUControlParseWithBufferProducer() func(ctx context.Context, readBuffer u
 }
 
 func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NPDUControl, error) {
-	v, err := (&_NPDUControl{}).parse(ctx, readBuffer)
+	v, err := (new(_NPDUControl)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -80,9 +80,9 @@ var _ CipConnectionManagerResponse = (*_CipConnectionManagerResponse)(nil)
 var _ CipServiceRequirements = (*_CipConnectionManagerResponse)(nil)
 
 // NewCipConnectionManagerResponse factory function for _CipConnectionManagerResponse
-func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32, serviceLen uint16) *_CipConnectionManagerResponse {
+func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32) *_CipConnectionManagerResponse {
 	_result := &_CipConnectionManagerResponse{
-		CipServiceContract:     NewCipService(serviceLen),
+		CipServiceContract:     NewCipService(),
 		OtConnectionId:         otConnectionId,
 		ToConnectionId:         toConnectionId,
 		ConnectionSerialNumber: connectionSerialNumber,

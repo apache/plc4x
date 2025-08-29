@@ -70,7 +70,7 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	opcuaApu, ok := message.(readWriteModel.OpcuaAPU)
 	if !ok {
 		if message, ok := message.(readWriteModel.MessagePDU); ok {
-			opcuaApu = readWriteModel.NewOpcuaAPU(message, false, true)
+			opcuaApu = readWriteModel.NewOpcuaAPU(message)
 		} else {
 			return errors.Errorf("Invalid message type %T", message)
 		}

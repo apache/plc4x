@@ -65,7 +65,7 @@ var _ BACnetConfirmedServiceRequestVTData = (*_BACnetConfirmedServiceRequestVTDa
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestVTData)(nil)
 
 // NewBACnetConfirmedServiceRequestVTData factory function for _BACnetConfirmedServiceRequestVTData
-func NewBACnetConfirmedServiceRequestVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTData {
+func NewBACnetConfirmedServiceRequestVTData(serviceRequestLength uint32, vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger) *_BACnetConfirmedServiceRequestVTData {
 	if vtSessionIdentifier == nil {
 		panic("vtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestVTData must not be nil")
 	}

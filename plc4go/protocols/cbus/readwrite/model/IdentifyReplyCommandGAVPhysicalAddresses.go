@@ -59,9 +59,9 @@ var _ IdentifyReplyCommandGAVPhysicalAddresses = (*_IdentifyReplyCommandGAVPhysi
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandGAVPhysicalAddresses)(nil)
 
 // NewIdentifyReplyCommandGAVPhysicalAddresses factory function for _IdentifyReplyCommandGAVPhysicalAddresses
-func NewIdentifyReplyCommandGAVPhysicalAddresses(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVPhysicalAddresses {
+func NewIdentifyReplyCommandGAVPhysicalAddresses(values []byte) *_IdentifyReplyCommandGAVPhysicalAddresses {
 	_result := &_IdentifyReplyCommandGAVPhysicalAddresses{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		Values:                       values,
 	}
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result

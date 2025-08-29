@@ -224,7 +224,7 @@ func QualifiedNameParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func QualifiedNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (QualifiedName, error) {
-	v, err := (&_QualifiedName{}).parse(ctx, readBuffer)
+	v, err := (new(_QualifiedName)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

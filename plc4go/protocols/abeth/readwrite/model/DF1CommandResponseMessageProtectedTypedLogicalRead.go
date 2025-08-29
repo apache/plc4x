@@ -59,9 +59,9 @@ var _ DF1CommandResponseMessageProtectedTypedLogicalRead = (*_DF1CommandResponse
 var _ DF1ResponseMessageRequirements = (*_DF1CommandResponseMessageProtectedTypedLogicalRead)(nil)
 
 // NewDF1CommandResponseMessageProtectedTypedLogicalRead factory function for _DF1CommandResponseMessageProtectedTypedLogicalRead
-func NewDF1CommandResponseMessageProtectedTypedLogicalRead(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, data []uint8, payloadLength uint16) *_DF1CommandResponseMessageProtectedTypedLogicalRead {
+func NewDF1CommandResponseMessageProtectedTypedLogicalRead(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, data []uint8) *_DF1CommandResponseMessageProtectedTypedLogicalRead {
 	_result := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
-		DF1ResponseMessageContract: NewDF1ResponseMessage(destinationAddress, sourceAddress, status, transactionCounter, payloadLength),
+		DF1ResponseMessageContract: NewDF1ResponseMessage(destinationAddress, sourceAddress, status, transactionCounter),
 		Data:                       data,
 	}
 	_result.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = _result

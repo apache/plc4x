@@ -69,7 +69,7 @@ func (r *ReadForeignDeviceTableAck) GetBvlciFDT() []*FDTEntry {
 	return r.bvlciFDT
 }
 
-func (r *ReadForeignDeviceTableAck) produceForeignDeviceTable() (entries []readWriteModel.BVLCForeignDeviceTableEntry, _ uint16) {
+func (r *ReadForeignDeviceTableAck) produceForeignDeviceTable() (entries []readWriteModel.BVLCForeignDeviceTableEntry) {
 	for _, entry := range r.bvlciFDT {
 		address := entry.FDAddress
 		addr := address.AddrAddress[:4]

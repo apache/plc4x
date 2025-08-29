@@ -321,7 +321,7 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 						2113537,
 						readWriteModel.NewNetworkConnectionParameters(4002, false, 2, 0, true),
 						readWriteModel.NewTransportType(true, 2, 3),
-						c.connectionPathSize, c.routingAddress, 1))
+						c.connectionPathSize, c.routingAddress))
 				typeIds := []readWriteModel.TypeId{readWriteModel.NewNullAddressItem(), exchange}
 				eipWrapper := readWriteModel.NewCipRRData(
 					c.sessionHandle,
@@ -418,8 +418,8 @@ func (c *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 			[]readWriteModel.TypeId{
 				readWriteModel.NewNullAddressItem(),
 				readWriteModel.NewUnConnectedDataItem(
-					readWriteModel.NewGetAttributeAllRequest(
-						classSegment, instanceSegment, uint16(0))),
+					readWriteModel.NewGetAttributeAllRequest(classSegment, instanceSegment),
+				),
 			},
 		),
 		func(message spi.Message) bool {

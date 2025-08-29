@@ -57,22 +57,19 @@ type _ListOfCovNotificationsList struct {
 	OpeningTag     BACnetOpeningTag
 	Specifications []ListOfCovNotifications
 	ClosingTag     BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ ListOfCovNotificationsList = (*_ListOfCovNotificationsList)(nil)
 
 // NewListOfCovNotificationsList factory function for _ListOfCovNotificationsList
-func NewListOfCovNotificationsList(openingTag BACnetOpeningTag, specifications []ListOfCovNotifications, closingTag BACnetClosingTag, tagNumber uint8) *_ListOfCovNotificationsList {
+func NewListOfCovNotificationsList(openingTag BACnetOpeningTag, specifications []ListOfCovNotifications, closingTag BACnetClosingTag) *_ListOfCovNotificationsList {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for ListOfCovNotificationsList must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for ListOfCovNotificationsList must not be nil")
 	}
-	return &_ListOfCovNotificationsList{OpeningTag: openingTag, Specifications: specifications, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_ListOfCovNotificationsList{OpeningTag: openingTag, Specifications: specifications, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type ListOfCovNotificationsListBuilder interface {
 	WithClosingTag(BACnetClosingTag) ListOfCovNotificationsListBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) ListOfCovNotificationsListBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) ListOfCovNotificationsListBuilder
 	// Build builds the ListOfCovNotificationsList or returns an error if something is wrong
 	Build() (ListOfCovNotificationsList, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_ListOfCovNotificationsListBuilder) WithClosingTagBuilder(builderSuppli
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_ListOfCovNotificationsListBuilder) WithArgTagNumber(tagNumber uint8) ListOfCovNotificationsListBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -273,7 +263,7 @@ func ListOfCovNotificationsListParseWithBufferProducer(tagNumber uint8) func(ctx
 }
 
 func ListOfCovNotificationsListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (ListOfCovNotificationsList, error) {
-	v, err := (&_ListOfCovNotificationsList{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_ListOfCovNotificationsList)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_ListOfCovNotificationsList) SerializeWithWriteBuffer(ctx context.Conte
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_ListOfCovNotificationsList) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_ListOfCovNotificationsList) IsListOfCovNotificationsList() {}
 
 func (m *_ListOfCovNotificationsList) DeepCopy() any {
@@ -373,7 +353,6 @@ func (m *_ListOfCovNotificationsList) deepCopy() *_ListOfCovNotificationsList {
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[ListOfCovNotifications, ListOfCovNotifications](m.Specifications),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _ListOfCovNotificationsListCopy
 }

@@ -61,12 +61,12 @@ var _ BACnetContextTagDouble = (*_BACnetContextTagDouble)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagDouble)(nil)
 
 // NewBACnetContextTagDouble factory function for _BACnetContextTagDouble
-func NewBACnetContextTagDouble(header BACnetTagHeader, payload BACnetTagPayloadDouble, tagNumberArgument uint8) *_BACnetContextTagDouble {
+func NewBACnetContextTagDouble(header BACnetTagHeader, payload BACnetTagPayloadDouble) *_BACnetContextTagDouble {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadDouble for BACnetContextTagDouble must not be nil")
 	}
 	_result := &_BACnetContextTagDouble{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 		Payload:                  payload,
 	}
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result

@@ -54,9 +54,9 @@ var _ BACnetConstructedDataDeviceAll = (*_BACnetConstructedDataDeviceAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeviceAll)(nil)
 
 // NewBACnetConstructedDataDeviceAll factory function for _BACnetConstructedDataDeviceAll
-func NewBACnetConstructedDataDeviceAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceAll {
+func NewBACnetConstructedDataDeviceAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataDeviceAll {
 	_result := &_BACnetConstructedDataDeviceAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

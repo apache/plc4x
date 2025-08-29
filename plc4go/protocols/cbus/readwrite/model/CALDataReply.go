@@ -62,12 +62,12 @@ var _ CALDataReply = (*_CALDataReply)(nil)
 var _ CALDataRequirements = (*_CALDataReply)(nil)
 
 // NewCALDataReply factory function for _CALDataReply
-func NewCALDataReply(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, parameterValue ParameterValue, requestContext RequestContext) *_CALDataReply {
+func NewCALDataReply(requestContext RequestContext, commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, parameterValue ParameterValue) *_CALDataReply {
 	if parameterValue == nil {
 		panic("parameterValue of type ParameterValue for CALDataReply must not be nil")
 	}
 	_result := &_CALDataReply{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract: NewCALData(requestContext, commandTypeContainer, additionalData),
 		ParamNo:         paramNo,
 		ParameterValue:  parameterValue,
 	}

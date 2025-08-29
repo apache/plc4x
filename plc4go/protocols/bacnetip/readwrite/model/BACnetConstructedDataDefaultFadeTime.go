@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDefaultFadeTime = (*_BACnetConstructedDataDefaultFade
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultFadeTime)(nil)
 
 // NewBACnetConstructedDataDefaultFadeTime factory function for _BACnetConstructedDataDefaultFadeTime
-func NewBACnetConstructedDataDefaultFadeTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultFadeTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultFadeTime {
+func NewBACnetConstructedDataDefaultFadeTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultFadeTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDefaultFadeTime {
 	if defaultFadeTime == nil {
 		panic("defaultFadeTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDefaultFadeTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataDefaultFadeTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DefaultFadeTime:               defaultFadeTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

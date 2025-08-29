@@ -54,9 +54,9 @@ var _ BACnetConstructedDataPositiveIntegerValueAll = (*_BACnetConstructedDataPos
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueAll)(nil)
 
 // NewBACnetConstructedDataPositiveIntegerValueAll factory function for _BACnetConstructedDataPositiveIntegerValueAll
-func NewBACnetConstructedDataPositiveIntegerValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueAll {
+func NewBACnetConstructedDataPositiveIntegerValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataPositiveIntegerValueAll {
 	_result := &_BACnetConstructedDataPositiveIntegerValueAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

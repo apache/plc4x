@@ -64,9 +64,9 @@ var _ BACnetConstructedDataLinkSpeeds = (*_BACnetConstructedDataLinkSpeeds)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLinkSpeeds)(nil)
 
 // NewBACnetConstructedDataLinkSpeeds factory function for _BACnetConstructedDataLinkSpeeds
-func NewBACnetConstructedDataLinkSpeeds(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, linkSpeeds []BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeeds {
+func NewBACnetConstructedDataLinkSpeeds(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, linkSpeeds []BACnetApplicationTagReal) *_BACnetConstructedDataLinkSpeeds {
 	_result := &_BACnetConstructedDataLinkSpeeds{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		LinkSpeeds:                    linkSpeeds,
 	}

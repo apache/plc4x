@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLifeSafetyZoneMaintenanceRequired = (*_BACnetConstruc
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired)(nil)
 
 // NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired factory function for _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
-func NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maintenanceRequired BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
+func NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maintenanceRequired BACnetApplicationTagBoolean) *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
 	if maintenanceRequired == nil {
 		panic("maintenanceRequired of type BACnetApplicationTagBoolean for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired must not be nil")
 	}
 	_result := &_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaintenanceRequired:           maintenanceRequired,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

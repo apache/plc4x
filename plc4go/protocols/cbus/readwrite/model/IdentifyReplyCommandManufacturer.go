@@ -59,9 +59,9 @@ var _ IdentifyReplyCommandManufacturer = (*_IdentifyReplyCommandManufacturer)(ni
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandManufacturer)(nil)
 
 // NewIdentifyReplyCommandManufacturer factory function for _IdentifyReplyCommandManufacturer
-func NewIdentifyReplyCommandManufacturer(manufacturerName string, numBytes uint8) *_IdentifyReplyCommandManufacturer {
+func NewIdentifyReplyCommandManufacturer(manufacturerName string) *_IdentifyReplyCommandManufacturer {
 	_result := &_IdentifyReplyCommandManufacturer{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		ManufacturerName:             manufacturerName,
 	}
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result

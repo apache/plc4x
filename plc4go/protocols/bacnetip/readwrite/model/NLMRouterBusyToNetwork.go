@@ -59,9 +59,9 @@ var _ NLMRouterBusyToNetwork = (*_NLMRouterBusyToNetwork)(nil)
 var _ NLMRequirements = (*_NLMRouterBusyToNetwork)(nil)
 
 // NewNLMRouterBusyToNetwork factory function for _NLMRouterBusyToNetwork
-func NewNLMRouterBusyToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMRouterBusyToNetwork {
+func NewNLMRouterBusyToNetwork(destinationNetworkAddresses []uint16) *_NLMRouterBusyToNetwork {
 	_result := &_NLMRouterBusyToNetwork{
-		NLMContract:                 NewNLM(apduLength),
+		NLMContract:                 NewNLM(),
 		DestinationNetworkAddresses: destinationNetworkAddresses,
 	}
 	_result.NLMContract.(*_NLM)._SubType = _result

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSetpointReference = (*_BACnetConstructedDataSetpointR
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSetpointReference)(nil)
 
 // NewBACnetConstructedDataSetpointReference factory function for _BACnetConstructedDataSetpointReference
-func NewBACnetConstructedDataSetpointReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, setpointReference BACnetSetpointReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpointReference {
+func NewBACnetConstructedDataSetpointReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, setpointReference BACnetSetpointReference) *_BACnetConstructedDataSetpointReference {
 	if setpointReference == nil {
 		panic("setpointReference of type BACnetSetpointReference for BACnetConstructedDataSetpointReference must not be nil")
 	}
 	_result := &_BACnetConstructedDataSetpointReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SetpointReference:             setpointReference,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

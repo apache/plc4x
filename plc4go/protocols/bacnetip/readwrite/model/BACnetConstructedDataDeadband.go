@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDeadband = (*_BACnetConstructedDataDeadband)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeadband)(nil)
 
 // NewBACnetConstructedDataDeadband factory function for _BACnetConstructedDataDeadband
-func NewBACnetConstructedDataDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeadband {
+func NewBACnetConstructedDataDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagReal) *_BACnetConstructedDataDeadband {
 	if deadband == nil {
 		panic("deadband of type BACnetApplicationTagReal for BACnetConstructedDataDeadband must not be nil")
 	}
 	_result := &_BACnetConstructedDataDeadband{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Deadband:                      deadband,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

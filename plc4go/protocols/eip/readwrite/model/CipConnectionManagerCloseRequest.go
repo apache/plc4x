@@ -91,7 +91,7 @@ var _ CipConnectionManagerCloseRequest = (*_CipConnectionManagerCloseRequest)(ni
 var _ CipServiceRequirements = (*_CipConnectionManagerCloseRequest)(nil)
 
 // NewCipConnectionManagerCloseRequest factory function for _CipConnectionManagerCloseRequest
-func NewCipConnectionManagerCloseRequest(requestPathSize uint8, classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, connectionPathSize uint8, connectionPaths []PathSegment, serviceLen uint16) *_CipConnectionManagerCloseRequest {
+func NewCipConnectionManagerCloseRequest(requestPathSize uint8, classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, connectionPathSize uint8, connectionPaths []PathSegment) *_CipConnectionManagerCloseRequest {
 	if classSegment == nil {
 		panic("classSegment of type PathSegment for CipConnectionManagerCloseRequest must not be nil")
 	}
@@ -99,7 +99,7 @@ func NewCipConnectionManagerCloseRequest(requestPathSize uint8, classSegment Pat
 		panic("instanceSegment of type PathSegment for CipConnectionManagerCloseRequest must not be nil")
 	}
 	_result := &_CipConnectionManagerCloseRequest{
-		CipServiceContract:     NewCipService(serviceLen),
+		CipServiceContract:     NewCipService(),
 		RequestPathSize:        requestPathSize,
 		ClassSegment:           classSegment,
 		InstanceSegment:        instanceSegment,

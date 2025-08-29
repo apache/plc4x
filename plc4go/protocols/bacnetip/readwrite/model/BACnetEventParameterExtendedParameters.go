@@ -105,15 +105,12 @@ type _BACnetEventParameterExtendedParameters struct {
 	ObjectIdentifier     BACnetApplicationTagObjectIdentifier
 	Reference            BACnetDeviceObjectPropertyReferenceEnclosed
 	ClosingTag           BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetEventParameterExtendedParameters = (*_BACnetEventParameterExtendedParameters)(nil)
 
 // NewBACnetEventParameterExtendedParameters factory function for _BACnetEventParameterExtendedParameters
-func NewBACnetEventParameterExtendedParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, realValue BACnetApplicationTagReal, unsignedValue BACnetApplicationTagUnsignedInteger, booleanValue BACnetApplicationTagBoolean, integerValue BACnetApplicationTagSignedInteger, doubleValue BACnetApplicationTagDouble, octetStringValue BACnetApplicationTagOctetString, characterStringValue BACnetApplicationTagCharacterString, bitStringValue BACnetApplicationTagBitString, enumeratedValue BACnetApplicationTagEnumerated, dateValue BACnetApplicationTagDate, timeValue BACnetApplicationTagTime, objectIdentifier BACnetApplicationTagObjectIdentifier, reference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterExtendedParameters {
+func NewBACnetEventParameterExtendedParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, realValue BACnetApplicationTagReal, unsignedValue BACnetApplicationTagUnsignedInteger, booleanValue BACnetApplicationTagBoolean, integerValue BACnetApplicationTagSignedInteger, doubleValue BACnetApplicationTagDouble, octetStringValue BACnetApplicationTagOctetString, characterStringValue BACnetApplicationTagCharacterString, bitStringValue BACnetApplicationTagBitString, enumeratedValue BACnetApplicationTagEnumerated, dateValue BACnetApplicationTagDate, timeValue BACnetApplicationTagTime, objectIdentifier BACnetApplicationTagObjectIdentifier, reference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) *_BACnetEventParameterExtendedParameters {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterExtendedParameters must not be nil")
 	}
@@ -123,7 +120,7 @@ func NewBACnetEventParameterExtendedParameters(openingTag BACnetOpeningTag, peek
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetEventParameterExtendedParameters must not be nil")
 	}
-	return &_BACnetEventParameterExtendedParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetEventParameterExtendedParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -204,8 +201,6 @@ type BACnetEventParameterExtendedParametersBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterExtendedParametersBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterExtendedParametersBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetEventParameterExtendedParametersBuilder
 	// Build builds the BACnetEventParameterExtendedParameters or returns an error if something is wrong
 	Build() (BACnetEventParameterExtendedParameters, error)
 	// MustBuild does the same as Build but panics on error
@@ -481,11 +476,6 @@ func (b *_BACnetEventParameterExtendedParametersBuilder) WithClosingTagBuilder(b
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetEventParameterExtendedParametersBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventParameterExtendedParametersBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -841,7 +831,7 @@ func BACnetEventParameterExtendedParametersParseWithBufferProducer(tagNumber uin
 }
 
 func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterExtendedParameters, error) {
-	v, err := (&_BACnetEventParameterExtendedParameters{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetEventParameterExtendedParameters)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -1145,16 +1135,6 @@ func (m *_BACnetEventParameterExtendedParameters) SerializeWithWriteBuffer(ctx c
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetEventParameterExtendedParameters) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetEventParameterExtendedParameters) IsBACnetEventParameterExtendedParameters() {}
 
 func (m *_BACnetEventParameterExtendedParameters) DeepCopy() any {
@@ -1183,7 +1163,6 @@ func (m *_BACnetEventParameterExtendedParameters) deepCopy() *_BACnetEventParame
 		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.ObjectIdentifier),
 		utils.DeepCopy[BACnetDeviceObjectPropertyReferenceEnclosed](m.Reference),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetEventParameterExtendedParametersCopy
 }

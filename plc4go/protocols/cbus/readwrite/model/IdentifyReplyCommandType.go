@@ -59,9 +59,9 @@ var _ IdentifyReplyCommandType = (*_IdentifyReplyCommandType)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandType)(nil)
 
 // NewIdentifyReplyCommandType factory function for _IdentifyReplyCommandType
-func NewIdentifyReplyCommandType(unitType string, numBytes uint8) *_IdentifyReplyCommandType {
+func NewIdentifyReplyCommandType(unitType string) *_IdentifyReplyCommandType {
 	_result := &_IdentifyReplyCommandType{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		UnitType:                     unitType,
 	}
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result

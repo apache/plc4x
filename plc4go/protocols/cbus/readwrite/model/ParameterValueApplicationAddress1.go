@@ -62,12 +62,12 @@ var _ ParameterValueApplicationAddress1 = (*_ParameterValueApplicationAddress1)(
 var _ ParameterValueRequirements = (*_ParameterValueApplicationAddress1)(nil)
 
 // NewParameterValueApplicationAddress1 factory function for _ParameterValueApplicationAddress1
-func NewParameterValueApplicationAddress1(value ApplicationAddress1, data []byte, numBytes uint8) *_ParameterValueApplicationAddress1 {
+func NewParameterValueApplicationAddress1(value ApplicationAddress1, data []byte) *_ParameterValueApplicationAddress1 {
 	if value == nil {
 		panic("value of type ApplicationAddress1 for ParameterValueApplicationAddress1 must not be nil")
 	}
 	_result := &_ParameterValueApplicationAddress1{
-		ParameterValueContract: NewParameterValue(numBytes),
+		ParameterValueContract: NewParameterValue(),
 		Value:                  value,
 		Data:                   data,
 	}

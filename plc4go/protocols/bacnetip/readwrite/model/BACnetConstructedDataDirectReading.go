@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDirectReading = (*_BACnetConstructedDataDirectReading
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDirectReading)(nil)
 
 // NewBACnetConstructedDataDirectReading factory function for _BACnetConstructedDataDirectReading
-func NewBACnetConstructedDataDirectReading(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, directReading BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDirectReading {
+func NewBACnetConstructedDataDirectReading(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, directReading BACnetApplicationTagReal) *_BACnetConstructedDataDirectReading {
 	if directReading == nil {
 		panic("directReading of type BACnetApplicationTagReal for BACnetConstructedDataDirectReading must not be nil")
 	}
 	_result := &_BACnetConstructedDataDirectReading{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DirectReading:                 directReading,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -54,9 +54,9 @@ var _ SetAttributeSingleResponse = (*_SetAttributeSingleResponse)(nil)
 var _ CipServiceRequirements = (*_SetAttributeSingleResponse)(nil)
 
 // NewSetAttributeSingleResponse factory function for _SetAttributeSingleResponse
-func NewSetAttributeSingleResponse(serviceLen uint16) *_SetAttributeSingleResponse {
+func NewSetAttributeSingleResponse() *_SetAttributeSingleResponse {
 	_result := &_SetAttributeSingleResponse{
-		CipServiceContract: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(),
 	}
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result

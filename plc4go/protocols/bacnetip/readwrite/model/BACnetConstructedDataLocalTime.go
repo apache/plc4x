@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLocalTime = (*_BACnetConstructedDataLocalTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLocalTime)(nil)
 
 // NewBACnetConstructedDataLocalTime factory function for _BACnetConstructedDataLocalTime
-func NewBACnetConstructedDataLocalTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localTime BACnetApplicationTagTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalTime {
+func NewBACnetConstructedDataLocalTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localTime BACnetApplicationTagTime) *_BACnetConstructedDataLocalTime {
 	if localTime == nil {
 		panic("localTime of type BACnetApplicationTagTime for BACnetConstructedDataLocalTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataLocalTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LocalTime:                     localTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

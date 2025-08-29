@@ -59,20 +59,16 @@ type _BACnetLifeSafetyStateTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetLifeSafetyState
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetLifeSafetyStateTagged = (*_BACnetLifeSafetyStateTagged)(nil)
 
 // NewBACnetLifeSafetyStateTagged factory function for _BACnetLifeSafetyStateTagged
-func NewBACnetLifeSafetyStateTagged(header BACnetTagHeader, value BACnetLifeSafetyState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLifeSafetyStateTagged {
+func NewBACnetLifeSafetyStateTagged(header BACnetTagHeader, value BACnetLifeSafetyState, proprietaryValue uint32) *_BACnetLifeSafetyStateTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetLifeSafetyStateTagged must not be nil")
 	}
-	return &_BACnetLifeSafetyStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetLifeSafetyStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetLifeSafetyStateTaggedBuilder interface {
 	WithValue(BACnetLifeSafetyState) BACnetLifeSafetyStateTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetLifeSafetyStateTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLifeSafetyStateTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetLifeSafetyStateTaggedBuilder
 	// Build builds the BACnetLifeSafetyStateTagged or returns an error if something is wrong
 	Build() (BACnetLifeSafetyStateTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetLifeSafetyStateTaggedBuilder) WithValue(value BACnetLifeSafetySt
 
 func (b *_BACnetLifeSafetyStateTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLifeSafetyStateTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetLifeSafetyStateTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLifeSafetyStateTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetLifeSafetyStateTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLifeSafetyStateTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetLifeSafetyStateTaggedParseWithBufferProducer(tagNumber uint8, tagClas
 }
 
 func BACnetLifeSafetyStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLifeSafetyStateTagged, error) {
-	v, err := (&_BACnetLifeSafetyStateTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetLifeSafetyStateTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetLifeSafetyStateTagged) SerializeWithWriteBuffer(ctx context.Cont
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLifeSafetyStateTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetLifeSafetyStateTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetLifeSafetyStateTagged) IsBACnetLifeSafetyStateTagged() {}
 
 func (m *_BACnetLifeSafetyStateTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetLifeSafetyStateTagged) deepCopy() *_BACnetLifeSafetyStateTagged 
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetLifeSafetyStateTaggedCopy
 }

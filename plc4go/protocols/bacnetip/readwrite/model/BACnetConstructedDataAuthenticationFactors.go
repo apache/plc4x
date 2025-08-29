@@ -64,9 +64,9 @@ var _ BACnetConstructedDataAuthenticationFactors = (*_BACnetConstructedDataAuthe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthenticationFactors)(nil)
 
 // NewBACnetConstructedDataAuthenticationFactors factory function for _BACnetConstructedDataAuthenticationFactors
-func NewBACnetConstructedDataAuthenticationFactors(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, authenticationFactors []BACnetCredentialAuthenticationFactor, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthenticationFactors {
+func NewBACnetConstructedDataAuthenticationFactors(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, authenticationFactors []BACnetCredentialAuthenticationFactor) *_BACnetConstructedDataAuthenticationFactors {
 	_result := &_BACnetConstructedDataAuthenticationFactors{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		AuthenticationFactors:         authenticationFactors,
 	}

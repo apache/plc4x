@@ -59,9 +59,9 @@ var _ BACnetUnconfirmedServiceRequestUnknown = (*_BACnetUnconfirmedServiceReques
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnknown)(nil)
 
 // NewBACnetUnconfirmedServiceRequestUnknown factory function for _BACnetUnconfirmedServiceRequestUnknown
-func NewBACnetUnconfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnknown {
+func NewBACnetUnconfirmedServiceRequestUnknown(unknownBytes []byte) *_BACnetUnconfirmedServiceRequestUnknown {
 	_result := &_BACnetUnconfirmedServiceRequestUnknown{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		UnknownBytes:                            unknownBytes,
 	}
 	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result

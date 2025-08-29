@@ -64,9 +64,9 @@ var _ BACnetConstructedDataActionText = (*_BACnetConstructedDataActionText)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActionText)(nil)
 
 // NewBACnetConstructedDataActionText factory function for _BACnetConstructedDataActionText
-func NewBACnetConstructedDataActionText(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, actionText []BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActionText {
+func NewBACnetConstructedDataActionText(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, actionText []BACnetApplicationTagCharacterString) *_BACnetConstructedDataActionText {
 	_result := &_BACnetConstructedDataActionText{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		ActionText:                    actionText,
 	}

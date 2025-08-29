@@ -74,7 +74,7 @@ var _ BACnetNotificationParametersDoubleOutOfRange = (*_BACnetNotificationParame
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersDoubleOutOfRange)(nil)
 
 // NewBACnetNotificationParametersDoubleOutOfRange factory function for _BACnetNotificationParametersDoubleOutOfRange
-func NewBACnetNotificationParametersDoubleOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagDouble, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagDouble, exceededLimit BACnetContextTagDouble, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersDoubleOutOfRange {
+func NewBACnetNotificationParametersDoubleOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagDouble, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagDouble, exceededLimit BACnetContextTagDouble, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersDoubleOutOfRange {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersDoubleOutOfRange must not be nil")
 	}
@@ -94,7 +94,7 @@ func NewBACnetNotificationParametersDoubleOutOfRange(openingTag BACnetOpeningTag
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersDoubleOutOfRange must not be nil")
 	}
 	_result := &_BACnetNotificationParametersDoubleOutOfRange{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		ExceedingValue:                       exceedingValue,
 		StatusFlags:                          statusFlags,

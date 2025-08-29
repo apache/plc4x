@@ -61,12 +61,12 @@ var _ BACnetConstructedDataManipulatedVariableReference = (*_BACnetConstructedDa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataManipulatedVariableReference)(nil)
 
 // NewBACnetConstructedDataManipulatedVariableReference factory function for _BACnetConstructedDataManipulatedVariableReference
-func NewBACnetConstructedDataManipulatedVariableReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, manipulatedVariableReference BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataManipulatedVariableReference {
+func NewBACnetConstructedDataManipulatedVariableReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, manipulatedVariableReference BACnetObjectPropertyReference) *_BACnetConstructedDataManipulatedVariableReference {
 	if manipulatedVariableReference == nil {
 		panic("manipulatedVariableReference of type BACnetObjectPropertyReference for BACnetConstructedDataManipulatedVariableReference must not be nil")
 	}
 	_result := &_BACnetConstructedDataManipulatedVariableReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ManipulatedVariableReference:  manipulatedVariableReference,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

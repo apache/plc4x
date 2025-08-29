@@ -500,7 +500,7 @@ func TestReadCALData(t *testing.T) {
 			args: args{
 				readBuffer: utils.NewReadBufferByteBased([]byte("2101")),
 			},
-			want: NewCALDataIdentify(CALCommandTypeContainer_CALCommandIdentify, nil, Attribute_Type, nil),
+			want: NewCALDataIdentify(nil, CALCommandTypeContainer_CALCommandIdentify, nil, Attribute_Type),
 		},
 	}
 	for _, tt := range tests {
@@ -551,19 +551,17 @@ func TestReadCBusCommand(t *testing.T) {
 				NewCBusPointToPointCommandIndirect(
 					12553,
 					NewCALDataWrite(
+						nil,
 						CALCommandTypeContainer_CALCommandWrite_4Bytes,
 						nil,
 						Parameter_UNKNOWN_01,
 						65,
-						NewParameterValueRaw([]byte{6, 00}, 2),
-						nil,
+						NewParameterValueRaw([]byte{6, 00}),
 					),
 					NewBridgeAddress(49),
 					NewNetworkRoute(NewNetworkProtocolControlInformation(1, 1), nil),
 					NewUnitAddress(0),
-					nil,
 				),
-				nil,
 			),
 		},
 	}
@@ -639,7 +637,7 @@ func TestWriteCALData(t *testing.T) {
 			name: "write something",
 			args: args{
 				writeBuffer: utils.NewWriteBufferBoxBased(),
-				calData:     NewCALDataReset(0, nil, nil),
+				calData:     NewCALDataReset(nil, 0, nil),
 			},
 		},
 	}
@@ -666,7 +664,7 @@ func TestWriteCBusCommand(t *testing.T) {
 			name: "write something",
 			args: args{
 				writeBuffer: utils.NewWriteBufferBoxBased(),
-				cbusCommand: NewCBusCommandDeviceManagement(NewCBusHeader(0, false, 0, 0), 0, 0, nil),
+				cbusCommand: NewCBusCommandDeviceManagement(NewCBusHeader(0, false, 0, 0), 0, 0),
 			},
 		},
 	}
@@ -694,19 +692,16 @@ func TestWriteEncodedReply(t *testing.T) {
 			args: args{
 				writeBuffer: utils.NewWriteBufferBoxBased(),
 				encodedReply: NewEncodedReplyCALReply(
+					NewRequestContext(false),
 					0,
 					NewCALReplyShort(
 						0,
 						NewCALDataReset(
+							NewRequestContext(false),
 							0,
 							nil,
-							NewRequestContext(false),
 						),
-						nil,
-						NewRequestContext(false),
 					),
-					nil,
-					NewRequestContext(false),
 				),
 			},
 		},

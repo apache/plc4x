@@ -68,7 +68,7 @@ var _ BACnetNotificationParametersChangeOfBitString = (*_BACnetNotificationParam
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersChangeOfBitString)(nil)
 
 // NewBACnetNotificationParametersChangeOfBitString factory function for _BACnetNotificationParametersChangeOfBitString
-func NewBACnetNotificationParametersChangeOfBitString(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, changeOfBitString BACnetContextTagBitString, statusFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfBitString {
+func NewBACnetNotificationParametersChangeOfBitString(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, changeOfBitString BACnetContextTagBitString, statusFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersChangeOfBitString {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfBitString must not be nil")
 	}
@@ -82,7 +82,7 @@ func NewBACnetNotificationParametersChangeOfBitString(openingTag BACnetOpeningTa
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfBitString must not be nil")
 	}
 	_result := &_BACnetNotificationParametersChangeOfBitString{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		ChangeOfBitString:                    changeOfBitString,
 		StatusFlags:                          statusFlags,

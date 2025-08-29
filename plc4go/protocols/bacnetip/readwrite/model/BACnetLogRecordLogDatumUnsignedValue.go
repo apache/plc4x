@@ -59,12 +59,12 @@ var _ BACnetLogRecordLogDatumUnsignedValue = (*_BACnetLogRecordLogDatumUnsignedV
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumUnsignedValue)(nil)
 
 // NewBACnetLogRecordLogDatumUnsignedValue factory function for _BACnetLogRecordLogDatumUnsignedValue
-func NewBACnetLogRecordLogDatumUnsignedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, unsignedValue BACnetContextTagUnsignedInteger, tagNumber uint8) *_BACnetLogRecordLogDatumUnsignedValue {
+func NewBACnetLogRecordLogDatumUnsignedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, unsignedValue BACnetContextTagUnsignedInteger) *_BACnetLogRecordLogDatumUnsignedValue {
 	if unsignedValue == nil {
 		panic("unsignedValue of type BACnetContextTagUnsignedInteger for BACnetLogRecordLogDatumUnsignedValue must not be nil")
 	}
 	_result := &_BACnetLogRecordLogDatumUnsignedValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		UnsignedValue:                   unsignedValue,
 	}
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result

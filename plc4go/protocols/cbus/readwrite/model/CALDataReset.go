@@ -54,9 +54,9 @@ var _ CALDataReset = (*_CALDataReset)(nil)
 var _ CALDataRequirements = (*_CALDataReset)(nil)
 
 // NewCALDataReset factory function for _CALDataReset
-func NewCALDataReset(commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataReset {
+func NewCALDataReset(requestContext RequestContext, commandTypeContainer CALCommandTypeContainer, additionalData CALData) *_CALDataReset {
 	_result := &_CALDataReset{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract: NewCALData(requestContext, commandTypeContainer, additionalData),
 	}
 	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result

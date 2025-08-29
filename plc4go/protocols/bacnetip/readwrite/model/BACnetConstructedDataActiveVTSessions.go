@@ -59,9 +59,9 @@ var _ BACnetConstructedDataActiveVTSessions = (*_BACnetConstructedDataActiveVTSe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveVTSessions)(nil)
 
 // NewBACnetConstructedDataActiveVTSessions factory function for _BACnetConstructedDataActiveVTSessions
-func NewBACnetConstructedDataActiveVTSessions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeVTSession []BACnetVTSession, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveVTSessions {
+func NewBACnetConstructedDataActiveVTSessions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeVTSession []BACnetVTSession) *_BACnetConstructedDataActiveVTSessions {
 	_result := &_BACnetConstructedDataActiveVTSessions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ActiveVTSession:               activeVTSession,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

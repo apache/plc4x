@@ -59,12 +59,12 @@ var _ BACnetLogRecordLogDatumNullValue = (*_BACnetLogRecordLogDatumNullValue)(ni
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumNullValue)(nil)
 
 // NewBACnetLogRecordLogDatumNullValue factory function for _BACnetLogRecordLogDatumNullValue
-func NewBACnetLogRecordLogDatumNullValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nullValue BACnetContextTagNull, tagNumber uint8) *_BACnetLogRecordLogDatumNullValue {
+func NewBACnetLogRecordLogDatumNullValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nullValue BACnetContextTagNull) *_BACnetLogRecordLogDatumNullValue {
 	if nullValue == nil {
 		panic("nullValue of type BACnetContextTagNull for BACnetLogRecordLogDatumNullValue must not be nil")
 	}
 	_result := &_BACnetLogRecordLogDatumNullValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		NullValue:                       nullValue,
 	}
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result

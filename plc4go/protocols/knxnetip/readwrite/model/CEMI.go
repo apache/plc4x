@@ -50,8 +50,6 @@ type CEMI interface {
 
 // CEMIContract provides a set of functions which can be overwritten by a sub struct
 type CEMIContract interface {
-	// GetSize() returns a parser argument
-	GetSize() uint16
 	// IsCEMI is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCEMI()
 	// CreateBuilder creates a CEMIBuilder
@@ -72,16 +70,13 @@ type _CEMI struct {
 		CEMIContract
 		CEMIRequirements
 	}
-
-	// Arguments.
-	Size uint16
 }
 
 var _ CEMIContract = (*_CEMI)(nil)
 
 // NewCEMI factory function for _CEMI
-func NewCEMI(size uint16) *_CEMI {
-	return &_CEMI{Size: size}
+func NewCEMI() *_CEMI {
+	return &_CEMI{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,8 +89,6 @@ type CEMIBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CEMIBuilder
-	// WithArgSize sets a parser argument
-	WithArgSize(uint16) CEMIBuilder
 	// AsLBusmonInd converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
 	AsLBusmonInd() LBusmonIndBuilder
 	// AsLDataReq converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
@@ -174,11 +167,6 @@ type _CEMIBuilder struct {
 var _ (CEMIBuilder) = (*_CEMIBuilder)(nil)
 
 func (b *_CEMIBuilder) WithMandatoryFields() CEMIBuilder {
-	return b
-}
-
-func (b *_CEMIBuilder) WithArgSize(size uint16) CEMIBuilder {
-	b.Size = size
 	return b
 }
 
@@ -517,7 +505,7 @@ func CEMIParseWithBufferProducer[T CEMI](size uint16) func(ctx context.Context, 
 }
 
 func CEMIParseWithBuffer[T CEMI](ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (T, error) {
-	v, err := (&_CEMI{Size: size}).parse(ctx, readBuffer, size)
+	v, err := (new(_CEMI)).parse(ctx, readBuffer, size)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -677,16 +665,6 @@ func (pm *_CEMI) serializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_CEMI) GetSize() uint16 {
-	return m.Size
-}
-
-//
-////
-
 func (m *_CEMI) IsCEMI() {}
 
 func (m *_CEMI) DeepCopy() any {
@@ -699,7 +677,6 @@ func (m *_CEMI) deepCopy() *_CEMI {
 	}
 	_CEMICopy := &_CEMI{
 		nil, // will be set by child
-		m.Size,
 	}
 	return _CEMICopy
 }

@@ -62,9 +62,9 @@ var _ NLMICouldBeRouterToNetwork = (*_NLMICouldBeRouterToNetwork)(nil)
 var _ NLMRequirements = (*_NLMICouldBeRouterToNetwork)(nil)
 
 // NewNLMICouldBeRouterToNetwork factory function for _NLMICouldBeRouterToNetwork
-func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, apduLength uint16) *_NLMICouldBeRouterToNetwork {
+func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8) *_NLMICouldBeRouterToNetwork {
 	_result := &_NLMICouldBeRouterToNetwork{
-		NLMContract:               NewNLM(apduLength),
+		NLMContract:               NewNLM(),
 		DestinationNetworkAddress: destinationNetworkAddress,
 		PerformanceIndex:          performanceIndex,
 	}

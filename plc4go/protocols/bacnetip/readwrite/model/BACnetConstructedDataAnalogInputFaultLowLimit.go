@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAnalogInputFaultLowLimit = (*_BACnetConstructedDataAn
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogInputFaultLowLimit)(nil)
 
 // NewBACnetConstructedDataAnalogInputFaultLowLimit factory function for _BACnetConstructedDataAnalogInputFaultLowLimit
-func NewBACnetConstructedDataAnalogInputFaultLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultLowLimit BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogInputFaultLowLimit {
+func NewBACnetConstructedDataAnalogInputFaultLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultLowLimit BACnetApplicationTagReal) *_BACnetConstructedDataAnalogInputFaultLowLimit {
 	if faultLowLimit == nil {
 		panic("faultLowLimit of type BACnetApplicationTagReal for BACnetConstructedDataAnalogInputFaultLowLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataAnalogInputFaultLowLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FaultLowLimit:                 faultLowLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -64,9 +64,9 @@ var _ BACnetConstructedDataGroupMembers = (*_BACnetConstructedDataGroupMembers)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGroupMembers)(nil)
 
 // NewBACnetConstructedDataGroupMembers factory function for _BACnetConstructedDataGroupMembers
-func NewBACnetConstructedDataGroupMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMembers []BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupMembers {
+func NewBACnetConstructedDataGroupMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMembers []BACnetApplicationTagObjectIdentifier) *_BACnetConstructedDataGroupMembers {
 	_result := &_BACnetConstructedDataGroupMembers{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		GroupMembers:                  groupMembers,
 	}

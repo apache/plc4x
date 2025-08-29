@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBACnetIPMulticastAddress = (*_BACnetConstructedDataBA
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPMulticastAddress)(nil)
 
 // NewBACnetConstructedDataBACnetIPMulticastAddress factory function for _BACnetConstructedDataBACnetIPMulticastAddress
-func NewBACnetConstructedDataBACnetIPMulticastAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipMulticastAddress BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPMulticastAddress {
+func NewBACnetConstructedDataBACnetIPMulticastAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipMulticastAddress BACnetApplicationTagOctetString) *_BACnetConstructedDataBACnetIPMulticastAddress {
 	if ipMulticastAddress == nil {
 		panic("ipMulticastAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataBACnetIPMulticastAddress must not be nil")
 	}
 	_result := &_BACnetConstructedDataBACnetIPMulticastAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IpMulticastAddress:            ipMulticastAddress,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

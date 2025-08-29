@@ -59,12 +59,12 @@ var _ BACnetEventParameterChangeOfValueCivCriteriaBitmask = (*_BACnetEventParame
 var _ BACnetEventParameterChangeOfValueCivCriteriaRequirements = (*_BACnetEventParameterChangeOfValueCivCriteriaBitmask)(nil)
 
 // NewBACnetEventParameterChangeOfValueCivCriteriaBitmask factory function for _BACnetEventParameterChangeOfValueCivCriteriaBitmask
-func NewBACnetEventParameterChangeOfValueCivCriteriaBitmask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitmask BACnetContextTagBitString, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaBitmask {
+func NewBACnetEventParameterChangeOfValueCivCriteriaBitmask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitmask BACnetContextTagBitString) *_BACnetEventParameterChangeOfValueCivCriteriaBitmask {
 	if bitmask == nil {
 		panic("bitmask of type BACnetContextTagBitString for BACnetEventParameterChangeOfValueCivCriteriaBitmask must not be nil")
 	}
 	_result := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
-		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag),
 		Bitmask: bitmask,
 	}
 	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result

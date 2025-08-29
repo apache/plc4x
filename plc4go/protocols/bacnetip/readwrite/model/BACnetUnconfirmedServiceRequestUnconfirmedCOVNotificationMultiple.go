@@ -71,7 +71,7 @@ var _ BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple = (*_BAC
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple)(nil)
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple factory function for _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
-func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, timeRemaining BACnetContextTagUnsignedInteger, timestamp BACnetTimeStampEnclosed, listOfCovNotifications ListOfCovNotificationsList, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, timeRemaining BACnetContextTagUnsignedInteger, timestamp BACnetTimeStampEnclosed, listOfCovNotifications ListOfCovNotificationsList) *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
 	if subscriberProcessIdentifier == nil {
 		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple must not be nil")
 	}
@@ -85,7 +85,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(subscr
 		panic("listOfCovNotifications of type ListOfCovNotificationsList for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		SubscriberProcessIdentifier:             subscriberProcessIdentifier,
 		InitiatingDeviceIdentifier:              initiatingDeviceIdentifier,
 		TimeRemaining:                           timeRemaining,

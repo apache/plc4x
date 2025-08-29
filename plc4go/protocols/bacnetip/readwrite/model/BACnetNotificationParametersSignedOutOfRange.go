@@ -74,7 +74,7 @@ var _ BACnetNotificationParametersSignedOutOfRange = (*_BACnetNotificationParame
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersSignedOutOfRange)(nil)
 
 // NewBACnetNotificationParametersSignedOutOfRange factory function for _BACnetNotificationParametersSignedOutOfRange
-func NewBACnetNotificationParametersSignedOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagSignedInteger, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagUnsignedInteger, exceededLimit BACnetContextTagSignedInteger, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersSignedOutOfRange {
+func NewBACnetNotificationParametersSignedOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagSignedInteger, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagUnsignedInteger, exceededLimit BACnetContextTagSignedInteger, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersSignedOutOfRange {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersSignedOutOfRange must not be nil")
 	}
@@ -94,7 +94,7 @@ func NewBACnetNotificationParametersSignedOutOfRange(openingTag BACnetOpeningTag
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersSignedOutOfRange must not be nil")
 	}
 	_result := &_BACnetNotificationParametersSignedOutOfRange{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		ExceedingValue:                       exceedingValue,
 		StatusFlags:                          statusFlags,

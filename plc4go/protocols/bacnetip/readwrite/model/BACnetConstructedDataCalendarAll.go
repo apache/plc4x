@@ -54,9 +54,9 @@ var _ BACnetConstructedDataCalendarAll = (*_BACnetConstructedDataCalendarAll)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCalendarAll)(nil)
 
 // NewBACnetConstructedDataCalendarAll factory function for _BACnetConstructedDataCalendarAll
-func NewBACnetConstructedDataCalendarAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCalendarAll {
+func NewBACnetConstructedDataCalendarAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataCalendarAll {
 	_result := &_BACnetConstructedDataCalendarAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

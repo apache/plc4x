@@ -61,12 +61,12 @@ var _ BACnetConstructedDataStopWhenFull = (*_BACnetConstructedDataStopWhenFull)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStopWhenFull)(nil)
 
 // NewBACnetConstructedDataStopWhenFull factory function for _BACnetConstructedDataStopWhenFull
-func NewBACnetConstructedDataStopWhenFull(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, stopWhenFull BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStopWhenFull {
+func NewBACnetConstructedDataStopWhenFull(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, stopWhenFull BACnetApplicationTagBoolean) *_BACnetConstructedDataStopWhenFull {
 	if stopWhenFull == nil {
 		panic("stopWhenFull of type BACnetApplicationTagBoolean for BACnetConstructedDataStopWhenFull must not be nil")
 	}
 	_result := &_BACnetConstructedDataStopWhenFull{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		StopWhenFull:                  stopWhenFull,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

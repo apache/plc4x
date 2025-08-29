@@ -61,12 +61,12 @@ var _ BACnetConstructedDataStartTime = (*_BACnetConstructedDataStartTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStartTime)(nil)
 
 // NewBACnetConstructedDataStartTime factory function for _BACnetConstructedDataStartTime
-func NewBACnetConstructedDataStartTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, startTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStartTime {
+func NewBACnetConstructedDataStartTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, startTime BACnetDateTime) *_BACnetConstructedDataStartTime {
 	if startTime == nil {
 		panic("startTime of type BACnetDateTime for BACnetConstructedDataStartTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataStartTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		StartTime:                     startTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

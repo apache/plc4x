@@ -54,9 +54,9 @@ var _ ApduDataExtLinkRead = (*_ApduDataExtLinkRead)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtLinkRead)(nil)
 
 // NewApduDataExtLinkRead factory function for _ApduDataExtLinkRead
-func NewApduDataExtLinkRead(length uint8) *_ApduDataExtLinkRead {
+func NewApduDataExtLinkRead() *_ApduDataExtLinkRead {
 	_result := &_ApduDataExtLinkRead{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

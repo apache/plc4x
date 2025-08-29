@@ -59,20 +59,16 @@ type _BACnetAuthorizationModeTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetAuthorizationMode
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetAuthorizationModeTagged = (*_BACnetAuthorizationModeTagged)(nil)
 
 // NewBACnetAuthorizationModeTagged factory function for _BACnetAuthorizationModeTagged
-func NewBACnetAuthorizationModeTagged(header BACnetTagHeader, value BACnetAuthorizationMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAuthorizationModeTagged {
+func NewBACnetAuthorizationModeTagged(header BACnetTagHeader, value BACnetAuthorizationMode, proprietaryValue uint32) *_BACnetAuthorizationModeTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetAuthorizationModeTagged must not be nil")
 	}
-	return &_BACnetAuthorizationModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetAuthorizationModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetAuthorizationModeTaggedBuilder interface {
 	WithValue(BACnetAuthorizationMode) BACnetAuthorizationModeTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetAuthorizationModeTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetAuthorizationModeTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetAuthorizationModeTaggedBuilder
 	// Build builds the BACnetAuthorizationModeTagged or returns an error if something is wrong
 	Build() (BACnetAuthorizationModeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetAuthorizationModeTaggedBuilder) WithValue(value BACnetAuthorizat
 
 func (b *_BACnetAuthorizationModeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAuthorizationModeTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetAuthorizationModeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAuthorizationModeTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetAuthorizationModeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAuthorizationModeTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetAuthorizationModeTaggedParseWithBufferProducer(tagNumber uint8, tagCl
 }
 
 func BACnetAuthorizationModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAuthorizationModeTagged, error) {
-	v, err := (&_BACnetAuthorizationModeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetAuthorizationModeTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetAuthorizationModeTagged) SerializeWithWriteBuffer(ctx context.Co
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetAuthorizationModeTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetAuthorizationModeTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetAuthorizationModeTagged) IsBACnetAuthorizationModeTagged() {}
 
 func (m *_BACnetAuthorizationModeTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetAuthorizationModeTagged) deepCopy() *_BACnetAuthorizationModeTag
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetAuthorizationModeTaggedCopy
 }

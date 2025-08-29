@@ -106,8 +106,6 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return HVACHumidityParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "HVACHumidityModeAndFlags":
 		return HVACHumidityModeAndFlagsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "CBusConstants":
-		return CBusConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "SerialInterfaceAddress":
 		return SerialInterfaceAddressParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "MeasurementData":

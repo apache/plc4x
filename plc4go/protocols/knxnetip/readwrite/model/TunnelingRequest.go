@@ -58,16 +58,13 @@ type _TunnelingRequest struct {
 	KnxNetIpMessageContract
 	TunnelingRequestDataBlock TunnelingRequestDataBlock
 	Cemi                      CEMI
-
-	// Arguments.
-	TotalLength uint16
 }
 
 var _ TunnelingRequest = (*_TunnelingRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_TunnelingRequest)(nil)
 
 // NewTunnelingRequest factory function for _TunnelingRequest
-func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI, totalLength uint16) *_TunnelingRequest {
+func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI) *_TunnelingRequest {
 	if tunnelingRequestDataBlock == nil {
 		panic("tunnelingRequestDataBlock of type TunnelingRequestDataBlock for TunnelingRequest must not be nil")
 	}
@@ -101,8 +98,6 @@ type TunnelingRequestBuilder interface {
 	WithCemi(CEMI) TunnelingRequestBuilder
 	// WithCemiBuilder adds Cemi (property field) which is build by the builder
 	WithCemiBuilder(func(CEMIBuilder) CEMIBuilder) TunnelingRequestBuilder
-	// WithArgTotalLength sets a parser argument
-	WithArgTotalLength(uint16) TunnelingRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() KnxNetIpMessageBuilder
 	// Build builds the TunnelingRequest or returns an error if something is wrong
@@ -162,11 +157,6 @@ func (b *_TunnelingRequestBuilder) WithCemiBuilder(builderSupplier func(CEMIBuil
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CEMIBuilder failed"))
 	}
-	return b
-}
-
-func (b *_TunnelingRequestBuilder) WithArgTotalLength(totalLength uint16) TunnelingRequestBuilder {
-	b.TotalLength = totalLength
 	return b
 }
 
@@ -354,16 +344,6 @@ func (m *_TunnelingRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 	return m.KnxNetIpMessageContract.(*_KnxNetIpMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_TunnelingRequest) GetTotalLength() uint16 {
-	return m.TotalLength
-}
-
-//
-////
-
 func (m *_TunnelingRequest) IsTunnelingRequest() {}
 
 func (m *_TunnelingRequest) DeepCopy() any {
@@ -378,7 +358,6 @@ func (m *_TunnelingRequest) deepCopy() *_TunnelingRequest {
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		utils.DeepCopy[TunnelingRequestDataBlock](m.TunnelingRequestDataBlock),
 		utils.DeepCopy[CEMI](m.Cemi),
-		m.TotalLength,
 	}
 	_TunnelingRequestCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _TunnelingRequestCopy

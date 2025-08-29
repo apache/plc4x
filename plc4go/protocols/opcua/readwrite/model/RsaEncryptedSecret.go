@@ -160,7 +160,7 @@ func RsaEncryptedSecretParseWithBufferProducer() func(ctx context.Context, readB
 }
 
 func RsaEncryptedSecretParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RsaEncryptedSecret, error) {
-	v, err := (&_RsaEncryptedSecret{}).parse(ctx, readBuffer)
+	v, err := (new(_RsaEncryptedSecret)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

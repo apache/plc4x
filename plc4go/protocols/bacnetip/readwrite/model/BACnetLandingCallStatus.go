@@ -273,7 +273,7 @@ func BACnetLandingCallStatusParseWithBufferProducer() func(ctx context.Context, 
 }
 
 func BACnetLandingCallStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatus, error) {
-	v, err := (&_BACnetLandingCallStatus{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetLandingCallStatus)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -57,22 +57,19 @@ type _BACnetFaultParameterFaultStateListOfFaultValues struct {
 	OpeningTag        BACnetOpeningTag
 	ListIfFaultValues []BACnetPropertyStates
 	ClosingTag        BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetFaultParameterFaultStateListOfFaultValues = (*_BACnetFaultParameterFaultStateListOfFaultValues)(nil)
 
 // NewBACnetFaultParameterFaultStateListOfFaultValues factory function for _BACnetFaultParameterFaultStateListOfFaultValues
-func NewBACnetFaultParameterFaultStateListOfFaultValues(openingTag BACnetOpeningTag, listIfFaultValues []BACnetPropertyStates, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultStateListOfFaultValues {
+func NewBACnetFaultParameterFaultStateListOfFaultValues(openingTag BACnetOpeningTag, listIfFaultValues []BACnetPropertyStates, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultStateListOfFaultValues {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultStateListOfFaultValues must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultStateListOfFaultValues must not be nil")
 	}
-	return &_BACnetFaultParameterFaultStateListOfFaultValues{OpeningTag: openingTag, ListIfFaultValues: listIfFaultValues, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetFaultParameterFaultStateListOfFaultValues{OpeningTag: openingTag, ListIfFaultValues: listIfFaultValues, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type BACnetFaultParameterFaultStateListOfFaultValuesBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetFaultParameterFaultStateListOfFaultValuesBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultStateListOfFaultValuesBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetFaultParameterFaultStateListOfFaultValuesBuilder
 	// Build builds the BACnetFaultParameterFaultStateListOfFaultValues or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultStateListOfFaultValues, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_BACnetFaultParameterFaultStateListOfFaultValuesBuilder) WithClosingTag
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetFaultParameterFaultStateListOfFaultValuesBuilder) WithArgTagNumber(tagNumber uint8) BACnetFaultParameterFaultStateListOfFaultValuesBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -273,7 +263,7 @@ func BACnetFaultParameterFaultStateListOfFaultValuesParseWithBufferProducer(tagN
 }
 
 func BACnetFaultParameterFaultStateListOfFaultValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultStateListOfFaultValues, error) {
-	v, err := (&_BACnetFaultParameterFaultStateListOfFaultValues{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetFaultParameterFaultStateListOfFaultValues)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_BACnetFaultParameterFaultStateListOfFaultValues) SerializeWithWriteBuf
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetFaultParameterFaultStateListOfFaultValues) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetFaultParameterFaultStateListOfFaultValues) IsBACnetFaultParameterFaultStateListOfFaultValues() {
 }
 
@@ -374,7 +354,6 @@ func (m *_BACnetFaultParameterFaultStateListOfFaultValues) deepCopy() *_BACnetFa
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetPropertyStates, BACnetPropertyStates](m.ListIfFaultValues),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetFaultParameterFaultStateListOfFaultValuesCopy
 }

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCredentialDisable = (*_BACnetConstructedDataCredentia
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialDisable)(nil)
 
 // NewBACnetConstructedDataCredentialDisable factory function for _BACnetConstructedDataCredentialDisable
-func NewBACnetConstructedDataCredentialDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentialDisable BACnetAccessCredentialDisableTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDisable {
+func NewBACnetConstructedDataCredentialDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentialDisable BACnetAccessCredentialDisableTagged) *_BACnetConstructedDataCredentialDisable {
 	if credentialDisable == nil {
 		panic("credentialDisable of type BACnetAccessCredentialDisableTagged for BACnetConstructedDataCredentialDisable must not be nil")
 	}
 	_result := &_BACnetConstructedDataCredentialDisable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CredentialDisable:             credentialDisable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSilenced = (*_BACnetConstructedDataSilenced)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSilenced)(nil)
 
 // NewBACnetConstructedDataSilenced factory function for _BACnetConstructedDataSilenced
-func NewBACnetConstructedDataSilenced(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, silenced BACnetSilencedStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSilenced {
+func NewBACnetConstructedDataSilenced(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, silenced BACnetSilencedStateTagged) *_BACnetConstructedDataSilenced {
 	if silenced == nil {
 		panic("silenced of type BACnetSilencedStateTagged for BACnetConstructedDataSilenced must not be nil")
 	}
 	_result := &_BACnetConstructedDataSilenced{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Silenced:                      silenced,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

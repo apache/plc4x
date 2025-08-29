@@ -68,12 +68,12 @@ var _ LBusmonInd = (*_LBusmonInd)(nil)
 var _ CEMIRequirements = (*_LBusmonInd)(nil)
 
 // NewLBusmonInd factory function for _LBusmonInd
-func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, crc *uint8, size uint16) *_LBusmonInd {
+func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, crc *uint8) *_LBusmonInd {
 	if dataFrame == nil {
 		panic("dataFrame of type LDataFrame for LBusmonInd must not be nil")
 	}
 	_result := &_LBusmonInd{
-		CEMIContract:                NewCEMI(size),
+		CEMIContract:                NewCEMI(),
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPSubnetMask = (*_BACnetConstructedDataIPSubnetMask)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPSubnetMask)(nil)
 
 // NewBACnetConstructedDataIPSubnetMask factory function for _BACnetConstructedDataIPSubnetMask
-func NewBACnetConstructedDataIPSubnetMask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipSubnetMask BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPSubnetMask {
+func NewBACnetConstructedDataIPSubnetMask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipSubnetMask BACnetApplicationTagOctetString) *_BACnetConstructedDataIPSubnetMask {
 	if ipSubnetMask == nil {
 		panic("ipSubnetMask of type BACnetApplicationTagOctetString for BACnetConstructedDataIPSubnetMask must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPSubnetMask{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IpSubnetMask:                  ipSubnetMask,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

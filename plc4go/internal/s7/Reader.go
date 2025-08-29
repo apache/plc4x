@@ -112,7 +112,6 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				s7MessageRequest,
 				true,
 				uint8(tpduId),
-				0,
 			),
 		)
 		// Start a new request-transaction (Is ended in the response-handler)

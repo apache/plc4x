@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPositiveIntegerValueDeadband = (*_BACnetConstructedDa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueDeadband)(nil)
 
 // NewBACnetConstructedDataPositiveIntegerValueDeadband factory function for _BACnetConstructedDataPositiveIntegerValueDeadband
-func NewBACnetConstructedDataPositiveIntegerValueDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueDeadband {
+func NewBACnetConstructedDataPositiveIntegerValueDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueDeadband {
 	if deadband == nil {
 		panic("deadband of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueDeadband must not be nil")
 	}
 	_result := &_BACnetConstructedDataPositiveIntegerValueDeadband{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Deadband:                      deadband,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

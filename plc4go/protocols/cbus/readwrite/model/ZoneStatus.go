@@ -189,7 +189,7 @@ func ZoneStatusParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 }
 
 func ZoneStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ZoneStatus, error) {
-	v, err := (&_ZoneStatus{}).parse(ctx, readBuffer)
+	v, err := (new(_ZoneStatus)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

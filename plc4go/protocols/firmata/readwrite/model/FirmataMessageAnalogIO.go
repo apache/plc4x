@@ -64,9 +64,9 @@ var _ FirmataMessageAnalogIO = (*_FirmataMessageAnalogIO)(nil)
 var _ FirmataMessageRequirements = (*_FirmataMessageAnalogIO)(nil)
 
 // NewFirmataMessageAnalogIO factory function for _FirmataMessageAnalogIO
-func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *_FirmataMessageAnalogIO {
+func NewFirmataMessageAnalogIO(pin uint8, data []int8) *_FirmataMessageAnalogIO {
 	_result := &_FirmataMessageAnalogIO{
-		FirmataMessageContract: NewFirmataMessage(response),
+		FirmataMessageContract: NewFirmataMessage(),
 		Pin:                    pin,
 		Data:                   data,
 	}

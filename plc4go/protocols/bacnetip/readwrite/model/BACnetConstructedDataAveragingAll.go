@@ -54,9 +54,9 @@ var _ BACnetConstructedDataAveragingAll = (*_BACnetConstructedDataAveragingAll)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAveragingAll)(nil)
 
 // NewBACnetConstructedDataAveragingAll factory function for _BACnetConstructedDataAveragingAll
-func NewBACnetConstructedDataAveragingAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAveragingAll {
+func NewBACnetConstructedDataAveragingAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataAveragingAll {
 	_result := &_BACnetConstructedDataAveragingAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

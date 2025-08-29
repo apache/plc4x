@@ -242,7 +242,7 @@ func BACnetKeyIdentifierParseWithBufferProducer() func(ctx context.Context, read
 }
 
 func BACnetKeyIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetKeyIdentifier, error) {
-	v, err := (&_BACnetKeyIdentifier{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetKeyIdentifier)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

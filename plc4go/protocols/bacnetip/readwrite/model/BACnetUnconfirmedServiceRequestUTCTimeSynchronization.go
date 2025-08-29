@@ -62,7 +62,7 @@ var _ BACnetUnconfirmedServiceRequestUTCTimeSynchronization = (*_BACnetUnconfirm
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUTCTimeSynchronization)(nil)
 
 // NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization factory function for _BACnetUnconfirmedServiceRequestUTCTimeSynchronization
-func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization(synchronizedDate BACnetApplicationTagDate, synchronizedTime BACnetApplicationTagTime, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
+func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization(synchronizedDate BACnetApplicationTagDate, synchronizedTime BACnetApplicationTagTime) *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
 	if synchronizedDate == nil {
 		panic("synchronizedDate of type BACnetApplicationTagDate for BACnetUnconfirmedServiceRequestUTCTimeSynchronization must not be nil")
 	}
@@ -70,7 +70,7 @@ func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization(synchronizedDate B
 		panic("synchronizedTime of type BACnetApplicationTagTime for BACnetUnconfirmedServiceRequestUTCTimeSynchronization must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestUTCTimeSynchronization{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		SynchronizedDate:                        synchronizedDate,
 		SynchronizedTime:                        synchronizedTime,
 	}

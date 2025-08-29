@@ -61,12 +61,12 @@ var _ BACnetContextTagEnumerated = (*_BACnetContextTagEnumerated)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagEnumerated)(nil)
 
 // NewBACnetContextTagEnumerated factory function for _BACnetContextTagEnumerated
-func NewBACnetContextTagEnumerated(header BACnetTagHeader, payload BACnetTagPayloadEnumerated, tagNumberArgument uint8) *_BACnetContextTagEnumerated {
+func NewBACnetContextTagEnumerated(header BACnetTagHeader, payload BACnetTagPayloadEnumerated) *_BACnetContextTagEnumerated {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadEnumerated for BACnetContextTagEnumerated must not be nil")
 	}
 	_result := &_BACnetContextTagEnumerated{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 		Payload:                  payload,
 	}
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result

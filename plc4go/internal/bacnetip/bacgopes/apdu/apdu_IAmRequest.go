@@ -47,11 +47,10 @@ func NewIAmRequest(args Args, kwArgs KWArgs, options ...Option) (*IAmRequest, er
 		},
 	}
 	options = AddRootMessageIfAbundant(options, readWriteModel.NewBACnetUnconfirmedServiceRequestIAm(
-		readWriteModel.CreateBACnetApplicationTagObjectIdentifier(0, 0),                                                // TODO: get right values
-		readWriteModel.CreateBACnetApplicationTagUnsignedInteger(0),                                                    // TODO: get right values
-		readWriteModel.NewBACnetSegmentationTagged(readWriteModel.CreateBACnetTagHeaderBalanced(false, 0, 0), 0, 0, 0), // TODO: get right values
-		readWriteModel.CreateBACnetVendorIdApplicationTagged(0),                                                        // TODO: get right values
-		0,
+		readWriteModel.CreateBACnetApplicationTagObjectIdentifier(0, 0),                                          // TODO: get right values
+		readWriteModel.CreateBACnetApplicationTagUnsignedInteger(0),                                              // TODO: get right values
+		readWriteModel.NewBACnetSegmentationTagged(readWriteModel.CreateBACnetTagHeaderBalanced(false, 0, 0), 0), // TODO: get right values
+		readWriteModel.CreateBACnetVendorIdApplicationTagged(0),                                                  // TODO: get right values
 	))
 	options = AddLeafTypeIfAbundant(options, w)
 	var err error

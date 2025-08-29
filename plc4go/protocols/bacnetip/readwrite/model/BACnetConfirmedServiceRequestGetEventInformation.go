@@ -59,7 +59,7 @@ var _ BACnetConfirmedServiceRequestGetEventInformation = (*_BACnetConfirmedServi
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestGetEventInformation)(nil)
 
 // NewBACnetConfirmedServiceRequestGetEventInformation factory function for _BACnetConfirmedServiceRequestGetEventInformation
-func NewBACnetConfirmedServiceRequestGetEventInformation(lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestGetEventInformation {
+func NewBACnetConfirmedServiceRequestGetEventInformation(serviceRequestLength uint32, lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier) *_BACnetConfirmedServiceRequestGetEventInformation {
 	_result := &_BACnetConfirmedServiceRequestGetEventInformation{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		LastReceivedObjectIdentifier:          lastReceivedObjectIdentifier,

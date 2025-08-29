@@ -56,16 +56,13 @@ type _OpcuaOpenRequest struct {
 	MessagePDUContract
 	OpenRequest OpenChannelMessage
 	Message     Payload
-
-	// Arguments.
-	TotalLength uint32
 }
 
 var _ OpcuaOpenRequest = (*_OpcuaOpenRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaOpenRequest)(nil)
 
 // NewOpcuaOpenRequest factory function for _OpcuaOpenRequest
-func NewOpcuaOpenRequest(chunk ChunkType, openRequest OpenChannelMessage, message Payload, totalLength uint32, binary bool) *_OpcuaOpenRequest {
+func NewOpcuaOpenRequest(chunk ChunkType, openRequest OpenChannelMessage, message Payload) *_OpcuaOpenRequest {
 	if openRequest == nil {
 		panic("openRequest of type OpenChannelMessage for OpcuaOpenRequest must not be nil")
 	}
@@ -73,7 +70,7 @@ func NewOpcuaOpenRequest(chunk ChunkType, openRequest OpenChannelMessage, messag
 		panic("message of type Payload for OpcuaOpenRequest must not be nil")
 	}
 	_result := &_OpcuaOpenRequest{
-		MessagePDUContract: NewMessagePDU(chunk, binary),
+		MessagePDUContract: NewMessagePDU(chunk),
 		OpenRequest:        openRequest,
 		Message:            message,
 	}
@@ -99,8 +96,6 @@ type OpcuaOpenRequestBuilder interface {
 	WithMessage(Payload) OpcuaOpenRequestBuilder
 	// WithMessageBuilder adds Message (property field) which is build by the builder
 	WithMessageBuilder(func(PayloadBuilder) PayloadBuilder) OpcuaOpenRequestBuilder
-	// WithArgTotalLength sets a parser argument
-	WithArgTotalLength(uint32) OpcuaOpenRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() MessagePDUBuilder
 	// Build builds the OpcuaOpenRequest or returns an error if something is wrong
@@ -160,11 +155,6 @@ func (b *_OpcuaOpenRequestBuilder) WithMessageBuilder(builderSupplier func(Paylo
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PayloadBuilder failed"))
 	}
-	return b
-}
-
-func (b *_OpcuaOpenRequestBuilder) WithArgTotalLength(totalLength uint32) OpcuaOpenRequestBuilder {
-	b.TotalLength = totalLength
 	return b
 }
 
@@ -356,16 +346,6 @@ func (m *_OpcuaOpenRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 	return m.MessagePDUContract.(*_MessagePDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_OpcuaOpenRequest) GetTotalLength() uint32 {
-	return m.TotalLength
-}
-
-//
-////
-
 func (m *_OpcuaOpenRequest) IsOpcuaOpenRequest() {}
 
 func (m *_OpcuaOpenRequest) DeepCopy() any {
@@ -380,7 +360,6 @@ func (m *_OpcuaOpenRequest) deepCopy() *_OpcuaOpenRequest {
 		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
 		utils.DeepCopy[OpenChannelMessage](m.OpenRequest),
 		utils.DeepCopy[Payload](m.Message),
-		m.TotalLength,
 	}
 	_OpcuaOpenRequestCopy.MessagePDUContract.(*_MessagePDU)._SubType = m
 	return _OpcuaOpenRequestCopy

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLocalDate = (*_BACnetConstructedDataLocalDate)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLocalDate)(nil)
 
 // NewBACnetConstructedDataLocalDate factory function for _BACnetConstructedDataLocalDate
-func NewBACnetConstructedDataLocalDate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localDate BACnetApplicationTagDate, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalDate {
+func NewBACnetConstructedDataLocalDate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localDate BACnetApplicationTagDate) *_BACnetConstructedDataLocalDate {
 	if localDate == nil {
 		panic("localDate of type BACnetApplicationTagDate for BACnetConstructedDataLocalDate must not be nil")
 	}
 	_result := &_BACnetConstructedDataLocalDate{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LocalDate:                     localDate,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

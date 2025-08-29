@@ -62,9 +62,9 @@ var _ ApduDataGroupValueResponse = (*_ApduDataGroupValueResponse)(nil)
 var _ ApduDataRequirements = (*_ApduDataGroupValueResponse)(nil)
 
 // NewApduDataGroupValueResponse factory function for _ApduDataGroupValueResponse
-func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte, dataLength uint8) *_ApduDataGroupValueResponse {
+func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte) *_ApduDataGroupValueResponse {
 	_result := &_ApduDataGroupValueResponse{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 		DataFirstByte:    dataFirstByte,
 		Data:             data,
 	}

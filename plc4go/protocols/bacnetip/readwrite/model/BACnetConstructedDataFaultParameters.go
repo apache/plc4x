@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFaultParameters = (*_BACnetConstructedDataFaultParame
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFaultParameters)(nil)
 
 // NewBACnetConstructedDataFaultParameters factory function for _BACnetConstructedDataFaultParameters
-func NewBACnetConstructedDataFaultParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultParameters BACnetFaultParameter, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultParameters {
+func NewBACnetConstructedDataFaultParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultParameters BACnetFaultParameter) *_BACnetConstructedDataFaultParameters {
 	if faultParameters == nil {
 		panic("faultParameters of type BACnetFaultParameter for BACnetConstructedDataFaultParameters must not be nil")
 	}
 	_result := &_BACnetConstructedDataFaultParameters{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FaultParameters:               faultParameters,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

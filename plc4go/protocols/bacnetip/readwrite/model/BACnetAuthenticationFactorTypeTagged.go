@@ -54,20 +54,16 @@ type BACnetAuthenticationFactorTypeTagged interface {
 type _BACnetAuthenticationFactorTypeTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetAuthenticationFactorType
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetAuthenticationFactorTypeTagged = (*_BACnetAuthenticationFactorTypeTagged)(nil)
 
 // NewBACnetAuthenticationFactorTypeTagged factory function for _BACnetAuthenticationFactorTypeTagged
-func NewBACnetAuthenticationFactorTypeTagged(header BACnetTagHeader, value BACnetAuthenticationFactorType, tagNumber uint8, tagClass TagClass) *_BACnetAuthenticationFactorTypeTagged {
+func NewBACnetAuthenticationFactorTypeTagged(header BACnetTagHeader, value BACnetAuthenticationFactorType) *_BACnetAuthenticationFactorTypeTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetAuthenticationFactorTypeTagged must not be nil")
 	}
-	return &_BACnetAuthenticationFactorTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetAuthenticationFactorTypeTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetAuthenticationFactorTypeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthenticationFactorTypeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetAuthenticationFactorType) BACnetAuthenticationFactorTypeTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetAuthenticationFactorTypeTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetAuthenticationFactorTypeTaggedBuilder
 	// Build builds the BACnetAuthenticationFactorTypeTagged or returns an error if something is wrong
 	Build() (BACnetAuthenticationFactorTypeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) WithHeaderBuilder(builder
 
 func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) WithValue(value BACnetAuthenticationFactorType) BACnetAuthenticationFactorTypeTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAuthenticationFactorTypeTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAuthenticationFactorTypeTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetAuthenticationFactorTypeTaggedParseWithBufferProducer(tagNumber uint8
 }
 
 func BACnetAuthenticationFactorTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAuthenticationFactorTypeTagged, error) {
-	v, err := (&_BACnetAuthenticationFactorTypeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetAuthenticationFactorTypeTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetAuthenticationFactorTypeTagged) SerializeWithWriteBuffer(ctx con
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetAuthenticationFactorTypeTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetAuthenticationFactorTypeTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetAuthenticationFactorTypeTagged) IsBACnetAuthenticationFactorTypeTagged() {}
 
 func (m *_BACnetAuthenticationFactorTypeTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetAuthenticationFactorTypeTagged) deepCopy() *_BACnetAuthenticatio
 	_BACnetAuthenticationFactorTypeTaggedCopy := &_BACnetAuthenticationFactorTypeTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetAuthenticationFactorTypeTaggedCopy
 }

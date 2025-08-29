@@ -57,22 +57,19 @@ type _BACnetLiftCarCallListFloorList struct {
 	OpeningTag   BACnetOpeningTag
 	FloorNumbers []BACnetApplicationTagUnsignedInteger
 	ClosingTag   BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetLiftCarCallListFloorList = (*_BACnetLiftCarCallListFloorList)(nil)
 
 // NewBACnetLiftCarCallListFloorList factory function for _BACnetLiftCarCallListFloorList
-func NewBACnetLiftCarCallListFloorList(openingTag BACnetOpeningTag, floorNumbers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLiftCarCallListFloorList {
+func NewBACnetLiftCarCallListFloorList(openingTag BACnetOpeningTag, floorNumbers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag) *_BACnetLiftCarCallListFloorList {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetLiftCarCallListFloorList must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetLiftCarCallListFloorList must not be nil")
 	}
-	return &_BACnetLiftCarCallListFloorList{OpeningTag: openingTag, FloorNumbers: floorNumbers, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetLiftCarCallListFloorList{OpeningTag: openingTag, FloorNumbers: floorNumbers, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type BACnetLiftCarCallListFloorListBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetLiftCarCallListFloorListBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLiftCarCallListFloorListBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLiftCarCallListFloorListBuilder
 	// Build builds the BACnetLiftCarCallListFloorList or returns an error if something is wrong
 	Build() (BACnetLiftCarCallListFloorList, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_BACnetLiftCarCallListFloorListBuilder) WithClosingTagBuilder(builderSu
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetLiftCarCallListFloorListBuilder) WithArgTagNumber(tagNumber uint8) BACnetLiftCarCallListFloorListBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -273,7 +263,7 @@ func BACnetLiftCarCallListFloorListParseWithBufferProducer(tagNumber uint8) func
 }
 
 func BACnetLiftCarCallListFloorListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLiftCarCallListFloorList, error) {
-	v, err := (&_BACnetLiftCarCallListFloorList{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetLiftCarCallListFloorList)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_BACnetLiftCarCallListFloorList) SerializeWithWriteBuffer(ctx context.C
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLiftCarCallListFloorList) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetLiftCarCallListFloorList) IsBACnetLiftCarCallListFloorList() {}
 
 func (m *_BACnetLiftCarCallListFloorList) DeepCopy() any {
@@ -373,7 +353,6 @@ func (m *_BACnetLiftCarCallListFloorList) deepCopy() *_BACnetLiftCarCallListFloo
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.FloorNumbers),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetLiftCarCallListFloorListCopy
 }

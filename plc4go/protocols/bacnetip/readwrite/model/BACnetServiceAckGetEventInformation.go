@@ -62,7 +62,7 @@ var _ BACnetServiceAckGetEventInformation = (*_BACnetServiceAckGetEventInformati
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckGetEventInformation)(nil)
 
 // NewBACnetServiceAckGetEventInformation factory function for _BACnetServiceAckGetEventInformation
-func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean, serviceAckLength uint32) *_BACnetServiceAckGetEventInformation {
+func NewBACnetServiceAckGetEventInformation(serviceAckLength uint32, listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean) *_BACnetServiceAckGetEventInformation {
 	if listOfEventSummaries == nil {
 		panic("listOfEventSummaries of type BACnetEventSummariesList for BACnetServiceAckGetEventInformation must not be nil")
 	}

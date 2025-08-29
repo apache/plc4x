@@ -60,23 +60,19 @@ type BACnetEventTransitionBitsTagged interface {
 type _BACnetEventTransitionBitsTagged struct {
 	Header  BACnetTagHeader
 	Payload BACnetTagPayloadBitString
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetEventTransitionBitsTagged = (*_BACnetEventTransitionBitsTagged)(nil)
 
 // NewBACnetEventTransitionBitsTagged factory function for _BACnetEventTransitionBitsTagged
-func NewBACnetEventTransitionBitsTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetEventTransitionBitsTagged {
+func NewBACnetEventTransitionBitsTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString) *_BACnetEventTransitionBitsTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetEventTransitionBitsTagged must not be nil")
 	}
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadBitString for BACnetEventTransitionBitsTagged must not be nil")
 	}
-	return &_BACnetEventTransitionBitsTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetEventTransitionBitsTagged{Header: header, Payload: payload}
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,10 +93,6 @@ type BACnetEventTransitionBitsTaggedBuilder interface {
 	WithPayload(BACnetTagPayloadBitString) BACnetEventTransitionBitsTaggedBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetEventTransitionBitsTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetEventTransitionBitsTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetEventTransitionBitsTaggedBuilder
 	// Build builds the BACnetEventTransitionBitsTagged or returns an error if something is wrong
 	Build() (BACnetEventTransitionBitsTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -151,15 +143,6 @@ func (b *_BACnetEventTransitionBitsTaggedBuilder) WithPayloadBuilder(builderSupp
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetEventTransitionBitsTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventTransitionBitsTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetEventTransitionBitsTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetEventTransitionBitsTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -298,7 +281,7 @@ func BACnetEventTransitionBitsTaggedParseWithBufferProducer(tagNumber uint8, tag
 }
 
 func BACnetEventTransitionBitsTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetEventTransitionBitsTagged, error) {
-	v, err := (&_BACnetEventTransitionBitsTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetEventTransitionBitsTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -410,19 +393,6 @@ func (m *_BACnetEventTransitionBitsTagged) SerializeWithWriteBuffer(ctx context.
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetEventTransitionBitsTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetEventTransitionBitsTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetEventTransitionBitsTagged) IsBACnetEventTransitionBitsTagged() {}
 
 func (m *_BACnetEventTransitionBitsTagged) DeepCopy() any {
@@ -436,8 +406,6 @@ func (m *_BACnetEventTransitionBitsTagged) deepCopy() *_BACnetEventTransitionBit
 	_BACnetEventTransitionBitsTaggedCopy := &_BACnetEventTransitionBitsTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		utils.DeepCopy[BACnetTagPayloadBitString](m.Payload),
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetEventTransitionBitsTaggedCopy
 }

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataUpdateKeySetTimeout = (*_BACnetConstructedDataUpdateK
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUpdateKeySetTimeout)(nil)
 
 // NewBACnetConstructedDataUpdateKeySetTimeout factory function for _BACnetConstructedDataUpdateKeySetTimeout
-func NewBACnetConstructedDataUpdateKeySetTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateKeySetTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateKeySetTimeout {
+func NewBACnetConstructedDataUpdateKeySetTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateKeySetTimeout BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataUpdateKeySetTimeout {
 	if updateKeySetTimeout == nil {
 		panic("updateKeySetTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataUpdateKeySetTimeout must not be nil")
 	}
 	_result := &_BACnetConstructedDataUpdateKeySetTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		UpdateKeySetTimeout:           updateKeySetTimeout,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSystemStatus = (*_BACnetConstructedDataSystemStatus)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSystemStatus)(nil)
 
 // NewBACnetConstructedDataSystemStatus factory function for _BACnetConstructedDataSystemStatus
-func NewBACnetConstructedDataSystemStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, systemStatus BACnetDeviceStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSystemStatus {
+func NewBACnetConstructedDataSystemStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, systemStatus BACnetDeviceStatusTagged) *_BACnetConstructedDataSystemStatus {
 	if systemStatus == nil {
 		panic("systemStatus of type BACnetDeviceStatusTagged for BACnetConstructedDataSystemStatus must not be nil")
 	}
 	_result := &_BACnetConstructedDataSystemStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SystemStatus:                  systemStatus,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

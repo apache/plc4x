@@ -61,12 +61,12 @@ var _ BACnetContextTagSignedInteger = (*_BACnetContextTagSignedInteger)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagSignedInteger)(nil)
 
 // NewBACnetContextTagSignedInteger factory function for _BACnetContextTagSignedInteger
-func NewBACnetContextTagSignedInteger(header BACnetTagHeader, payload BACnetTagPayloadSignedInteger, tagNumberArgument uint8) *_BACnetContextTagSignedInteger {
+func NewBACnetContextTagSignedInteger(header BACnetTagHeader, payload BACnetTagPayloadSignedInteger) *_BACnetContextTagSignedInteger {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadSignedInteger for BACnetContextTagSignedInteger must not be nil")
 	}
 	_result := &_BACnetContextTagSignedInteger{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 		Payload:                  payload,
 	}
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result

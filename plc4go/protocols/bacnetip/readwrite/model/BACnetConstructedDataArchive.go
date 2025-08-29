@@ -61,12 +61,12 @@ var _ BACnetConstructedDataArchive = (*_BACnetConstructedDataArchive)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataArchive)(nil)
 
 // NewBACnetConstructedDataArchive factory function for _BACnetConstructedDataArchive
-func NewBACnetConstructedDataArchive(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, archive BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataArchive {
+func NewBACnetConstructedDataArchive(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, archive BACnetApplicationTagBoolean) *_BACnetConstructedDataArchive {
 	if archive == nil {
 		panic("archive of type BACnetApplicationTagBoolean for BACnetConstructedDataArchive must not be nil")
 	}
 	_result := &_BACnetConstructedDataArchive{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Archive:                       archive,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

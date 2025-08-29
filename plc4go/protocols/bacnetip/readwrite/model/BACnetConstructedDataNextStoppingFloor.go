@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNextStoppingFloor = (*_BACnetConstructedDataNextStopp
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNextStoppingFloor)(nil)
 
 // NewBACnetConstructedDataNextStoppingFloor factory function for _BACnetConstructedDataNextStoppingFloor
-func NewBACnetConstructedDataNextStoppingFloor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nextStoppingFloor BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNextStoppingFloor {
+func NewBACnetConstructedDataNextStoppingFloor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nextStoppingFloor BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataNextStoppingFloor {
 	if nextStoppingFloor == nil {
 		panic("nextStoppingFloor of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNextStoppingFloor must not be nil")
 	}
 	_result := &_BACnetConstructedDataNextStoppingFloor{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NextStoppingFloor:             nextStoppingFloor,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

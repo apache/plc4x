@@ -261,7 +261,7 @@ func KnxGroupAddressParseWithBufferProducer[T KnxGroupAddress](numLevels uint8) 
 }
 
 func KnxGroupAddressParseWithBuffer[T KnxGroupAddress](ctx context.Context, readBuffer utils.ReadBuffer, numLevels uint8) (T, error) {
-	v, err := (&_KnxGroupAddress{}).parse(ctx, readBuffer, numLevels)
+	v, err := (new(_KnxGroupAddress)).parse(ctx, readBuffer, numLevels)
 	if err != nil {
 		var zero T
 		return zero, err

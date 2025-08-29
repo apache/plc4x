@@ -64,9 +64,9 @@ var _ BACnetConstructedDataAccessDoors = (*_BACnetConstructedDataAccessDoors)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessDoors)(nil)
 
 // NewBACnetConstructedDataAccessDoors factory function for _BACnetConstructedDataAccessDoors
-func NewBACnetConstructedDataAccessDoors(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, accessDoors []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoors {
+func NewBACnetConstructedDataAccessDoors(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, accessDoors []BACnetDeviceObjectReference) *_BACnetConstructedDataAccessDoors {
 	_result := &_BACnetConstructedDataAccessDoors{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		AccessDoors:                   accessDoors,
 	}

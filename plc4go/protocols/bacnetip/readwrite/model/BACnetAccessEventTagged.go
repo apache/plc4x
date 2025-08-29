@@ -59,20 +59,16 @@ type _BACnetAccessEventTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetAccessEvent
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetAccessEventTagged = (*_BACnetAccessEventTagged)(nil)
 
 // NewBACnetAccessEventTagged factory function for _BACnetAccessEventTagged
-func NewBACnetAccessEventTagged(header BACnetTagHeader, value BACnetAccessEvent, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessEventTagged {
+func NewBACnetAccessEventTagged(header BACnetTagHeader, value BACnetAccessEvent, proprietaryValue uint32) *_BACnetAccessEventTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetAccessEventTagged must not be nil")
 	}
-	return &_BACnetAccessEventTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetAccessEventTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetAccessEventTaggedBuilder interface {
 	WithValue(BACnetAccessEvent) BACnetAccessEventTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetAccessEventTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetAccessEventTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetAccessEventTaggedBuilder
 	// Build builds the BACnetAccessEventTagged or returns an error if something is wrong
 	Build() (BACnetAccessEventTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetAccessEventTaggedBuilder) WithValue(value BACnetAccessEvent) BAC
 
 func (b *_BACnetAccessEventTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessEventTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetAccessEventTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccessEventTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetAccessEventTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccessEventTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetAccessEventTaggedParseWithBufferProducer(tagNumber uint8, tagClass Ta
 }
 
 func BACnetAccessEventTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessEventTagged, error) {
-	v, err := (&_BACnetAccessEventTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetAccessEventTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetAccessEventTagged) SerializeWithWriteBuffer(ctx context.Context,
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetAccessEventTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetAccessEventTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetAccessEventTagged) IsBACnetAccessEventTagged() {}
 
 func (m *_BACnetAccessEventTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetAccessEventTagged) deepCopy() *_BACnetAccessEventTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetAccessEventTaggedCopy
 }

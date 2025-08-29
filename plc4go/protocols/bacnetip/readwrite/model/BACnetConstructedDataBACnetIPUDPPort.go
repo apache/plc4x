@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBACnetIPUDPPort = (*_BACnetConstructedDataBACnetIPUDP
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPUDPPort)(nil)
 
 // NewBACnetConstructedDataBACnetIPUDPPort factory function for _BACnetConstructedDataBACnetIPUDPPort
-func NewBACnetConstructedDataBACnetIPUDPPort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipUdpPort BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPUDPPort {
+func NewBACnetConstructedDataBACnetIPUDPPort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipUdpPort BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataBACnetIPUDPPort {
 	if ipUdpPort == nil {
 		panic("ipUdpPort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBACnetIPUDPPort must not be nil")
 	}
 	_result := &_BACnetConstructedDataBACnetIPUDPPort{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IpUdpPort:                     ipUdpPort,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

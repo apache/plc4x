@@ -130,7 +130,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 
 		// Assemble the finished ADU
 		m.log.Trace().Msg("Assemble ADU")
-		requestAdu := readWriteModel.NewModbusTcpADU(uint16(transactionIdentifier), m.unitIdentifier, pdu, false)
+		requestAdu := readWriteModel.NewModbusTcpADU(uint16(transactionIdentifier), m.unitIdentifier, pdu)
 
 		// Send the ADU over the wire
 		m.log.Trace().Msg("Send ADU")

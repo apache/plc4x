@@ -50,8 +50,6 @@ type ApduData interface {
 
 // ApduDataContract provides a set of functions which can be overwritten by a sub struct
 type ApduDataContract interface {
-	// GetDataLength() returns a parser argument
-	GetDataLength() uint8
 	// IsApduData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduData()
 	// CreateBuilder creates a ApduDataBuilder
@@ -72,16 +70,13 @@ type _ApduData struct {
 		ApduDataContract
 		ApduDataRequirements
 	}
-
-	// Arguments.
-	DataLength uint8
 }
 
 var _ ApduDataContract = (*_ApduData)(nil)
 
 // NewApduData factory function for _ApduData
-func NewApduData(dataLength uint8) *_ApduData {
-	return &_ApduData{DataLength: dataLength}
+func NewApduData() *_ApduData {
+	return &_ApduData{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,8 +89,6 @@ type ApduDataBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataBuilder
-	// WithArgDataLength sets a parser argument
-	WithArgDataLength(uint8) ApduDataBuilder
 	// AsApduDataGroupValueRead converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
 	AsApduDataGroupValueRead() ApduDataGroupValueReadBuilder
 	// AsApduDataGroupValueResponse converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
@@ -160,11 +153,6 @@ type _ApduDataBuilder struct {
 var _ (ApduDataBuilder) = (*_ApduDataBuilder)(nil)
 
 func (b *_ApduDataBuilder) WithMandatoryFields() ApduDataBuilder {
-	return b
-}
-
-func (b *_ApduDataBuilder) WithArgDataLength(dataLength uint8) ApduDataBuilder {
-	b.DataLength = dataLength
 	return b
 }
 
@@ -433,7 +421,7 @@ func ApduDataParseWithBufferProducer[T ApduData](dataLength uint8) func(ctx cont
 }
 
 func ApduDataParseWithBuffer[T ApduData](ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (T, error) {
-	v, err := (&_ApduData{DataLength: dataLength}).parse(ctx, readBuffer, dataLength)
+	v, err := (new(_ApduData)).parse(ctx, readBuffer, dataLength)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -565,16 +553,6 @@ func (pm *_ApduData) serializeParent(ctx context.Context, writeBuffer utils.Writ
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_ApduData) GetDataLength() uint8 {
-	return m.DataLength
-}
-
-//
-////
-
 func (m *_ApduData) IsApduData() {}
 
 func (m *_ApduData) DeepCopy() any {
@@ -587,7 +565,6 @@ func (m *_ApduData) deepCopy() *_ApduData {
 	}
 	_ApduDataCopy := &_ApduData{
 		nil, // will be set by child
-		m.DataLength,
 	}
 	return _ApduDataCopy
 }

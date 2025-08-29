@@ -59,20 +59,16 @@ type _BACnetAccessZoneOccupancyStateTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetAccessZoneOccupancyState
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetAccessZoneOccupancyStateTagged = (*_BACnetAccessZoneOccupancyStateTagged)(nil)
 
 // NewBACnetAccessZoneOccupancyStateTagged factory function for _BACnetAccessZoneOccupancyStateTagged
-func NewBACnetAccessZoneOccupancyStateTagged(header BACnetTagHeader, value BACnetAccessZoneOccupancyState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessZoneOccupancyStateTagged {
+func NewBACnetAccessZoneOccupancyStateTagged(header BACnetTagHeader, value BACnetAccessZoneOccupancyState, proprietaryValue uint32) *_BACnetAccessZoneOccupancyStateTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetAccessZoneOccupancyStateTagged must not be nil")
 	}
-	return &_BACnetAccessZoneOccupancyStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetAccessZoneOccupancyStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetAccessZoneOccupancyStateTaggedBuilder interface {
 	WithValue(BACnetAccessZoneOccupancyState) BACnetAccessZoneOccupancyStateTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetAccessZoneOccupancyStateTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetAccessZoneOccupancyStateTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetAccessZoneOccupancyStateTaggedBuilder
 	// Build builds the BACnetAccessZoneOccupancyStateTagged or returns an error if something is wrong
 	Build() (BACnetAccessZoneOccupancyStateTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithValue(value BACnetAcc
 
 func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessZoneOccupancyStateTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccessZoneOccupancyStateTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccessZoneOccupancyStateTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetAccessZoneOccupancyStateTaggedParseWithBufferProducer(tagNumber uint8
 }
 
 func BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessZoneOccupancyStateTagged, error) {
-	v, err := (&_BACnetAccessZoneOccupancyStateTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetAccessZoneOccupancyStateTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetAccessZoneOccupancyStateTagged) SerializeWithWriteBuffer(ctx con
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetAccessZoneOccupancyStateTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetAccessZoneOccupancyStateTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetAccessZoneOccupancyStateTagged) IsBACnetAccessZoneOccupancyStateTagged() {}
 
 func (m *_BACnetAccessZoneOccupancyStateTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetAccessZoneOccupancyStateTagged) deepCopy() *_BACnetAccessZoneOcc
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetAccessZoneOccupancyStateTaggedCopy
 }

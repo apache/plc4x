@@ -189,7 +189,7 @@ func AlphaParseWithBufferProducer() func(ctx context.Context, readBuffer utils.R
 }
 
 func AlphaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Alpha, error) {
-	v, err := (&_Alpha{}).parse(ctx, readBuffer)
+	v, err := (new(_Alpha)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

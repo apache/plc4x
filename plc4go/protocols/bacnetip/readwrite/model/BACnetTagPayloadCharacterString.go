@@ -41,6 +41,8 @@ type BACnetTagPayloadCharacterString interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
+	// GetActualLength returns ActualLength (property field)
+	GetActualLength() uint32
 	// GetEncoding returns Encoding (property field)
 	GetEncoding() BACnetCharacterEncoding
 	// GetValue returns Value (property field)
@@ -55,18 +57,16 @@ type BACnetTagPayloadCharacterString interface {
 
 // _BACnetTagPayloadCharacterString is the data-structure of this message
 type _BACnetTagPayloadCharacterString struct {
-	Encoding BACnetCharacterEncoding
-	Value    string
-
-	// Arguments.
 	ActualLength uint32
+	Encoding     BACnetCharacterEncoding
+	Value        string
 }
 
 var _ BACnetTagPayloadCharacterString = (*_BACnetTagPayloadCharacterString)(nil)
 
 // NewBACnetTagPayloadCharacterString factory function for _BACnetTagPayloadCharacterString
-func NewBACnetTagPayloadCharacterString(encoding BACnetCharacterEncoding, value string, actualLength uint32) *_BACnetTagPayloadCharacterString {
-	return &_BACnetTagPayloadCharacterString{Encoding: encoding, Value: value, ActualLength: actualLength}
+func NewBACnetTagPayloadCharacterString(actualLength uint32, encoding BACnetCharacterEncoding, value string) *_BACnetTagPayloadCharacterString {
+	return &_BACnetTagPayloadCharacterString{ActualLength: actualLength, Encoding: encoding, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -78,13 +78,13 @@ func NewBACnetTagPayloadCharacterString(encoding BACnetCharacterEncoding, value 
 type BACnetTagPayloadCharacterStringBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(encoding BACnetCharacterEncoding, value string) BACnetTagPayloadCharacterStringBuilder
+	WithMandatoryFields(actualLength uint32, encoding BACnetCharacterEncoding, value string) BACnetTagPayloadCharacterStringBuilder
+	// WithActualLength adds ActualLength (property field)
+	WithActualLength(uint32) BACnetTagPayloadCharacterStringBuilder
 	// WithEncoding adds Encoding (property field)
 	WithEncoding(BACnetCharacterEncoding) BACnetTagPayloadCharacterStringBuilder
 	// WithValue adds Value (property field)
 	WithValue(string) BACnetTagPayloadCharacterStringBuilder
-	// WithArgActualLength sets a parser argument
-	WithArgActualLength(uint32) BACnetTagPayloadCharacterStringBuilder
 	// Build builds the BACnetTagPayloadCharacterString or returns an error if something is wrong
 	Build() (BACnetTagPayloadCharacterString, error)
 	// MustBuild does the same as Build but panics on error
@@ -104,8 +104,13 @@ type _BACnetTagPayloadCharacterStringBuilder struct {
 
 var _ (BACnetTagPayloadCharacterStringBuilder) = (*_BACnetTagPayloadCharacterStringBuilder)(nil)
 
-func (b *_BACnetTagPayloadCharacterStringBuilder) WithMandatoryFields(encoding BACnetCharacterEncoding, value string) BACnetTagPayloadCharacterStringBuilder {
-	return b.WithEncoding(encoding).WithValue(value)
+func (b *_BACnetTagPayloadCharacterStringBuilder) WithMandatoryFields(actualLength uint32, encoding BACnetCharacterEncoding, value string) BACnetTagPayloadCharacterStringBuilder {
+	return b.WithActualLength(actualLength).WithEncoding(encoding).WithValue(value)
+}
+
+func (b *_BACnetTagPayloadCharacterStringBuilder) WithActualLength(actualLength uint32) BACnetTagPayloadCharacterStringBuilder {
+	b.ActualLength = actualLength
+	return b
 }
 
 func (b *_BACnetTagPayloadCharacterStringBuilder) WithEncoding(encoding BACnetCharacterEncoding) BACnetTagPayloadCharacterStringBuilder {
@@ -115,11 +120,6 @@ func (b *_BACnetTagPayloadCharacterStringBuilder) WithEncoding(encoding BACnetCh
 
 func (b *_BACnetTagPayloadCharacterStringBuilder) WithValue(value string) BACnetTagPayloadCharacterStringBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetTagPayloadCharacterStringBuilder) WithArgActualLength(actualLength uint32) BACnetTagPayloadCharacterStringBuilder {
-	b.ActualLength = actualLength
 	return b
 }
 
@@ -163,6 +163,10 @@ func (b *_BACnetTagPayloadCharacterString) CreateBACnetTagPayloadCharacterString
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
+func (m *_BACnetTagPayloadCharacterString) GetActualLength() uint32 {
+	return m.ActualLength
+}
 
 func (m *_BACnetTagPayloadCharacterString) GetEncoding() BACnetCharacterEncoding {
 	return m.Encoding
@@ -236,7 +240,7 @@ func BACnetTagPayloadCharacterStringParseWithBufferProducer(actualLength uint32)
 }
 
 func BACnetTagPayloadCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadCharacterString, error) {
-	v, err := (&_BACnetTagPayloadCharacterString{ActualLength: actualLength}).parse(ctx, readBuffer, actualLength)
+	v, err := (new(_BACnetTagPayloadCharacterString)).parse(ctx, readBuffer, actualLength)
 	if err != nil {
 		return nil, err
 	}
@@ -251,6 +255,7 @@ func (m *_BACnetTagPayloadCharacterString) parse(ctx context.Context, readBuffer
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	m.ActualLength = actualLength
 
 	encoding, err := ReadEnumField[BACnetCharacterEncoding](ctx, "encoding", "BACnetCharacterEncoding", ReadEnum(BACnetCharacterEncodingByValue, ReadByte(readBuffer, 8)))
 	if err != nil {
@@ -314,16 +319,6 @@ func (m *_BACnetTagPayloadCharacterString) SerializeWithWriteBuffer(ctx context.
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetTagPayloadCharacterString) GetActualLength() uint32 {
-	return m.ActualLength
-}
-
-//
-////
-
 func (m *_BACnetTagPayloadCharacterString) IsBACnetTagPayloadCharacterString() {}
 
 func (m *_BACnetTagPayloadCharacterString) DeepCopy() any {
@@ -335,9 +330,9 @@ func (m *_BACnetTagPayloadCharacterString) deepCopy() *_BACnetTagPayloadCharacte
 		return nil
 	}
 	_BACnetTagPayloadCharacterStringCopy := &_BACnetTagPayloadCharacterString{
+		m.ActualLength,
 		m.Encoding,
 		m.Value,
-		m.ActualLength,
 	}
 	return _BACnetTagPayloadCharacterStringCopy
 }

@@ -74,9 +74,9 @@ var _ MonitoredSALShortFormBasicMode = (*_MonitoredSALShortFormBasicMode)(nil)
 var _ MonitoredSALRequirements = (*_MonitoredSALShortFormBasicMode)(nil)
 
 // NewMonitoredSALShortFormBasicMode factory function for _MonitoredSALShortFormBasicMode
-func NewMonitoredSALShortFormBasicMode(salType byte, counts byte, bridgeCount *uint8, networkNumber *uint8, noCounts *byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_MonitoredSALShortFormBasicMode {
+func NewMonitoredSALShortFormBasicMode(salType byte, counts byte, bridgeCount *uint8, networkNumber *uint8, noCounts *byte, application ApplicationIdContainer, salData SALData) *_MonitoredSALShortFormBasicMode {
 	_result := &_MonitoredSALShortFormBasicMode{
-		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
+		MonitoredSALContract: NewMonitoredSAL(salType),
 		Counts:               counts,
 		BridgeCount:          bridgeCount,
 		NetworkNumber:        networkNumber,

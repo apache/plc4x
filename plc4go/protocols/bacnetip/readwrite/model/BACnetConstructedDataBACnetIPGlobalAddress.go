@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBACnetIPGlobalAddress = (*_BACnetConstructedDataBACne
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPGlobalAddress)(nil)
 
 // NewBACnetConstructedDataBACnetIPGlobalAddress factory function for _BACnetConstructedDataBACnetIPGlobalAddress
-func NewBACnetConstructedDataBACnetIPGlobalAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIpGlobalAddress BACnetHostNPort, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPGlobalAddress {
+func NewBACnetConstructedDataBACnetIPGlobalAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIpGlobalAddress BACnetHostNPort) *_BACnetConstructedDataBACnetIPGlobalAddress {
 	if bacnetIpGlobalAddress == nil {
 		panic("bacnetIpGlobalAddress of type BACnetHostNPort for BACnetConstructedDataBACnetIPGlobalAddress must not be nil")
 	}
 	_result := &_BACnetConstructedDataBACnetIPGlobalAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BacnetIpGlobalAddress:         bacnetIpGlobalAddress,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

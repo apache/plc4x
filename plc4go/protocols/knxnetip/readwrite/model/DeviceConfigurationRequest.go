@@ -58,16 +58,13 @@ type _DeviceConfigurationRequest struct {
 	KnxNetIpMessageContract
 	DeviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock
 	Cemi                                CEMI
-
-	// Arguments.
-	TotalLength uint16
 }
 
 var _ DeviceConfigurationRequest = (*_DeviceConfigurationRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_DeviceConfigurationRequest)(nil)
 
 // NewDeviceConfigurationRequest factory function for _DeviceConfigurationRequest
-func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI, totalLength uint16) *_DeviceConfigurationRequest {
+func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI) *_DeviceConfigurationRequest {
 	if deviceConfigurationRequestDataBlock == nil {
 		panic("deviceConfigurationRequestDataBlock of type DeviceConfigurationRequestDataBlock for DeviceConfigurationRequest must not be nil")
 	}
@@ -101,8 +98,6 @@ type DeviceConfigurationRequestBuilder interface {
 	WithCemi(CEMI) DeviceConfigurationRequestBuilder
 	// WithCemiBuilder adds Cemi (property field) which is build by the builder
 	WithCemiBuilder(func(CEMIBuilder) CEMIBuilder) DeviceConfigurationRequestBuilder
-	// WithArgTotalLength sets a parser argument
-	WithArgTotalLength(uint16) DeviceConfigurationRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() KnxNetIpMessageBuilder
 	// Build builds the DeviceConfigurationRequest or returns an error if something is wrong
@@ -162,11 +157,6 @@ func (b *_DeviceConfigurationRequestBuilder) WithCemiBuilder(builderSupplier fun
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CEMIBuilder failed"))
 	}
-	return b
-}
-
-func (b *_DeviceConfigurationRequestBuilder) WithArgTotalLength(totalLength uint16) DeviceConfigurationRequestBuilder {
-	b.TotalLength = totalLength
 	return b
 }
 
@@ -354,16 +344,6 @@ func (m *_DeviceConfigurationRequest) SerializeWithWriteBuffer(ctx context.Conte
 	return m.KnxNetIpMessageContract.(*_KnxNetIpMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_DeviceConfigurationRequest) GetTotalLength() uint16 {
-	return m.TotalLength
-}
-
-//
-////
-
 func (m *_DeviceConfigurationRequest) IsDeviceConfigurationRequest() {}
 
 func (m *_DeviceConfigurationRequest) DeepCopy() any {
@@ -378,7 +358,6 @@ func (m *_DeviceConfigurationRequest) deepCopy() *_DeviceConfigurationRequest {
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		utils.DeepCopy[DeviceConfigurationRequestDataBlock](m.DeviceConfigurationRequestDataBlock),
 		utils.DeepCopy[CEMI](m.Cemi),
-		m.TotalLength,
 	}
 	_DeviceConfigurationRequestCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _DeviceConfigurationRequestCopy

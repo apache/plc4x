@@ -64,9 +64,9 @@ var _ BACnetConstructedDataConfigurationFiles = (*_BACnetConstructedDataConfigur
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataConfigurationFiles)(nil)
 
 // NewBACnetConstructedDataConfigurationFiles factory function for _BACnetConstructedDataConfigurationFiles
-func NewBACnetConstructedDataConfigurationFiles(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, configurationFiles []BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataConfigurationFiles {
+func NewBACnetConstructedDataConfigurationFiles(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, configurationFiles []BACnetApplicationTagObjectIdentifier) *_BACnetConstructedDataConfigurationFiles {
 	_result := &_BACnetConstructedDataConfigurationFiles{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		ConfigurationFiles:            configurationFiles,
 	}

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLockout = (*_BACnetConstructedDataLockout)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLockout)(nil)
 
 // NewBACnetConstructedDataLockout factory function for _BACnetConstructedDataLockout
-func NewBACnetConstructedDataLockout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lockout BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockout {
+func NewBACnetConstructedDataLockout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lockout BACnetApplicationTagBoolean) *_BACnetConstructedDataLockout {
 	if lockout == nil {
 		panic("lockout of type BACnetApplicationTagBoolean for BACnetConstructedDataLockout must not be nil")
 	}
 	_result := &_BACnetConstructedDataLockout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Lockout:                       lockout,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

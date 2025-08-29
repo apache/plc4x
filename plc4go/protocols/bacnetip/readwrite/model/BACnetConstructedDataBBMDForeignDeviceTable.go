@@ -59,9 +59,9 @@ var _ BACnetConstructedDataBBMDForeignDeviceTable = (*_BACnetConstructedDataBBMD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBBMDForeignDeviceTable)(nil)
 
 // NewBACnetConstructedDataBBMDForeignDeviceTable factory function for _BACnetConstructedDataBBMDForeignDeviceTable
-func NewBACnetConstructedDataBBMDForeignDeviceTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdForeignDeviceTable []BACnetBDTEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDForeignDeviceTable {
+func NewBACnetConstructedDataBBMDForeignDeviceTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdForeignDeviceTable []BACnetBDTEntry) *_BACnetConstructedDataBBMDForeignDeviceTable {
 	_result := &_BACnetConstructedDataBBMDForeignDeviceTable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BbmdForeignDeviceTable:        bbmdForeignDeviceTable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

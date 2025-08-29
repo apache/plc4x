@@ -61,12 +61,12 @@ var _ BACnetConstructedDataEnergyMeter = (*_BACnetConstructedDataEnergyMeter)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEnergyMeter)(nil)
 
 // NewBACnetConstructedDataEnergyMeter factory function for _BACnetConstructedDataEnergyMeter
-func NewBACnetConstructedDataEnergyMeter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, energyMeter BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnergyMeter {
+func NewBACnetConstructedDataEnergyMeter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, energyMeter BACnetApplicationTagReal) *_BACnetConstructedDataEnergyMeter {
 	if energyMeter == nil {
 		panic("energyMeter of type BACnetApplicationTagReal for BACnetConstructedDataEnergyMeter must not be nil")
 	}
 	_result := &_BACnetConstructedDataEnergyMeter{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		EnergyMeter:                   energyMeter,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

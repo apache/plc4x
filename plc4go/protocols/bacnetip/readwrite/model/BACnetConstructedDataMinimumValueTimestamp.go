@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMinimumValueTimestamp = (*_BACnetConstructedDataMinim
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumValueTimestamp)(nil)
 
 // NewBACnetConstructedDataMinimumValueTimestamp factory function for _BACnetConstructedDataMinimumValueTimestamp
-func NewBACnetConstructedDataMinimumValueTimestamp(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumValueTimestamp BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumValueTimestamp {
+func NewBACnetConstructedDataMinimumValueTimestamp(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumValueTimestamp BACnetDateTime) *_BACnetConstructedDataMinimumValueTimestamp {
 	if minimumValueTimestamp == nil {
 		panic("minimumValueTimestamp of type BACnetDateTime for BACnetConstructedDataMinimumValueTimestamp must not be nil")
 	}
 	_result := &_BACnetConstructedDataMinimumValueTimestamp{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MinimumValueTimestamp:         minimumValueTimestamp,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

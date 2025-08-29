@@ -62,7 +62,7 @@ var _ BACnetConfirmedServiceRequestCreateObject = (*_BACnetConfirmedServiceReque
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestCreateObject)(nil)
 
 // NewBACnetConfirmedServiceRequestCreateObject factory function for _BACnetConfirmedServiceRequestCreateObject
-func NewBACnetConfirmedServiceRequestCreateObject(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, listOfValues BACnetPropertyValues, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestCreateObject {
+func NewBACnetConfirmedServiceRequestCreateObject(serviceRequestLength uint32, objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, listOfValues BACnetPropertyValues) *_BACnetConfirmedServiceRequestCreateObject {
 	if objectSpecifier == nil {
 		panic("objectSpecifier of type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier for BACnetConfirmedServiceRequestCreateObject must not be nil")
 	}

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDefaultStepIncrement = (*_BACnetConstructedDataDefaul
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultStepIncrement)(nil)
 
 // NewBACnetConstructedDataDefaultStepIncrement factory function for _BACnetConstructedDataDefaultStepIncrement
-func NewBACnetConstructedDataDefaultStepIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultStepIncrement BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultStepIncrement {
+func NewBACnetConstructedDataDefaultStepIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultStepIncrement BACnetApplicationTagReal) *_BACnetConstructedDataDefaultStepIncrement {
 	if defaultStepIncrement == nil {
 		panic("defaultStepIncrement of type BACnetApplicationTagReal for BACnetConstructedDataDefaultStepIncrement must not be nil")
 	}
 	_result := &_BACnetConstructedDataDefaultStepIncrement{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DefaultStepIncrement:          defaultStepIncrement,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -64,9 +64,9 @@ var _ BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty = (*_BACnetCo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty)(nil)
 
 // NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty factory function for _BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty
-func NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMembers []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty {
+func NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMembers []BACnetDeviceObjectPropertyReference) *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty {
 	_result := &_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		GroupMembers:                  groupMembers,
 	}

@@ -59,9 +59,9 @@ var _ RequestNull = (*_RequestNull)(nil)
 var _ RequestRequirements = (*_RequestNull)(nil)
 
 // NewRequestNull factory function for _RequestNull
-func NewRequestNull(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestNull {
+func NewRequestNull(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination) *_RequestNull {
 	_result := &_RequestNull{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination),
 	}
 	_result.RequestContract.(*_Request)._SubType = _result
 	return _result

@@ -59,20 +59,16 @@ type _BACnetLiftCarDirectionTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetLiftCarDirection
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetLiftCarDirectionTagged = (*_BACnetLiftCarDirectionTagged)(nil)
 
 // NewBACnetLiftCarDirectionTagged factory function for _BACnetLiftCarDirectionTagged
-func NewBACnetLiftCarDirectionTagged(header BACnetTagHeader, value BACnetLiftCarDirection, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarDirectionTagged {
+func NewBACnetLiftCarDirectionTagged(header BACnetTagHeader, value BACnetLiftCarDirection, proprietaryValue uint32) *_BACnetLiftCarDirectionTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetLiftCarDirectionTagged must not be nil")
 	}
-	return &_BACnetLiftCarDirectionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetLiftCarDirectionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetLiftCarDirectionTaggedBuilder interface {
 	WithValue(BACnetLiftCarDirection) BACnetLiftCarDirectionTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetLiftCarDirectionTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLiftCarDirectionTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetLiftCarDirectionTaggedBuilder
 	// Build builds the BACnetLiftCarDirectionTagged or returns an error if something is wrong
 	Build() (BACnetLiftCarDirectionTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetLiftCarDirectionTaggedBuilder) WithValue(value BACnetLiftCarDire
 
 func (b *_BACnetLiftCarDirectionTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLiftCarDirectionTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetLiftCarDirectionTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLiftCarDirectionTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetLiftCarDirectionTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLiftCarDirectionTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetLiftCarDirectionTaggedParseWithBufferProducer(tagNumber uint8, tagCla
 }
 
 func BACnetLiftCarDirectionTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLiftCarDirectionTagged, error) {
-	v, err := (&_BACnetLiftCarDirectionTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetLiftCarDirectionTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetLiftCarDirectionTagged) SerializeWithWriteBuffer(ctx context.Con
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLiftCarDirectionTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetLiftCarDirectionTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetLiftCarDirectionTagged) IsBACnetLiftCarDirectionTagged() {}
 
 func (m *_BACnetLiftCarDirectionTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetLiftCarDirectionTagged) deepCopy() *_BACnetLiftCarDirectionTagge
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetLiftCarDirectionTaggedCopy
 }

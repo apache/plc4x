@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBackupAndRestoreState = (*_BACnetConstructedDataBacku
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBackupAndRestoreState)(nil)
 
 // NewBACnetConstructedDataBackupAndRestoreState factory function for _BACnetConstructedDataBackupAndRestoreState
-func NewBACnetConstructedDataBackupAndRestoreState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupAndRestoreState BACnetBackupStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupAndRestoreState {
+func NewBACnetConstructedDataBackupAndRestoreState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupAndRestoreState BACnetBackupStateTagged) *_BACnetConstructedDataBackupAndRestoreState {
 	if backupAndRestoreState == nil {
 		panic("backupAndRestoreState of type BACnetBackupStateTagged for BACnetConstructedDataBackupAndRestoreState must not be nil")
 	}
 	_result := &_BACnetConstructedDataBackupAndRestoreState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BackupAndRestoreState:         backupAndRestoreState,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -64,9 +64,9 @@ var _ BACnetConstructedDataIPv6DNSServer = (*_BACnetConstructedDataIPv6DNSServer
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6DNSServer)(nil)
 
 // NewBACnetConstructedDataIPv6DNSServer factory function for _BACnetConstructedDataIPv6DNSServer
-func NewBACnetConstructedDataIPv6DNSServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, ipv6DnsServer []BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DNSServer {
+func NewBACnetConstructedDataIPv6DNSServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, ipv6DnsServer []BACnetApplicationTagOctetString) *_BACnetConstructedDataIPv6DNSServer {
 	_result := &_BACnetConstructedDataIPv6DNSServer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		Ipv6DnsServer:                 ipv6DnsServer,
 	}

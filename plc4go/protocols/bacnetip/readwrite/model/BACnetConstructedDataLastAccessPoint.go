@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLastAccessPoint = (*_BACnetConstructedDataLastAccessP
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastAccessPoint)(nil)
 
 // NewBACnetConstructedDataLastAccessPoint factory function for _BACnetConstructedDataLastAccessPoint
-func NewBACnetConstructedDataLastAccessPoint(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastAccessPoint BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastAccessPoint {
+func NewBACnetConstructedDataLastAccessPoint(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastAccessPoint BACnetDeviceObjectReference) *_BACnetConstructedDataLastAccessPoint {
 	if lastAccessPoint == nil {
 		panic("lastAccessPoint of type BACnetDeviceObjectReference for BACnetConstructedDataLastAccessPoint must not be nil")
 	}
 	_result := &_BACnetConstructedDataLastAccessPoint{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LastAccessPoint:               lastAccessPoint,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

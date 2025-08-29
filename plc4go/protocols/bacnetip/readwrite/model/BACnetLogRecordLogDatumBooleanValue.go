@@ -59,12 +59,12 @@ var _ BACnetLogRecordLogDatumBooleanValue = (*_BACnetLogRecordLogDatumBooleanVal
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumBooleanValue)(nil)
 
 // NewBACnetLogRecordLogDatumBooleanValue factory function for _BACnetLogRecordLogDatumBooleanValue
-func NewBACnetLogRecordLogDatumBooleanValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, booleanValue BACnetContextTagBoolean, tagNumber uint8) *_BACnetLogRecordLogDatumBooleanValue {
+func NewBACnetLogRecordLogDatumBooleanValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, booleanValue BACnetContextTagBoolean) *_BACnetLogRecordLogDatumBooleanValue {
 	if booleanValue == nil {
 		panic("booleanValue of type BACnetContextTagBoolean for BACnetLogRecordLogDatumBooleanValue must not be nil")
 	}
 	_result := &_BACnetLogRecordLogDatumBooleanValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		BooleanValue:                    booleanValue,
 	}
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result

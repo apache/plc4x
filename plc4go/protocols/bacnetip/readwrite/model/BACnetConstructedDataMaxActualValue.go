@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMaxActualValue = (*_BACnetConstructedDataMaxActualVal
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaxActualValue)(nil)
 
 // NewBACnetConstructedDataMaxActualValue factory function for _BACnetConstructedDataMaxActualValue
-func NewBACnetConstructedDataMaxActualValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxActualValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxActualValue {
+func NewBACnetConstructedDataMaxActualValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxActualValue BACnetApplicationTagReal) *_BACnetConstructedDataMaxActualValue {
 	if maxActualValue == nil {
 		panic("maxActualValue of type BACnetApplicationTagReal for BACnetConstructedDataMaxActualValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataMaxActualValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaxActualValue:                maxActualValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

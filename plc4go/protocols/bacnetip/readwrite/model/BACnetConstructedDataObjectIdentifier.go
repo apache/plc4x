@@ -61,12 +61,12 @@ var _ BACnetConstructedDataObjectIdentifier = (*_BACnetConstructedDataObjectIden
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataObjectIdentifier)(nil)
 
 // NewBACnetConstructedDataObjectIdentifier factory function for _BACnetConstructedDataObjectIdentifier
-func NewBACnetConstructedDataObjectIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectIdentifier BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectIdentifier {
+func NewBACnetConstructedDataObjectIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectIdentifier BACnetApplicationTagObjectIdentifier) *_BACnetConstructedDataObjectIdentifier {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataObjectIdentifier must not be nil")
 	}
 	_result := &_BACnetConstructedDataObjectIdentifier{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ObjectIdentifier:              objectIdentifier,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

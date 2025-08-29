@@ -59,9 +59,9 @@ var _ BACnetConstructedDataRoutingTable = (*_BACnetConstructedDataRoutingTable)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRoutingTable)(nil)
 
 // NewBACnetConstructedDataRoutingTable factory function for _BACnetConstructedDataRoutingTable
-func NewBACnetConstructedDataRoutingTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, routingTable []BACnetRouterEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRoutingTable {
+func NewBACnetConstructedDataRoutingTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, routingTable []BACnetRouterEntry) *_BACnetConstructedDataRoutingTable {
 	_result := &_BACnetConstructedDataRoutingTable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RoutingTable:                  routingTable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

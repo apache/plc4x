@@ -59,9 +59,9 @@ var _ BACnetConstructedDataRestartNotificationRecipients = (*_BACnetConstructedD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRestartNotificationRecipients)(nil)
 
 // NewBACnetConstructedDataRestartNotificationRecipients factory function for _BACnetConstructedDataRestartNotificationRecipients
-func NewBACnetConstructedDataRestartNotificationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, restartNotificationRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestartNotificationRecipients {
+func NewBACnetConstructedDataRestartNotificationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, restartNotificationRecipients []BACnetRecipient) *_BACnetConstructedDataRestartNotificationRecipients {
 	_result := &_BACnetConstructedDataRestartNotificationRecipients{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RestartNotificationRecipients: restartNotificationRecipients,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

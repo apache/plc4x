@@ -59,9 +59,9 @@ var _ BACnetConstructedDataLifeSafetyAlarmValues = (*_BACnetConstructedDataLifeS
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLifeSafetyAlarmValues)(nil)
 
 // NewBACnetConstructedDataLifeSafetyAlarmValues factory function for _BACnetConstructedDataLifeSafetyAlarmValues
-func NewBACnetConstructedDataLifeSafetyAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetLifeSafetyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyAlarmValues {
+func NewBACnetConstructedDataLifeSafetyAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetLifeSafetyStateTagged) *_BACnetConstructedDataLifeSafetyAlarmValues {
 	_result := &_BACnetConstructedDataLifeSafetyAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AlarmValues:                   alarmValues,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -59,9 +59,9 @@ var _ IdentifyReplyCommandGAVValuesCurrent = (*_IdentifyReplyCommandGAVValuesCur
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandGAVValuesCurrent)(nil)
 
 // NewIdentifyReplyCommandGAVValuesCurrent factory function for _IdentifyReplyCommandGAVValuesCurrent
-func NewIdentifyReplyCommandGAVValuesCurrent(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVValuesCurrent {
+func NewIdentifyReplyCommandGAVValuesCurrent(values []byte) *_IdentifyReplyCommandGAVValuesCurrent {
 	_result := &_IdentifyReplyCommandGAVValuesCurrent{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		Values:                       values,
 	}
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result

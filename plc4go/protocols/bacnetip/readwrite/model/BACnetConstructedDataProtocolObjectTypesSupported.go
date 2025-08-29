@@ -61,12 +61,12 @@ var _ BACnetConstructedDataProtocolObjectTypesSupported = (*_BACnetConstructedDa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolObjectTypesSupported)(nil)
 
 // NewBACnetConstructedDataProtocolObjectTypesSupported factory function for _BACnetConstructedDataProtocolObjectTypesSupported
-func NewBACnetConstructedDataProtocolObjectTypesSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolObjectTypesSupported BACnetObjectTypesSupportedTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolObjectTypesSupported {
+func NewBACnetConstructedDataProtocolObjectTypesSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolObjectTypesSupported BACnetObjectTypesSupportedTagged) *_BACnetConstructedDataProtocolObjectTypesSupported {
 	if protocolObjectTypesSupported == nil {
 		panic("protocolObjectTypesSupported of type BACnetObjectTypesSupportedTagged for BACnetConstructedDataProtocolObjectTypesSupported must not be nil")
 	}
 	_result := &_BACnetConstructedDataProtocolObjectTypesSupported{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ProtocolObjectTypesSupported:  protocolObjectTypesSupported,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

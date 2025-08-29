@@ -91,7 +91,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			if value := singleTag.GetProperties()[0].ArrayIndex; value != nil {
 				arrayIndex = readWriteModel.CreateBACnetContextTagUnsignedInteger(2, *value)
 			}
-			serviceRequest = readWriteModel.NewBACnetConfirmedServiceRequestReadProperty(objectIdentifier, propertyIdentifier, arrayIndex, 0)
+			serviceRequest = readWriteModel.NewBACnetConfirmedServiceRequestReadProperty(0, objectIdentifier, propertyIdentifier, arrayIndex)
 		} else {
 			// Multi request
 			var data []readWriteModel.BACnetReadAccessSpecification
@@ -116,7 +116,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				data = append(data, specification)
 			}
 
-			serviceRequest = readWriteModel.NewBACnetConfirmedServiceRequestReadPropertyMultiple(data, 0, 0)
+			serviceRequest = readWriteModel.NewBACnetConfirmedServiceRequestReadPropertyMultiple(0, data)
 		}
 
 		invokeId := m.invokeIdGenerator.getAndIncrement()
@@ -134,7 +134,6 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			serviceRequest,
 			nil,
 			nil,
-			serviceRequest.GetLengthInBytes(context.Background()),
 		)
 
 		// Start a new request-transaction (Is ended in the response-handler)

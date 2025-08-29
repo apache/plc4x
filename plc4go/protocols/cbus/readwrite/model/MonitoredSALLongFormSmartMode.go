@@ -81,9 +81,9 @@ var _ MonitoredSALLongFormSmartMode = (*_MonitoredSALLongFormSmartMode)(nil)
 var _ MonitoredSALRequirements = (*_MonitoredSALLongFormSmartMode)(nil)
 
 // NewMonitoredSALLongFormSmartMode factory function for _MonitoredSALLongFormSmartMode
-func NewMonitoredSALLongFormSmartMode(salType byte, terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, application ApplicationIdContainer, reservedByte *byte, replyNetwork ReplyNetwork, salData SALData, cBusOptions CBusOptions) *_MonitoredSALLongFormSmartMode {
+func NewMonitoredSALLongFormSmartMode(salType byte, terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, application ApplicationIdContainer, reservedByte *byte, replyNetwork ReplyNetwork, salData SALData) *_MonitoredSALLongFormSmartMode {
 	_result := &_MonitoredSALLongFormSmartMode{
-		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
+		MonitoredSALContract: NewMonitoredSAL(salType),
 		TerminatingByte:      terminatingByte,
 		UnitAddress:          unitAddress,
 		BridgeAddress:        bridgeAddress,

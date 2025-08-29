@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDescriptionOfHalt = (*_BACnetConstructedDataDescripti
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDescriptionOfHalt)(nil)
 
 // NewBACnetConstructedDataDescriptionOfHalt factory function for _BACnetConstructedDataDescriptionOfHalt
-func NewBACnetConstructedDataDescriptionOfHalt(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, descriptionForHalt BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDescriptionOfHalt {
+func NewBACnetConstructedDataDescriptionOfHalt(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, descriptionForHalt BACnetApplicationTagCharacterString) *_BACnetConstructedDataDescriptionOfHalt {
 	if descriptionForHalt == nil {
 		panic("descriptionForHalt of type BACnetApplicationTagCharacterString for BACnetConstructedDataDescriptionOfHalt must not be nil")
 	}
 	_result := &_BACnetConstructedDataDescriptionOfHalt{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DescriptionForHalt:            descriptionForHalt,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

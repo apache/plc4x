@@ -160,7 +160,7 @@ func ContinuationPointParseWithBufferProducer() func(ctx context.Context, readBu
 }
 
 func ContinuationPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ContinuationPoint, error) {
-	v, err := (&_ContinuationPoint{}).parse(ctx, readBuffer)
+	v, err := (new(_ContinuationPoint)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

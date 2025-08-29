@@ -57,22 +57,19 @@ type _BACnetFaultParameterFaultExtendedParameters struct {
 	OpeningTag BACnetOpeningTag
 	Parameters []BACnetFaultParameterFaultExtendedParametersEntry
 	ClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetFaultParameterFaultExtendedParameters = (*_BACnetFaultParameterFaultExtendedParameters)(nil)
 
 // NewBACnetFaultParameterFaultExtendedParameters factory function for _BACnetFaultParameterFaultExtendedParameters
-func NewBACnetFaultParameterFaultExtendedParameters(openingTag BACnetOpeningTag, parameters []BACnetFaultParameterFaultExtendedParametersEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultExtendedParameters {
+func NewBACnetFaultParameterFaultExtendedParameters(openingTag BACnetOpeningTag, parameters []BACnetFaultParameterFaultExtendedParametersEntry, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultExtendedParameters {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultExtendedParameters must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultExtendedParameters must not be nil")
 	}
-	return &_BACnetFaultParameterFaultExtendedParameters{OpeningTag: openingTag, Parameters: parameters, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetFaultParameterFaultExtendedParameters{OpeningTag: openingTag, Parameters: parameters, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type BACnetFaultParameterFaultExtendedParametersBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetFaultParameterFaultExtendedParametersBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultExtendedParametersBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetFaultParameterFaultExtendedParametersBuilder
 	// Build builds the BACnetFaultParameterFaultExtendedParameters or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultExtendedParameters, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) WithClosingTagBuil
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) WithArgTagNumber(tagNumber uint8) BACnetFaultParameterFaultExtendedParametersBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -273,7 +263,7 @@ func BACnetFaultParameterFaultExtendedParametersParseWithBufferProducer(tagNumbe
 }
 
 func BACnetFaultParameterFaultExtendedParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultExtendedParameters, error) {
-	v, err := (&_BACnetFaultParameterFaultExtendedParameters{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetFaultParameterFaultExtendedParameters)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_BACnetFaultParameterFaultExtendedParameters) SerializeWithWriteBuffer(
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetFaultParameterFaultExtendedParameters) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetFaultParameterFaultExtendedParameters) IsBACnetFaultParameterFaultExtendedParameters() {
 }
 
@@ -374,7 +354,6 @@ func (m *_BACnetFaultParameterFaultExtendedParameters) deepCopy() *_BACnetFaultP
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetFaultParameterFaultExtendedParametersEntry, BACnetFaultParameterFaultExtendedParametersEntry](m.Parameters),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetFaultParameterFaultExtendedParametersCopy
 }

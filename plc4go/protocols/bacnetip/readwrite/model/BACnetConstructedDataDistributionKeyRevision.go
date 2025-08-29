@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDistributionKeyRevision = (*_BACnetConstructedDataDis
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDistributionKeyRevision)(nil)
 
 // NewBACnetConstructedDataDistributionKeyRevision factory function for _BACnetConstructedDataDistributionKeyRevision
-func NewBACnetConstructedDataDistributionKeyRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, distributionKeyRevision BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDistributionKeyRevision {
+func NewBACnetConstructedDataDistributionKeyRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, distributionKeyRevision BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDistributionKeyRevision {
 	if distributionKeyRevision == nil {
 		panic("distributionKeyRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDistributionKeyRevision must not be nil")
 	}
 	_result := &_BACnetConstructedDataDistributionKeyRevision{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DistributionKeyRevision:       distributionKeyRevision,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

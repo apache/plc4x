@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCOVResubscriptionInterval = (*_BACnetConstructedDataC
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCOVResubscriptionInterval)(nil)
 
 // NewBACnetConstructedDataCOVResubscriptionInterval factory function for _BACnetConstructedDataCOVResubscriptionInterval
-func NewBACnetConstructedDataCOVResubscriptionInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covResubscriptionInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVResubscriptionInterval {
+func NewBACnetConstructedDataCOVResubscriptionInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covResubscriptionInterval BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataCOVResubscriptionInterval {
 	if covResubscriptionInterval == nil {
 		panic("covResubscriptionInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCOVResubscriptionInterval must not be nil")
 	}
 	_result := &_BACnetConstructedDataCOVResubscriptionInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CovResubscriptionInterval:     covResubscriptionInterval,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

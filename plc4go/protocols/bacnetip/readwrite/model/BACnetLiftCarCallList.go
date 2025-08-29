@@ -207,7 +207,7 @@ func BACnetLiftCarCallListParseWithBufferProducer() func(ctx context.Context, re
 }
 
 func BACnetLiftCarCallListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLiftCarCallList, error) {
-	v, err := (&_BACnetLiftCarCallList{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetLiftCarCallList)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

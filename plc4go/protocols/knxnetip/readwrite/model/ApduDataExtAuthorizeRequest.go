@@ -62,9 +62,9 @@ var _ ApduDataExtAuthorizeRequest = (*_ApduDataExtAuthorizeRequest)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtAuthorizeRequest)(nil)
 
 // NewApduDataExtAuthorizeRequest factory function for _ApduDataExtAuthorizeRequest
-func NewApduDataExtAuthorizeRequest(level uint8, data []byte, length uint8) *_ApduDataExtAuthorizeRequest {
+func NewApduDataExtAuthorizeRequest(level uint8, data []byte) *_ApduDataExtAuthorizeRequest {
 	_result := &_ApduDataExtAuthorizeRequest{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 		Level:               level,
 		Data:                data,
 	}

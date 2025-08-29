@@ -53,16 +53,13 @@ type BACnetTagPayloadEnumerated interface {
 // _BACnetTagPayloadEnumerated is the data-structure of this message
 type _BACnetTagPayloadEnumerated struct {
 	Data []byte
-
-	// Arguments.
-	ActualLength uint32
 }
 
 var _ BACnetTagPayloadEnumerated = (*_BACnetTagPayloadEnumerated)(nil)
 
 // NewBACnetTagPayloadEnumerated factory function for _BACnetTagPayloadEnumerated
-func NewBACnetTagPayloadEnumerated(data []byte, actualLength uint32) *_BACnetTagPayloadEnumerated {
-	return &_BACnetTagPayloadEnumerated{Data: data, ActualLength: actualLength}
+func NewBACnetTagPayloadEnumerated(data []byte) *_BACnetTagPayloadEnumerated {
+	return &_BACnetTagPayloadEnumerated{Data: data}
 }
 
 ///////////////////////////////////////////////////////////
@@ -77,8 +74,6 @@ type BACnetTagPayloadEnumeratedBuilder interface {
 	WithMandatoryFields(data []byte) BACnetTagPayloadEnumeratedBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) BACnetTagPayloadEnumeratedBuilder
-	// WithArgActualLength sets a parser argument
-	WithArgActualLength(uint32) BACnetTagPayloadEnumeratedBuilder
 	// Build builds the BACnetTagPayloadEnumerated or returns an error if something is wrong
 	Build() (BACnetTagPayloadEnumerated, error)
 	// MustBuild does the same as Build but panics on error
@@ -104,11 +99,6 @@ func (b *_BACnetTagPayloadEnumeratedBuilder) WithMandatoryFields(data []byte) BA
 
 func (b *_BACnetTagPayloadEnumeratedBuilder) WithData(data ...byte) BACnetTagPayloadEnumeratedBuilder {
 	b.Data = data
-	return b
-}
-
-func (b *_BACnetTagPayloadEnumeratedBuilder) WithArgActualLength(actualLength uint32) BACnetTagPayloadEnumeratedBuilder {
-	b.ActualLength = actualLength
 	return b
 }
 
@@ -220,7 +210,7 @@ func BACnetTagPayloadEnumeratedParseWithBufferProducer(actualLength uint32) func
 }
 
 func BACnetTagPayloadEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadEnumerated, error) {
-	v, err := (&_BACnetTagPayloadEnumerated{ActualLength: actualLength}).parse(ctx, readBuffer, actualLength)
+	v, err := (new(_BACnetTagPayloadEnumerated)).parse(ctx, readBuffer, actualLength)
 	if err != nil {
 		return nil, err
 	}
@@ -288,16 +278,6 @@ func (m *_BACnetTagPayloadEnumerated) SerializeWithWriteBuffer(ctx context.Conte
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetTagPayloadEnumerated) GetActualLength() uint32 {
-	return m.ActualLength
-}
-
-//
-////
-
 func (m *_BACnetTagPayloadEnumerated) IsBACnetTagPayloadEnumerated() {}
 
 func (m *_BACnetTagPayloadEnumerated) DeepCopy() any {
@@ -310,7 +290,6 @@ func (m *_BACnetTagPayloadEnumerated) deepCopy() *_BACnetTagPayloadEnumerated {
 	}
 	_BACnetTagPayloadEnumeratedCopy := &_BACnetTagPayloadEnumerated{
 		utils.DeepCopySlice[byte, byte](m.Data),
-		m.ActualLength,
 	}
 	return _BACnetTagPayloadEnumeratedCopy
 }

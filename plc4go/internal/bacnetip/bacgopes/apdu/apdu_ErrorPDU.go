@@ -84,7 +84,6 @@ func (e *ErrorPDU) buildConfirmedRequest(bacnetError readWriteModel.BACnetError)
 		invokeID,
 		e.GetErrorChoice(),
 		e.bacnetError,
-		0,
 	)
 }
 

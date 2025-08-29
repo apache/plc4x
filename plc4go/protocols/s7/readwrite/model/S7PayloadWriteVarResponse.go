@@ -59,9 +59,9 @@ var _ S7PayloadWriteVarResponse = (*_S7PayloadWriteVarResponse)(nil)
 var _ S7PayloadRequirements = (*_S7PayloadWriteVarResponse)(nil)
 
 // NewS7PayloadWriteVarResponse factory function for _S7PayloadWriteVarResponse
-func NewS7PayloadWriteVarResponse(items []S7VarPayloadStatusItem, parameter S7Parameter) *_S7PayloadWriteVarResponse {
+func NewS7PayloadWriteVarResponse(items []S7VarPayloadStatusItem) *_S7PayloadWriteVarResponse {
 	_result := &_S7PayloadWriteVarResponse{
-		S7PayloadContract: NewS7Payload(parameter),
+		S7PayloadContract: NewS7Payload(),
 		Items:             items,
 	}
 	_result.S7PayloadContract.(*_S7Payload)._SubType = _result

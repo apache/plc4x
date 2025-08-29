@@ -359,7 +359,7 @@ func BACnetTagPayloadDateParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func BACnetTagPayloadDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadDate, error) {
-	v, err := (&_BACnetTagPayloadDate{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetTagPayloadDate)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

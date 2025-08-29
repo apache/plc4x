@@ -61,12 +61,12 @@ var _ BACnetConstructedDataApplicationSoftwareVersion = (*_BACnetConstructedData
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataApplicationSoftwareVersion)(nil)
 
 // NewBACnetConstructedDataApplicationSoftwareVersion factory function for _BACnetConstructedDataApplicationSoftwareVersion
-func NewBACnetConstructedDataApplicationSoftwareVersion(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, applicationSoftwareVersion BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataApplicationSoftwareVersion {
+func NewBACnetConstructedDataApplicationSoftwareVersion(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, applicationSoftwareVersion BACnetApplicationTagCharacterString) *_BACnetConstructedDataApplicationSoftwareVersion {
 	if applicationSoftwareVersion == nil {
 		panic("applicationSoftwareVersion of type BACnetApplicationTagCharacterString for BACnetConstructedDataApplicationSoftwareVersion must not be nil")
 	}
 	_result := &_BACnetConstructedDataApplicationSoftwareVersion{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ApplicationSoftwareVersion:    applicationSoftwareVersion,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

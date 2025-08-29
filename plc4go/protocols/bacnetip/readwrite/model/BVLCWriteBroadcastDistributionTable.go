@@ -55,16 +55,13 @@ type BVLCWriteBroadcastDistributionTable interface {
 type _BVLCWriteBroadcastDistributionTable struct {
 	BVLCContract
 	Table []BVLCBroadcastDistributionTableEntry
-
-	// Arguments.
-	BvlcPayloadLength uint16
 }
 
 var _ BVLCWriteBroadcastDistributionTable = (*_BVLCWriteBroadcastDistributionTable)(nil)
 var _ BVLCRequirements = (*_BVLCWriteBroadcastDistributionTable)(nil)
 
 // NewBVLCWriteBroadcastDistributionTable factory function for _BVLCWriteBroadcastDistributionTable
-func NewBVLCWriteBroadcastDistributionTable(table []BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *_BVLCWriteBroadcastDistributionTable {
+func NewBVLCWriteBroadcastDistributionTable(table []BVLCBroadcastDistributionTableEntry) *_BVLCWriteBroadcastDistributionTable {
 	_result := &_BVLCWriteBroadcastDistributionTable{
 		BVLCContract: NewBVLC(),
 		Table:        table,
@@ -85,8 +82,6 @@ type BVLCWriteBroadcastDistributionTableBuilder interface {
 	WithMandatoryFields(table []BVLCBroadcastDistributionTableEntry) BVLCWriteBroadcastDistributionTableBuilder
 	// WithTable adds Table (property field)
 	WithTable(...BVLCBroadcastDistributionTableEntry) BVLCWriteBroadcastDistributionTableBuilder
-	// WithArgBvlcPayloadLength sets a parser argument
-	WithArgBvlcPayloadLength(uint16) BVLCWriteBroadcastDistributionTableBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BVLCBuilder
 	// Build builds the BVLCWriteBroadcastDistributionTable or returns an error if something is wrong
@@ -121,11 +116,6 @@ func (b *_BVLCWriteBroadcastDistributionTableBuilder) WithMandatoryFields(table 
 
 func (b *_BVLCWriteBroadcastDistributionTableBuilder) WithTable(table ...BVLCBroadcastDistributionTableEntry) BVLCWriteBroadcastDistributionTableBuilder {
 	b.Table = table
-	return b
-}
-
-func (b *_BVLCWriteBroadcastDistributionTableBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength uint16) BVLCWriteBroadcastDistributionTableBuilder {
-	b.BvlcPayloadLength = bvlcPayloadLength
 	return b
 }
 
@@ -294,16 +284,6 @@ func (m *_BVLCWriteBroadcastDistributionTable) SerializeWithWriteBuffer(ctx cont
 	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_BVLCWriteBroadcastDistributionTable) GetBvlcPayloadLength() uint16 {
-	return m.BvlcPayloadLength
-}
-
-//
-////
-
 func (m *_BVLCWriteBroadcastDistributionTable) IsBVLCWriteBroadcastDistributionTable() {}
 
 func (m *_BVLCWriteBroadcastDistributionTable) DeepCopy() any {
@@ -317,7 +297,6 @@ func (m *_BVLCWriteBroadcastDistributionTable) deepCopy() *_BVLCWriteBroadcastDi
 	_BVLCWriteBroadcastDistributionTableCopy := &_BVLCWriteBroadcastDistributionTable{
 		m.BVLCContract.(*_BVLC).deepCopy(),
 		utils.DeepCopySlice[BVLCBroadcastDistributionTableEntry, BVLCBroadcastDistributionTableEntry](m.Table),
-		m.BvlcPayloadLength,
 	}
 	_BVLCWriteBroadcastDistributionTableCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCWriteBroadcastDistributionTableCopy

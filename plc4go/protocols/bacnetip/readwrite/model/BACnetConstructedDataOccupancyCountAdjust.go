@@ -61,12 +61,12 @@ var _ BACnetConstructedDataOccupancyCountAdjust = (*_BACnetConstructedDataOccupa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyCountAdjust)(nil)
 
 // NewBACnetConstructedDataOccupancyCountAdjust factory function for _BACnetConstructedDataOccupancyCountAdjust
-func NewBACnetConstructedDataOccupancyCountAdjust(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyCountAdjust BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyCountAdjust {
+func NewBACnetConstructedDataOccupancyCountAdjust(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyCountAdjust BACnetApplicationTagBoolean) *_BACnetConstructedDataOccupancyCountAdjust {
 	if occupancyCountAdjust == nil {
 		panic("occupancyCountAdjust of type BACnetApplicationTagBoolean for BACnetConstructedDataOccupancyCountAdjust must not be nil")
 	}
 	_result := &_BACnetConstructedDataOccupancyCountAdjust{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		OccupancyCountAdjust:          occupancyCountAdjust,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -62,9 +62,9 @@ var _ ParameterValueBaudRateSelector = (*_ParameterValueBaudRateSelector)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueBaudRateSelector)(nil)
 
 // NewParameterValueBaudRateSelector factory function for _ParameterValueBaudRateSelector
-func NewParameterValueBaudRateSelector(value BaudRateSelector, data []byte, numBytes uint8) *_ParameterValueBaudRateSelector {
+func NewParameterValueBaudRateSelector(value BaudRateSelector, data []byte) *_ParameterValueBaudRateSelector {
 	_result := &_ParameterValueBaudRateSelector{
-		ParameterValueContract: NewParameterValue(numBytes),
+		ParameterValueContract: NewParameterValue(),
 		Value:                  value,
 		Data:                   data,
 	}

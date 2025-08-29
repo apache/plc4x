@@ -69,7 +69,7 @@ func (w *WriteBroadcastDistributionTable) GetBvlciBDT() []*Address {
 	return w.bvlciBDT
 }
 
-func (w *WriteBroadcastDistributionTable) produceBroadcastDistributionTable() (entries []readWriteModel.BVLCBroadcastDistributionTableEntry, _ uint16) {
+func (w *WriteBroadcastDistributionTable) produceBroadcastDistributionTable() (entries []readWriteModel.BVLCBroadcastDistributionTableEntry) {
 	for _, address := range w.bvlciBDT {
 		addr := address.AddrAddress[:4]
 		port := uint16(47808)

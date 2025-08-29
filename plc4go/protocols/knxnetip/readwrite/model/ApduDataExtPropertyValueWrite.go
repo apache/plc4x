@@ -71,9 +71,9 @@ var _ ApduDataExtPropertyValueWrite = (*_ApduDataExtPropertyValueWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyValueWrite)(nil)
 
 // NewApduDataExtPropertyValueWrite factory function for _ApduDataExtPropertyValueWrite
-func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *_ApduDataExtPropertyValueWrite {
+func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) *_ApduDataExtPropertyValueWrite {
 	_result := &_ApduDataExtPropertyValueWrite{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 		ObjectIndex:         objectIndex,
 		PropertyId:          propertyId,
 		Count:               count,

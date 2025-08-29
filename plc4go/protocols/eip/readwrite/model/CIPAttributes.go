@@ -60,16 +60,13 @@ type _CIPAttributes struct {
 	NumberAvailable *uint16
 	NumberActive    *uint16
 	Data            []byte
-
-	// Arguments.
-	PacketLength uint16
 }
 
 var _ CIPAttributes = (*_CIPAttributes)(nil)
 
 // NewCIPAttributes factory function for _CIPAttributes
-func NewCIPAttributes(classId []uint16, numberAvailable *uint16, numberActive *uint16, data []byte, packetLength uint16) *_CIPAttributes {
-	return &_CIPAttributes{ClassId: classId, NumberAvailable: numberAvailable, NumberActive: numberActive, Data: data, PacketLength: packetLength}
+func NewCIPAttributes(classId []uint16, numberAvailable *uint16, numberActive *uint16, data []byte) *_CIPAttributes {
+	return &_CIPAttributes{ClassId: classId, NumberAvailable: numberAvailable, NumberActive: numberActive, Data: data}
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,8 +87,6 @@ type CIPAttributesBuilder interface {
 	WithOptionalNumberActive(uint16) CIPAttributesBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) CIPAttributesBuilder
-	// WithArgPacketLength sets a parser argument
-	WithArgPacketLength(uint16) CIPAttributesBuilder
 	// Build builds the CIPAttributes or returns an error if something is wrong
 	Build() (CIPAttributes, error)
 	// MustBuild does the same as Build but panics on error
@@ -132,11 +127,6 @@ func (b *_CIPAttributesBuilder) WithOptionalNumberActive(numberActive uint16) CI
 
 func (b *_CIPAttributesBuilder) WithData(data ...byte) CIPAttributesBuilder {
 	b.Data = data
-	return b
-}
-
-func (b *_CIPAttributesBuilder) WithArgPacketLength(packetLength uint16) CIPAttributesBuilder {
-	b.PacketLength = packetLength
 	return b
 }
 
@@ -261,7 +251,7 @@ func CIPAttributesParseWithBufferProducer(packetLength uint16) func(ctx context.
 }
 
 func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (CIPAttributes, error) {
-	v, err := (&_CIPAttributes{PacketLength: packetLength}).parse(ctx, readBuffer, packetLength)
+	v, err := (new(_CIPAttributes)).parse(ctx, readBuffer, packetLength)
 	if err != nil {
 		return nil, err
 	}
@@ -361,16 +351,6 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_CIPAttributes) GetPacketLength() uint16 {
-	return m.PacketLength
-}
-
-//
-////
-
 func (m *_CIPAttributes) IsCIPAttributes() {}
 
 func (m *_CIPAttributes) DeepCopy() any {
@@ -386,7 +366,6 @@ func (m *_CIPAttributes) deepCopy() *_CIPAttributes {
 		utils.CopyPtr[uint16](m.NumberAvailable),
 		utils.CopyPtr[uint16](m.NumberActive),
 		utils.DeepCopySlice[byte, byte](m.Data),
-		m.PacketLength,
 	}
 	return _CIPAttributesCopy
 }

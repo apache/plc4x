@@ -62,9 +62,9 @@ var _ NLMInitializeRoutingTable = (*_NLMInitializeRoutingTable)(nil)
 var _ NLMRequirements = (*_NLMInitializeRoutingTable)(nil)
 
 // NewNLMInitializeRoutingTable factory function for _NLMInitializeRoutingTable
-func NewNLMInitializeRoutingTable(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping, apduLength uint16) *_NLMInitializeRoutingTable {
+func NewNLMInitializeRoutingTable(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping) *_NLMInitializeRoutingTable {
 	_result := &_NLMInitializeRoutingTable{
-		NLMContract:   NewNLM(apduLength),
+		NLMContract:   NewNLM(),
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
 	}

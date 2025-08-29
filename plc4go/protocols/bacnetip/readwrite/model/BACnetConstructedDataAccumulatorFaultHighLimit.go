@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAccumulatorFaultHighLimit = (*_BACnetConstructedDataA
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccumulatorFaultHighLimit)(nil)
 
 // NewBACnetConstructedDataAccumulatorFaultHighLimit factory function for _BACnetConstructedDataAccumulatorFaultHighLimit
-func NewBACnetConstructedDataAccumulatorFaultHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultHighLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorFaultHighLimit {
+func NewBACnetConstructedDataAccumulatorFaultHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultHighLimit BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataAccumulatorFaultHighLimit {
 	if faultHighLimit == nil {
 		panic("faultHighLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccumulatorFaultHighLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataAccumulatorFaultHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FaultHighLimit:                faultHighLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

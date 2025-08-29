@@ -57,22 +57,19 @@ type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification struct {
 	OpeningTag                              BACnetOpeningTag
 	ListOfCovSubscriptionSpecificationEntry []BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
 	ClosingTag                              BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification = (*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification)(nil)
 
 // NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification factory function for _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification
-func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification(openingTag BACnetOpeningTag, listOfCovSubscriptionSpecificationEntry []BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification {
+func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification(openingTag BACnetOpeningTag, listOfCovSubscriptionSpecificationEntry []BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, closingTag BACnetClosingTag) *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification must not be nil")
 	}
-	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification{OpeningTag: openingTag, ListOfCovSubscriptionSpecificationEntry: listOfCovSubscriptionSpecificationEntry, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification{OpeningTag: openingTag, ListOfCovSubscriptionSpecificationEntry: listOfCovSubscriptionSpecificationEntry, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder inte
 	WithClosingTag(BACnetClosingTag) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder
 	// Build builds the BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification or returns an error if something is wrong
 	Build() (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) WithArgTagNumber(tagNumber uint8) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -273,7 +263,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParseWithBuf
 }
 
 func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification, error) {
-	v, err := (&_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) Seria
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification() {
 }
 
@@ -374,7 +354,6 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) deepC
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry](m.ListOfCovSubscriptionSpecificationEntry),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationCopy
 }

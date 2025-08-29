@@ -59,9 +59,9 @@ var _ BACnetConstructedDataSubscribedRecipients = (*_BACnetConstructedDataSubscr
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSubscribedRecipients)(nil)
 
 // NewBACnetConstructedDataSubscribedRecipients factory function for _BACnetConstructedDataSubscribedRecipients
-func NewBACnetConstructedDataSubscribedRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, subscribedRecipients []BACnetEventNotificationSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubscribedRecipients {
+func NewBACnetConstructedDataSubscribedRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, subscribedRecipients []BACnetEventNotificationSubscription) *_BACnetConstructedDataSubscribedRecipients {
 	_result := &_BACnetConstructedDataSubscribedRecipients{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SubscribedRecipients:          subscribedRecipients,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

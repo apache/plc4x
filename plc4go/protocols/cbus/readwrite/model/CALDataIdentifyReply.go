@@ -62,12 +62,12 @@ var _ CALDataIdentifyReply = (*_CALDataIdentifyReply)(nil)
 var _ CALDataRequirements = (*_CALDataIdentifyReply)(nil)
 
 // NewCALDataIdentifyReply factory function for _CALDataIdentifyReply
-func NewCALDataIdentifyReply(commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute, identifyReplyCommand IdentifyReplyCommand, requestContext RequestContext) *_CALDataIdentifyReply {
+func NewCALDataIdentifyReply(requestContext RequestContext, commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute, identifyReplyCommand IdentifyReplyCommand) *_CALDataIdentifyReply {
 	if identifyReplyCommand == nil {
 		panic("identifyReplyCommand of type IdentifyReplyCommand for CALDataIdentifyReply must not be nil")
 	}
 	_result := &_CALDataIdentifyReply{
-		CALDataContract:      NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract:      NewCALData(requestContext, commandTypeContainer, additionalData),
 		Attribute:            attribute,
 		IdentifyReplyCommand: identifyReplyCommand,
 	}

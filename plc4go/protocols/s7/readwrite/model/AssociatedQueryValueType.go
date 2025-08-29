@@ -242,7 +242,7 @@ func AssociatedQueryValueTypeParseWithBufferProducer() func(ctx context.Context,
 }
 
 func AssociatedQueryValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AssociatedQueryValueType, error) {
-	v, err := (&_AssociatedQueryValueType{}).parse(ctx, readBuffer)
+	v, err := (new(_AssociatedQueryValueType)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

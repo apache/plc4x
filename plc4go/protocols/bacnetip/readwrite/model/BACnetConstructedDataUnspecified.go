@@ -64,9 +64,9 @@ var _ BACnetConstructedDataUnspecified = (*_BACnetConstructedDataUnspecified)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUnspecified)(nil)
 
 // NewBACnetConstructedDataUnspecified factory function for _BACnetConstructedDataUnspecified
-func NewBACnetConstructedDataUnspecified(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, data []BACnetConstructedDataElement, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUnspecified {
+func NewBACnetConstructedDataUnspecified(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, data []BACnetConstructedDataElement) *_BACnetConstructedDataUnspecified {
 	_result := &_BACnetConstructedDataUnspecified{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		Data:                          data,
 	}

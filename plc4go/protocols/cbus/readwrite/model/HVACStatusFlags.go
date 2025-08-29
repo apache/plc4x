@@ -325,7 +325,7 @@ func HVACStatusFlagsParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func HVACStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACStatusFlags, error) {
-	v, err := (&_HVACStatusFlags{}).parse(ctx, readBuffer)
+	v, err := (new(_HVACStatusFlags)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

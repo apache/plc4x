@@ -54,9 +54,9 @@ var _ TDataConnectedReq = (*_TDataConnectedReq)(nil)
 var _ CEMIRequirements = (*_TDataConnectedReq)(nil)
 
 // NewTDataConnectedReq factory function for _TDataConnectedReq
-func NewTDataConnectedReq(size uint16) *_TDataConnectedReq {
+func NewTDataConnectedReq() *_TDataConnectedReq {
 	_result := &_TDataConnectedReq{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result

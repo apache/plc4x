@@ -54,9 +54,9 @@ var _ BACnetConstructedDataMultiStateOutputAll = (*_BACnetConstructedDataMultiSt
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateOutputAll)(nil)
 
 // NewBACnetConstructedDataMultiStateOutputAll factory function for _BACnetConstructedDataMultiStateOutputAll
-func NewBACnetConstructedDataMultiStateOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputAll {
+func NewBACnetConstructedDataMultiStateOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataMultiStateOutputAll {
 	_result := &_BACnetConstructedDataMultiStateOutputAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

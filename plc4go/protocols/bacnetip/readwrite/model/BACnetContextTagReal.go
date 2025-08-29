@@ -61,12 +61,12 @@ var _ BACnetContextTagReal = (*_BACnetContextTagReal)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagReal)(nil)
 
 // NewBACnetContextTagReal factory function for _BACnetContextTagReal
-func NewBACnetContextTagReal(header BACnetTagHeader, payload BACnetTagPayloadReal, tagNumberArgument uint8) *_BACnetContextTagReal {
+func NewBACnetContextTagReal(header BACnetTagHeader, payload BACnetTagPayloadReal) *_BACnetContextTagReal {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadReal for BACnetContextTagReal must not be nil")
 	}
 	_result := &_BACnetContextTagReal{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 		Payload:                  payload,
 	}
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result

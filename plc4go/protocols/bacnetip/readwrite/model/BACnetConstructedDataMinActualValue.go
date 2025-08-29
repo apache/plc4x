@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMinActualValue = (*_BACnetConstructedDataMinActualVal
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinActualValue)(nil)
 
 // NewBACnetConstructedDataMinActualValue factory function for _BACnetConstructedDataMinActualValue
-func NewBACnetConstructedDataMinActualValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minActualValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinActualValue {
+func NewBACnetConstructedDataMinActualValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minActualValue BACnetApplicationTagReal) *_BACnetConstructedDataMinActualValue {
 	if minActualValue == nil {
 		panic("minActualValue of type BACnetApplicationTagReal for BACnetConstructedDataMinActualValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataMinActualValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MinActualValue:                minActualValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

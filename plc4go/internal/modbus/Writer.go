@@ -120,7 +120,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 		}
 
 		// Assemble the finished ADU
-		requestAdu := readWriteModel.NewModbusTcpADU(uint16(transactionIdentifier), m.unitIdentifier, pdu, false)
+		requestAdu := readWriteModel.NewModbusTcpADU(uint16(transactionIdentifier), m.unitIdentifier, pdu)
 
 		// Send the ADU over the wire
 		err = m.messageCodec.SendRequest(ctx, requestAdu, func(message spi.Message) bool {

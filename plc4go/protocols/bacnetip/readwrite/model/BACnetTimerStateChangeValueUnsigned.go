@@ -59,12 +59,12 @@ var _ BACnetTimerStateChangeValueUnsigned = (*_BACnetTimerStateChangeValueUnsign
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueUnsigned)(nil)
 
 // NewBACnetTimerStateChangeValueUnsigned factory function for _BACnetTimerStateChangeValueUnsigned
-func NewBACnetTimerStateChangeValueUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueUnsigned {
+func NewBACnetTimerStateChangeValueUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger) *_BACnetTimerStateChangeValueUnsigned {
 	if unsignedValue == nil {
 		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetTimerStateChangeValueUnsigned must not be nil")
 	}
 	_result := &_BACnetTimerStateChangeValueUnsigned{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader),
 		UnsignedValue:                       unsignedValue,
 	}
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result

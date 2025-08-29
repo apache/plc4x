@@ -62,9 +62,9 @@ var _ COTPPacketTpduError = (*_COTPPacketTpduError)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketTpduError)(nil)
 
 // NewCOTPPacketTpduError factory function for _COTPPacketTpduError
-func NewCOTPPacketTpduError(parameters []COTPParameter, payload S7Message, destinationReference uint16, rejectCause uint8, cotpLen uint16) *_COTPPacketTpduError {
+func NewCOTPPacketTpduError(parameters []COTPParameter, payload S7Message, destinationReference uint16, rejectCause uint8) *_COTPPacketTpduError {
 	_result := &_COTPPacketTpduError{
-		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
+		COTPPacketContract:   NewCOTPPacket(parameters, payload),
 		DestinationReference: destinationReference,
 		RejectCause:          rejectCause,
 	}

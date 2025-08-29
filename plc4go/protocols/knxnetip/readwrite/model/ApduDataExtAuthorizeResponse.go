@@ -59,9 +59,9 @@ var _ ApduDataExtAuthorizeResponse = (*_ApduDataExtAuthorizeResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtAuthorizeResponse)(nil)
 
 // NewApduDataExtAuthorizeResponse factory function for _ApduDataExtAuthorizeResponse
-func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *_ApduDataExtAuthorizeResponse {
+func NewApduDataExtAuthorizeResponse(level uint8) *_ApduDataExtAuthorizeResponse {
 	_result := &_ApduDataExtAuthorizeResponse{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 		Level:               level,
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result

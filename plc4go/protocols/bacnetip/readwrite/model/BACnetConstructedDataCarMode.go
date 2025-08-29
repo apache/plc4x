@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCarMode = (*_BACnetConstructedDataCarMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarMode)(nil)
 
 // NewBACnetConstructedDataCarMode factory function for _BACnetConstructedDataCarMode
-func NewBACnetConstructedDataCarMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carMode BACnetLiftCarModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarMode {
+func NewBACnetConstructedDataCarMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carMode BACnetLiftCarModeTagged) *_BACnetConstructedDataCarMode {
 	if carMode == nil {
 		panic("carMode of type BACnetLiftCarModeTagged for BACnetConstructedDataCarMode must not be nil")
 	}
 	_result := &_BACnetConstructedDataCarMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CarMode:                       carMode,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

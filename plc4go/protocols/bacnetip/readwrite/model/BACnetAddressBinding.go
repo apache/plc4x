@@ -242,7 +242,7 @@ func BACnetAddressBindingParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func BACnetAddressBindingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {
-	v, err := (&_BACnetAddressBinding{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetAddressBinding)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

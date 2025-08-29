@@ -61,12 +61,12 @@ var _ BACnetConstructedDataReliability = (*_BACnetConstructedDataReliability)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReliability)(nil)
 
 // NewBACnetConstructedDataReliability factory function for _BACnetConstructedDataReliability
-func NewBACnetConstructedDataReliability(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reliability BACnetReliabilityTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliability {
+func NewBACnetConstructedDataReliability(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reliability BACnetReliabilityTagged) *_BACnetConstructedDataReliability {
 	if reliability == nil {
 		panic("reliability of type BACnetReliabilityTagged for BACnetConstructedDataReliability must not be nil")
 	}
 	_result := &_BACnetConstructedDataReliability{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Reliability:                   reliability,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

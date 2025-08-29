@@ -59,12 +59,12 @@ var _ BACnetPriorityValueTime = (*_BACnetPriorityValueTime)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueTime)(nil)
 
 // NewBACnetPriorityValueTime factory function for _BACnetPriorityValueTime
-func NewBACnetPriorityValueTime(peekedTagHeader BACnetTagHeader, timeValue BACnetApplicationTagTime, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueTime {
+func NewBACnetPriorityValueTime(peekedTagHeader BACnetTagHeader, timeValue BACnetApplicationTagTime) *_BACnetPriorityValueTime {
 	if timeValue == nil {
 		panic("timeValue of type BACnetApplicationTagTime for BACnetPriorityValueTime must not be nil")
 	}
 	_result := &_BACnetPriorityValueTime{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		TimeValue:                   timeValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLowDiffLimit = (*_BACnetConstructedDataLowDiffLimit)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLowDiffLimit)(nil)
 
 // NewBACnetConstructedDataLowDiffLimit factory function for _BACnetConstructedDataLowDiffLimit
-func NewBACnetConstructedDataLowDiffLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowDiffLimit BACnetOptionalREAL, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLowDiffLimit {
+func NewBACnetConstructedDataLowDiffLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowDiffLimit BACnetOptionalREAL) *_BACnetConstructedDataLowDiffLimit {
 	if lowDiffLimit == nil {
 		panic("lowDiffLimit of type BACnetOptionalREAL for BACnetConstructedDataLowDiffLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataLowDiffLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LowDiffLimit:                  lowDiffLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -64,9 +64,9 @@ var _ BACnetConstructedDataCarDoorCommand = (*_BACnetConstructedDataCarDoorComma
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarDoorCommand)(nil)
 
 // NewBACnetConstructedDataCarDoorCommand factory function for _BACnetConstructedDataCarDoorCommand
-func NewBACnetConstructedDataCarDoorCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, carDoorCommand []BACnetLiftCarDoorCommandTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorCommand {
+func NewBACnetConstructedDataCarDoorCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, carDoorCommand []BACnetLiftCarDoorCommandTagged) *_BACnetConstructedDataCarDoorCommand {
 	_result := &_BACnetConstructedDataCarDoorCommand{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		CarDoorCommand:                carDoorCommand,
 	}

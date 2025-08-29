@@ -61,12 +61,12 @@ var _ BACnetConstructedDataReasonForHalt = (*_BACnetConstructedDataReasonForHalt
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReasonForHalt)(nil)
 
 // NewBACnetConstructedDataReasonForHalt factory function for _BACnetConstructedDataReasonForHalt
-func NewBACnetConstructedDataReasonForHalt(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programError BACnetProgramErrorTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForHalt {
+func NewBACnetConstructedDataReasonForHalt(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programError BACnetProgramErrorTagged) *_BACnetConstructedDataReasonForHalt {
 	if programError == nil {
 		panic("programError of type BACnetProgramErrorTagged for BACnetConstructedDataReasonForHalt must not be nil")
 	}
 	_result := &_BACnetConstructedDataReasonForHalt{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ProgramError:                  programError,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

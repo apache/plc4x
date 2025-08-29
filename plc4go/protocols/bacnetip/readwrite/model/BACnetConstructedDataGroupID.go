@@ -61,12 +61,12 @@ var _ BACnetConstructedDataGroupID = (*_BACnetConstructedDataGroupID)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGroupID)(nil)
 
 // NewBACnetConstructedDataGroupID factory function for _BACnetConstructedDataGroupID
-func NewBACnetConstructedDataGroupID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, groupId BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupID {
+func NewBACnetConstructedDataGroupID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, groupId BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataGroupID {
 	if groupId == nil {
 		panic("groupId of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataGroupID must not be nil")
 	}
 	_result := &_BACnetConstructedDataGroupID{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		GroupId:                       groupId,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

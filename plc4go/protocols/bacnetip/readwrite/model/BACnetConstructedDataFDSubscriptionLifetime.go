@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFDSubscriptionLifetime = (*_BACnetConstructedDataFDSu
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFDSubscriptionLifetime)(nil)
 
 // NewBACnetConstructedDataFDSubscriptionLifetime factory function for _BACnetConstructedDataFDSubscriptionLifetime
-func NewBACnetConstructedDataFDSubscriptionLifetime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fdSubscriptionLifetime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFDSubscriptionLifetime {
+func NewBACnetConstructedDataFDSubscriptionLifetime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fdSubscriptionLifetime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataFDSubscriptionLifetime {
 	if fdSubscriptionLifetime == nil {
 		panic("fdSubscriptionLifetime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFDSubscriptionLifetime must not be nil")
 	}
 	_result := &_BACnetConstructedDataFDSubscriptionLifetime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FdSubscriptionLifetime:        fdSubscriptionLifetime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

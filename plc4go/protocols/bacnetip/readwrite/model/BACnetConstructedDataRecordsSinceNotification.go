@@ -61,12 +61,12 @@ var _ BACnetConstructedDataRecordsSinceNotification = (*_BACnetConstructedDataRe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRecordsSinceNotification)(nil)
 
 // NewBACnetConstructedDataRecordsSinceNotification factory function for _BACnetConstructedDataRecordsSinceNotification
-func NewBACnetConstructedDataRecordsSinceNotification(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recordsSinceNotifications BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRecordsSinceNotification {
+func NewBACnetConstructedDataRecordsSinceNotification(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recordsSinceNotifications BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataRecordsSinceNotification {
 	if recordsSinceNotifications == nil {
 		panic("recordsSinceNotifications of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRecordsSinceNotification must not be nil")
 	}
 	_result := &_BACnetConstructedDataRecordsSinceNotification{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RecordsSinceNotifications:     recordsSinceNotifications,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

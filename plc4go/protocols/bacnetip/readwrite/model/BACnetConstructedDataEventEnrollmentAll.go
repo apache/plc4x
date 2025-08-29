@@ -54,9 +54,9 @@ var _ BACnetConstructedDataEventEnrollmentAll = (*_BACnetConstructedDataEventEnr
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventEnrollmentAll)(nil)
 
 // NewBACnetConstructedDataEventEnrollmentAll factory function for _BACnetConstructedDataEventEnrollmentAll
-func NewBACnetConstructedDataEventEnrollmentAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventEnrollmentAll {
+func NewBACnetConstructedDataEventEnrollmentAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataEventEnrollmentAll {
 	_result := &_BACnetConstructedDataEventEnrollmentAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

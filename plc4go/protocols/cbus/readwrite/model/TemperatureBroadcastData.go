@@ -252,7 +252,7 @@ func TemperatureBroadcastDataParseWithBufferProducer() func(ctx context.Context,
 }
 
 func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TemperatureBroadcastData, error) {
-	v, err := (&_TemperatureBroadcastData{}).parse(ctx, readBuffer)
+	v, err := (new(_TemperatureBroadcastData)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

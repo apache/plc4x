@@ -59,12 +59,12 @@ var _ CBusCommandPointToPoint = (*_CBusCommandPointToPoint)(nil)
 var _ CBusCommandRequirements = (*_CBusCommandPointToPoint)(nil)
 
 // NewCBusCommandPointToPoint factory function for _CBusCommandPointToPoint
-func NewCBusCommandPointToPoint(header CBusHeader, command CBusPointToPointCommand, cBusOptions CBusOptions) *_CBusCommandPointToPoint {
+func NewCBusCommandPointToPoint(header CBusHeader, command CBusPointToPointCommand) *_CBusCommandPointToPoint {
 	if command == nil {
 		panic("command of type CBusPointToPointCommand for CBusCommandPointToPoint must not be nil")
 	}
 	_result := &_CBusCommandPointToPoint{
-		CBusCommandContract: NewCBusCommand(header, cBusOptions),
+		CBusCommandContract: NewCBusCommand(header),
 		Command:             command,
 	}
 	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result

@@ -59,12 +59,12 @@ var _ BACnetPriorityValueOctetString = (*_BACnetPriorityValueOctetString)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueOctetString)(nil)
 
 // NewBACnetPriorityValueOctetString factory function for _BACnetPriorityValueOctetString
-func NewBACnetPriorityValueOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueOctetString {
+func NewBACnetPriorityValueOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString) *_BACnetPriorityValueOctetString {
 	if octetStringValue == nil {
 		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetPriorityValueOctetString must not be nil")
 	}
 	_result := &_BACnetPriorityValueOctetString{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		OctetStringValue:            octetStringValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result

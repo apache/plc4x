@@ -59,9 +59,9 @@ var _ BinaryPayload = (*_BinaryPayload)(nil)
 var _ PayloadRequirements = (*_BinaryPayload)(nil)
 
 // NewBinaryPayload factory function for _BinaryPayload
-func NewBinaryPayload(sequenceHeader SequenceHeader, payload []byte, byteCount uint32) *_BinaryPayload {
+func NewBinaryPayload(sequenceHeader SequenceHeader, payload []byte) *_BinaryPayload {
 	_result := &_BinaryPayload{
-		PayloadContract: NewPayload(sequenceHeader, byteCount),
+		PayloadContract: NewPayload(sequenceHeader),
 		Payload:         payload,
 	}
 	_result.PayloadContract.(*_Payload)._SubType = _result

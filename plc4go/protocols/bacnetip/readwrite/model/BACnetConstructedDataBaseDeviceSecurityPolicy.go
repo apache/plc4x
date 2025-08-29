@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBaseDeviceSecurityPolicy = (*_BACnetConstructedDataBa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBaseDeviceSecurityPolicy)(nil)
 
 // NewBACnetConstructedDataBaseDeviceSecurityPolicy factory function for _BACnetConstructedDataBaseDeviceSecurityPolicy
-func NewBACnetConstructedDataBaseDeviceSecurityPolicy(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, baseDeviceSecurityPolicy BACnetSecurityLevelTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBaseDeviceSecurityPolicy {
+func NewBACnetConstructedDataBaseDeviceSecurityPolicy(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, baseDeviceSecurityPolicy BACnetSecurityLevelTagged) *_BACnetConstructedDataBaseDeviceSecurityPolicy {
 	if baseDeviceSecurityPolicy == nil {
 		panic("baseDeviceSecurityPolicy of type BACnetSecurityLevelTagged for BACnetConstructedDataBaseDeviceSecurityPolicy must not be nil")
 	}
 	_result := &_BACnetConstructedDataBaseDeviceSecurityPolicy{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BaseDeviceSecurityPolicy:      baseDeviceSecurityPolicy,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

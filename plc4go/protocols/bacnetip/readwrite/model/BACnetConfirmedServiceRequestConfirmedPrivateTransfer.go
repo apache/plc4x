@@ -65,7 +65,7 @@ var _ BACnetConfirmedServiceRequestConfirmedPrivateTransfer = (*_BACnetConfirmed
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestConfirmedPrivateTransfer)(nil)
 
 // NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer factory function for _BACnetConfirmedServiceRequestConfirmedPrivateTransfer
-func NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, serviceParameters BACnetConstructedData, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer {
+func NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(serviceRequestLength uint32, vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, serviceParameters BACnetConstructedData) *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer {
 	if vendorId == nil {
 		panic("vendorId of type BACnetVendorIdTagged for BACnetConfirmedServiceRequestConfirmedPrivateTransfer must not be nil")
 	}

@@ -54,9 +54,9 @@ var _ BACnetConstructedDataTrendLogAll = (*_BACnetConstructedDataTrendLogAll)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogAll)(nil)
 
 // NewBACnetConstructedDataTrendLogAll factory function for _BACnetConstructedDataTrendLogAll
-func NewBACnetConstructedDataTrendLogAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogAll {
+func NewBACnetConstructedDataTrendLogAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataTrendLogAll {
 	_result := &_BACnetConstructedDataTrendLogAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

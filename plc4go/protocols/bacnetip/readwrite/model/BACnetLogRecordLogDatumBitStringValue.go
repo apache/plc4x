@@ -59,12 +59,12 @@ var _ BACnetLogRecordLogDatumBitStringValue = (*_BACnetLogRecordLogDatumBitStrin
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumBitStringValue)(nil)
 
 // NewBACnetLogRecordLogDatumBitStringValue factory function for _BACnetLogRecordLogDatumBitStringValue
-func NewBACnetLogRecordLogDatumBitStringValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitStringValue BACnetContextTagBitString, tagNumber uint8) *_BACnetLogRecordLogDatumBitStringValue {
+func NewBACnetLogRecordLogDatumBitStringValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitStringValue BACnetContextTagBitString) *_BACnetLogRecordLogDatumBitStringValue {
 	if bitStringValue == nil {
 		panic("bitStringValue of type BACnetContextTagBitString for BACnetLogRecordLogDatumBitStringValue must not be nil")
 	}
 	_result := &_BACnetLogRecordLogDatumBitStringValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		BitStringValue:                  bitStringValue,
 	}
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result

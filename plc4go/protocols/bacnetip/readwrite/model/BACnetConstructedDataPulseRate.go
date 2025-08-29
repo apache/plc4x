@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPulseRate = (*_BACnetConstructedDataPulseRate)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPulseRate)(nil)
 
 // NewBACnetConstructedDataPulseRate factory function for _BACnetConstructedDataPulseRate
-func NewBACnetConstructedDataPulseRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, pulseRate BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseRate {
+func NewBACnetConstructedDataPulseRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, pulseRate BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataPulseRate {
 	if pulseRate == nil {
 		panic("pulseRate of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPulseRate must not be nil")
 	}
 	_result := &_BACnetConstructedDataPulseRate{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PulseRate:                     pulseRate,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

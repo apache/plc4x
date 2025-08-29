@@ -59,9 +59,9 @@ var _ S7PayloadUserData = (*_S7PayloadUserData)(nil)
 var _ S7PayloadRequirements = (*_S7PayloadUserData)(nil)
 
 // NewS7PayloadUserData factory function for _S7PayloadUserData
-func NewS7PayloadUserData(items []S7PayloadUserDataItem, parameter S7Parameter) *_S7PayloadUserData {
+func NewS7PayloadUserData(items []S7PayloadUserDataItem) *_S7PayloadUserData {
 	_result := &_S7PayloadUserData{
-		S7PayloadContract: NewS7Payload(parameter),
+		S7PayloadContract: NewS7Payload(),
 		Items:             items,
 	}
 	_result.S7PayloadContract.(*_S7Payload)._SubType = _result

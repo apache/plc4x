@@ -308,7 +308,7 @@ func BACnetEventNotificationSubscriptionParseWithBufferProducer() func(ctx conte
 }
 
 func BACnetEventNotificationSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventNotificationSubscription, error) {
-	v, err := (&_BACnetEventNotificationSubscription{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetEventNotificationSubscription)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

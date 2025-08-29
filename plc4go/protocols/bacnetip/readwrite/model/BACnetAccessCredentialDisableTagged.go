@@ -59,20 +59,16 @@ type _BACnetAccessCredentialDisableTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetAccessCredentialDisable
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetAccessCredentialDisableTagged = (*_BACnetAccessCredentialDisableTagged)(nil)
 
 // NewBACnetAccessCredentialDisableTagged factory function for _BACnetAccessCredentialDisableTagged
-func NewBACnetAccessCredentialDisableTagged(header BACnetTagHeader, value BACnetAccessCredentialDisable, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessCredentialDisableTagged {
+func NewBACnetAccessCredentialDisableTagged(header BACnetTagHeader, value BACnetAccessCredentialDisable, proprietaryValue uint32) *_BACnetAccessCredentialDisableTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetAccessCredentialDisableTagged must not be nil")
 	}
-	return &_BACnetAccessCredentialDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetAccessCredentialDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetAccessCredentialDisableTaggedBuilder interface {
 	WithValue(BACnetAccessCredentialDisable) BACnetAccessCredentialDisableTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetAccessCredentialDisableTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetAccessCredentialDisableTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetAccessCredentialDisableTaggedBuilder
 	// Build builds the BACnetAccessCredentialDisableTagged or returns an error if something is wrong
 	Build() (BACnetAccessCredentialDisableTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetAccessCredentialDisableTaggedBuilder) WithValue(value BACnetAcce
 
 func (b *_BACnetAccessCredentialDisableTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessCredentialDisableTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetAccessCredentialDisableTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccessCredentialDisableTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetAccessCredentialDisableTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccessCredentialDisableTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetAccessCredentialDisableTaggedParseWithBufferProducer(tagNumber uint8,
 }
 
 func BACnetAccessCredentialDisableTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessCredentialDisableTagged, error) {
-	v, err := (&_BACnetAccessCredentialDisableTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetAccessCredentialDisableTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetAccessCredentialDisableTagged) SerializeWithWriteBuffer(ctx cont
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetAccessCredentialDisableTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetAccessCredentialDisableTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetAccessCredentialDisableTagged) IsBACnetAccessCredentialDisableTagged() {}
 
 func (m *_BACnetAccessCredentialDisableTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetAccessCredentialDisableTagged) deepCopy() *_BACnetAccessCredenti
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetAccessCredentialDisableTaggedCopy
 }

@@ -64,9 +64,9 @@ var _ BACnetConstructedDataLandingDoorStatus = (*_BACnetConstructedDataLandingDo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLandingDoorStatus)(nil)
 
 // NewBACnetConstructedDataLandingDoorStatus factory function for _BACnetConstructedDataLandingDoorStatus
-func NewBACnetConstructedDataLandingDoorStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, landingDoorStatus []BACnetLandingDoorStatus, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingDoorStatus {
+func NewBACnetConstructedDataLandingDoorStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, landingDoorStatus []BACnetLandingDoorStatus) *_BACnetConstructedDataLandingDoorStatus {
 	_result := &_BACnetConstructedDataLandingDoorStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		LandingDoorStatus:             landingDoorStatus,
 	}

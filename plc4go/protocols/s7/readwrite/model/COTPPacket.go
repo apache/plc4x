@@ -54,8 +54,6 @@ type COTPPacketContract interface {
 	GetParameters() []COTPParameter
 	// GetPayload returns Payload (property field)
 	GetPayload() S7Message
-	// GetCotpLen() returns a parser argument
-	GetCotpLen() uint16
 	// IsCOTPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPPacket()
 	// CreateBuilder creates a COTPPacketBuilder
@@ -78,16 +76,13 @@ type _COTPPacket struct {
 	}
 	Parameters []COTPParameter
 	Payload    S7Message
-
-	// Arguments.
-	CotpLen uint16
 }
 
 var _ COTPPacketContract = (*_COTPPacket)(nil)
 
 // NewCOTPPacket factory function for _COTPPacket
-func NewCOTPPacket(parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacket {
-	return &_COTPPacket{Parameters: parameters, Payload: payload, CotpLen: cotpLen}
+func NewCOTPPacket(parameters []COTPParameter, payload S7Message) *_COTPPacket {
+	return &_COTPPacket{Parameters: parameters, Payload: payload}
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,8 +101,6 @@ type COTPPacketBuilder interface {
 	WithOptionalPayload(S7Message) COTPPacketBuilder
 	// WithOptionalPayloadBuilder adds Payload (property field) which is build by the builder
 	WithOptionalPayloadBuilder(func(S7MessageBuilder) S7MessageBuilder) COTPPacketBuilder
-	// WithArgCotpLen sets a parser argument
-	WithArgCotpLen(uint16) COTPPacketBuilder
 	// AsCOTPPacketData converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
 	AsCOTPPacketData() COTPPacketDataBuilder
 	// AsCOTPPacketConnectionRequest converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
@@ -172,11 +165,6 @@ func (b *_COTPPacketBuilder) WithOptionalPayloadBuilder(builderSupplier func(S7M
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "S7MessageBuilder failed"))
 	}
-	return b
-}
-
-func (b *_COTPPacketBuilder) WithArgCotpLen(cotpLen uint16) COTPPacketBuilder {
-	b.CotpLen = cotpLen
 	return b
 }
 
@@ -378,7 +366,7 @@ func COTPPacketParseWithBufferProducer[T COTPPacket](cotpLen uint16) func(ctx co
 }
 
 func COTPPacketParseWithBuffer[T COTPPacket](ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (T, error) {
-	v, err := (&_COTPPacket{CotpLen: cotpLen}).parse(ctx, readBuffer, cotpLen)
+	v, err := (new(_COTPPacket)).parse(ctx, readBuffer, cotpLen)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -506,16 +494,6 @@ func (pm *_COTPPacket) serializeParent(ctx context.Context, writeBuffer utils.Wr
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_COTPPacket) GetCotpLen() uint16 {
-	return m.CotpLen
-}
-
-//
-////
-
 func (m *_COTPPacket) IsCOTPPacket() {}
 
 func (m *_COTPPacket) DeepCopy() any {
@@ -530,7 +508,6 @@ func (m *_COTPPacket) deepCopy() *_COTPPacket {
 		nil, // will be set by child
 		utils.DeepCopySlice[COTPParameter, COTPParameter](m.Parameters),
 		utils.DeepCopy[S7Message](m.Payload),
-		m.CotpLen,
 	}
 	return _COTPPacketCopy
 }

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataRequestedShedLevel = (*_BACnetConstructedDataRequeste
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRequestedShedLevel)(nil)
 
 // NewBACnetConstructedDataRequestedShedLevel factory function for _BACnetConstructedDataRequestedShedLevel
-func NewBACnetConstructedDataRequestedShedLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, requestedShedLevel BACnetShedLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRequestedShedLevel {
+func NewBACnetConstructedDataRequestedShedLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, requestedShedLevel BACnetShedLevel) *_BACnetConstructedDataRequestedShedLevel {
 	if requestedShedLevel == nil {
 		panic("requestedShedLevel of type BACnetShedLevel for BACnetConstructedDataRequestedShedLevel must not be nil")
 	}
 	_result := &_BACnetConstructedDataRequestedShedLevel{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RequestedShedLevel:            requestedShedLevel,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

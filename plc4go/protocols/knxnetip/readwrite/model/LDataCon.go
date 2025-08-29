@@ -65,12 +65,12 @@ var _ LDataCon = (*_LDataCon)(nil)
 var _ CEMIRequirements = (*_LDataCon)(nil)
 
 // NewLDataCon factory function for _LDataCon
-func NewLDataCon(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataCon {
+func NewLDataCon(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) *_LDataCon {
 	if dataFrame == nil {
 		panic("dataFrame of type LDataFrame for LDataCon must not be nil")
 	}
 	_result := &_LDataCon{
-		CEMIContract:                NewCEMI(size),
+		CEMIContract:                NewCEMI(),
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,

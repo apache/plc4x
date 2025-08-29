@@ -59,9 +59,9 @@ var _ BACnetConstructedDataUTCTimeSynchronizationRecipients = (*_BACnetConstruct
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUTCTimeSynchronizationRecipients)(nil)
 
 // NewBACnetConstructedDataUTCTimeSynchronizationRecipients factory function for _BACnetConstructedDataUTCTimeSynchronizationRecipients
-func NewBACnetConstructedDataUTCTimeSynchronizationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, utcTimeSynchronizationRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCTimeSynchronizationRecipients {
+func NewBACnetConstructedDataUTCTimeSynchronizationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, utcTimeSynchronizationRecipients []BACnetRecipient) *_BACnetConstructedDataUTCTimeSynchronizationRecipients {
 	_result := &_BACnetConstructedDataUTCTimeSynchronizationRecipients{
-		BACnetConstructedDataContract:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		UtcTimeSynchronizationRecipients: utcTimeSynchronizationRecipients,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

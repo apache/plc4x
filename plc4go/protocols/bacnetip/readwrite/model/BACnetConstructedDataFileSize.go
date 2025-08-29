@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFileSize = (*_BACnetConstructedDataFileSize)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileSize)(nil)
 
 // NewBACnetConstructedDataFileSize factory function for _BACnetConstructedDataFileSize
-func NewBACnetConstructedDataFileSize(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileSize BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileSize {
+func NewBACnetConstructedDataFileSize(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileSize BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataFileSize {
 	if fileSize == nil {
 		panic("fileSize of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFileSize must not be nil")
 	}
 	_result := &_BACnetConstructedDataFileSize{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FileSize:                      fileSize,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

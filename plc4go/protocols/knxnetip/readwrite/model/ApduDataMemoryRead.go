@@ -62,9 +62,9 @@ var _ ApduDataMemoryRead = (*_ApduDataMemoryRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataMemoryRead)(nil)
 
 // NewApduDataMemoryRead factory function for _ApduDataMemoryRead
-func NewApduDataMemoryRead(numBytes uint8, address uint16, dataLength uint8) *_ApduDataMemoryRead {
+func NewApduDataMemoryRead(numBytes uint8, address uint16) *_ApduDataMemoryRead {
 	_result := &_ApduDataMemoryRead{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 		NumBytes:         numBytes,
 		Address:          address,
 	}

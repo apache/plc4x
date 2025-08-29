@@ -47,8 +47,6 @@ func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 	switch typeName {
 	case "PathSegment":
 		return PathSegmentParseWithBuffer[PathSegment](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "EipConstants":
-		return EipConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "TransportType":
 		return TransportTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "PortSegmentType":

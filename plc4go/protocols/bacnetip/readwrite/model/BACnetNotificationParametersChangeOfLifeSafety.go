@@ -74,7 +74,7 @@ var _ BACnetNotificationParametersChangeOfLifeSafety = (*_BACnetNotificationPara
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersChangeOfLifeSafety)(nil)
 
 // NewBACnetNotificationParametersChangeOfLifeSafety factory function for _BACnetNotificationParametersChangeOfLifeSafety
-func NewBACnetNotificationParametersChangeOfLifeSafety(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, newState BACnetLifeSafetyStateTagged, newMode BACnetLifeSafetyModeTagged, statusFlags BACnetStatusFlagsTagged, operationExpected BACnetLifeSafetyOperationTagged, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfLifeSafety {
+func NewBACnetNotificationParametersChangeOfLifeSafety(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, newState BACnetLifeSafetyStateTagged, newMode BACnetLifeSafetyModeTagged, statusFlags BACnetStatusFlagsTagged, operationExpected BACnetLifeSafetyOperationTagged, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersChangeOfLifeSafety {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
 	}
@@ -94,7 +94,7 @@ func NewBACnetNotificationParametersChangeOfLifeSafety(openingTag BACnetOpeningT
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
 	}
 	_result := &_BACnetNotificationParametersChangeOfLifeSafety{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		NewState:                             newState,
 		NewMode:                              newMode,

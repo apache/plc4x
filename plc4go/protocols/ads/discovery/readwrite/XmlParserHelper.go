@@ -49,8 +49,6 @@ func (m AdsDiscoveryXmlParserHelper) Parse(typeName string, xmlString string, pa
 		return AdsDiscoveryParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsDiscoveryBlock":
 		return AdsDiscoveryBlockParseWithBuffer[AdsDiscoveryBlock](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "AdsDiscoveryConstants":
-		return AdsDiscoveryConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsNetId":
 		return AmsNetIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsString":

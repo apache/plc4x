@@ -62,9 +62,9 @@ var _ COTPPacketData = (*_COTPPacketData)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketData)(nil)
 
 // NewCOTPPacketData factory function for _COTPPacketData
-func NewCOTPPacketData(parameters []COTPParameter, payload S7Message, eot bool, tpduRef uint8, cotpLen uint16) *_COTPPacketData {
+func NewCOTPPacketData(parameters []COTPParameter, payload S7Message, eot bool, tpduRef uint8) *_COTPPacketData {
 	_result := &_COTPPacketData{
-		COTPPacketContract: NewCOTPPacket(parameters, payload, cotpLen),
+		COTPPacketContract: NewCOTPPacket(parameters, payload),
 		Eot:                eot,
 		TpduRef:            tpduRef,
 	}

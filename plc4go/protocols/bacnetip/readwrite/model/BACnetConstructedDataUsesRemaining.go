@@ -61,12 +61,12 @@ var _ BACnetConstructedDataUsesRemaining = (*_BACnetConstructedDataUsesRemaining
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUsesRemaining)(nil)
 
 // NewBACnetConstructedDataUsesRemaining factory function for _BACnetConstructedDataUsesRemaining
-func NewBACnetConstructedDataUsesRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, usesRemaining BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUsesRemaining {
+func NewBACnetConstructedDataUsesRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, usesRemaining BACnetApplicationTagSignedInteger) *_BACnetConstructedDataUsesRemaining {
 	if usesRemaining == nil {
 		panic("usesRemaining of type BACnetApplicationTagSignedInteger for BACnetConstructedDataUsesRemaining must not be nil")
 	}
 	_result := &_BACnetConstructedDataUsesRemaining{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		UsesRemaining:                 usesRemaining,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

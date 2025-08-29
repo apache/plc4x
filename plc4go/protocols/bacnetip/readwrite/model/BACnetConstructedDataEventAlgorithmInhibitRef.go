@@ -61,12 +61,12 @@ var _ BACnetConstructedDataEventAlgorithmInhibitRef = (*_BACnetConstructedDataEv
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventAlgorithmInhibitRef)(nil)
 
 // NewBACnetConstructedDataEventAlgorithmInhibitRef factory function for _BACnetConstructedDataEventAlgorithmInhibitRef
-func NewBACnetConstructedDataEventAlgorithmInhibitRef(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventAlgorithmInhibitRef BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibitRef {
+func NewBACnetConstructedDataEventAlgorithmInhibitRef(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventAlgorithmInhibitRef BACnetObjectPropertyReference) *_BACnetConstructedDataEventAlgorithmInhibitRef {
 	if eventAlgorithmInhibitRef == nil {
 		panic("eventAlgorithmInhibitRef of type BACnetObjectPropertyReference for BACnetConstructedDataEventAlgorithmInhibitRef must not be nil")
 	}
 	_result := &_BACnetConstructedDataEventAlgorithmInhibitRef{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		EventAlgorithmInhibitRef:      eventAlgorithmInhibitRef,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

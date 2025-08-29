@@ -190,7 +190,7 @@ func PowerUpParseWithBufferProducer() func(ctx context.Context, readBuffer utils
 }
 
 func PowerUpParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PowerUp, error) {
-	v, err := (&_PowerUp{}).parse(ctx, readBuffer)
+	v, err := (new(_PowerUp)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

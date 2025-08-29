@@ -54,9 +54,9 @@ var _ ApduDataExtOpenRoutingTableRequest = (*_ApduDataExtOpenRoutingTableRequest
 var _ ApduDataExtRequirements = (*_ApduDataExtOpenRoutingTableRequest)(nil)
 
 // NewApduDataExtOpenRoutingTableRequest factory function for _ApduDataExtOpenRoutingTableRequest
-func NewApduDataExtOpenRoutingTableRequest(length uint8) *_ApduDataExtOpenRoutingTableRequest {
+func NewApduDataExtOpenRoutingTableRequest() *_ApduDataExtOpenRoutingTableRequest {
 	_result := &_ApduDataExtOpenRoutingTableRequest{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

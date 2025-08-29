@@ -61,12 +61,12 @@ var _ BACnetConstructedDataInstantaneousPower = (*_BACnetConstructedDataInstanta
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInstantaneousPower)(nil)
 
 // NewBACnetConstructedDataInstantaneousPower factory function for _BACnetConstructedDataInstantaneousPower
-func NewBACnetConstructedDataInstantaneousPower(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, instantaneousPower BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstantaneousPower {
+func NewBACnetConstructedDataInstantaneousPower(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, instantaneousPower BACnetApplicationTagReal) *_BACnetConstructedDataInstantaneousPower {
 	if instantaneousPower == nil {
 		panic("instantaneousPower of type BACnetApplicationTagReal for BACnetConstructedDataInstantaneousPower must not be nil")
 	}
 	_result := &_BACnetConstructedDataInstantaneousPower{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		InstantaneousPower:            instantaneousPower,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

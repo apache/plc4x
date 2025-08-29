@@ -242,7 +242,7 @@ func BACnetHostNPortParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func BACnetHostNPortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostNPort, error) {
-	v, err := (&_BACnetHostNPort{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetHostNPort)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

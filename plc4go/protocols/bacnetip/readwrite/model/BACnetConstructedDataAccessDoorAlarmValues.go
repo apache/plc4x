@@ -59,9 +59,9 @@ var _ BACnetConstructedDataAccessDoorAlarmValues = (*_BACnetConstructedDataAcces
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessDoorAlarmValues)(nil)
 
 // NewBACnetConstructedDataAccessDoorAlarmValues factory function for _BACnetConstructedDataAccessDoorAlarmValues
-func NewBACnetConstructedDataAccessDoorAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetDoorAlarmStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorAlarmValues {
+func NewBACnetConstructedDataAccessDoorAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetDoorAlarmStateTagged) *_BACnetConstructedDataAccessDoorAlarmValues {
 	_result := &_BACnetConstructedDataAccessDoorAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AlarmValues:                   alarmValues,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

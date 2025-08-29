@@ -53,20 +53,16 @@ type OpcuaAPU interface {
 // _OpcuaAPU is the data-structure of this message
 type _OpcuaAPU struct {
 	Message MessagePDU
-
-	// Arguments.
-	Response       bool
-	BinaryEncoding bool
 }
 
 var _ OpcuaAPU = (*_OpcuaAPU)(nil)
 
 // NewOpcuaAPU factory function for _OpcuaAPU
-func NewOpcuaAPU(message MessagePDU, response bool, binaryEncoding bool) *_OpcuaAPU {
+func NewOpcuaAPU(message MessagePDU) *_OpcuaAPU {
 	if message == nil {
 		panic("message of type MessagePDU for OpcuaAPU must not be nil")
 	}
-	return &_OpcuaAPU{Message: message, Response: response, BinaryEncoding: binaryEncoding}
+	return &_OpcuaAPU{Message: message}
 }
 
 ///////////////////////////////////////////////////////////
@@ -83,10 +79,6 @@ type OpcuaAPUBuilder interface {
 	WithMessage(MessagePDU) OpcuaAPUBuilder
 	// WithMessageBuilder adds Message (property field) which is build by the builder
 	WithMessageBuilder(func(MessagePDUBuilder) MessagePDUBuilder) OpcuaAPUBuilder
-	// WithArgResponse sets a parser argument
-	WithArgResponse(bool) OpcuaAPUBuilder
-	// WithArgBinaryEncoding sets a parser argument
-	WithArgBinaryEncoding(bool) OpcuaAPUBuilder
 	// Build builds the OpcuaAPU or returns an error if something is wrong
 	Build() (OpcuaAPU, error)
 	// MustBuild does the same as Build but panics on error
@@ -122,15 +114,6 @@ func (b *_OpcuaAPUBuilder) WithMessageBuilder(builderSupplier func(MessagePDUBui
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "MessagePDUBuilder failed"))
 	}
-	return b
-}
-
-func (b *_OpcuaAPUBuilder) WithArgResponse(response bool) OpcuaAPUBuilder {
-	b.Response = response
-	return b
-}
-func (b *_OpcuaAPUBuilder) WithArgBinaryEncoding(binaryEncoding bool) OpcuaAPUBuilder {
-	b.BinaryEncoding = binaryEncoding
 	return b
 }
 
@@ -226,7 +209,7 @@ func OpcuaAPUParseWithBufferProducer(response bool, binaryEncoding bool) func(ct
 }
 
 func OpcuaAPUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool, binaryEncoding bool) (OpcuaAPU, error) {
-	v, err := (&_OpcuaAPU{Response: response, BinaryEncoding: binaryEncoding}).parse(ctx, readBuffer, response, binaryEncoding)
+	v, err := (new(_OpcuaAPU)).parse(ctx, readBuffer, response, binaryEncoding)
 	if err != nil {
 		return nil, err
 	}
@@ -282,19 +265,6 @@ func (m *_OpcuaAPU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_OpcuaAPU) GetResponse() bool {
-	return m.Response
-}
-func (m *_OpcuaAPU) GetBinaryEncoding() bool {
-	return m.BinaryEncoding
-}
-
-//
-////
-
 func (m *_OpcuaAPU) IsOpcuaAPU() {}
 
 func (m *_OpcuaAPU) DeepCopy() any {
@@ -307,8 +277,6 @@ func (m *_OpcuaAPU) deepCopy() *_OpcuaAPU {
 	}
 	_OpcuaAPUCopy := &_OpcuaAPU{
 		utils.DeepCopy[MessagePDU](m.Message),
-		m.Response,
-		m.BinaryEncoding,
 	}
 	return _OpcuaAPUCopy
 }

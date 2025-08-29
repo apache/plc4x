@@ -54,9 +54,9 @@ var _ ApduDataExtMemoryBitWrite = (*_ApduDataExtMemoryBitWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtMemoryBitWrite)(nil)
 
 // NewApduDataExtMemoryBitWrite factory function for _ApduDataExtMemoryBitWrite
-func NewApduDataExtMemoryBitWrite(length uint8) *_ApduDataExtMemoryBitWrite {
+func NewApduDataExtMemoryBitWrite() *_ApduDataExtMemoryBitWrite {
 	_result := &_ApduDataExtMemoryBitWrite{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

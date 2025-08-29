@@ -54,9 +54,9 @@ var _ GetAttributeSingleRequest = (*_GetAttributeSingleRequest)(nil)
 var _ CipServiceRequirements = (*_GetAttributeSingleRequest)(nil)
 
 // NewGetAttributeSingleRequest factory function for _GetAttributeSingleRequest
-func NewGetAttributeSingleRequest(serviceLen uint16) *_GetAttributeSingleRequest {
+func NewGetAttributeSingleRequest() *_GetAttributeSingleRequest {
 	_result := &_GetAttributeSingleRequest{
-		CipServiceContract: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(),
 	}
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result

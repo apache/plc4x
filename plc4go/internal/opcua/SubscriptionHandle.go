@@ -147,7 +147,6 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 	extObject := readWriteModel.NewRootExtensionObject(
 		expandedNodeId,
 		createMonitoredItemsRequest,
-		identifier,
 	)
 
 	ctx, cancel := context.WithTimeout(context.Background(), REQUEST_TIMEOUT)
@@ -279,7 +278,6 @@ func (h *SubscriptionHandle) startSubscriber() {
 				extObject := readWriteModel.NewRootExtensionObject(
 					extExpandedNodeId,
 					publishRequest,
-					identifier,
 				)
 
 				ctx := context.Background()
@@ -390,7 +388,6 @@ func (h *SubscriptionHandle) stopSubscriber() {
 	extObject := readWriteModel.NewRootExtensionObject(
 		extExpandedNodeId,
 		deleteSubscriptionrequest,
-		identifier,
 	)
 
 	ctx := context.Background()

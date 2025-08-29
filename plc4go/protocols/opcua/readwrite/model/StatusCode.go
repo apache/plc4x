@@ -189,7 +189,7 @@ func StatusCodeParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 }
 
 func StatusCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusCode, error) {
-	v, err := (&_StatusCode{}).parse(ctx, readBuffer)
+	v, err := (new(_StatusCode)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

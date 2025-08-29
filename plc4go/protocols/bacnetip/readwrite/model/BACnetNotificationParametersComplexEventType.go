@@ -59,12 +59,12 @@ var _ BACnetNotificationParametersComplexEventType = (*_BACnetNotificationParame
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersComplexEventType)(nil)
 
 // NewBACnetNotificationParametersComplexEventType factory function for _BACnetNotificationParametersComplexEventType
-func NewBACnetNotificationParametersComplexEventType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, listOfValues BACnetPropertyValues, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersComplexEventType {
+func NewBACnetNotificationParametersComplexEventType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, listOfValues BACnetPropertyValues) *_BACnetNotificationParametersComplexEventType {
 	if listOfValues == nil {
 		panic("listOfValues of type BACnetPropertyValues for BACnetNotificationParametersComplexEventType must not be nil")
 	}
 	_result := &_BACnetNotificationParametersComplexEventType{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		ListOfValues:                         listOfValues,
 	}
 	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result

@@ -211,7 +211,7 @@ func NetworkProtocolControlInformationParseWithBufferProducer() func(ctx context
 }
 
 func NetworkProtocolControlInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
-	v, err := (&_NetworkProtocolControlInformation{}).parse(ctx, readBuffer)
+	v, err := (new(_NetworkProtocolControlInformation)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

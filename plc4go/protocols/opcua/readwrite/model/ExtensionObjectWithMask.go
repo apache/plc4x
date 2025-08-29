@@ -53,8 +53,6 @@ type ExtensionObjectWithMaskContract interface {
 	ExtensionObjectContract
 	// GetEncodingMask returns EncodingMask (property field)
 	GetEncodingMask() ExtensionObjectEncodingMask
-	// GetExtensionId() returns a parser argument
-	GetExtensionId() int32
 	// GetIncludeEncodingMask returns IncludeEncodingMask (discriminator field)
 	GetIncludeEncodingMask() bool
 	// IsExtensionObjectWithMask is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -78,15 +76,12 @@ type _ExtensionObjectWithMask struct {
 		ExtensionObjectWithMaskRequirements
 	}
 	EncodingMask ExtensionObjectEncodingMask
-
-	// Arguments.
-	ExtensionId int32
 }
 
 var _ ExtensionObjectWithMaskContract = (*_ExtensionObjectWithMask)(nil)
 
 // NewExtensionObjectWithMask factory function for _ExtensionObjectWithMask
-func NewExtensionObjectWithMask(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask, extensionId int32) *_ExtensionObjectWithMask {
+func NewExtensionObjectWithMask(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask) *_ExtensionObjectWithMask {
 	if encodingMask == nil {
 		panic("encodingMask of type ExtensionObjectEncodingMask for ExtensionObjectWithMask must not be nil")
 	}
@@ -112,8 +107,6 @@ type ExtensionObjectWithMaskBuilder interface {
 	WithEncodingMask(ExtensionObjectEncodingMask) ExtensionObjectWithMaskBuilder
 	// WithEncodingMaskBuilder adds EncodingMask (property field) which is build by the builder
 	WithEncodingMaskBuilder(func(ExtensionObjectEncodingMaskBuilder) ExtensionObjectEncodingMaskBuilder) ExtensionObjectWithMaskBuilder
-	// WithArgExtensionId sets a parser argument
-	WithArgExtensionId(int32) ExtensionObjectWithMaskBuilder
 	// AsBinaryExtensionObjectWithMask converts this build to a subType of ExtensionObjectWithMask. It is always possible to return to current builder using Done()
 	AsBinaryExtensionObjectWithMask() BinaryExtensionObjectWithMaskBuilder
 	// AsNullExtensionObjectWithMask converts this build to a subType of ExtensionObjectWithMask. It is always possible to return to current builder using Done()
@@ -174,11 +167,6 @@ func (b *_ExtensionObjectWithMaskBuilder) WithEncodingMaskBuilder(builderSupplie
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectEncodingMaskBuilder failed"))
 	}
-	return b
-}
-
-func (b *_ExtensionObjectWithMaskBuilder) WithArgExtensionId(extensionId int32) ExtensionObjectWithMaskBuilder {
-	b.ExtensionId = extensionId
 	return b
 }
 
@@ -402,16 +390,6 @@ func (pm *_ExtensionObjectWithMask) serializeParent(ctx context.Context, writeBu
 	return pm.ExtensionObjectContract.(*_ExtensionObject).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_ExtensionObjectWithMask) GetExtensionId() int32 {
-	return m.ExtensionId
-}
-
-//
-////
-
 func (m *_ExtensionObjectWithMask) IsExtensionObjectWithMask() {}
 
 func (m *_ExtensionObjectWithMask) DeepCopy() any {
@@ -426,7 +404,6 @@ func (m *_ExtensionObjectWithMask) deepCopy() *_ExtensionObjectWithMask {
 		m.ExtensionObjectContract.(*_ExtensionObject).deepCopy(),
 		nil, // will be set by child
 		utils.DeepCopy[ExtensionObjectEncodingMask](m.EncodingMask),
-		m.ExtensionId,
 	}
 	_ExtensionObjectWithMaskCopy.ExtensionObjectContract.(*_ExtensionObject)._SubType = m
 	return _ExtensionObjectWithMaskCopy

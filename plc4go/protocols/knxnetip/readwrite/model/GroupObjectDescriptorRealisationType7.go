@@ -325,7 +325,7 @@ func GroupObjectDescriptorRealisationType7ParseWithBufferProducer() func(ctx con
 }
 
 func GroupObjectDescriptorRealisationType7ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType7, error) {
-	v, err := (&_GroupObjectDescriptorRealisationType7{}).parse(ctx, readBuffer)
+	v, err := (new(_GroupObjectDescriptorRealisationType7)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

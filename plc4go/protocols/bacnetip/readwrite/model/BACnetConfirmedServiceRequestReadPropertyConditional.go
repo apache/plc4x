@@ -53,16 +53,13 @@ type BACnetConfirmedServiceRequestReadPropertyConditional interface {
 type _BACnetConfirmedServiceRequestReadPropertyConditional struct {
 	BACnetConfirmedServiceRequestContract
 	BytesOfRemovedService []byte
-
-	// Arguments.
-	ServiceRequestPayloadLength uint32
 }
 
 var _ BACnetConfirmedServiceRequestReadPropertyConditional = (*_BACnetConfirmedServiceRequestReadPropertyConditional)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestReadPropertyConditional)(nil)
 
 // NewBACnetConfirmedServiceRequestReadPropertyConditional factory function for _BACnetConfirmedServiceRequestReadPropertyConditional
-func NewBACnetConfirmedServiceRequestReadPropertyConditional(bytesOfRemovedService []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReadPropertyConditional {
+func NewBACnetConfirmedServiceRequestReadPropertyConditional(serviceRequestLength uint32, bytesOfRemovedService []byte) *_BACnetConfirmedServiceRequestReadPropertyConditional {
 	_result := &_BACnetConfirmedServiceRequestReadPropertyConditional{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		BytesOfRemovedService:                 bytesOfRemovedService,
@@ -83,8 +80,6 @@ type BACnetConfirmedServiceRequestReadPropertyConditionalBuilder interface {
 	WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
 	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
 	WithBytesOfRemovedService(...byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
-	// WithArgServiceRequestPayloadLength sets a parser argument
-	WithArgServiceRequestPayloadLength(uint32) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestReadPropertyConditional or returns an error if something is wrong
@@ -119,11 +114,6 @@ func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithManda
 
 func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
 	b.BytesOfRemovedService = bytesOfRemovedService
-	return b
-}
-
-func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithArgServiceRequestPayloadLength(serviceRequestPayloadLength uint32) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
-	b.ServiceRequestPayloadLength = serviceRequestPayloadLength
 	return b
 }
 
@@ -290,16 +280,6 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) SerializeWithWri
 	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetServiceRequestPayloadLength() uint32 {
-	return m.ServiceRequestPayloadLength
-}
-
-//
-////
-
 func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) IsBACnetConfirmedServiceRequestReadPropertyConditional() {
 }
 
@@ -314,7 +294,6 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) deepCopy() *_BAC
 	_BACnetConfirmedServiceRequestReadPropertyConditionalCopy := &_BACnetConfirmedServiceRequestReadPropertyConditional{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
-		m.ServiceRequestPayloadLength,
 	}
 	_BACnetConfirmedServiceRequestReadPropertyConditionalCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestReadPropertyConditionalCopy

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataProportionalConstant = (*_BACnetConstructedDataPropor
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProportionalConstant)(nil)
 
 // NewBACnetConstructedDataProportionalConstant factory function for _BACnetConstructedDataProportionalConstant
-func NewBACnetConstructedDataProportionalConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, proportionalConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProportionalConstant {
+func NewBACnetConstructedDataProportionalConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, proportionalConstant BACnetApplicationTagReal) *_BACnetConstructedDataProportionalConstant {
 	if proportionalConstant == nil {
 		panic("proportionalConstant of type BACnetApplicationTagReal for BACnetConstructedDataProportionalConstant must not be nil")
 	}
 	_result := &_BACnetConstructedDataProportionalConstant{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ProportionalConstant:          proportionalConstant,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

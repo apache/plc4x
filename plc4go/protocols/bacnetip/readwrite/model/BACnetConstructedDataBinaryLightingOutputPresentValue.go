@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBinaryLightingOutputPresentValue = (*_BACnetConstruct
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryLightingOutputPresentValue)(nil)
 
 // NewBACnetConstructedDataBinaryLightingOutputPresentValue factory function for _BACnetConstructedDataBinaryLightingOutputPresentValue
-func NewBACnetConstructedDataBinaryLightingOutputPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetBinaryLightingPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryLightingOutputPresentValue {
+func NewBACnetConstructedDataBinaryLightingOutputPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetBinaryLightingPVTagged) *_BACnetConstructedDataBinaryLightingOutputPresentValue {
 	if presentValue == nil {
 		panic("presentValue of type BACnetBinaryLightingPVTagged for BACnetConstructedDataBinaryLightingOutputPresentValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataBinaryLightingOutputPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PresentValue:                  presentValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

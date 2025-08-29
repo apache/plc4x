@@ -86,9 +86,9 @@ var _ APDUComplexAck = (*_APDUComplexAck)(nil)
 var _ APDURequirements = (*_APDUComplexAck)(nil)
 
 // NewAPDUComplexAck factory function for _APDUComplexAck
-func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck BACnetServiceAck, segmentServiceChoice *BACnetConfirmedServiceChoice, segment []byte, apduLength uint16) *_APDUComplexAck {
+func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck BACnetServiceAck, segmentServiceChoice *BACnetConfirmedServiceChoice, segment []byte) *_APDUComplexAck {
 	_result := &_APDUComplexAck{
-		APDUContract:         NewAPDU(apduLength),
+		APDUContract:         NewAPDU(),
 		SegmentedMessage:     segmentedMessage,
 		MoreFollows:          moreFollows,
 		OriginalInvokeId:     originalInvokeId,

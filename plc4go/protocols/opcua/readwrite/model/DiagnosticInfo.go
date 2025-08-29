@@ -465,7 +465,7 @@ func DiagnosticInfoParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DiagnosticInfo, error) {
-	v, err := (&_DiagnosticInfo{}).parse(ctx, readBuffer)
+	v, err := (new(_DiagnosticInfo)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

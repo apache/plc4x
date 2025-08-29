@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAnalogValueMaxPresValue = (*_BACnetConstructedDataAna
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogValueMaxPresValue)(nil)
 
 // NewBACnetConstructedDataAnalogValueMaxPresValue factory function for _BACnetConstructedDataAnalogValueMaxPresValue
-func NewBACnetConstructedDataAnalogValueMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogValueMaxPresValue {
+func NewBACnetConstructedDataAnalogValueMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagReal) *_BACnetConstructedDataAnalogValueMaxPresValue {
 	if maxPresValue == nil {
 		panic("maxPresValue of type BACnetApplicationTagReal for BACnetConstructedDataAnalogValueMaxPresValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataAnalogValueMaxPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaxPresValue:                  maxPresValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

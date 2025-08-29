@@ -90,8 +90,6 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return HVACHumidityParseWithBuffer(context.Background(), io)
 	case "HVACHumidityModeAndFlags":
 		return HVACHumidityModeAndFlagsParseWithBuffer(context.Background(), io)
-	case "CBusConstants":
-		return CBusConstantsParseWithBuffer(context.Background(), io)
 	case "SerialInterfaceAddress":
 		return SerialInterfaceAddressParseWithBuffer(context.Background(), io)
 	case "MeasurementData":

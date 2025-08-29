@@ -61,12 +61,12 @@ var _ BACnetConstructedDataInactiveText = (*_BACnetConstructedDataInactiveText)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInactiveText)(nil)
 
 // NewBACnetConstructedDataInactiveText factory function for _BACnetConstructedDataInactiveText
-func NewBACnetConstructedDataInactiveText(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inactiveText BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInactiveText {
+func NewBACnetConstructedDataInactiveText(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inactiveText BACnetApplicationTagCharacterString) *_BACnetConstructedDataInactiveText {
 	if inactiveText == nil {
 		panic("inactiveText of type BACnetApplicationTagCharacterString for BACnetConstructedDataInactiveText must not be nil")
 	}
 	_result := &_BACnetConstructedDataInactiveText{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		InactiveText:                  inactiveText,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

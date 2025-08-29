@@ -52,8 +52,6 @@ func (m ModbusParserHelper) Parse(typeName string, arguments []string, io utils.
 		return ModbusPDUReadFileRecordResponseItemParseWithBuffer(context.Background(), io)
 	case "ModbusDeviceInformationObject":
 		return ModbusDeviceInformationObjectParseWithBuffer(context.Background(), io)
-	case "ModbusConstants":
-		return ModbusConstantsParseWithBuffer(context.Background(), io)
 	case "ModbusPDUWriteFileRecordResponseItem":
 		return ModbusPDUWriteFileRecordResponseItemParseWithBuffer(context.Background(), io)
 	case "ModbusPDU":

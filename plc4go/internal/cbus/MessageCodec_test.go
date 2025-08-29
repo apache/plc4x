@@ -68,11 +68,7 @@ func TestMessageCodec_Send(t *testing.T) {
 						readWriteModel.ConfirmationType_CHECKSUM_FAILURE,
 					),
 					nil,
-					nil,
-					nil,
 				),
-				nil,
-				nil,
 			)},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
@@ -157,9 +153,8 @@ func TestMessageCodec_Receive(t *testing.T) {
 			},
 			want: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewServerErrorReply(
-					33, cbusOptions, requestContext,
+					33,
 				),
-				requestContext, cbusOptions,
 			),
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
@@ -248,9 +243,8 @@ func TestMessageCodec_Receive(t *testing.T) {
 			},
 			want: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewServerErrorReply(
-					33, cbusOptions, requestContext,
+					33,
 				),
-				requestContext, cbusOptions,
 			),
 			wantErr: assert.NoError,
 		},
@@ -274,16 +268,14 @@ func TestMessageCodec_Receive(t *testing.T) {
 					readWriteModel.RequestType_DIRECT_COMMAND,
 					readWriteModel.NewRequestTermination(),
 					readWriteModel.NewCALDataRecall(
+						nil,
 						readWriteModel.CALCommandTypeContainer_CALCommandRecall,
 						nil,
 						readWriteModel.Parameter_UNKNOWN_33,
 						1,
-						nil,
 					),
 					nil,
-					cbusOptions,
 				),
-				requestContext, cbusOptions,
 			),
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
@@ -330,11 +322,14 @@ func TestMessageCodec_Receive(t *testing.T) {
 					56,
 					readWriteModel.NewReplyEncodedReply(
 						56,
+						cbusOptions,
 						readWriteModel.NewEncodedReplyCALReply(
+							requestContext,
 							134,
 							readWriteModel.NewCALReplyLong(
 								134,
 								readWriteModel.NewCALDataStatusExtended(
+									requestContext,
 									249,
 									nil,
 									64,
@@ -475,7 +470,6 @@ func TestMessageCodec_Receive(t *testing.T) {
 										),
 									},
 									nil,
-									requestContext,
 								),
 								262656,
 								readWriteModel.NewUnitAddress(4),
@@ -483,21 +477,12 @@ func TestMessageCodec_Receive(t *testing.T) {
 								readWriteModel.NewSerialInterfaceAddress(2),
 								utils.ToPtr(byte(0)),
 								nil,
-								cbusOptions,
-								requestContext,
 							),
-							cbusOptions,
-							requestContext,
 						),
 						nil,
-						cbusOptions,
-						requestContext,
 					),
 					readWriteModel.NewResponseTermination(),
-					cbusOptions,
-					requestContext,
 				),
-				requestContext, cbusOptions,
 			),
 			wantErr: assert.NoError,
 		},
@@ -531,7 +516,9 @@ func TestMessageCodec_Receive(t *testing.T) {
 					48,
 					readWriteModel.NewReplyEncodedReply(
 						48,
+						cbusOptions,
 						readWriteModel.NewMonitoredSALReply(
+							requestContext,
 							5,
 							readWriteModel.NewMonitoredSALLongFormSmartMode(
 								5,
@@ -560,20 +547,12 @@ func TestMessageCodec_Receive(t *testing.T) {
 										4,
 									),
 								),
-								cbusOptions,
 							),
-							cbusOptions,
-							requestContext,
 						),
 						nil,
-						cbusOptions,
-						requestContext,
 					),
 					readWriteModel.NewResponseTermination(),
-					cbusOptions,
-					requestContext,
 				),
-				requestContext, cbusOptions,
 			),
 			wantErr: assert.NoError,
 		},
@@ -782,7 +761,9 @@ func Test_extractMMIAndSAL(t *testing.T) {
 						0,
 						readWriteModel.NewReplyEncodedReply(
 							0,
+							readWriteModel.NewCBusOptionsBuilder().MustBuild(),
 							readWriteModel.NewMonitoredSALReply(
+								readWriteModel.NewRequestContext(false),
 								0,
 								readWriteModel.NewMonitoredSALShortFormBasicMode(
 									0,
@@ -792,21 +773,12 @@ func Test_extractMMIAndSAL(t *testing.T) {
 									nil,
 									readWriteModel.ApplicationIdContainer_RESERVED_00,
 									nil,
-									nil,
 								),
-								nil,
-								nil,
 							),
-							nil,
-							nil,
 							nil,
 						),
 						readWriteModel.NewResponseTermination(),
-						nil,
-						nil,
 					),
-					nil,
-					nil,
 				),
 			},
 			setup: func(t *testing.T, args *args) {

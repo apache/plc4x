@@ -50,10 +50,10 @@ type BACnetConfirmedServiceRequest interface {
 
 // BACnetConfirmedServiceRequestContract provides a set of functions which can be overwritten by a sub struct
 type BACnetConfirmedServiceRequestContract interface {
+	// GetServiceRequestLength returns ServiceRequestLength (property field)
+	GetServiceRequestLength() uint32
 	// GetServiceRequestPayloadLength returns ServiceRequestPayloadLength (virtual field)
 	GetServiceRequestPayloadLength() uint32
-	// GetServiceRequestLength() returns a parser argument
-	GetServiceRequestLength() uint32
 	// IsBACnetConfirmedServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequest()
 	// CreateBuilder creates a BACnetConfirmedServiceRequestBuilder
@@ -74,8 +74,6 @@ type _BACnetConfirmedServiceRequest struct {
 		BACnetConfirmedServiceRequestContract
 		BACnetConfirmedServiceRequestRequirements
 	}
-
-	// Arguments.
 	ServiceRequestLength uint32
 }
 
@@ -95,9 +93,9 @@ func NewBACnetConfirmedServiceRequest(serviceRequestLength uint32) *_BACnetConfi
 type BACnetConfirmedServiceRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields() BACnetConfirmedServiceRequestBuilder
-	// WithArgServiceRequestLength sets a parser argument
-	WithArgServiceRequestLength(uint32) BACnetConfirmedServiceRequestBuilder
+	WithMandatoryFields(serviceRequestLength uint32) BACnetConfirmedServiceRequestBuilder
+	// WithServiceRequestLength adds ServiceRequestLength (property field)
+	WithServiceRequestLength(uint32) BACnetConfirmedServiceRequestBuilder
 	// AsBACnetConfirmedServiceRequestAcknowledgeAlarm converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
 	AsBACnetConfirmedServiceRequestAcknowledgeAlarm() BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
 	// AsBACnetConfirmedServiceRequestConfirmedCOVNotification converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
@@ -193,11 +191,11 @@ type _BACnetConfirmedServiceRequestBuilder struct {
 
 var _ (BACnetConfirmedServiceRequestBuilder) = (*_BACnetConfirmedServiceRequestBuilder)(nil)
 
-func (b *_BACnetConfirmedServiceRequestBuilder) WithMandatoryFields() BACnetConfirmedServiceRequestBuilder {
-	return b
+func (b *_BACnetConfirmedServiceRequestBuilder) WithMandatoryFields(serviceRequestLength uint32) BACnetConfirmedServiceRequestBuilder {
+	return b.WithServiceRequestLength(serviceRequestLength)
 }
 
-func (b *_BACnetConfirmedServiceRequestBuilder) WithArgServiceRequestLength(serviceRequestLength uint32) BACnetConfirmedServiceRequestBuilder {
+func (b *_BACnetConfirmedServiceRequestBuilder) WithServiceRequestLength(serviceRequestLength uint32) BACnetConfirmedServiceRequestBuilder {
 	b.ServiceRequestLength = serviceRequestLength
 	return b
 }
@@ -582,6 +580,19 @@ func (b *_BACnetConfirmedServiceRequest) CreateBACnetConfirmedServiceRequestBuil
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_BACnetConfirmedServiceRequest) GetServiceRequestLength() uint32 {
+	return m.ServiceRequestLength
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
@@ -646,7 +657,7 @@ func BACnetConfirmedServiceRequestParseWithBufferProducer[T BACnetConfirmedServi
 }
 
 func BACnetConfirmedServiceRequestParseWithBuffer[T BACnetConfirmedServiceRequest](ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (T, error) {
-	v, err := (&_BACnetConfirmedServiceRequest{ServiceRequestLength: serviceRequestLength}).parse(ctx, readBuffer, serviceRequestLength)
+	v, err := (new(_BACnetConfirmedServiceRequest)).parse(ctx, readBuffer, serviceRequestLength)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -672,6 +683,7 @@ func (m *_BACnetConfirmedServiceRequest) parse(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceChoice' field"))
 	}
+	m.ServiceRequestLength = serviceRequestLength
 
 	serviceRequestPayloadLength, err := ReadVirtualField[uint32](ctx, "serviceRequestPayloadLength", (*uint32)(nil), utils.InlineIf((bool((serviceRequestLength) > (0))), func() any { return uint32((uint32(serviceRequestLength) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32))
 	if err != nil {
@@ -853,16 +865,6 @@ func (pm *_BACnetConfirmedServiceRequest) serializeParent(ctx context.Context, w
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_BACnetConfirmedServiceRequest) GetServiceRequestLength() uint32 {
-	return m.ServiceRequestLength
-}
-
-//
-////
 
 func (m *_BACnetConfirmedServiceRequest) IsBACnetConfirmedServiceRequest() {}
 

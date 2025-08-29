@@ -54,9 +54,9 @@ var _ MPropWriteReq = (*_MPropWriteReq)(nil)
 var _ CEMIRequirements = (*_MPropWriteReq)(nil)
 
 // NewMPropWriteReq factory function for _MPropWriteReq
-func NewMPropWriteReq(size uint16) *_MPropWriteReq {
+func NewMPropWriteReq() *_MPropWriteReq {
 	_result := &_MPropWriteReq{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataVendorName = (*_BACnetConstructedDataVendorName)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVendorName)(nil)
 
 // NewBACnetConstructedDataVendorName factory function for _BACnetConstructedDataVendorName
-func NewBACnetConstructedDataVendorName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vendorName BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVendorName {
+func NewBACnetConstructedDataVendorName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vendorName BACnetApplicationTagCharacterString) *_BACnetConstructedDataVendorName {
 	if vendorName == nil {
 		panic("vendorName of type BACnetApplicationTagCharacterString for BACnetConstructedDataVendorName must not be nil")
 	}
 	_result := &_BACnetConstructedDataVendorName{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		VendorName:                    vendorName,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

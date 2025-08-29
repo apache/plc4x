@@ -73,9 +73,9 @@ var _ APDUSegmentAck = (*_APDUSegmentAck)(nil)
 var _ APDURequirements = (*_APDUSegmentAck)(nil)
 
 // NewAPDUSegmentAck factory function for _APDUSegmentAck
-func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8, apduLength uint16) *_APDUSegmentAck {
+func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8) *_APDUSegmentAck {
 	_result := &_APDUSegmentAck{
-		APDUContract:     NewAPDU(apduLength),
+		APDUContract:     NewAPDU(),
 		NegativeAck:      negativeAck,
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPowerMode = (*_BACnetConstructedDataPowerMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPowerMode)(nil)
 
 // NewBACnetConstructedDataPowerMode factory function for _BACnetConstructedDataPowerMode
-func NewBACnetConstructedDataPowerMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, powerMode BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPowerMode {
+func NewBACnetConstructedDataPowerMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, powerMode BACnetApplicationTagBoolean) *_BACnetConstructedDataPowerMode {
 	if powerMode == nil {
 		panic("powerMode of type BACnetApplicationTagBoolean for BACnetConstructedDataPowerMode must not be nil")
 	}
 	_result := &_BACnetConstructedDataPowerMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PowerMode:                     powerMode,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

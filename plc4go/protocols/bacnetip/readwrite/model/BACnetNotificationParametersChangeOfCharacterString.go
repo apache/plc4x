@@ -71,7 +71,7 @@ var _ BACnetNotificationParametersChangeOfCharacterString = (*_BACnetNotificatio
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersChangeOfCharacterString)(nil)
 
 // NewBACnetNotificationParametersChangeOfCharacterString factory function for _BACnetNotificationParametersChangeOfCharacterString
-func NewBACnetNotificationParametersChangeOfCharacterString(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, changedValue BACnetContextTagCharacterString, statusFlags BACnetStatusFlagsTagged, alarmValue BACnetContextTagCharacterString, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfCharacterString {
+func NewBACnetNotificationParametersChangeOfCharacterString(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, changedValue BACnetContextTagCharacterString, statusFlags BACnetStatusFlagsTagged, alarmValue BACnetContextTagCharacterString, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersChangeOfCharacterString {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfCharacterString must not be nil")
 	}
@@ -88,7 +88,7 @@ func NewBACnetNotificationParametersChangeOfCharacterString(openingTag BACnetOpe
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfCharacterString must not be nil")
 	}
 	_result := &_BACnetNotificationParametersChangeOfCharacterString{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		ChangedValue:                         changedValue,
 		StatusFlags:                          statusFlags,

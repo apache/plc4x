@@ -315,7 +315,7 @@ func S7ParameterParseWithBufferProducer[T S7Parameter](messageType uint8) func(c
 }
 
 func S7ParameterParseWithBuffer[T S7Parameter](ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (T, error) {
-	v, err := (&_S7Parameter{}).parse(ctx, readBuffer, messageType)
+	v, err := (new(_S7Parameter)).parse(ctx, readBuffer, messageType)
 	if err != nil {
 		var zero T
 		return zero, err

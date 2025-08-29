@@ -54,9 +54,9 @@ var _ ApduDataExtDomainAddressWrite = (*_ApduDataExtDomainAddressWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressWrite)(nil)
 
 // NewApduDataExtDomainAddressWrite factory function for _ApduDataExtDomainAddressWrite
-func NewApduDataExtDomainAddressWrite(length uint8) *_ApduDataExtDomainAddressWrite {
+func NewApduDataExtDomainAddressWrite() *_ApduDataExtDomainAddressWrite {
 	_result := &_ApduDataExtDomainAddressWrite{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

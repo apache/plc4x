@@ -59,12 +59,12 @@ var _ ExtensiblePayload = (*_ExtensiblePayload)(nil)
 var _ PayloadRequirements = (*_ExtensiblePayload)(nil)
 
 // NewExtensiblePayload factory function for _ExtensiblePayload
-func NewExtensiblePayload(sequenceHeader SequenceHeader, payload RootExtensionObject, byteCount uint32) *_ExtensiblePayload {
+func NewExtensiblePayload(sequenceHeader SequenceHeader, payload RootExtensionObject) *_ExtensiblePayload {
 	if payload == nil {
 		panic("payload of type RootExtensionObject for ExtensiblePayload must not be nil")
 	}
 	_result := &_ExtensiblePayload{
-		PayloadContract: NewPayload(sequenceHeader, byteCount),
+		PayloadContract: NewPayload(sequenceHeader),
 		Payload:         payload,
 	}
 	_result.PayloadContract.(*_Payload)._SubType = _result

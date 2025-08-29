@@ -57,15 +57,12 @@ type _BACnetCalendarEntryEnclosed struct {
 	OpeningTag    BACnetOpeningTag
 	CalendarEntry BACnetCalendarEntry
 	ClosingTag    BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetCalendarEntryEnclosed = (*_BACnetCalendarEntryEnclosed)(nil)
 
 // NewBACnetCalendarEntryEnclosed factory function for _BACnetCalendarEntryEnclosed
-func NewBACnetCalendarEntryEnclosed(openingTag BACnetOpeningTag, calendarEntry BACnetCalendarEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetCalendarEntryEnclosed {
+func NewBACnetCalendarEntryEnclosed(openingTag BACnetOpeningTag, calendarEntry BACnetCalendarEntry, closingTag BACnetClosingTag) *_BACnetCalendarEntryEnclosed {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetCalendarEntryEnclosed must not be nil")
 	}
@@ -75,7 +72,7 @@ func NewBACnetCalendarEntryEnclosed(openingTag BACnetOpeningTag, calendarEntry B
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetCalendarEntryEnclosed must not be nil")
 	}
-	return &_BACnetCalendarEntryEnclosed{OpeningTag: openingTag, CalendarEntry: calendarEntry, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetCalendarEntryEnclosed{OpeningTag: openingTag, CalendarEntry: calendarEntry, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,8 +97,6 @@ type BACnetCalendarEntryEnclosedBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetCalendarEntryEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetCalendarEntryEnclosedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetCalendarEntryEnclosedBuilder
 	// Build builds the BACnetCalendarEntryEnclosed or returns an error if something is wrong
 	Build() (BACnetCalendarEntryEnclosed, error)
 	// MustBuild does the same as Build but panics on error
@@ -167,11 +162,6 @@ func (b *_BACnetCalendarEntryEnclosedBuilder) WithClosingTagBuilder(builderSuppl
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetCalendarEntryEnclosedBuilder) WithArgTagNumber(tagNumber uint8) BACnetCalendarEntryEnclosedBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -287,7 +277,7 @@ func BACnetCalendarEntryEnclosedParseWithBufferProducer(tagNumber uint8) func(ct
 }
 
 func BACnetCalendarEntryEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetCalendarEntryEnclosed, error) {
-	v, err := (&_BACnetCalendarEntryEnclosed{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetCalendarEntryEnclosed)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -363,16 +353,6 @@ func (m *_BACnetCalendarEntryEnclosed) SerializeWithWriteBuffer(ctx context.Cont
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetCalendarEntryEnclosed) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetCalendarEntryEnclosed) IsBACnetCalendarEntryEnclosed() {}
 
 func (m *_BACnetCalendarEntryEnclosed) DeepCopy() any {
@@ -387,7 +367,6 @@ func (m *_BACnetCalendarEntryEnclosed) deepCopy() *_BACnetCalendarEntryEnclosed 
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopy[BACnetCalendarEntry](m.CalendarEntry),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetCalendarEntryEnclosedCopy
 }

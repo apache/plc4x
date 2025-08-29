@@ -61,12 +61,12 @@ var _ BACnetConstructedDataStatusFlags = (*_BACnetConstructedDataStatusFlags)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStatusFlags)(nil)
 
 // NewBACnetConstructedDataStatusFlags factory function for _BACnetConstructedDataStatusFlags
-func NewBACnetConstructedDataStatusFlags(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, statusFlags BACnetStatusFlagsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStatusFlags {
+func NewBACnetConstructedDataStatusFlags(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, statusFlags BACnetStatusFlagsTagged) *_BACnetConstructedDataStatusFlags {
 	if statusFlags == nil {
 		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetConstructedDataStatusFlags must not be nil")
 	}
 	_result := &_BACnetConstructedDataStatusFlags{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		StatusFlags:                   statusFlags,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

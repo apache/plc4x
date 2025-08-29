@@ -65,7 +65,7 @@ var _ BACnetConfirmedServiceRequestReadProperty = (*_BACnetConfirmedServiceReque
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestReadProperty)(nil)
 
 // NewBACnetConfirmedServiceRequestReadProperty factory function for _BACnetConfirmedServiceRequestReadProperty
-func NewBACnetConfirmedServiceRequestReadProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReadProperty {
+func NewBACnetConfirmedServiceRequestReadProperty(serviceRequestLength uint32, objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger) *_BACnetConfirmedServiceRequestReadProperty {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestReadProperty must not be nil")
 	}

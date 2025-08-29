@@ -54,9 +54,9 @@ var _ ApduDataAdcRead = (*_ApduDataAdcRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataAdcRead)(nil)
 
 // NewApduDataAdcRead factory function for _ApduDataAdcRead
-func NewApduDataAdcRead(dataLength uint8) *_ApduDataAdcRead {
+func NewApduDataAdcRead() *_ApduDataAdcRead {
 	_result := &_ApduDataAdcRead{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result

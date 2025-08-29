@@ -62,12 +62,12 @@ var _ NLMUpdateKeyDistributionKey = (*_NLMUpdateKeyDistributionKey)(nil)
 var _ NLMRequirements = (*_NLMUpdateKeyDistributionKey)(nil)
 
 // NewNLMUpdateKeyDistributionKey factory function for _NLMUpdateKeyDistributionKey
-func NewNLMUpdateKeyDistributionKey(keyRevision byte, key NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMUpdateKeyDistributionKey {
+func NewNLMUpdateKeyDistributionKey(keyRevision byte, key NLMUpdateKeyUpdateKeyEntry) *_NLMUpdateKeyDistributionKey {
 	if key == nil {
 		panic("key of type NLMUpdateKeyUpdateKeyEntry for NLMUpdateKeyDistributionKey must not be nil")
 	}
 	_result := &_NLMUpdateKeyDistributionKey{
-		NLMContract: NewNLM(apduLength),
+		NLMContract: NewNLM(),
 		KeyRevision: keyRevision,
 		Key:         key,
 	}

@@ -41,7 +41,7 @@ func NewDisconnectConnectionToNetwork(args Args, kwArgs KWArgs, options ...Optio
 	}
 	ApplyAppliers(options, i)
 	options = AddLeafTypeIfAbundant(options, i)
-	options = AddNLMIfAbundant(options, model.NewNLMDisconnectConnectionToNetwork(i.dctnDNET, 0))
+	options = AddNLMIfAbundant(options, model.NewNLMDisconnectConnectionToNetwork(i.dctnDNET))
 	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")

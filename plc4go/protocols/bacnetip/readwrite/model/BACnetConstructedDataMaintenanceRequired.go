@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMaintenanceRequired = (*_BACnetConstructedDataMainten
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaintenanceRequired)(nil)
 
 // NewBACnetConstructedDataMaintenanceRequired factory function for _BACnetConstructedDataMaintenanceRequired
-func NewBACnetConstructedDataMaintenanceRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maintenanceRequired BACnetMaintenanceTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaintenanceRequired {
+func NewBACnetConstructedDataMaintenanceRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maintenanceRequired BACnetMaintenanceTagged) *_BACnetConstructedDataMaintenanceRequired {
 	if maintenanceRequired == nil {
 		panic("maintenanceRequired of type BACnetMaintenanceTagged for BACnetConstructedDataMaintenanceRequired must not be nil")
 	}
 	_result := &_BACnetConstructedDataMaintenanceRequired{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaintenanceRequired:           maintenanceRequired,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

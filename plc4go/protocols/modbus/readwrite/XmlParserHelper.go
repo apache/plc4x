@@ -60,8 +60,6 @@ func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserAr
 		return ModbusPDUReadFileRecordResponseItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusDeviceInformationObject":
 		return ModbusDeviceInformationObjectParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ModbusConstants":
-		return ModbusConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusPDUWriteFileRecordResponseItem":
 		return ModbusPDUWriteFileRecordResponseItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusPDU":

@@ -54,9 +54,9 @@ var _ FirmataCommandSystemReset = (*_FirmataCommandSystemReset)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSystemReset)(nil)
 
 // NewFirmataCommandSystemReset factory function for _FirmataCommandSystemReset
-func NewFirmataCommandSystemReset(response bool) *_FirmataCommandSystemReset {
+func NewFirmataCommandSystemReset() *_FirmataCommandSystemReset {
 	_result := &_FirmataCommandSystemReset{
-		FirmataCommandContract: NewFirmataCommand(response),
+		FirmataCommandContract: NewFirmataCommand(),
 	}
 	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
 	return _result

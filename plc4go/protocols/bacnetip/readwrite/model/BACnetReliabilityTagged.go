@@ -59,20 +59,16 @@ type _BACnetReliabilityTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetReliability
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetReliabilityTagged = (*_BACnetReliabilityTagged)(nil)
 
 // NewBACnetReliabilityTagged factory function for _BACnetReliabilityTagged
-func NewBACnetReliabilityTagged(header BACnetTagHeader, value BACnetReliability, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetReliabilityTagged {
+func NewBACnetReliabilityTagged(header BACnetTagHeader, value BACnetReliability, proprietaryValue uint32) *_BACnetReliabilityTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetReliabilityTagged must not be nil")
 	}
-	return &_BACnetReliabilityTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetReliabilityTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetReliabilityTaggedBuilder interface {
 	WithValue(BACnetReliability) BACnetReliabilityTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetReliabilityTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetReliabilityTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetReliabilityTaggedBuilder
 	// Build builds the BACnetReliabilityTagged or returns an error if something is wrong
 	Build() (BACnetReliabilityTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetReliabilityTaggedBuilder) WithValue(value BACnetReliability) BAC
 
 func (b *_BACnetReliabilityTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetReliabilityTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetReliabilityTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetReliabilityTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetReliabilityTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetReliabilityTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetReliabilityTaggedParseWithBufferProducer(tagNumber uint8, tagClass Ta
 }
 
 func BACnetReliabilityTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetReliabilityTagged, error) {
-	v, err := (&_BACnetReliabilityTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetReliabilityTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetReliabilityTagged) SerializeWithWriteBuffer(ctx context.Context,
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetReliabilityTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetReliabilityTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetReliabilityTagged) IsBACnetReliabilityTagged() {}
 
 func (m *_BACnetReliabilityTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetReliabilityTagged) deepCopy() *_BACnetReliabilityTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetReliabilityTaggedCopy
 }

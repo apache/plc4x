@@ -55,16 +55,13 @@ type UnknownMessage interface {
 type _UnknownMessage struct {
 	KnxNetIpMessageContract
 	UnknownData []byte
-
-	// Arguments.
-	TotalLength uint16
 }
 
 var _ UnknownMessage = (*_UnknownMessage)(nil)
 var _ KnxNetIpMessageRequirements = (*_UnknownMessage)(nil)
 
 // NewUnknownMessage factory function for _UnknownMessage
-func NewUnknownMessage(unknownData []byte, totalLength uint16) *_UnknownMessage {
+func NewUnknownMessage(unknownData []byte) *_UnknownMessage {
 	_result := &_UnknownMessage{
 		KnxNetIpMessageContract: NewKnxNetIpMessage(),
 		UnknownData:             unknownData,
@@ -85,8 +82,6 @@ type UnknownMessageBuilder interface {
 	WithMandatoryFields(unknownData []byte) UnknownMessageBuilder
 	// WithUnknownData adds UnknownData (property field)
 	WithUnknownData(...byte) UnknownMessageBuilder
-	// WithArgTotalLength sets a parser argument
-	WithArgTotalLength(uint16) UnknownMessageBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() KnxNetIpMessageBuilder
 	// Build builds the UnknownMessage or returns an error if something is wrong
@@ -121,11 +116,6 @@ func (b *_UnknownMessageBuilder) WithMandatoryFields(unknownData []byte) Unknown
 
 func (b *_UnknownMessageBuilder) WithUnknownData(unknownData ...byte) UnknownMessageBuilder {
 	b.UnknownData = unknownData
-	return b
-}
-
-func (b *_UnknownMessageBuilder) WithArgTotalLength(totalLength uint16) UnknownMessageBuilder {
-	b.TotalLength = totalLength
 	return b
 }
 
@@ -292,16 +282,6 @@ func (m *_UnknownMessage) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	return m.KnxNetIpMessageContract.(*_KnxNetIpMessage).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_UnknownMessage) GetTotalLength() uint16 {
-	return m.TotalLength
-}
-
-//
-////
-
 func (m *_UnknownMessage) IsUnknownMessage() {}
 
 func (m *_UnknownMessage) DeepCopy() any {
@@ -315,7 +295,6 @@ func (m *_UnknownMessage) deepCopy() *_UnknownMessage {
 	_UnknownMessageCopy := &_UnknownMessage{
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.UnknownData),
-		m.TotalLength,
 	}
 	_UnknownMessageCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _UnknownMessageCopy

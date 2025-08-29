@@ -39,6 +39,8 @@ type BACnetTagPayloadBoolean interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
+	// GetActualLength returns ActualLength (property field)
+	GetActualLength() uint32
 	// GetValue returns Value (virtual field)
 	GetValue() bool
 	// GetIsTrue returns IsTrue (virtual field)
@@ -53,8 +55,6 @@ type BACnetTagPayloadBoolean interface {
 
 // _BACnetTagPayloadBoolean is the data-structure of this message
 type _BACnetTagPayloadBoolean struct {
-
-	// Arguments.
 	ActualLength uint32
 }
 
@@ -74,9 +74,9 @@ func NewBACnetTagPayloadBoolean(actualLength uint32) *_BACnetTagPayloadBoolean {
 type BACnetTagPayloadBooleanBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields() BACnetTagPayloadBooleanBuilder
-	// WithArgActualLength sets a parser argument
-	WithArgActualLength(uint32) BACnetTagPayloadBooleanBuilder
+	WithMandatoryFields(actualLength uint32) BACnetTagPayloadBooleanBuilder
+	// WithActualLength adds ActualLength (property field)
+	WithActualLength(uint32) BACnetTagPayloadBooleanBuilder
 	// Build builds the BACnetTagPayloadBoolean or returns an error if something is wrong
 	Build() (BACnetTagPayloadBoolean, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,11 +96,11 @@ type _BACnetTagPayloadBooleanBuilder struct {
 
 var _ (BACnetTagPayloadBooleanBuilder) = (*_BACnetTagPayloadBooleanBuilder)(nil)
 
-func (b *_BACnetTagPayloadBooleanBuilder) WithMandatoryFields() BACnetTagPayloadBooleanBuilder {
-	return b
+func (b *_BACnetTagPayloadBooleanBuilder) WithMandatoryFields(actualLength uint32) BACnetTagPayloadBooleanBuilder {
+	return b.WithActualLength(actualLength)
 }
 
-func (b *_BACnetTagPayloadBooleanBuilder) WithArgActualLength(actualLength uint32) BACnetTagPayloadBooleanBuilder {
+func (b *_BACnetTagPayloadBooleanBuilder) WithActualLength(actualLength uint32) BACnetTagPayloadBooleanBuilder {
 	b.ActualLength = actualLength
 	return b
 }
@@ -141,6 +141,19 @@ func (b *_BACnetTagPayloadBoolean) CreateBACnetTagPayloadBooleanBuilder() BACnet
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_BACnetTagPayloadBoolean) GetActualLength() uint32 {
+	return m.ActualLength
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
@@ -211,7 +224,7 @@ func BACnetTagPayloadBooleanParseWithBufferProducer(actualLength uint32) func(ct
 }
 
 func BACnetTagPayloadBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadBoolean, error) {
-	v, err := (&_BACnetTagPayloadBoolean{ActualLength: actualLength}).parse(ctx, readBuffer, actualLength)
+	v, err := (new(_BACnetTagPayloadBoolean)).parse(ctx, readBuffer, actualLength)
 	if err != nil {
 		return nil, err
 	}
@@ -226,6 +239,7 @@ func (m *_BACnetTagPayloadBoolean) parse(ctx context.Context, readBuffer utils.R
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	m.ActualLength = actualLength
 
 	value, err := ReadVirtualField[bool](ctx, "value", (*bool)(nil), bool((actualLength) == (1)))
 	if err != nil {
@@ -292,16 +306,6 @@ func (m *_BACnetTagPayloadBoolean) SerializeWithWriteBuffer(ctx context.Context,
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_BACnetTagPayloadBoolean) GetActualLength() uint32 {
-	return m.ActualLength
-}
-
-//
-////
 
 func (m *_BACnetTagPayloadBoolean) IsBACnetTagPayloadBoolean() {}
 

@@ -234,7 +234,7 @@ func BACnetVMACEntryParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func BACnetVMACEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) {
-	v, err := (&_BACnetVMACEntry{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetVMACEntry)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

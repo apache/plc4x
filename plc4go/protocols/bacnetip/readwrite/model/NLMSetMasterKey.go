@@ -59,12 +59,12 @@ var _ NLMSetMasterKey = (*_NLMSetMasterKey)(nil)
 var _ NLMRequirements = (*_NLMSetMasterKey)(nil)
 
 // NewNLMSetMasterKey factory function for _NLMSetMasterKey
-func NewNLMSetMasterKey(key NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMSetMasterKey {
+func NewNLMSetMasterKey(key NLMUpdateKeyUpdateKeyEntry) *_NLMSetMasterKey {
 	if key == nil {
 		panic("key of type NLMUpdateKeyUpdateKeyEntry for NLMSetMasterKey must not be nil")
 	}
 	_result := &_NLMSetMasterKey{
-		NLMContract: NewNLM(apduLength),
+		NLMContract: NewNLM(),
 		Key:         key,
 	}
 	_result.NLMContract.(*_NLM)._SubType = _result

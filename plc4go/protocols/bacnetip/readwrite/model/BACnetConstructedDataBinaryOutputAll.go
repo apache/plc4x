@@ -54,9 +54,9 @@ var _ BACnetConstructedDataBinaryOutputAll = (*_BACnetConstructedDataBinaryOutpu
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryOutputAll)(nil)
 
 // NewBACnetConstructedDataBinaryOutputAll factory function for _BACnetConstructedDataBinaryOutputAll
-func NewBACnetConstructedDataBinaryOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputAll {
+func NewBACnetConstructedDataBinaryOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataBinaryOutputAll {
 	_result := &_BACnetConstructedDataBinaryOutputAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

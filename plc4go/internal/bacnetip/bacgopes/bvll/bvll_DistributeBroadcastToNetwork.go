@@ -49,7 +49,7 @@ func NewDistributeBroadcastToNetwork(args Args, kwArgs KWArgs, options ...Option
 	return d, nil
 }
 
-func (d *DistributeBroadcastToNetwork) produceInnerNPDU(inNpdu readWriteModel.NPDU) (npdu readWriteModel.NPDU, bvlcPayloadLength uint16) {
+func (d *DistributeBroadcastToNetwork) produceInnerNPDU(inNpdu readWriteModel.NPDU) (npdu readWriteModel.NPDU) {
 	npdu = inNpdu
 	return
 }

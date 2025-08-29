@@ -57,15 +57,12 @@ type _ErrorEnclosed struct {
 	OpeningTag BACnetOpeningTag
 	Error      Error
 	ClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ ErrorEnclosed = (*_ErrorEnclosed)(nil)
 
 // NewErrorEnclosed factory function for _ErrorEnclosed
-func NewErrorEnclosed(openingTag BACnetOpeningTag, error Error, closingTag BACnetClosingTag, tagNumber uint8) *_ErrorEnclosed {
+func NewErrorEnclosed(openingTag BACnetOpeningTag, error Error, closingTag BACnetClosingTag) *_ErrorEnclosed {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for ErrorEnclosed must not be nil")
 	}
@@ -75,7 +72,7 @@ func NewErrorEnclosed(openingTag BACnetOpeningTag, error Error, closingTag BACne
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for ErrorEnclosed must not be nil")
 	}
-	return &_ErrorEnclosed{OpeningTag: openingTag, Error: error, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_ErrorEnclosed{OpeningTag: openingTag, Error: error, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,8 +97,6 @@ type ErrorEnclosedBuilder interface {
 	WithClosingTag(BACnetClosingTag) ErrorEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) ErrorEnclosedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) ErrorEnclosedBuilder
 	// Build builds the ErrorEnclosed or returns an error if something is wrong
 	Build() (ErrorEnclosed, error)
 	// MustBuild does the same as Build but panics on error
@@ -167,11 +162,6 @@ func (b *_ErrorEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACne
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_ErrorEnclosedBuilder) WithArgTagNumber(tagNumber uint8) ErrorEnclosedBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -287,7 +277,7 @@ func ErrorEnclosedParseWithBufferProducer(tagNumber uint8) func(ctx context.Cont
 }
 
 func ErrorEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEnclosed, error) {
-	v, err := (&_ErrorEnclosed{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_ErrorEnclosed)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -363,16 +353,6 @@ func (m *_ErrorEnclosed) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_ErrorEnclosed) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_ErrorEnclosed) IsErrorEnclosed() {}
 
 func (m *_ErrorEnclosed) DeepCopy() any {
@@ -387,7 +367,6 @@ func (m *_ErrorEnclosed) deepCopy() *_ErrorEnclosed {
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopy[Error](m.Error),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _ErrorEnclosedCopy
 }

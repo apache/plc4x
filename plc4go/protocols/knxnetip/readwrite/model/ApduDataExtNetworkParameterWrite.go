@@ -54,9 +54,9 @@ var _ ApduDataExtNetworkParameterWrite = (*_ApduDataExtNetworkParameterWrite)(ni
 var _ ApduDataExtRequirements = (*_ApduDataExtNetworkParameterWrite)(nil)
 
 // NewApduDataExtNetworkParameterWrite factory function for _ApduDataExtNetworkParameterWrite
-func NewApduDataExtNetworkParameterWrite(length uint8) *_ApduDataExtNetworkParameterWrite {
+func NewApduDataExtNetworkParameterWrite() *_ApduDataExtNetworkParameterWrite {
 	_result := &_ApduDataExtNetworkParameterWrite{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

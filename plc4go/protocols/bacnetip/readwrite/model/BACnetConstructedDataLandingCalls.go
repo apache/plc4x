@@ -59,9 +59,9 @@ var _ BACnetConstructedDataLandingCalls = (*_BACnetConstructedDataLandingCalls)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLandingCalls)(nil)
 
 // NewBACnetConstructedDataLandingCalls factory function for _BACnetConstructedDataLandingCalls
-func NewBACnetConstructedDataLandingCalls(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, landingCallStatus []BACnetLandingCallStatus, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingCalls {
+func NewBACnetConstructedDataLandingCalls(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, landingCallStatus []BACnetLandingCallStatus) *_BACnetConstructedDataLandingCalls {
 	_result := &_BACnetConstructedDataLandingCalls{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LandingCallStatus:             landingCallStatus,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

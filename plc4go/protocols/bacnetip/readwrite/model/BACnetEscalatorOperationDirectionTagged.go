@@ -59,20 +59,16 @@ type _BACnetEscalatorOperationDirectionTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetEscalatorOperationDirection
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetEscalatorOperationDirectionTagged = (*_BACnetEscalatorOperationDirectionTagged)(nil)
 
 // NewBACnetEscalatorOperationDirectionTagged factory function for _BACnetEscalatorOperationDirectionTagged
-func NewBACnetEscalatorOperationDirectionTagged(header BACnetTagHeader, value BACnetEscalatorOperationDirection, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEscalatorOperationDirectionTagged {
+func NewBACnetEscalatorOperationDirectionTagged(header BACnetTagHeader, value BACnetEscalatorOperationDirection, proprietaryValue uint32) *_BACnetEscalatorOperationDirectionTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetEscalatorOperationDirectionTagged must not be nil")
 	}
-	return &_BACnetEscalatorOperationDirectionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetEscalatorOperationDirectionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetEscalatorOperationDirectionTaggedBuilder interface {
 	WithValue(BACnetEscalatorOperationDirection) BACnetEscalatorOperationDirectionTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetEscalatorOperationDirectionTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetEscalatorOperationDirectionTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetEscalatorOperationDirectionTaggedBuilder
 	// Build builds the BACnetEscalatorOperationDirectionTagged or returns an error if something is wrong
 	Build() (BACnetEscalatorOperationDirectionTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetEscalatorOperationDirectionTaggedBuilder) WithValue(value BACnet
 
 func (b *_BACnetEscalatorOperationDirectionTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetEscalatorOperationDirectionTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetEscalatorOperationDirectionTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetEscalatorOperationDirectionTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetEscalatorOperationDirectionTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetEscalatorOperationDirectionTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetEscalatorOperationDirectionTaggedParseWithBufferProducer(tagNumber ui
 }
 
 func BACnetEscalatorOperationDirectionTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetEscalatorOperationDirectionTagged, error) {
-	v, err := (&_BACnetEscalatorOperationDirectionTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetEscalatorOperationDirectionTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetEscalatorOperationDirectionTagged) SerializeWithWriteBuffer(ctx 
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetEscalatorOperationDirectionTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetEscalatorOperationDirectionTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetEscalatorOperationDirectionTagged) IsBACnetEscalatorOperationDirectionTagged() {}
 
 func (m *_BACnetEscalatorOperationDirectionTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetEscalatorOperationDirectionTagged) deepCopy() *_BACnetEscalatorO
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetEscalatorOperationDirectionTaggedCopy
 }

@@ -59,12 +59,12 @@ var _ BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement = 
 var _ BACnetEventParameterChangeOfValueCivCriteriaRequirements = (*_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement)(nil)
 
 // NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement factory function for _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
-func NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, referencedPropertyIncrement BACnetContextTagReal, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
+func NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, referencedPropertyIncrement BACnetContextTagReal) *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
 	if referencedPropertyIncrement == nil {
 		panic("referencedPropertyIncrement of type BACnetContextTagReal for BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement must not be nil")
 	}
 	_result := &_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement{
-		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag),
 		ReferencedPropertyIncrement:                          referencedPropertyIncrement,
 	}
 	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result

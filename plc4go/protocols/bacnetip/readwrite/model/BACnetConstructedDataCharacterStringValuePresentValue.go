@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCharacterStringValuePresentValue = (*_BACnetConstruct
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCharacterStringValuePresentValue)(nil)
 
 // NewBACnetConstructedDataCharacterStringValuePresentValue factory function for _BACnetConstructedDataCharacterStringValuePresentValue
-func NewBACnetConstructedDataCharacterStringValuePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCharacterStringValuePresentValue {
+func NewBACnetConstructedDataCharacterStringValuePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagCharacterString) *_BACnetConstructedDataCharacterStringValuePresentValue {
 	if presentValue == nil {
 		panic("presentValue of type BACnetApplicationTagCharacterString for BACnetConstructedDataCharacterStringValuePresentValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataCharacterStringValuePresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PresentValue:                  presentValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

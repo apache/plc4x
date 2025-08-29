@@ -59,12 +59,12 @@ var _ ParameterValueInterfaceOptions1PowerUpSettings = (*_ParameterValueInterfac
 var _ ParameterValueRequirements = (*_ParameterValueInterfaceOptions1PowerUpSettings)(nil)
 
 // NewParameterValueInterfaceOptions1PowerUpSettings factory function for _ParameterValueInterfaceOptions1PowerUpSettings
-func NewParameterValueInterfaceOptions1PowerUpSettings(value InterfaceOptions1PowerUpSettings, numBytes uint8) *_ParameterValueInterfaceOptions1PowerUpSettings {
+func NewParameterValueInterfaceOptions1PowerUpSettings(value InterfaceOptions1PowerUpSettings) *_ParameterValueInterfaceOptions1PowerUpSettings {
 	if value == nil {
 		panic("value of type InterfaceOptions1PowerUpSettings for ParameterValueInterfaceOptions1PowerUpSettings must not be nil")
 	}
 	_result := &_ParameterValueInterfaceOptions1PowerUpSettings{
-		ParameterValueContract: NewParameterValue(numBytes),
+		ParameterValueContract: NewParameterValue(),
 		Value:                  value,
 	}
 	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result

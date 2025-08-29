@@ -55,16 +55,13 @@ type CIPEncapsulationReadResponse interface {
 type _CIPEncapsulationReadResponse struct {
 	CIPEncapsulationPacketContract
 	Response DF1ResponseMessage
-
-	// Arguments.
-	PacketLen uint16
 }
 
 var _ CIPEncapsulationReadResponse = (*_CIPEncapsulationReadResponse)(nil)
 var _ CIPEncapsulationPacketRequirements = (*_CIPEncapsulationReadResponse)(nil)
 
 // NewCIPEncapsulationReadResponse factory function for _CIPEncapsulationReadResponse
-func NewCIPEncapsulationReadResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32, response DF1ResponseMessage, packetLen uint16) *_CIPEncapsulationReadResponse {
+func NewCIPEncapsulationReadResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32, response DF1ResponseMessage) *_CIPEncapsulationReadResponse {
 	if response == nil {
 		panic("response of type DF1ResponseMessage for CIPEncapsulationReadResponse must not be nil")
 	}
@@ -90,8 +87,6 @@ type CIPEncapsulationReadResponseBuilder interface {
 	WithResponse(DF1ResponseMessage) CIPEncapsulationReadResponseBuilder
 	// WithResponseBuilder adds Response (property field) which is build by the builder
 	WithResponseBuilder(func(DF1ResponseMessageBuilder) DF1ResponseMessageBuilder) CIPEncapsulationReadResponseBuilder
-	// WithArgPacketLen sets a parser argument
-	WithArgPacketLen(uint16) CIPEncapsulationReadResponseBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() CIPEncapsulationPacketBuilder
 	// Build builds the CIPEncapsulationReadResponse or returns an error if something is wrong
@@ -136,11 +131,6 @@ func (b *_CIPEncapsulationReadResponseBuilder) WithResponseBuilder(builderSuppli
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DF1ResponseMessageBuilder failed"))
 	}
-	return b
-}
-
-func (b *_CIPEncapsulationReadResponseBuilder) WithArgPacketLen(packetLen uint16) CIPEncapsulationReadResponseBuilder {
-	b.PacketLen = packetLen
 	return b
 }
 
@@ -308,16 +298,6 @@ func (m *_CIPEncapsulationReadResponse) SerializeWithWriteBuffer(ctx context.Con
 	return m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_CIPEncapsulationReadResponse) GetPacketLen() uint16 {
-	return m.PacketLen
-}
-
-//
-////
-
 func (m *_CIPEncapsulationReadResponse) IsCIPEncapsulationReadResponse() {}
 
 func (m *_CIPEncapsulationReadResponse) DeepCopy() any {
@@ -331,7 +311,6 @@ func (m *_CIPEncapsulationReadResponse) deepCopy() *_CIPEncapsulationReadRespons
 	_CIPEncapsulationReadResponseCopy := &_CIPEncapsulationReadResponse{
 		m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).deepCopy(),
 		utils.DeepCopy[DF1ResponseMessage](m.Response),
-		m.PacketLen,
 	}
 	_CIPEncapsulationReadResponseCopy.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = m
 	return _CIPEncapsulationReadResponseCopy

@@ -64,9 +64,9 @@ var _ BACnetConstructedDataPositiveAccessRules = (*_BACnetConstructedDataPositiv
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveAccessRules)(nil)
 
 // NewBACnetConstructedDataPositiveAccessRules factory function for _BACnetConstructedDataPositiveAccessRules
-func NewBACnetConstructedDataPositiveAccessRules(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, positiveAccessRules []BACnetAccessRule, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveAccessRules {
+func NewBACnetConstructedDataPositiveAccessRules(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, positiveAccessRules []BACnetAccessRule) *_BACnetConstructedDataPositiveAccessRules {
 	_result := &_BACnetConstructedDataPositiveAccessRules{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		PositiveAccessRules:           positiveAccessRules,
 	}

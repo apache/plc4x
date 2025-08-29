@@ -383,7 +383,7 @@ func BACnetServiceAckAtomicReadFileStreamOrRecordParseWithBufferProducer[T BACne
 }
 
 func BACnetServiceAckAtomicReadFileStreamOrRecordParseWithBuffer[T BACnetServiceAckAtomicReadFileStreamOrRecord](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetServiceAckAtomicReadFileStreamOrRecord{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetServiceAckAtomicReadFileStreamOrRecord)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

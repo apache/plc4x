@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDatabaseRevision = (*_BACnetConstructedDataDatabaseRe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDatabaseRevision)(nil)
 
 // NewBACnetConstructedDataDatabaseRevision factory function for _BACnetConstructedDataDatabaseRevision
-func NewBACnetConstructedDataDatabaseRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, databaseRevision BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDatabaseRevision {
+func NewBACnetConstructedDataDatabaseRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, databaseRevision BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDatabaseRevision {
 	if databaseRevision == nil {
 		panic("databaseRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDatabaseRevision must not be nil")
 	}
 	_result := &_BACnetConstructedDataDatabaseRevision{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DatabaseRevision:              databaseRevision,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

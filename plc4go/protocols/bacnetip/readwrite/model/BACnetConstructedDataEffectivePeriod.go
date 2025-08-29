@@ -61,12 +61,12 @@ var _ BACnetConstructedDataEffectivePeriod = (*_BACnetConstructedDataEffectivePe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEffectivePeriod)(nil)
 
 // NewBACnetConstructedDataEffectivePeriod factory function for _BACnetConstructedDataEffectivePeriod
-func NewBACnetConstructedDataEffectivePeriod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateRange BACnetDateRange, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEffectivePeriod {
+func NewBACnetConstructedDataEffectivePeriod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateRange BACnetDateRange) *_BACnetConstructedDataEffectivePeriod {
 	if dateRange == nil {
 		panic("dateRange of type BACnetDateRange for BACnetConstructedDataEffectivePeriod must not be nil")
 	}
 	_result := &_BACnetConstructedDataEffectivePeriod{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DateRange:                     dateRange,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

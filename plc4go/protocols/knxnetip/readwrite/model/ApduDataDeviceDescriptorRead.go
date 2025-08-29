@@ -59,9 +59,9 @@ var _ ApduDataDeviceDescriptorRead = (*_ApduDataDeviceDescriptorRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataDeviceDescriptorRead)(nil)
 
 // NewApduDataDeviceDescriptorRead factory function for _ApduDataDeviceDescriptorRead
-func NewApduDataDeviceDescriptorRead(descriptorType uint8, dataLength uint8) *_ApduDataDeviceDescriptorRead {
+func NewApduDataDeviceDescriptorRead(descriptorType uint8) *_ApduDataDeviceDescriptorRead {
 	_result := &_ApduDataDeviceDescriptorRead{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 		DescriptorType:   descriptorType,
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result

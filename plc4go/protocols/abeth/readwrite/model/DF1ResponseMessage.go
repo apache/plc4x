@@ -58,8 +58,6 @@ type DF1ResponseMessageContract interface {
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)
 	GetTransactionCounter() uint16
-	// GetPayloadLength() returns a parser argument
-	GetPayloadLength() uint16
 	// IsDF1ResponseMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1ResponseMessage()
 	// CreateBuilder creates a DF1ResponseMessageBuilder
@@ -84,9 +82,6 @@ type _DF1ResponseMessage struct {
 	SourceAddress      uint8
 	Status             uint8
 	TransactionCounter uint16
-
-	// Arguments.
-	PayloadLength uint16
 	// Reserved Fields
 	reservedField0 *uint8
 	reservedField1 *uint8
@@ -95,8 +90,8 @@ type _DF1ResponseMessage struct {
 var _ DF1ResponseMessageContract = (*_DF1ResponseMessage)(nil)
 
 // NewDF1ResponseMessage factory function for _DF1ResponseMessage
-func NewDF1ResponseMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *_DF1ResponseMessage {
-	return &_DF1ResponseMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter, PayloadLength: payloadLength}
+func NewDF1ResponseMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *_DF1ResponseMessage {
+	return &_DF1ResponseMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter}
 }
 
 ///////////////////////////////////////////////////////////
@@ -117,8 +112,6 @@ type DF1ResponseMessageBuilder interface {
 	WithStatus(uint8) DF1ResponseMessageBuilder
 	// WithTransactionCounter adds TransactionCounter (property field)
 	WithTransactionCounter(uint16) DF1ResponseMessageBuilder
-	// WithArgPayloadLength sets a parser argument
-	WithArgPayloadLength(uint16) DF1ResponseMessageBuilder
 	// AsDF1CommandResponseMessageProtectedTypedLogicalRead converts this build to a subType of DF1ResponseMessage. It is always possible to return to current builder using Done()
 	AsDF1CommandResponseMessageProtectedTypedLogicalRead() DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
 	// Build builds the DF1ResponseMessage or returns an error if something is wrong
@@ -173,11 +166,6 @@ func (b *_DF1ResponseMessageBuilder) WithStatus(status uint8) DF1ResponseMessage
 
 func (b *_DF1ResponseMessageBuilder) WithTransactionCounter(transactionCounter uint16) DF1ResponseMessageBuilder {
 	b.TransactionCounter = transactionCounter
-	return b
-}
-
-func (b *_DF1ResponseMessageBuilder) WithArgPayloadLength(payloadLength uint16) DF1ResponseMessageBuilder {
-	b.PayloadLength = payloadLength
 	return b
 }
 
@@ -340,7 +328,7 @@ func DF1ResponseMessageParseWithBufferProducer[T DF1ResponseMessage](payloadLeng
 }
 
 func DF1ResponseMessageParseWithBuffer[T DF1ResponseMessage](ctx context.Context, readBuffer utils.ReadBuffer, payloadLength uint16) (T, error) {
-	v, err := (&_DF1ResponseMessage{PayloadLength: payloadLength}).parse(ctx, readBuffer, payloadLength)
+	v, err := (new(_DF1ResponseMessage)).parse(ctx, readBuffer, payloadLength)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -472,16 +460,6 @@ func (pm *_DF1ResponseMessage) serializeParent(ctx context.Context, writeBuffer 
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_DF1ResponseMessage) GetPayloadLength() uint16 {
-	return m.PayloadLength
-}
-
-//
-////
-
 func (m *_DF1ResponseMessage) IsDF1ResponseMessage() {}
 
 func (m *_DF1ResponseMessage) DeepCopy() any {
@@ -498,7 +476,6 @@ func (m *_DF1ResponseMessage) deepCopy() *_DF1ResponseMessage {
 		m.SourceAddress,
 		m.Status,
 		m.TransactionCounter,
-		m.PayloadLength,
 		m.reservedField0,
 		m.reservedField1,
 	}

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDescription = (*_BACnetConstructedDataDescription)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDescription)(nil)
 
 // NewBACnetConstructedDataDescription factory function for _BACnetConstructedDataDescription
-func NewBACnetConstructedDataDescription(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, description BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDescription {
+func NewBACnetConstructedDataDescription(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, description BACnetApplicationTagCharacterString) *_BACnetConstructedDataDescription {
 	if description == nil {
 		panic("description of type BACnetApplicationTagCharacterString for BACnetConstructedDataDescription must not be nil")
 	}
 	_result := &_BACnetConstructedDataDescription{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Description:                   description,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

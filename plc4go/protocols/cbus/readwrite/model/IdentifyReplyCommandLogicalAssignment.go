@@ -59,9 +59,9 @@ var _ IdentifyReplyCommandLogicalAssignment = (*_IdentifyReplyCommandLogicalAssi
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandLogicalAssignment)(nil)
 
 // NewIdentifyReplyCommandLogicalAssignment factory function for _IdentifyReplyCommandLogicalAssignment
-func NewIdentifyReplyCommandLogicalAssignment(logicAssigment []LogicAssignment, numBytes uint8) *_IdentifyReplyCommandLogicalAssignment {
+func NewIdentifyReplyCommandLogicalAssignment(logicAssigment []LogicAssignment) *_IdentifyReplyCommandLogicalAssignment {
 	_result := &_IdentifyReplyCommandLogicalAssignment{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		LogicAssigment:               logicAssigment,
 	}
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result

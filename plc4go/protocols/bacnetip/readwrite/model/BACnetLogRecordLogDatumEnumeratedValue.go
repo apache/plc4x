@@ -59,12 +59,12 @@ var _ BACnetLogRecordLogDatumEnumeratedValue = (*_BACnetLogRecordLogDatumEnumera
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumEnumeratedValue)(nil)
 
 // NewBACnetLogRecordLogDatumEnumeratedValue factory function for _BACnetLogRecordLogDatumEnumeratedValue
-func NewBACnetLogRecordLogDatumEnumeratedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enumeratedValue BACnetContextTagEnumerated, tagNumber uint8) *_BACnetLogRecordLogDatumEnumeratedValue {
+func NewBACnetLogRecordLogDatumEnumeratedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enumeratedValue BACnetContextTagEnumerated) *_BACnetLogRecordLogDatumEnumeratedValue {
 	if enumeratedValue == nil {
 		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogRecordLogDatumEnumeratedValue must not be nil")
 	}
 	_result := &_BACnetLogRecordLogDatumEnumeratedValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		EnumeratedValue:                 enumeratedValue,
 	}
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result

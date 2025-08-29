@@ -65,12 +65,12 @@ var _ BACnetUnconfirmedServiceRequestWhoHas = (*_BACnetUnconfirmedServiceRequest
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestWhoHas)(nil)
 
 // NewBACnetUnconfirmedServiceRequestWhoHas factory function for _BACnetUnconfirmedServiceRequestWhoHas
-func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger, object BACnetUnconfirmedServiceRequestWhoHasObject, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWhoHas {
+func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger, object BACnetUnconfirmedServiceRequestWhoHasObject) *_BACnetUnconfirmedServiceRequestWhoHas {
 	if object == nil {
 		panic("object of type BACnetUnconfirmedServiceRequestWhoHasObject for BACnetUnconfirmedServiceRequestWhoHas must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestWhoHas{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		DeviceInstanceRangeLowLimit:             deviceInstanceRangeLowLimit,
 		DeviceInstanceRangeHighLimit:            deviceInstanceRangeHighLimit,
 		Object:                                  object,

@@ -59,12 +59,12 @@ var _ BACnetPriorityValueDateTime = (*_BACnetPriorityValueDateTime)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueDateTime)(nil)
 
 // NewBACnetPriorityValueDateTime factory function for _BACnetPriorityValueDateTime
-func NewBACnetPriorityValueDateTime(peekedTagHeader BACnetTagHeader, dateTimeValue BACnetDateTimeEnclosed, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDateTime {
+func NewBACnetPriorityValueDateTime(peekedTagHeader BACnetTagHeader, dateTimeValue BACnetDateTimeEnclosed) *_BACnetPriorityValueDateTime {
 	if dateTimeValue == nil {
 		panic("dateTimeValue of type BACnetDateTimeEnclosed for BACnetPriorityValueDateTime must not be nil")
 	}
 	_result := &_BACnetPriorityValueDateTime{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		DateTimeValue:               dateTimeValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result

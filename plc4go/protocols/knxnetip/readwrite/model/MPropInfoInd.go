@@ -54,9 +54,9 @@ var _ MPropInfoInd = (*_MPropInfoInd)(nil)
 var _ CEMIRequirements = (*_MPropInfoInd)(nil)
 
 // NewMPropInfoInd factory function for _MPropInfoInd
-func NewMPropInfoInd(size uint16) *_MPropInfoInd {
+func NewMPropInfoInd() *_MPropInfoInd {
 	_result := &_MPropInfoInd{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result

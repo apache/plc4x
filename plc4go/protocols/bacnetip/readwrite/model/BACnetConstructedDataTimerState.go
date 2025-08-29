@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTimerState = (*_BACnetConstructedDataTimerState)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerState)(nil)
 
 // NewBACnetConstructedDataTimerState factory function for _BACnetConstructedDataTimerState
-func NewBACnetConstructedDataTimerState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timerState BACnetTimerStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerState {
+func NewBACnetConstructedDataTimerState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timerState BACnetTimerStateTagged) *_BACnetConstructedDataTimerState {
 	if timerState == nil {
 		panic("timerState of type BACnetTimerStateTagged for BACnetConstructedDataTimerState must not be nil")
 	}
 	_result := &_BACnetConstructedDataTimerState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		TimerState:                    timerState,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

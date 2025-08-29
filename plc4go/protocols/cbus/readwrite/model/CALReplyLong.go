@@ -78,12 +78,12 @@ var _ CALReplyLong = (*_CALReplyLong)(nil)
 var _ CALReplyRequirements = (*_CALReplyLong)(nil)
 
 // NewCALReplyLong factory function for _CALReplyLong
-func NewCALReplyLong(calType byte, calData CALData, terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyLong {
+func NewCALReplyLong(calType byte, calData CALData, terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork) *_CALReplyLong {
 	if serialInterfaceAddress == nil {
 		panic("serialInterfaceAddress of type SerialInterfaceAddress for CALReplyLong must not be nil")
 	}
 	_result := &_CALReplyLong{
-		CALReplyContract:       NewCALReply(calType, calData, cBusOptions, requestContext),
+		CALReplyContract:       NewCALReply(calType, calData),
 		TerminatingByte:        terminatingByte,
 		UnitAddress:            unitAddress,
 		BridgeAddress:          bridgeAddress,

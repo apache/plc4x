@@ -54,9 +54,9 @@ var _ ApduDataExtFileStreamInfoReport = (*_ApduDataExtFileStreamInfoReport)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtFileStreamInfoReport)(nil)
 
 // NewApduDataExtFileStreamInfoReport factory function for _ApduDataExtFileStreamInfoReport
-func NewApduDataExtFileStreamInfoReport(length uint8) *_ApduDataExtFileStreamInfoReport {
+func NewApduDataExtFileStreamInfoReport() *_ApduDataExtFileStreamInfoReport {
 	_result := &_ApduDataExtFileStreamInfoReport{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

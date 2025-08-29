@@ -59,7 +59,7 @@ var _ BACnetServiceAckCreateObject = (*_BACnetServiceAckCreateObject)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckCreateObject)(nil)
 
 // NewBACnetServiceAckCreateObject factory function for _BACnetServiceAckCreateObject
-func NewBACnetServiceAckCreateObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceAckLength uint32) *_BACnetServiceAckCreateObject {
+func NewBACnetServiceAckCreateObject(serviceAckLength uint32, objectIdentifier BACnetApplicationTagObjectIdentifier) *_BACnetServiceAckCreateObject {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckCreateObject must not be nil")
 	}

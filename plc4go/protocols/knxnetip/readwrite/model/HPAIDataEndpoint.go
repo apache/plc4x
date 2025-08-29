@@ -244,7 +244,7 @@ func HPAIDataEndpointParseWithBufferProducer() func(ctx context.Context, readBuf
 }
 
 func HPAIDataEndpointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HPAIDataEndpoint, error) {
-	v, err := (&_HPAIDataEndpoint{}).parse(ctx, readBuffer)
+	v, err := (new(_HPAIDataEndpoint)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

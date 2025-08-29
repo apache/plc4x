@@ -61,12 +61,12 @@ var _ BACnetConstructedDataRepresents = (*_BACnetConstructedDataRepresents)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRepresents)(nil)
 
 // NewBACnetConstructedDataRepresents factory function for _BACnetConstructedDataRepresents
-func NewBACnetConstructedDataRepresents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, represents BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRepresents {
+func NewBACnetConstructedDataRepresents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, represents BACnetDeviceObjectReference) *_BACnetConstructedDataRepresents {
 	if represents == nil {
 		panic("represents of type BACnetDeviceObjectReference for BACnetConstructedDataRepresents must not be nil")
 	}
 	_result := &_BACnetConstructedDataRepresents{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Represents:                    represents,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

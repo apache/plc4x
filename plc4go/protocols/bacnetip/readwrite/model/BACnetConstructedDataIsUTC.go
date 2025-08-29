@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIsUTC = (*_BACnetConstructedDataIsUTC)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIsUTC)(nil)
 
 // NewBACnetConstructedDataIsUTC factory function for _BACnetConstructedDataIsUTC
-func NewBACnetConstructedDataIsUTC(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, isUtc BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIsUTC {
+func NewBACnetConstructedDataIsUTC(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, isUtc BACnetApplicationTagBoolean) *_BACnetConstructedDataIsUTC {
 	if isUtc == nil {
 		panic("isUtc of type BACnetApplicationTagBoolean for BACnetConstructedDataIsUTC must not be nil")
 	}
 	_result := &_BACnetConstructedDataIsUTC{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IsUtc:                         isUtc,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

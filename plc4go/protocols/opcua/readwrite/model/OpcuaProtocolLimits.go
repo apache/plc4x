@@ -240,7 +240,7 @@ func OpcuaProtocolLimitsParseWithBufferProducer() func(ctx context.Context, read
 }
 
 func OpcuaProtocolLimitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaProtocolLimits, error) {
-	v, err := (&_OpcuaProtocolLimits{}).parse(ctx, readBuffer)
+	v, err := (new(_OpcuaProtocolLimits)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

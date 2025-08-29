@@ -67,9 +67,9 @@ var _ CipReadResponse = (*_CipReadResponse)(nil)
 var _ CipServiceRequirements = (*_CipReadResponse)(nil)
 
 // NewCipReadResponse factory function for _CipReadResponse
-func NewCipReadResponse(status uint8, extStatus uint8, data CIPData, serviceLen uint16) *_CipReadResponse {
+func NewCipReadResponse(status uint8, extStatus uint8, data CIPData) *_CipReadResponse {
 	_result := &_CipReadResponse{
-		CipServiceContract: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(),
 		Status:             status,
 		ExtStatus:          extStatus,
 		Data:               data,

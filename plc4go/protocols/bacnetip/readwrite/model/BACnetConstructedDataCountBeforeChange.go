@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCountBeforeChange = (*_BACnetConstructedDataCountBefo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCountBeforeChange)(nil)
 
 // NewBACnetConstructedDataCountBeforeChange factory function for _BACnetConstructedDataCountBeforeChange
-func NewBACnetConstructedDataCountBeforeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, countBeforeChange BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCountBeforeChange {
+func NewBACnetConstructedDataCountBeforeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, countBeforeChange BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataCountBeforeChange {
 	if countBeforeChange == nil {
 		panic("countBeforeChange of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCountBeforeChange must not be nil")
 	}
 	_result := &_BACnetConstructedDataCountBeforeChange{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CountBeforeChange:             countBeforeChange,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

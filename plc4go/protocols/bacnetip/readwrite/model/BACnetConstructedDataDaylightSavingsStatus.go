@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDaylightSavingsStatus = (*_BACnetConstructedDataDayli
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDaylightSavingsStatus)(nil)
 
 // NewBACnetConstructedDataDaylightSavingsStatus factory function for _BACnetConstructedDataDaylightSavingsStatus
-func NewBACnetConstructedDataDaylightSavingsStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, daylightSavingsStatus BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaylightSavingsStatus {
+func NewBACnetConstructedDataDaylightSavingsStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, daylightSavingsStatus BACnetApplicationTagBoolean) *_BACnetConstructedDataDaylightSavingsStatus {
 	if daylightSavingsStatus == nil {
 		panic("daylightSavingsStatus of type BACnetApplicationTagBoolean for BACnetConstructedDataDaylightSavingsStatus must not be nil")
 	}
 	_result := &_BACnetConstructedDataDaylightSavingsStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DaylightSavingsStatus:         daylightSavingsStatus,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -59,9 +59,9 @@ var _ BACnetConstructedDataVTClassesSupported = (*_BACnetConstructedDataVTClasse
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVTClassesSupported)(nil)
 
 // NewBACnetConstructedDataVTClassesSupported factory function for _BACnetConstructedDataVTClassesSupported
-func NewBACnetConstructedDataVTClassesSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vtClassesSupported []BACnetVTClassTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVTClassesSupported {
+func NewBACnetConstructedDataVTClassesSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vtClassesSupported []BACnetVTClassTagged) *_BACnetConstructedDataVTClassesSupported {
 	_result := &_BACnetConstructedDataVTClassesSupported{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		VtClassesSupported:            vtClassesSupported,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

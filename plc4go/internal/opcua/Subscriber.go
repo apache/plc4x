@@ -152,9 +152,8 @@ func (s *Subscriber) onSubscribeCreateSubscription(ctx context.Context, cycleTim
 	extObject := readWriteModel.NewExtensiblePayload(
 		nil,
 		readWriteModel.NewRootExtensionObject(
-			expandedNodeId, createSubscriptionRequest, createSubscriptionRequest.GetExtensionId(),
+			expandedNodeId, createSubscriptionRequest,
 		),
-		0,
 	)
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))

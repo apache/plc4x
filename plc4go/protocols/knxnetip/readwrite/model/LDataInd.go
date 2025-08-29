@@ -65,12 +65,12 @@ var _ LDataInd = (*_LDataInd)(nil)
 var _ CEMIRequirements = (*_LDataInd)(nil)
 
 // NewLDataInd factory function for _LDataInd
-func NewLDataInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataInd {
+func NewLDataInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) *_LDataInd {
 	if dataFrame == nil {
 		panic("dataFrame of type LDataFrame for LDataInd must not be nil")
 	}
 	_result := &_LDataInd{
-		CEMIContract:                NewCEMI(size),
+		CEMIContract:                NewCEMI(),
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,

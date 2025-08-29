@@ -65,7 +65,7 @@ var _ BACnetServiceAckGetAlarmSummary = (*_BACnetServiceAckGetAlarmSummary)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckGetAlarmSummary)(nil)
 
 // NewBACnetServiceAckGetAlarmSummary factory function for _BACnetServiceAckGetAlarmSummary
-func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, serviceAckLength uint32) *_BACnetServiceAckGetAlarmSummary {
+func NewBACnetServiceAckGetAlarmSummary(serviceAckLength uint32, objectIdentifier BACnetApplicationTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged) *_BACnetServiceAckGetAlarmSummary {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckGetAlarmSummary must not be nil")
 	}

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLightingCommand = (*_BACnetConstructedDataLightingCom
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingCommand)(nil)
 
 // NewBACnetConstructedDataLightingCommand factory function for _BACnetConstructedDataLightingCommand
-func NewBACnetConstructedDataLightingCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lightingCommand BACnetLightingCommand, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingCommand {
+func NewBACnetConstructedDataLightingCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lightingCommand BACnetLightingCommand) *_BACnetConstructedDataLightingCommand {
 	if lightingCommand == nil {
 		panic("lightingCommand of type BACnetLightingCommand for BACnetConstructedDataLightingCommand must not be nil")
 	}
 	_result := &_BACnetConstructedDataLightingCommand{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LightingCommand:               lightingCommand,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

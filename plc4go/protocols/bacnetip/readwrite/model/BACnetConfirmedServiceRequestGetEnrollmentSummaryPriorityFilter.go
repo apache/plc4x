@@ -60,15 +60,12 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter struct {
 	MinPriority BACnetContextTagUnsignedInteger
 	MaxPriority BACnetContextTagUnsignedInteger
 	ClosingTag  BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter)(nil)
 
 // NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
-func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(openingTag BACnetOpeningTag, minPriority BACnetContextTagUnsignedInteger, maxPriority BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
+func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(openingTag BACnetOpeningTag, minPriority BACnetContextTagUnsignedInteger, maxPriority BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
 	}
@@ -81,7 +78,7 @@ func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(openingT
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
 	}
-	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{OpeningTag: openingTag, MinPriority: minPriority, MaxPriority: maxPriority, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{OpeningTag: openingTag, MinPriority: minPriority, MaxPriority: maxPriority, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,8 +107,6 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder inte
 	WithClosingTag(BACnetClosingTag) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
 	// Build builds the BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error)
 	// MustBuild does the same as Build but panics on error
@@ -192,11 +187,6 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) WithArgTagNumber(tagNumber uint8) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -322,7 +312,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuf
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error) {
-	v, err := (&_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -408,16 +398,6 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) Seria
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) IsBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter() {
 }
 
@@ -434,7 +414,6 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) deepC
 		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.MinPriority),
 		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.MaxPriority),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterCopy
 }

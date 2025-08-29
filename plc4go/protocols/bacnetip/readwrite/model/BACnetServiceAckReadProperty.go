@@ -68,7 +68,7 @@ var _ BACnetServiceAckReadProperty = (*_BACnetServiceAckReadProperty)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckReadProperty)(nil)
 
 // NewBACnetServiceAckReadProperty factory function for _BACnetServiceAckReadProperty
-func NewBACnetServiceAckReadProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, values BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckReadProperty {
+func NewBACnetServiceAckReadProperty(serviceAckLength uint32, objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, values BACnetConstructedData) *_BACnetServiceAckReadProperty {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetServiceAckReadProperty must not be nil")
 	}

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIntegralConstant = (*_BACnetConstructedDataIntegralCo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegralConstant)(nil)
 
 // NewBACnetConstructedDataIntegralConstant factory function for _BACnetConstructedDataIntegralConstant
-func NewBACnetConstructedDataIntegralConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, integralConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegralConstant {
+func NewBACnetConstructedDataIntegralConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, integralConstant BACnetApplicationTagReal) *_BACnetConstructedDataIntegralConstant {
 	if integralConstant == nil {
 		panic("integralConstant of type BACnetApplicationTagReal for BACnetConstructedDataIntegralConstant must not be nil")
 	}
 	_result := &_BACnetConstructedDataIntegralConstant{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IntegralConstant:              integralConstant,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

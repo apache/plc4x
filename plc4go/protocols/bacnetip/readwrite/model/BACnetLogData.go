@@ -58,8 +58,6 @@ type BACnetLogDataContract interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetTagNumber() returns a parser argument
-	GetTagNumber() uint8
 	// IsBACnetLogData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogData()
 	// CreateBuilder creates a BACnetLogDataBuilder
@@ -83,15 +81,12 @@ type _BACnetLogData struct {
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetLogDataContract = (*_BACnetLogData)(nil)
 
 // NewBACnetLogData factory function for _BACnetLogData
-func NewBACnetLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogData {
+func NewBACnetLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetLogData {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetLogData must not be nil")
 	}
@@ -101,7 +96,7 @@ func NewBACnetLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHead
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetLogData must not be nil")
 	}
-	return &_BACnetLogData{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetLogData{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -126,8 +121,6 @@ type BACnetLogDataBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetLogDataBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLogDataBuilder
 	// AsBACnetLogDataLogStatus converts this build to a subType of BACnetLogData. It is always possible to return to current builder using Done()
 	AsBACnetLogDataLogStatus() BACnetLogDataLogStatusBuilder
 	// AsBACnetLogDataLogData converts this build to a subType of BACnetLogData. It is always possible to return to current builder using Done()
@@ -211,11 +204,6 @@ func (b *_BACnetLogDataBuilder) WithClosingTagBuilder(builderSupplier func(BACne
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetLogDataBuilder) WithArgTagNumber(tagNumber uint8) BACnetLogDataBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -407,7 +395,7 @@ func BACnetLogDataParseWithBufferProducer[T BACnetLogData](tagNumber uint8) func
 }
 
 func BACnetLogDataParseWithBuffer[T BACnetLogData](ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (T, error) {
-	v, err := (&_BACnetLogData{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetLogData)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -516,16 +504,6 @@ func (pm *_BACnetLogData) serializeParent(ctx context.Context, writeBuffer utils
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLogData) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetLogData) IsBACnetLogData() {}
 
 func (m *_BACnetLogData) DeepCopy() any {
@@ -541,7 +519,6 @@ func (m *_BACnetLogData) deepCopy() *_BACnetLogData {
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetLogDataCopy
 }

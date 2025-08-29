@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLandingCallControl = (*_BACnetConstructedDataLandingC
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLandingCallControl)(nil)
 
 // NewBACnetConstructedDataLandingCallControl factory function for _BACnetConstructedDataLandingCallControl
-func NewBACnetConstructedDataLandingCallControl(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, landingCallControl BACnetLandingCallStatus, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingCallControl {
+func NewBACnetConstructedDataLandingCallControl(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, landingCallControl BACnetLandingCallStatus) *_BACnetConstructedDataLandingCallControl {
 	if landingCallControl == nil {
 		panic("landingCallControl of type BACnetLandingCallStatus for BACnetConstructedDataLandingCallControl must not be nil")
 	}
 	_result := &_BACnetConstructedDataLandingCallControl{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LandingCallControl:            landingCallControl,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

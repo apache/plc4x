@@ -59,9 +59,9 @@ var _ BACnetConstructedDataTrendLogMultipleLogBuffer = (*_BACnetConstructedDataT
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogMultipleLogBuffer)(nil)
 
 // NewBACnetConstructedDataTrendLogMultipleLogBuffer factory function for _BACnetConstructedDataTrendLogMultipleLogBuffer
-func NewBACnetConstructedDataTrendLogMultipleLogBuffer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, floorText []BACnetLogMultipleRecord, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogMultipleLogBuffer {
+func NewBACnetConstructedDataTrendLogMultipleLogBuffer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, floorText []BACnetLogMultipleRecord) *_BACnetConstructedDataTrendLogMultipleLogBuffer {
 	_result := &_BACnetConstructedDataTrendLogMultipleLogBuffer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FloorText:                     floorText,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

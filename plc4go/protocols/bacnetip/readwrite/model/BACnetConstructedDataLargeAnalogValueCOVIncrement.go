@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLargeAnalogValueCOVIncrement = (*_BACnetConstructedDa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueCOVIncrement)(nil)
 
 // NewBACnetConstructedDataLargeAnalogValueCOVIncrement factory function for _BACnetConstructedDataLargeAnalogValueCOVIncrement
-func NewBACnetConstructedDataLargeAnalogValueCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueCOVIncrement {
+func NewBACnetConstructedDataLargeAnalogValueCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagDouble) *_BACnetConstructedDataLargeAnalogValueCOVIncrement {
 	if covIncrement == nil {
 		panic("covIncrement of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueCOVIncrement must not be nil")
 	}
 	_result := &_BACnetConstructedDataLargeAnalogValueCOVIncrement{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		CovIncrement:                  covIncrement,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDoorExtendedPulseTime = (*_BACnetConstructedDataDoorE
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorExtendedPulseTime)(nil)
 
 // NewBACnetConstructedDataDoorExtendedPulseTime factory function for _BACnetConstructedDataDoorExtendedPulseTime
-func NewBACnetConstructedDataDoorExtendedPulseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorExtendedPulseTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorExtendedPulseTime {
+func NewBACnetConstructedDataDoorExtendedPulseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorExtendedPulseTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDoorExtendedPulseTime {
 	if doorExtendedPulseTime == nil {
 		panic("doorExtendedPulseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorExtendedPulseTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataDoorExtendedPulseTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DoorExtendedPulseTime:         doorExtendedPulseTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -52,7 +52,7 @@ func NewOriginalUnicastNPDU(args Args, kwArgs KWArgs, options ...Option) (*Origi
 	return o, nil
 }
 
-func (o *OriginalUnicastNPDU) produceInnerNPDU(inNpdu readWriteModel.NPDU) (npdu readWriteModel.NPDU, bvlcPayloadLength uint16) {
+func (o *OriginalUnicastNPDU) produceInnerNPDU(inNpdu readWriteModel.NPDU) (npdu readWriteModel.NPDU) {
 	npdu = inNpdu
 	return
 }

@@ -59,9 +59,9 @@ var _ BACnetConstructedDataManualSlaveAddressBinding = (*_BACnetConstructedDataM
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataManualSlaveAddressBinding)(nil)
 
 // NewBACnetConstructedDataManualSlaveAddressBinding factory function for _BACnetConstructedDataManualSlaveAddressBinding
-func NewBACnetConstructedDataManualSlaveAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, manualSlaveAddressBinding []BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataManualSlaveAddressBinding {
+func NewBACnetConstructedDataManualSlaveAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, manualSlaveAddressBinding []BACnetAddressBinding) *_BACnetConstructedDataManualSlaveAddressBinding {
 	_result := &_BACnetConstructedDataManualSlaveAddressBinding{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ManualSlaveAddressBinding:     manualSlaveAddressBinding,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

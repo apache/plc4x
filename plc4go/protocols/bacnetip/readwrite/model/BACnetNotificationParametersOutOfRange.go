@@ -74,7 +74,7 @@ var _ BACnetNotificationParametersOutOfRange = (*_BACnetNotificationParametersOu
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersOutOfRange)(nil)
 
 // NewBACnetNotificationParametersOutOfRange factory function for _BACnetNotificationParametersOutOfRange
-func NewBACnetNotificationParametersOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagReal, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagReal, exceededLimit BACnetContextTagReal, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersOutOfRange {
+func NewBACnetNotificationParametersOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagReal, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagReal, exceededLimit BACnetContextTagReal, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersOutOfRange {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersOutOfRange must not be nil")
 	}
@@ -94,7 +94,7 @@ func NewBACnetNotificationParametersOutOfRange(openingTag BACnetOpeningTag, peek
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersOutOfRange must not be nil")
 	}
 	_result := &_BACnetNotificationParametersOutOfRange{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		ExceedingValue:                       exceedingValue,
 		StatusFlags:                          statusFlags,

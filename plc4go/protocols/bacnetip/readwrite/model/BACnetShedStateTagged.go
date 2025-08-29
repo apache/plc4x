@@ -54,20 +54,16 @@ type BACnetShedStateTagged interface {
 type _BACnetShedStateTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetShedState
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetShedStateTagged = (*_BACnetShedStateTagged)(nil)
 
 // NewBACnetShedStateTagged factory function for _BACnetShedStateTagged
-func NewBACnetShedStateTagged(header BACnetTagHeader, value BACnetShedState, tagNumber uint8, tagClass TagClass) *_BACnetShedStateTagged {
+func NewBACnetShedStateTagged(header BACnetTagHeader, value BACnetShedState) *_BACnetShedStateTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetShedStateTagged must not be nil")
 	}
-	return &_BACnetShedStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetShedStateTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetShedStateTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetShedStateTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetShedState) BACnetShedStateTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetShedStateTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetShedStateTaggedBuilder
 	// Build builds the BACnetShedStateTagged or returns an error if something is wrong
 	Build() (BACnetShedStateTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetShedStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(B
 
 func (b *_BACnetShedStateTaggedBuilder) WithValue(value BACnetShedState) BACnetShedStateTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetShedStateTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetShedStateTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetShedStateTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetShedStateTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetShedStateTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagC
 }
 
 func BACnetShedStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetShedStateTagged, error) {
-	v, err := (&_BACnetShedStateTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetShedStateTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetShedStateTagged) SerializeWithWriteBuffer(ctx context.Context, w
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetShedStateTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetShedStateTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetShedStateTagged) IsBACnetShedStateTagged() {}
 
 func (m *_BACnetShedStateTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetShedStateTagged) deepCopy() *_BACnetShedStateTagged {
 	_BACnetShedStateTaggedCopy := &_BACnetShedStateTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetShedStateTaggedCopy
 }

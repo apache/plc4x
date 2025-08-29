@@ -49,7 +49,7 @@ func NewOriginalBroadcastNPDU(args Args, kwArgs KWArgs, options ...Option) (*Ori
 	return o, nil
 }
 
-func (o *OriginalBroadcastNPDU) produceInnerNPDU(inNpdu readWriteModel.NPDU) (npdu readWriteModel.NPDU, bvlcPayloadLength uint16) {
+func (o *OriginalBroadcastNPDU) produceInnerNPDU(inNpdu readWriteModel.NPDU) (npdu readWriteModel.NPDU) {
 	npdu = inNpdu
 	return
 }

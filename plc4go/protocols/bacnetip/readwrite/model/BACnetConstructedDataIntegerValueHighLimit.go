@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIntegerValueHighLimit = (*_BACnetConstructedDataInteg
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegerValueHighLimit)(nil)
 
 // NewBACnetConstructedDataIntegerValueHighLimit factory function for _BACnetConstructedDataIntegerValueHighLimit
-func NewBACnetConstructedDataIntegerValueHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueHighLimit {
+func NewBACnetConstructedDataIntegerValueHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagSignedInteger) *_BACnetConstructedDataIntegerValueHighLimit {
 	if highLimit == nil {
 		panic("highLimit of type BACnetApplicationTagSignedInteger for BACnetConstructedDataIntegerValueHighLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataIntegerValueHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		HighLimit:                     highLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

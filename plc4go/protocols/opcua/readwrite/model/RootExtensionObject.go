@@ -53,16 +53,13 @@ type RootExtensionObject interface {
 type _RootExtensionObject struct {
 	ExtensionObjectContract
 	Body ExtensionObjectDefinition
-
-	// Arguments.
-	ExtensionId int32
 }
 
 var _ RootExtensionObject = (*_RootExtensionObject)(nil)
 var _ ExtensionObjectRequirements = (*_RootExtensionObject)(nil)
 
 // NewRootExtensionObject factory function for _RootExtensionObject
-func NewRootExtensionObject(typeId ExpandedNodeId, body ExtensionObjectDefinition, extensionId int32) *_RootExtensionObject {
+func NewRootExtensionObject(typeId ExpandedNodeId, body ExtensionObjectDefinition) *_RootExtensionObject {
 	if body == nil {
 		panic("body of type ExtensionObjectDefinition for RootExtensionObject must not be nil")
 	}
@@ -88,8 +85,6 @@ type RootExtensionObjectBuilder interface {
 	WithBody(ExtensionObjectDefinition) RootExtensionObjectBuilder
 	// WithBodyBuilder adds Body (property field) which is build by the builder
 	WithBodyBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RootExtensionObjectBuilder
-	// WithArgExtensionId sets a parser argument
-	WithArgExtensionId(int32) RootExtensionObjectBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() ExtensionObjectBuilder
 	// Build builds the RootExtensionObject or returns an error if something is wrong
@@ -134,11 +129,6 @@ func (b *_RootExtensionObjectBuilder) WithBodyBuilder(builderSupplier func(Exten
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	return b
-}
-
-func (b *_RootExtensionObjectBuilder) WithArgExtensionId(extensionId int32) RootExtensionObjectBuilder {
-	b.ExtensionId = extensionId
 	return b
 }
 
@@ -306,16 +296,6 @@ func (m *_RootExtensionObject) SerializeWithWriteBuffer(ctx context.Context, wri
 	return m.ExtensionObjectContract.(*_ExtensionObject).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_RootExtensionObject) GetExtensionId() int32 {
-	return m.ExtensionId
-}
-
-//
-////
-
 func (m *_RootExtensionObject) IsRootExtensionObject() {}
 
 func (m *_RootExtensionObject) DeepCopy() any {
@@ -329,7 +309,6 @@ func (m *_RootExtensionObject) deepCopy() *_RootExtensionObject {
 	_RootExtensionObjectCopy := &_RootExtensionObject{
 		m.ExtensionObjectContract.(*_ExtensionObject).deepCopy(),
 		utils.DeepCopy[ExtensionObjectDefinition](m.Body),
-		m.ExtensionId,
 	}
 	_RootExtensionObjectCopy.ExtensionObjectContract.(*_ExtensionObject)._SubType = m
 	return _RootExtensionObjectCopy

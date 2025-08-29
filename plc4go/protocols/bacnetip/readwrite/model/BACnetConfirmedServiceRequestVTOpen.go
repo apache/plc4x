@@ -62,7 +62,7 @@ var _ BACnetConfirmedServiceRequestVTOpen = (*_BACnetConfirmedServiceRequestVTOp
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestVTOpen)(nil)
 
 // NewBACnetConfirmedServiceRequestVTOpen factory function for _BACnetConfirmedServiceRequestVTOpen
-func NewBACnetConfirmedServiceRequestVTOpen(vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTOpen {
+func NewBACnetConfirmedServiceRequestVTOpen(serviceRequestLength uint32, vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger) *_BACnetConfirmedServiceRequestVTOpen {
 	if vtClass == nil {
 		panic("vtClass of type BACnetVTClassTagged for BACnetConfirmedServiceRequestVTOpen must not be nil")
 	}

@@ -39,6 +39,8 @@ type BACnetRejectReasonTagged interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
+	// GetActualLength returns ActualLength (property field)
+	GetActualLength() uint32
 	// GetValue returns Value (property field)
 	GetValue() BACnetRejectReason
 	// GetProprietaryValue returns ProprietaryValue (property field)
@@ -53,18 +55,16 @@ type BACnetRejectReasonTagged interface {
 
 // _BACnetRejectReasonTagged is the data-structure of this message
 type _BACnetRejectReasonTagged struct {
+	ActualLength     uint32
 	Value            BACnetRejectReason
 	ProprietaryValue uint32
-
-	// Arguments.
-	ActualLength uint32
 }
 
 var _ BACnetRejectReasonTagged = (*_BACnetRejectReasonTagged)(nil)
 
 // NewBACnetRejectReasonTagged factory function for _BACnetRejectReasonTagged
-func NewBACnetRejectReasonTagged(value BACnetRejectReason, proprietaryValue uint32, actualLength uint32) *_BACnetRejectReasonTagged {
-	return &_BACnetRejectReasonTagged{Value: value, ProprietaryValue: proprietaryValue, ActualLength: actualLength}
+func NewBACnetRejectReasonTagged(actualLength uint32, value BACnetRejectReason, proprietaryValue uint32) *_BACnetRejectReasonTagged {
+	return &_BACnetRejectReasonTagged{ActualLength: actualLength, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -76,13 +76,13 @@ func NewBACnetRejectReasonTagged(value BACnetRejectReason, proprietaryValue uint
 type BACnetRejectReasonTaggedBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(value BACnetRejectReason, proprietaryValue uint32) BACnetRejectReasonTaggedBuilder
+	WithMandatoryFields(actualLength uint32, value BACnetRejectReason, proprietaryValue uint32) BACnetRejectReasonTaggedBuilder
+	// WithActualLength adds ActualLength (property field)
+	WithActualLength(uint32) BACnetRejectReasonTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetRejectReason) BACnetRejectReasonTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetRejectReasonTaggedBuilder
-	// WithArgActualLength sets a parser argument
-	WithArgActualLength(uint32) BACnetRejectReasonTaggedBuilder
 	// Build builds the BACnetRejectReasonTagged or returns an error if something is wrong
 	Build() (BACnetRejectReasonTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,8 +102,13 @@ type _BACnetRejectReasonTaggedBuilder struct {
 
 var _ (BACnetRejectReasonTaggedBuilder) = (*_BACnetRejectReasonTaggedBuilder)(nil)
 
-func (b *_BACnetRejectReasonTaggedBuilder) WithMandatoryFields(value BACnetRejectReason, proprietaryValue uint32) BACnetRejectReasonTaggedBuilder {
-	return b.WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetRejectReasonTaggedBuilder) WithMandatoryFields(actualLength uint32, value BACnetRejectReason, proprietaryValue uint32) BACnetRejectReasonTaggedBuilder {
+	return b.WithActualLength(actualLength).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetRejectReasonTaggedBuilder) WithActualLength(actualLength uint32) BACnetRejectReasonTaggedBuilder {
+	b.ActualLength = actualLength
+	return b
 }
 
 func (b *_BACnetRejectReasonTaggedBuilder) WithValue(value BACnetRejectReason) BACnetRejectReasonTaggedBuilder {
@@ -113,11 +118,6 @@ func (b *_BACnetRejectReasonTaggedBuilder) WithValue(value BACnetRejectReason) B
 
 func (b *_BACnetRejectReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetRejectReasonTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetRejectReasonTaggedBuilder) WithArgActualLength(actualLength uint32) BACnetRejectReasonTaggedBuilder {
-	b.ActualLength = actualLength
 	return b
 }
 
@@ -161,6 +161,10 @@ func (b *_BACnetRejectReasonTagged) CreateBACnetRejectReasonTaggedBuilder() BACn
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
+func (m *_BACnetRejectReasonTagged) GetActualLength() uint32 {
+	return m.ActualLength
+}
 
 func (m *_BACnetRejectReasonTagged) GetValue() BACnetRejectReason {
 	return m.Value
@@ -234,7 +238,7 @@ func BACnetRejectReasonTaggedParseWithBufferProducer(actualLength uint32) func(c
 }
 
 func BACnetRejectReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetRejectReasonTagged, error) {
-	v, err := (&_BACnetRejectReasonTagged{ActualLength: actualLength}).parse(ctx, readBuffer, actualLength)
+	v, err := (new(_BACnetRejectReasonTagged)).parse(ctx, readBuffer, actualLength)
 	if err != nil {
 		return nil, err
 	}
@@ -249,6 +253,7 @@ func (m *_BACnetRejectReasonTagged) parse(ctx context.Context, readBuffer utils.
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	m.ActualLength = actualLength
 
 	value, err := ReadManualField[BACnetRejectReason](ctx, "value", readBuffer, EnsureType[BACnetRejectReason](ReadEnumGeneric(ctx, readBuffer, actualLength, BACnetRejectReason_VENDOR_PROPRIETARY_VALUE)))
 	if err != nil {
@@ -314,16 +319,6 @@ func (m *_BACnetRejectReasonTagged) SerializeWithWriteBuffer(ctx context.Context
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetRejectReasonTagged) GetActualLength() uint32 {
-	return m.ActualLength
-}
-
-//
-////
-
 func (m *_BACnetRejectReasonTagged) IsBACnetRejectReasonTagged() {}
 
 func (m *_BACnetRejectReasonTagged) DeepCopy() any {
@@ -335,9 +330,9 @@ func (m *_BACnetRejectReasonTagged) deepCopy() *_BACnetRejectReasonTagged {
 		return nil
 	}
 	_BACnetRejectReasonTaggedCopy := &_BACnetRejectReasonTagged{
+		m.ActualLength,
 		m.Value,
 		m.ProprietaryValue,
-		m.ActualLength,
 	}
 	return _BACnetRejectReasonTaggedCopy
 }

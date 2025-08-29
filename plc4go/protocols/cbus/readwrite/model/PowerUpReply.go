@@ -59,12 +59,12 @@ var _ PowerUpReply = (*_PowerUpReply)(nil)
 var _ ReplyRequirements = (*_PowerUpReply)(nil)
 
 // NewPowerUpReply factory function for _PowerUpReply
-func NewPowerUpReply(peekedByte byte, powerUpIndicator PowerUp, cBusOptions CBusOptions, requestContext RequestContext) *_PowerUpReply {
+func NewPowerUpReply(peekedByte byte, powerUpIndicator PowerUp) *_PowerUpReply {
 	if powerUpIndicator == nil {
 		panic("powerUpIndicator of type PowerUp for PowerUpReply must not be nil")
 	}
 	_result := &_PowerUpReply{
-		ReplyContract:    NewReply(peekedByte, cBusOptions, requestContext),
+		ReplyContract:    NewReply(peekedByte),
 		PowerUpIndicator: powerUpIndicator,
 	}
 	_result.ReplyContract.(*_Reply)._SubType = _result

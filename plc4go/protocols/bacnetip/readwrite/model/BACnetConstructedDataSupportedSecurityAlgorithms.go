@@ -59,9 +59,9 @@ var _ BACnetConstructedDataSupportedSecurityAlgorithms = (*_BACnetConstructedDat
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSupportedSecurityAlgorithms)(nil)
 
 // NewBACnetConstructedDataSupportedSecurityAlgorithms factory function for _BACnetConstructedDataSupportedSecurityAlgorithms
-func NewBACnetConstructedDataSupportedSecurityAlgorithms(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSupportedSecurityAlgorithms {
+func NewBACnetConstructedDataSupportedSecurityAlgorithms(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataSupportedSecurityAlgorithms {
 	_result := &_BACnetConstructedDataSupportedSecurityAlgorithms{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SupportedSecurityAlgorithms:   supportedSecurityAlgorithms,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -325,7 +325,7 @@ func BACnetCalendarEntryParseWithBufferProducer[T BACnetCalendarEntry]() func(ct
 }
 
 func BACnetCalendarEntryParseWithBuffer[T BACnetCalendarEntry](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetCalendarEntry{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetCalendarEntry)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

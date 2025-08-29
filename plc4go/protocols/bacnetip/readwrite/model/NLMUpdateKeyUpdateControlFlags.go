@@ -308,7 +308,7 @@ func NLMUpdateKeyUpdateControlFlagsParseWithBufferProducer() func(ctx context.Co
 }
 
 func NLMUpdateKeyUpdateControlFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdateControlFlags, error) {
-	v, err := (&_NLMUpdateKeyUpdateControlFlags{}).parse(ctx, readBuffer)
+	v, err := (new(_NLMUpdateKeyUpdateControlFlags)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

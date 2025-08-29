@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDoorOpenTooLongTime = (*_BACnetConstructedDataDoorOpe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorOpenTooLongTime)(nil)
 
 // NewBACnetConstructedDataDoorOpenTooLongTime factory function for _BACnetConstructedDataDoorOpenTooLongTime
-func NewBACnetConstructedDataDoorOpenTooLongTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorOpenTooLongTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorOpenTooLongTime {
+func NewBACnetConstructedDataDoorOpenTooLongTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorOpenTooLongTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDoorOpenTooLongTime {
 	if doorOpenTooLongTime == nil {
 		panic("doorOpenTooLongTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorOpenTooLongTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataDoorOpenTooLongTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DoorOpenTooLongTime:           doorOpenTooLongTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

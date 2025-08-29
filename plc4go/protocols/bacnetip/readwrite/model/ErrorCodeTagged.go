@@ -59,20 +59,16 @@ type _ErrorCodeTagged struct {
 	Header           BACnetTagHeader
 	Value            ErrorCode
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ ErrorCodeTagged = (*_ErrorCodeTagged)(nil)
 
 // NewErrorCodeTagged factory function for _ErrorCodeTagged
-func NewErrorCodeTagged(header BACnetTagHeader, value ErrorCode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_ErrorCodeTagged {
+func NewErrorCodeTagged(header BACnetTagHeader, value ErrorCode, proprietaryValue uint32) *_ErrorCodeTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for ErrorCodeTagged must not be nil")
 	}
-	return &_ErrorCodeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_ErrorCodeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type ErrorCodeTaggedBuilder interface {
 	WithValue(ErrorCode) ErrorCodeTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) ErrorCodeTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) ErrorCodeTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) ErrorCodeTaggedBuilder
 	// Build builds the ErrorCodeTagged or returns an error if something is wrong
 	Build() (ErrorCodeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_ErrorCodeTaggedBuilder) WithValue(value ErrorCode) ErrorCodeTaggedBuil
 
 func (b *_ErrorCodeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) ErrorCodeTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_ErrorCodeTaggedBuilder) WithArgTagNumber(tagNumber uint8) ErrorCodeTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_ErrorCodeTaggedBuilder) WithArgTagClass(tagClass TagClass) ErrorCodeTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func ErrorCodeTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) 
 }
 
 func ErrorCodeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (ErrorCodeTagged, error) {
-	v, err := (&_ErrorCodeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_ErrorCodeTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_ErrorCodeTagged) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_ErrorCodeTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_ErrorCodeTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_ErrorCodeTagged) IsErrorCodeTagged() {}
 
 func (m *_ErrorCodeTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_ErrorCodeTagged) deepCopy() *_ErrorCodeTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _ErrorCodeTaggedCopy
 }

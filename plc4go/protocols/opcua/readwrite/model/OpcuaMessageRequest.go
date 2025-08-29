@@ -56,16 +56,13 @@ type _OpcuaMessageRequest struct {
 	MessagePDUContract
 	SecurityHeader SecurityHeader
 	Message        Payload
-
-	// Arguments.
-	TotalLength uint32
 }
 
 var _ OpcuaMessageRequest = (*_OpcuaMessageRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaMessageRequest)(nil)
 
 // NewOpcuaMessageRequest factory function for _OpcuaMessageRequest
-func NewOpcuaMessageRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload, totalLength uint32, binary bool) *_OpcuaMessageRequest {
+func NewOpcuaMessageRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload) *_OpcuaMessageRequest {
 	if securityHeader == nil {
 		panic("securityHeader of type SecurityHeader for OpcuaMessageRequest must not be nil")
 	}
@@ -73,7 +70,7 @@ func NewOpcuaMessageRequest(chunk ChunkType, securityHeader SecurityHeader, mess
 		panic("message of type Payload for OpcuaMessageRequest must not be nil")
 	}
 	_result := &_OpcuaMessageRequest{
-		MessagePDUContract: NewMessagePDU(chunk, binary),
+		MessagePDUContract: NewMessagePDU(chunk),
 		SecurityHeader:     securityHeader,
 		Message:            message,
 	}
@@ -99,8 +96,6 @@ type OpcuaMessageRequestBuilder interface {
 	WithMessage(Payload) OpcuaMessageRequestBuilder
 	// WithMessageBuilder adds Message (property field) which is build by the builder
 	WithMessageBuilder(func(PayloadBuilder) PayloadBuilder) OpcuaMessageRequestBuilder
-	// WithArgTotalLength sets a parser argument
-	WithArgTotalLength(uint32) OpcuaMessageRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() MessagePDUBuilder
 	// Build builds the OpcuaMessageRequest or returns an error if something is wrong
@@ -160,11 +155,6 @@ func (b *_OpcuaMessageRequestBuilder) WithMessageBuilder(builderSupplier func(Pa
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PayloadBuilder failed"))
 	}
-	return b
-}
-
-func (b *_OpcuaMessageRequestBuilder) WithArgTotalLength(totalLength uint32) OpcuaMessageRequestBuilder {
-	b.TotalLength = totalLength
 	return b
 }
 
@@ -356,16 +346,6 @@ func (m *_OpcuaMessageRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 	return m.MessagePDUContract.(*_MessagePDU).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_OpcuaMessageRequest) GetTotalLength() uint32 {
-	return m.TotalLength
-}
-
-//
-////
-
 func (m *_OpcuaMessageRequest) IsOpcuaMessageRequest() {}
 
 func (m *_OpcuaMessageRequest) DeepCopy() any {
@@ -380,7 +360,6 @@ func (m *_OpcuaMessageRequest) deepCopy() *_OpcuaMessageRequest {
 		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
 		utils.DeepCopy[SecurityHeader](m.SecurityHeader),
 		utils.DeepCopy[Payload](m.Message),
-		m.TotalLength,
 	}
 	_OpcuaMessageRequestCopy.MessagePDUContract.(*_MessagePDU)._SubType = m
 	return _OpcuaMessageRequestCopy

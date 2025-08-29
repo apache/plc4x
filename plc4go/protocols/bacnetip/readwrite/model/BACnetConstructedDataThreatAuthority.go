@@ -61,12 +61,12 @@ var _ BACnetConstructedDataThreatAuthority = (*_BACnetConstructedDataThreatAutho
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataThreatAuthority)(nil)
 
 // NewBACnetConstructedDataThreatAuthority factory function for _BACnetConstructedDataThreatAuthority
-func NewBACnetConstructedDataThreatAuthority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, threatAuthority BACnetAccessThreatLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatAuthority {
+func NewBACnetConstructedDataThreatAuthority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, threatAuthority BACnetAccessThreatLevel) *_BACnetConstructedDataThreatAuthority {
 	if threatAuthority == nil {
 		panic("threatAuthority of type BACnetAccessThreatLevel for BACnetConstructedDataThreatAuthority must not be nil")
 	}
 	_result := &_BACnetConstructedDataThreatAuthority{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ThreatAuthority:               threatAuthority,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -59,12 +59,12 @@ var _ BACnetPriorityValueBoolean = (*_BACnetPriorityValueBoolean)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueBoolean)(nil)
 
 // NewBACnetPriorityValueBoolean factory function for _BACnetPriorityValueBoolean
-func NewBACnetPriorityValueBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBoolean {
+func NewBACnetPriorityValueBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean) *_BACnetPriorityValueBoolean {
 	if booleanValue == nil {
 		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetPriorityValueBoolean must not be nil")
 	}
 	_result := &_BACnetPriorityValueBoolean{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		BooleanValue:                booleanValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result

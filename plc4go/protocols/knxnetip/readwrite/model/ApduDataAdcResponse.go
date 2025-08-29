@@ -54,9 +54,9 @@ var _ ApduDataAdcResponse = (*_ApduDataAdcResponse)(nil)
 var _ ApduDataRequirements = (*_ApduDataAdcResponse)(nil)
 
 // NewApduDataAdcResponse factory function for _ApduDataAdcResponse
-func NewApduDataAdcResponse(dataLength uint8) *_ApduDataAdcResponse {
+func NewApduDataAdcResponse() *_ApduDataAdcResponse {
 	_result := &_ApduDataAdcResponse{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
